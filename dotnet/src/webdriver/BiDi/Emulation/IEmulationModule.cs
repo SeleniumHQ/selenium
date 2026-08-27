@@ -24,7 +24,7 @@ public interface IEmulationModule
     Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetGeolocationOverrideResult> SetGeolocationOverrideAsync(GeolocationOverride? geolocationOverride, SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetLocaleOverrideResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null, CancellationToken cancellationToken = default);
-    Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? mediaFeatures, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default);
+    Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? features, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetNetworkConditionsResult> SetNetworkConditionsAsync(NetworkConditions? networkConditions, SetNetworkConditionsOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetScreenOrientationOverrideResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null, CancellationToken cancellationToken = default);
     Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null, CancellationToken cancellationToken = default);

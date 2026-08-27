@@ -78,9 +78,9 @@ internal sealed class EmulationModule : Module, IEmulationModule
         return await ExecuteAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? mediaFeatures, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? features, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new SetMediaFeaturesOverrideParameters(mediaFeatures, options?.Contexts, options?.UserContexts);
+        var @params = new SetMediaFeaturesOverrideParameters(features, options?.Contexts, options?.UserContexts);
         return await ExecuteAsync(SetMediaFeaturesOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
     }
 
