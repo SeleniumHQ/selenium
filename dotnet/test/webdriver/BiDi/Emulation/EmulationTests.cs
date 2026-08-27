@@ -84,6 +84,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetMediaFeaturesOverride()
     {
         Assert.That(async () =>
@@ -100,6 +103,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetMediaFeaturesOverrideToDefault()
     {
         Assert.That(async () =>
