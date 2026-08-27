@@ -109,7 +109,6 @@ task :pre_release, [:tag] do |_task, arguments|
   language = parsed[:language]
 
   if parsed[:patch].zero?
-    Rake::Task['update_cddl'].invoke
     Rake::Task['update_manager'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['rust:version'].invoke(version)

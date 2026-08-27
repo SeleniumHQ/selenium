@@ -188,9 +188,6 @@ jobs:
           - task: manager
             name: Selenium Manager Binaries
             run: ./go update_manager
-          - task: cddl
-            name: CDDL Spec Files
-            run: ./go update_cddl
           - task: authors
             name: Authors
             run: ./go authors
@@ -243,7 +240,6 @@ jobs:
             fi
           }
           apply_patch versions "bump versions"
-          apply_patch cddl "update cddl spec files"
           apply_patch changelogs "changelogs updated"
           apply_patch rust-changelogs "rust changelogs updated"
           apply_patch manager "update selenium manager versions"
@@ -271,7 +267,6 @@ jobs:
             | Component | Status |
             |-----------|--------|
             | Versions | ${{ steps.apply.outputs.versions == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | CDDL spec files | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.cddl == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Changelogs | ${{ steps.apply.outputs.changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Rust Changelogs | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.rust-changelogs == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
             | Selenium Manager | ${{ needs.parse-tag.outputs.language != 'all' && 'N/A' || (steps.apply.outputs.manager == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)') }} |
