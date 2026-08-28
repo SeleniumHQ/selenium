@@ -69,8 +69,10 @@ _HEADER = """# Licensed to the Software Freedom Conservancy (SFC) under one
 
 _RESERVED_FIELDS = {"as_json", "from_json", "extensions"}
 
-# The Enum mixin for a schema enum's declared value primitive; anything else stays str.
-_ENUM_MIXINS = {"integer": "int", "number": "float"}
+# The Enum mixin for a schema enum's declared value primitive. A primitive with no
+# mixin (bool cannot be subclassed) gets a plain Enum: the runtime serializes through
+# `.value`, so the member keeps its real type either way.
+_ENUM_MIXINS = {"string": "str", "integer": "int", "number": "float"}
 
 
 # --------------------------------------------------------------------------- #
@@ -845,8 +847,9 @@ def _spec_docstring(name: str, spec_href: str | None) -> list[str]:
 
 
 def _emit_enum(e: EnumIR) -> str:
-    mixin = _ENUM_MIXINS.get(e.primitive, "str")
-    lines = [f"@register({lit(e.schema_name)})", f"class {e.class_name}({mixin}, Enum):"]
+    mixin = _ENUM_MIXINS.get(e.primitive)
+    bases = f"{mixin}, Enum" if mixin else "Enum"
+    lines = [f"@register({lit(e.schema_name)})", f"class {e.class_name}({bases}):"]
     lines += _spec_docstring(e.schema_name, e.spec_href)
     for member, value in e.members:
         lines.append(f"    {member} = {lit(value)}")
