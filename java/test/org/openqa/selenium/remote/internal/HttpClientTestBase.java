@@ -320,6 +320,22 @@ public abstract class HttpClientTestBase {
     }
   }
 
+  @Test
+  void shouldSendRequestWithPathThatNeedsQuoting() {
+    // A proxied request holds the decoded path of the original request, which may contain
+    // characters that are not allowed in a URI, e.g. spaces in the name of a file downloaded
+    // from Grid. The client must quote them, and the server must decode them back.
+    String path =
+        "/session/772f83578930be5dce8f626ecf8ea935/se/files/attestation pour l'employeur.pdf";
+
+    HttpResponse response =
+        executeWithinServer(
+            new HttpRequest(GET, path),
+            req -> new HttpResponse().setContent(Contents.utf8String(req.getUri())));
+
+    assertThat(response.contentAsString()).isEqualTo(path);
+  }
+
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
         new HttpRequest(GET, "/foo"),

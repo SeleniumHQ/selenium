@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.http.jdk;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpHeader.UserAgent;
 
 import com.google.common.net.MediaType;
@@ -42,6 +43,8 @@ class JdkHttpMessages {
   private final ClientConfig config;
   private static final List<String> IGNORE_HEADERS =
       List.of("content-length", "connection", "host");
+  private static final String ALLOWED_IN_URI = "-._~!$&'()*+,;=:@/?%";
+  private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
 
   public JdkHttpMessages(ClientConfig config) {
     this.config = Objects.requireNonNull(config, "Client config");
@@ -135,15 +138,50 @@ class JdkHttpMessages {
         throw new IllegalStateException(
             "Unable to resolve relative URI " + uri + ": base URI is not set in ClientConfig");
       }
+      String path = quoteIllegalCharacters(uri);
       String base = baseUrl.toString();
       if (base.endsWith("/")) {
-        rawUrl = base.substring(0, base.length() - 1) + uri;
+        rawUrl = base.substring(0, base.length() - 1) + path;
       } else {
-        rawUrl = base + uri;
+        rawUrl = base + path;
       }
     }
 
     return URI.create(rawUrl);
+  }
+
+  /**
+   * The URI of a request may hold characters that {@link URI} refuses, most commonly a space in
+   * the name of a file to download from Grid. This happens because the server receiving the
+   * request decodes the path ("%20" becomes a literal space), and the decoded value is kept in
+   * the {@link HttpRequest} that is handed over to this client for proxying. Quote every
+   * character that is not allowed in a URI, and leave all the others untouched, so that URIs
+   * which were valid before are sent exactly as they were.
+   */
+  private static String quoteIllegalCharacters(String uri) {
+    StringBuilder quoted = new StringBuilder(uri.length());
+    for (int i = 0; i < uri.length(); ) {
+      int codePoint = uri.codePointAt(i);
+      i += Character.charCount(codePoint);
+      if (isAllowedInUri(codePoint)) {
+        quoted.appendCodePoint(codePoint);
+        continue;
+      }
+      for (byte b : new String(Character.toChars(codePoint)).getBytes(UTF_8)) {
+        quoted.append('%').append(HEX_DIGITS[(b >> 4) & 0xf]).append(HEX_DIGITS[b & 0xf]);
+      }
+    }
+    return quoted.toString();
+  }
+
+  private static boolean isAllowedInUri(int codePoint) {
+    if (codePoint >= 128) {
+      return false;
+    }
+    return (codePoint >= 'a' && codePoint <= 'z')
+        || (codePoint >= 'A' && codePoint <= 'Z')
+        || (codePoint >= '0' && codePoint <= '9')
+        || ALLOWED_IN_URI.indexOf(codePoint) >= 0;
   }
 
   public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
