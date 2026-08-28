@@ -5958,35 +5958,271 @@
       "inbound": false
     },
     "emulation.MediaFeatures": {
-      "kind": "alias",
-      "type": {
-        "list": {
-          "ref": "emulation.MediaFeature"
-        }
-      },
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeatures"
-    },
-    "emulation.MediaFeature": {
       "kind": "record",
       "fields": [
         {
-          "name": "name",
-          "wire": "name",
-          "required": true,
+          "name": "anyHover",
+          "wire": "any-hover",
+          "required": false,
           "type": {
-            "primitive": "string"
+            "ref": "emulation.MediaFeaturesAnyHover",
+            "nullable": true
           }
         },
         {
-          "name": "value",
-          "wire": "value",
-          "required": true,
+          "name": "anyPointer",
+          "wire": "any-pointer",
+          "required": false,
           "type": {
-            "primitive": "string"
+            "ref": "emulation.MediaFeaturesAnyPointer",
+            "nullable": true
+          }
+        },
+        {
+          "name": "color",
+          "wire": "color",
+          "required": false,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "colorGamut",
+          "wire": "color-gamut",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesColorGamut",
+            "nullable": true
+          }
+        },
+        {
+          "name": "colorIndex",
+          "wire": "color-index",
+          "required": false,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "displayMode",
+          "wire": "display-mode",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesDisplayMode",
+            "nullable": true
+          }
+        },
+        {
+          "name": "dynamicRange",
+          "wire": "dynamic-range",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesDynamicRange",
+            "nullable": true
+          }
+        },
+        {
+          "name": "environmentBlending",
+          "wire": "environment-blending",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesEnvironmentBlending",
+            "nullable": true
+          }
+        },
+        {
+          "name": "forcedColors",
+          "wire": "forced-colors",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesForcedColors",
+            "nullable": true
+          }
+        },
+        {
+          "name": "grid",
+          "wire": "grid",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesGrid",
+            "nullable": true
+          }
+        },
+        {
+          "name": "horizontalViewportSegments",
+          "wire": "horizontal-viewport-segments",
+          "required": false,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "hover",
+          "wire": "hover",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesHover",
+            "nullable": true
+          }
+        },
+        {
+          "name": "invertedColors",
+          "wire": "inverted-colors",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesInvertedColors",
+            "nullable": true
+          }
+        },
+        {
+          "name": "monochrome",
+          "wire": "monochrome",
+          "required": false,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "navControls",
+          "wire": "nav-controls",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesNavControls",
+            "nullable": true
+          }
+        },
+        {
+          "name": "overflowBlock",
+          "wire": "overflow-block",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesOverflowBlock",
+            "nullable": true
+          }
+        },
+        {
+          "name": "overflowInline",
+          "wire": "overflow-inline",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesOverflowInline",
+            "nullable": true
+          }
+        },
+        {
+          "name": "pointer",
+          "wire": "pointer",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPointer",
+            "nullable": true
+          }
+        },
+        {
+          "name": "prefersColorScheme",
+          "wire": "prefers-color-scheme",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPrefersColorScheme",
+            "nullable": true
+          }
+        },
+        {
+          "name": "prefersContrast",
+          "wire": "prefers-contrast",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPrefersContrast",
+            "nullable": true
+          }
+        },
+        {
+          "name": "prefersReducedData",
+          "wire": "prefers-reduced-data",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPrefersReducedData",
+            "nullable": true
+          }
+        },
+        {
+          "name": "prefersReducedMotion",
+          "wire": "prefers-reduced-motion",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPrefersReducedMotion",
+            "nullable": true
+          }
+        },
+        {
+          "name": "prefersReducedTransparency",
+          "wire": "prefers-reduced-transparency",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesPrefersReducedTransparency",
+            "nullable": true
+          }
+        },
+        {
+          "name": "scan",
+          "wire": "scan",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesScan",
+            "nullable": true
+          }
+        },
+        {
+          "name": "scripting",
+          "wire": "scripting",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesScripting",
+            "nullable": true
+          }
+        },
+        {
+          "name": "update",
+          "wire": "update",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesUpdate",
+            "nullable": true
+          }
+        },
+        {
+          "name": "verticalViewportSegments",
+          "wire": "vertical-viewport-segments",
+          "required": false,
+          "type": {
+            "ref": "js-uint",
+            "nullable": true
+          }
+        },
+        {
+          "name": "videoColorGamut",
+          "wire": "video-color-gamut",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesVideoColorGamut",
+            "nullable": true
+          }
+        },
+        {
+          "name": "videoDynamicRange",
+          "wire": "video-dynamic-range",
+          "required": false,
+          "type": {
+            "ref": "emulation.MediaFeaturesVideoDynamicRange",
+            "nullable": true
           }
         }
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeature",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeatures",
       "outbound": true,
       "inbound": false
     },
@@ -16126,6 +16362,284 @@
       "synthetic": true,
       "owner": "browsingContext.PrintParameters",
       "label": "Orientation"
+    },
+    "emulation.MediaFeaturesAnyHover": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "hover"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "AnyHover"
+    },
+    "emulation.MediaFeaturesAnyPointer": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "coarse",
+        "fine"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "AnyPointer"
+    },
+    "emulation.MediaFeaturesColorGamut": {
+      "kind": "enum",
+      "values": [
+        "srgb",
+        "p3",
+        "rec2020"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "ColorGamut"
+    },
+    "emulation.MediaFeaturesDisplayMode": {
+      "kind": "enum",
+      "values": [
+        "fullscreen",
+        "standalone",
+        "minimal-ui",
+        "browser",
+        "picture-in-picture"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "DisplayMode"
+    },
+    "emulation.MediaFeaturesDynamicRange": {
+      "kind": "enum",
+      "values": [
+        "standard",
+        "high"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "DynamicRange"
+    },
+    "emulation.MediaFeaturesEnvironmentBlending": {
+      "kind": "enum",
+      "values": [
+        "opaque",
+        "additive",
+        "subtractive"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "EnvironmentBlending"
+    },
+    "emulation.MediaFeaturesForcedColors": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "active"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "ForcedColors"
+    },
+    "emulation.MediaFeaturesGrid": {
+      "kind": "enum",
+      "values": [
+        0,
+        1
+      ],
+      "primitive": "integer",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Grid"
+    },
+    "emulation.MediaFeaturesHover": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "hover"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Hover"
+    },
+    "emulation.MediaFeaturesInvertedColors": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "inverted"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "InvertedColors"
+    },
+    "emulation.MediaFeaturesNavControls": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "back"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "NavControls"
+    },
+    "emulation.MediaFeaturesOverflowBlock": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "scroll",
+        "optional-paged",
+        "paged"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "OverflowBlock"
+    },
+    "emulation.MediaFeaturesOverflowInline": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "scroll"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "OverflowInline"
+    },
+    "emulation.MediaFeaturesPointer": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "coarse",
+        "fine"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Pointer"
+    },
+    "emulation.MediaFeaturesPrefersColorScheme": {
+      "kind": "enum",
+      "values": [
+        "light",
+        "dark"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "PrefersColorScheme"
+    },
+    "emulation.MediaFeaturesPrefersContrast": {
+      "kind": "enum",
+      "values": [
+        "no-preference",
+        "more",
+        "less",
+        "custom"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "PrefersContrast"
+    },
+    "emulation.MediaFeaturesPrefersReducedData": {
+      "kind": "enum",
+      "values": [
+        "no-preference",
+        "reduce"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "PrefersReducedData"
+    },
+    "emulation.MediaFeaturesPrefersReducedMotion": {
+      "kind": "enum",
+      "values": [
+        "no-preference",
+        "reduce"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "PrefersReducedMotion"
+    },
+    "emulation.MediaFeaturesPrefersReducedTransparency": {
+      "kind": "enum",
+      "values": [
+        "no-preference",
+        "reduce"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "PrefersReducedTransparency"
+    },
+    "emulation.MediaFeaturesScan": {
+      "kind": "enum",
+      "values": [
+        "interlace",
+        "progressive"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Scan"
+    },
+    "emulation.MediaFeaturesScripting": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "initial-only",
+        "enabled"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Scripting"
+    },
+    "emulation.MediaFeaturesUpdate": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "slow",
+        "fast"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "Update"
+    },
+    "emulation.MediaFeaturesVideoColorGamut": {
+      "kind": "enum",
+      "values": [
+        "srgb",
+        "p3",
+        "rec2020"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "VideoColorGamut"
+    },
+    "emulation.MediaFeaturesVideoDynamicRange": {
+      "kind": "enum",
+      "values": [
+        "standard",
+        "high"
+      ],
+      "primitive": "string",
+      "synthetic": true,
+      "owner": "emulation.MediaFeatures",
+      "label": "VideoDynamicRange"
     },
     "emulation.SetScrollbarTypeOverrideParametersScrollbarType": {
       "kind": "enum",
