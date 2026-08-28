@@ -367,7 +367,8 @@ internal class RemoteValueConverter : JsonConverter<RemoteValue>
             return new StringRemoteValue(reader.GetString()!);
         }
 
-        return reader.GetDiscriminator("type") switch
+        var type = reader.GetDiscriminator("type");
+        return type switch
         {
             "number" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NumberRemoteValue>()),
             "boolean" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<BooleanRemoteValue>()),
@@ -395,7 +396,7 @@ internal class RemoteValueConverter : JsonConverter<RemoteValue>
             "htmlcollection" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<HtmlCollectionRemoteValue>()),
             "node" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NodeRemoteValue>()),
             "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowProxyRemoteValue>()),
-            _ => null,
+            _ => throw new JsonException($"Unknown remote value type '{type}'."),
         };
     }
 
