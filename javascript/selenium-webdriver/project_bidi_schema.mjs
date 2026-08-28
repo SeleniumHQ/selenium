@@ -216,17 +216,32 @@ function projectEntry(e) {
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }
 
+// A wire key that is already an identifier is kept verbatim, so `namespaceURI` stays
+// wire-faithful; a quoted CDDL key that is not (`prefers-color-scheme`) is camelCased so
+// every binding derives an identifier from `name` without re-solving punctuation itself.
+const IDENTIFIER = /^[A-Za-z][A-Za-z0-9]*$/
+
+function fieldName(wire) {
+  if (IDENTIFIER.test(wire)) return wire
+  const [head, ...rest] = wire.split(/[^A-Za-z0-9]+/).filter(Boolean)
+  if (!head) return wire
+  return head + rest.map((part) => part[0].toUpperCase() + part.slice(1)).join('')
+}
+
 function projectField(prop) {
+  // A vendor-prefixed key (moz:allowPrivateBrowsing) keeps its wire form: extractVendor
+  // routes it out of the shared types, and the vendor pipeline drops the namespace itself.
+  const vendor = prop['x-selenium-vendor']
   const field = {
-    name: prop.Name,
+    name: vendor ? prop.Name : fieldName(prop.Name),
     wire: prop.Name,
     required: (prop.Occurrence?.n ?? 1) >= 1,
     type: projectRef(prop.Type),
   }
   // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
   // extractVendor can route it out of the shared schema; stripped there before it ships.
-  if (prop['x-selenium-vendor']) {
-    field.vendor = prop['x-selenium-vendor']
+  if (vendor) {
+    field.vendor = vendor
     field.via = prop['x-selenium-vendor-via']
   }
   return field
@@ -792,7 +807,16 @@ export function checkSchema(schema) {
   for (const [name, node] of Object.entries(schema.types)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
-      for (const f of node.fields) report(`${name}.${f.name}`, f.type)
+      const wireByName = new Map()
+      for (const f of node.fields) {
+        report(`${name}.${f.name}`, f.type)
+        // Two wire keys that camelCase to one name would collapse into a single
+        // attribute downstream, silently keeping whichever the binding wrote last.
+        const prior = wireByName.get(f.name)
+        if (prior !== undefined && prior !== f.wire)
+          errors.push(`${name}: wire keys ${prior} and ${f.wire} both project to field name ${f.name}`)
+        wireByName.set(f.name, f.wire)
+      }
       if (node.map) report(`${name}.*`, node.map)
     } else if (node.kind === 'union') {
       for (const v of node.variants) if (!has(v)) errors.push(`${name}: unresolved variant ${v}`)

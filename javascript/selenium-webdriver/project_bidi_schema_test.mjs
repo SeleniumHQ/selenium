@@ -73,6 +73,20 @@ describe('projectSchema', () => {
     })
   })
 
+  it('camelCases a quoted wire key into an identifier, keeping the wire name exact', () => {
+    const ast = [group('x.T', [field('prefers-color-scheme', ['text'], { n: 0, m: 1 })])]
+    const [f] = projectSchema(ast, {}).types['x.T'].fields
+    assert.equal(f.name, 'prefersColorScheme')
+    assert.equal(f.wire, 'prefers-color-scheme')
+  })
+
+  it('leaves a wire key that is already an identifier verbatim (namespaceURI is not mangled)', () => {
+    const ast = [group('x.T', [field('namespaceURI', ['text'])])]
+    const [f] = projectSchema(ast, {}).types['x.T'].fields
+    assert.equal(f.name, 'namespaceURI')
+    assert.equal(f.wire, 'namespaceURI')
+  })
+
   it('hoists an inline record so the field is a plain ref (no inline records), tagged with its origin', () => {
     assert.deepEqual(schema.types['session.Caps'].fields[0].type, { ref: 'session.CapsExtra' })
     const extra = schema.types['session.CapsExtra']
@@ -770,6 +784,26 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.T.a: unresolved type x.Missing'])
+  })
+
+  it('flags two wire keys projecting to one field name', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.T': {
+          kind: 'record',
+          fields: [
+            { name: 'colorGamut', wire: 'colorGamut', required: false, type: { primitive: 'string' } },
+            { name: 'colorGamut', wire: 'color-gamut', required: false, type: { primitive: 'string' } },
+          ],
+        },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), [
+      'x.T: wire keys colorGamut and color-gamut both project to field name colorGamut',
+    ])
   })
 
   it('catches an unresolved ref inside an alias', () => {
