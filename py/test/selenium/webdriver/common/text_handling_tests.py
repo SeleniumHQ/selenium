@@ -215,6 +215,14 @@ def test_should_get_text_which_is_avalid_complex_jsonobject(driver, pages):
     assert """{a=\"\\\\b\\\\\\\"\'\\\'\"}""" == element.text
 
 
+# WebKit computes Get Element Text without applying text-transform at all, so it
+# returns the untransformed source text even for Latin script; verified as of
+# 2026-08-28 that Safari returns 'hello world'. This is unrelated to
+# https://github.com/SeleniumHQ/selenium/issues/17945 - Chrome, Edge and Firefox
+# all pass these assertions.
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_webkitgtk
+@pytest.mark.xfail_wpewebkit
 def test_should_capitalize_latin_text_when_text_transform_is_capitalize(driver, pages):
     pages.load("textTransform.html")
     assert "Hello World" == driver.find_element(by=By.ID, value="capitalized-latin").text
@@ -222,11 +230,12 @@ def test_should_capitalize_latin_text_when_text_transform_is_capitalize(driver, 
 
 
 # Get Element Text is a driver-side endpoint, served from each browser's own
-# vendored copy of javascript/atoms/dom.js. These stay xfail until the fix for
-# https://github.com/SeleniumHQ/selenium/issues/17945 is upstreamed into
-# Chromium and Gecko and ships in a release; verified as of 2026-08-28 that all
-# three still return the untransformed 'привет мир'. The authoritative test for
-# the atom itself is javascript/atoms/test/text_test.html.
+# vendored copy of javascript/atoms/dom.js. Chrome, Edge and Firefox stay xfail
+# until the fix for https://github.com/SeleniumHQ/selenium/issues/17945 is
+# upstreamed into Chromium and Gecko and ships in a release; verified as of
+# 2026-08-28 that all three still return the untransformed 'привет мир'. The
+# authoritative test for the atom itself is javascript/atoms/test/text_test.html.
+# WebKit is xfail for the separate reason noted on the Latin test above.
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_edge
 @pytest.mark.xfail_firefox
