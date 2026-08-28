@@ -247,6 +247,12 @@ class Record:
         for item in value if w.is_list else [value]:
             if isinstance(item, enum_cls):
                 continue
+            # bool is a subclass of int, so True would resolve to an int-valued member
+            # and then serialize as JSON true rather than the number the schema declares.
+            if type(item) is bool and not any(type(member.value) is bool for member in enum_cls):
+                raise BiDiSerializationError(
+                    f"{type(self).__name__}.{name}: {item!r} is not a valid {enum_cls.__name__}"
+                )
             try:
                 enum_cls(item)
             except ValueError:
