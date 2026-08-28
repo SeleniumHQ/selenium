@@ -8,7 +8,7 @@ on:
     branches:
       - trunk
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 4 * * *"
   workflow_dispatch:
   workflow_call:
 
@@ -156,6 +156,33 @@ jobs:
     needs: read-targets
     uses: ./.github/workflows/ci-javascript.yml
     if: needs.read-targets.outputs.js != ''
+
+  merge-flaky-results:
+    name: Merge Flaky Results
+    if: always() && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk'
+    needs: [dotnet, java, grid, python, ruby, rust, javascript]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Download results
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: flaky-*
+          path: build/flaky-artifacts
+      - name: Merge results
+        id: merge
+        shell: bash
+        run: ./scripts/github-actions/merge-flaky-results.sh
+      - name: Upload results
+        if: steps.merge.outputs.results == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: merged-flaky-results-${{ github.run_id }}
+          retention-days: 60
+          path: build/flaky/results.jsonl
+          overwrite: true
 
   ci-success:
     name: CI Success

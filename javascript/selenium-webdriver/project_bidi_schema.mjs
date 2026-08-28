@@ -595,7 +595,7 @@ function reachableTypes(roots, types) {
  * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
  *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
  *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
- * @returns {{schemaVersion: number, commands: object[], events: object[], types: object, domains: object}} The schema.
+ * @returns {{schemaVersion: number, generatedBy: string, regenerateWith: string, commands: object[], events: object[], types: object, domains: object}} The schema.
  */
 export function projectSchema(ast, model, links = {}) {
   const types = {}
@@ -681,7 +681,15 @@ export function projectSchema(ast, model, links = {}) {
   // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
   // binding that reads only `types`/`commands`/`events` never sees vendor fields.
   const vendor = extractVendor(types)
-  const schema = { schemaVersion: 1, commands, events, types, domains }
+  const schema = {
+    schemaVersion: 1,
+    generatedBy: 'javascript/selenium-webdriver/project_bidi_schema.mjs',
+    regenerateWith: 'bazel run //common/bidi:update-schema',
+    commands,
+    events,
+    types,
+    domains,
+  }
   if (Object.keys(vendor).length) schema.vendor = vendor
   return schema
 }

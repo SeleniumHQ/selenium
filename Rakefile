@@ -52,16 +52,10 @@ end
 task default: [:grid]
 task grid: [:'java:grid']
 
-# ./go update_browser stable
-# ./go update_browser beta
 desc 'Update pinned browser versions'
-task :update_browsers, [:channel] do |_task, arguments|
-  chrome_channel = arguments[:channel] || 'Stable'
-  chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
-
+task :update_browsers do |_task, _arguments|
   puts 'pinning updated browsers and drivers'
-  Bazel.execute('run', args, '//scripts:pinned_browsers')
+  Bazel.execute('run', [], '//scripts:pinned_browsers')
 end
 
 desc 'Update Selenium Manager to latest release'
@@ -76,11 +70,6 @@ task :update_multitool do |_task, _arguments|
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
 end
 
-desc 'Update dependencies for release'
-task :release_update do |_task, _arguments|
-  Rake::Task[:update_multitool].invoke
-end
-
 desc 'Update pinned CDDL spec files from w3c/webref'
 task :update_cddl do |_task, _arguments|
   puts 'Updating pinned CDDL spec references'
@@ -88,13 +77,9 @@ task :update_cddl do |_task, _arguments|
 end
 
 desc 'Update Chrome DevTools support'
-task :update_cdp, [:channel] do |_task, arguments|
-  chrome_channel = arguments[:channel] || 'stable'
-  chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
-
-  puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
-  Bazel.execute('run', args, '//scripts:update_cdp')
+task :update_cdp do |_task, _arguments|
+  puts 'Updating Chrome DevTools references to include the latest from the Stable channel'
+  Bazel.execute('run', [], '//scripts:update_cdp')
 end
 
 task ios_driver: 'appium:build'
@@ -107,28 +92,30 @@ task :authors do
      'sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS'
 end
 
-# Example: `./go release_updates selenium-4.31.0 early-stable`
-# Example: `./go release_updates selenium-4.31.1-ruby`
+desc 'Update dependencies for all bindings and Rust, plus pinned multitool binaries'
+task :update do
+  Rake::Task['all:update'].invoke
+  Rake::Task['rust:update'].invoke
+  Rake::Task['update_multitool'].invoke
+end
+
+# Equivalent to `.github/workflows/pre-release.yml` in a single command
+# Example: `./go pre_release selenium-4.31.0`
+# Example: `./go pre_release selenium-4.31.1-ruby`
 desc 'Update everything in preparation for a release'
-task :release_updates, [:tag, :channel] do |_task, arguments|
+task :pre_release, [:tag] do |_task, arguments|
   parsed = SeleniumRake.parse_tag(arguments[:tag])
   version = parsed[:version]
   language = parsed[:language]
 
   if parsed[:patch].zero?
-    Rake::Task['update_browsers'].invoke(arguments[:channel])
-    Rake::Task['update_cdp'].invoke(arguments[:channel])
-    Rake::Task['update_cddl'].invoke
     Rake::Task['update_manager'].invoke
-    Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['rust:version'].invoke(version)
-    Rake::Task['rust:update'].invoke
     Rake::Task['rust:changelogs'].invoke
   end
 
   Rake::Task["#{language}:version"].invoke(version)
-  Rake::Task["#{language}:update"].invoke
   Rake::Task["#{language}:changelogs"].invoke
 end
 

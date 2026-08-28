@@ -1158,6 +1158,42 @@ bot.dom.INLINE_DISPLAY_BOXES_ = [
 
 
 /**
+ * The two patterns "text-transform: capitalize" applies, in order: the first
+ * titlecases the letter starting each word, the second titlecases a letter
+ * opening a "_"- or "*"-delimited run.
+ *
+ * A word runs through letters, combining marks and digits, and also through
+ * apostrophes ("don't") and underscores (snake_case), neither of which
+ * browsers treat as a word break. Enclosed alphanumerics are symbols rather
+ * than letters, but have case mappings, so they count as letters here.
+ *
+ * The Unicode property escapes need the ES2015 "u" flag, which also makes the
+ * patterns match letters outside the BMP. Engines without it (IE) fall back to
+ * the Latin-only classes these replaced, so their text is transformed exactly
+ * as it was before.
+ *
+ * @private {!Array.<!RegExp>}
+ * @const
+ */
+bot.dom.CAPITALIZE_PATTERNS_ = (function () {
+  var letter = '\\p{L}\\u24B6-\\u24E9';
+  var wordCharacter = '\'_\\p{M}\\p{N}' + letter;
+  try {
+    return [
+      new RegExp('(^|[^' + wordCharacter + '])([' + letter + '])', 'gu'),
+      new RegExp(
+        '(^|[^' + wordCharacter + '])([_*])([' + letter + '])', 'gu')
+    ];
+  } catch (ignored) {
+    return [
+      /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])/g,
+      /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])([_*])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24D0-\u24E9])/g
+    ];
+  }
+})();
+
+
+/**
  * @param {!Text} textNode Text node.
  * @param {!Array.<string>} lines Accumulated visible lines of text.
  * @param {?string} whitespace Parent element's "white-space" style.
@@ -1195,15 +1231,13 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function (textNode, lines,
 
   if (textTransform == 'capitalize') {
     // 1) don't treat '_' as a separator (protects snake_case)
-    var re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])/g;
-    text = text.replace(re, function () {
+    text = text.replace(bot.dom.CAPITALIZE_PATTERNS_[0], function () {
       return arguments[1] + arguments[2].toUpperCase();
     });
 
     // 2) capitalize after opening "_" or "*"
     // Preceded by start or a non-word (so it won't fire for snake_case)
-    re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])([_*])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24D0-\u24E9])/g;
-    text = text.replace(re, function () {
+    text = text.replace(bot.dom.CAPITALIZE_PATTERNS_[1], function () {
       return arguments[1] + arguments[2] + arguments[3].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {

@@ -87,8 +87,13 @@ module Selenium
                 .to raise_error(Error::SerializationError, /RemoteValue expected an object/)
             end
 
-            it 'passes a bare scalar through a union that has a scalar arm (input.Origin)' do
+            it 'passes a declared bare scalar through a union that has a scalar arm (input.Origin)' do
               expect(Input::Origin.from_json('viewport')).to eq('viewport')
+            end
+
+            it 'raises when a bare scalar is not one of the union scalar arms' do
+              expect { Input::Origin.from_json('banana') }
+                .to raise_error(Error::SerializationError, /Origin received a scalar not in this Selenium/)
             end
 
             it 'keeps a map string key while typing its object value (object-only value union)' do
@@ -404,9 +409,13 @@ module Selenium
                 .to raise_error(ArgumentError, /NavigateParameters#url expected string/)
             end
 
-            it 'rejects a float for an integer field, mirroring the wire integer/number split' do
-              expect { Emulation::ScreenArea.new(width: 5.0, height: 5) }
+            it 'rejects a fractional value for an integer field, mirroring the wire integer/number split' do
+              expect { Emulation::ScreenArea.new(width: 5.5, height: 5) }
                 .to raise_error(ArgumentError, /ScreenArea#width expected integer/)
+            end
+
+            it 'accepts a whole-valued float for an integer field, as the wire may spell it either way' do
+              expect(Emulation::ScreenArea.new(width: 5.0, height: 5).as_json).to eq('width' => 5.0, 'height' => 5)
             end
 
             it 'accepts either an integer or a float for a number field' do
@@ -621,6 +630,12 @@ module Selenium
               expect(parsed.key).to eq(5)
             end
 
+            it 'accepts a whole-valued float for an integer-typed field and holds it as an Integer' do
+              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5.0, 'data' => 'x')
+
+              expect(parsed.key).to be_an(::Integer).and eq(5)
+            end
+
             # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
             # its leaf primitive, so a wrong-typed value is rejected instead of passing opaque.
             it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
@@ -630,23 +645,16 @@ module Selenium
           end
 
           # RequestDeviceInfo is a minimal record: a required `id` and a required-and-nullable `name`.
-          describe 'inbound required-field tolerance' do
-            it 'tolerates a missing required-nullable field as omitted (UNSET, not null) and warns' do
-              parsed = nil
-              expect { parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
-                .to have_warning(:bidi_missing_required)
-              explicit = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
-
-              expect(parsed.name).to equal(Serialization::UNSET)
-              expect(explicit.name).to be_nil
-            end
-
-            it 'escalates a missing required field to an error in strict mode (SE_BIDI_STRICT)' do
-              allow(ENV).to receive(:fetch).and_call_original
-              allow(ENV).to receive(:fetch).with('SE_BIDI_STRICT', '').and_return('true')
-
+          describe 'inbound required fields' do
+            it 'raises when a required field is missing from the response' do
               expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
                 .to raise_error(Error::SerializationError, /RequestDeviceInfo#name is required but was missing/)
+            end
+
+            it 'accepts an explicit null for a required-and-nullable field' do
+              parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
+
+              expect(parsed.name).to be_nil
             end
           end
         end

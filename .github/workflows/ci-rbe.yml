@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - trunk
+  schedule:
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       disable_test_cache:
@@ -34,4 +36,4 @@ jobs:
       cache-save: ${{ github.ref_name == 'trunk' }}
       rerun-with-debug: true
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/ci-build.sh ${{ github.event.inputs.disable_test_cache }}
+      run: ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}

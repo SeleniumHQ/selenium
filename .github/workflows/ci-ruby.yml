@@ -4,14 +4,14 @@ on:
   workflow_call:
     inputs:
       smoke:
-        description: Run smoke tests only (callers pass false to run the full matrix)
+        description: Smoke tests always run; callers pass false to add the full matrix
         required: false
         type: boolean
         default: true
   workflow_dispatch:
     inputs:
       smoke:
-        description: Run smoke tests only
+        description: Smoke tests only (default also runs the full matrix)
         required: false
         type: boolean
         default: false
@@ -45,7 +45,6 @@ jobs:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
-      rerun-with-debug: true
       run: >
         bazel test
         --keep_going
@@ -54,7 +53,6 @@ jobs:
 
   smoke:
     name: ${{ matrix.os }}-smoke
-    if: github.event_name != 'schedule' && inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -91,10 +89,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi"]
+        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi,-os-sensitive,-se-manager"]
         include:
           - os: macos
-            tag_filters: safari-local,safari-preview-bidi
+            tag_filters: safari-local,safari-preview-bidi,-os-sensitive,-se-manager
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'base64'
+require 'json'
 require 'net/http'
 
 # use #java_release_targets to access this list
@@ -72,64 +73,111 @@ def verify_java_release_targets
   raise error_message
 end
 
-def read_m2_user_pass
-  settings_path = File.join(Dir.home, '.m2', 'settings.xml')
-  unless File.exist?(settings_path)
-    warn "Maven settings file not found at #{settings_path}"
-    return
-  end
+module Sonatype
+  module_function
 
-  puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
-  settings = File.read(settings_path)
-  found_section = false
-  settings.each_line do |line|
-    if !found_section
-      found_section = line.include? '<id>central</id>'
-    elsif line.include?('<username>')
-      ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
-    elsif line.include?('<password>')
-      ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
+  def load_credentials
+    ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+    ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
+    return if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+    settings_path = File.join(Dir.home, '.m2', 'settings.xml')
+    unless File.exist?(settings_path)
+      warn "Maven settings file not found at #{settings_path}"
+      return
     end
-    break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-  end
-end
 
-def sonatype_auth_token
-  read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-  Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
-end
-
-def trigger_sonatype_publish(token)
-  puts 'Triggering Sonatype upload with automatic publishing...'
-  url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
-        'org.seleniumhq?publishing_type=automatic'
-  uri = URI(url)
-
-  req = Net::HTTP::Post.new(uri)
-  req['Authorization'] = "Basic #{token}"
-  req['Accept'] = '*/*'
-  req['Content-Length'] = '0'
-
-  begin
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
-                                                  open_timeout: 10, read_timeout: 180) do |http|
-      http.request(req)
+    puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
+    settings = File.read(settings_path)
+    found_section = false
+    settings.each_line do |line|
+      if !found_section
+        found_section = line.include? '<id>central</id>'
+      elsif line.include?('<username>')
+        ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
+      elsif line.include?('<password>')
+        ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
+      end
+      break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     end
-  rescue Net::ReadTimeout, Net::OpenTimeout => e
-    warn <<~MSG
-      Request timed out.
-      The deployment may still have been created on the server.
-      Check https://central.sonatype.com/publishing/deployments for status.
-    MSG
-    raise e
   end
 
-  unless res.is_a?(Net::HTTPSuccess)
-    warn "Failed to trigger upload (HTTP #{res.code}): #{res.body}"
-    exit(1)
+  def auth_token
+    load_credentials
+    Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
   end
 
-  puts 'Upload triggered — Sonatype will automatically validate and publish.'
+  def trigger_publish
+    puts 'Triggering Sonatype upload with automatic publishing...'
+    url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
+          'org.seleniumhq?publishing_type=automatic'
+    uri = URI(url)
+
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{auth_token}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
+
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                    open_timeout: 10, read_timeout: 180) do |http|
+        http.request(req)
+      end
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      warn <<~MSG
+        Request timed out.
+        The deployment may still have been created on the server.
+        Check https://central.sonatype.com/publishing/deployments for status.
+      MSG
+      raise e
+    end
+
+    unless res.is_a?(Net::HTTPSuccess)
+      warn "Failed to trigger upload (HTTP #{res.code}): #{res.body}"
+      exit(1)
+    end
+
+    puts 'Upload triggered — Sonatype will automatically validate and publish.'
+  end
+
+  def request_json(request)
+    request['Accept'] = 'application/json'
+    res = SeleniumRake.get_request(request)
+    raise "#{request.uri.path} returned HTTP #{res.code}: #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+
+    JSON.parse(res.body)
+  end
+
+  # Staging repositories are keyed by (user, IP, user agent) and the search defaults to the caller's
+  # IP, so ip=any is required to see one opened by a previous attempt on a different runner.
+  def staging_repositories
+    req = Net::HTTP::Get.new(URI('https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?ip=any'))
+    req['Authorization'] = "Basic #{auth_token}"
+    request_json(req).fetch('repositories')
+  end
+
+  def published?(version)
+    query = "namespace=org.seleniumhq.selenium&name=selenium-java&version=#{version}"
+    req = Net::HTTP::Get.new(URI("https://central.sonatype.com/api/v1/publisher/published?#{query}"))
+    # The Portal documents Bearer, where the staging API shim above takes Basic. Same credential.
+    req['Authorization'] = "Bearer #{auth_token}"
+    request_json(req).fetch('published')
+  end
+
+  # A repository still open or closed is a previous attempt that has not landed — mid-publish, or
+  # rejected by the Portal. Both want a look at the deployments page before another deploy piles on.
+  def already_deployed?(version)
+    unfinished = %w[open closed]
+    if staging_repositories.any? { |repo| unfinished.include?(repo['state']) }
+      raise 'A previous attempt left a staging repository behind; check it at ' \
+            'https://central.sonatype.com/publishing/deployments before releasing again.'
+    end
+
+    return false unless published?(version)
+
+    puts "#{version} is already deployed — skipping the deploy."
+    true
+  end
 end
 
 desc 'Build Java Client Jars'
@@ -260,11 +308,8 @@ desc 'Validate Java release credentials'
 task :check_credentials do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
 
-  has_env = (ENV['MAVEN_USER'] || ENV.fetch('SEL_M2_USER',
-                                            nil)) && (ENV['MAVEN_PASSWORD'] || ENV.fetch('SEL_M2_PASS', nil))
-  settings = File.join(Dir.home, '.m2', 'settings.xml')
-  has_file = File.exist?(settings) && File.read(settings).include?('<id>central</id>')
-  unless has_env || has_file
+  Sonatype.load_credentials
+  unless ENV['MAVEN_USER'] && ENV['MAVEN_PASSWORD']
     raise 'Missing Maven credentials: set MAVEN_USER/MAVEN_PASSWORD or configure ~/.m2/settings.xml'
   end
 
@@ -279,25 +324,7 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
 
-  unless nightly
-    already_published = begin
-      SeleniumRake.verify_package_published(maven_central_pom_url)
-      true
-    rescue StandardError
-      false
-    end
-
-    if already_published
-      puts 'Java packages already published — skipping release.'
-      next
-    end
-  end
-
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
-
-  ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
-  ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
-  token = sonatype_auth_token
 
   repo_domain = 'central.sonatype.com'
   repo = if nightly
@@ -317,12 +344,14 @@ task :release do |_task, arguments|
   Rake::Task['java:package'].invoke('--config=release')
   Rake::Task['java:build'].invoke('--config=release')
 
-  puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
+  next if !nightly && Sonatype.already_deployed?(java_version)
+
+  puts "Deploying Java artifacts to '#{ENV.fetch('MAVEN_REPO', nil)}'"
   java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
 
   next if nightly
 
-  trigger_sonatype_publish(token)
+  Sonatype.trigger_publish
 end
 
 def maven_central_pom_url
@@ -399,7 +428,7 @@ task :docs_generate do
   Bazel.execute('build', [], '//java/src/org/openqa/selenium/grid:all-javadocs')
 end
 
-desc 'Update Maven dependencies'
+desc 'Update Maven dependencies to latest versions'
 task :update do
   puts 'Updating Maven dependencies'
   # Make sure things are in a good state to start with

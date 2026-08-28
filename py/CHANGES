@@ -1,3 +1,9 @@
+Selenium 4.48.0
+* Support CDP versions: v150, v151, v152
+* fix W3C capabilities built from a list of options (create_matches) (#17897)
+* generate the internal BiDi protocol layer from the shared binding-neutral schema (#17761)
+* update new BiDi layer generation to conform to latest proposed ADR (#17942)
+
 Selenium 4.47.0
 * Support CDP versions: v149, v150, v151
 * Fix default command_executor URL in RemoteWebDriver docstring (#17803)

@@ -28,5 +28,6 @@ public sealed record DownloadWillBeginEventArgs(
     BrowsingContext Context,
     Navigation? Navigation,
     [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
+    string Url,
+    Browser.UserContext? UserContext)
     : EventArgs, IBaseNavigationInfo;

@@ -122,7 +122,7 @@ generate_bidi_library(
     ],
 )
 
-VERSION = "4.48.0-nightly202608101808"
+VERSION = "4.49.0-nightly202608272014"
 
 BROWSER_VERSIONS = [
     "v152",
@@ -150,6 +150,7 @@ js_library(
         "common/*.js",
         "bidi/*.js",
         "bidi/external/*.js",
+        "bidi/serialization/*.js",
     ]),
     deps = [
         ":node_modules/@bazel/runfiles",
@@ -197,9 +198,14 @@ pkg_tar(
 )
 
 SMALL_TESTS = [
+    "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
+    "test/bidi/serialization/record_test.js",
+    "test/bidi/serialization/union_test.js",
+    "test/bidi/serialization/wire_contract_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
+    "test/lib/bidi_connection_test.js",
     "test/lib/by_test.js",
     "test/lib/credentials_test.js",
     "test/lib/error_test.js",
