@@ -346,6 +346,7 @@ internal class BrowsingContextTests : BiDiTestFixture
     [Test]
     [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
     [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public async Task CanStartAndStopScreencast()
     {
         StartScreencastResult startScreencastResult = null;
