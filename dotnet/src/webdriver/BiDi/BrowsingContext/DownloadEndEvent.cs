@@ -26,25 +26,31 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 [JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(
-    BrowsingContext Context)
-    : EventArgs;
+    BrowsingContext Context,
+    Navigation? Navigation,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : EventArgs, IBaseNavigationInfo;
 
 public sealed record DownloadCanceledEventArgs(
     Download Download,
     BrowsingContext Context,
     Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
 public sealed record DownloadCompleteEventArgs(
     Download Download,
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
 internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArgs>
 {
