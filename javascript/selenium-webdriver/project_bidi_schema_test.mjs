@@ -64,6 +64,7 @@ describe('projectSchema', () => {
     assert.deepEqual(schema.types['network.SetCacheBehaviorParametersCacheBehavior'], {
       kind: 'enum',
       values: ['default', 'bypass'],
+      primitive: 'string',
       synthetic: true,
       owner: 'network.SetCacheBehaviorParameters',
       label: 'CacheBehavior',
@@ -71,6 +72,13 @@ describe('projectSchema', () => {
     assert.deepEqual(schema.types['network.SetCacheBehaviorParameters'].fields[0].type, {
       ref: 'network.SetCacheBehaviorParametersCacheBehavior',
     })
+  })
+
+  it('tags a numeric enum with its value primitive, so a binding reads the type rather than deriving it', () => {
+    const ast = [group('x.T', [field('grid', [lit(0), lit(1)])])]
+    const [, def] = Object.entries(projectSchema(ast, {}).types).find(([, t]) => t.kind === 'enum')
+    assert.deepEqual(def.values, [0, 1])
+    assert.equal(def.primitive, 'integer')
   })
 
   it('camelCases a quoted wire key into an identifier, keeping the wire name exact', () => {

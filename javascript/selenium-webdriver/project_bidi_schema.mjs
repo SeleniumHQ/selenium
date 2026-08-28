@@ -22,7 +22,7 @@
  * straight mapping into a small vocabulary:
  *
  *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
- *             | { kind: 'enum',   values: [string], specHref? }
+ *             | { kind: 'enum',   values: [scalar], primitive?, specHref? }
  *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
@@ -267,7 +267,14 @@ function unionMemberRefs(def) {
 function projectType(def) {
   if (def.Type === 'variable') {
     const pt = def.PropertyType ?? []
-    if (pt.length && pt.every(isLiteral)) return { kind: 'enum', values: pt.map((e) => e.Value) }
+    if (pt.length && pt.every(isLiteral)) {
+      // Carry the literals' shared primitive so every binding reads the value type
+      // rather than re-deriving it from the JSON values (which arrive differently typed
+      // per language). Matches what enumNode does for an un-hoisted inline choice.
+      const values = pt.map((e) => e.Value)
+      const primitive = literalPrimitive(values)
+      return primitive ? { kind: 'enum', values, primitive } : { kind: 'enum', values }
+    }
     // A union of refs is a union even when some arms are inline groups wrapping a
     // ref (e.g. script.LocalValue's date/regexp arms): projectRef resolves those to
     // refs, so promote the all-ref result to a first-class union (it gets a selector)

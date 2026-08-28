@@ -1729,6 +1729,7 @@
         "unknown error",
         "unsupported operation"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-errorcode"
     },
     "SessionCommand": {
@@ -2131,6 +2132,7 @@
         "dismiss",
         "ignore"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-session-UserPromptHandlerType"
     },
     "session.Subscription": {
@@ -3561,6 +3563,7 @@
         "interactive",
         "complete"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-browsingContext-ReadinessState"
     },
     "browsingContext.UserPromptType": {
@@ -3571,6 +3574,7 @@
         "confirm",
         "prompt"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-browsingContext-UserPromptType"
     },
     "browsingContext.Activate": {
@@ -3905,6 +3909,7 @@
         "tab",
         "window"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcreatetype"
     },
     "browsingContext.CreateParameters": {
@@ -5671,6 +5676,7 @@
         "light",
         "dark"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationforcedcolorsmodetheme"
     },
     "emulation.SetForcedColorsModeThemeOverrideResult": {
@@ -6204,6 +6210,7 @@
         "portrait",
         "landscape"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenorientationnatural"
     },
     "emulation.ScreenOrientationType": {
@@ -6214,6 +6221,7 @@
         "landscape-primary",
         "landscape-secondary"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenorientationtype"
     },
     "emulation.ScreenOrientation": {
@@ -7052,6 +7060,7 @@
       "values": [
         "blob"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-network-CollectorType"
     },
     "network.SameSite": {
@@ -7062,6 +7071,7 @@
         "none",
         "default"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-networksamesite"
     },
     "network.Cookie": {
@@ -7175,6 +7185,7 @@
         "request",
         "response"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-network-dataType"
     },
     "network.FetchTimingInfo": {
@@ -7942,6 +7953,7 @@
         "responseStarted",
         "authRequired"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-networkinterceptphase"
     },
     "network.AddInterceptResult": {
@@ -9938,6 +9950,7 @@
         "Infinity",
         "-Infinity"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptspecialnumber"
     },
     "script.NumberValue": {
@@ -10400,6 +10413,7 @@
         "audio-worklet",
         "worklet"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-RealmType"
     },
     "script.RemoteReference": {
@@ -11479,6 +11493,7 @@
         "root",
         "none"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-ResultOwnership"
     },
     "script.SerializationOptions": {
@@ -12769,6 +12784,7 @@
         "warn",
         "error"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-loglevel"
     },
     "log.Entry": {
@@ -13371,6 +13387,7 @@
         "pen",
         "touch"
       ],
+      "primitive": "string",
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointertype"
     },
     "input.PointerParameters": {
@@ -14354,7 +14371,8 @@
         "granted",
         "denied",
         "prompt"
-      ]
+      ],
+      "primitive": "string"
     },
     "permissions.setPermission": {
       "kind": "record",
@@ -14434,6 +14452,7 @@
         "success",
         "failure"
       ],
+      "primitive": "string",
       "specHref": "https://wicg.github.io/nav-speculation/prefetch.html#cddl-type-speculationpreloadingstatus"
     },
     "SpeculationEvent": {
@@ -16058,6 +16077,7 @@
         "minimized",
         "normal"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "browser.ClientWindowInfo",
       "label": "State"
@@ -16069,6 +16089,7 @@
         "maximized",
         "minimized"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "browser.SetClientWindowStateParameters_ClientWindowNamedState",
       "label": "State"
@@ -16079,6 +16100,7 @@
         "full",
         "partial"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "browsingContext.InnerTextLocator",
       "label": "MatchType"
@@ -16089,6 +16111,7 @@
         "viewport",
         "document"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "browsingContext.CaptureScreenshotParameters",
       "label": "Origin"
@@ -16099,6 +16122,7 @@
         "portrait",
         "landscape"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "browsingContext.PrintParameters",
       "label": "Orientation"
@@ -16109,6 +16133,7 @@
         "classic",
         "overlay"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "emulation.SetScrollbarTypeOverrideParameters",
       "label": "ScrollbarType"
@@ -16121,6 +16146,7 @@
         "preflight",
         "other"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "network.Initiator",
       "label": "Type"
@@ -16131,6 +16157,7 @@
         "default",
         "cancel"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "network.ContinueWithAuthParameters_NoCredentials",
       "label": "Action"
@@ -16141,6 +16168,7 @@
         "default",
         "bypass"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "network.SetCacheBehaviorParameters",
       "label": "CacheBehavior"
@@ -16151,6 +16179,7 @@
         "open",
         "closed"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "script.NodeProperties",
       "label": "Mode"
@@ -16162,6 +16191,7 @@
         "open",
         "all"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "script.SerializationOptions",
       "label": "IncludeShadowTree"
@@ -16173,6 +16203,7 @@
         "powered-off",
         "powered-on"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateAdapterParameters",
       "label": "State"
@@ -16183,6 +16214,7 @@
         "add",
         "remove"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateServiceParameters",
       "label": "Type"
@@ -16193,6 +16225,7 @@
         "add",
         "remove"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateCharacteristicParameters",
       "label": "Type"
@@ -16205,6 +16238,7 @@
         "subscribe-to-notifications",
         "unsubscribe-from-notifications"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateCharacteristicResponseParameters",
       "label": "Type"
@@ -16215,6 +16249,7 @@
         "add",
         "remove"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateDescriptorParameters",
       "label": "Type"
@@ -16225,6 +16260,7 @@
         "read",
         "write"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.SimulateDescriptorResponseParameters",
       "label": "Type"
@@ -16238,6 +16274,7 @@
         "subscribe-to-notifications",
         "unsubscribe-from-notifications"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.CharacteristicEventGeneratedParameters",
       "label": "Type"
@@ -16248,6 +16285,7 @@
         "read",
         "write"
       ],
+      "primitive": "string",
       "synthetic": true,
       "owner": "bluetooth.DescriptorEventGeneratedParameters",
       "label": "Type"

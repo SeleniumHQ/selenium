@@ -27,7 +27,7 @@ module Selenium
 
 <%- end -%>
 <%- mod.enums.each do |enum| -%>
-          <%= enum.constant_name %>: Hash[Symbol, String]
+          <%= enum.constant_name %>: Hash[Symbol, <%= enum.rbs_value_type %>]
 
 <%- end -%>
 <%- mod.types.select(&:union?).each do |union| -%>
