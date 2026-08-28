@@ -24,124 +24,88 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 {
-    private static readonly Command<CreateParameters, CreateResult> CreateCommand = new(
-        "browsingContext.create", Default.CreateParameters, Default.CreateResult);
-
-    private static readonly Command<NavigateParameters, NavigateResult> NavigateCommand = new(
-        "browsingContext.navigate", Default.NavigateParameters, Default.NavigateResult);
-
-    private static readonly Command<ActivateParameters, ActivateResult> ActivateCommand = new(
-        "browsingContext.activate", Default.ActivateParameters, Default.ActivateResult);
-
-    private static readonly Command<LocateNodesParameters, LocateNodesResult> LocateNodesCommand = new(
-        "browsingContext.locateNodes", Default.LocateNodesParameters, Default.LocateNodesResult);
-
-    private static readonly Command<CaptureScreenshotParameters, CaptureScreenshotResult> CaptureScreenshotCommand = new(
-        "browsingContext.captureScreenshot", Default.CaptureScreenshotParameters, Default.CaptureScreenshotResult);
-
-    private static readonly Command<CloseParameters, CloseResult> CloseCommand = new(
-        "browsingContext.close", Default.CloseParameters, Default.CloseResult);
-
-    private static readonly Command<TraverseHistoryParameters, TraverseHistoryResult> TraverseHistoryCommand = new(
-        "browsingContext.traverseHistory", Default.TraverseHistoryParameters, Default.TraverseHistoryResult);
-
-    private static readonly Command<ReloadParameters, ReloadResult> ReloadCommand = new(
-        "browsingContext.reload", Default.ReloadParameters, Default.ReloadResult);
-
-    private static readonly Command<SetViewportParameters, SetViewportResult> SetViewportCommand = new(
-        "browsingContext.setViewport", Default.SetViewportParameters, Default.SetViewportResult);
-
-    private static readonly Command<GetTreeParameters, GetTreeResult> GetTreeCommand = new(
-        "browsingContext.getTree", Default.GetTreeParameters, Default.GetTreeResult);
-
-    private static readonly Command<PrintParameters, PrintResult> PrintCommand = new(
-        "browsingContext.print", Default.PrintParameters, Default.PrintResult);
-
-    private static readonly Command<HandleUserPromptParameters, HandleUserPromptResult> HandleUserPromptCommand = new(
-        "browsingContext.handleUserPrompt", Default.HandleUserPromptParameters, Default.HandleUserPromptResult);
-
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        return await ExecuteAsync(CreateCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.create", @params, Default.CreateParameters, Default.CreateResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NavigateParameters(context, url, options?.Wait);
 
-        return await ExecuteAsync(NavigateCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.navigate", @params, Default.NavigateParameters, Default.NavigateResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ActivateResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ActivateParameters(context);
 
-        return await ExecuteAsync(ActivateCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.activate", @params, Default.ActivateParameters, Default.ActivateResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new LocateNodesParameters(context, locator, options?.MaxNodeCount, options?.SerializationOptions, options?.StartNodes);
 
-        return await ExecuteAsync(LocateNodesCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.locateNodes", @params, Default.LocateNodesParameters, Default.LocateNodesResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
 
-        return await ExecuteAsync(CaptureScreenshotCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.captureScreenshot", @params, Default.CaptureScreenshotParameters, Default.CaptureScreenshotResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CloseResult> CloseAsync(BrowsingContext context, CloseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await ExecuteAsync(CloseCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.close", @params, Default.CloseParameters, Default.CloseResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new TraverseHistoryParameters(context, delta);
 
-        return await ExecuteAsync(TraverseHistoryCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.traverseHistory", @params, Default.TraverseHistoryParameters, Default.TraverseHistoryResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ReloadResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ReloadParameters(context, options?.IgnoreCache, options?.Wait);
 
-        return await ExecuteAsync(ReloadCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.reload", @params, Default.ReloadParameters, Default.ReloadResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetViewportParameters(options?.Context, options?.Viewport, options?.DevicePixelRatio, options?.UserContexts);
 
-        return await ExecuteAsync(SetViewportCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.setViewport", @params, Default.SetViewportParameters, Default.SetViewportResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        return await ExecuteAsync(GetTreeCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.getTree", @params, Default.GetTreeParameters, Default.GetTreeResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new PrintParameters(context, options?.Background, options?.Margin, options?.Orientation, options?.Page, options?.PageRanges, options?.Scale, options?.ShrinkToFit);
 
-        return await ExecuteAsync(PrintCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.print", @params, Default.PrintParameters, Default.PrintResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<HandleUserPromptResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new HandleUserPromptParameters(context, options?.Accept, options?.UserText);
 
-        return await ExecuteAsync(HandleUserPromptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("browsingContext.handleUserPrompt", @params, Default.HandleUserPromptParameters, Default.HandleUserPromptResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public IEventSource<NavigationStartedEventArgs> NavigationStarted => _navigationStarted ?? Interlocked.CompareExchange(ref _navigationStarted, CreateEventSource(BrowsingContextEvent.NavigationStarted), null) ?? _navigationStarted;
