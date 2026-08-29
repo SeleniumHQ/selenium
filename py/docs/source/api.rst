@@ -64,6 +64,7 @@ webdriver.common
    selenium.webdriver.common.timeouts
    selenium.webdriver.common.utils
    selenium.webdriver.common.virtual_authenticator
+   selenium.webdriver.common.web_extension
    selenium.webdriver.common.webdriver
    selenium.webdriver.common.window
 
