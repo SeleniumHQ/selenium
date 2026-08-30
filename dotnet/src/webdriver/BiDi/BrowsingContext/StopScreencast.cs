@@ -1,4 +1,4 @@
-// <copyright file="DownloadWillBeginEvent.cs" company="Selenium Committers">
+// <copyright file="StopScreencast.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record DownloadWillBeginEventArgs(
-    Download Download,
-    string SuggestedFilename,
-    BrowsingContext Context,
-    Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url,
-    Browser.UserContext? UserContext)
-    : EventArgs, IBaseNavigationInfo;
+internal sealed record StopScreencastParameters(Screencast Screencast) : Parameters;
+
+public sealed record StopScreencastOptions : CommandOptions;
+
+public sealed record StopScreencastResult(string Path, string? Error) : EmptyResult;

@@ -41,7 +41,6 @@ from selenium.webdriver.common._bidi.serialization import (
     meta,
     register,
     resolve,
-    strict_inbound,
 )
 
 # --- fixtures: value types declared the way the generator emits them ---
@@ -163,12 +162,14 @@ class Rect(Record):
 @register("test.Shape")
 class Shape(Union):
     _PRESENCE = (("test.Circle", ("radius",)), ("test.Rect", ("width", "height")))
+    _SCALAR_VALUES = frozenset({"blob"})
 
 
 @register("test.BareOrObject")
 class BareOrObject(Union):
     _DISCRIMINATOR = "type"
     _VARIANTS = {}
+    _SCALAR_VALUES = frozenset({"viewport"})
 
 
 @register("test.ObjectOnly")
@@ -285,7 +286,7 @@ def test_round_trips_through_the_wire():
     assert Point.from_json(Point(x=1, y=2).as_json()) == Point(x=1, y=2)
 
 
-# --- outbound value validation (as_json, ADR decision 1) ---
+# --- outbound value validation (as_json) ---
 
 
 def test_as_json_accepts_valid_outbound_values():
@@ -296,6 +297,11 @@ def test_as_json_accepts_valid_outbound_values():
 def test_as_json_rejects_a_wrong_typed_primitive():
     with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got str"):
         Point(x="nope", y=2).as_json()
+
+
+def test_as_json_rejects_a_fractional_value_on_an_integer_field():
+    with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got float"):
+        Point(x=1.5, y=2).as_json()
 
 
 def test_as_json_rejects_a_scalar_where_a_list_is_expected():
@@ -337,7 +343,7 @@ def test_as_json_rejects_a_non_variant_object_map_value():
         StringMap(value=[["k", Circle(radius=1)]]).as_json()
 
 
-# --- outbound union fields (ADR decisions 4-5) ---
+# --- outbound union fields ---
 
 
 def test_as_json_serializes_a_valid_union_variant():
@@ -355,9 +361,14 @@ def test_as_json_rejects_a_scalar_on_an_object_only_union_field():
         UnionField(obj="cat").as_json()
 
 
-def test_as_json_allows_a_bare_scalar_on_a_non_object_only_union_field():
-    # Shape has scalar arms (not object-only), so a bare scalar passes as inbound would return it.
-    assert UnionField(shape="whatever").as_json() == {"shape": "whatever"}
+def test_as_json_allows_a_pinned_bare_scalar_on_a_non_object_only_union_field():
+    # Shape has a scalar arm (not object-only), so its pinned literal passes as inbound would return it.
+    assert UnionField(shape="blob").as_json() == {"shape": "blob"}
+
+
+def test_as_json_rejects_an_unpinned_bare_scalar_on_a_non_object_only_union_field():
+    with pytest.raises(BiDiSerializationError, match=r"UnionField.shape: 'whatever' is not one of Shape's arms"):
+        UnionField(shape="whatever").as_json()
 
 
 def test_as_json_accepts_a_transitively_nested_union_variant():
@@ -381,41 +392,20 @@ def test_a_unions_variant_classes_are_computed_once_and_cached():
 # --- inbound: required / optional / null ---
 
 
-def test_a_missing_required_field_inbound_is_tolerated_warned_and_left_unset(caplog):
-    with caplog.at_level(logging.WARNING):
-        result = Point.from_json({"x": 1})
-    assert result.x == 1
-    assert result.y is UNSET
-    assert "missing required" in caplog.text
-    assert "'y'" in caplog.text
-
-
-def test_multiple_missing_required_fields_warn_once_for_the_record(caplog):
-    with caplog.at_level(logging.WARNING):
-        result = Point.from_json({})
-    assert result.x is UNSET
-    assert result.y is UNSET
-    missing_warnings = [r for r in caplog.records if "missing required" in r.getMessage()]
-    assert len(missing_warnings) == 1
-    assert "'x'" in caplog.text
-    assert "'y'" in caplog.text
-
-
-def test_strict_inbound_escalates_a_missing_required_field_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"missing required 'y'"):
+def test_a_missing_required_field_inbound_is_an_error():
+    with pytest.raises(BiDiSerializationError, match=r"missing required 'y'"):
         Point.from_json({"x": 1})
 
 
-def test_strict_inbound_scope_is_restored_after_the_block():
-    with strict_inbound():
-        pass
-    assert Point.from_json({"x": 1}).y is UNSET  # tolerant again
+def test_every_missing_required_field_is_named_in_one_error():
+    with pytest.raises(BiDiSerializationError, match=r"missing required 'x', 'y'"):
+        Point.from_json({})
 
 
 def test_as_json_errors_when_a_required_field_is_unset():
-    # A field the wire omitted is tolerated inbound (left UNSET) but must not go back out:
-    # outbound requires every required field, so re-serializing it errors.
-    incomplete = Point.from_json({"x": 1})
+    # Nothing inbound can leave a required field unset any more, but a caller can pass the
+    # sentinel, and outbound requires every required field, so serializing one errors.
+    incomplete = Point(x=1, y=UNSET)
     with pytest.raises(BiDiSerializationError, match=r"Point.y: required 'y' is not set"):
         incomplete.as_json()
 
@@ -463,9 +453,10 @@ def test_integer_rejects_a_fractional_float():
         Scalars.from_json({"count": 1.5, "ratio": 1.0, "flag": True, "name": "n"})
 
 
-def test_integer_rejects_even_a_whole_valued_float():
-    with pytest.raises(BiDiSerializationError, match=r"expected int"):
-        Scalars.from_json({"count": 5.0, "ratio": 1.0, "flag": True, "name": "n"})
+def test_integer_accepts_a_whole_valued_float_and_holds_it_as_an_int():
+    parsed = Scalars.from_json({"count": 5.0, "ratio": 1.0, "flag": True, "name": "n"})
+    assert parsed.count == 5
+    assert isinstance(parsed.count, int)
 
 
 def test_integer_rejects_a_bool():
@@ -547,18 +538,11 @@ def test_an_inbound_enum_value_outside_the_schema_raises():
 
 def test_an_extensible_record_keeps_undeclared_properties_silently(caplog):
     # An undeclared field on an extensible type is spec-sanctioned (preserved), not a deviation,
-    # so it is kept without a warning (ADR decision 1/9).
+    # so it is kept without a warning.
     with caplog.at_level(logging.WARNING):
         result = Extensible.from_json({"known": "k", "extra": "e", "more": 1})
     assert result.extensions == {"extra": "e", "more": 1}
     assert caplog.records == []
-
-
-def test_strict_inbound_does_not_reject_undeclared_properties_on_an_extensible_record():
-    # Extras are valid on an extensible type, so strict mode must not escalate them to an error.
-    with strict_inbound():
-        result = Extensible.from_json({"known": "k", "extra": "e"})
-    assert result.extensions == {"extra": "e"}
 
 
 def test_an_extensible_record_merges_captured_keys_back_on_serialization():
@@ -566,13 +550,13 @@ def test_an_extensible_record_merges_captured_keys_back_on_serialization():
 
 
 def test_an_extension_may_not_shadow_a_declared_field_on_serialization():
-    # A key the type declares must never appear in the extras map (ADR decision 1), so an extra
+    # A key the type declares must never appear in the extras map, so an extra
     # cannot overwrite a declared field on the wire.
     with pytest.raises(BiDiSerializationError, match=r"shadows declared field 'known'"):
         Extensible(known="k", extensions={"known": "evil"}).as_json()
 
 
-# --- nullable constants (ADR decision 4, by vocabulary) ---
+# --- nullable constants ---
 
 
 def test_a_nullable_constant_accepts_its_literal_and_null_outbound():
@@ -600,11 +584,6 @@ def test_a_closed_record_drops_and_warns_on_undeclared_properties(caplog):
         result = Point.from_json({"x": 1, "y": 2, "z": 3})
     assert result == Point(x=1, y=2)
     assert "'z'" in caplog.text
-
-
-def test_strict_inbound_escalates_an_undeclared_property_to_an_error():
-    with strict_inbound(), pytest.raises(BiDiSerializationError, match=r"undeclared 'z'"):
-        Point.from_json({"x": 1, "y": 2, "z": 3})
 
 
 def test_many_undeclared_properties_warn_once_for_the_record_not_once_per_key(caplog):
@@ -644,6 +623,16 @@ def test_an_unknown_discriminator_falls_back_to_the_declared_variant():
 
 def test_a_bare_scalar_arm_is_returned_unchanged():
     assert BareOrObject.from_json("viewport") == "viewport"
+
+
+def test_an_inbound_scalar_outside_the_pinned_arms_raises():
+    with pytest.raises(BiDiSerializationError, match=r"received a scalar not in this Selenium's BiDi schema"):
+        BareOrObject.from_json("banana")
+
+
+def test_an_inbound_unhashable_payload_on_a_scalar_arm_raises_rather_than_crashing():
+    with pytest.raises(BiDiSerializationError, match=r"received a scalar not in this Selenium's BiDi schema"):
+        BareOrObject.from_json(["viewport"])
 
 
 def test_a_variant_outside_the_schema_raises_instead_of_passing_through():
