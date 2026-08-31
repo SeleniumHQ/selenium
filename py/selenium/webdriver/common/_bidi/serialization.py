@@ -251,9 +251,9 @@ class Record:
                 member = enum_cls(item)
             except ValueError:
                 member = None
-            # bool is a subclass of int, so True resolves to an int-valued member and would
-            # then serialize as JSON true rather than the number the schema declares.
-            if member is None or (type(item) is bool and type(member.value) is not bool):
+            # bool is a subclass of int, so each resolves to the other's member and would
+            # then serialize as the wrong JSON type: True as a number, or 1 as a boolean.
+            if member is None or (type(item) is bool) != (type(member.value) is bool):
                 raise BiDiSerializationError(
                     f"{type(self).__name__}.{name}: {item!r} is not a valid {enum_cls.__name__}"
                 ) from None
