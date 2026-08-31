@@ -48,6 +48,140 @@ module Selenium
             landscape_secondary: 'landscape-secondary'
           }.freeze
 
+          MEDIA_FEATURES_ANY_HOVER = {
+            none: 'none',
+            hover: 'hover'
+          }.freeze
+
+          MEDIA_FEATURES_ANY_POINTER = {
+            none: 'none',
+            coarse: 'coarse',
+            fine: 'fine'
+          }.freeze
+
+          MEDIA_FEATURES_COLOR_GAMUT = {
+            srgb: 'srgb',
+            p3: 'p3',
+            rec2020: 'rec2020'
+          }.freeze
+
+          MEDIA_FEATURES_DISPLAY_MODE = {
+            fullscreen: 'fullscreen',
+            standalone: 'standalone',
+            minimal_ui: 'minimal-ui',
+            browser: 'browser',
+            picture_in_picture: 'picture-in-picture'
+          }.freeze
+
+          MEDIA_FEATURES_DYNAMIC_RANGE = {
+            standard: 'standard',
+            high: 'high'
+          }.freeze
+
+          MEDIA_FEATURES_ENVIRONMENT_BLENDING = {
+            opaque: 'opaque',
+            additive: 'additive',
+            subtractive: 'subtractive'
+          }.freeze
+
+          MEDIA_FEATURES_FORCED_COLORS = {
+            none: 'none',
+            active: 'active'
+          }.freeze
+
+          MEDIA_FEATURES_GRID = {
+            _0: 0,
+            _1: 1
+          }.freeze
+
+          MEDIA_FEATURES_HOVER = {
+            none: 'none',
+            hover: 'hover'
+          }.freeze
+
+          MEDIA_FEATURES_INVERTED_COLORS = {
+            none: 'none',
+            inverted: 'inverted'
+          }.freeze
+
+          MEDIA_FEATURES_NAV_CONTROLS = {
+            none: 'none',
+            back: 'back'
+          }.freeze
+
+          MEDIA_FEATURES_OVERFLOW_BLOCK = {
+            none: 'none',
+            scroll: 'scroll',
+            optional_paged: 'optional-paged',
+            paged: 'paged'
+          }.freeze
+
+          MEDIA_FEATURES_OVERFLOW_INLINE = {
+            none: 'none',
+            scroll: 'scroll'
+          }.freeze
+
+          MEDIA_FEATURES_POINTER = {
+            none: 'none',
+            coarse: 'coarse',
+            fine: 'fine'
+          }.freeze
+
+          MEDIA_FEATURES_PREFERS_COLOR_SCHEME = {
+            light: 'light',
+            dark: 'dark'
+          }.freeze
+
+          MEDIA_FEATURES_PREFERS_CONTRAST = {
+            no_preference: 'no-preference',
+            more: 'more',
+            less: 'less',
+            custom: 'custom'
+          }.freeze
+
+          MEDIA_FEATURES_PREFERS_REDUCED_DATA = {
+            no_preference: 'no-preference',
+            reduce: 'reduce'
+          }.freeze
+
+          MEDIA_FEATURES_PREFERS_REDUCED_MOTION = {
+            no_preference: 'no-preference',
+            reduce: 'reduce'
+          }.freeze
+
+          MEDIA_FEATURES_PREFERS_REDUCED_TRANSPARENCY = {
+            no_preference: 'no-preference',
+            reduce: 'reduce'
+          }.freeze
+
+          MEDIA_FEATURES_SCAN = {
+            interlace: 'interlace',
+            progressive: 'progressive'
+          }.freeze
+
+          MEDIA_FEATURES_SCRIPTING = {
+            none: 'none',
+            initial_only: 'initial-only',
+            enabled: 'enabled'
+          }.freeze
+
+          MEDIA_FEATURES_UPDATE = {
+            none: 'none',
+            slow: 'slow',
+            fast: 'fast'
+          }.freeze
+
+          MEDIA_FEATURES_VIDEO_COLOR_GAMUT = {
+            srgb: 'srgb',
+            p3: 'p3',
+            rec2020: 'rec2020'
+          }.freeze
+
+          MEDIA_FEATURES_VIDEO_DYNAMIC_RANGE = {
+            standard: 'standard',
+            high: 'high'
+          }.freeze
+
           SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE = {
             classic: 'classic',
             overlay: 'overlay'
@@ -120,17 +254,149 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetmediafeaturesoverrideparameters
           SetMediaFeaturesOverrideParameters = Serialization::Record.define(
-            features: {wire_key: 'features', nullable: true, ref: 'Emulation::MediaFeature', list: true},
+            features: {wire_key: 'features', nullable: true, ref: 'Emulation::MediaFeatures'},
             contexts: {wire_key: 'contexts', required: false, list: true},
             user_contexts: {wire_key: 'userContexts', required: false, list: true}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeature
-          MediaFeature = Serialization::Record.define(
-            name: {wire_key: 'name', primitive: 'string'},
-            value: {wire_key: 'value', primitive: 'string'}
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationmediafeatures
+          MediaFeatures = Serialization::Record.define(
+            any_hover: {
+              wire_key: 'any-hover',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_ANY_HOVER'
+            },
+            any_pointer: {
+              wire_key: 'any-pointer',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_ANY_POINTER'
+            },
+            color: {wire_key: 'color', required: false, nullable: true, primitive: 'integer'},
+            color_gamut: {
+              wire_key: 'color-gamut',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_COLOR_GAMUT'
+            },
+            color_index: {wire_key: 'color-index', required: false, nullable: true, primitive: 'integer'},
+            display_mode: {
+              wire_key: 'display-mode',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_DISPLAY_MODE'
+            },
+            dynamic_range: {
+              wire_key: 'dynamic-range',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_DYNAMIC_RANGE'
+            },
+            environment_blending: {
+              wire_key: 'environment-blending',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_ENVIRONMENT_BLENDING'
+            },
+            forced_colors: {
+              wire_key: 'forced-colors',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_FORCED_COLORS'
+            },
+            grid: {wire_key: 'grid', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_GRID'},
+            horizontal_viewport_segments: {
+              wire_key: 'horizontal-viewport-segments',
+              required: false,
+              nullable: true,
+              primitive: 'integer'
+            },
+            hover: {wire_key: 'hover', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_HOVER'},
+            inverted_colors: {
+              wire_key: 'inverted-colors',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_INVERTED_COLORS'
+            },
+            monochrome: {wire_key: 'monochrome', required: false, nullable: true, primitive: 'integer'},
+            nav_controls: {
+              wire_key: 'nav-controls',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_NAV_CONTROLS'
+            },
+            overflow_block: {
+              wire_key: 'overflow-block',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_OVERFLOW_BLOCK'
+            },
+            overflow_inline: {
+              wire_key: 'overflow-inline',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_OVERFLOW_INLINE'
+            },
+            pointer: {wire_key: 'pointer', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_POINTER'},
+            prefers_color_scheme: {
+              wire_key: 'prefers-color-scheme',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_PREFERS_COLOR_SCHEME'
+            },
+            prefers_contrast: {
+              wire_key: 'prefers-contrast',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_PREFERS_CONTRAST'
+            },
+            prefers_reduced_data: {
+              wire_key: 'prefers-reduced-data',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_PREFERS_REDUCED_DATA'
+            },
+            prefers_reduced_motion: {
+              wire_key: 'prefers-reduced-motion',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_PREFERS_REDUCED_MOTION'
+            },
+            prefers_reduced_transparency: {
+              wire_key: 'prefers-reduced-transparency',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_PREFERS_REDUCED_TRANSPARENCY'
+            },
+            scan: {wire_key: 'scan', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_SCAN'},
+            scripting: {
+              wire_key: 'scripting',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_SCRIPTING'
+            },
+            update: {wire_key: 'update', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_UPDATE'},
+            vertical_viewport_segments: {
+              wire_key: 'vertical-viewport-segments',
+              required: false,
+              nullable: true,
+              primitive: 'integer'
+            },
+            video_color_gamut: {
+              wire_key: 'video-color-gamut',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_VIDEO_COLOR_GAMUT'
+            },
+            video_dynamic_range: {
+              wire_key: 'video-dynamic-range',
+              required: false,
+              nullable: true,
+              enum: 'Emulation::MEDIA_FEATURES_VIDEO_DYNAMIC_RANGE'
+            }
           )
 
           # @api private
@@ -245,7 +511,7 @@ module Selenium
 
           def geolocation_coordinates(**) = GeolocationCoordinates.new(**)
           def geolocation_position_error(**) = GeolocationPositionError.new(**)
-          def media_feature(**) = MediaFeature.new(**)
+          def media_features(**) = MediaFeatures.new(**)
           def network_conditions_offline(**) = NetworkConditionsOffline.new(**)
           def screen_area(**) = ScreenArea.new(**)
           def screen_orientation(**) = ScreenOrientation.new(**)
