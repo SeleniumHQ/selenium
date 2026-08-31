@@ -355,14 +355,18 @@ public class CdpClientGenerator {
       commands.forEach(
           command -> {
             if (command.type instanceof ObjectType || command.type instanceof EnumType) {
-              classDecl.addMember(Objects.requireNonNull(command.type.toTypeDeclaration()).setPublic(true).setStatic(true));
+              classDecl.addMember(
+                  Objects.requireNonNull(command.type.toTypeDeclaration())
+                      .setPublic(true)
+                      .setStatic(true));
             }
             command.parameters.forEach(
                 parameter -> {
                   if (parameter.type instanceof EnumType) {
                     EnumType parameterType = ((EnumType) parameter.type);
                     parameterType.name = capitalize(command.name) + parameterType.name;
-                    classDecl.addMember(Objects.requireNonNull(parameter.type.toTypeDeclaration()).setPublic(true));
+                    classDecl.addMember(
+                        Objects.requireNonNull(parameter.type.toTypeDeclaration()).setPublic(true));
                   }
                 });
             classDecl.addMember(command.toMethodDeclaration());
@@ -371,7 +375,8 @@ public class CdpClientGenerator {
       events.forEach(
           event -> {
             if (event.type instanceof EnumType) {
-              classDecl.addMember(Objects.requireNonNull(event.type.toTypeDeclaration()).setPublic(true));
+              classDecl.addMember(
+                  Objects.requireNonNull(event.type.toTypeDeclaration()).setPublic(true));
             }
             classDecl.addMember(event.toMethodDeclaration());
           });
