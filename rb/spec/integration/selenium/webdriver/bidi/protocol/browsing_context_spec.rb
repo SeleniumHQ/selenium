@@ -355,7 +355,10 @@ module Selenium
                                  reason: 'Safari does not implement browsingContext.startScreencast'},
                                 {browser: :firefox, platform: :linux,
                                  exception: {class: Error::UnknownError, message: /startScreencast/},
-                                 reason: 'Firefox startScreencast fails with NS_ERROR_FAILURE on Linux'}] do
+                                 reason: 'Firefox startScreencast fails with NS_ERROR_FAILURE on Linux'},
+                                {browser: :firefox,
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Stable Firefox does not implement browsingContext.startScreencast'}] do
             it 'starts and stops a screencast' do
               result = browsing_context.start_screencast(
                 context: driver.window_handle,

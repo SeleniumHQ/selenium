@@ -16,6 +16,14 @@ on:
         required: false
         default: false
         type: boolean
+      profile:
+        description: 'RBE profile: main is the PR target set, full adds beta browsers'
+        required: false
+        default: full
+        type: choice
+        options:
+          - full
+          - main
   workflow_call:
 
 concurrency:
@@ -36,4 +44,4 @@ jobs:
       cache-save: ${{ github.ref_name == 'trunk' }}
       rerun-with-debug: true
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}
+      run: SELENIUM_RBE_PROFILE=${{ github.event.inputs.profile || (github.event_name == 'schedule' && 'full' || 'main') }} ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}
