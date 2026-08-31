@@ -310,14 +310,15 @@ module BiDiGenerate
     def type_entry = "'#{wire_name}' => #{payload_ref || 'nil'}"
   end
 
-  # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
-  # spec_href links to the type's definition in the live spec (nil when the schema has none).
-  # The RBS type for a schema enum's declared value primitive; anything else is untyped.
-  RBS_ENUM_VALUES = {'string' => 'String', 'integer' => 'Integer', 'number' => 'Float',
+  # The RBS type a schema value primitive maps to; an unrecognized one is untyped.
+  RBS_VALUE_TYPES = {'string' => 'String', 'integer' => 'Integer', 'number' => 'Float',
                      'boolean' => 'bool'}.freeze
 
+  # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples;
+  # primitive is the schema's declared value type. spec_href links to the type's definition in
+  # the live spec (nil when the schema has none).
   Enum = Struct.new(:constant_name, :pairs, :primitive, :spec_href, keyword_init: true) do
-    def rbs_value_type = RBS_ENUM_VALUES.fetch(primitive, 'untyped')
+    def rbs_value_type = RBS_VALUE_TYPES.fetch(primitive, 'untyped')
   end
 
   # The generated Protocol::ErrorCode module (filename 'error_code'): `codes` is the [wire, class_name]
