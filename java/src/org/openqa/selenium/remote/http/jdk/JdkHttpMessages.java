@@ -151,12 +151,12 @@ class JdkHttpMessages {
   }
 
   /**
-   * The URI of a request may hold characters that {@link URI} refuses, most commonly a space in
-   * the name of a file to download from Grid. This happens because the server receiving the
-   * request decodes the path ("%20" becomes a literal space), and the decoded value is kept in
-   * the {@link HttpRequest} that is handed over to this client for proxying. Quote every
-   * character that is not allowed in a URI, and leave all the others untouched, so that URIs
-   * which were valid before are sent exactly as they were.
+   * The URI of a request may hold characters that {@link URI} refuses, most commonly a space in the
+   * name of a file to download from Grid. This happens because the server receiving the request
+   * decodes the path ("%20" becomes a literal space), and the decoded value is kept in the {@link
+   * HttpRequest} that is handed over to this client for proxying. Quote every character that is not
+   * allowed in a URI, and leave all the others untouched, so that URIs which were valid before are
+   * sent exactly as they were.
    */
   private static String quoteIllegalCharacters(String uri) {
     StringBuilder quoted = new StringBuilder(uri.length());
