@@ -114,7 +114,8 @@ public class CdpClientGenerator {
     model.dumpTo(target);
 
     Path outputJar = Paths.get(args[3]).toAbsolutePath();
-    Files.createDirectories(outputJar.getParent());
+    Path parent = outputJar.getParent();
+    if (parent != null) Files.createDirectories(parent);
 
     try (OutputStream os = Files.newOutputStream(outputJar);
         JarOutputStream jos = new JarOutputStream(os)) {
@@ -247,7 +248,7 @@ public class CdpClientGenerator {
       TypeDeclaration<?> typeDeclaration =
           type instanceof VoidType
               ? new ClassOrInterfaceDeclaration().setName(capitalize(name)).setPublic(true)
-              : type.toTypeDeclaration().setPublic(true);
+              : Objects.requireNonNull(type.toTypeDeclaration()).setPublic(true);
 
       if (description != null) {
         typeDeclaration.setJavadocComment(sanitizeJavadoc(description));
@@ -354,14 +355,14 @@ public class CdpClientGenerator {
       commands.forEach(
           command -> {
             if (command.type instanceof ObjectType || command.type instanceof EnumType) {
-              classDecl.addMember(command.type.toTypeDeclaration().setPublic(true).setStatic(true));
+              classDecl.addMember(Objects.requireNonNull(command.type.toTypeDeclaration()).setPublic(true).setStatic(true));
             }
             command.parameters.forEach(
                 parameter -> {
                   if (parameter.type instanceof EnumType) {
                     EnumType parameterType = ((EnumType) parameter.type);
                     parameterType.name = capitalize(command.name) + parameterType.name;
-                    classDecl.addMember(parameter.type.toTypeDeclaration().setPublic(true));
+                    classDecl.addMember(Objects.requireNonNull(parameter.type.toTypeDeclaration()).setPublic(true));
                   }
                 });
             classDecl.addMember(command.toMethodDeclaration());
@@ -370,7 +371,7 @@ public class CdpClientGenerator {
       events.forEach(
           event -> {
             if (event.type instanceof EnumType) {
-              classDecl.addMember(event.type.toTypeDeclaration().setPublic(true));
+              classDecl.addMember(Objects.requireNonNull(event.type.toTypeDeclaration()).setPublic(true));
             }
             classDecl.addMember(event.toMethodDeclaration());
           });
@@ -393,7 +394,7 @@ public class CdpClientGenerator {
           Map.of(
               "domain",
                   (domain, value) -> {
-                    domain.name = (String) value;
+                    domain.name = Objects.requireNonNull((String) value);
                   },
               "dependencies",
                   (domain, value) -> {
@@ -401,7 +402,7 @@ public class CdpClientGenerator {
                   },
               "types",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               TypeSpec type = new TypeSpec(basePackage, domain);
@@ -411,7 +412,7 @@ public class CdpClientGenerator {
                   },
               "commands",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               CommandSpec command = new CommandSpec(domain);
@@ -421,7 +422,7 @@ public class CdpClientGenerator {
                   },
               "events",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               EventSpec event = new EventSpec(domain);
@@ -1070,13 +1071,15 @@ public class CdpClientGenerator {
           .getBody()
           .get()
           .addStatement(
-              String.format(
-                  "return java.util.Arrays.stream(%s.values())\n"
-                      + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
-                      + ".findFirst()\n"
-                      + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
-                      + "\"Given value \" + s + \" is not found within %s \"));",
-                  name, name));
+              "return java.util.Arrays.stream("
+                  + name
+                  + ".values())\n"
+                  + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
+                  + ".findFirst()\n"
+                  + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
+                  + "\"Given value \" + s + \" is not found within "
+                  + name
+                  + " \"));");
 
       enumDecl
           .addMethod("toString")
