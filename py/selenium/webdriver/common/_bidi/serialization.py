@@ -409,9 +409,14 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     if w.enum is not None:
         enum_cls = resolve(w.enum)
         try:
-            return enum_cls(raw)
+            member = enum_cls(raw)
         except ValueError:
+            member = None
+        # Same bool/int exclusion the primitive checks make: True would otherwise resolve
+        # to an int-valued member, and 1 to a boolean one.
+        if member is None or (type(raw) is bool) != (type(member.value) is bool):
             raise BiDiSerializationError(f"{cls.__name__}.{name}: {raw!r} is not a valid {enum_cls.__name__}") from None
+        return member
     if w.ref is not None:
         klass = resolve(w.ref)
         # A record must arrive as an object; a union may legitimately be a bare scalar
