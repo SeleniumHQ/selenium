@@ -48,6 +48,12 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
+from selenium.webdriver.common._bidi.web_extension import (
+    ExtensionBase64Encoded,
+    ExtensionDataValue,
+    ExtensionPath,
+)
+from selenium.webdriver.common._bidi.web_extension import WebExtension as WebExtensionProtocol
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
@@ -1475,8 +1481,11 @@ class WebDriver(BaseWebDriver):
                 "enable it with `options.enable_bidi = True`."
             )
 
-        result = self.webextension.install(**{**self._web_extension_data(path), **options})
-        return WebExtension(result["extension"])
+        # The generated vendor arguments carry the namespace the wire keys spell as
+        # `moz:permanent` / `moz:allowPrivateBrowsing`, so the classic names map straight over.
+        vendor = {f"moz_{name}": value for name, value in options.items()}
+        result = WebExtensionProtocol(self).install(self._web_extension_data(path), **vendor)
+        return WebExtension(result.extension)
 
     def uninstall_web_extension(self, extension: WebExtension) -> None:
         """Uninstall a web extension installed with `install_web_extension`.
@@ -1505,7 +1514,7 @@ class WebDriver(BaseWebDriver):
                 "enable it with `options.enable_bidi = True`."
             )
 
-        self.webextension.uninstall(extension.id)
+        WebExtensionProtocol(self).uninstall(extension.id)
 
     def _bidi_enabled(self) -> bool:
         return bool(self.caps.get("webSocketUrl"))
@@ -1513,13 +1522,13 @@ class WebDriver(BaseWebDriver):
     def _is_firefox(self) -> bool:
         return self.caps.get("browserName", "").lower() == "firefox"
 
-    def _web_extension_data(self, path: str) -> dict[str, str]:
-        """Resolve `path` into the `webextension.install` argument for it."""
+    def _web_extension_data(self, path: str) -> ExtensionDataValue:
+        """Resolve `path` into the `webExtension.install` extension data for it."""
         if not os.path.isdir(path):
-            return {"base64_value": _encode_extension(path)}
+            return ExtensionBase64Encoded(value=_encode_extension(path))
         # A directory only resolves on the machine running the browser, so a remote session
         # uploads it first and installs from the path the remote end hands back.
-        return {"path": self._upload_web_extension(path) if self._is_remote else path}
+        return ExtensionPath(path=self._upload_web_extension(path) if self._is_remote else path)
 
     def _upload_web_extension(self, directory: str) -> str:
         """Upload `directory` to the remote end and return the path it unpacked to."""

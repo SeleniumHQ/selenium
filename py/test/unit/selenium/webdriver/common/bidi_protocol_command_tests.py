@@ -39,6 +39,7 @@ from selenium.webdriver.common._bidi.network import Cookie, InterceptPhase, Netw
 from selenium.webdriver.common._bidi.serialization import BiDiSerializationError
 from selenium.webdriver.common._bidi.storage import PartialCookie
 from selenium.webdriver.common._bidi.transport import Transport
+from selenium.webdriver.common._bidi.web_extension import ExtensionPath, WebExtension
 
 
 class DrivingConnection:
@@ -175,6 +176,54 @@ def test_a_received_only_extensible_type_retains_unknown_wire_keys():
         }
     )
     assert cookie.extensions == {"vendorSpecific": "x"}
+
+
+# --- vendor overlays folded into the type they extend ---
+#
+# The schema keeps browser-specific fields out of the shared types and collects them under
+# `vendor`, tagged with the extension point they came from. The generator folds them back into
+# that type, so a vendor field is a named argument like any other; only the Python name is
+# namespaced, because a wire key like `moz:permanent` is not an identifier.
+
+_EXTENSION_DATA = {"type": "path", "path": "/tmp/ext"}
+
+
+def test_a_vendor_field_is_a_named_argument_sent_under_its_qualified_wire_key():
+    web_extension, connection = _domain(WebExtension, reply={"extension": "e-1"})
+
+    web_extension.install(extension_data=ExtensionPath(path="/tmp/ext"), moz_permanent=True)
+
+    assert connection.sent == {
+        "method": "webExtension.install",
+        "params": {"extensionData": _EXTENSION_DATA, "moz:permanent": True},
+    }
+
+
+def test_a_vendor_field_left_unset_stays_off_the_wire():
+    web_extension, connection = _domain(WebExtension, reply={"extension": "e-1"})
+
+    web_extension.install(extension_data=ExtensionPath(path="/tmp/ext"))
+
+    assert connection.sent["params"] == {"extensionData": _EXTENSION_DATA}
+
+
+def test_a_vendor_field_set_to_false_is_still_sent():
+    # `False` is a meaningful value here, not an absent one: it has to survive the
+    # optional-field filtering rather than be dropped as falsey.
+    web_extension, connection = _domain(WebExtension, reply={"extension": "e-1"})
+
+    web_extension.install(extension_data=ExtensionPath(path="/tmp/ext"), moz_allow_private_browsing=False)
+
+    assert connection.sent["params"] == {"extensionData": _EXTENSION_DATA, "moz:allowPrivateBrowsing": False}
+
+
+def test_a_vendor_field_is_type_checked_like_any_other_field():
+    web_extension, connection = _domain(WebExtension)
+
+    with pytest.raises(BiDiSerializationError):
+        web_extension.install(extension_data=ExtensionPath(path="/tmp/ext"), moz_permanent="yes")
+
+    assert connection.sent is None
 
 
 # --- construction ---
