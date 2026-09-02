@@ -1436,9 +1436,12 @@ class WebDriver(BaseWebDriver):
                 an archive. Chromium installs unpacked directories only.
             permanent: Firefox only. Install the extension permanently rather
                 than for the lifetime of the session. Omitting it leaves the
-                choice to the browser.
+                choice to the browser. Firefox installs only a packed, signed
+                extension permanently; a directory is rejected.
             allow_private_browsing: Firefox only. Let the extension run in
-                private browsing windows.
+                private browsing windows. Honoured over WebDriver Classic;
+                Firefox's BiDi implementation does not read it yet, so a BiDi
+                session accepts it without effect.
 
         Returns:
             A `WebExtension` wrapping the id the browser assigned. Pass it to
