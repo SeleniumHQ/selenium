@@ -148,7 +148,7 @@ class TestChromiumDriverWebExtension:
         return Pages()
 
     @pytest.fixture
-    def chromium_driver(self, chromium_options, request):
+    def chromium_driver(self, chromium_options, request, server):
         """Create a Chrome/Edge driver with webextension support enabled."""
         driver_option = request.config.option.drivers[0].lower()
 
@@ -171,13 +171,19 @@ class TestChromiumDriverWebExtension:
         if binary:
             chromium_options.binary_location = binary
 
-        executable = _resolve_bazel_path(request.config.option.executable)
-        if executable:
-            service = browser_service(executable_path=executable)
+        if server is not None:
+            chromium_driver = webdriver.Remote(
+                command_executor=server.status_url.removesuffix("/status"),
+                options=chromium_options,
+            )
         else:
-            service = browser_service()
+            executable = _resolve_bazel_path(request.config.option.executable)
+            if executable:
+                service = browser_service(executable_path=executable)
+            else:
+                service = browser_service()
 
-        chromium_driver = browser_class(options=chromium_options, service=service)
+            chromium_driver = browser_class(options=chromium_options, service=service)
 
         yield chromium_driver
         chromium_driver.quit()
