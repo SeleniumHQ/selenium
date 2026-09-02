@@ -31,19 +31,19 @@ from selenium.webdriver.remote.webdriver import WebDriver
 EXTENSION_ID = "webextensions-selenium-example-v3@example.com"
 
 
-class FakeWebExtensionModule:
-    """Stands in for the BiDi webExtension module, recording what it was asked to do."""
+class RecordingConnection:
+    """Stands in for WebSocketConnection, minus the socket.
+
+    Records the BiDi frames the driver sends so a test can assert on the wire
+    payload itself rather than on an intercepted call.
+    """
 
     def __init__(self):
-        self.installs = []
-        self.uninstalls = []
+        self.sent = []
 
-    def install(self, **kwargs):
-        self.installs.append(kwargs)
-        return {"extension": EXTENSION_ID}
-
-    def uninstall(self, extension):
-        self.uninstalls.append(extension)
+    def send_cmd(self, method, params):
+        self.sent.append({"method": method, "params": params})
+        return {"result": {"extension": EXTENSION_ID} if method == "webExtension.install" else {}}
 
 
 class FakeCommandExecutor:
@@ -85,10 +85,8 @@ class SessionlessDriver(WebDriver):
         self.commands = []
         self.uploaded = []
         self.command_executor = FakeCommandExecutor(firefox_commands)
-        self.webextension_module = FakeWebExtensionModule()
-        # Satisfy the `webextension` property without opening a websocket.
-        self._websocket_connection = object()
-        self._webextension = self.webextension_module
+        # Lets the BiDi domains build their transport without opening a websocket.
+        self._websocket_connection = RecordingConnection()
 
     def execute(self, driver_command, params=None):
         if driver_command in ("INSTALL_ADDON", "UNINSTALL_ADDON"):
@@ -108,6 +106,9 @@ class SessionlessDriver(WebDriver):
 
     def command_params(self, name):
         return [params for command, params in self.commands if command == name]
+
+    def bidi_params(self, method):
+        return [frame["params"] for frame in self._websocket_connection.sent if frame["method"] == method]
 
 
 class SessionlessFirefoxDriver(SessionlessDriver, FirefoxWebDriver):
@@ -161,7 +162,9 @@ class TestInstallOverBiDi:
 
         driver.install_web_extension(str(extension_dir))
 
-        assert driver.webextension_module.installs == [{"path": str(extension_dir)}]
+        assert driver.bidi_params("webExtension.install") == [
+            {"extensionData": {"type": "path", "path": str(extension_dir)}}
+        ]
         assert driver.command_params(Command.UPLOAD_FILE) == []
 
     def test_remote_session_uploads_a_directory_and_installs_the_returned_path(self, extension_dir):
@@ -169,7 +172,9 @@ class TestInstallOverBiDi:
 
         driver.install_web_extension(str(extension_dir))
 
-        assert driver.webextension_module.installs == [{"path": "/remote/uploads/webextensions-selenium-example"}]
+        assert driver.bidi_params("webExtension.install") == [
+            {"extensionData": {"type": "path", "path": "/remote/uploads/webextensions-selenium-example"}}
+        ]
 
     def test_uploaded_archive_keeps_the_directory_as_its_only_root_entry(self, extension_dir):
         # The Grid rejects an upload that unpacks to more than one top-level entry,
@@ -202,8 +207,9 @@ class TestInstallOverBiDi:
 
         driver.install_web_extension(str(extension_archive))
 
-        installed = driver.webextension_module.installs[0]
-        assert base64.b64decode(installed["base64_value"]) == extension_archive.read_bytes()
+        installed = driver.bidi_params("webExtension.install")[0]["extensionData"]
+        assert installed["type"] == "base64"
+        assert base64.b64decode(installed["value"]) == extension_archive.read_bytes()
         assert driver.command_params(Command.UPLOAD_FILE) == []
 
     def test_base64_is_passed_through_untouched(self):
@@ -212,16 +218,36 @@ class TestInstallOverBiDi:
 
         driver.install_web_extension(encoded)
 
-        assert driver.webextension_module.installs == [{"base64_value": encoded}]
+        assert driver.bidi_params("webExtension.install") == [{"extensionData": {"type": "base64", "value": encoded}}]
 
-    def test_firefox_options_are_forwarded(self, extension_dir):
+    def test_firefox_options_are_sent_as_vendor_fields(self, extension_dir):
+        # The vendor fields sit beside extensionData at the top level of the params,
+        # under the namespaced wire keys Firefox reads.
         driver = SessionlessDriver(browser_name="firefox")
 
         driver.install_web_extension(str(extension_dir), permanent=True, allow_private_browsing=True)
 
-        assert driver.webextension_module.installs == [
-            {"path": str(extension_dir), "permanent": True, "allow_private_browsing": True}
+        assert driver.bidi_params("webExtension.install") == [
+            {
+                "extensionData": {"type": "path", "path": str(extension_dir)},
+                "moz:permanent": True,
+                "moz:allowPrivateBrowsing": True,
+            }
         ]
+
+    def test_an_option_set_to_false_is_still_sent(self, extension_dir):
+        driver = SessionlessDriver(browser_name="firefox")
+
+        driver.install_web_extension(str(extension_dir), permanent=False)
+
+        assert driver.bidi_params("webExtension.install")[0]["moz:permanent"] is False
+
+    def test_an_option_left_unset_is_not_sent(self, extension_dir):
+        driver = SessionlessDriver(browser_name="firefox")
+
+        driver.install_web_extension(str(extension_dir))
+
+        assert driver.bidi_params("webExtension.install")[0].keys() == {"extensionData"}
 
     def test_firefox_options_are_rejected_on_chromium(self, extension_dir):
         driver = SessionlessDriver(browser_name="chrome")
@@ -237,7 +263,7 @@ class TestUninstallOverBiDi:
 
         driver.uninstall_web_extension(extension)
 
-        assert driver.webextension_module.uninstalls == [EXTENSION_ID]
+        assert driver.bidi_params("webExtension.uninstall") == [{"extension": EXTENSION_ID}]
 
     def test_a_raw_id_is_rejected(self):
         driver = SessionlessDriver()
