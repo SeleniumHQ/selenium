@@ -871,7 +871,11 @@ BIDI_IMPLEMENTATIONS = []
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
-REMOTE_BIDI_TESTS = []
+REMOTE_BIDI_TESTS = [
+    # install_web_extension uploads an unpacked extension to the remote end and
+    # installs from the path it hands back, which only happens over Grid.
+    "test/selenium/webdriver/common/bidi/driver_web_extension_tests.py",
+]
 
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
