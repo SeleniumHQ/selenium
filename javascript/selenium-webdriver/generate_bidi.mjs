@@ -697,7 +697,23 @@ function typeRefNames(node) {
   return []
 }
 
-/** Import statements for every other-domain type this domain's types reference. */
+/**
+ * Import statements for every other-domain type this domain's types reference: a
+ * type-only import for the TS names themselves, plus a plain side-effect import of
+ * the same module. The type-only import is erased at compile time (it exists purely
+ * for `tsc`), so it registers nothing at runtime — a caller who only imports, say,
+ * `session.js` would never actually load `browsing_context.js`, leaving every
+ * `browsingContext.*` type unregistered in the shared runtime registry (registry.js)
+ * and silently skipping deep validation for any field that refs one (see
+ * validateValue()'s `if (referenced === undefined) return value` in record.js).
+ * The side-effect import forces that module to load — and therefore register its
+ * types — regardless of whether this domain is used standalone. Safe even when two
+ * domains reference each other (e.g. session <-> browsingContext): CommonJS resolves
+ * a require() cycle by returning the other module's not-yet-complete exports, but a
+ * bare side-effect import binds nothing, and no type here is read at define time
+ * anyway — resolution happens lazily, at validation time (registry.js), by which
+ * point both modules have finished loading.
+ */
 function computeCrossDomainImports(types, domain) {
   const bySourceDomain = new Map()
   for (const node of Object.values(types)) {
@@ -713,6 +729,7 @@ function computeCrossDomainImports(types, domain) {
   for (const [sourceDomain, names] of [...bySourceDomain.entries()].sort()) {
     const sourceFile = DOMAIN_FILES[sourceDomain].replace('.ts', '.js')
     imports.push(`import type { ${[...names].sort().join(', ')} } from './${sourceFile}'`)
+    imports.push(`import './${sourceFile}'`)
   }
   return imports
 }
@@ -1003,6 +1020,8 @@ function generateCommandMethod(cmd, runtimeByTsName) {
 
   // Use a double-cast (T as unknown as Record<string,unknown>) so TypeScript
   // accepts the conversion even when the params type has no index signature.
+  // Only actually used when there's no RecordClass/UnionClass to build a validated
+  // instance from below (paramsRuntime undefined) — otherwise sendArg overrides it.
   const paramsCast = hasParams ? '(params as unknown as Record<string, unknown>)' : '{}'
   const paramsRuntime = hasParams ? runtimeByTsName.get(paramsTypeName) : undefined
   const resultRuntime = !isVoid ? runtimeByTsName.get(resultTypeName) : undefined
@@ -1014,28 +1033,32 @@ function generateCommandMethod(cmd, runtimeByTsName) {
     lines.push(`  async ${methodName}(): Promise<${returnType}> {`)
   }
 
-  // Outbound validation: constructing/building the params record throws on a
-  // violation before anything reaches the wire. Takes the original
-  // typed `params` directly (matching RecordClass<T>'s `new (data: T)`), not
-  // the Record<string, unknown> cast meant only for the wire send() call below.
-  // The original `params` is still what gets sent — construction here is
-  // purely for its validating side effect.
+  // Outbound validation: constructing/building the params record throws on a violation
+  // before anything reaches the wire. Takes the original typed `params` directly
+  // (matching RecordClass<T>'s `new (data: T)`), not the Record<string, unknown> cast
+  // meant only for the wire send() call below. The *validated* instance — not the
+  // caller's original `params` — is what actually gets sent: its toJSON() is what
+  // converts JS-facing field names (params.prefersColorScheme) to their declared wire
+  // keys (prefers-color-scheme), including on any nested record/union field.
+  let sendArg = paramsCast
   if (paramsRuntime?.kind === 'record') {
-    lines.push(`    new ${paramsRuntime.runtimeName}(params)`)
+    lines.push(`    const validatedParams = new ${paramsRuntime.runtimeName}(params)`)
+    sendArg = '(validatedParams as unknown as Record<string, unknown>)'
   } else if (paramsRuntime?.kind === 'union') {
-    lines.push(`    ${paramsRuntime.runtimeName}.build(params)`)
+    lines.push(`    const validatedParams = ${paramsRuntime.runtimeName}.build(params)`)
+    sendArg = '(validatedParams as unknown as Record<string, unknown>)'
   }
 
   // Domain.send() already checks for an error response and throws. Inbound
   // validation then runs through the result's own fromWire() when one is
   // registered; otherwise the result is cast as before.
   if (isVoid) {
-    lines.push(`    await this.send('${methodStr}', ${paramsCast})`)
+    lines.push(`    await this.send('${methodStr}', ${sendArg})`)
   } else if (resultRuntime?.kind === 'record' || resultRuntime?.kind === 'union') {
-    lines.push(`    const result = await this.send('${methodStr}', ${paramsCast})`)
+    lines.push(`    const result = await this.send('${methodStr}', ${sendArg})`)
     lines.push(`    return ${resultRuntime.runtimeName}.fromWire(result) as unknown as ${resultTypeName}`)
   } else {
-    lines.push(`    return (await this.send('${methodStr}', ${paramsCast})) as ${resultTypeName}`)
+    lines.push(`    return (await this.send('${methodStr}', ${sendArg})) as ${resultTypeName}`)
   }
 
   lines.push(`  }`)
