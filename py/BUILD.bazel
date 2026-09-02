@@ -338,6 +338,10 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":bidi",
+        # webdriver.py installs web extensions through the generated protocol layer, so it
+        # rides along with :bidi rather than only reaching the targets that test BiDi.
+        # :remote cannot carry it: the generator depends on :remote, so that would cycle.
+        ":bidi_protocol",
         ":exceptions",
         ":latest",
         ":remote",
