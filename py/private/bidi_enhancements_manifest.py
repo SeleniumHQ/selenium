@@ -1755,9 +1755,11 @@ class UserPromptHandler:
             archive_path: File-system path to a packed extension archive.
             base64_value: Base64-encoded extension archive string.
             permanent: Firefox only.  Install the extension permanently rather
-                than for the lifetime of the session.
+                than for the lifetime of the session.  Only a packed, signed
+                extension can be installed permanently; ``path`` is rejected.
             allow_private_browsing: Firefox only.  Let the extension run in
-                private browsing windows.
+                private browsing windows.  Firefox does not read this field
+                yet, so it is currently accepted without effect.
 
         Returns:
             The raw result dict from the BiDi ``webExtension.install`` command

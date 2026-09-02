@@ -92,11 +92,36 @@ class TestFirefoxDriverWebExtension:
         verify_extension_injection(driver, pages)
         verify_uninstalled(driver, extension)
 
-    def test_install_permanently_and_allow_private_browsing(self, driver, pages):
+    @pytest.mark.no_driver_after_test
+    def test_install_permanently_from_archive(self, driver, pages):
+        # Firefox honours moz:permanent only for a packed extension; an unpacked directory
+        # is rejected with "Permanent installation of unpacked extensions is not supported".
+        # A permanent install also goes through AddonManager signature checking, so the
+        # extension has to be the signed archive.
         extension = driver.install_web_extension(
-            os.path.join(EXTENSIONS, EXTENSION_PATH),
-            permanent=True,
-            allow_private_browsing=True,
+            os.path.join(EXTENSIONS, EXTENSION_ARCHIVE_PATH), permanent=True
+        )
+
+        assert extension.id == EXTENSION_ID
+        verify_extension_injection(driver, pages)
+        verify_uninstalled(driver, extension)
+
+    def test_install_temporarily_from_directory(self, driver, pages):
+        extension = driver.install_web_extension(
+            os.path.join(EXTENSIONS, "webextensions-selenium-example"), permanent=False
+        )
+
+        assert extension.id == EXTENSION_ID
+        verify_extension_injection(driver, pages)
+        verify_uninstalled(driver, extension)
+
+    def test_install_allowing_private_browsing(self, driver, pages):
+        # Only asserts the option reaches the browser without being rejected. Firefox's BiDi
+        # webExtension.install does not read moz:allowPrivateBrowsing yet -- it passes
+        # allowPrivateBrowsing=false to Addon.installWithPath unconditionally -- so there is
+        # nothing observable to assert on. The classic endpoint does honour it.
+        extension = driver.install_web_extension(
+            os.path.join(EXTENSIONS, EXTENSION_PATH), allow_private_browsing=True
         )
 
         assert extension.id == EXTENSION_ID
