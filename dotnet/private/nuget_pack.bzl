@@ -23,8 +23,41 @@ def _guess_dotnet_version(assembly_info):
 
 def nuget_pack_impl(ctx):
     nuspec = ctx.actions.declare_file("%s-generated.nuspec" % ctx.label.name)
+
+    template_for_expand = ctx.file.nuspec_template
+    if ctx.attr.cpm_file and ctx.attr.csproj_file:
+        all_tfms = sorted([
+            _guess_dotnet_version(lib[DotnetAssemblyRuntimeInfo])
+            for lib in ctx.attr.libs
+        ])
+        template_for_expand = ctx.actions.declare_file("%s-with-deps.nuspec" % ctx.label.name)
+        ctx.actions.run(
+            outputs = [template_for_expand],
+            inputs = [
+                ctx.file.nuspec_template,
+                ctx.file.cpm_file,
+                ctx.file.csproj_file,
+            ],
+            executable = ctx.executable._cpm_nuspec_gen,
+            arguments = [
+                "--template",
+                ctx.file.nuspec_template.path,
+                "--cpm",
+                ctx.file.cpm_file.path,
+                "--csproj",
+                ctx.file.csproj_file.path,
+                "--output",
+                template_for_expand.path,
+                "--compat-tfms",
+                ",".join(ctx.attr.compat_tfms),
+                "--all-tfms",
+                ",".join(all_tfms),
+            ],
+            mnemonic = "RenderNuspecDependencies",
+        )
+
     ctx.actions.expand_template(
-        template = ctx.file.nuspec_template,
+        template = template_for_expand,
         output = nuspec,
         substitutions = {
             "$packageid$": ctx.attr.id,
@@ -163,6 +196,23 @@ nuget_pack = rule(
         "nuspec_template": attr.label(
             mandatory = True,
             allow_single_file = True,
+        ),
+        "cpm_file": attr.label(
+            doc = "Directory.Packages.props to source versions from when rendering the nuspec $dependencies$ block.",
+            allow_single_file = True,
+        ),
+        "csproj_file": attr.label(
+            doc = "csproj whose <PackageReference> set determines which packages appear in the nuspec $dependencies$ block.",
+            allow_single_file = True,
+        ),
+        "compat_tfms": attr.string_list(
+            doc = "TFMs that receive the csproj's <PackageReference> set in nuspec dependencies. Other TFMs in libs get an empty group.",
+            default = [],
+        ),
+        "_cpm_nuspec_gen": attr.label(
+            default = "//dotnet/private:cpm_nuspec_gen",
+            executable = True,
+            cfg = "exec",
         ),
     },
     toolchains = ["@rules_dotnet//dotnet:toolchain_type"],

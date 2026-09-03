@@ -53,11 +53,12 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->
 
+  <!-- Versions for these PackageReferences come from dotnet/Directory.Packages.props (CPM). -->
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
-    <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="System.Threading.Channels" />
   </ItemGroup>
 
   <Target Name="GenerateBazelArtifacts" BeforeTargets="CoreCompile">

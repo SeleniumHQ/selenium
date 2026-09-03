@@ -172,6 +172,12 @@ copy_file(
 
 nuget_pack(
     name = "webdriver-pack",
+    compat_tfms = [
+        "net462",
+        "netstandard2.0",
+    ],
+    cpm_file = "//dotnet:Directory.Packages.props",
+    csproj_file = "Selenium.WebDriver.csproj",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
         "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
