@@ -1742,16 +1742,24 @@ class UserPromptHandler:
         path: str | None = None,
         archive_path: str | None = None,
         base64_value: str | None = None,
+        permanent: bool | None = None,
+        allow_private_browsing: bool | None = None,
     ):
         """Install a web extension.
 
-        Exactly one of the three keyword arguments must be provided.
+        Exactly one of path, archive_path or base64_value must be provided.
 
         Args:
             path: Directory path to an unpacked extension (also accepted for
                 signed ``.xpi`` / ``.crx`` archive files on Firefox).
             archive_path: File-system path to a packed extension archive.
             base64_value: Base64-encoded extension archive string.
+            permanent: Firefox only.  Install the extension permanently rather
+                than for the lifetime of the session.  Only a packed, signed
+                extension can be installed permanently; ``path`` is rejected.
+            allow_private_browsing: Firefox only.  Let the extension run in
+                private browsing windows.  Firefox does not read this field
+                yet, so it is currently accepted without effect.
 
         Returns:
             The raw result dict from the BiDi ``webExtension.install`` command
@@ -1776,7 +1784,12 @@ class UserPromptHandler:
         else:
             assert base64_value is not None
             extension_data = {"type": "base64", "value": base64_value}
-        params = {"extensionData": extension_data}
+        params: dict = {"extensionData": extension_data}
+        # Firefox vendor fields, see common/bidi/webextension-install-extensions.cddl
+        if permanent is not None:
+            params["moz:permanent"] = permanent
+        if allow_private_browsing is not None:
+            params["moz:allowPrivateBrowsing"] = allow_private_browsing
         cmd = command_builder("webExtension.install", params)
         try:
             return self._conn.execute(cmd)

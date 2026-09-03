@@ -24,6 +24,7 @@ import contextlib
 import copy
 import functools
 import inspect
+import logging
 import os
 import pkgutil
 import tempfile
@@ -35,6 +36,7 @@ from base64 import b64decode, urlsafe_b64encode
 from collections.abc import Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
+from io import BytesIO
 from typing import TYPE_CHECKING, Any, cast
 
 from typing_extensions import Self
@@ -55,9 +57,10 @@ from selenium.webdriver.common.bidi.permissions import Permissions
 from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
-from selenium.webdriver.common.bidi.webextension import WebExtension
+from selenium.webdriver.common.bidi.webextension import WebExtension as BidiWebExtension
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
+from selenium.webdriver.common.web_extension import WebExtension
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -75,6 +78,57 @@ from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 cdp = None
+
+logger = logging.getLogger(__name__)
+
+# Remote ends that do not implement a command answer in one of these shapes.
+_UNSUPPORTED_COMMAND_MARKERS = (
+    "Unrecognized command: POST",
+    "Command not found: POST ",
+    '{"status":405,"value":["GET","HEAD","DELETE"]}',
+)
+
+
+def _is_unsupported_command(message: str) -> bool:
+    return any(marker in message for marker in _UNSUPPORTED_COMMAND_MARKERS)
+
+
+# Mirrors FirefoxRemoteConnection, which only a `webdriver.Firefox` session gets.
+_FIREFOX_ADDON_COMMANDS = {
+    "INSTALL_ADDON": ("POST", "/session/$sessionId/moz/addon/install"),
+    "UNINSTALL_ADDON": ("POST", "/session/$sessionId/moz/addon/uninstall"),
+}
+
+
+def _zip_directory(directory: str, root: str) -> str:
+    """Zip `directory` recursively and return the archive base64-encoded.
+
+    Entry names are relative to `root`: passing the directory itself puts its
+    contents at the archive root, passing the parent keeps the directory as the
+    archive's single top-level entry.
+    """
+    directory = os.path.normpath(directory)
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as archive:
+        for base, _, files in os.walk(directory):
+            for name in files:
+                filename = os.path.join(base, name)
+                archive.write(filename, os.path.relpath(filename, root))
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+
+def _encode_extension(path: str) -> str:
+    """Return the extension at `path` as a base64-encoded archive.
+
+    A directory is zipped with its contents at the archive root, a file is read
+    as-is, and anything else is assumed to already be base64-encoded bytes.
+    """
+    if os.path.isdir(path):
+        return _zip_directory(path, root=path)
+    if os.path.isfile(path):
+        with open(path, "rb") as extension:
+            return base64.b64encode(extension.read()).decode("utf-8")
+    return path
 
 
 def import_cdp() -> None:
@@ -298,7 +352,7 @@ class WebDriver(BaseWebDriver):
         self._bidi_session: Session | None = None
         self._browsing_context: BrowsingContext | None = None
         self._storage: Storage | None = None
-        self._webextension: WebExtension | None = None
+        self._webextension: BidiWebExtension | None = None
         self._permissions: Permissions | None = None
         self._emulation: Emulation | None = None
         self._input: Input | None = None
@@ -1348,7 +1402,7 @@ class WebDriver(BaseWebDriver):
         return self._permissions
 
     @property
-    def webextension(self) -> WebExtension:
+    def webextension(self) -> BidiWebExtension:
         """Get a webextension module object for BiDi webextension commands.
 
         Returns:
@@ -1363,9 +1417,146 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if self._webextension is None:
-            self._webextension = WebExtension(self._websocket_connection)
+            self._webextension = BidiWebExtension(self._websocket_connection)
 
         return self._webextension
+
+    def install_web_extension(
+        self,
+        path: str,
+        *,
+        permanent: bool | None = None,
+        allow_private_browsing: bool | None = None,
+    ) -> WebExtension:
+        """Install a web extension into the running session.
+
+        Args:
+            path: An unpacked extension directory, a packed extension archive
+                (`.xpi`, `.crx` or `.zip`), or the base64-encoded bytes of such
+                an archive. Chromium installs unpacked directories only.
+            permanent: Firefox only. Install the extension permanently rather
+                than for the lifetime of the session. Omitting it leaves the
+                choice to the browser. Firefox installs only a packed, signed
+                extension permanently; a directory is rejected.
+            allow_private_browsing: Firefox only. Let the extension run in
+                private browsing windows. Honoured over WebDriver Classic;
+                Firefox's BiDi implementation does not read it yet, so a BiDi
+                session accepts it without effect.
+
+        Returns:
+            A `WebExtension` wrapping the id the browser assigned. Pass it to
+            `uninstall_web_extension` to remove the extension again.
+
+        Raises:
+            ValueError: If a Firefox-only option is given for another browser.
+            WebDriverException: If the session cannot install extensions, such as
+                a Chromium session started without BiDi.
+
+        Example:
+            extension = driver.install_web_extension("/path/to/extension")
+            driver.uninstall_web_extension(extension)
+        """
+        options: dict[str, Any] = {"permanent": permanent, "allow_private_browsing": allow_private_browsing}
+        options = {name: value for name, value in options.items() if value is not None}
+        if options and not self._is_firefox():
+            raise ValueError(
+                f"{', '.join(sorted(options))} is only supported on Firefox, not {self.caps.get('browserName')}"
+            )
+
+        if not self._bidi_enabled():
+            if self._is_firefox():
+                return WebExtension(self._install_addon_over_classic(path, **options))
+            raise WebDriverException(
+                f"Installing a web extension on {self.caps.get('browserName')} needs a WebDriver BiDi session; "
+                "enable it with `options.enable_bidi = True`."
+            )
+
+        result = self.webextension.install(**{**self._web_extension_data(path), **options})
+        return WebExtension(result["extension"])
+
+    def uninstall_web_extension(self, extension: WebExtension) -> None:
+        """Uninstall a web extension installed with `install_web_extension`.
+
+        Args:
+            extension: The `WebExtension` returned by `install_web_extension`.
+
+        Raises:
+            TypeError: If something other than a `WebExtension` is given.
+            WebDriverException: If the session cannot uninstall extensions, such
+                as a Chromium session started without BiDi.
+        """
+        if not isinstance(extension, WebExtension):
+            raise TypeError(
+                "uninstall_web_extension takes the WebExtension returned by "
+                f"install_web_extension, not {type(extension).__name__}"
+            )
+
+        if not self._bidi_enabled():
+            if self._is_firefox():
+                self._register_classic_addon_commands()
+                self.execute("UNINSTALL_ADDON", {"id": extension.id})
+                return
+            raise WebDriverException(
+                f"Uninstalling a web extension on {self.caps.get('browserName')} needs a WebDriver BiDi session; "
+                "enable it with `options.enable_bidi = True`."
+            )
+
+        self.webextension.uninstall(extension.id)
+
+    def _bidi_enabled(self) -> bool:
+        return bool(self.caps.get("webSocketUrl"))
+
+    def _is_firefox(self) -> bool:
+        return self.caps.get("browserName", "").lower() == "firefox"
+
+    def _web_extension_data(self, path: str) -> dict[str, str]:
+        """Resolve `path` into the `webextension.install` argument for it."""
+        if not os.path.isdir(path):
+            return {"base64_value": _encode_extension(path)}
+        # A directory only resolves on the machine running the browser, so a remote session
+        # uploads it first and installs from the path the remote end hands back.
+        return {"path": self._upload_web_extension(path) if self._is_remote else path}
+
+    def _upload_web_extension(self, directory: str) -> str:
+        """Upload `directory` to the remote end and return the path it unpacked to."""
+        archive = _zip_directory(directory, root=os.path.dirname(os.path.normpath(directory)))
+        try:
+            return self.execute(Command.UPLOAD_FILE, {"file": archive})["value"]
+        except WebDriverException as e:
+            if _is_unsupported_command(str(e)):
+                raise WebDriverException(
+                    "Could not upload the extension directory to the remote end. Installing an "
+                    "unpacked extension over a remote session needs a remote end that accepts "
+                    "file uploads, such as the Selenium Grid."
+                ) from e
+            raise
+
+    def _register_classic_addon_commands(self) -> None:
+        """Teach the command executor the Firefox-classic addon endpoints.
+
+        `webdriver.Firefox` registers these in its own connection, but a Grid session
+        driven through `webdriver.Remote` uses the plain one, which does not have them.
+        """
+        executor = cast(RemoteConnection, self.command_executor)
+        for name, (method, url) in _FIREFOX_ADDON_COMMANDS.items():
+            if executor.get_command(name) is None:
+                executor.add_command(name, method, url)
+
+    def _install_addon_over_classic(
+        self,
+        path: str,
+        permanent: bool | None = None,
+        allow_private_browsing: bool | None = None,
+    ) -> str:
+        """Install through the Firefox-classic endpoint and return the extension id."""
+        payload: dict[str, Any] = {"addon": _encode_extension(path)}
+        if permanent is not None:
+            payload["temporary"] = not permanent
+        if allow_private_browsing is not None:
+            payload["allowPrivateBrowsing"] = allow_private_browsing
+        logger.debug("Installing web extension over the WebDriver-Classic endpoint")
+        self._register_classic_addon_commands()
+        return self.execute("INSTALL_ADDON", payload)["value"]
 
     @property
     def emulation(self) -> Emulation:
