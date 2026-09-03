@@ -82,6 +82,7 @@ JS_EXCLUSIONS = [
 
 PY_EXCLUSIONS = [
     f"{ROOT}/py/generate.py",
+    f"{ROOT}/py/test/unit/cdp_generate_tests.py",
     f"{ROOT}/py/selenium/webdriver/common/devtools/**/*",
     f"{ROOT}/py/venv/**/*",
 ]
