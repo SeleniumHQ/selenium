@@ -1,0 +1,29 @@
+{
+  "name": "@selenium/manager-linux-x64",
+  "version": "4.45.0",
+  "description": "Selenium Manager binary for Linux x64",
+  "license": "Apache-2.0",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-manager#readme",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/SeleniumHQ"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/selenium"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:packaging.bzl", "py_wheel")
+load("//common:defs.bzl", "copy_file")
+
+SM_VERSION = "4.45.0"
+
+copy_file(
+    name = "manager-binary",
+    src = "//common/manager:selenium-manager-macos",
+    out = "selenium_manager_macos/bin/selenium-manager",
+)
+
+py_library(
+    name = "lib",
+    srcs = ["selenium_manager_macos/__init__.py"],
+    data = [":manager-binary"],
+    imports = ["."],
+)
+
+py_wheel(
+    name = "selenium-manager-macos-wheel",
+    abi = "none",
+    classifiers = [
+        "Operating System :: MacOS :: MacOS X",
+        "Programming Language :: Python",
+        "Topic :: Software Development :: Testing",
+    ],
+    description_content_type = "text/plain",
+    distribution = "selenium_manager_macos",
+    entry_points = {
+        "console_scripts": {
+            "selenium-manager": "selenium_manager_macos:main",
+        },
+    },
+    homepage = "https://www.selenium.dev",
+    license = "Apache-2.0",
+    platform = "macosx_10_13_universal2",
+    python_requires = ">=3.9",
+    python_tag = "py3",
+    strip_path_prefixes = ["py/selenium-manager-macos/"],
+    summary = "Selenium Manager binary for macOS (universal binary, x86-64 + aarch64)",
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+    deps = [":lib"],
+)
