@@ -1,7 +1,11 @@
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "java_binary", "java_library")
 
 AUGMENTER_SRCS = [
     "BiDiProvider.java",
+]
+
+GENERATOR_SRCS = [
+    "BiDiGenerator.java",
 ]
 
 java_library(
@@ -26,7 +30,7 @@ java_library(
         [
             "*.java",
         ],
-        exclude = AUGMENTER_SRCS,
+        exclude = AUGMENTER_SRCS + GENERATOR_SRCS,
     ),
     visibility = [
         "//java/src/org/openqa/selenium/bidi:__subpackages__",
@@ -39,6 +43,48 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
+        "@maven//:org_jspecify_jspecify",
+    ],
+)
+
+java_binary(
+    name = "bidi-client-generator",
+    srcs = GENERATOR_SRCS,
+    main_class = "org.openqa.selenium.bidi.BiDiGenerator",
+    deps = [
+        "//java/src/org/openqa/selenium/json",
+    ],
+)
+
+genrule(
+    name = "generate-bidi",
+    srcs = ["//javascript/selenium-webdriver:create-bidi-src_schema"],
+    outs = ["bidi-generated.srcjar"],
+    cmd = "\"$(execpath :bidi-client-generator)\" \"$(location //javascript/selenium-webdriver:create-bidi-src_schema)\" \"$@\"",
+    tools = [":bidi-client-generator"],
+)
+
+# Autogen, not checked in: the build compiles :generate-bidi's srcjar directly, nothing is
+# hand-edited, every build ships fresh output. The cross-binding BiDi codegen decisions doc (G1)
+# calls checking-in-while-unproven the general recommendation, but also names this exact shape —
+# build-time generation straight into bazel-out — as the end state, and notes selenium-devtools/CDP
+# in this repo already works this way. Matching that existing, already-de-risked precedent avoids
+# standing up a separate checked-in + verify-test workflow (with its own CI-coverage question to
+# resolve first) just for BiDi. Trade-off accepted knowingly: less reviewable diff surface while the
+# generator is still new.
+java_library(
+    name = "bidi-generated",
+    srcs = [":generate-bidi"],
+    visibility = [
+        "//java/src/org/openqa/selenium/bidi:__subpackages__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/test/org/openqa/selenium/bidi:__subpackages__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        ":bidi",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
         "@maven//:org_jspecify_jspecify",
     ],
 )
