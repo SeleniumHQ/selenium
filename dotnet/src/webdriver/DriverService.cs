@@ -474,7 +474,6 @@ public abstract class DriverService : IDisposable, IAsyncDisposable
     {
         if (process.HasExited)
         {
-            // The process is gone; there is nothing left to clean up.
             return;
         }
 
