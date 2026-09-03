@@ -39,7 +39,7 @@ class PointerInput(InputDevice):
         duration=DEFAULT_MOVE_DURATION,
         x: float = 0,
         y: float = 0,
-        origin: WebElement | None = None,
+        origin: WebElement | str | None = None,
         **kwargs,
     ):
         action = {"type": "pointerMove", "duration": duration, "x": x, "y": y, **kwargs}

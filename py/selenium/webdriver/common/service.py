@@ -22,7 +22,6 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
-from io import IOBase
 from subprocess import PIPE
 from time import sleep
 from typing import IO, Any
@@ -156,10 +155,10 @@ class Service(ABC):
     def stop(self) -> None:
         """Stops the service."""
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
-            if isinstance(self.log_output, IOBase) and self._owns_log_output:
-                self.log_output.close()
-            elif isinstance(self.log_output, int):
+            if isinstance(self.log_output, int):
                 os.close(self.log_output)
+            elif self.log_output is not None and self._owns_log_output:
+                self.log_output.close()
         if self.process is not None:
             try:
                 if self.process.poll() is None:
