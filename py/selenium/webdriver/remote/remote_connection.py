@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import functools
 import logging
 import string
 import sys
@@ -138,6 +139,23 @@ remote_commands = {
 }
 
 
+class _classorinstancemethod:
+    """Bind the wrapped function to the instance when accessed on one, else to the class.
+
+    Lets get_remote_connection_headers keep its classmethod call surface
+    (RemoteConnection.get_remote_connection_headers(...) and subclass ``super()`` overrides
+    such as Appium's) while, on an instance, resolving that connection's own
+    user_agent/extra_headers instead of the process-wide class defaults.
+    """
+
+    def __init__(self, func):
+        self.func = func
+        functools.update_wrapper(self, func)
+
+    def __get__(self, obj, cls=None):
+        return functools.partial(self.func, obj if obj is not None else cls)
+
+
 class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
@@ -239,9 +257,14 @@ class RemoteConnection:
         )
         cls._client_config.ca_certs = path
 
-    @classmethod
+    @_classorinstancemethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
         """Get headers for remote request.
+
+        ``cls`` is the connection instance when called on one (so ``user_agent`` and
+        ``extra_headers`` come from that connection's client_config) and the class when
+        called on the class, preserving ``RemoteConnection.get_remote_connection_headers``
+        and subclass ``super()`` overrides.
 
         Args:
             parsed_url: The parsed url
@@ -331,8 +354,13 @@ class RemoteConnection:
         RemoteConnection._timeout = self._client_config.timeout
         RemoteConnection._ca_certs = self._client_config.ca_certs
         RemoteConnection._client_config = self._client_config
-        # user_agent and extra_headers are not mirrored onto the class: that leaked one
-        # connection's headers to every other one. _request() reads them per-instance.
+        # Resolve this connection's headers once into instance state instead of mutating the
+        # shared class attributes (which leaked one connection's headers, auth included, onto
+        # every other one). A client_config value replaces the class-level default, matching
+        # trunk's "or" semantics; get_remote_connection_headers reads these per-instance via
+        # the _classorinstancemethod descriptor.
+        self.user_agent = self._client_config.user_agent or type(self).user_agent
+        self.extra_headers = dict(self._client_config.extra_headers or type(self).extra_headers or {}) or None
 
         if remote_server_addr:
             warnings.warn(
@@ -419,13 +447,6 @@ class RemoteConnection:
         """
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
-        # Apply this connection's own user-agent and extra headers from its client_config so
-        # per-connection configuration is not shared across RemoteConnection instances via
-        # class attributes.
-        if self._client_config.user_agent:
-            headers["User-Agent"] = self._client_config.user_agent
-        if self._client_config.extra_headers:
-            headers.update(self._client_config.extra_headers)
         auth_header = self._client_config.get_auth_header()
 
         if auth_header:
