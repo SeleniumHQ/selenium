@@ -36,6 +36,8 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,7 +121,7 @@ class TunnelWebsocketTest {
   }
 
   private Server<?> createEchoBackend(
-      String response, CountDownLatch receivedLatch, AtomicReference<String> received) {
+      String response, CountDownLatch receivedLatch, AtomicReference<@Nullable String> received) {
     return new NettyServer(
             new BaseServerOptions(emptyConfig),
             nullHandler,
@@ -139,7 +141,7 @@ class TunnelWebsocketTest {
 
   @Test
   void shouldForwardTextMessageToBackend() throws URISyntaxException, InterruptedException {
-    AtomicReference<String> received = new AtomicReference<>();
+    AtomicReference<@Nullable String> received = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
     backendServer = createEchoBackend("", latch, received);
@@ -199,7 +201,7 @@ class TunnelWebsocketTest {
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     CountDownLatch latch = new CountDownLatch(1);
-    AtomicReference<String> reply = new AtomicReference<>();
+    AtomicReference<@Nullable String> reply = new AtomicReference<>();
 
     try (WebSocket socket =
         factory
@@ -349,7 +351,7 @@ class TunnelWebsocketTest {
     // The tunnel handler detects the https scheme and adds a TLS handler on the node-side channel.
     MapConfig httpsConfig =
         new MapConfig(Map.of("server", Map.of("https-self-signed", true, "hostname", "localhost")));
-    AtomicReference<String> received = new AtomicReference<>();
+    AtomicReference<@Nullable String> received = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
     backendServer =
@@ -467,9 +469,9 @@ class TunnelWebsocketTest {
   void shouldTunnelBiDiThroughFullGridSessionLifecycle()
       throws URISyntaxException, InterruptedException {
     // Stub backend — simulates a Node's BiDi WebSocket endpoint. Echoes a fixed reply.
-    AtomicReference<String> received = new AtomicReference<>();
+    AtomicReference<@Nullable String> received = new AtomicReference<>();
     CountDownLatch receivedLatch = new CountDownLatch(1);
-    AtomicReference<String> reply = new AtomicReference<>();
+    AtomicReference<@Nullable String> reply = new AtomicReference<>();
     CountDownLatch replyLatch = new CountDownLatch(1);
 
     backendServer =
@@ -508,7 +510,7 @@ class TunnelWebsocketTest {
 
     // routerUrl is set after tunnelServer starts so the TestSessionFactory can embed the Router's
     // WebSocket URL in the returned webSocketUrl capability (the real Grid does the same).
-    AtomicReference<URL> routerUrl = new AtomicReference<>();
+    AtomicReference<@Nullable URL> routerUrl = new AtomicReference<>();
 
     // TestSessionFactory: session URI → backendServer (so the TCP tunnel connects there).
     // The returned capabilities include webSocketUrl pointing to the Router's BiDi endpoint,
@@ -654,7 +656,7 @@ class TunnelWebsocketTest {
   @Test
   void proxyPath_shouldForwardTextMessageToBackend()
       throws URISyntaxException, InterruptedException {
-    AtomicReference<String> received = new AtomicReference<>();
+    AtomicReference<@Nullable String> received = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
     backendServer = createEchoBackend("", latch, received);
@@ -685,6 +687,7 @@ class TunnelWebsocketTest {
   }
 
   @Test
+  @NullMarked
   void proxyPath_shouldForwardReplyFromBackendToClient()
       throws URISyntaxException, InterruptedException {
     backendServer = createEchoBackend("proxy-pong", new CountDownLatch(1), new AtomicReference<>());
@@ -702,7 +705,7 @@ class TunnelWebsocketTest {
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     CountDownLatch latch = new CountDownLatch(1);
-    AtomicReference<String> reply = new AtomicReference<>();
+    AtomicReference<@Nullable String> reply = new AtomicReference<>();
 
     try (WebSocket socket =
         factory
@@ -771,6 +774,7 @@ class TunnelWebsocketTest {
   }
 
   @Test
+  @NullMarked
   void proxyPath_shouldSupportMultipleMessagesAndBidirectionalFlow()
       throws URISyntaxException, InterruptedException {
     // Backend echoes every text message back with a ">" prefix to distinguish direction.
@@ -835,7 +839,7 @@ class TunnelWebsocketTest {
   @Test
   void proxyPath_shouldRelayNodeInitiatedClose() throws URISyntaxException, InterruptedException {
     CountDownLatch closeLatch = new CountDownLatch(1);
-    AtomicReference<Integer> closeCode = new AtomicReference<>();
+    AtomicReference<@Nullable Integer> closeCode = new AtomicReference<>();
 
     // Backend sends one text message, then immediately closes the connection.
     backendServer =

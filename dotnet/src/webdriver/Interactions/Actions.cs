@@ -553,10 +553,7 @@ public class Actions : IAction
     /// <exception cref="ArgumentException">If both or either of Viewport and Element are set.</exception>
     public Actions ScrollFromOrigin(WheelInputDevice.ScrollOrigin scrollOrigin, int deltaX, int deltaY)
     {
-        if (scrollOrigin is null)
-        {
-            throw new ArgumentNullException(nameof(scrollOrigin));
-        }
+        ArgumentNullException.ThrowIfNull(scrollOrigin);
 
         if (scrollOrigin.Viewport && scrollOrigin.Element != null)
         {

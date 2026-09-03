@@ -49,14 +49,20 @@ DOTNET="$RUNFILES_DIR/{dotnet}"
 # Find the workspace root
 WORKSPACE_ROOT="${{BUILD_WORKSPACE_DIRECTORY:-$RUNFILES_DIR/_main}}"
 DOTNET_DIR="$WORKSPACE_ROOT/dotnet"
+SOLUTION="$DOTNET_DIR/Selenium.slnx"
 
 cd "$DOTNET_DIR"
 
-echo "Running dotnet format $@ on all projects..."
-find "$DOTNET_DIR/src" "$DOTNET_DIR/test" -name "*.csproj" 2>/dev/null | while read -r proj; do
-    echo "  Formatting $proj..."
-    "$DOTNET" format "$@" "$proj" || exit 1
-done || exit 1
+# Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+export AllowMissingPrunePackageData=true
+
+if [[ ! -f "$SOLUTION" ]]; then
+    echo "ERROR: Could not find $SOLUTION" >&2
+    exit 1
+fi
+
+echo "Running dotnet format $@ on Selenium.slnx..."
+"$DOTNET" format "$@" "$SOLUTION" || exit 1
 
 echo "Done."
 """.format(
@@ -78,7 +84,7 @@ def _create_windows_script(ctx, dotnet):
     script_content = """@echo off
 setlocal
 
-set RUNFILES_DIR=%~dp0%~n0.runfiles
+set RUNFILES_DIR=%~dp0%~nx0.runfiles
 set DOTNET=%RUNFILES_DIR%\\{dotnet_path}
 
 if defined BUILD_WORKSPACE_DIRECTORY (
@@ -87,18 +93,20 @@ if defined BUILD_WORKSPACE_DIRECTORY (
     set WORKSPACE_ROOT=%RUNFILES_DIR%\\_main
 )
 set DOTNET_DIR=%WORKSPACE_ROOT%\\dotnet
+set SOLUTION=%DOTNET_DIR%\\Selenium.slnx
 
 cd /d "%DOTNET_DIR%"
 
-echo Running dotnet format %* on all projects...
-for /r "%DOTNET_DIR%\\src" %%p in (*.csproj) do (
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
+rem Bazel-bundled SDK ref packs lack prune metadata; opt out of NETSDK1226.
+set AllowMissingPrunePackageData=true
+
+if not exist "%SOLUTION%" (
+    echo ERROR: Could not find %SOLUTION% 1>&2
+    exit /b 1
 )
-for /r "%DOTNET_DIR%\\test" %%p in (*.csproj) do (
-    echo   Formatting %%p...
-    "%DOTNET%" format %* "%%p" || exit /b 1
-)
+
+echo Running dotnet format %* on Selenium.slnx...
+"%DOTNET%" format %* "%SOLUTION%" || exit /b 1
 
 echo Done.
 """.format(

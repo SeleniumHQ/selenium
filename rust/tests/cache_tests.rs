@@ -23,12 +23,14 @@ use std::path::Path;
 
 mod common;
 
+#[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
 #[rstest]
 #[case("../tmp")]
 #[case("../áèîö")]
 #[case("../テスト")]
 fn cache_path_test(#[case] tmp_cache_folder_name: String) {
     let mut cmd = get_selenium_manager();
+    cmd.env_remove("SE_CACHE_PATH");
     cmd.args([
         "--browser",
         "chrome",

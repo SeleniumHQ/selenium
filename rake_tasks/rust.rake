@@ -12,15 +12,6 @@ task :build do |_task, arguments|
   Bazel.execute('build', args, '//rust:selenium-manager')
 end
 
-desc 'Update the rust lock files'
-task :update do
-  puts 'pinning cargo versions'
-  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//:all')
-end
-
-desc 'Pin Rust dependencies'
-task pin: :update
-
 desc 'Format Rust code with rustfmt'
 task :format do
   puts '  Running rustfmt...'
@@ -30,6 +21,26 @@ end
 desc 'Run Rust linter (no-op, clippy not configured)'
 task :lint do
   puts '  Rust linting not configured'
+end
+
+desc 'Pin Rust dependencies'
+task :pin do
+  puts 'pinning Cargo.lock and Bazel crate metadata'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'generate-lockfile', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//...')
+end
+
+desc 'Update Rust dependencies to latest versions within specified range'
+task :update do
+  puts 'updating Cargo.lock'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'update', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+  Rake::Task['rust:pin'].invoke
 end
 
 desc 'Update Rust changelog'
@@ -53,8 +64,14 @@ task :version, [:version] do |_task, arguments|
   new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
   puts "Updating Rust from #{old_version} to #{new_version}"
 
+  # Replace only the selenium-manager package version field, not coincidental
+  # crate-version literals elsewhere (e.g. `tar = "0.4.44"` in Cargo.toml).
+  pattern = /(^\s*version\s*=\s*")#{Regexp.escape(old_version)}(")/
   ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
+    text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
+
+  Rake::Task['rust:pin'].reenable
+  Rake::Task['rust:pin'].invoke
 end

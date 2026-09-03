@@ -17,33 +17,37 @@
 
 package org.openqa.selenium;
 
+import static java.time.Instant.ofEpochMilli;
+import static java.time.ZoneId.systemDefault;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.remote.DomMutation;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.Script;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
 class WebScriptTest extends JupiterTestBase {
 
-  String page;
+  private String page;
 
   @Test
   @NeedsFreshDriver
@@ -51,7 +55,7 @@ class WebScriptTest extends JupiterTestBase {
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
 
-    long id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -80,8 +84,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<ConsoleLogEntry> consumer1 = future1::complete;
     Consumer<ConsoleLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer2);
 
     // Removing the second consumer, so it will no longer get the console message.
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id2);
@@ -105,7 +109,7 @@ class WebScriptTest extends JupiterTestBase {
   void canAddJsErrorHandler() throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
 
-    long id = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -130,8 +134,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<JavascriptLogEntry> consumer1 = future1::complete;
     Consumer<JavascriptLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
 
     // Removing the second consumer, so it will no longer get the JS error.
     ((RemoteWebDriver) driver).script().removeJavaScriptErrorHandler(id2);
@@ -162,8 +166,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<JavascriptLogEntry> consumer1 = future1::complete;
     Consumer<JavascriptLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -182,58 +186,52 @@ class WebScriptTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canAddDomMutationHandler() throws InterruptedException {
-    AtomicReference<DomMutation> seen = new AtomicReference<>();
-    CountDownLatch latch = new CountDownLatch(1);
+  void canAddDomMutationHandler() {
+    List<String> mutations = new CopyOnWriteArrayList<>();
 
-    ((RemoteWebDriver) driver)
-        .script()
-        .addDomMutationHandler(
-            mutation -> {
-              seen.set(mutation);
-              latch.countDown();
-            });
+    Script script = ((RemoteWebDriver) driver).script();
+    script.addDomMutationHandler(mutationHandler(mutations));
 
     driver.get(pages.dynamicPage);
+    triggerDomMutation();
 
-    WebElement reveal = driver.findElement(By.id("reveal"));
-    reveal.click();
-    WebElement revealed = driver.findElement(By.id("revealed"));
-
-    new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
-
-    Assertions.assertThat(latch.await(10, SECONDS)).isTrue();
-    assertThat(seen.get().getAttributeName()).isEqualTo("style");
-    assertThat(seen.get().getCurrentValue()).isEmpty();
-    assertThat(seen.get().getOldValue()).isEqualTo("display:none;");
+    assertThat(mutations).isNotEmpty();
+    assertThat(lastOf(mutations)).isEqualTo("style: 'display:none;' -> ''");
   }
 
   @Test
   @NeedsFreshDriver
-  void canRemoveDomMutationHandler() throws InterruptedException {
-    AtomicReference<DomMutation> seen = new AtomicReference<>();
-    CountDownLatch latch = new CountDownLatch(1);
-
-    long id =
-        ((RemoteWebDriver) driver)
-            .script()
-            .addDomMutationHandler(
-                mutation -> {
-                  seen.set(mutation);
-                  latch.countDown();
-                });
+  void canRemoveDomMutationHandler() {
+    List<String> mutations = new CopyOnWriteArrayList<>();
+    Script script = ((RemoteWebDriver) driver).script();
+    String id = script.addDomMutationHandler(mutationHandler(mutations));
 
     driver.get(pages.dynamicPage);
+    triggerDomMutation();
+    assertThat(mutations).isNotEmpty();
 
-    ((RemoteWebDriver) driver).script().removeDomMutationHandler(id);
+    script.removeDomMutationHandler(id);
 
+    mutations.clear();
+    driver.get(pages.dynamicPage);
+    triggerDomMutation();
+    assertThat(mutations).isEmpty();
+  }
+
+  private void triggerDomMutation() {
     WebElement reveal = driver.findElement(By.id("reveal"));
     reveal.click();
     WebElement revealed = driver.findElement(By.id("revealed"));
-
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
+  }
 
-    Assertions.assertThat(latch.await(10, SECONDS)).isFalse();
+  private static Consumer<DomMutation> mutationHandler(List<String> mutations) {
+    return mutation -> {
+      mutations.add(
+          String.format(
+              "%s: '%s' -> '%s'",
+              mutation.getAttributeName(), mutation.getOldValue(), mutation.getCurrentValue()));
+    };
   }
 
   @Test
@@ -243,7 +241,7 @@ class WebScriptTest extends JupiterTestBase {
 
     ((RemoteWebDriver) driver).script().pin("() => { console.log('Hello!'); }");
 
-    long id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -257,27 +255,46 @@ class WebScriptTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canUnpinScript() {
-    CountDownLatch latch = new CountDownLatch(2);
+  void canUnpinScript() throws InterruptedException {
+    List<String> logs = new CopyOnWriteArrayList<>();
+    CountDownLatch latch = new CountDownLatch(1);
 
-    String pinnedScript =
-        ((RemoteWebDriver) driver).script().pin("() => { console.log('Hello!'); }");
+    Script script = ((RemoteWebDriver) driver).script();
+    String pinnedScript = script.pin("() => { console.log('Hello!'); }");
 
-    long id =
-        ((RemoteWebDriver) driver)
-            .script()
-            .addConsoleMessageHandler(consoleLogEntry -> latch.countDown());
+    DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern("HH:mm:ss:SSS").withZone(systemDefault());
 
-    page = appServer.whereIs("/bidi/logEntryAdded.html");
+    String id =
+        script.addConsoleMessageHandler(
+            log -> {
+              String time = formatter.format(ofEpochMilli(log.getTimestamp()));
+              String message = String.format("%s %s", log.getText(), time);
+              logs.add(message);
+              latch.countDown();
+            });
 
-    driver.get(page);
+    try {
+      page = appServer.whereIs("/bidi/logEntryAdded.html");
+      assertThat(logs).hasSize(0);
 
-    ((RemoteWebDriver) driver).script().unpin(pinnedScript);
+      driver.get(page);
+      assertThat(latch.await(10, SECONDS)).isTrue();
 
-    driver.get(page);
+      assertThat(logs).as("Chrome logs once, FireFox logs twice").isNotEmpty();
+      assertThat(logs.get(0)).startsWith("Hello!");
 
-    assertThat(latch.getCount()).isEqualTo(1L);
+      script.unpin(pinnedScript);
 
-    ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id);
+      logs.clear();
+      driver.get(page);
+      assertThat(logs).as("Script has been unpinned, no logs anymore.").isEmpty();
+    } finally {
+      script.removeConsoleMessageHandler(id);
+    }
+  }
+
+  private static <T> T lastOf(List<T> list) {
+    return list.get(list.size() - 1);
   }
 }

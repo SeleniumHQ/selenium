@@ -15,22 +15,29 @@ def _strip_test_prefixes(path):
         path = path[:-len(filename)] + filename[len("test_"):]
     return path
 
-def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, **kwargs):
-    library_name = "%s-test-lib" % name
+def py_test_suite(name, srcs, size = None, deps = None, python_version = None, imports = None, visibility = None, test_suffix = None, **kwargs):
+    support_srcs = [src for src in srcs if not _is_test(src)]
 
-    py_library(
-        name = library_name,
-        testonly = True,
-        srcs = srcs,
-        deps = deps,
-        imports = imports,
-        precompile = "disabled",
-    )
+    if support_srcs:
+        library_name = "%s-test-lib" % name
+        py_library(
+            name = library_name,
+            testonly = True,
+            srcs = support_srcs,
+            deps = deps,
+            imports = imports,
+            precompile = "disabled",
+        )
+        test_deps = [library_name]
+    else:
+        test_deps = deps or []
+
+    suffix = test_suffix if test_suffix != None else _suite_suffix(name)
 
     tests = []
     for src in srcs:
         if _is_test(src):
-            test_name = "%s-%s" % (_strip_test_prefixes(src), _suite_suffix(name))
+            test_name = "%s-%s" % (_strip_test_prefixes(src), suffix)
 
             tests.append(test_name)
 
@@ -38,7 +45,7 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
                 name = test_name,
                 size = size,
                 srcs = [src],
-                deps = [library_name],
+                deps = test_deps,
                 python_version = python_version,
                 precompile = "disabled",
                 **kwargs

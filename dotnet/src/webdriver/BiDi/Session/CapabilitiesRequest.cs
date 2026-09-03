@@ -23,5 +23,5 @@ public sealed record CapabilitiesRequest
 {
     public CapabilityRequest? AlwaysMatch { get; init; }
 
-    public IEnumerable<CapabilityRequest>? FirstMatch { get; init; }
+    public ImmutableArray<CapabilityRequest>? FirstMatch { get; init; }
 }

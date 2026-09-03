@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.42.0.202602192150"
+version = "4.49.0.202608272014"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -26,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "certifi>=2026.1.4",
+    "certifi>=2026.2.25",
     "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
     "typing_extensions>=4.15.0,<5.0",
@@ -41,15 +41,6 @@ download = "https://pypi.org/project/selenium"
 changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
 documentation = "https://www.selenium.dev/documentation/webdriver"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
-
-[dependency-groups]
-lint = [
-    "ruff==0.15.0",
-]
-validate = [
-    "validate-pyproject==0.25",
-    "packaging==26.0",
-]
 
 [tool.setuptools]
 zip-safe = false
@@ -108,7 +99,6 @@ testpaths = ["test"]
 
 # mypy global options
 [tool.mypy]
-exclude = "selenium/webdriver/common/devtools"
 # The aim in future is we would be able to turn (most) of these flags on
 # warn about per-module sections in the config file that do not match any files processed.
 warn_unused_configs = true
@@ -135,11 +125,18 @@ warn_unused_ignores = true
 # warns when returning a value with typing.Any from a function with a non typing.Any return type.
 warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
-warn_unreachable = false
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = [
+    "selenium.webdriver.common.bidi.*",
+]
+ignore_errors = true
 
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
+    "selenium/webdriver/common/bidi/",
 ]
 line-length = 120
 respect-gitignore = true

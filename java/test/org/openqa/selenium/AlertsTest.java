@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -117,8 +118,10 @@ class AlertsTest extends JupiterTestBase {
     driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> alert.sendKeys(null));
+    //noinspection DataFlowIssue
+    assertThatThrownBy(() -> alert.sendKeys(null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Keys to send should be a not null CharSequence");
   }
 
   @Test

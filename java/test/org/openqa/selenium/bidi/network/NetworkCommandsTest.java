@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
@@ -206,14 +208,14 @@ class NetworkCommandsTest extends JupiterTestBase {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
 
-      long callbackId =
+      String callbackId =
           network.onAuthRequired(
               responseDetails ->
                   network.continueWithAuth(
                       responseDetails.getRequest().getRequestId(),
                       new UsernameAndPassword("test", "test")));
 
-      assertThat(callbackId).isGreaterThan(0);
+      assertThat(callbackId).isNotBlank();
 
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -242,6 +244,15 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE, Duration.ofMillis(200)))
           .isInstanceOf(WebDriverException.class);
+
+      // "default" hands authentication back to the browser: Firefox raises its own credential
+      // prompt, Chrome and Edge block the navigation without exposing one. Dismiss it so the
+      // session is still usable once the test ends.
+      try {
+        shortWait.until(alertIsPresent()).dismiss();
+      } catch (TimeoutException ignored) {
+        // Chromium-based browsers do not surface a prompt here
+      }
     }
   }
 

@@ -20,6 +20,10 @@ package org.openqa.selenium.firefox;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @deprecated Use {@link HasExtensions#installExtension} instead.
+ */
+@Deprecated(forRemoval = true)
 public interface Extension {
   void writeTo(File parentDirectory) throws IOException;
 }

@@ -17,41 +17,34 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
+using static OpenQA.Selenium.BiDi.WebExtension.WebExtensionJsonSerializerContext;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule : Module, IWebExtensionModule
+internal sealed class WebExtensionModule : Module, IWebExtensionModule
 {
-    private WebExtensionJsonSerializerContext _jsonContext = null!;
-
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new InstallParameters(extensionData);
 
-        return await ExecuteCommandAsync(new InstallCommand(@params), options, _jsonContext.InstallCommand, _jsonContext.InstallResult, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("webExtension.install", @params, Default.InstallParameters, Default.InstallResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UninstallParameters(extension);
 
-        return await ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult, cancellationToken).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(IBiDi bidi, JsonSerializerOptions jsonSerializerOptions)
-    {
-        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(bidi));
-
-        _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
+        return await ExecuteAsync("webExtension.uninstall", @params, Default.UninstallParameters, Default.UninstallResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 
-[JsonSerializable(typeof(InstallCommand))]
+[JsonSerializable(typeof(InstallParameters))]
 [JsonSerializable(typeof(InstallResult))]
-[JsonSerializable(typeof(UninstallCommand))]
+[JsonSerializable(typeof(UninstallParameters))]
 [JsonSerializable(typeof(UninstallResult))]
 
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class WebExtensionJsonSerializerContext : JsonSerializerContext;

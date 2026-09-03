@@ -17,35 +17,65 @@
 // under the License.
 // </copyright>
 
+using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class Command
-{
-    protected Command(string method)
-    {
-        Method = method;
-    }
-
-    [JsonPropertyOrder(1)]
-    public string Method { get; }
-
-    [JsonPropertyOrder(0)]
-    public long Id { get; internal set; }
-}
-
-internal abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
-    where TParameters : Parameters
-    where TResult : EmptyResult
-{
-    [JsonPropertyOrder(2)]
-    public TParameters Params { get; } = @params;
-}
-
-internal record Parameters
+public record Parameters
 {
     public static Parameters Empty { get; } = new Parameters();
+
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; internal set; }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalData
+    {
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+        init
+        {
+            if (value.IsEmpty)
+            {
+                RawAdditionalData = null;
+            }
+            else
+            {
+                RawAdditionalData = [];
+                foreach (var prop in value)
+                {
+                    RawAdditionalData[prop.Name] = prop.Value;
+                }
+            }
+        }
+    }
 }
 
-public abstract record EmptyResult;
+public abstract record CommandOptions
+{
+    public AdditionalData AdditionalData { get; init; }
+
+    public AdditionalData AdditionalMessageData { get; init; }
+}
+
+public abstract record EmptyResult
+{
+    [JsonExtensionData]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    // IMPORTANT NOTE: Reasons for this property being public:
+    // - The setter is not internal because the deserializer needs to be able to set this property when deserializing a command result
+    // - The property is public to make external serializers see it so that they can deserialize additional data when deserializing a command result
+    // - EditorBrowsableState.Never hides this property from IntelliSense to avoid confusion for users; it is technically a public property
+    public Dictionary<string, JsonElement>? RawAdditionalData { get; set; }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalData
+    {
+        get => RawAdditionalData is null ? AdditionalData.Empty : AdditionalData.FromDictionary(RawAdditionalData);
+    }
+
+    [JsonIgnore]
+    public AdditionalData AdditionalMessageData { get; internal set; }
+}

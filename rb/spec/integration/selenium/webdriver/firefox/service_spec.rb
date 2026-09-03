@@ -23,15 +23,15 @@ module Selenium
   module WebDriver
     module Firefox
       describe Service,
-               {exclude: {driver: :remote},
-                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}]} do
+               {skip_if: {driver: :remote},
+                skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :firefox}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
         after { service_manager.stop }
 
         it 'auto uses geckodriver' do
-          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+          service.executable_path = DriverFinder.new(nil, described_class.new).driver_path
 
           expect(service_manager.uri).to be_a(URI)
         end

@@ -21,7 +21,9 @@ using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Tests;
+using OpenQA.Selenium.Tests.Infrastructure;
+using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -51,35 +53,35 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
     {
-        Environment.EnvironmentManager.Instance.CloseCurrentDriver();
+        EnvironmentManager.Instance.CloseCurrentDriver();
         DriverOptions options = OperatingSystem.IsWindows() ? new EdgeOptions() : new ChromeOptions();
         RemoteWebDriver noSlashDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, options);
-        noSlashDriver.Url = javascriptPage;
+        noSlashDriver.Url = Urls.JavascriptPage;
         noSlashDriver.Quit();
     }
 
     [Test]
     public void ShouldBeAbleToSendFileToRemoteServer()
     {
-        IAllowsFileDetection fileDetectionDriver = driver as IAllowsFileDetection;
+        IAllowsFileDetection fileDetectionDriver = Driver as IAllowsFileDetection;
         if (fileDetectionDriver == null)
         {
-            Assert.That(driver, Is.InstanceOf<IAllowsFileDetection>(), "driver does not support file detection. This should not be");
+            Assert.That(Driver, Is.InstanceOf<IAllowsFileDetection>(), "driver does not support file detection. This should not be");
         }
 
         fileDetectionDriver.FileDetector = new LocalFileDetector();
 
-        driver.Url = uploadPage;
-        IWebElement uploadElement = driver.FindElement(By.Id("upload"));
+        Driver.Url = Urls.UploadPage;
+        IWebElement uploadElement = Driver.FindElement(By.Id("upload"));
         uploadElement.SendKeys(testFile.FullName);
-        driver.FindElement(By.Id("go")).Submit();
+        Driver.FindElement(By.Id("go")).Submit();
 
-        driver.SwitchTo().Frame("upload_target");
+        Driver.SwitchTo().Frame("upload_target");
 
-        IWebElement body = driver.FindElement(By.XPath("//body"));
-        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
-        driver.SwitchTo().DefaultContent();
-        uploadElement = driver.FindElement(By.Id("upload"));
+        IWebElement body = Driver.FindElement(By.XPath("//body"));
+        Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + Driver.PageSource);
+        Driver.SwitchTo().DefaultContent();
+        uploadElement = Driver.FindElement(By.Id("upload"));
         Console.WriteLine(uploadElement.Text);
     }
 

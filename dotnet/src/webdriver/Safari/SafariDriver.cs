@@ -164,17 +164,10 @@ public class SafariDriver : WebDriver
 
     private static async Task<ICommandExecutor> GenerateDriverServiceCommandExecutorAsync(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
-        if (service is null)
-        {
-            throw new ArgumentNullException(nameof(service));
-        }
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(options);
 
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
-
-        if (service.DriverServicePath == null)
+        if (service.DriverServicePath == null && service.DriverPathFromEnvironment == null)
         {
             DriverFinder finder = new DriverFinder(options);
             string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);

@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -220,6 +221,7 @@ class ReferrerTest extends JupiterTestBase {
     }
   }
 
+  @NullMarked
   private static class RecordingHandler implements HttpHandler {
 
     private final List<ExpectedRequest> requests = new CopyOnWriteArrayList<>();

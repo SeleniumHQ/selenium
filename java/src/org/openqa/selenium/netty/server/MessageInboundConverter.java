@@ -71,7 +71,8 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
           }
 
           if (finalFragment) {
-            message = new BinaryMessage(buffer.toByteArray());
+            // toByteArray() returns a fresh copy we own; transfer it without re-copying.
+            message = BinaryMessage.wrap(buffer.toByteArray());
             buffer.reset();
             next = Continuation.None;
           } else {
@@ -90,7 +91,7 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
           }
           break;
         case None:
-          ctx.write(frame);
+          ctx.fireChannelRead(frame.retain());
           return;
         default:
           throw new IllegalStateException("unexpected enum: " + next);
@@ -128,7 +129,7 @@ class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame
       CloseWebSocketFrame closeFrame = (CloseWebSocketFrame) frame;
       message = new CloseMessage(closeFrame.statusCode(), closeFrame.reasonText());
     } else {
-      ctx.write(frame);
+      ctx.fireChannelRead(frame.retain());
       return;
     }
 

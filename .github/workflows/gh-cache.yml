@@ -1,0 +1,44 @@
+name: GitHub Cache
+
+on:
+  push:
+    branches: [trunk]
+    # Browser pins (common/repositories.bzl, common/browsers.bzl) are deliberately
+    # absent: this job populates with --pin_browsers=false, so those repositories
+    # are never fetched and a run triggered by them has nothing new to cache.
+    paths:
+      - 'MODULE.bazel'
+      - 'multitool.lock.json'
+      - 'pnpm-lock.yaml'
+      - 'rust/Cargo.lock'
+      - 'java/maven_install.json'
+      - 'py/requirements_lock.txt'
+      - 'rb/Gemfile.lock'
+      - 'dotnet/paket.lock'
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: gh-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  populate:
+    name: Populate Cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos, windows]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: ${{ matrix.os }}
+      os: ${{ matrix.os }}
+      cache-save: true
+      run: >-
+        bazel build --nobuild --build_tests_only --keep_going --pin_browsers=false
+        //java/test/... //py:* //rb/spec/... //rust/tests/...
+        //javascript/selenium-webdriver:* //dotnet/test/...

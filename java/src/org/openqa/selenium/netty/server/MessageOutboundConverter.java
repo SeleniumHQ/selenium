@@ -46,14 +46,15 @@ class MessageOutboundConverter extends ChannelOutboundHandlerAdapter {
 
     if (seMessage instanceof CloseMessage) {
       CloseMessage closeMessage = (CloseMessage) seMessage;
-      ctx.writeAndFlush(
-          new CloseWebSocketFrame(true, 0, closeMessage.code(), closeMessage.reason()));
+      ctx.write(
+          new CloseWebSocketFrame(true, 0, closeMessage.code(), closeMessage.reason()), promise);
     } else if (seMessage instanceof BinaryMessage) {
-      ctx.writeAndFlush(
+      ctx.write(
           new BinaryWebSocketFrame(
-              true, 0, Unpooled.copiedBuffer(((BinaryMessage) seMessage).data())));
+              true, 0, Unpooled.copiedBuffer(((BinaryMessage) seMessage).data())),
+          promise);
     } else if (seMessage instanceof TextMessage) {
-      ctx.writeAndFlush(new TextWebSocketFrame(true, 0, ((TextMessage) seMessage).text()));
+      ctx.write(new TextWebSocketFrame(true, 0, ((TextMessage) seMessage).text()), promise);
     } else {
       LOG.warning(String.format("Unable to handle %s", msg));
       super.write(ctx, msg, promise);

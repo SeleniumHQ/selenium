@@ -21,71 +21,120 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using OpenQA.Selenium.BiDi.Session;
+using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi;
 
 internal sealed class Broker : IAsyncDisposable
 {
+    // Limits how many received messages can be buffered before backpressure is applied to the transport.
+    private const int ReceivedMessageQueueCapacity = 16;
+
+    // How long to wait for a command response before cancelling.
+    private static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(30);
+
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
-    private readonly EventDispatcher _eventDispatcher;
-    private readonly IBiDi _bidi;
+    private readonly BiDi _bidi;
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
     private long _currentCommandId;
 
-    private readonly Task _receivingMessageTask;
+    private readonly Channel<PooledBufferWriter> _receivedMessages = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = true, SingleWriter = true, FullMode = BoundedChannelFullMode.Wait });
+
+    private readonly Channel<PooledBufferWriter> _bufferPool = Channel.CreateBounded<PooledBufferWriter>(
+        new BoundedChannelOptions(ReceivedMessageQueueCapacity) { SingleReader = false, SingleWriter = false });
+
+    private volatile Exception? _terminalReceiveException;
+
+    private readonly Task _receivingTask;
+    private readonly Task _processingTask;
     private readonly CancellationTokenSource _receiveMessagesCancellationTokenSource;
 
-    public Broker(ITransport transport, IBiDi bidi, Func<ISessionModule> sessionProvider)
+    public Broker(ITransport transport, BiDi bidi)
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = new EventDispatcher(sessionProvider);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = Task.Run(() => ReceiveMessagesLoopAsync(_receiveMessagesCancellationTokenSource.Token));
+        _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
+        _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, EventHandler eventHandler, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        return _eventDispatcher.SubscribeAsync(eventName, eventHandler, options, jsonTypeInfo, cancellationToken);
-    }
-
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo, CancellationToken cancellationToken)
-        where TCommand : Command
+    public async Task<TResult> ExecuteAsync<TParameters, TResult>(string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
         where TResult : EmptyResult
     {
-        command.Id = Interlocked.Increment(ref _currentCommandId);
+        if (_terminalReceiveException is { } terminalException)
+        {
+            throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
+        }
+
+        var id = Interlocked.Increment(ref _currentCommandId);
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        using var cts = cancellationToken.CanBeCanceled
-            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
-            : new CancellationTokenSource();
+        using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
+            ? null
+            : new CancellationTokenSource(DefaultCommandTimeout);
 
-        var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
-        cts.CancelAfter(timeout);
+        var effectiveToken = cts?.Token ?? cancellationToken;
 
-        using var sendBuffer = new PooledBufferWriter();
+        var sendBuffer = RentBuffer();
 
-        using (var writer = new Utf8JsonWriter(sendBuffer))
+        try
         {
-            JsonSerializer.Serialize(writer, command, jsonCommandTypeInfo);
+            using (BiDiContext.Use(_bidi))
+            using (var writer = new Utf8JsonWriter(sendBuffer))
+            {
+                writer.WriteStartObject();
+                writer.WriteNumber("id"u8, id);
+                writer.WriteString("method"u8, method);
+                writer.WritePropertyName("params"u8);
+
+                if (options is { AdditionalData: { IsEmpty: false } additionalData })
+                {
+                    // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                    if (ReferenceEquals(@params, Parameters.Empty))
+                    {
+                        @params = (TParameters)(object)new Parameters();
+                    }
+                    @params.RawAdditionalData ??= [];
+                    foreach (var prop in additionalData)
+                    {
+                        @params.RawAdditionalData[prop.Name] = prop.Value;
+                    }
+                }
+
+                JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
+                if (options is not null)
+                {
+                    foreach (var prop in options.AdditionalMessageData)
+                    {
+                        writer.WritePropertyName(prop.Name);
+                        prop.Value.WriteTo(writer);
+                    }
+                }
+                writer.WriteEndObject();
+            }
+        }
+        catch
+        {
+            ReturnBuffer(sendBuffer);
+            throw;
         }
 
-        var commandInfo = new CommandInfo(tcs, jsonResultTypeInfo);
-        _pendingCommands[command.Id] = commandInfo;
+        var commandInfo = new CommandInfo(tcs, resultTypeInfo);
+        _pendingCommands[id] = commandInfo;
 
-        using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = effectiveToken.Register(() =>
         {
-            tcs.TrySetCanceled(cts.Token);
-            _pendingCommands.TryRemove(command.Id, out _);
+            tcs.TrySetCanceled(effectiveToken);
+            _pendingCommands.TryRemove(id, out _);
         });
 
         try
@@ -99,12 +148,16 @@ internal sealed class Broker : IAsyncDisposable
 #endif
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            await _transport.SendAsync(sendBuffer.WrittenMemory, effectiveToken).ConfigureAwait(false);
         }
         catch
         {
-            _pendingCommands.TryRemove(command.Id, out _);
+            _pendingCommands.TryRemove(id, out _);
             throw;
+        }
+        finally
+        {
+            ReturnBuffer(sendBuffer);
         }
 
         return (TResult)await tcs.Task.ConfigureAwait(false);
@@ -112,28 +165,41 @@ internal sealed class Broker : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        _receiveMessagesCancellationTokenSource.Cancel();
-
-        await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
-
         try
         {
-            await _receivingMessageTask.ConfigureAwait(false);
+            // Dispose subscriptions while transport and processing loop are still active,
+            // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
+            await _bidi.EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+
+            _receiveMessagesCancellationTokenSource.Cancel();
+
+            try
+            {
+                await _receivingTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+            {
+                // Expected when cancellation is requested, ignore.
+            }
+
+            await _processingTask.ConfigureAwait(false);
+
+            await _transport.DisposeAsync().ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (_receiveMessagesCancellationTokenSource.IsCancellationRequested)
+        finally
         {
-            // Expected when cancellation is requested, ignore.
+            _receiveMessagesCancellationTokenSource.Dispose();
+
+            while (_bufferPool.Reader.TryRead(out var buffer))
+            {
+                buffer.Dispose();
+            }
         }
-
-        _receiveMessagesCancellationTokenSource.Dispose();
-
-        await _transport.DisposeAsync().ConfigureAwait(false);
-
-        GC.SuppressFinalize(this);
     }
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
+        using var scope = BiDiContext.Use(_bidi);
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
         const int TypeError = 3;
@@ -145,6 +211,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        Dictionary<string, JsonElement>? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -192,7 +259,10 @@ internal sealed class Broker : IAsyncDisposable
             }
             else
             {
+                var propName = reader.GetString()!;
                 reader.Read();
+                additionalMessageData ??= [];
+                additionalMessageData[propName] = JsonElement.ParseValue(ref reader);
             }
 
             reader.Skip();
@@ -204,22 +274,23 @@ internal sealed class Broker : IAsyncDisposable
             case TypeSuccess:
                 if (id is null) throw new BiDiException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var command))
+                if (_pendingCommands.TryRemove(id.Value, out var command))
                 {
                     try
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
 
+                        if (additionalMessageData is not null)
+                        {
+                            ((EmptyResult)commandResult).AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+                        }
+
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)
                     {
                         command.TaskCompletionSource.TrySetException(ex);
-                    }
-                    finally
-                    {
-                        _pendingCommands.TryRemove(id.Value, out _);
                     }
                 }
                 else
@@ -235,31 +306,23 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_eventDispatcher.TryGetJsonTypeInfo(method, out var jsonTypeInfo))
+                try
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
-                    }
-
-                    break;
+                    _bidi.EventDispatcher.DeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex}.\nMessage content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
-                var eventArgs = JsonSerializer.Deserialize(ref paramsReader, jsonTypeInfo) as EventArgs
-                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
-
-                eventArgs.BiDi = _bidi;
-
-                _eventDispatcher.EnqueueEvent(method, eventArgs);
                 break;
 
             case TypeError:
                 if (id is null) throw new BiDiException($"The remote end responded with 'error' message type, but missed required 'id' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
+                if (_pendingCommands.TryRemove(id.Value, out var errorCommand))
                 {
                     errorCommand.TaskCompletionSource.TrySetException(new BiDiException($"{error}: {message}"));
-                    _pendingCommands.TryRemove(id.Value, out _);
                 }
                 else
                 {
@@ -281,37 +344,33 @@ internal sealed class Broker : IAsyncDisposable
         }
     }
 
-    private async Task ReceiveMessagesLoopAsync(CancellationToken cancellationToken)
+    private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        using var receiveBufferWriter = new PooledBufferWriter();
-
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                receiveBufferWriter.Reset();
-
-                await _transport.ReceiveAsync(receiveBufferWriter, cancellationToken).ConfigureAwait(false);
-
-                if (_logger.IsEnabled(LogEventLevel.Trace))
-                {
-#if NET8_0_OR_GREATER
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.Span)}");
-#else
-                    _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(receiveBufferWriter.WrittenMemory.ToArray())}");
-#endif
-                }
+                var buffer = RentBuffer();
 
                 try
                 {
-                    ProcessReceivedMessage(receiveBufferWriter.WrittenMemory.Span);
-                }
-                catch (Exception ex)
-                {
-                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    await _transport.ReceiveAsync(buffer, cancellationToken).ConfigureAwait(false);
+
+                    if (_logger.IsEnabled(LogEventLevel.Trace))
                     {
-                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+#if NET8_0_OR_GREATER
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.Span)}");
+#else
+                        _logger.Trace($"BiDi RCV <-- {System.Text.Encoding.UTF8.GetString(buffer.WrittenMemory.ToArray())}");
+#endif
                     }
+
+                    await _receivedMessages.Writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    ReturnBuffer(buffer);
+                    throw;
                 }
             }
         }
@@ -322,16 +381,72 @@ internal sealed class Broker : IAsyncDisposable
                 _logger.Error($"Unhandled error occurred while receiving remote messages: {ex}");
             }
 
-            // Fail all pending commands, as the connection is likely broken if we failed to receive messages.
-            foreach (var id in _pendingCommands.Keys)
+            // Propagated via _terminalReceiveException; not rethrown to keep disposal orderly.
+            _terminalReceiveException = ex;
+        }
+        finally
+        {
+            _receivedMessages.Writer.TryComplete();
+        }
+    }
+
+    private async Task ProcessMessagesAsync()
+    {
+        var reader = _receivedMessages.Reader;
+
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
+        {
+            while (reader.TryRead(out var buffer))
             {
-                if (_pendingCommands.TryRemove(id, out var pendingCommand))
+                try
                 {
-                    pendingCommand.TaskCompletionSource.TrySetException(ex);
+                    ProcessReceivedMessage(buffer.WrittenMemory.Span);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occurred while processing remote message: {ex}");
+                    }
+                }
+                finally
+                {
+                    ReturnBuffer(buffer);
                 }
             }
+        }
 
-            throw;
+        // Channel is fully drained. Fail any commands that didn't get a response:
+        // either with the transport error or cancellation for clean shutdown.
+        var terminalException = _terminalReceiveException;
+
+        foreach (var id in _pendingCommands.Keys)
+        {
+            if (_pendingCommands.TryRemove(id, out var pendingCommand))
+            {
+                if (terminalException is not null)
+                {
+                    pendingCommand.TaskCompletionSource.TrySetException(terminalException);
+                }
+                else
+                {
+                    pendingCommand.TaskCompletionSource.TrySetCanceled();
+                }
+            }
+        }
+    }
+
+    private PooledBufferWriter RentBuffer()
+    {
+        return _bufferPool.Reader.TryRead(out var buffer) ? buffer : new PooledBufferWriter();
+    }
+
+    private void ReturnBuffer(PooledBufferWriter buffer)
+    {
+        buffer.Reset();
+        if (!_bufferPool.Writer.TryWrite(buffer))
+        {
+            buffer.Dispose();
         }
     }
 
@@ -359,7 +474,13 @@ internal sealed class Broker : IAsyncDisposable
             _written = 0;
         }
 
-        public void Advance(int count) => _written += count;
+        public void Advance(int count)
+        {
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (_written + count > (_buffer?.Length ?? 0)) throw new InvalidOperationException("Cannot advance past the end of the buffer.");
+
+            _written += count;
+        }
 
         public Memory<byte> GetMemory(int sizeHint = 0)
         {
@@ -377,8 +498,10 @@ internal sealed class Broker : IAsyncDisposable
         {
             var buffer = _buffer ?? throw new ObjectDisposedException(nameof(PooledBufferWriter));
 
-            if (sizeHint <= 0) sizeHint = buffer.Length - _written;
-            if (sizeHint <= 0) sizeHint = buffer.Length;
+            if (sizeHint <= 0)
+            {
+                sizeHint = Math.Max(1, buffer.Length - _written);
+            }
 
             if (_written + sizeHint > buffer.Length)
             {

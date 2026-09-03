@@ -22,10 +22,10 @@ import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.remote.http.Contents.string;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import java.io.IOException;
@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -47,6 +49,7 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 @SuppressWarnings("unchecked")
 @Tag("UnitTests")
+@NullMarked
 class ProtocolHandshakeTest {
 
   @Test
@@ -55,11 +58,7 @@ class ProtocolHandshakeTest {
         singletonMap("capabilities", singleton(new ImmutableCapabilities()));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(
-        utf8String("{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
+    RecordingHttpClient client = createClient();
 
     new ProtocolHandshake().createSession(client, command);
 
@@ -76,11 +75,7 @@ class ProtocolHandshakeTest {
         singletonMap("capabilities", singleton(new ImmutableCapabilities()));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(
-        utf8String("{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
+    RecordingHttpClient client = createClient();
 
     ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
     assertThat(result.getDialect()).isEqualTo(Dialect.W3C);
@@ -96,11 +91,7 @@ class ProtocolHandshakeTest {
     Map<String, Object> params = singletonMap("capabilities", singleton(caps));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(
-        utf8String("{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
+    RecordingHttpClient client = createClient();
 
     new ProtocolHandshake().createSession(client, command);
 
@@ -125,7 +116,7 @@ class ProtocolHandshakeTest {
   }
 
   @Test
-  void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
+  void doesNotCreateFirstMatchForNonW3CCaps() {
     Capabilities caps =
         new ImmutableCapabilities(
             "cheese", EMPTY_MAP,
@@ -136,10 +127,12 @@ class ProtocolHandshakeTest {
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     ProtocolHandshake handshake = new ProtocolHandshake();
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> handshake.createSession(null, command));
+    assertThatThrownBy(() -> handshake.createSession(createClient(), command))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Illegal key values seen in w3c capabilities: [cheese]");
   }
 
+  @Nullable
   private List<Map<String, Object>> mergeW3C(Map<String, Object> caps) {
     Map<String, Object> capabilities = (Map<String, Object>) caps.get("capabilities");
     if (capabilities == null) {
@@ -163,13 +156,13 @@ class ProtocolHandshakeTest {
   }
 
   private Map<String, Object> getRequestPayloadAsMap(RecordingHttpClient client) {
-    return new Json().toType(client.getRequestPayload(), Map.class);
+    return new Json().toType(requireNonNull(client.getRequestPayload()), Map.class);
   }
 
-  class RecordingHttpClient implements HttpClient {
+  private static class RecordingHttpClient implements HttpClient {
 
     private final HttpResponse response;
-    private String payload;
+    private @Nullable String payload;
 
     RecordingHttpClient(HttpResponse response) {
       this.response = response;
@@ -177,11 +170,11 @@ class ProtocolHandshakeTest {
 
     @Override
     public HttpResponse execute(HttpRequest request) {
-      payload = string(request);
+      payload = request.contentAsString();
       return response;
     }
 
-    String getRequestPayload() {
+    @Nullable String getRequestPayload() {
       return payload;
     }
 
@@ -199,9 +192,16 @@ class ProtocolHandshakeTest {
 
     @Override
     public <T> java.net.http.HttpResponse<T> sendNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
-        throws java.io.IOException, InterruptedException {
+        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
       throw new UnsupportedOperationException("sendNative");
     }
+  }
+
+  private static RecordingHttpClient createClient() {
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        utf8String("{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
+    return new RecordingHttpClient(response);
   }
 }

@@ -20,7 +20,9 @@ package org.openqa.selenium.bidi.browsingcontext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class Locator {
   final Map<String, Object> map = new HashMap<>();
 

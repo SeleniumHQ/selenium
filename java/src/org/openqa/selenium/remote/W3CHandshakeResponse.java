@@ -20,12 +20,13 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 class W3CHandshakeResponse implements HandshakeResponse {
 
   @Override
-  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> errorHandler() {
+  public Function<InitialHandshakeResponse, ProtocolHandshake.@Nullable Result> errorHandler() {
     return tuple -> {
       Object rawValue = tuple.getData().get("value");
       if (!(rawValue instanceof Map)) {
@@ -70,7 +71,7 @@ class W3CHandshakeResponse implements HandshakeResponse {
   }
 
   @Override
-  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler() {
+  public Function<InitialHandshakeResponse, ProtocolHandshake.@Nullable Result> successHandler() {
     return tuple -> {
       Object rawValue = tuple.getData().get("value");
       if (!(rawValue instanceof Map)) {

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -26,6 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -95,14 +97,15 @@ class AnnotationsTest {
   @PageFactoryFinder(FindByXXXX.FindByXXXXBuilder.class)
   public @interface FindByXXXX {
 
-    class FindByXXXXBuilder extends AbstractFindByBuilder {
+    @NullMarked
+    class FindByXXXXBuilder extends AbstractFindByBuilder<Object> {
 
       @Override
       public By buildIt(Object annotation, Field field) {
         return new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {
-            return null;
+            return emptyList();
           }
 
           @Override

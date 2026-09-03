@@ -1,3 +1,71 @@
+## 4.48.0
+
+- Support CDP versions: v150, v151, v152
+- Normalize empty custom locator results (#17851)
+- [build] Automated Browser Version Update (major) with CDP (#17910)
+- Ensure BiDi is not exposed on Driver (#17926)
+- Add serialization and domain layer (#17927)
+- [bidi] Add BiDi connection-level event subscription (#17946)
+
+## 4.47.0
+
+- Support CDP versions: v149, v150, v151
+- link generated BiDi elements to their spec definitions (#17781)
+- add objectOnly/preserveExtras/scalar-primitive BiDi schema signals (#17784)
+- [build] Fix GeckoDriver rejecting system-access via capabilities (#17811)
+- [build] standardize generated-file license and not to edit markers across generators (#17816)
+- [build] Download and bundle Selenium Manager SBOM and NOTICE in each package (#17820)
+- [build] BiDi schema generation cleanup (#17837)
+- [build] Merge vendor cddl files into shared BiDi schema and implement custom Firefox webExtension options (#17840)
+- [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+- remove deprecated FTP proxy support (#17846)
+- [bidi] Correct float/enum type fidelity in the shared schema and validate primitives outbound in Ruby (#17852)
+- [bidi] mark BiDi types extensible per spec and update Ruby handling (#17853)
+- validate BiDi outbound ref fields against their declared type (#17861)
+- [build] derive per-type inbound/outbound directionality in the shared schema (#17864)
+- [build] update node versioning for testing and publishing (#17866)
+- Wait for async BiDi events and window resize in flaky tests (#17874)
+- deprecate invalid Firefox profile code (#17871)
+- [build] Automated Browser Version Update with CDP (#17873)
+
+## 4.46.0
+
+- Support CDP versions: v148, v149, v150
+- Add binding-neutral BiDi schema with cddl2ts-gated fidelity (#17700)
+- Update cddl to 0.21.0 to fix quoted reserved-word parsing in BiDi codegen (#17752)
+- Add guidance for testing conventions in each language (#16734)
+
+## 4.45.0
+
+- Support CDP versions: v147, v148, v149
+- update vulnerable dependency with a range (#17466)
+- update dev dependencies (#17479)
+- update eslint to v10 with fixes (#17482)
+- Use the typescript atom for get attribute (#17526)
+- Move JS bindings to use typescript atoms for isDisplayed and Find-Element (#17547)
+- trim agent formatting guidance (#17617)
+- [build] Automated Browser Version Update (#17609)
+- Add Javascript/Typescript CDDL code generator for WebDriver BiDi (#17574)
+- Expose BiDi CDDL ast and model as shared artifacts (#17657)
+
+## 4.44.0
+
+- Support CDP versions: v146, v147, v148
+- [Agents] Update agents to make sure do linting. (#17366)
+- Standardize README files across bindings (#17245)
+- Fix MaxListenersExceededWarning in BiDi send (#17423)
+- [JavaScript] Move 'isDisplayed' atom to be typescript (#17316)
+
+## 4.43.0
+
+- Support CDP versions: v145, v146, v147
+
+## 4.42.0
+
+- Support CDP versions: v144, v145, v146
+- [nodejs] Color Class for Javascript library (#16944)
+- Fix failing javascript tests (#17293)
+
 ## 4.41.0
 
 - Support CDP versions: v143, v144, v145

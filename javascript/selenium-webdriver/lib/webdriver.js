@@ -40,7 +40,7 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
-const BIDI = require('../bidi')
+const { getBidiConnection, closeBidiConnection } = require('./bidi_connection')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
 const Script = require('./script')
@@ -692,6 +692,16 @@ class WebDriver {
   }
 
   /**
+   * The shared logger deprecation notices (e.g. {@link WebDriver#getBidi})
+   * are emitted through — a class-level accessor since a deprecation can be
+   * reported from a static/prototype context with no driver instance at hand.
+   * @return {!./logging.Logger} the shared `selenium.webdriver.webdriver` logger.
+   */
+  static get logger() {
+    return logging.getLogger('selenium.webdriver.webdriver')
+  }
+
+  /**
    * Creates a new WebDriver session.
    *
    * This function will always return a WebDriver instance. If there is an error
@@ -794,10 +804,9 @@ class WebDriver {
         this._cdpWsConnection.close()
       }
 
-      // Close the BiDi websocket connection
-      if (this._bidiConnection !== undefined) {
-        this._bidiConnection.close()
-      }
+      // Not awaited: the session is already torn down by this point, so
+      // closing our end of the socket doesn't need to gate quit() completing.
+      closeBidiConnection(this)
     })
   }
 
@@ -1045,6 +1054,9 @@ class WebDriver {
   async findElementInternal_(locatorFn, context) {
     let result = await locatorFn(context)
     if (Array.isArray(result)) {
+      if (result.length === 0) {
+        throw new NoSuchElementError('Cannot locate an element with provided parameters')
+      }
       result = result[0]
     }
     if (!(result instanceof WebElement)) {
@@ -1088,7 +1100,15 @@ class WebDriver {
    * @private
    */
   async findElementsInternal_(locatorFn, context) {
-    const result = await locatorFn(context)
+    let result
+    try {
+      result = await locatorFn(context)
+    } catch (ex) {
+      if (ex instanceof NoSuchElementError) {
+        return []
+      }
+      throw ex
+    }
     if (result instanceof WebElement) {
       return [result]
     }
@@ -1239,7 +1259,7 @@ class WebDriver {
    * @return {!Promise<resolved>} A new CDP instance.
    */
   async createCDPConnection(target) {
-    let debuggerUrl = null
+    let debuggerUrl
 
     const caps = await this.getCapabilities()
 
@@ -1299,19 +1319,6 @@ class WebDriver {
 
   async getCdpTargets() {
     this._cdpConnection.execute('Target.getTargets')
-  }
-
-  /**
-   * Initiates bidi connection using 'webSocketUrl'
-   * @returns {BIDI}
-   */
-  async getBidi() {
-    if (this._bidiConnection === undefined) {
-      const caps = await this.getCapabilities()
-      let WebSocketUrl = caps['map_'].get('webSocketUrl')
-      this._bidiConnection = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
-    }
-    return this._bidiConnection
   }
 
   /**
@@ -1502,7 +1509,7 @@ class WebDriver {
       null,
     )
 
-    let mutationListener = ''
+    let mutationListener
     try {
       // Depending on what is running the code it could appear in 2 different places which is why we try
       // here and then the other location
@@ -1777,6 +1784,36 @@ class WebDriver {
     return await this.execute(cmd)
   }
 }
+
+/**
+ * Returns the WebDriver BiDi connection for this session.
+ *
+ * @deprecated BiDi is an internal implementation detail — this accessor hands
+ * back the raw transport directly, which is no longer supported public API.
+ * Use a composed BiDi module instead, e.g. `Network.create(driver)` or
+ * `require('selenium-webdriver/bidi/network')`.
+ * @function
+ * @name WebDriver#getBidi
+ * @returns {Promise<import('../bidi')>} A promise resolving to this session's raw
+ *     BiDi connection, opened on first access and reused afterward.
+ */
+// Object.defineProperty, not `WebDriver.prototype.getBidi = function () {...}`:
+// a plain assignment creates an enumerable property, but a method declared in
+// the class body (like every other method here) is non-enumerable — so BiDi
+// would become more discoverable off the driver than it was before.
+Object.defineProperty(WebDriver.prototype, 'getBidi', {
+  value: function () {
+    WebDriver.logger.deprecate(
+      'webdriver-getBidi',
+      'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
+        "require('selenium-webdriver/bidi/network').",
+    )
+    return getBidiConnection(this)
+  },
+  writable: true,
+  enumerable: false,
+  configurable: true,
+})
 
 /**
  * Interface for navigating back and forth in the browser history.

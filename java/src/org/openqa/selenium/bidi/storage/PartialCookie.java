@@ -19,9 +19,11 @@ package org.openqa.selenium.bidi.storage;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.network.BytesValue;
 import org.openqa.selenium.bidi.network.Cookie;
 
+@Beta
 public class PartialCookie {
   private final Map<String, Object> map = new HashMap<>();
 

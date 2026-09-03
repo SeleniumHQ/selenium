@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ class JsonToWebElementConverterTest {
   public void createIdleDriver() {
     driver =
         new RemoteWebDriver(cmd -> new Response(), new ImmutableCapabilities()) {
+          @NullMarked
           @Override
           protected void startSession(Capabilities capabilities) {
             // Do nothing

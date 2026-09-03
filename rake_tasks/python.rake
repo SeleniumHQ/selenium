@@ -8,27 +8,6 @@ def python_version
   end
 end
 
-def setup_pypirc
-  pypirc = File.join(Dir.home, '.pypirc')
-  return if File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
-
-  token = ENV.fetch('TWINE_PASSWORD', nil)
-  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' if token.nil? || token.empty?
-
-  pypi_section = <<~PYPIRC
-    [pypi]
-    username = __token__
-    password = #{token}
-  PYPIRC
-
-  if File.exist?(pypirc)
-    File.open(pypirc, 'a') { |f| f.puts("\n#{pypi_section}") }
-  else
-    File.write(pypirc, pypi_section)
-  end
-  File.chmod(0o600, pypirc)
-end
-
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -39,23 +18,41 @@ end
 desc 'Validate Python release credentials'
 task :check_credentials do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
-  next if nightly
+  token_env = nightly ? 'TWINE_NIGHTLY_PASSWORD' : 'TWINE_PASSWORD'
+  section = nightly ? 'testpypi' : 'pypi'
 
   pypirc = File.join(Dir.home, '.pypirc')
-  has_pypirc = File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
-  has_env = ENV.fetch('TWINE_PASSWORD', nil) && !ENV['TWINE_PASSWORD'].empty?
-  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' unless has_pypirc || has_env
+  has_pypirc = File.exist?(pypirc) && File.read(pypirc).match?(/^\[#{section}\]/m)
+  has_env = ENV.fetch(token_env, nil) && !ENV[token_env].empty?
+  raise "Missing PyPI credentials: set #{token_env} or configure ~/.pypirc" unless has_pypirc || has_env
 end
 
 desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+
+  unless nightly
+    already_published = begin
+      Rake::Task['py:verify'].invoke
+      true
+    rescue StandardError
+      false
+    ensure
+      Rake::Task['py:verify'].reenable
+    end
+
+    if already_published
+      puts 'Python package already published — skipping release.'
+      next
+    end
+  end
+
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
-  setup_pypirc unless nightly
 
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
   command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
@@ -70,28 +67,47 @@ end
 
 desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
 task :local_dev, [:all] do |_task, arguments|
-  Bazel.execute('build', [], '//py:selenium')
+  Bazel.execute('build', [], '//py:selenium-wheel')
 
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
 
-  copy_all = arguments[:all] == 'all'
-  if copy_all
-    FileUtils.rm_rf("#{lib_path}/common/devtools")
-    FileUtils.cp_r("#{bazel_bin}/.", lib_path, remove_destination: true)
+  if arguments[:all] == 'all'
+    dirs = Dir.children(bazel_bin)
+    files = []
   else
-    %w[common/devtools common/linux common/mac common/windows].each do |dir|
-      src = "#{bazel_bin}/#{dir}"
-      dest = "#{lib_path}/#{dir}"
-      next unless Dir.exist?(src)
+    dirs = %w[common/bidi common/_bidi common/devtools]
+    files = %w[
+      remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
+      common/mutation-listener.js common/bidi-mutation-listener.js
+      common/linux/selenium-manager common/macos/selenium-manager common/windows/selenium-manager.exe
+      firefox/webdriver_prefs.json
+    ]
+  end
 
-      FileUtils.rm_rf(dest)
-      FileUtils.cp_r(src, dest)
-    end
+  dirs.each do |dir|
+    src_dir = "#{bazel_bin}/#{dir}"
+    dest_dir = "#{lib_path}/#{dir}"
 
-    %w[getAttribute.js isDisplayed.js findElements.js].each do |atom|
-      FileUtils.cp("#{bazel_bin}/remote/#{atom}", "#{lib_path}/remote/#{atom}")
+    FileUtils.rm_rf(dest_dir)
+    # Restore any git tracked files in the directory we just deleted
+    SeleniumRake.git.checkout_file('HEAD', dest_dir) unless SeleniumRake.git.ls_files(dest_dir).empty?
+
+    # Copy each file individually to resolve Bazel's cache symlinks
+    Dir.glob(File.join(src_dir, '**', '*')).each do |src|
+      next unless File.file?(src)
+
+      dest = File.join(dest_dir, src.delete_prefix("#{src_dir}/"))
+      FileUtils.mkdir_p(File.dirname(dest))
+      FileUtils.cp(File.realpath(src), dest)
     end
+  end
+
+  files.each do |file|
+    dest = "#{lib_path}/#{file}"
+    FileUtils.mkdir_p(File.dirname(dest))
+    FileUtils.rm_f(dest)
+    FileUtils.cp(File.realpath("#{bazel_bin}/#{file}"), dest)
   end
 end
 
@@ -129,14 +145,13 @@ end
 
 desc 'Pin Python dependencies'
 task :pin do
-  Bazel.execute('run', [], '//scripts:update_py_deps')
   Bazel.execute('run', [], '//py:requirements.update')
-  SeleniumRake.git.add('py/requirements.txt')
-  SeleniumRake.git.add('py/requirements_lock.txt')
 end
 
-desc 'Update Python dependencies (alias for pin)'
-task update: :pin
+desc 'Update Python dependencies to latest versions within specified range'
+task :update do
+  Bazel.execute('run', ['--', '--upgrade'], '//py:requirements.update')
+end
 
 desc 'Update Python changelog'
 task :changelogs do
@@ -174,11 +189,11 @@ task :format do
   Bazel.execute('run', [], '//py:ruff-format')
 end
 
-desc 'Run Python linters (ruff check, mypy, docs)'
+desc 'Run Python linters (ruff check --no-fix, mypy, docs)'
 task :lint do
-  puts '  Running ruff check...'
-  Bazel.execute('run', [], '//py:ruff-check')
-  puts '  Running mypy...'
-  Bazel.execute('run', [], '//py:mypy')
-  Rake::Task['py:docs_generate'].invoke
+  SeleniumRake.aggregate_errors(
+    ruff_check: -> { Bazel.execute('run', ['--', '--no-fix'], '//py:ruff-check') },
+    mypy: -> { Bazel.execute('run', [], '//py:mypy') },
+    python_docs: -> { Rake::Task['py:docs_generate'].invoke }
+  )
 end

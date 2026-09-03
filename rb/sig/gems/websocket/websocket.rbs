@@ -2,6 +2,9 @@ module WebSocket
   DEFAULT_VERSION: Integer
   ROOT: String
 
+  def self.max_frame_size: () -> Integer
+  def self.max_frame_size=: (Integer) -> Integer
+
   # Defining autoloaded classes as interface or class is dependent on their implementation,
   # which is not provided. Here, we'll declare them as modules, but they might need to be
   # updated according to their actual definitions.

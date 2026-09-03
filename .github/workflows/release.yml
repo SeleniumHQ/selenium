@@ -3,6 +3,12 @@ name: Release Selenium
 on:
   pull_request:
     types: [closed]
+    paths:
+      - 'java/version.bzl'
+      - 'rb/lib/selenium/webdriver/version.rb'
+      - 'py/selenium/__init__.py'
+      - 'dotnet/version.bzl'
+      - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
       tag:
@@ -13,9 +19,25 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
 
 jobs:
+  unlock-on-close:
+    name: Unlock Trunk on PR Close
+    if: >-
+      github.event.repository.fork == false &&
+      github.event_name == 'pull_request' &&
+      startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+      github.event.pull_request.merged == false
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+      message: "Trunk has been unlocked: ${{ github.event.pull_request.head.ref }} was closed without merging."
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   extract-tag:
     name: Extract Tag
     runs-on: ubuntu-latest
@@ -59,49 +81,156 @@ jobs:
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  create-tag:
+    name: Create Tag
+    needs: [parse-tag, get-approval]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          if gh api "/repos/${{ github.repository }}/git/ref/tags/${TAG}" >/dev/null 2>&1; then
+            echo "Tag ${TAG} already exists — skipping creation."
+            exit 0
+          fi
+          gh api -X POST /repos/${{ github.repository }}/git/refs \
+            -f ref="refs/tags/${TAG}" \
+            -f sha="${SHA}"
+
+  github-release-draft:
+    name: GitHub Release Draft
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language == 'all'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Generate release notes against previous minor release
+        env:
+          TAG: ${{ needs.parse-tag.outputs.tag }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          PREV=$(gh release list --exclude-drafts --json tagName \
+            -q 'map(.tagName | select(test("^selenium-[0-9]+\\.[0-9]+\\.0$")))[0]')
+          echo "Previous release tag: $PREV"
+          {
+            cat scripts/github-actions/release_header.md
+            echo ""
+            gh api -X POST "/repos/${{ github.repository }}/releases/generate-notes" \
+              -f tag_name="$TAG" \
+              -f previous_tag_name="$PREV" \
+              -f target_commitish="$SHA" \
+              --jq .body
+          } > release_body.md
+      - name: Create draft GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          allowUpdates: true
+          bodyFile: "release_body.md"
+          name: "Selenium ${{ needs.parse-tag.outputs.version }}"
+          tag: "${{ needs.parse-tag.outputs.tag }}"
+          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+
   publish:
     name: Build and Publish ${{ matrix.language }}
     needs: [parse-tag, get-approval]
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
-        language: [java, python, ruby, dotnet, javascript]
+        language: [java, ruby, dotnet, javascript]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
       gpg-sign: ${{ matrix.language == 'java' }}
-      run: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('./go {0}:release', matrix.language) || 'echo skipping' }}
+      gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
+      node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
+      run: |
+        if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
+          ./go ${{ matrix.language }}:release
+        else
+          echo skipping
+        fi
       artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
-      artifact-path: build/dist/*.*
+      artifact-path: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && 'build/dist/*.*' || '' }}
     secrets: inherit
 
-  github-release:
-    name: GitHub Release
-    needs: [parse-tag, publish]
+  build-python:
+    name: Build Python
+    needs: [parse-tag, get-approval]
+    if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Python
+      run: ./go py:build --config=release
+      artifact-name: pypi-distributions
+      artifact-path: |
+        bazel-bin/py/selenium-*.whl
+        bazel-bin/py/selenium-[0-9]*.tar.gz
+    secrets: inherit
+
+  publish-python:
+    name: Publish Python to PyPI
+    needs: [parse-tag, build-python]
+    if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - name: Download Python distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: pypi-distributions
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  github-release-publish:
+    name: GitHub Release Publish
+    needs: [parse-tag, publish, github-release-draft]
     if: >-
-      needs.parse-tag.outputs.language == 'all' ||
+      always() && !failure() && !cancelled() &&
+      (needs.parse-tag.outputs.language == 'all' ||
       needs.parse-tag.outputs.language == 'java' ||
-      needs.parse-tag.outputs.language == 'dotnet'
+      needs.parse-tag.outputs.language == 'dotnet')
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout repo
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Download all release packages
         if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: release-packages-*
           merge-multiple: true
+          path: "build/dist/"
       - name: Download release packages
         if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-packages-${{ needs.parse-tag.outputs.language }}
+          path: "build/dist/"
       - name: Delete nightly release and tag
         if: needs.parse-tag.outputs.language == 'all'
         env:
@@ -113,33 +242,24 @@ jobs:
           if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
             gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
           fi
-      - name: Create GitHub release
-        if: needs.parse-tag.outputs.language == 'all'
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "build/dist/*.*"
-          bodyFile: "scripts/github-actions/release_header.md"
-          generateReleaseNotes: true
-          name: "Selenium ${{ needs.parse-tag.outputs.version }}"
-          tag: "${{ needs.parse-tag.outputs.tag }}"
-          commit: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
-      - name: Update GitHub release
-        if: needs.parse-tag.outputs.language != 'all'
+      - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
           BASE_VERSION="${VERSION%.*}.0"
           gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
+          gh release edit "selenium-$BASE_VERSION" --draft=false
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [parse-tag, publish, github-release]
+    needs: [parse-tag, publish, publish-python, github-release-publish, create-tag]
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
-      needs.github-release.result != 'failure'
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      needs.github-release-publish.result != 'failure' &&
+      needs.create-tag.result != 'failure'
     permissions:
       contents: write
     strategy:
@@ -156,25 +276,23 @@ jobs:
 
   verify:
     name: Verify Published Packages
-    needs: [parse-tag, docs]
+    needs: [parse-tag, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
 
-  unrestrict-trunk:
-    name: Unrestrict Trunk Branch
-    needs: verify
-    uses: ./.github/workflows/restrict-trunk.yml
-    with:
-      restrict: false
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   reset-version:
     name: Generate Nightly Versions
-    needs: [parse-tag, docs]
+    needs: [parse-tag, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
@@ -183,7 +301,7 @@ jobs:
 
   update-version:
     name: Push Nightly Versions
-    needs: [parse-tag, reset-version, unrestrict-trunk]
+    needs: [parse-tag, reset-version]
     permissions:
       contents: write
       actions: read
@@ -196,13 +314,18 @@ jobs:
 
   nightly:
     name: Publish Nightly Packages
-    needs: [parse-tag, update-version]
+    needs: [parse-tag, update-version, github-release-publish]
+    if: >-
+      always() && !cancelled() &&
+      needs.update-version.result == 'success' &&
+      (needs.github-release-publish.result == 'success' || needs.github-release-publish.result == 'skipped')
     permissions:
       contents: write
       packages: write
     uses: ./.github/workflows/nightly.yml
     with:
       language: ${{ needs.parse-tag.outputs.language }}
+      ignore_release_check: true
     secrets: inherit
 
   mirror:
@@ -212,28 +335,48 @@ jobs:
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 
-  on-release-failure:
-    name: On Release Failure
+  unrestrict-trunk:
+    name: Unrestrict Trunk Branch
+    needs: [parse-tag, publish, publish-python, update-version, mirror]
+    if: >-
+      always() && !cancelled() &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      needs.update-version.result == 'success' &&
+      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      restrict: false
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  on-release-complete:
+    name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [publish, docs, github-release, update-version, nightly, mirror, verify]
-    if: failure()
+    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
+    if: always() && !cancelled()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_ICON_EMOJI: ":rotating_light:"
-          SLACK_COLOR: failure
+          SLACK_ICON_EMOJI: ${{ contains(needs.*.result, 'failure') && ':rotating_light:' || (needs.publish.result == 'success' && ':white_check_mark:' || ':warning:') }}
+          SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Release failed
+          SLACK_TITLE: ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
           SLACK_MESSAGE: |
             • Selenium Published: ${{ needs.publish.result }}
+            • Python Published: ${{ needs.publish-python.result }}
+            • Tag Created: ${{ needs.create-tag.result }}
+            • GitHub Release Draft: ${{ needs.github-release-draft.result }}
             • Docs Updated: ${{ needs.docs.result }}
-            • GitHub Release Published: ${{ needs.github-release.result }}
+            • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
             • Nightly Packages: ${{ needs.nightly.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
+            • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

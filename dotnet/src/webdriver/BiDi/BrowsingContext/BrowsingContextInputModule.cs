@@ -21,9 +21,9 @@ using OpenQA.Selenium.BiDi.Input;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule) : IBrowsingContextInputModule
+internal sealed class BrowsingContextInputModule(BrowsingContext context, IInputModule inputModule, EventDispatcher dispatcher) : IBrowsingContextInputModule
 {
-    public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<PerformActionsResult> PerformActionsAsync(ImmutableArray<SourceActions> actions, PerformActionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         return inputModule.PerformActionsAsync(context, actions, options, cancellationToken);
     }
@@ -33,44 +33,12 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, IInputMo
         return inputModule.ReleaseActionsAsync(context, options, cancellationToken);
     }
 
-    public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
+    public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, ImmutableArray<string> files, SetFilesOptions? options = null, CancellationToken cancellationToken = default)
     {
         return inputModule.SetFilesAsync(context, element, files, options, cancellationToken);
     }
 
-    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogEventArgs, Task> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
-
-        return inputModule.OnFileDialogOpenedAsync(
-            e => HandleFileDialogOpenedAsync(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogEventArgs> handler, ContextSubscriptionOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        if (handler is null) throw new ArgumentNullException(nameof(handler));
-
-        return inputModule.OnFileDialogOpenedAsync(
-            e => HandleFileDialogOpened(e, handler),
-            ContextSubscriptionOptions.WithContext(options, context),
-            cancellationToken);
-    }
-
-    private async Task HandleFileDialogOpenedAsync(FileDialogEventArgs e, Func<FileDialogEventArgs, Task> handler)
-    {
-        if (context.Equals(e.Context))
-        {
-            await handler(e).ConfigureAwait(false);
-        }
-    }
-
-    private void HandleFileDialogOpened(FileDialogEventArgs e, Action<FileDialogEventArgs> handler)
-    {
-        if (context.Equals(e.Context))
-        {
-            handler(e);
-        }
-    }
+    public IEventSource<FileDialogOpenedEventArgs> FileDialogOpened => _fileDialogOpened ??= new ContextEventSource<FileDialogOpenedEventArgs>(
+        dispatcher, InputEvent.FileDialogOpened, context, e => context.Equals(e.Context));
+    private ContextEventSource<FileDialogOpenedEventArgs>? _fileDialogOpened;
 }

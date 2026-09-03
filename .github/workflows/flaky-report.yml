@@ -1,0 +1,62 @@
+name: Flaky Report
+
+on:
+  schedule:
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+    inputs:
+      window-days:
+        description: Days of history the flake rate is measured over
+        required: false
+        type: string
+        default: '21'
+      recent-days:
+        description: A target must have flaked this recently to be reported
+        required: false
+        type: string
+        default: '7'
+      min-runs:
+        description: Runs a target needs before its rate is trusted
+        required: false
+        type: string
+        default: '15'
+      min-rate:
+        description: Percent of runs a target must flake in before it is counted
+        required: false
+        type: string
+        default: '5'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  report:
+    name: Report Flaky Tests
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Build report
+        id: report
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WINDOW_DAYS: ${{ inputs.window-days || '21' }}
+          RECENT_DAYS: ${{ inputs.recent-days || '7' }}
+          MIN_RUNS: ${{ inputs.min-runs || '15' }}
+          MIN_RATE: ${{ inputs.min-rate || '5' }}
+        run: ./scripts/github-actions/flaky-report.sh
+      - name: Slack Notification
+        if: github.event_name == 'schedule' && steps.report.outputs.flaky == 'true'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ':warning:'
+          SLACK_COLOR: warning
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: Flakiness Report
+          SLACK_MESSAGE: ${{ steps.report.outputs.message }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

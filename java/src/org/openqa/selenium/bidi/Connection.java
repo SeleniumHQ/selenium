@@ -45,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -55,6 +56,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
 
+@Beta
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
@@ -67,11 +69,10 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private final AtomicLong EVENT_CALLBACK_ID = new AtomicLong(1);
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
-  private final Map<Event<?>, Map<Long, Consumer<?>>> eventCallbacks = new HashMap<>();
+  private final Map<Event<?>, Map<String, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
   private final WebSocket socket;
   private final AtomicBoolean underlyingSocketClosed = new AtomicBoolean(false);
@@ -174,20 +175,18 @@ public class Connection implements Closeable {
     }
   }
 
-  public <X> long addListener(Event<X> event, Consumer<X> handler) {
+  public <X> void addListener(String subscriptionId, Event<X> event, Consumer<X> handler) {
+    Require.nonNull("Subscription id", subscriptionId);
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
-
-    long id = EVENT_CALLBACK_ID.getAndIncrement();
 
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).put(id, handler);
+      eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).put(subscriptionId, handler);
     } finally {
       lock.unlock();
     }
-    return id;
   }
 
   public <X> void clearListener(Event<X> event) {
@@ -200,7 +199,9 @@ public class Connection implements Closeable {
     }
   }
 
-  public void removeListener(long id) {
+  public void removeListener(String id) {
+    Require.nonNull("Subscription id", id);
+
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
@@ -219,8 +220,18 @@ public class Connection implements Closeable {
     }
   }
 
+  public boolean isSubscribed(String id) {
+    Lock lock = callbacksLock.readLock();
+    lock.lock();
+    try {
+      return eventCallbacks.values().stream().anyMatch(listeners -> listeners.containsKey(id));
+    } finally {
+      lock.unlock();
+    }
+  }
+
   public <X> boolean isEventSubscribed(Event<X> event) {
-    Lock lock = callbacksLock.writeLock();
+    Lock lock = callbacksLock.readLock();
     lock.lock();
     try {
       return eventCallbacks.containsKey(event);

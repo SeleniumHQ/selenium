@@ -17,6 +17,8 @@
 
 """The Proxy implementation."""
 
+from __future__ import annotations
+
 
 class ProxyTypeFactory:
     """Factory for proxy types."""
@@ -72,16 +74,16 @@ class _ProxyTypeDescriptor:
 class Proxy:
     """Proxy configuration containing proxy type and necessary proxy settings."""
 
-    proxyType = ProxyType.UNSPECIFIED
-    autodetect = False
-    httpProxy = ""
-    noProxy = ""
-    proxyAutoconfigUrl = ""
-    sslProxy = ""
-    socksProxy = ""
-    socksUsername = ""
-    socksPassword = ""
-    socksVersion = None
+    proxyType: dict = ProxyType.UNSPECIFIED
+    autodetect: bool = False
+    httpProxy: str = ""
+    noProxy: str | list[str] = ""
+    proxyAutoconfigUrl: str = ""
+    sslProxy: str = ""
+    socksProxy: str = ""
+    socksUsername: str = ""
+    socksPassword: str = ""
+    socksVersion: int | None = None
 
     # create descriptor type objects
     auto_detect = _ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)

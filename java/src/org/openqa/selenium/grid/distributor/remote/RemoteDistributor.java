@@ -75,7 +75,7 @@ public class RemoteDistributor extends Distributor {
 
     HttpResponse response = client.with(addSecret).execute(request);
 
-    Values.get(response, Void.class);
+    Values.parse(response);
 
     LOG.info(String.format("Added node %s.", node.getId()));
 
@@ -91,7 +91,7 @@ public class RemoteDistributor extends Distributor {
 
     HttpResponse response = client.with(addSecret).execute(request);
 
-    return Values.get(response, Boolean.class);
+    return Values.parseBoolean(response);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class RemoteDistributor extends Distributor {
 
     HttpResponse response = client.with(addSecret).execute(request);
 
-    Values.get(response, Void.class);
+    Values.parse(response);
   }
 
   @Override
@@ -112,7 +112,7 @@ public class RemoteDistributor extends Distributor {
 
     HttpResponse response = client.execute(request);
 
-    return Values.get(response, DistributorStatus.class);
+    return Values.parse(response, DistributorStatus.class);
   }
 
   @Override
@@ -125,7 +125,7 @@ public class RemoteDistributor extends Distributor {
     HttpResponse res = client.execute(req);
 
     if (res.isSuccessful()) {
-      return Either.right(Values.get(res, CreateSessionResponse.class));
+      return Either.right(Values.parse(res, CreateSessionResponse.class));
     } else {
       return Either.left(Values.get(res, SessionNotCreatedException.class));
     }

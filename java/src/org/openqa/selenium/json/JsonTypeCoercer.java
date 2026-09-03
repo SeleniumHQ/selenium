@@ -21,14 +21,17 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
 import static org.openqa.selenium.json.Types.narrow;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -114,6 +117,12 @@ class JsonTypeCoercer {
     builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, (list) -> list::add));
     //noinspection unchecked
     builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, (set) -> set::add));
+    //noinspection unchecked
+    builder.add(
+        new CollectionCoercer<>(
+            Collection.class, this, ArrayList::new, (collection) -> collection::add));
+
+    builder.add(new OptionalCoercer(this));
 
     builder.add(new StaticInitializerCoercer());
 
@@ -121,6 +130,8 @@ class JsonTypeCoercer {
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
+
+    builder.add(new ConstructorCoercer(this));
 
     // Order matters here: we want this to be the last called coercer
     builder.add(new InstanceCoercer(this));
@@ -132,7 +143,7 @@ class JsonTypeCoercer {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
 
-    if (json.peek() == JsonType.NULL) {
+    if (json.peek() == JsonType.NULL && !isOptional(typeOfT)) {
       @SuppressWarnings("unchecked")
       T next = (T) json.nextNull();
       return next;
@@ -164,5 +175,14 @@ class JsonTypeCoercer {
               return funct;
             })
         .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
+  }
+
+  private boolean isOptional(Type type) {
+    if (type instanceof Class) {
+      return Optional.class.equals(type);
+    }
+
+    return type instanceof ParameterizedType
+        && Optional.class.equals(((ParameterizedType) type).getRawType());
   }
 }

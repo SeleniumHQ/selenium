@@ -266,10 +266,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="script" /> is <see langword="null"/>.</exception>
     public object? ExecuteScript(PinnedScript script, params object?[]? args)
     {
-        if (script == null)
-        {
-            throw new ArgumentNullException(nameof(script));
-        }
+        ArgumentNullException.ThrowIfNull(script);
 
         return this.ExecuteScript(script.MakeExecutionScript(), args);
     }
@@ -372,10 +369,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="printOptions"/> is <see langword="null"/>.</exception>
     public PrintDocument Print(PrintOptions printOptions)
     {
-        if (printOptions is null)
-        {
-            throw new ArgumentNullException(nameof(printOptions));
-        }
+        ArgumentNullException.ThrowIfNull(printOptions);
 
         Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
 
@@ -610,6 +604,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
+            if (this.CommandExecutor is Remote.HttpCommandExecutor httpExecutor)
+            {
+                matchCapabilities["se:remoteUrl"] = httpExecutor.RemoteServerUri.AbsoluteUri;
+            }
+
             List<object> firstMatchCapabilitiesList = new List<object>();
             firstMatchCapabilitiesList.Add(matchCapabilities);
 
@@ -620,7 +619,35 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
         else
         {
-            parameters.Add("capabilities", remoteSettings.ToDictionary());
+            Dictionary<string, object?> remoteSettingsDictionary = remoteSettings.ToDictionary();
+
+            // Advertise se:remoteUrl on the caller's behalf, as every other binding does. It must be
+            // nested in alwaysMatch (the Grid drops top-level metadata), built into a fresh copy so
+            // the caller-owned RemoteSessionSettings is not mutated. Only a matched capability counts
+            // as explicit here: a se:remoteUrl set via AddMetadataSetting stays top-level, is ignored
+            // by the Grid, and does not suppress this injection (the executor URL stays authoritative).
+            // Skip only when se:remoteUrl already lives in alwaysMatch/firstMatch, to preserve that
+            // value and avoid an alwaysMatch/firstMatch overlap. If only one of several firstMatch
+            // alternatives sets it explicitly, injection is suppressed for all of them; that
+            // multi-alternative case is intentionally not supported.
+            if (this.CommandExecutor is Remote.HttpCommandExecutor remoteHttpExecutor
+                && !ContainsMatchCapability(remoteSettingsDictionary, "se:remoteUrl"))
+            {
+                Dictionary<string, object?> alwaysMatch = new Dictionary<string, object?>();
+                if (remoteSettingsDictionary.TryGetValue("alwaysMatch", out object? existingAlwaysMatch)
+                    && existingAlwaysMatch is IDictionary<string, object> existingCapabilities)
+                {
+                    foreach (KeyValuePair<string, object> capability in existingCapabilities)
+                    {
+                        alwaysMatch[capability.Key] = capability.Value;
+                    }
+                }
+
+                alwaysMatch["se:remoteUrl"] = remoteHttpExecutor.RemoteServerUri.AbsoluteUri;
+                remoteSettingsDictionary["alwaysMatch"] = alwaysMatch;
+            }
+
+            parameters.Add("capabilities", remoteSettingsDictionary);
         }
 
         Response response = this.Execute(DriverCommand.NewSession, parameters);
@@ -638,6 +665,31 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         this.SessionId = new SessionId(sessionId);
     }
 
+    private static bool ContainsMatchCapability(Dictionary<string, object?> capabilitiesDictionary, string capabilityName)
+    {
+        if (capabilitiesDictionary.TryGetValue("alwaysMatch", out object? alwaysMatch)
+            && alwaysMatch is IDictionary<string, object> alwaysMatchCapabilities
+            && alwaysMatchCapabilities.ContainsKey(capabilityName))
+        {
+            return true;
+        }
+
+        if (capabilitiesDictionary.TryGetValue("firstMatch", out object? firstMatch)
+            && firstMatch is IEnumerable<object> firstMatchCandidates)
+        {
+            foreach (object candidate in firstMatchCandidates)
+            {
+                if (candidate is IDictionary<string, object> firstMatchCapabilities
+                    && firstMatchCapabilities.ContainsKey(capabilityName))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Gets the capabilities as a dictionary.
     /// </summary>
@@ -648,10 +700,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="capabilitiesToConvert"/> is <see langword="null"/>.</exception>
     protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
     {
-        if (capabilitiesToConvert is null)
-        {
-            throw new ArgumentNullException(nameof(capabilitiesToConvert));
-        }
+        ArgumentNullException.ThrowIfNull(capabilitiesToConvert);
 
         Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
 
@@ -1033,10 +1082,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
     public string AddVirtualAuthenticator(VirtualAuthenticatorOptions options)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         Response commandResponse = this.Execute(DriverCommand.AddVirtualAuthenticator, options.ToDictionary());
 
@@ -1053,10 +1099,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="ArgumentNullException">If <paramref name="authenticatorId"/> is <see langword="null"/>.</exception>
     public void RemoveVirtualAuthenticator(string authenticatorId)
     {
-        if (authenticatorId is null)
-        {
-            throw new ArgumentNullException(nameof(authenticatorId));
-        }
+        ArgumentNullException.ThrowIfNull(authenticatorId);
 
         Dictionary<string, object?> parameters = new Dictionary<string, object?>();
         parameters.Add("authenticatorId", authenticatorId);
@@ -1078,10 +1121,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void AddCredential(Credential credential)
     {
-        if (credential is null)
-        {
-            throw new ArgumentNullException(nameof(credential));
-        }
+        ArgumentNullException.ThrowIfNull(credential);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 
@@ -1140,10 +1180,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="InvalidOperationException">If a Virtual Authenticator has not been added yet.</exception>
     public void RemoveCredential(string credentialId)
     {
-        if (credentialId is null)
-        {
-            throw new ArgumentNullException(nameof(credentialId));
-        }
+        ArgumentNullException.ThrowIfNull(credentialId);
 
         string authenticatorId = this.AuthenticatorId ?? throw new InvalidOperationException("Virtual Authenticator needs to be added before it can perform operations");
 

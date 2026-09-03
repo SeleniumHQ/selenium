@@ -35,13 +35,11 @@ use crate::lock::Lock;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
-    get_metadata, is_stats_in_metadata, write_metadata,
+    get_metadata, is_stats_in_metadata, now_unix_timestamp, update_cached_asset, write_metadata,
 };
 use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
 use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
-use crate::shell::{
-    Command, run_shell_command, run_shell_command_by_os, run_shell_command_with_log,
-};
+use crate::shell::{Command, run_shell_command, run_shell_command_with_log};
 use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
 use anyhow::anyhow;
@@ -53,7 +51,7 @@ use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use std::{env, fs, thread};
-use walkdir::DirEntry;
+use walkdir::{DirEntry, WalkDir};
 use which::which;
 
 pub mod chrome;
@@ -65,13 +63,16 @@ pub mod files;
 pub mod firefox;
 pub mod grid;
 pub mod iexplorer;
+pub mod jre;
 pub mod lock;
 pub mod logger;
 pub mod metadata;
 pub mod mirror;
+pub mod rules;
 pub mod safari;
 pub mod safaritp;
 pub mod shell;
+pub mod skills;
 pub mod stats;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 300; // The timeout is applied from when the request starts connecting until the response body has finished
@@ -82,19 +83,9 @@ pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
 pub const REG_VERSION_ARG: &str = "version";
-pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
-pub const PLIST_COMMAND: &str =
-    r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
-pub const HDIUTIL_ATTACH_COMMAND: &str = "hdiutil attach {}";
-pub const HDIUTIL_DETACH_COMMAND: &str = "hdiutil detach /Volumes/{}";
-pub const CP_VOLUME_COMMAND: &str = "cp -R /Volumes/{}/{}.app {}";
-pub const MSIEXEC_INSTALL_COMMAND: &str = "start /wait msiexec /i {} /qn ALLOWDOWNGRADE=1";
-pub const WINDOWS_CHECK_ADMIN_COMMAND: &str = "net session";
-pub const DASH_VERSION: &str = "{}{}{} -v";
-pub const DASH_DASH_VERSION: &str = "{}{}{} --version";
-pub const DOUBLE_QUOTE: &str = r#"""#;
-pub const SINGLE_QUOTE: &str = "'";
+pub const DASH_VERSION: &str = "-v";
+pub const DASH_DASH_VERSION: &str = "--version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
@@ -106,14 +97,13 @@ pub const ARCH_ARM64: &str = "arm64";
 pub const ARCH_ARM7L: &str = "arm7l";
 pub const ARCH_OTHER: &str = "other";
 pub const TTL_SEC: u64 = 3600;
-pub const UNAME_COMMAND: &str = "uname -{}";
-pub const ESCAPE_COMMAND: &str = r#"printf %q "{}""#;
+pub const CACHE_TTL_DAYS: u64 = 30;
 pub const SNAPSHOT: &str = "SNAPSHOT";
 pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version in offline mode";
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{}{} not available for download";
 pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
-    "{} {} not available for download (minimum version: {})";
+    "{} {} not available for download on {} (minimum version: {})";
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
@@ -195,6 +185,10 @@ pub trait SeleniumManager {
     // Shared functions
     // ----------------------------------------------------------
 
+    fn get_browser_versions_url(&self) -> &str {
+        ""
+    }
+
     fn download_driver(&mut self) -> Result<(), Error> {
         let driver_path_in_cache = self.get_driver_path_in_cache()?;
         let driver_name_with_extension = self.get_driver_name_with_extension();
@@ -257,12 +251,18 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            return Err(anyhow!(format_three_args(
+            let mut message = format_four_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
+                self.get_arch(),
                 &min_browser_version_for_download.to_string(),
-            )));
+            );
+            let versions_url = self.get_browser_versions_url();
+            if !versions_url.is_empty() {
+                message = format!("{}. Check available versions at {}", message, versions_url);
+            }
+            return Err(anyhow!(message));
         }
 
         if self.is_version_specific(original_browser_version) {
@@ -331,6 +331,14 @@ pub trait SeleniumManager {
                 location_note
             ));
             self.set_browser_path(path_to_string(&browser_binary_path));
+            let cache_path = self.get_cache_path()?;
+            let mut metadata = get_metadata(self.get_logger(), &cache_path);
+            update_cached_asset(
+                &mut metadata.cached_assets,
+                self.get_browser_name(),
+                &browser_version,
+            );
+            write_metadata(&metadata, self.get_logger(), cache_path);
             return Ok(Some(browser_binary_path));
         }
 
@@ -414,7 +422,27 @@ pub trait SeleniumManager {
             .unwrap_or_default()
     }
 
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        None
+    }
+
     fn detect_browser_path(&mut self) -> Option<PathBuf> {
+        // A driver's binary search is channel-agnostic and finds system browsers, so mirror it only
+        // for the default channel and when the user hasn't asked to skip browsers in the path.
+        if !self.is_browser_version_unstable()
+            && !self.is_skip_browser_in_path()
+            && let Some(browser_path) = self.detect_browser_in_known_locations()
+        {
+            let canon_browser_path = self.canonicalize_path(browser_path);
+            self.get_logger().debug(format!(
+                "{} detected at {}",
+                self.get_browser_name(),
+                canon_browser_path
+            ));
+            self.set_browser_path(canon_browser_path.clone());
+            return Some(Path::new(&canon_browser_path).to_path_buf());
+        }
+
         let browser_version = self.get_browser_version();
         let browser_path = self.get_browser_path_from_version(browser_version);
 
@@ -475,11 +503,8 @@ pub trait SeleniumManager {
         ));
         let mut browser_version: Option<String> = None;
         for driver_version_command in commands.into_iter() {
-            let output = match run_shell_command_with_log(
-                self.get_logger(),
-                self.get_os(),
-                driver_version_command,
-            ) {
+            let output = match run_shell_command_with_log(self.get_logger(), driver_version_command)
+            {
                 Ok(out) => out,
                 Err(_) => continue,
             };
@@ -510,6 +535,7 @@ pub trait SeleniumManager {
         }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
+            let original_browser_path = self.get_browser_path().to_string();
             match self.discover_browser_version()? {
                 Some(discovered_version) => {
                     if !self.is_safari() {
@@ -522,6 +548,17 @@ pub trait SeleniumManager {
                     if self.is_browser_version_specific()
                         && !self.get_browser_version().eq(&discovered_version)
                     {
+                        if !original_browser_path.is_empty() {
+                            self.set_fallback_driver_from_cache(false);
+                            return Err(anyhow!(format!(
+                                "The browser at {} has version {} but {} {} was requested; \
+                                 remove --browser-path to allow a browser download",
+                                original_browser_path,
+                                discovered_version,
+                                self.get_browser_name(),
+                                self.get_browser_version(),
+                            )));
+                        }
                         download_browser = true;
                     } else {
                         let discovered_major_browser_version = self
@@ -552,6 +589,9 @@ pub trait SeleniumManager {
                                         discovered_major_browser_version,
                                     ));
                                     download_browser = true;
+                                    if self.is_avoid_browser_download() {
+                                        self.set_browser_version(discovered_major_browser_version);
+                                    }
                                 }
                             } else {
                                 self.set_browser_version(discovered_version);
@@ -566,6 +606,17 @@ pub trait SeleniumManager {
                                 discovered_major_browser_version,
                                 major_browser_version,
                             ));
+                            if !original_browser_path.is_empty() {
+                                self.set_fallback_driver_from_cache(false);
+                                return Err(anyhow!(format!(
+                                    "The browser at {} has version {} but {} {} was requested; \
+                                     remove --browser-path to allow a browser download",
+                                    original_browser_path,
+                                    discovered_version,
+                                    self.get_browser_name(),
+                                    self.get_browser_version(),
+                                )));
+                            }
                             download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);
@@ -673,13 +724,11 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        let driver_version_command = Command::new_single(format_three_args(
-            DASH_DASH_VERSION,
+        let driver_version_command = Command::new(
             self.get_driver_name(),
-            "",
-            "",
-        ));
-        match run_shell_command_by_os(self.get_os(), driver_version_command) {
+            vec![String::from(DASH_DASH_VERSION)],
+        );
+        match run_shell_command(driver_version_command) {
             Ok(output) => {
                 let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -710,8 +759,8 @@ pub trait SeleniumManager {
     fn is_windows_admin(&self) -> bool {
         let os = self.get_os();
         if WINDOWS.is(os) {
-            let command = Command::new_single(WINDOWS_CHECK_ADMIN_COMMAND.to_string());
-            let output = run_shell_command_by_os(os, command).unwrap_or_default();
+            let command = Command::new("net", vec![String::from("session")]);
+            let output = run_shell_command(command).unwrap_or_default();
             !output.is_empty() && !output.contains("error") && !output.contains("not recognized")
         } else {
             false
@@ -743,7 +792,8 @@ pub trait SeleniumManager {
     }
 
     fn is_webview2(&self) -> bool {
-        self.get_browser_name().eq(WEBVIEW2_NAME)
+        // Browser selection matches case-insensitively but keeps the original casing (e.g. "WebView2").
+        self.get_browser_name().eq_ignore_ascii_case(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
@@ -813,6 +863,10 @@ pub trait SeleniumManager {
 
     fn is_browser_version_specific(&self) -> bool {
         self.is_version_specific(self.get_browser_version())
+    }
+
+    fn is_driver_version_specific(&self) -> bool {
+        self.is_version_specific(self.get_driver_version())
     }
 
     fn setup(&mut self) -> Result<PathBuf, Error> {
@@ -917,6 +971,14 @@ pub trait SeleniumManager {
                     self.get_driver_name(),
                     self.get_driver_version()
                 ));
+                let cache_path = self.get_cache_path()?;
+                let mut metadata = get_metadata(self.get_logger(), &cache_path);
+                update_cached_asset(
+                    &mut metadata.cached_assets,
+                    self.get_driver_name(),
+                    self.get_driver_version(),
+                );
+                write_metadata(&metadata, self.get_logger(), cache_path);
             }
         } else if !self.is_safari() {
             // If driver is not in the cache, download it
@@ -966,7 +1028,7 @@ pub trait SeleniumManager {
         is_driver_in_path: &bool,
         err: Error,
     ) -> Result<(), Error> {
-        if *is_driver_in_path {
+        if *is_driver_in_path && self.is_fallback_driver_from_cache() {
             self.get_logger().debug_or_warn(
                 format!("Exception managing {}: {}", self.get_browser_name(), err),
                 self.is_offline(),
@@ -1081,10 +1143,6 @@ pub trait SeleniumManager {
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Error> {
         get_index_version(full_version, 0)
-    }
-
-    fn get_minor_version(&self, full_version: &str) -> Result<String, Error> {
-        get_index_version(full_version, 1)
     }
 
     fn get_selenium_release_version(&self) -> Result<String, Error> {
@@ -1206,35 +1264,22 @@ pub trait SeleniumManager {
                 return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {
-                let reg_command =
-                    Command::new_multiple(vec!["REG", "QUERY", reg_key, "/v", reg_version_arg]);
+                let reg_command = Command::new(
+                    "REG",
+                    vec![
+                        String::from("QUERY"),
+                        reg_key.to_string(),
+                        String::from("/v"),
+                        reg_version_arg.to_string(),
+                    ],
+                );
                 commands.push(reg_command);
             }
         } else if !escaped_browser_path.is_empty() {
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                "",
-                &escaped_browser_path,
-                "",
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                DOUBLE_QUOTE,
-                &browser_path,
-                DOUBLE_QUOTE,
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                SINGLE_QUOTE,
-                &browser_path,
-                SINGLE_QUOTE,
-            )));
-            commands.push(Command::new_single(format_three_args(
-                cmd_version_arg,
-                "",
-                &browser_path,
-                "",
-            )));
+            commands.push(Command::new(
+                escaped_browser_path,
+                vec![cmd_version_arg.to_string()],
+            ));
         }
 
         Ok(self.detect_browser_version(commands))
@@ -1252,7 +1297,14 @@ pub trait SeleniumManager {
             }
         }
         if MACOS.is(self.get_os()) {
-            let plist_command = Command::new_single(format_one_arg(PLIST_COMMAND, &browser_path));
+            let plist_command = Command::new(
+                "/usr/libexec/PlistBuddy",
+                vec![
+                    String::from("-c"),
+                    String::from("print :CFBundleShortVersionString"),
+                    format!("{}/Contents/Info.plist", browser_path),
+                ],
+            );
             commands.push(plist_command);
         } else {
             return Ok(None);
@@ -1303,11 +1355,16 @@ pub trait SeleniumManager {
         } else {
             format!(" {}", browser_version)
         };
-        Err(anyhow!(format_two_args(
+        let mut message = format_two_args(
             error_message,
             self.get_browser_name(),
             &browser_version_label,
-        )))
+        );
+        let versions_url = self.get_browser_versions_url();
+        if !versions_url.is_empty() {
+            message = format!("{}. Check available versions at {}", message, versions_url);
+        }
+        Err(anyhow!(message))
     }
 
     // ----------------------------------------------------------
@@ -1485,16 +1542,6 @@ pub trait SeleniumManager {
 
         if path.exists() {
             escaped_path = self.canonicalize_path(path.to_path_buf());
-            if WINDOWS.is(self.get_os()) {
-                escaped_path = escaped_path.replace('\\', "\\\\");
-            } else {
-                let escape_command =
-                    Command::new_single(format_one_arg(ESCAPE_COMMAND, escaped_path.as_str()));
-                escaped_path = run_shell_command("bash", "-c", escape_command).unwrap_or_default();
-                if escaped_path.is_empty() {
-                    escaped_path = string_path.clone();
-                }
-            }
         }
         if !string_path.eq(&escaped_path) {
             self.get_logger().trace(format!(
@@ -1718,15 +1765,203 @@ pub fn clear_cache(log: &Logger, path: &str) {
     }
 }
 
+/// Removes cached driver and browser binaries whose `last_used` timestamp (tracked in the
+/// `cached_assets` section of the metadata) is older than `ttl_days` days.
+///
+/// `cached_assets` is intentionally separate from the TTL-based `drivers`/`browsers` entries
+/// so that usage history survives beyond the short version-discovery TTL (default: 1 hour).
+/// This prevents binaries from escaping pruning just because their metadata entry was already
+/// flushed by a routine write for a different driver or browser.
+pub fn prune_old_cache_entries(log: &Logger, cache_path: &str, ttl_days: u64) {
+    let cache = Path::new(cache_path);
+    if !cache.exists() {
+        return;
+    }
+    let cache_path_buf = cache.to_path_buf();
+    let mut metadata = get_metadata(log, &Some(cache_path_buf.clone()));
+    let cutoff = now_unix_timestamp().saturating_sub(ttl_days * 24 * 3600);
+
+    let old_assets: Vec<(String, String)> = metadata
+        .cached_assets
+        .iter()
+        .filter(|a| a.last_used < cutoff)
+        .map(|a| (a.asset_name.clone(), a.asset_version.clone()))
+        .collect();
+
+    if old_assets.is_empty() {
+        return;
+    }
+
+    for (name, version) in &old_assets {
+        delete_cached_asset(log, cache, name, version);
+    }
+
+    metadata.cached_assets.retain(|a| a.last_used >= cutoff);
+    write_metadata(&metadata, log, Some(cache_path_buf));
+}
+
+fn delete_cached_asset(log: &Logger, cache: &Path, asset_name: &str, asset_version: &str) {
+    let asset_dir = cache.join(asset_name);
+    if !asset_dir.exists() {
+        return;
+    }
+    let to_remove: Vec<PathBuf> = WalkDir::new(&asset_dir)
+        .min_depth(1)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir() && e.file_name().to_str() == Some(asset_version))
+        .map(|e| e.path().to_path_buf())
+        .collect();
+
+    for path in to_remove {
+        log.debug(format!("Removing old cache entry: {}", path.display()));
+        fs::remove_dir_all(&path).unwrap_or_else(|err| {
+            log.warn(format!(
+                "The cache entry {} cannot be removed: {}",
+                path.display(),
+                err
+            ))
+        });
+        // Remove any ancestor directories that are now empty, up to (not including) the cache root
+        let mut parent = path.parent();
+        while let Some(dir) = parent {
+            if dir == cache {
+                break;
+            }
+            if fs::read_dir(dir)
+                .map(|mut d| d.next().is_none())
+                .unwrap_or(false)
+            {
+                let _ = fs::remove_dir(dir);
+            } else {
+                break;
+            }
+            parent = dir.parent();
+        }
+    }
+}
+
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
+    // Ensure the ring provider is installed. Returns Err if already set, which
+    // is fine — we just need it present before ClientBuilder::build() runs.
+    let _ = rustls::crypto::ring::default_provider().install_default();
     let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
     Ok(client_builder.build().unwrap_or_default())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::logger::Logger;
+    use crate::metadata::{CachedAsset, Metadata, write_metadata};
+
+    #[test]
+    fn get_escaped_path_returns_canonical_path_without_shell_escaping() {
+        let tmp = tempfile::tempdir().unwrap();
+        let folder = tmp.path().join("space dir");
+        std::fs::create_dir(&folder).unwrap();
+
+        let manager = crate::chrome::ChromeManager::new().unwrap();
+        let escaped = manager.get_escaped_path(folder.to_string_lossy().to_string());
+
+        assert_eq!(escaped, manager.canonicalize_path(folder));
+    }
+
+    #[test]
+    fn prune_cache_entries_removes_old_driver_entries() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path();
+        let log = Logger::new();
+
+        let version_dir = cache
+            .join("chromedriver")
+            .join("linux")
+            .join("x86_64")
+            .join("120.0.6099.109");
+        fs::create_dir_all(&version_dir).unwrap();
+        fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
+
+        // last_used more than 30 days ago; no TTL-based driver entry (simulates what happens
+        // after the TTL entry has been flushed by a subsequent write for a different driver)
+        let old_last_used = now_unix_timestamp().saturating_sub(31 * 24 * 3600);
+        let metadata = Metadata {
+            browsers: vec![],
+            drivers: vec![],
+            stats: vec![],
+            cached_assets: vec![CachedAsset {
+                asset_name: "chromedriver".to_string(),
+                asset_version: "120.0.6099.109".to_string(),
+                last_used: old_last_used,
+            }],
+        };
+        write_metadata(&metadata, &log, Some(cache.to_path_buf()));
+
+        prune_old_cache_entries(&log, cache.to_str().unwrap(), 30);
+
+        assert!(
+            !version_dir.exists(),
+            "Version directory should be removed when last_used is older than ttl_days"
+        );
+        assert!(
+            !cache.join("chromedriver").exists(),
+            "Empty parent directories should be cleaned up"
+        );
+        let updated = get_metadata(&log, &Some(cache.to_path_buf()));
+        assert!(
+            updated.cached_assets.is_empty(),
+            "Stale cached_assets entry should be removed"
+        );
+    }
+
+    #[test]
+    fn prune_cache_entries_keeps_recent_driver_entries() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path();
+        let log = Logger::new();
+
+        let version_dir = cache
+            .join("chromedriver")
+            .join("linux")
+            .join("x86_64")
+            .join("130.0.6723.91");
+        fs::create_dir_all(&version_dir).unwrap();
+        fs::write(version_dir.join("chromedriver"), b"fake binary").unwrap();
+
+        let metadata = Metadata {
+            browsers: vec![],
+            drivers: vec![],
+            stats: vec![],
+            cached_assets: vec![CachedAsset {
+                asset_name: "chromedriver".to_string(),
+                asset_version: "130.0.6723.91".to_string(),
+                last_used: now_unix_timestamp(),
+            }],
+        };
+        write_metadata(&metadata, &log, Some(cache.to_path_buf()));
+
+        prune_old_cache_entries(&log, cache.to_str().unwrap(), 30);
+
+        assert!(
+            version_dir.exists(),
+            "Version directory should be kept when last_used is within ttl_days"
+        );
+        let updated = get_metadata(&log, &Some(cache.to_path_buf()));
+        assert!(
+            !updated.cached_assets.is_empty(),
+            "Recent cached_assets entry should be retained"
+        );
+    }
+
+    #[test]
+    fn prune_cache_entries_handles_missing_cache() {
+        let log = Logger::new();
+        prune_old_cache_entries(&log, "/nonexistent/path/that/does/not/exist", 30);
+    }
 }
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
@@ -1744,14 +1979,62 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg3, 1)
 }
 
+pub fn format_four_args(string: &str, arg1: &str, arg2: &str, arg3: &str, arg4: &str) -> String {
+    string
+        .replacen("{}", arg1, 1)
+        .replacen("{}", arg2, 1)
+        .replacen("{}", arg3, 1)
+        .replacen("{}", arg4, 1)
+}
+
 // ----------------------------------------------------------
 // Private functions
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+#[cfg(test)]
+mod index_version_tests {
+    use super::*;
+
+    #[test]
+    fn get_index_version_major() {
+        assert_eq!(get_index_version("120.0.6099.109", 0).unwrap(), "120");
+    }
+
+    #[test]
+    fn get_index_version_minor() {
+        assert_eq!(get_index_version("120.0.6099.109", 1).unwrap(), "0");
+    }
+
+    #[test]
+    fn get_index_version_patch() {
+        assert_eq!(get_index_version("120.0.6099.109", 2).unwrap(), "6099");
+    }
+
+    #[test]
+    fn get_index_version_single_component() {
+        assert_eq!(get_index_version("115", 0).unwrap(), "115");
+    }
+
+    #[test]
+    fn get_index_version_out_of_bounds_errors() {
+        let result = get_index_version("115", 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_index_version_empty_string_errors() {
+        let result = get_index_version("", 0);
+        assert!(result.is_err());
+    }
 }

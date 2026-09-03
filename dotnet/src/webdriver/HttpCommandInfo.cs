@@ -51,8 +51,10 @@ public class HttpCommandInfo : CommandInfo
     /// <exception cref="ArgumentNullException">If <paramref name="method"/> or <paramref name="resourcePath"/> are <see langword="null"/>.</exception>
     public HttpCommandInfo(string method, string resourcePath)
     {
-        this.ResourcePath = resourcePath ?? throw new ArgumentNullException(nameof(resourcePath));
-        this.Method = method ?? throw new ArgumentNullException(nameof(method));
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullException.ThrowIfNull(resourcePath);
+        this.ResourcePath = resourcePath;
+        this.Method = method;
     }
 
     /// <summary>

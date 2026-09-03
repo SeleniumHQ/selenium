@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.HasAuthentication;
@@ -45,8 +43,6 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
@@ -54,7 +50,6 @@ import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.EventType;
@@ -85,12 +80,10 @@ public class ChromiumDriver extends RemoteWebDriver
       name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
-  private final Capabilities capabilities;
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
   private final Optional<DevTools> devTools;
-  private final Optional<BiDi> biDi;
 
   /**
    * May be null when the driver does not support casting; initialized during setup if available.
@@ -121,22 +114,6 @@ public class ChromiumDriver extends RemoteWebDriver
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
 
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
-
-    Optional<URI> biDiUri =
-        webSocketUrl.map(
-            uri -> {
-              try {
-                return new URI(uri);
-              } catch (URISyntaxException e) {
-                LOG.warning(e.getMessage());
-              }
-              return null;
-            });
-
-    this.biDi = createBiDi(biDiUri, clientConfig);
-
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
     Optional<HttpClient> client =
@@ -163,22 +140,7 @@ public class ChromiumDriver extends RemoteWebDriver
     }
 
     CdpInfo cdpInfo =
-        new CdpVersionFinder()
-            .match(originalCapabilities.getBrowserVersion())
-            .orElseGet(
-                () -> {
-                  LOG.warning(
-                      String.format(
-                          "Unable to find version of CDP to use for %s. You may need to include a"
-                              + " dependency on a specific version of the CDP using something"
-                              + " similar to `org.seleniumhq.selenium:selenium-devtools-v86:%s`"
-                              + " where the version (\"v86\") matches the version of the"
-                              + " chromium-based browser you're using and the version number of the"
-                              + " artifact is the same as Selenium's.",
-                          originalCapabilities.getBrowserVersion(),
-                          new BuildInfo().getReleaseLabel()));
-                  return new NoOpCdpInfo();
-                });
+        new CdpVersionFinder().findMatchingVersion(originalCapabilities.getBrowserVersion());
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
@@ -312,33 +274,6 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public Optional<DevTools> maybeGetDevTools() {
     return devTools;
-  }
-
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
-    if (biDiUri.isEmpty()) {
-      return Optional.empty();
-    }
-
-    URI wsUri =
-        biDiUri.orElseThrow(
-            () ->
-                new BiDiException(
-                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
-                        + " capability is set."));
-
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    org.openqa.selenium.bidi.Connection biDiConnection =
-        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-    return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
-  }
-
-  @Override
-  public Optional<BiDi> maybeGetBiDi() {
-    return biDi;
   }
 
   @Override

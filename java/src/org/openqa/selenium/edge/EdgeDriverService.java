@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.internal.Debug;
@@ -100,7 +101,7 @@ public class EdgeDriverService extends DriverService {
   public EdgeDriverService(
       @Nullable File executable,
       int port,
-      @Nullable Duration timeout,
+      Duration timeout,
       @Nullable List<String> args,
       @Nullable Map<String, String> environment)
       throws IOException {
@@ -297,6 +298,11 @@ public class EdgeDriverService extends DriverService {
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
       args.add(String.format(Locale.ROOT, "--port=%d", getPort()));
+      // yes, it is --enable-chrome-logs, even on msedgedriver; --enable-logging=stderr fails to
+      // launch the browser on Windows, and would override a user's CHROME_LOG_FILE; skip it then.
+      if (!Platform.getCurrent().is(Platform.WINDOWS) && System.getenv("CHROME_LOG_FILE") == null) {
+        args.add("--enable-chrome-logs");
+      }
 
       // Readable timestamp and append logs only work if log path is specified in args
       // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
@@ -335,7 +341,7 @@ public class EdgeDriverService extends DriverService {
     protected EdgeDriverService createDriverService(
         @Nullable File exe,
         int port,
-        @Nullable Duration timeout,
+        Duration timeout,
         @Nullable List<String> args,
         @Nullable Map<String, String> environment) {
       try {

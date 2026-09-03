@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.NodeSessionFactoryProvider;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
@@ -69,6 +70,7 @@ public class LocalNodeFactory {
                 serverOptions.getExternalUri(),
                 nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
                 secretOptions.getRegistrationSecret())
+            .gridUrlSpecified(nodeOptions.getPublicGridUri().isPresent())
             .maximumConcurrentSessions(nodeOptions.getMaxSessions())
             .sessionTimeout(sessionTimeout)
             .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
@@ -116,6 +118,22 @@ public class LocalNodeFactory {
                     String.format(
                         "Extension %s is on the classpath but not enabled by configuration",
                         providerName));
+              }
+            });
+
+    ServiceLoader.load(NodeCommandInterceptor.class)
+        .forEach(
+            interceptor -> {
+              String interceptorName = interceptor.getClass().getName();
+              if (interceptor.isEnabled(config)) {
+                LOG.info(String.format("Loading command interceptor from %s", interceptorName));
+                interceptor.initialize(config, eventOptions.getEventBus());
+                builder.addInterceptor(interceptor);
+              } else {
+                LOG.fine(
+                    String.format(
+                        "Interceptor %s is on the classpath but not enabled by configuration",
+                        interceptorName));
               }
             });
 

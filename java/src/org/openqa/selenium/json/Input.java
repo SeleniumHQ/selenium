@@ -29,8 +29,13 @@ import org.openqa.selenium.internal.Require;
  * read characters in the input buffer.
  */
 class Input {
-  /** end-of-file indicator (0xFFFD) */
-  public static final char EOF = (char) -1; // NOTE: Produces Unicode replacement character (0xFFFD)
+  /**
+   * End-of-input sentinel returned by {@link #peek()} and {@link #read()}.
+   *
+   * <p>Value {@code -1} mirrors {@link java.io.Reader#read()} and — unlike a {@code char} sentinel
+   * — cannot collide with any valid UTF-16 code unit (including U+FFFF).
+   */
+  public static final int EOF = -1;
 
   /** the number of chars to buffer */
   private static final int BUFFER_SIZE = 4096;
@@ -64,18 +69,20 @@ class Input {
   /**
    * Extract the next character from the input without consuming it.
    *
-   * @return the next input character; {@link #EOF} if input is exhausted
+   * @return the next input character as an unsigned UTF-16 code unit (0-65535); {@link #EOF} if
+   *     input is exhausted
    */
-  public char peek() {
+  public int peek() {
     return fill() ? buffer[position + 1] : EOF;
   }
 
   /**
    * Read and consume the next character from the input.
    *
-   * @return the next input character; {@link #EOF} if input is exhausted
+   * @return the next input character as an unsigned UTF-16 code unit (0-65535); {@link #EOF} if
+   *     input is exhausted
    */
-  public char read() {
+  public int read() {
     return fill() ? buffer[++position] : EOF;
   }
 

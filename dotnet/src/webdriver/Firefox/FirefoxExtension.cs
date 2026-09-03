@@ -29,6 +29,7 @@ namespace OpenQA.Selenium.Firefox;
 /// <summary>
 /// Provides the ability to install extensions into a <see cref="FirefoxProfile"/>.
 /// </summary>
+[Obsolete("Use FirefoxDriver.InstallAddOnFromFile instead.")]
 public class FirefoxExtension
 {
     private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#";
@@ -47,7 +48,8 @@ public class FirefoxExtension
     /// <exception cref="ArgumentNullException">If <paramref name="fileName"/> is <see langword="null"/>.</exception>
     public FirefoxExtension(string fileName)
     {
-        this.extensionFileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+        ArgumentNullException.ThrowIfNull(fileName);
+        this.extensionFileName = fileName;
     }
 
     /// <summary>

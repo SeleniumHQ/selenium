@@ -24,9 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -51,7 +56,10 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.BaseActiveSession;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -425,6 +433,278 @@ class LocalNodeTest {
     assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
     assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
         .isEqualTo("файл+with+tähtedega.png");
+  }
+
+  @Test
+  void commandInterceptorIsCalledForEachWebDriverCommand() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> interceptedCommands = new ArrayList<>();
+
+    LocalNode nodeWithInterceptor =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(
+                new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+                  @Override
+                  public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+                    return true;
+                  }
+
+                  @Override
+                  public void initialize(
+                      org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+                  @Override
+                  public HttpResponse intercept(
+                      SessionId id, HttpRequest req, Callable<HttpResponse> next) throws Exception {
+                    interceptedCommands.add(req.getMethod() + " " + req.getUri());
+                    return next.call();
+                  }
+                })
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptor.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+
+    SessionId sessionId = response.right().getSession().getId();
+    nodeWithInterceptor.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(interceptedCommands).hasSize(1);
+    assertThat(interceptedCommands.get(0)).contains("/title");
+  }
+
+  @Test
+  void multipleInterceptorsAreChainedOuterToInner() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    List<String> callOrder = new ArrayList<>();
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor outer =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("outer-before");
+            HttpResponse resp = next.call();
+            callOrder.add("outer-after");
+            return resp;
+          }
+        };
+
+    org.openqa.selenium.grid.node.NodeCommandInterceptor inner =
+        new org.openqa.selenium.grid.node.NodeCommandInterceptor() {
+          @Override
+          public boolean isEnabled(org.openqa.selenium.grid.config.Config config) {
+            return true;
+          }
+
+          @Override
+          public void initialize(org.openqa.selenium.grid.config.Config config, EventBus bus) {}
+
+          @Override
+          public HttpResponse intercept(SessionId id, HttpRequest req, Callable<HttpResponse> next)
+              throws Exception {
+            callOrder.add("inner-before");
+            HttpResponse resp = next.call();
+            callOrder.add("inner-after");
+            return resp;
+          }
+        };
+
+    LocalNode nodeWithInterceptors =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .add(
+                stereotype,
+                new TestSessionFactory(
+                    (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+            .addInterceptor(outer)
+            .addInterceptor(inner)
+            .build();
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        nodeWithInterceptors.newSession(
+            new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
+    assertThat(response.isRight()).isTrue();
+    SessionId sessionId = response.right().getSession().getId();
+
+    nodeWithInterceptors.executeWebDriverCommand(
+        new HttpRequest(GET, "/session/" + sessionId + "/title"));
+
+    assertThat(callOrder)
+        .containsExactly("outer-before", "inner-before", "inner-after", "outer-after");
+  }
+
+  @Test
+  void uploadFileIsForwardedWhenSessionUsesRemoteFileSystem() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    RecordingSessionFactory factory = new RecordingSessionFactory(uri, caps, true);
+    LocalNode remoteFsNode =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret).add(caps, factory).build();
+
+    SessionId id = createSession(remoteFsNode, caps);
+
+    HttpRequest uploadReq = new HttpRequest(POST, "/session/" + id + "/se/file");
+    HttpResponse response = remoteFsNode.uploadFile(uploadReq, id);
+
+    // The command must be forwarded to the session (browser environment) rather than written to the
+    // Node's own filesystem. Docker and Kubernetes sessions both report a remote filesystem.
+    assertThat(factory.session.lastRequest).isNotNull();
+    assertThat(factory.session.lastRequest.getUri()).isEqualTo("/session/" + id + "/se/file");
+    assertThat(response.getHeader("X-Forwarded")).isEqualTo("true");
+  }
+
+  @Test
+  void downloadFileIsForwardedWhenSessionUsesRemoteFileSystem() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    RecordingSessionFactory factory = new RecordingSessionFactory(uri, caps, true);
+    LocalNode remoteFsNode =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret).add(caps, factory).build();
+
+    SessionId id = createSession(remoteFsNode, caps);
+
+    HttpRequest downloadReq = new HttpRequest(GET, "/session/" + id + "/se/files");
+    HttpResponse response = remoteFsNode.downloadFile(downloadReq, id);
+
+    assertThat(factory.session.lastRequest).isNotNull();
+    assertThat(factory.session.lastRequest.getUri()).isEqualTo("/session/" + id + "/se/files");
+    assertThat(response.getHeader("X-Forwarded")).isEqualTo("true");
+  }
+
+  @Test
+  void fileCommandsAreHandledLocallyForSessionsSharingTheNodeFilesystem()
+      throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:1234");
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    // A plain session (e.g. a static Grid Node) shares the Node's filesystem, so file commands are
+    // handled locally and are never forwarded to the session.
+    RecordingSessionFactory factory = new RecordingSessionFactory(uri, caps, false);
+    LocalNode localFsNode =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret).add(caps, factory).build();
+
+    SessionId id = createSession(localFsNode, caps);
+
+    // Managed downloads are disabled, so a local download attempt fails here instead of forwarding.
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(
+            () ->
+                localFsNode.downloadFile(new HttpRequest(GET, "/session/" + id + "/se/files"), id))
+        .withMessageContaining("enable-managed-downloads");
+    assertThat(factory.session.lastRequest).isNull();
+  }
+
+  private static SessionId createSession(LocalNode node, Capabilities caps) {
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
+    if (response.isLeft()) {
+      throw new AssertionError("Unable to create session: " + response.left().getMessage());
+    }
+    return response.right().getSession().getId();
+  }
+
+  /**
+   * An {@link ActiveSession} that records the last request it was asked to execute, so tests can
+   * assert whether a file command was forwarded to the session. Its {@link #isRemoteFileSystem()}
+   * value is configurable to emulate both remote (Docker/Kubernetes) and local (static Grid Node)
+   * sessions.
+   */
+  private static class RecordingActiveSession extends BaseActiveSession {
+    private final boolean remoteFileSystem;
+    private volatile HttpRequest lastRequest;
+
+    RecordingActiveSession(
+        SessionId id,
+        URL url,
+        Capabilities stereotype,
+        Capabilities capabilities,
+        boolean remoteFileSystem) {
+      super(id, url, W3C, W3C, stereotype, capabilities, Instant.now());
+      this.remoteFileSystem = remoteFileSystem;
+    }
+
+    @Override
+    public boolean isRemoteFileSystem() {
+      return remoteFileSystem;
+    }
+
+    @Override
+    public void stop() {
+      // Do nothing.
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      this.lastRequest = req;
+      return new HttpResponse().setHeader("X-Forwarded", "true");
+    }
+  }
+
+  private static class RecordingSessionFactory implements SessionFactory {
+    private final URI uri;
+    private final Capabilities stereotype;
+    private final boolean remoteFileSystem;
+    private volatile RecordingActiveSession session;
+
+    RecordingSessionFactory(URI uri, Capabilities stereotype, boolean remoteFileSystem) {
+      this.uri = uri;
+      this.stereotype = ImmutableCapabilities.copyOf(stereotype);
+      this.remoteFileSystem = remoteFileSystem;
+    }
+
+    @Override
+    public Capabilities getStereotype() {
+      return stereotype;
+    }
+
+    @Override
+    public boolean test(Capabilities capabilities) {
+      return true;
+    }
+
+    @Override
+    public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
+      SessionId id = new SessionId(UUID.randomUUID());
+      URL url;
+      try {
+        url = uri.toURL();
+      } catch (MalformedURLException e) {
+        throw new UncheckedIOException(e);
+      }
+      RecordingActiveSession created =
+          new RecordingActiveSession(
+              id, url, stereotype, sessionRequest.getDesiredCapabilities(), remoteFileSystem);
+      this.session = created;
+      return Either.right(created);
+    }
   }
 
   private void waitUntilNodeStopped(SessionId sessionId) {

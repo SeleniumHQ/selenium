@@ -54,6 +54,7 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLContext;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -109,20 +110,10 @@ public class JdkHttpClient implements HttpClient {
             .executor(executorService);
 
     Credentials credentials = config.credentials();
-    String info = config.baseUri().getUserInfo();
+    URI baseUri = config.baseUri();
+    String info = baseUri != null ? baseUri.getUserInfo() : null;
     if (info != null && !info.trim().isEmpty()) {
-      String[] parts = info.split(":", 2);
-      String username = parts[0];
-      String password = parts.length > 1 ? parts[1] : null;
-
-      Authenticator authenticator =
-          new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-              return new PasswordAuthentication(username, password.toCharArray());
-            }
-          };
-      builder = builder.authenticator(authenticator);
+      builder = builder.authenticator(new PasswordAuthenticator(info));
     } else if (credentials != null) {
       if (!(credentials instanceof UsernameAndPassword)) {
         throw new IllegalArgumentException(
@@ -158,6 +149,11 @@ public class JdkHttpClient implements HttpClient {
     this.client = builder.build();
   }
 
+  /** Will expose the underlying native HttpClient used. */
+  public java.net.http.HttpClient client() {
+    return client;
+  }
+
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
     URI uri;
@@ -165,7 +161,11 @@ public class JdkHttpClient implements HttpClient {
     try {
       uri = getWebSocketUri(request);
     } catch (URISyntaxException e) {
-      throw new ConnectionFailedException("JdkWebSocket initial request execution error", e);
+      String message =
+          String.format(
+              "JdkWebSocket initial request execution error (uri: %s)",
+              maskUrlCredentials(messages.getRawUri(request)));
+      throw new ConnectionFailedException(message, e);
     }
 
     java.net.http.WebSocket.Builder builder = client.newWebSocketBuilder();
@@ -182,6 +182,7 @@ public class JdkHttpClient implements HttpClient {
                   final StringBuilder builder = new StringBuilder();
                   final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onText(
                       java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
@@ -201,6 +202,7 @@ public class JdkHttpClient implements HttpClient {
                     return null;
                   }
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onBinary(
                       java.net.http.WebSocket webSocket, ByteBuffer data, boolean last) {
@@ -226,6 +228,7 @@ public class JdkHttpClient implements HttpClient {
                     return null;
                   }
 
+                  @Nullable
                   @Override
                   public CompletionStage<?> onClose(
                       java.net.http.WebSocket webSocket, int statusCode, String reason) {
@@ -252,13 +255,20 @@ public class JdkHttpClient implements HttpClient {
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
       throw new ConnectionFailedException(
-          "JdkWebSocket initial request execution error", (cause != null) ? cause : e);
+          String.format(
+              "JdkWebSocket initial request execution error (uri: %s)", maskUrlCredentials(uri)),
+          (cause != null) ? cause : e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new ConnectionFailedException("JdkWebSocket initial request interrupted", e);
+      throw new ConnectionFailedException(
+          String.format(
+              "JdkWebSocket initial request interrupted (uri: %s)", maskUrlCredentials(uri)),
+          e);
     } catch (java.util.concurrent.TimeoutException e) {
       webSocketCompletableFuture.cancel(true);
-      throw new ConnectionFailedException("JdkWebSocket initial request timeout", e);
+      throw new ConnectionFailedException(
+          String.format("JdkWebSocket initial request timeout (uri: %s)", maskUrlCredentials(uri)),
+          e);
     }
 
     WebSocket websocket =
@@ -519,7 +529,7 @@ public class JdkHttpClient implements HttpClient {
     return String.format("%s %s", method, uri);
   }
 
-  static String maskUrlCredentials(String uri) {
+  public static String maskUrlCredentials(String uri) {
     try {
       return maskUrlCredentials(new URI(uri));
     } catch (URISyntaxException invalidUri) {
@@ -527,7 +537,7 @@ public class JdkHttpClient implements HttpClient {
     }
   }
 
-  private static String maskUrlCredentials(URI u) {
+  public static String maskUrlCredentials(URI u) {
     if (u.getUserInfo() == null) {
       return u.toString();
     }
@@ -624,9 +634,6 @@ public class JdkHttpClient implements HttpClient {
 
     @Override
     public List<Proxy> select(URI uri) {
-      if (proxy == null) {
-        return List.of();
-      }
       if (uri.getScheme().toLowerCase(Locale.ENGLISH).startsWith("http")) {
         return List.of(proxy);
       }

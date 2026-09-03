@@ -16,9 +16,20 @@
 # under the License.
 """The By implementation."""
 
+from __future__ import annotations
+
 from typing import Literal
 
-ByType = Literal["id", "xpath", "link text", "partial link text", "name", "tag name", "class name", "css selector"]
+ByType = Literal[
+    "id",
+    "xpath",
+    "link text",
+    "partial link text",
+    "name",
+    "tag name",
+    "class name",
+    "css selector",
+]
 
 
 class By:

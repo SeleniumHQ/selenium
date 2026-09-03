@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
@@ -76,7 +77,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       LOG.log(
           Level.FINER,
           "Decoding response (status was: {0}, content type: {1}, content length: {2})",
-          new Object[] {
+          new @Nullable Object[] {
             encodedResponse.getStatus(),
             encodedResponse.getContentType(),
             encodedResponse.getContentLength()
@@ -167,11 +168,12 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       }
     }
 
-    if (response.getValue() instanceof String) {
+    Object value = response.getValue();
+    if (value instanceof String) {
       // We normalise to \n because Java will translate this to \r\n
       // if this is suitable on our platform, and if we have \r\n, java will
       // turn this into \r\r\n, which would be Bad!
-      response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
+      response.setValue(((String) value).replace("\r\n", "\n"));
     }
 
     return response;

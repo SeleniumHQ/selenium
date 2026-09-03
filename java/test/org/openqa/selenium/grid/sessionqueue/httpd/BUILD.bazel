@@ -1,0 +1,18 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*.java"]),
+    javacopts = [
+        "--release",
+        TOOLS_JAVA_VERSION,
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
+        artifact("org.assertj:assertj-core"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)

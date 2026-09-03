@@ -84,7 +84,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.WebElementToJsonConverter;
@@ -95,7 +94,6 @@ import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
-@NullMarked
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
@@ -363,7 +361,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               atomFileName,
               (fileName) -> {
                 String rawFunction =
-                    resourceAsString("/org/openqa/selenium/remote/" + atomFileName);
+                    resourceAsString(getClass(), "/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");
                 return String.format(
                     "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
@@ -391,7 +389,11 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private String cssEscape(String using) {
     using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-    if (!using.isEmpty() && Character.isDigit(using.charAt(0))) {
+    // CSS only requires the leading-digit escape for ASCII 0-9; non-ASCII Unicode digits
+    // (e.g. Arabic-Indic, fullwidth) are already valid identifier-start code points and must
+    // be left untouched, or they collide with the escape for a different ASCII digit.
+    char first = using.isEmpty() ? '\0' : using.charAt(0);
+    if (first >= '0' && first <= '9') {
       using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }
     return using;

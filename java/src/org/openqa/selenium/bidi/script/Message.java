@@ -16,9 +16,9 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class Message {
   private final String channel;
   private final RemoteValue data;
@@ -28,40 +28,6 @@ public class Message {
     this.channel = channel;
     this.data = data;
     this.source = source;
-  }
-
-  public static Message fromJson(JsonInput input) {
-    String channel = null;
-    RemoteValue data = null;
-    Source source = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "channel":
-          channel = input.read(String.class);
-          break;
-
-        case "data":
-          data = input.read(RemoteValue.class);
-          break;
-
-        case "source":
-          source = input.read(Source.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-
-    input.endObject();
-
-    return new Message(
-        Require.nonNull("channel", channel),
-        Require.nonNull("data", data),
-        Require.nonNull("source", source));
   }
 
   public String getChannel() {

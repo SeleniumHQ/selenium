@@ -46,7 +46,9 @@ public interface HttpClient extends Closeable, HttpHandler {
    * @param request the HTTP request to send
    * @param handler the BodyHandler that determines how to handle the response body
    * @return a CompletableFuture containing the HTTP response
+   * @deprecated use JdkHttpClient#httpClient() instead.
    */
+  @Deprecated(forRemoval = true)
   <T> CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
       java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler);
 
@@ -59,7 +61,9 @@ public interface HttpClient extends Closeable, HttpHandler {
    * @return the HTTP response
    * @throws java.io.IOException if an I/O error occurs
    * @throws InterruptedException if the operation is interrupted
+   * @deprecated use JdkHttpClient#httpClient() instead.
    */
+  @Deprecated(forRemoval = true)
   <T> java.net.http.HttpResponse<T> sendNative(
       java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
       throws java.io.IOException, InterruptedException;

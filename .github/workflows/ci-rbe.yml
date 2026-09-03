@@ -2,9 +2,13 @@ name: CI - RBE
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/decisions/**'
   push:
     branches:
       - trunk
+  schedule:
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       disable_test_cache:
@@ -12,9 +16,10 @@ on:
         required: false
         default: false
         type: boolean
+  workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ci-rbe-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
@@ -24,11 +29,11 @@ permissions:
 jobs:
   test:
     name: Test
-    if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
+    if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests
+      cache-save: ${{ github.ref_name == 'trunk' }}
       rerun-with-debug: true
-      caching: false
-      ruby-version: jruby-10.0.0.0
-      run: ./scripts/github-actions/ci-build.sh ${{ github.event.inputs.disable_test_cache }}
+      ruby-version: jruby-10.1.0.0
+      run: ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}

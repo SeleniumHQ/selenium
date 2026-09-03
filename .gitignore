@@ -4,6 +4,7 @@ projectFilesBackup/
 .svn
 .credentials.dat
 .ijwb
+/java-libs
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
@@ -67,6 +68,13 @@ __pycache__
 .tox
 *.pyc
 dist/
+py/selenium/webdriver/common/bidi/
+# Generated internal BiDi protocol modules; the hand-written runtime beside them stays tracked.
+py/selenium/webdriver/common/_bidi/*
+!py/selenium/webdriver/common/_bidi/__init__.py
+!py/selenium/webdriver/common/_bidi/serialization.py
+!py/selenium/webdriver/common/_bidi/transport.py
+!py/selenium/webdriver/common/_bidi/domain.py
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
 py/selenium/webdriver/common/linux/
@@ -99,6 +107,9 @@ obj/
 *.aps
 launchSettings.json
 Generated/
+# Un-ignore the hand-written tests for the generated BiDi domain API (macOS
+# case-insensitive filesystem would otherwise match "Generated/" above).
+!javascript/selenium-webdriver/test/bidi/generated/
 ipch/
 /iedriver.log
 /phantomjsdriver.log
@@ -134,6 +145,7 @@ MODULE.bazel.lock
 /.vscode/
 /.scannerwork/
 /.bazelrc.local
+/.bazelbsp/
 
 # Engflow
 *.crt
@@ -144,8 +156,8 @@ dotnet-bin
 .metadata/
 .npmrc
 
-/.local/*
-!/.local/.gitkeep
+**/.local/*
+!/.local/README.md
 
 # Security
 .env
@@ -158,6 +170,9 @@ dotnet-bin
 /.cline
 /.windsurf
 /.zencoder
+AGENTS.local.md
+CLAUDE.local.md
+GEMINI.local.md
 
 # Common per-tool config/rules files people accidentally add
 /.cursorignore
@@ -168,3 +183,7 @@ dotnet-bin
 # Common generated transcripts
 *_cline_transcript.json
 .copilot-chat-history.json
+
+# Mempalace
+mempalace.yaml
+entities.json

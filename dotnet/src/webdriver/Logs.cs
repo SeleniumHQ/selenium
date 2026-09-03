@@ -35,7 +35,8 @@ public class Logs : ILogs
     /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
     public Logs(WebDriver driver)
     {
-        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentNullException.ThrowIfNull(driver);
+        this.driver = driver;
     }
 
     /// <summary>
@@ -75,10 +76,7 @@ public class Logs : ILogs
     /// <exception cref="ArgumentNullException">If <paramref name="logKind"/> is <see langword="null"/>.</exception>
     public ReadOnlyCollection<LogEntry> GetLog(string logKind)
     {
-        if (logKind is null)
-        {
-            throw new ArgumentNullException(nameof(logKind));
-        }
+        ArgumentNullException.ThrowIfNull(logKind);
 
         List<LogEntry> entries = new List<LogEntry>();
 

@@ -52,7 +52,8 @@ public class DevToolsCommandData
     {
         CommandId = commandId;
         SessionId = sessionId;
-        CommandName = commandName ?? throw new ArgumentNullException(nameof(commandName));
+        ArgumentNullException.ThrowIfNull(commandName);
+        CommandName = commandName;
         CommandParameters = commandParameters;
         SyncEvent = new ManualResetEventSlim(false);
     }

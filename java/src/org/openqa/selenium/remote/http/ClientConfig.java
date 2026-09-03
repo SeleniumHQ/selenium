@@ -24,7 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Optional;
 import javax.net.ssl.SSLContext;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.internal.Require;
 
@@ -32,14 +34,14 @@ public class ClientConfig {
 
   private static final Filter RETRY_FILTER = new RetryRequest();
   private static final Filter DEFAULT_FILTER = new AddSeleniumUserAgent();
-  private final URI baseUri;
+  private final @Nullable URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
   private final Duration wsTimeout;
   private final Filter filters;
-  private final Proxy proxy;
-  private final Credentials credentials;
-  private final SSLContext sslContext;
+  private final @Nullable Proxy proxy;
+  private final @Nullable Credentials credentials;
+  private final @Nullable SSLContext sslContext;
   private final String version;
 
   protected ClientConfig(
@@ -64,14 +66,14 @@ public class ClientConfig {
   }
 
   protected ClientConfig(
-      URI baseUri,
+      @Nullable URI baseUri,
       Duration connectionTimeout,
       Duration readTimeout,
       Duration wsTimeout,
       Filter filters,
-      Proxy proxy,
-      Credentials credentials,
-      SSLContext sslContext,
+      @Nullable Proxy proxy,
+      @Nullable Credentials credentials,
+      @Nullable SSLContext sslContext,
       String version) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
@@ -133,13 +135,19 @@ public class ClientConfig {
     }
   }
 
+  @Nullable
   public URI baseUri() {
     return baseUri;
   }
 
+  @Nullable
   public URL baseUrl() {
+    return Optional.ofNullable(baseUri()).map(this::toURL).orElse(null);
+  }
+
+  private URL toURL(URI uri) {
     try {
-      return baseUri().toURL();
+      return uri.toURL();
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }
@@ -240,6 +248,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public Proxy proxy() {
     return proxy;
   }
@@ -257,6 +266,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public Credentials credentials() {
     return credentials;
   }
@@ -274,6 +284,7 @@ public class ClientConfig {
         version);
   }
 
+  @Nullable
   public SSLContext sslContext() {
     return sslContext;
   }

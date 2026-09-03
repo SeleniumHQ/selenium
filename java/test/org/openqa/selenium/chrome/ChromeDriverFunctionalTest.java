@@ -39,6 +39,7 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -126,7 +127,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
                         + "name: arguments[0]"
                         + "}));",
                     permission);
-    return result.get("state").toString();
+    return Require.nonNull("Result", result).get("state").toString();
   }
 
   @Test

@@ -1,3 +1,57 @@
+Selenium 4.48.0
+* Support CDP versions: v150, v151, v152
+* fix W3C capabilities built from a list of options (create_matches) (#17897)
+* generate the internal BiDi protocol layer from the shared binding-neutral schema (#17761)
+* update new BiDi layer generation to conform to latest proposed ADR (#17942)
+
+Selenium 4.47.0
+* Support CDP versions: v149, v150, v151
+* Fix default command_executor URL in RemoteWebDriver docstring (#17803)
+* [grid] honor client-advertised se:remoteUrl for reachable BiDi/CDP/VNC URLs (#17790)
+* prevent CDP access with Firefox (#17849)
+* pass --enable-chrome-logs unless CHROME_LOG_FILE is set (#17858)
+* accept By in find_element/find_elements type hints (#17870)
+* fix no_proxy matching so empty entries and substrings do not bypass the proxy (#17884)
+* Ensure driver service subprocess resources are cleaned up (#17889)
+
+Selenium 4.46.0
+* Support CDP versions: v148, v149, v150
+* [build] add copyright headers to rbs, pyi, ts, mjs, and erb files (#17720)
+* Route Safari, STP and WebView2 to their handlers (#17728)
+* Fix example WebDriverWait import in docstring (#17735)
+
+Selenium 4.45.0
+* Support CDP versions: v147, v148, v149
+* Allow MAX_WS_MESSAGE_SIZE to be configurable (#17581)
+* Extract feature-specific modules from //py:common  (#17606)
+* [build] use pinned browser and driver for starting grid in python and ruby tests (#17610)
+* Extract alert and color into dedicated libraries  (#17611)
+* [bidi]: close BiDi websocket on `quit()` (#17663)
+* terminate driver service process when start() fails to connect (#17651)
+
+Selenium 4.44.0
+* Support CDP versions: v146, v147, v148
+* CDDL 2 Python generator (#16914)
+* Use generated Bidi files instead of hand curated ones (#17266)
+* Fix race condition in WebSocketConnection.execute() causing KeyError (#17381)
+* Implement high level APIs for script (#17371)
+* Add edge service arg to inherit browser i/o streams (#17415)
+* Update dev dependencies and fix type annotation (#17434)
+
+Selenium 4.43.0
+* Support CDP versions: v145, v146, v147
+
+Selenium 4.42.0
+* Support CDP versions: v144, v145, v146
+* Add return type annotation to execute_script and execute_async_script (#17117)
+* Use Self as return type of __enter__ in remote.WebDriver (#17170)
+* Add type stubs for lazy imported classes and modules (#17165)
+* Do not close externally provided log_output streams (#17204)
+* Generate module for importing latest devtools (#17133)
+* Improve Selenium Manager platform/architecture detection (#17271)
+* Add APIRequestContext to make requests with browser auth/cookie state (#17228)
+* Update dev dependencies and multitool binaries (#17314)
+
 Selenium 4.41.0
 * Support CDP versions: v143, v144, v145
 * Fix return type hint for `alert_is_present` (#16975)

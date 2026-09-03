@@ -12,6 +12,9 @@
 See `java/TESTING.md`
 
 ## Code conventions
+### Interfaces
+- New methods added to existing interfaces must provide a default implementation, if possible.
+- Interfaces must not expose the native classes of their implementations.
 
 ### Logging
 ```java

@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
@@ -322,6 +323,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         + originalMethodName.substring(1);
   }
 
+  @Nullable
   private Method findMatchingMethod(WebDriverListener listener, String methodName, Object[] args) {
     for (Method m : listener.getClass().getMethods()) {
       if (m.getName().equals(methodName) && parametersMatch(m, args)) {

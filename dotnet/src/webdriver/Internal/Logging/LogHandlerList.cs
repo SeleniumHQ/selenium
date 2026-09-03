@@ -17,45 +17,63 @@
 // under the License.
 // </copyright>
 
+using System.Collections;
+
 namespace OpenQA.Selenium.Internal.Logging;
 
 /// <summary>
 /// Represents a list of log handlers.
 /// </summary>
 /// <inheritdoc cref="ILogHandlerList"/>
-internal sealed class LogHandlerList : List<ILogHandler>, ILogHandlerList
+internal sealed class LogHandlerList : ILogHandlerList
 {
     private readonly ILogContext _logContext;
+    private readonly object _lock = new();
+    private volatile ILogHandler[] _handlers;
 
     public LogHandlerList(ILogContext logContext)
     {
         _logContext = logContext;
+        _handlers = [];
     }
 
     public LogHandlerList(ILogContext logContext, IEnumerable<ILogHandler> handlers)
-        : base(handlers)
     {
         _logContext = logContext;
+        _handlers = [.. handlers];
     }
 
-    public new ILogContext Add(ILogHandler handler)
+    public ILogContext Add(ILogHandler handler)
     {
-        base.Add(handler);
+        lock (_lock)
+        {
+            _handlers = [.. _handlers, handler];
+        }
 
         return _logContext;
     }
 
-    public new ILogContext Remove(ILogHandler handler)
+    public ILogContext Remove(ILogHandler handler)
     {
-        base.Remove(handler);
+        lock (_lock)
+        {
+            _handlers = [.. _handlers.Where(h => h != handler)];
+        }
 
         return _logContext;
     }
 
-    public new ILogContext Clear()
+    public ILogContext Clear()
     {
-        base.Clear();
+        lock (_lock)
+        {
+            _handlers = [];
+        }
 
         return _logContext;
     }
+
+    public IEnumerator<ILogHandler> GetEnumerator() => ((IEnumerable<ILogHandler>)_handlers).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => _handlers.GetEnumerator();
 }

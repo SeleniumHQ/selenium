@@ -21,7 +21,7 @@ using OpenQA.Selenium.BiDi.Storage;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextStorageModule(BrowsingContext context, IStorageModule storageModule) : IBrowsingContextStorageModule
+internal sealed class BrowsingContextStorageModule(BrowsingContext context, IStorageModule storageModule) : IBrowsingContextStorageModule
 {
     public Task<GetCookiesResult> GetCookiesAsync(ContextGetCookiesOptions? options = null, CancellationToken cancellationToken = default)
     {

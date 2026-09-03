@@ -20,11 +20,10 @@ package org.openqa.selenium.remote.codec;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNullElse;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.string;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.openqa.selenium.json.Json;
@@ -52,7 +51,8 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
    */
   @Override
   public HttpResponse encode(Supplier<HttpResponse> factory, Response response) {
-    int status = response.getStatus() == ErrorCodes.SUCCESS ? HTTP_OK : HTTP_INTERNAL_ERROR;
+    int responseStatus = requireNonNullElse(response.getStatus(), 0);
+    int status = responseStatus == ErrorCodes.SUCCESS ? HTTP_OK : HTTP_INTERNAL_ERROR;
 
     byte[] data = json.toJson(getValueToEncode(response)).getBytes(UTF_8);
 
@@ -71,9 +71,8 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String contentType =
-        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
-    String content = string(encodedResponse).trim();
+    String contentType = encodedResponse.getHeader(HttpHeader.ContentType, "");
+    String content = encodedResponse.contentAsString().trim();
     try {
       return reconstructValue(json.toType(content, Response.class));
     } catch (JsonException e) {
@@ -108,18 +107,20 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       response.setValue(content);
     }
 
-    if (response.getStatus() != null && response.getState() == null) {
-      response.setState(errorCodes.toState(response.getStatus()));
-    } else if (response.getStatus() == null && response.getState() != null) {
-      response.setStatus(
-          errorCodes.toStatus(response.getState(), Optional.of(encodedResponse.getStatus())));
+    Integer status = response.getStatus();
+    String state = response.getState();
+
+    if (status != null && state == null) {
+      response.setState(errorCodes.toState(status));
+    } else if (status == null && state != null) {
+      response.setStatus(errorCodes.toStatus(state, Optional.of(encodedResponse.getStatus())));
     } else if (statusCode == 200) {
       response.setStatus(ErrorCodes.SUCCESS);
       response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
     }
 
-    if (response.getStatus() != null) {
-      response.setState(errorCodes.toState(response.getStatus()));
+    if (status != null) {
+      response.setState(errorCodes.toState(status));
     } else if (statusCode == 200) {
       response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
     }

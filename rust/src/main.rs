@@ -23,13 +23,17 @@ use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
+use selenium_manager::jre::ensure_jre;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
-use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
+use selenium_manager::rules::write_rules_file;
+use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
-    SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
+    CACHE_TTL_DAYS, SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
+    prune_old_cache_entries,
 };
+use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
@@ -156,17 +160,60 @@ struct Cli {
     /// Not using browsers found in the PATH
     #[clap(long)]
     skip_browser_in_path: bool,
+
+    /// Add a skills file with Selenium best practices to the repository
+    #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
+    init_skills: Option<String>,
+
+    /// Add a rules file with Selenium guidance for LLM coding assistants to the repository
+    #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
+    init_rules: Option<String>,
 }
 
 fn main() {
     let mut cli = Cli::parse();
-    let cache_path =
-        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
 
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
     let log = Logger::create(&cli.output, debug, trace, &log_level);
+
+    if let Some(mut skills_file) = cli.init_skills {
+        if skills_file.is_empty() {
+            let default_path = Path::new("skills").join("skills.md");
+            if default_path.exists() {
+                skills_file = "selenium.md".to_string();
+            } else {
+                skills_file = default_path.to_string_lossy().to_string();
+            }
+        }
+        if let Err(err) = write_skills_file(Path::new(&skills_file), &log) {
+            log.error(format!("Error creating {}: {}", skills_file, err));
+            flush_and_exit(DATAERR, &log, Some(err));
+        }
+        log.info(format!("{} file successfully created", skills_file));
+        flush_and_exit(OK, &log, None);
+    }
+
+    if let Some(mut rules_file) = cli.init_rules {
+        if rules_file.is_empty() {
+            let default_path = Path::new("rules").join("selenium.md");
+            if default_path.exists() {
+                rules_file = "selenium-rules.md".to_string();
+            } else {
+                rules_file = default_path.to_string_lossy().to_string();
+            }
+        }
+        if let Err(err) = write_rules_file(Path::new(&rules_file), &log) {
+            log.error(format!("Error creating {}: {}", rules_file, err));
+            flush_and_exit(DATAERR, &log, Some(err));
+        }
+        log.info(format!("{} file successfully created", rules_file));
+        flush_and_exit(OK, &log, None);
+    }
+
+    let cache_path =
+        StringKey(vec![CACHE_PATH_KEY], &cli.cache_path.unwrap_or_default()).get_value();
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
     let mut driver_name: String = cli.driver.unwrap_or_default();
@@ -236,10 +283,33 @@ fn main() {
     if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
         clear_metadata(selenium_manager.get_logger(), &cache_path);
     }
+    prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
+
+    let proxy = cli.proxy.clone().unwrap_or_default();
 
     selenium_manager
         .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_proxy(proxy.clone()))
+        .and_then(|_| {
+            if selenium_manager.is_grid() {
+                ensure_jre(
+                    Some(cache_path.as_str()),
+                    cli.timeout,
+                    Some(proxy.as_str()),
+                    selenium_manager.is_offline(),
+                    selenium_manager.get_logger(),
+                )
+                .map(|runtime| {
+                    selenium_manager.get_logger().debug(format!(
+                        "Java runtime resolved from {}: {}",
+                        runtime.source,
+                        runtime.java_path.display()
+                    ));
+                })
+            } else {
+                Ok(())
+            }
+        })
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {

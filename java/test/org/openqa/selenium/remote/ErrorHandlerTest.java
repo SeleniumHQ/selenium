@@ -105,6 +105,15 @@ class ErrorHandlerTest {
   }
 
   @Test
+  void testShouldThrowAVanillaWebDriverExceptionIfResponseStatusIsNull() {
+    Response response = new Response();
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123))
+        .withNoCause()
+        .withMessageContaining(new WebDriverException().getMessage());
+  }
+
+  @Test
   void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(

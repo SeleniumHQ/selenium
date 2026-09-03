@@ -23,7 +23,7 @@ public static class WebDriverExtensions
 {
     public static async Task<IBiDi> AsBiDiAsync(this IWebDriver webDriver, Action<BiDiOptionsBuilder>? configure = null, CancellationToken cancellationToken = default)
     {
-        if (webDriver is null) throw new ArgumentNullException(nameof(webDriver));
+        ArgumentNullException.ThrowIfNull(webDriver);
 
         string? webSocketUrl = null;
 
@@ -34,7 +34,12 @@ public static class WebDriverExtensions
 
         if (webSocketUrl is null) throw new BiDiException("The driver is not compatible with bidirectional protocol or \"webSocketUrl\" not enabled in driver options.");
 
-        var bidi = await BiDi.ConnectAsync(webSocketUrl, configure, cancellationToken).ConfigureAwait(false);
+        if (!Uri.TryCreate(webSocketUrl, UriKind.Absolute, out var uri) || (uri.Scheme != "ws" && uri.Scheme != "wss"))
+        {
+            throw new BiDiException($"The driver returned an invalid WebSocket URL: \"{webSocketUrl}\". The driver may not support the bidirectional protocol.");
+        }
+
+        var bidi = await BiDi.ConnectAsync(uri, configure, cancellationToken).ConfigureAwait(false);
 
         return bidi;
     }

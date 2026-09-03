@@ -18,6 +18,7 @@
 # under the License.
 
 require 'selenium/webdriver/common/error'
+require 'selenium/webdriver/common/client_config'
 require 'selenium/webdriver/common/local_driver'
 require 'selenium/webdriver/common/driver_finder'
 require 'selenium/webdriver/common/platform'
@@ -75,7 +76,6 @@ require 'selenium/webdriver/common/driver_extensions/prints_page'
 require 'selenium/webdriver/common/driver_extensions/uploads_files'
 require 'selenium/webdriver/common/driver_extensions/full_page_screenshot'
 require 'selenium/webdriver/common/driver_extensions/has_addons'
-require 'selenium/webdriver/common/driver_extensions/has_bidi'
 require 'selenium/webdriver/common/driver_extensions/has_devtools'
 require 'selenium/webdriver/common/driver_extensions/has_file_downloads'
 require 'selenium/webdriver/common/driver_extensions/has_session_events'

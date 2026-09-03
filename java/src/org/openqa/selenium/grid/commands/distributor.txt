@@ -1,0 +1,105 @@
+Selenium Grid ships with a pluggable Distributor component that manages node
+registration, health checking, slot reservation, and session routing. The
+Distributor implementation is selected with --distributor-implementation.
+
+== LocalDistributor (default)
+
+The default implementation keeps all state in JVM memory. It is suitable for
+single-instance deployments: standalone mode, hub mode, and a Grid where only
+one Distributor replica is needed.
+
+Starting a standalone Grid (Distributor is embedded, no extra flag required):
+
+```
+java -jar selenium.jar standalone
+```
+
+Starting a dedicated Distributor server with the local (in-memory) backend:
+
+```
+java -jar selenium.jar distributor \
+  --port 5553 \
+  --sessions http://localhost:5556 \
+  --session-queue http://localhost:5559
+```
+
+== RedisBackedDistributor
+
+The RedisBackedDistributor stores all grid state in Redis. Multiple Distributor
+replicas can run simultaneously against the same Redis instance: node
+registrations, slot reservations, and health-check coordination are all
+handled atomically through Redis. This enables zero-downtime rolling restarts.
+
+Prerequisites
+
+1. A running Redis instance (Redis 6.2+). For production, prefer Redis Sentinel
+   or Redis Cluster for high availability.
+
+2. All Distributor replicas must reach the same Redis instance.
+
+Starting two Distributor replicas behind a load balancer:
+
+```
+# Replica 1
+java -jar selenium.jar distributor \
+  --port 5553 \
+  --distributor-implementation org.openqa.selenium.grid.distributor.redis.RedisBackedDistributor \
+  --distributor-backend-url redis://redis-host:6379 \
+  --sessions http://localhost:5556 \
+  --session-queue http://localhost:5559
+
+# Replica 2 (same flags, different --port or different host)
+java -jar selenium.jar distributor \
+  --port 5554 \
+  --distributor-implementation org.openqa.selenium.grid.distributor.redis.RedisBackedDistributor \
+  --distributor-backend-url redis://redis-host:6379 \
+  --sessions http://localhost:5556 \
+  --session-queue http://localhost:5559
+```
+
+Using a TOML config file instead of flags:
+
+```
+[distributor]
+implementation = "org.openqa.selenium.grid.distributor.redis.RedisBackedDistributor"
+backend-url    = "redis://redis-host:6379"
+```
+
+```
+java -jar selenium.jar distributor --config grid.toml
+```
+
+How replicas coordinate
+
+* Node registrations: each replica records the node in Redis and creates a
+  local proxy object; all replicas receive the same EventBus event.
+
+* Health checks: replicas race for a per-node lock in Redis using atomic
+  SET NX. Only the lock winner runs the HTTP /status probe that cycle.
+  Others skip silently, so nodes are checked exactly once per interval
+  regardless of replica count.
+
+* Slot reservations: protected by Redis SET NX on the slot key. Exactly one
+  replica wins for each session request; others retry or return the request
+  to the queue.
+
+* Graceful shutdown / rolling restarts: send SIGTERM to a replica. It marks
+  itself draining in Redis, finishes in-flight work, and exits. The remaining
+  replica continues serving requests without interruption.
+
+== Custom Distributor via --ext
+
+Any class that extends org.openqa.selenium.grid.distributor.Distributor and
+provides a static create(Config) factory method can be loaded at runtime:
+
+```
+java -jar selenium.jar \
+  --ext /path/to/my-distributor.jar \
+  distributor \
+  --distributor-implementation com.example.MyDistributor \
+  --distributor-backend-url mydb://host:port/grid
+```
+
+The --distributor-backend-url value is available to any implementation via
+new DistributorOptions(config).getBackendUri().
+

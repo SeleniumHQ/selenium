@@ -34,7 +34,8 @@ public sealed class LogEvent
     /// <exception cref="ArgumentNullException">If <paramref name="issuedBy"/> is <see langword="null"/>.</exception>
     public LogEvent(Type issuedBy, DateTimeOffset timestamp, LogEventLevel level, string message)
     {
-        IssuedBy = issuedBy ?? throw new ArgumentNullException(nameof(issuedBy));
+        ArgumentNullException.ThrowIfNull(issuedBy);
+        IssuedBy = issuedBy;
         Timestamp = timestamp;
         Level = level;
         Message = message;

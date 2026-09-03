@@ -17,6 +17,10 @@ BIDI_TESTS = [
     "RemoteWebDriverBiDiTest.java",
 ]
 
+SMALL_TESTS = [
+    "DirectForwardingListenerTest.java",
+]
+
 java_library(
     name = "support",
     testonly = True,
@@ -129,11 +133,26 @@ java_selenium_test_suite(
 )
 
 java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = SMALL_TESTS,
+    deps = [
+        "//java/src/org/openqa/selenium/grid/router",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
+    ] + JUNIT5_DEPS,
+)
+
+java_test_suite(
     name = "medium-tests",
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS,
+        exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS,
     ),
     tags = [
         "requires-network",

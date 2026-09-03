@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -38,7 +39,7 @@ public class DriverFinder {
   private final Capabilities options;
   private final SeleniumManager seleniumManager;
   private boolean offline;
-  private Result result;
+  private @Nullable Result result;
 
   public DriverFinder(DriverService service, Capabilities options) {
     this(service, options, SeleniumManager.getInstance());
@@ -131,8 +132,11 @@ public class DriverFinder {
 
   private List<String> toArguments() {
     List<String> arguments = new ArrayList<>();
+    Object value = options.getCapability("se:browserName");
+    String browserName = value instanceof String ? (String) value : null;
+
     arguments.add("--browser");
-    arguments.add(options.getBrowserName());
+    arguments.add(browserName != null ? browserName : options.getBrowserName());
 
     if (!options.getBrowserVersion().isEmpty()) {
       arguments.add("--browser-version");
@@ -152,7 +156,8 @@ public class DriverFinder {
     Proxy proxy = Proxy.extractFrom(options);
     if (proxy != null
         && proxy.getProxyType() != Proxy.ProxyType.DIRECT
-        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT) {
+        && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT
+        && proxy.getProxyType() != Proxy.ProxyType.SYSTEM) {
       arguments.add("--proxy");
       if (proxy.getSslProxy() != null) {
         arguments.add(proxy.getSslProxy());
@@ -171,6 +176,7 @@ public class DriverFinder {
    * @param options browser options used to start the session
    * @return the browser binary path when present, only Chrome/Firefox/Edge
    */
+  @Nullable
   private static String getBrowserBinary(Capabilities options) {
     List<String> vendorOptionsCapabilities =
         List.of("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");

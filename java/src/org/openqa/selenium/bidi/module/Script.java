@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
@@ -54,6 +55,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
+@Beta
 public class Script implements Closeable {
   private final Set<String> browsingContextIds;
 
@@ -346,7 +348,7 @@ public class Script implements Closeable {
     this.bidi.send(new Command<>("script.removePreloadScript", Map.of("script", id)));
   }
 
-  public long onMessage(Consumer<Message> consumer) {
+  public String onMessage(Consumer<Message> consumer) {
     if (browsingContextIds.isEmpty()) {
       return this.bidi.addListener(messageEvent, consumer);
     } else {

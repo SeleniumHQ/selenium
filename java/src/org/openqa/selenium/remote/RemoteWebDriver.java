@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
@@ -27,6 +29,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,14 +44,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
@@ -77,6 +80,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.BiDiException;
+import org.openqa.selenium.bidi.Connection;
+import org.openqa.selenium.bidi.Handle;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -87,10 +93,7 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
@@ -109,6 +112,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 @Augmentable
 public class RemoteWebDriver
     implements WebDriver,
+        HasBiDi,
         JavascriptExecutor,
         HasCapabilities,
         HasDownloads,
@@ -133,25 +137,26 @@ public class RemoteWebDriver
   private final ClientConfig clientConfig;
   private CommandExecutor executor;
   protected Capabilities capabilities;
-  private SessionId sessionId;
+  private @Nullable SessionId sessionId;
   private FileDetector fileDetector = new UselessFileDetector();
   private final ExecuteMethod executeMethod = new RemoteExecuteMethod(this);
 
-  private JsonToWebElementConverter converter;
+  private JsonToWebElementConverter converter = new JsonToWebElementConverter(this);
 
-  private Logs remoteLogs;
+  private final Logs remoteLogs = new RemoteLogs(executeMethod);
 
-  @SuppressWarnings("deprecation")
-  private LocalLogs localLogs;
+  @Nullable private Script remoteScript;
 
-  private Script remoteScript;
+  @Nullable private Network remoteNetwork;
 
-  private Network remoteNetwork;
+  private Optional<BiDi> biDi = Optional.empty();
 
   // For cglib
+  @SuppressWarnings("DataFlowIssue")
   protected RemoteWebDriver() {
-    this.capabilities = init(new ImmutableCapabilities());
+    this.capabilities = new ImmutableCapabilities();
     this.clientConfig = ClientConfig.defaultConfig();
+    this.executor = null;
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -176,7 +181,7 @@ public class RemoteWebDriver
             Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
             clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
@@ -191,10 +196,9 @@ public class RemoteWebDriver
     this(
         createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
         Require.nonNull("Capabilities", capabilities),
-        clientConfig);
+        clientConfig.baseUrl(remoteAddress));
   }
 
-  @SuppressWarnings("deprecation")
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this(executor, capabilities, ClientConfig.defaultConfig());
   }
@@ -203,11 +207,7 @@ public class RemoteWebDriver
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
-    this.capabilities = init(capabilities);
-
-    if (executor instanceof NeedsLocalLogs) {
-      ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
-    }
+    this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
       startSession(capabilities);
@@ -251,29 +251,7 @@ public class RemoteWebDriver
     return new RemoteWebDriverBuilder();
   }
 
-  private Capabilities init(Capabilities capabilities) {
-    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
-
-    converter = new JsonToWebElementConverter(this);
-
-    initLocalLogs();
-    remoteLogs = new RemoteLogs(executeMethod);
-
-    return capabilities;
-  }
-
-  @SuppressWarnings("deprecation")
-  private void initLocalLogs() {
-    LOG.addHandler(LoggingHandler.getInstance());
-
-    Set<String> logTypesToIgnore = Set.of();
-
-    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
-    LocalLogs clientLogs =
-        LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
-    localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
-  }
-
+  @Nullable
   public SessionId getSessionId() {
     return sessionId;
   }
@@ -282,9 +260,20 @@ public class RemoteWebDriver
     sessionId = new SessionId(opaqueKey);
   }
 
+  private Capabilities addRemoteUrl(Capabilities capabilities) {
+    URI baseUri = clientConfig.baseUri();
+    if (baseUri == null) {
+      return capabilities;
+    }
+    MutableCapabilities withRemoteUrl = new MutableCapabilities(capabilities);
+    withRemoteUrl.setCapability("se:remoteUrl", baseUri.toString());
+    return withRemoteUrl;
+  }
+
   protected void startSession(Capabilities capabilities) {
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
+    capabilities = addRemoteUrl(capabilities);
 
     try {
       Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
@@ -310,23 +299,11 @@ public class RemoteWebDriver
       @SuppressWarnings("unchecked")
       Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
       MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-      String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
-      Platform platform;
-      try {
-        if (platformString == null || platformString.isEmpty()) {
-          platform = Platform.ANY;
-        } else {
-          platform = Platform.fromString(platformString);
-        }
-      } catch (WebDriverException e) {
-        // The server probably responded with a name matching the os.name
-        // system property. Try to recover and parse this.
-        platform = Platform.extractFromSysProperty(platformString);
-      }
-      returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+      returnedCapabilities.setCapability(PLATFORM_NAME, resolvePlatform(rawCapabilities));
 
       this.capabilities = returnedCapabilities;
       sessionId = new SessionId(response.getSessionId());
+      this.biDi = createBiDi();
     } catch (Exception e) {
       // If session creation fails, stop the driver service to prevent zombie processes
       if (executor instanceof DriverCommandExecutor) {
@@ -337,6 +314,21 @@ public class RemoteWebDriver
         }
       }
       throw e;
+    }
+  }
+
+  static Platform resolvePlatform(Map<String, Object> rawCapabilities) {
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
+    try {
+      if (platformString == null || platformString.isEmpty()) {
+        return Platform.ANY;
+      } else {
+        return Platform.fromString(platformString);
+      }
+    } catch (WebDriverException e) {
+      // The server probably responded with a name matching the os.name
+      // system property. Try to recover and parse this.
+      return Platform.extractFromSysProperty(platformString);
     }
   }
 
@@ -360,12 +352,8 @@ public class RemoteWebDriver
     this.executor = executor;
   }
 
-  @NonNull
   @Override
   public Capabilities getCapabilities() {
-    if (capabilities == null) {
-      return new ImmutableCapabilities();
-    }
     return capabilities;
   }
 
@@ -413,7 +401,7 @@ public class RemoteWebDriver
     Response response = execute(DriverCommand.PRINT_PAGE(printOptions));
 
     Object result = response.getValue();
-    return new Pdf((String) result);
+    return new Pdf((String) requireNonNull(result));
   }
 
   @Override
@@ -455,6 +443,65 @@ public class RemoteWebDriver
     return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
   }
 
+  private Optional<BiDi> createBiDi() {
+    Object rawUrl = this.capabilities.getCapability("webSocketUrl");
+    if (!(rawUrl instanceof String)) {
+      return Optional.empty();
+    }
+    String webSocketUrl = ((String) rawUrl).trim();
+    URI wsUri;
+    try {
+      wsUri = new URI(webSocketUrl);
+    } catch (URISyntaxException e) {
+      LOG.log(
+          Level.WARNING,
+          "BiDi was requested but the remote end returned an invalid webSocketUrl.",
+          e);
+      return Optional.empty();
+    }
+    String scheme = wsUri.getScheme();
+    if (scheme == null || (!scheme.equalsIgnoreCase("ws") && !scheme.equalsIgnoreCase("wss"))) {
+      LOG.warning("BiDi was requested but the remote end did not return a valid webSocketUrl.");
+      return Optional.empty();
+    }
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    ClientConfig wsConfig = this.clientConfig.baseUri(wsUri);
+    HttpClient wsClient = clientFactory.createClient(wsConfig);
+    try {
+      Connection biDiConnection = new Connection(wsClient, wsUri.toString());
+      return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
+    } catch (RuntimeException e) {
+      wsClient.close();
+      LOG.log(
+          Level.WARNING,
+          "BiDi was requested but the WebSocket connection could not be established.",
+          e);
+      return Optional.empty();
+    }
+  }
+
+  @Deprecated(since = "4.46", forRemoval = true)
+  @Override
+  public Optional<BiDi> maybeGetBiDi() {
+    return biDi;
+  }
+
+  // Calls maybeGetBiDi() rather than reading the private field directly so that subclasses
+  // that override maybeGetBiDi() (e.g. AppiumDriver) are not broken before they migrate to
+  // overriding getHandle(). Remove the @SuppressWarnings and switch to the field once
+  // maybeGetBiDi() is deleted.
+  @SuppressWarnings("deprecation")
+  @Override
+  public Handle getHandle() {
+    return maybeGetBiDi()
+        .map(BiDi::asHandle)
+        .orElseThrow(
+            () ->
+                new BiDiException(
+                    "Check if this browser version supports BiDi and if the"
+                        + " 'webSocketUrl: true' capability is set."));
+  }
+
   // Misc
 
   @Override
@@ -480,11 +527,11 @@ public class RemoteWebDriver
     Object value = response.getValue();
     List<String> windowHandles = (ArrayList<String>) value;
 
-    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
+    if (windowHandles.isEmpty()) {
       // If no top-level browsing contexts are open after calling close, it indicates that the
       // WebDriver session is closed.
       // If the WebDriver session is closed, the BiDi session also needs to be closed.
-      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+      biDi.ifPresent(BiDi::close);
     }
   }
 
@@ -500,9 +547,7 @@ public class RemoteWebDriver
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
       }
 
-      if (this instanceof HasBiDi) {
-        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
-      }
+      biDi.ifPresent(BiDi::close);
 
       execute(DriverCommand.QUIT);
     } finally {
@@ -530,15 +575,16 @@ public class RemoteWebDriver
   }
 
   @Override
-  public @Nullable Object executeScript(@NonNull String script, @Nullable Object... args) {
+  public @Nullable Object executeScript(String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
     return execute(DriverCommand.EXECUTE_SCRIPT(script, convertedArgs)).getValue();
   }
 
+  @Nullable
   @Override
-  public Object executeAsyncScript(String script, Object... args) {
+  public Object executeAsyncScript(String script, @Nullable Object... args) {
     List<Object> convertedArgs =
         Stream.of(args).map(new WebElementToJsonConverter()).collect(Collectors.toList());
 
@@ -592,6 +638,7 @@ public class RemoteWebDriver
     LOG.setLevel(level);
   }
 
+  @Nullable
   protected Response execute(CommandPayload payload) {
     Command command = new Command(sessionId, payload);
     Response response;
@@ -697,7 +744,6 @@ public class RemoteWebDriver
   }
 
   @Override
-  @NullMarked
   public void perform(Collection<Sequence> actions) {
     execute(DriverCommand.ACTIONS(actions));
   }
@@ -707,7 +753,6 @@ public class RemoteWebDriver
     execute(DriverCommand.CLEAR_ACTIONS_STATE);
   }
 
-  @NullMarked
   @Override
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId =
@@ -715,7 +760,6 @@ public class RemoteWebDriver
     return new RemoteVirtualAuthenticator(authenticatorId);
   }
 
-  @NullMarked
   @Override
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(
@@ -837,7 +881,8 @@ public class RemoteWebDriver
    * @return the response data from the server
    * @throws WebDriverException if the event cannot be fired
    */
-  public Map<String, Object> fireSessionEvent(String eventType, Map<String, Object> payload) {
+  public Map<String, Object> fireSessionEvent(
+      String eventType, @Nullable Map<String, Object> payload) {
     Response response = execute(DriverCommand.FIRE_SESSION_EVENT(eventType, payload));
     return (Map<String, Object>) response.getValue();
   }
@@ -864,6 +909,7 @@ public class RemoteWebDriver
     execute(DriverCommand.RESET_COOLDOWN);
   }
 
+  @Nullable
   @Override
   public FederatedCredentialManagementDialog getFederatedCredentialManagementDialog() {
     FederatedCredentialManagementDialog dialog = new FedCmDialogImpl(executeMethod);
@@ -884,7 +930,7 @@ public class RemoteWebDriver
    * @param toLog any data that might be interesting.
    * @param when verb tense of "Execute" to prefix message
    */
-  protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+  protected void log(@Nullable SessionId sessionId, String commandName, Object toLog, When when) {
     if (!LOG.isLoggable(level)) {
       return;
     }
@@ -983,9 +1029,7 @@ public class RemoteWebDriver
    * @see UselessFileDetector
    */
   public void setFileDetector(FileDetector detector) {
-    if (detector == null) {
-      throw new WebDriverException("You may not set a file detector that is null");
-    }
+    Require.nonNull("File detector", detector);
     fileDetector = detector;
   }
 
@@ -1028,9 +1072,7 @@ public class RemoteWebDriver
 
     @Override
     public void deleteCookieNamed(String name) {
-      if (name == null || name.isBlank()) {
-        throw new IllegalArgumentException("Cookie name cannot be empty");
-      }
+      Require.nonBlank("Cookie name", name);
       execute(DriverCommand.DELETE_COOKIE(name));
     }
 
@@ -1087,11 +1129,10 @@ public class RemoteWebDriver
       return toReturn;
     }
 
+    @Nullable
     @Override
     public Cookie getCookieNamed(String name) {
-      if (name == null || name.isBlank()) {
-        throw new IllegalArgumentException("Cookie name cannot be empty");
-      }
+      Require.nonBlank("Cookie name", name);
       Set<Cookie> allCookies = getCookies();
       for (Cookie cookie : allCookies) {
         if (cookie.getName().equals(name)) {
@@ -1159,9 +1200,6 @@ public class RemoteWebDriver
 
     @Beta
     protected class RemoteWindow implements Window {
-
-      Map<String, Object> rawPoint;
-
       @Override
       @SuppressWarnings({"unchecked"})
       public Dimension getSize() {
@@ -1184,7 +1222,7 @@ public class RemoteWebDriver
       @SuppressWarnings("unchecked")
       public Point getPosition() {
         Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION());
-        rawPoint = (Map<String, Object>) response.getValue();
+        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();
@@ -1362,9 +1400,7 @@ public class RemoteWebDriver
      */
     @Override
     public void sendKeys(String keysToSend) {
-      if (keysToSend == null) {
-        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
-      }
+      Require.nonNull("Keys to send", keysToSend, "should be a not null CharSequence");
       execute(DriverCommand.SET_ALERT_VALUE(keysToSend));
     }
   }
@@ -1381,7 +1417,6 @@ public class RemoteWebDriver
       return id;
     }
 
-    @NullMarked
     @Override
     public void addCredential(Credential credential) {
       execute(
@@ -1400,13 +1435,11 @@ public class RemoteWebDriver
       return response.stream().map(Credential::fromMap).collect(Collectors.toList());
     }
 
-    @NullMarked
     @Override
     public void removeCredential(byte[] credentialId) {
       removeCredential(Base64.getUrlEncoder().encodeToString(credentialId));
     }
 
-    @NullMarked
     @Override
     public void removeCredential(String credentialId) {
       execute(
