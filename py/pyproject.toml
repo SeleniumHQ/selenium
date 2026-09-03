@@ -125,11 +125,10 @@ warn_unused_ignores = true
 # warns when returning a value with typing.Any from a function with a non typing.Any return type.
 warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
-warn_unreachable = false
+warn_unreachable = true
 
 [[tool.mypy.overrides]]
 module = [
-    "selenium.webdriver.common.devtools.*",
     "selenium.webdriver.common.bidi.*",
 ]
 ignore_errors = true
