@@ -22,15 +22,15 @@
  *   1. parse     --cddl <f>  --dump-ast <f>                 CDDL → AST
  *   2. model     --ast  <f>  --dump-model <f>               AST → command/event model
  *   3. generate  --ast  <f>  --model <f>  --output-dir <d>  AST + model → one TS module per domain
- *                  [--enhancements <f>] [--spec-version <v>]
+ *                  [--spec-version <v>]
  */
 
 import { parse } from 'cddl'
-import { transform } from 'cddl2ts'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
+import { projectSchema } from './project_bidi_schema.mjs'
 
 // ============================================================
 // Domain configuration
@@ -54,25 +54,6 @@ const METHOD_DOMAIN_MAP = {
   webExtension: 'webExtension',
   bluetooth: 'bluetooth',
 }
-
-// Maps TypeScript export name prefixes to domain keys.
-// Ordered longest-first so the most specific prefix always wins.
-const NAME_PREFIX_TO_DOMAIN = [
-  ['UserAgentClientHints', 'userAgentClientHints'],
-  ['BrowsingContext', 'browsingContext'],
-  ['WebExtension', 'webExtension'],
-  ['Permissions', 'permissions'],
-  ['Bluetooth', 'bluetooth'],
-  ['Emulation', 'emulation'],
-  ['Speculation', 'speculation'],
-  ['Storage', 'storage'],
-  ['Session', 'session'],
-  ['Network', 'network'],
-  ['Script', 'script'],
-  ['Input', 'input'],
-  ['Browser', 'browser'],
-  ['Log', 'log'],
-]
 
 // Output filename for each domain key.
 const DOMAIN_FILES = {
@@ -152,7 +133,6 @@ async function main() {
       model: { type: 'string' },
       'dump-ast': { type: 'string' },
       'dump-model': { type: 'string' },
-      enhancements: { type: 'string' },
       'output-dir': { type: 'string' },
       'spec-version': { type: 'string', default: '1.0' },
     },
@@ -182,7 +162,7 @@ async function main() {
       'Usage (one stage per invocation):\n' +
         '  generate_bidi.mjs --cddl <file> [--cddl <file>...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
-        '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--enhancements <file>] [--spec-version <v>]',
+        '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--spec-version <v>]',
     )
     process.exit(1)
   }
@@ -283,30 +263,27 @@ function writeJson(fileArg, data, label, pretty = false) {
   console.log(`  → ${out} (${label})`)
 }
 
-/** Emit one TS module per domain: types from the AST (cddl2ts), methods from the model. */
+/** Emit one TS module per domain: types and commands/events, both from bidi_schema.json. */
 function generateTypeScript(ast, model, args) {
   const outputDir = resolve(args['output-dir'])
   const specVersion = args['spec-version']
-  const enhancements = loadEnhancements(args.enhancements)
 
-  console.log('Pass 1: generating types via cddl2ts…')
-  const rawTypes = transform(ast)
-  const cleanTypes = postProcessTypes(rawTypes)
-  const typesByDomain = splitTypesByDomain(cleanTypes)
-  const typeNameToDomain = buildTypeNameToDomainMap(typesByDomain)
+  console.log('Projecting the binding-neutral schema…')
+  const schema = projectSchema(ast, model)
+  console.log(
+    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types`,
+  )
 
-  console.log('Pass 2: building commands and events from model…')
-  const allCommands = modelToCommands(model)
-  const allEvents = modelToEvents(model)
-  console.log(`  ${allCommands.length} commands, ${allEvents.length} events`)
+  const typesByDomain = groupTypesByDomain(schema.types)
+  const allCommands = schemaToCommands(schema)
+  const allEvents = schemaToEvents(schema)
 
   mkdirSync(outputDir, { recursive: true })
 
   for (const [domainKey, filename] of Object.entries(DOMAIN_FILES)) {
-    const types = typesByDomain[domainKey] ?? ''
+    const types = typesByDomain[domainKey] ?? {}
     const commands = allCommands.filter((c) => c.domain === domainKey)
     const events = allEvents.filter((e) => e.domain === domainKey)
-    const enhancement = enhancements[domainKey] ?? {}
     const className = DOMAIN_CLASSES[domainKey]
 
     const content = generateDomainFile({
@@ -315,9 +292,7 @@ function generateTypeScript(ast, model, args) {
       types,
       commands,
       events,
-      enhancement,
       specVersion,
-      typeNameToDomain,
     })
 
     const outPath = join(outputDir, filename)
@@ -329,188 +304,22 @@ function generateTypeScript(ast, model, args) {
 }
 
 // ============================================================
-// Enhancements manifest
+// Schema-derived domain grouping
 // ============================================================
 
-function loadEnhancements(manifestPath) {
-  if (!manifestPath) return {}
-  const fullPath = resolveInputPath(manifestPath)
-  if (!existsSync(fullPath)) {
-    console.warn(`Warning: enhancements manifest not found: ${fullPath}`)
-    return {}
-  }
-  let parsed
-  try {
-    parsed = JSON.parse(readFileSync(fullPath, 'utf8'))
-  } catch (err) {
-    throw new Error(`Failed to parse enhancements manifest at ${fullPath}: ${err.message}`)
-  }
-  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    throw new Error(
-      `Enhancements manifest at ${fullPath} must be a JSON object, got ${Array.isArray(parsed) ? 'array' : typeof parsed}`,
-    )
-  }
-  return parsed
+/** A schema type name's domain segment, e.g. 'network.AddIntercept' -> 'network'. */
+function domainForTypeName(name) {
+  const dotIdx = name.indexOf('.')
+  if (dotIdx === -1) return 'common'
+  return METHOD_DOMAIN_MAP[name.slice(0, dotIdx)] ?? 'common'
 }
 
-// ============================================================
-// Pass 1: type post-processing
-// ============================================================
-
-/**
- * Reconcile cddl2ts's per-name declarations and replace `any` with `unknown`.
- *
- * cddl2ts emits several declarations for one name in two cases:
- *   - identical duplicates, when the `*-all.cddl` input concatenates local + remote
- *     definitions of a shared type — keep the first, drop the rest; and
- *   - a group that both aliases another (`X = ( Extensible )` → `type X = Extensible`)
- *     and gains fields via `//=` (→ `interface X { … }`). A type alias and an interface
- *     of the same name cannot coexist in TS, so fold them into one intersection
- *     (`type X = Extensible & { … }`) rather than letting the interface's fields drop.
- */
-function postProcessTypes(rawTs) {
-  const clean = (s) =>
-    s.replace(/Record<string, any>/g, 'Record<string, unknown>').replace(/: any([;,)\s\[])/g, ': unknown$1')
-
-  // Split into ordered items: a declaration block { name, kind, lines } or raw { text }.
-  const lines = rawTs.split('\n')
-  const items = []
-  let i = 0
-  while (i < lines.length) {
-    const m = lines[i].match(/^export (type|interface) (\w+)/)
-    if (!m) {
-      items.push({ text: lines[i] })
-      i++
-      continue
-    }
-    const start = i
-    if (lines[i].includes('{') && !lines[i].endsWith('{}') && !lines[i].endsWith('{};')) {
-      let depth = (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
-      i++
-      while (i < lines.length && depth > 0) {
-        depth += (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
-        i++
-      }
-    } else {
-      i++
-    }
-    items.push({ name: m[2], kind: m[1], lines: lines.slice(start, i) })
-  }
-
-  const byName = new Map()
-  for (const it of items) if (it.name) byName.set(it.name, [...(byName.get(it.name) ?? []), it])
-
-  const emitted = new Set()
-  const output = []
-  for (const it of items) {
-    if (!it.name) {
-      output.push(it.text)
-      continue
-    }
-    if (emitted.has(it.name)) continue
-    emitted.add(it.name)
-    output.push(reconcileDecls(it.name, byName.get(it.name)).join('\n'))
-  }
-
-  return clean(output.join('\n'))
-}
-
-/** The lines between an interface's braces, i.e. its member declarations. */
-function interfaceBody(block) {
-  const text = block.lines.join('\n')
-  return text.slice(text.indexOf('{') + 1, text.lastIndexOf('}')).replace(/^\n|\n$/g, '')
-}
-
-/**
- * Collapse a name's cddl2ts declarations into one. A lone declaration (or identical
- * duplicates) keeps the first. A `type X = <rhs>` alias plus `interface X { … }`
- * bodies fold into `type X = <rhs> & { … }` so the interface fields survive.
- */
-function reconcileDecls(name, blocks) {
-  const alias = blocks.find((b) => b.kind === 'type')
-  const bodies = blocks
-    .filter((b) => b.kind === 'interface')
-    .map(interfaceBody)
-    .filter((b) => b.trim())
-  if (!alias || !bodies.length) return blocks[0].lines
-  const rhs = alias.lines
-    .join('\n')
-    .replace(/^export type \w+\s*=\s*/, '')
-    .replace(/;\s*$/, '')
-    .trim()
-  return [`export type ${name} = ${[rhs, ...bodies.map((b) => `{\n${b}\n}`)].join(' & ')};`]
-}
-
-// ============================================================
-// Domain splitting
-// ============================================================
-
-function getDomainForExportName(name) {
-  for (const [prefix, domain] of NAME_PREFIX_TO_DOMAIN) {
-    if (name.startsWith(prefix)) return domain
-  }
-  return 'common'
-}
-
-/**
- * Partition the flat cddl2ts TypeScript output into per-domain strings,
- * treating each blank-line-separated block as one export declaration.
- */
-function splitTypesByDomain(cleanTypes) {
-  const domainLines = {}
-
-  const lines = cleanTypes.split('\n')
-  let blockLines = []
-
-  // Flush one accumulated block, splitting it further by individual exports
-  // so that consecutive single-line declarations (no blank line between them)
-  // each land in the correct domain rather than all being bucketed under the
-  // first declaration's domain.
-  const flushBlock = () => {
-    if (blockLines.length === 0) return
-
-    let exportLines = []
-    let exportDomain = null
-
-    const commitExport = () => {
-      if (exportLines.length === 0) return
-      const domain = exportDomain ?? 'common'
-      if (!domainLines[domain]) domainLines[domain] = []
-      domainLines[domain].push(...exportLines, '')
-      exportLines = []
-      exportDomain = null
-    }
-
-    for (const line of blockLines) {
-      const m = line.match(/^export (?:type|interface) (\w+)/)
-      if (m) {
-        commitExport()
-        exportDomain = getDomainForExportName(m[1])
-      }
-      exportLines.push(line)
-    }
-    commitExport()
-
-    blockLines = []
-  }
-
-  for (const line of lines) {
-    // Skip cddl2ts source comment headers.
-    if (line.startsWith('// GENERATED CONTENT') || line.startsWith('// Source:')) {
-      flushBlock()
-      continue
-    }
-    if (line === '' && blockLines.length > 0) {
-      flushBlock()
-    } else if (line !== '') {
-      blockLines.push(line)
-    }
-  }
-  flushBlock()
-
+/** Groups the schema's flat `types` map into `{ domain: { typeName: node } }`. */
+function groupTypesByDomain(types) {
   const result = {}
-  for (const [domain, dl] of Object.entries(domainLines)) {
-    result[domain] = dl.join('\n').trimEnd()
+  for (const [name, node] of Object.entries(types)) {
+    const domain = domainForTypeName(name)
+    ;(result[domain] ??= {})[name] = node
   }
   return result
 }
@@ -543,14 +352,22 @@ function buildEmptyParamTypes(ast) {
 function normalizeDottedName(name) {
   return name
     .split('.')
-    .map((part) => {
-      const titled = part.charAt(0).toUpperCase() + part.slice(1)
-      // Normalize acronym runs to match cddl2ts output:
-      //   CSPParameters → CspParameters   HTMLCollection → HtmlCollection
-      // Rule: 2+ uppercase letters followed by an uppercase+lowercase pair (or end
-      // of string) → keep only the first uppercase and lowercase the rest.
-      return titled.replace(/([A-Z]{2,})(?=[A-Z][a-z]|$)/g, (m) => m[0] + m.slice(1).toLowerCase())
-    })
+    .map((part) =>
+      // A schema name segment may itself be hyphenated (e.g. the CDDL prelude
+      // range aliases 'js-uint'/'js-int'), which isn't a valid TS identifier
+      // character — split on '-' too so each word gets its own PascalCase turn.
+      part
+        .split('-')
+        .map((word) => {
+          const titled = word.charAt(0).toUpperCase() + word.slice(1)
+          // Normalize acronym runs to match cddl2ts output:
+          //   CSPParameters → CspParameters   HTMLCollection → HtmlCollection
+          // Rule: 2+ uppercase letters followed by an uppercase+lowercase pair (or end
+          // of string) → keep only the first uppercase and lowercase the rest.
+          return titled.replace(/([A-Z]{2,})(?=[A-Z][a-z]|$)/g, (m) => m[0] + m.slice(1).toLowerCase())
+        })
+        .join(''),
+    )
     .join('')
 }
 
@@ -785,39 +602,26 @@ function buildResultTypeNames(ast) {
   return names
 }
 
-/** Map model commands to the generator's command-entry shape. */
-function modelToCommands(model) {
-  const commands = []
-  for (const [domain, entry] of Object.entries(model)) {
-    for (const c of entry.commands) {
-      commands.push({
-        domain,
-        methodStr: c.method,
-        methodName: c.name,
-        paramsTypeName: c.params !== null ? normalizeDottedName(c.params) : null,
-        hasParams: c.params !== null,
-        resultTypeName: c.result !== null ? normalizeDottedName(c.result) : null,
-      })
-    }
-  }
-  return commands
+/** Map the schema's commands to the generator's command-entry shape. */
+function schemaToCommands(schema) {
+  return schema.commands.map((c) => ({
+    domain: c.domain,
+    methodStr: c.method,
+    methodName: c.name,
+    paramsTypeName: c.params ? normalizeDottedName(c.params.ref) : null,
+    hasParams: c.params !== null,
+    resultTypeName: c.result ? normalizeDottedName(c.result.ref) : null,
+  }))
 }
 
-/** Map model events to the generator's event-entry shape. */
-function modelToEvents(model) {
-  const events = []
-  for (const [domain, entry] of Object.entries(model)) {
-    for (const e of entry.events) {
-      events.push({
-        domain,
-        methodStr: e.method,
-        eventName: e.name,
-        paramsTypeName: e.params !== null ? normalizeDottedName(e.params) : null,
-        onMethodName: 'on' + e.name.charAt(0).toUpperCase() + e.name.slice(1),
-      })
-    }
-  }
-  return events
+/** Map the schema's events to the generator's event-entry shape. */
+function schemaToEvents(schema) {
+  return schema.events.map((e) => ({
+    domain: e.domain,
+    methodStr: e.method,
+    eventName: e.name,
+    paramsTypeName: e.params ? normalizeDottedName(e.params.ref) : null,
+  }))
 }
 
 // ============================================================
@@ -842,120 +646,267 @@ const GENERATED_NOTE = commentLines(
 )
 
 // ============================================================
-// Type-map helpers for cross-domain import generation
+// Schema type node -> TypeScript, and cross-domain imports
 // ============================================================
 
-/**
- * Returns a Map from exported type name → domain key.
- * Used to generate cross-domain import statements.
- */
-function buildTypeNameToDomainMap(typesByDomain) {
-  const map = new Map()
-  for (const [domain, typeBlock] of Object.entries(typesByDomain)) {
-    for (const line of typeBlock.split('\n')) {
-      const m = line.match(/^export (?:type|interface) (\w+)/)
-      if (m) map.set(m[1], domain)
-    }
+const PRIMITIVE_TS = { string: 'string', integer: 'number', number: 'number', boolean: 'boolean', null: 'null' }
+
+/** Converts a schema type-ref node into a TypeScript type expression. */
+function typeNodeToTs(node) {
+  if (!node) return 'unknown'
+  let base
+  if (node.primitive !== undefined) {
+    base = PRIMITIVE_TS[node.primitive] ?? 'unknown'
+  } else if (node.const !== undefined) {
+    base = JSON.stringify(node.const)
+  } else if (node.ref !== undefined) {
+    base = normalizeDottedName(node.ref)
+  } else if (node.enum !== undefined) {
+    base = node.enum.map((v) => JSON.stringify(v)).join(' | ')
+  } else if (node.list !== undefined) {
+    base = `Array<${typeNodeToTs(node.list)}>`
+  } else if (node.map !== undefined) {
+    base = `Record<string, ${typeNodeToTs(node.map)}>`
+  } else if (node.union !== undefined) {
+    base = node.union.map((v) => typeNodeToTs(v)).join(' | ')
+  } else {
+    base = 'unknown'
   }
-  return map
+  return node.nullable ? `${base} | null` : base
+}
+
+/** The type-name refs a projected ref node points at (list/map/union recurse). */
+function refsIn(node) {
+  if (!node) return []
+  if (node.ref) return [node.ref]
+  if (node.list) return refsIn(node.list)
+  if (node.map) return refsIn(node.map)
+  if (node.union) return node.union.flatMap(refsIn)
+  return []
+}
+
+/** The type-name refs a type *node* (record/union/alias) points at. */
+function typeRefNames(node) {
+  if (node.kind === 'record') {
+    const refs = node.fields.flatMap((f) => refsIn(f.type))
+    if (node.map) refs.push(...refsIn(node.map))
+    return refs
+  }
+  if (node.kind === 'union') return node.variants
+  if (node.kind === 'alias') return refsIn(node.type)
+  return []
 }
 
 /**
- * Scans a domain's type block for references to types that live in OTHER
- * domains and returns the import statements needed to make the file compile.
- *
- * Only PascalCase identifiers that exist in typeNameToDomain and belong to a
- * different domain are considered. Built-in TypeScript types (string, number,
- * boolean, …) never appear in the map, so they are naturally excluded.
+ * Import statements for every other-domain type this domain's types reference: a
+ * type-only import for the TS names themselves, plus a plain side-effect import of
+ * the same module. The type-only import is erased at compile time (it exists purely
+ * for `tsc`), so it registers nothing at runtime — a caller who only imports, say,
+ * `session.js` would never actually load `browsing_context.js`, leaving every
+ * `browsingContext.*` type unregistered in the shared runtime registry (registry.js)
+ * and silently skipping deep validation for any field that refs one (see
+ * validateValue()'s `if (referenced === undefined) return value` in record.js).
+ * The side-effect import forces that module to load — and therefore register its
+ * types — regardless of whether this domain is used standalone. Safe even when two
+ * domains reference each other (e.g. session <-> browsingContext): CommonJS resolves
+ * a require() cycle by returning the other module's not-yet-complete exports, but a
+ * bare side-effect import binds nothing, and no type here is read at define time
+ * anyway — resolution happens lazily, at validation time (registry.js), by which
+ * point both modules have finished loading.
  */
-function computeCrossDomainImports(typeBlock, domain, typeNameToDomain) {
-  if (!typeBlock) return []
-
-  // Collect all PascalCase identifiers referenced in the type block.
-  const referenced = new Set()
-  for (const match of typeBlock.matchAll(/\b([A-Z][A-Za-z0-9]*)\b/g)) {
-    referenced.add(match[1])
-  }
-
-  // Group by source domain (skip same-domain types and unknown types).
+function computeCrossDomainImports(types, domain) {
   const bySourceDomain = new Map()
-  for (const name of referenced) {
-    const sourceDomain = typeNameToDomain.get(name)
-    if (!sourceDomain || sourceDomain === domain) continue
-    if (!bySourceDomain.has(sourceDomain)) bySourceDomain.set(sourceDomain, new Set())
-    bySourceDomain.get(sourceDomain).add(name)
+  for (const node of Object.values(types)) {
+    for (const ref of typeRefNames(node)) {
+      const sourceDomain = domainForTypeName(ref)
+      if (sourceDomain === domain) continue
+      if (!bySourceDomain.has(sourceDomain)) bySourceDomain.set(sourceDomain, new Set())
+      bySourceDomain.get(sourceDomain).add(normalizeDottedName(ref))
+    }
   }
 
-  // Emit sorted import lines.
   const imports = []
   for (const [sourceDomain, names] of [...bySourceDomain.entries()].sort()) {
     const sourceFile = DOMAIN_FILES[sourceDomain].replace('.ts', '.js')
-    const sorted = [...names].sort()
-    imports.push(`import type { ${sorted.join(', ')} } from './${sourceFile}'`)
+    imports.push(`import type { ${[...names].sort().join(', ')} } from './${sourceFile}'`)
+    imports.push(`import './${sourceFile}'`)
   }
   return imports
 }
 
-function generateDomainFile({
-  domain,
-  className,
-  types,
-  commands,
-  events,
-  enhancement,
-  specVersion,
-  typeNameToDomain,
-}) {
+/**
+ * Emits one schema type's TS declaration plus the runtime call that registers
+ * it for validation — see bidi/serialization/{record,enum,union}.js. Returns
+ * the runtime binding's own name and kind too, so a command method in the
+ * same domain can reference it directly (e.g. to validate its params before
+ * sending, or parse its result via fromWire()) rather than only reaching
+ * nested/cross-domain refs indirectly through the shared registry.
+ */
+function generateTypeDeclaration(name, node) {
+  const tsName = normalizeDottedName(name)
+
+  if (node.kind === 'enum') {
+    const runtimeName = `${tsName}Enum`
+    const literal = node.values.map((v) => JSON.stringify(v)).join(' | ')
+    const ts = [
+      `export type ${tsName} = ${literal}`,
+      `const ${runtimeName} = defineEnum<${tsName}>('${name}', ${JSON.stringify(node.values)})`,
+    ].join('\n')
+    return { ts, runtimeName, kind: 'enum' }
+  }
+
+  if (node.kind === 'alias') {
+    const ts = [
+      `export type ${tsName} = ${typeNodeToTs(node.type)}`,
+      `defineAlias('${name}', ${JSON.stringify(node.type)})`,
+    ].join('\n')
+    return { ts, runtimeName: null, kind: 'alias' }
+  }
+
+  if (node.kind === 'record') {
+    // No suffix: an interface and a const may share one name in TS (they live in
+    // separate type/value spaces, and only the const survives compilation to JS) —
+    // verified this compiles clean. Two names for one concept was self-inflicted
+    // confusion, not a real requirement; Ruby's generator uses one name too.
+    const runtimeName = tsName
+    const lines = [`export interface ${tsName} {`]
+    for (const field of node.fields) {
+      // Tolerating a missing required field's absence is no longer required —
+      // fromWire() now rejects a missing required field the same as any other
+      // invalid value, so a required field is always present, nullable or not.
+      const optional = !field.required
+      lines.push(`  ${field.name}${optional ? '?' : ''}: ${typeNodeToTs(field.type)}`)
+    }
+    lines.push(`}`)
+    const optionsArg = node.extensible ? `, ${JSON.stringify({ extensible: true })}` : ''
+    lines.push(`const ${runtimeName} = defineRecord<${tsName}>('${name}', ${JSON.stringify(node.fields)}${optionsArg})`)
+    return { ts: lines.join('\n'), runtimeName, kind: 'record' }
+  }
+
+  if (node.kind === 'union') {
+    const runtimeName = `${tsName}Union`
+    const memberNames = node.variants.map((v) => normalizeDottedName(v))
+    const options = {}
+    if (node.objectOnly) options.objectOnly = true
+    const optionsArg = Object.keys(options).length ? `, ${JSON.stringify(options)}` : ''
+    const ts = [
+      `export type ${tsName} = ${memberNames.join(' | ')}`,
+      `const ${runtimeName} = defineUnion<${tsName}>('${name}', ${JSON.stringify(node.selector)}${optionsArg})`,
+    ].join('\n')
+    return { ts, runtimeName, kind: 'union' }
+  }
+
+  return { ts: `export type ${tsName} = unknown`, runtimeName: null, kind: 'unknown' }
+}
+
+/**
+ * Follows an alias chain (an alias can point at another alias) to the record/union
+ * it ultimately resolves to, within `types` — one domain's own type map, the same
+ * shape generateDomainFile already has, so this needs no extra generator plumbing.
+ * Only a same-domain target is resolvable this way: a cross-domain alias (by far the
+ * most common case — `-> EmptyResult`, used across every domain) would need the target's
+ * runtime binding imported as a *value*, not just a type, from another domain's compiled
+ * file — real plumbing this doesn't attempt. Left unresolved there deliberately: EmptyResult
+ * has no required fields, so an unchecked cast catches nothing a fromWire() call would
+ * have caught either way — there's no actual validation gap to close for that case, only
+ * for a same-domain alias to a record/union that has real fields (or variants) to check.
+ * @returns {{runtimeName: string, kind: 'record'|'union'}|null}
+ */
+function resolveAliasRuntime(node, types) {
+  const seen = new Set()
+  let current = node
+  while (current?.kind === 'alias' && current.type?.ref && !seen.has(current.type.ref)) {
+    seen.add(current.type.ref)
+    const targetName = current.type.ref
+    const target = types[targetName]
+    if (target === undefined) return null // not in this domain — cross-domain, left unresolved
+    if (target.kind === 'record') return { runtimeName: normalizeDottedName(targetName), kind: 'record' }
+    if (target.kind === 'union') return { runtimeName: `${normalizeDottedName(targetName)}Union`, kind: 'union' }
+    current = target // another alias — keep resolving
+  }
+  return null
+}
+
+function generateDomainFile({ domain, className, types, commands, events, specVersion }) {
   const parts = [LICENSE_HEADER, '', GENERATED_NOTE]
 
   parts.push(`// Built from the WebDriver BiDi CDDL spec (v${specVersion}).`)
   parts.push(`// Source: https://github.com/w3c/webref/tree/main/ed/cddl`)
   parts.push('')
 
-  const filteredCommands = commands.filter((c) => !enhancement.excludeMethods?.includes(c.methodName))
-  const filteredEvents = events.filter((e) => !enhancement.excludeMethods?.includes(e.eventName))
-  const hasImplementation = className != null && (filteredCommands.length > 0 || filteredEvents.length > 0)
+  const hasImplementation = className != null && (commands.length > 0 || events.length > 0)
 
-  // Filter out excluded types before emitting.
-  let typeBlock = types
-  if (enhancement.excludeTypes?.length) {
-    typeBlock = filterExcludedTypes(typeBlock, enhancement.excludeTypes)
+  const typeEntries = Object.entries(types)
+
+  const crossDomainImports = computeCrossDomainImports(Object.fromEntries(typeEntries), domain)
+  if (crossDomainImports.length > 0) {
+    for (const line of crossDomainImports) parts.push(line)
+    parts.push('')
   }
 
-  // Compute cross-domain imports needed by this domain's type block.
-  // Types from other domains are referenced by name but live in separate files.
-  const crossDomainImports = computeCrossDomainImports(typeBlock, domain, typeNameToDomain)
-
-  if (crossDomainImports.length > 0) {
-    for (const line of crossDomainImports) {
-      parts.push(line)
-    }
+  if (typeEntries.length > 0) {
+    parts.push(`import { defineRecord, defineAlias } from '../serialization/record.js'`)
+    parts.push(`import { defineEnum } from '../serialization/enum.js'`)
+    parts.push(`import { defineUnion } from '../serialization/union.js'`)
     parts.push('')
   }
 
   if (hasImplementation) {
-    // Define the BiDi connection interface inline so the generated file is
-    // self-contained for tsc and doesn't need to resolve ../index.js.
-    parts.push(`/** Minimal BiDi transport interface (satisfied structurally by bidi/index.js). */`)
-    parts.push(`interface BidiConnection {`)
-    parts.push(`  send(command: Record<string, unknown>): Promise<unknown>`)
-    parts.push(`  subscribe(event: string | string[], contexts?: string[]): Promise<void>`)
-    parts.push(`  on(event: string, listener: (params: unknown) => void): void`)
-    parts.push(`}`)
+    // Domain.connect(driver) reaches the one BiDi connection for `driver`
+    // through the real internal accessor (never the deprecated driver.getBidi()).
+    parts.push(`import { Domain, event, type EventDescriptor, DOMAIN_TOKEN } from '../domain.js'`)
     parts.push('')
   }
 
-  if (typeBlock) {
+  // tsName -> {runtimeName, kind, fields?}, so a command method in this same file
+  // can validate its own params/result directly (rather than only reaching
+  // nested/cross-domain refs indirectly through the shared registry) and document
+  // each params field in its JSDoc from the same field list, not a second copy.
+  const runtimeByTsName = new Map()
+  // Enum constants owned by this domain, exposed as a discoverable static property
+  // on the domain class (or a top-level export when there's no class to attach to) —
+  // e.g. Network.SameSite = { STRICT: 'strict', ... }, mirroring how Ruby's generator
+  // exposes Network::SAME_SITE as a real, inspectable constant rather than a bare string.
+  const enumConstants = []
+
+  if (typeEntries.length > 0) {
     parts.push(`// --- Types ---`)
     parts.push('')
-    parts.push(typeBlock)
-    parts.push('')
+    for (const [name, node] of typeEntries) {
+      const declared = generateTypeDeclaration(name, node)
+      const tsName = normalizeDottedName(name)
+      if (declared.runtimeName) {
+        runtimeByTsName.set(tsName, {
+          runtimeName: declared.runtimeName,
+          kind: declared.kind,
+          fields: node.kind === 'record' ? node.fields : undefined,
+        })
+      } else if (declared.kind === 'alias') {
+        // An alias itself has no RecordClass/UnionClass of its own (declared.runtimeName
+        // is null, see generateTypeDeclaration) — but when it ultimately points at a
+        // same-domain record/union, a command whose result *is* that alias (e.g.
+        // browser.CreateUserContextResult -> browser.UserContextInfo) should still
+        // validate inbound through fromWire(), not silently cast an unchecked response.
+        // Resolved by naming convention (a record's runtime const is its own tsName; a
+        // union's is `${tsName}Union`), not by depending on the target having already
+        // been processed — types is a complete map regardless of iteration order.
+        const resolved = resolveAliasRuntime(node, types)
+        if (resolved) runtimeByTsName.set(tsName, { ...resolved, fields: undefined })
+      }
+      if (declared.kind === 'enum') {
+        enumConstants.push({ propertyName: localSchemaName(name, tsName), values: node.values })
+      }
+      parts.push(declared.ts)
+      parts.push('')
+    }
   }
 
-  if (enhancement.extraTypes) {
-    parts.push(`// --- Additional Types ---`)
+  if (!hasImplementation && enumConstants.length > 0) {
+    parts.push(`// --- Enum constants ---`)
     parts.push('')
-    parts.push(enhancement.extraTypes)
+    for (const { propertyName, values } of enumConstants) {
+      parts.push(`export const ${propertyName} = ${generateEnumConstantLiteral(values)}`)
+    }
     parts.push('')
   }
 
@@ -965,9 +916,10 @@ function generateDomainFile({
     parts.push(
       generateClass({
         className,
-        commands: filteredCommands,
-        events: filteredEvents,
-        enhancement,
+        commands,
+        events,
+        runtimeByTsName,
+        enumConstants,
       }),
     )
   }
@@ -975,128 +927,179 @@ function generateDomainFile({
   return parts.join('\n') + '\n'
 }
 
-function filterExcludedTypes(typeBlock, excludeTypes) {
-  const lines = typeBlock.split('\n')
-  const output = []
-  let i = 0
+// Disclaimer attached to every generated class — matches Java's BiDiGenerator.
+const INTERNAL_API_DOC = [
+  '/**',
+  ' * This is an unsupported API. No compatibility guarantees are provided.',
+  ' * It tracks the W3C WebDriver BiDi specification directly. As the specification',
+  ' * evolves, this API will change or be removed without prior notice.',
+  ' */',
+].join('\n')
 
-  while (i < lines.length) {
-    const line = lines[i]
-    const match = line.match(/^export (?:type|interface) (\w+)/)
-    if (match && excludeTypes.includes(match[1])) {
-      if (line.includes('{') && !line.endsWith('{}') && !line.endsWith('{};')) {
-        let depth = (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length
-        i++
-        while (i < lines.length && depth > 0) {
-          depth += (lines[i].match(/\{/g) ?? []).length - (lines[i].match(/\}/g) ?? []).length
-          i++
-        }
-      } else {
-        i++
-      }
-      if (i < lines.length && lines[i] === '') i++
-      continue
-    }
-    output.push(line)
-    i++
-  }
-
-  return output.join('\n').trimEnd()
+// camelCase -> SCREAMING_SNAKE_CASE, for event descriptor constant names
+// ("beforeRequestSent" -> "BEFORE_REQUEST_SENT") and enum constant keys
+// ("beforeRequestSent" -> "BEFORE_REQUEST_SENT", "strict" -> "STRICT").
+function screamingSnakeCase(camel) {
+  return camel.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toUpperCase()
 }
 
-function generateClass({ className, commands, events, enhancement }) {
+// The un-prefixed local segment of a dotted schema name, PascalCased —
+// 'network.InterceptPhase' -> 'InterceptPhase'. Used for a static enum constant's
+// property name on its owning domain class, where the class already implies the
+// domain (Network.InterceptPhase, not Network.NetworkInterceptPhase).
+function localSchemaName(name, tsNameFallback) {
+  const dotIdx = name.indexOf('.')
+  return dotIdx === -1 ? tsNameFallback : normalizeDottedName(name.slice(dotIdx + 1))
+}
+
+// A valid JS identifier for an enum constant's key, derived from its wire value.
+// Unlike event/method names (always clean camelCase), some enum values are
+// space- or hyphen-separated (error.ErrorCode: "invalid argument", emulation.
+// ScreenOrientationType: "portrait-primary") or start with a character no JS
+// identifier can (script.SpecialNumber: "-0", "-Infinity") — normalize those
+// separators to underscores, and guard a still-invalid leading digit, before
+// screamingSnakeCase's uppercasing, so every generated key actually parses.
+function enumConstantKey(value) {
+  const key = screamingSnakeCase(String(value).replace(/[-\s]+/g, '_'))
+  return /^[0-9]/.test(key) ? `_${key}` : key
+}
+
+// A frozen, inspectable object literal for an enum's values — the JS-idiomatic
+// answer to Ruby's `Network::INTERCEPT_PHASE` constant (see
+// serialization.rb's Serialization module): a real value a caller can log,
+// autocomplete on, or iterate, instead of a bare string they have to already know.
+// Raw string values (e.g. 'beforeRequestSent') keep working unchanged — this is
+// purely an additional, discoverable way to reach the same values.
+function generateEnumConstantLiteral(values) {
+  const entries = values.map((v) => `${enumConstantKey(v)}: ${JSON.stringify(v)}`).join(', ')
+  return `Object.freeze({ ${entries} } as const)`
+}
+
+// The WebDriver BiDi spec's own anchor format for a command/event section
+// (e.g. '#command-network-addIntercept', '#event-network-beforeRequestSent') —
+// matches the @see links Ruby's generator emits for the same commands/events.
+function specSectionUrl(methodStr, kind) {
+  const [domain, local] = methodStr.split('.')
+  return `https://w3c.github.io/webdriver-bidi/#${kind}-${domain}-${local}`
+}
+
+function generateClass({ className, commands, events, runtimeByTsName, enumConstants }) {
   const lines = []
 
-  lines.push(`export class ${className} {`)
-  lines.push(`  private constructor(private readonly bidi: BidiConnection) {}`)
+  lines.push(INTERNAL_API_DOC)
+  lines.push(`export class ${className} extends Domain {`)
+
+  for (const evt of events) {
+    lines.push('')
+    lines.push(generateEventDescriptor(evt, runtimeByTsName))
+  }
+
+  for (const { propertyName, values } of enumConstants) {
+    lines.push('')
+    lines.push(`  static readonly ${propertyName} = ${generateEnumConstantLiteral(values)}`)
+  }
+
   lines.push('')
   lines.push(`  static async create(driver: unknown): Promise<${className}> {`)
-  lines.push(
-    `    const caps = await (driver as { getCapabilities(): Promise<{ get(key: string): unknown }> }).getCapabilities()`,
-  )
-  lines.push(`    if (!caps.get('webSocketUrl')) {`)
-  lines.push(`      throw new Error('WebDriver instance must support BiDi protocol')`)
-  lines.push(`    }`)
-  lines.push(`    const bidi = await (driver as { getBidi(): Promise<BidiConnection> }).getBidi()`)
-  lines.push(`    return new ${className}(bidi)`)
+  lines.push(`    return new ${className}(await Domain.connect(driver), DOMAIN_TOKEN)`)
   lines.push(`  }`)
 
   for (const cmd of commands) {
-    const override = enhancement.extraMethods?.[cmd.methodName]
     lines.push('')
-    lines.push(override ?? generateCommandMethod(cmd))
-  }
-
-  for (const evt of events) {
-    const override = enhancement.extraMethods?.[evt.onMethodName]
-    lines.push('')
-    lines.push(override ?? generateEventMethod(evt))
-  }
-
-  if (enhancement.extraMethods) {
-    const knownNames = new Set([...commands.map((c) => c.methodName), ...events.map((e) => e.onMethodName)])
-    for (const [name, body] of Object.entries(enhancement.extraMethods)) {
-      if (!knownNames.has(name)) {
-        // Purely additive method not tied to a command or event.
-        lines.push('')
-        lines.push(body)
-      }
-    }
+    lines.push(generateCommandMethod(cmd, runtimeByTsName))
   }
 
   lines.push(`}`)
   return lines.join('\n')
 }
 
-function generateCommandMethod(cmd) {
+// A static EventDescriptor<T> constant — no subscribe/dispatch method. Callers
+// reach events via the inherited addCallback(descriptor, handler), never a
+// per-event generated method. When the params type has a registered runtime
+// (record/union), it's passed to event() so addCallback() can validate each
+// delivered payload through fromWire() before the caller's handler runs.
+function generateEventDescriptor(evt, runtimeByTsName) {
+  const { eventName, methodStr, paramsTypeName } = evt
+  const paramsType = paramsTypeName ?? 'unknown'
+  const constName = screamingSnakeCase(eventName)
+  const paramsRuntime = paramsTypeName ? runtimeByTsName.get(paramsTypeName) : undefined
+  const runtimeArg =
+    paramsRuntime?.kind === 'record' || paramsRuntime?.kind === 'union' ? `, ${paramsRuntime.runtimeName}` : ''
+  const doc = `  /** @see ${specSectionUrl(methodStr, 'event')} */`
+  return `${doc}\n  static readonly ${constName}: EventDescriptor<${paramsType}> = event('${methodStr}'${runtimeArg})`
+}
+
+// A JSDoc block for a generated command method — readable without any TypeScript
+// tooling, since a plain-JS user gets no autocomplete from the sibling .d.ts unless
+// their editor happens to resolve it. Unrolls each params field individually (from
+// the same field list defineRecord() validates against, not a second copy of it) so
+// required vs. optional is visible in an ordinary hover, matching what Ruby's
+// generator gives for free via real keyword arguments in the method signature.
+function generateCommandJsDoc(cmd, paramsRuntime, resultTypeName) {
+  const { methodStr, paramsTypeName, hasParams } = cmd
+  const lines = ['  /**']
+  if (hasParams) {
+    lines.push(`   * @param {${paramsTypeName}} params`)
+    for (const field of paramsRuntime?.fields ?? []) {
+      const tsType = typeNodeToTs(field.type)
+      const tag = field.required ? `params.${field.name}` : `[params.${field.name}]`
+      lines.push(`   * @param {${tsType}} ${tag}`)
+    }
+  }
+  lines.push(`   * @returns {Promise<${resultTypeName ?? 'void'}>}`)
+  lines.push(`   * @see ${specSectionUrl(methodStr, 'command')}`)
+  lines.push('   */')
+  return lines.join('\n')
+}
+
+function generateCommandMethod(cmd, runtimeByTsName) {
   const { methodName, methodStr, paramsTypeName, hasParams, resultTypeName } = cmd
   const isVoid = resultTypeName === null
   const returnType = isVoid ? 'void' : resultTypeName
 
   // Use a double-cast (T as unknown as Record<string,unknown>) so TypeScript
   // accepts the conversion even when the params type has no index signature.
+  // Only actually used when there's no RecordClass/UnionClass to build a validated
+  // instance from below (paramsRuntime undefined) — otherwise sendArg overrides it.
   const paramsCast = hasParams ? '(params as unknown as Record<string, unknown>)' : '{}'
+  const paramsRuntime = hasParams ? runtimeByTsName.get(paramsTypeName) : undefined
+  const resultRuntime = !isVoid ? runtimeByTsName.get(resultTypeName) : undefined
 
-  const lines = []
+  const lines = [generateCommandJsDoc(cmd, paramsRuntime, isVoid ? null : resultTypeName)]
   if (hasParams) {
     lines.push(`  async ${methodName}(params: ${paramsTypeName}): Promise<${returnType}> {`)
   } else {
     lines.push(`  async ${methodName}(): Promise<${returnType}> {`)
   }
 
-  // Both void and non-void commands go through the same error-check pattern.
-  // bidi/index.js always resolves (never rejects) regardless of response type,
-  // so we must inspect the payload ourselves and throw on error responses.
-  lines.push(`    const response = await this.bidi.send({`)
-  lines.push(`      method: '${methodStr}',`)
-  lines.push(`      params: ${paramsCast},`)
-  lines.push(`    }) as Record<string, unknown>`)
-  lines.push(`    if (response['type'] === 'error') {`)
-  lines.push(`      throw new Error(\`\${response['error']}: \${response['message']}\`)`)
-  lines.push(`    }`)
-  if (!isVoid) {
-    lines.push(`    return (response as unknown as { result: ${resultTypeName} }).result`)
+  // Outbound validation: constructing/building the params record throws on a violation
+  // before anything reaches the wire. Takes the original typed `params` directly
+  // (matching RecordClass<T>'s `new (data: T)`), not the Record<string, unknown> cast
+  // meant only for the wire send() call below. The *validated* instance — not the
+  // caller's original `params` — is what actually gets sent: its toJSON() is what
+  // converts JS-facing field names (params.prefersColorScheme) to their declared wire
+  // keys (prefers-color-scheme), including on any nested record/union field.
+  let sendArg = paramsCast
+  if (paramsRuntime?.kind === 'record') {
+    lines.push(`    const validatedParams = new ${paramsRuntime.runtimeName}(params)`)
+    sendArg = '(validatedParams as unknown as Record<string, unknown>)'
+  } else if (paramsRuntime?.kind === 'union') {
+    lines.push(`    const validatedParams = ${paramsRuntime.runtimeName}.build(params)`)
+    sendArg = '(validatedParams as unknown as Record<string, unknown>)'
   }
 
-  lines.push(`  }`)
-  return lines.join('\n')
-}
+  // Domain.send() already checks for an error response and throws. Inbound
+  // validation then runs through the result's own fromWire() when one is
+  // registered; otherwise the result is cast as before.
+  if (isVoid) {
+    lines.push(`    await this.send('${methodStr}', ${sendArg})`)
+  } else if (resultRuntime?.kind === 'record' || resultRuntime?.kind === 'union') {
+    lines.push(`    const result = await this.send('${methodStr}', ${sendArg})`)
+    lines.push(`    return ${resultRuntime.runtimeName}.fromWire(result) as unknown as ${resultTypeName}`)
+  } else {
+    lines.push(`    return (await this.send('${methodStr}', ${sendArg})) as ${resultTypeName}`)
+  }
 
-function generateEventMethod(evt) {
-  const { onMethodName, methodStr, paramsTypeName } = evt
-  const cbType = paramsTypeName ? `(params: ${paramsTypeName}) => void` : `(params: unknown) => void`
-
-  const lines = []
-  lines.push(`  async ${onMethodName}(callback: ${cbType}): Promise<void> {`)
-  lines.push(`    await this.bidi.subscribe('${methodStr}')`)
-  // bidi/index.js emits BiDi events by method name through its single shared
-  // message dispatcher (which already handles JSON parsing and closed-state
-  // guards). Using bidi.on() here avoids attaching a new ws.on('message', ...)
-  // listener on every subscription call, preventing listener accumulation and
-  // MaxListeners warnings.
-  lines.push(`    this.bidi.on('${methodStr}', (params: unknown) => {`)
-  lines.push(`      callback(${paramsTypeName ? `params as ${paramsTypeName}` : 'params'})`)
-  lines.push(`    })`)
   lines.push(`  }`)
   return lines.join('\n')
 }
