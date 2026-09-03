@@ -68,6 +68,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Pdf;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -84,6 +85,8 @@ import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.Connection;
 import org.openqa.selenium.bidi.Handle;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialManagementDialog;
@@ -359,7 +362,34 @@ public class RemoteWebDriver
 
   @Override
   public void get(String url) {
-    execute(DriverCommand.GET(url));
+    if (isBiDiEnabled()) {
+      new BrowsingContext(this, getWindowHandle()).navigate(url, getReadinessState());
+    } else {
+      execute(DriverCommand.GET(url));
+    }
+  }
+
+  // BiDi is active when the driver implements HasBiDi and the session returned a WebSocket URL
+  // (a String), not just the boolean request capability that was sent at session creation.
+  private boolean isBiDiEnabled() {
+    return this instanceof HasBiDi
+        && getCapabilities().getCapability("webSocketUrl") instanceof String;
+  }
+
+  private ReadinessState getReadinessState() {
+    Object raw = getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY);
+    // The capability may be a PageLoadStrategy enum (set locally) or a String (deserialized from
+    // JSON), so normalise to the enum via toString() before comparing.
+    PageLoadStrategy strategy =
+        raw instanceof PageLoadStrategy
+            ? (PageLoadStrategy) raw
+            : PageLoadStrategy.fromString(raw == null ? null : raw.toString());
+    if (PageLoadStrategy.EAGER.equals(strategy)) {
+      return ReadinessState.INTERACTIVE;
+    } else if (PageLoadStrategy.NONE.equals(strategy)) {
+      return ReadinessState.NONE;
+    }
+    return ReadinessState.COMPLETE;
   }
 
   @Override
@@ -1256,12 +1286,20 @@ public class RemoteWebDriver
 
     @Override
     public void back() {
-      execute(DriverCommand.GO_BACK);
+      if (isBiDiEnabled()) {
+        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).back();
+      } else {
+        execute(DriverCommand.GO_BACK);
+      }
     }
 
     @Override
     public void forward() {
-      execute(DriverCommand.GO_FORWARD);
+      if (isBiDiEnabled()) {
+        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).forward();
+      } else {
+        execute(DriverCommand.GO_FORWARD);
+      }
     }
 
     @Override
@@ -1276,7 +1314,11 @@ public class RemoteWebDriver
 
     @Override
     public void refresh() {
-      execute(DriverCommand.REFRESH);
+      if (isBiDiEnabled()) {
+        new BrowsingContext(RemoteWebDriver.this, getWindowHandle()).reload(getReadinessState());
+      } else {
+        execute(DriverCommand.REFRESH);
+      }
     }
   }
 
