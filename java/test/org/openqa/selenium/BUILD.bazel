@@ -27,6 +27,7 @@ java_test_suite(
     size = "small",
     srcs = SMALL_TESTS,
     deps = [
+        ":helpers",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/netty/server:test-server",
