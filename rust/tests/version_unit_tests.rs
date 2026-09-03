@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use selenium_manager::SeleniumManager;
 use selenium_manager::files::parse_version;
 use selenium_manager::get_manager_by_browser;
 use selenium_manager::logger::Logger;

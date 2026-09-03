@@ -196,8 +196,9 @@ impl ARCH {
         match self {
             ARCH::X32 => vec![ARCH_X86, "i386", "x32", "i686"],
             ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "ia64"],
-            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
-            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64"],
+            // "arm" is the conventional name for 32-bit ARM (e.g. std::env::consts::ARCH)
+            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l", "arm"],
         }
     }
 
