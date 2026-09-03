@@ -543,7 +543,10 @@ py_library(
 py_library(
     name = "selenium",
     srcs = [],
-    data = ["selenium/py.typed"],
+    data = [
+        "selenium/llms.txt",
+        "selenium/py.typed",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -831,6 +834,7 @@ py_test_suite(
         "--instafail",
     ],
     deps = [
+        ":docs-tools",
         ":init-tree",
         ":selenium",
     ] + TEST_DEPS,
@@ -1454,6 +1458,30 @@ py_binary(
     deps = [":selenium"],
 )
 
+# Parses the workspace sources with `ast` rather than importing them, so it needs
+# nothing on the path and is safe to run before anything is built.
+py_binary(
+    name = "generate-deprecations",
+    srcs = ["generate_deprecations.py"],
+    main = "generate_deprecations.py",
+)
+
+# The documentation tooling, exposed so its logic can be unit tested rather than
+# only exercised by a release-time documentation build.
+py_library(
+    name = "docs-tools",
+    srcs = [
+        "docs/source/_ext/llm_assets.py",
+        "generate_deprecations.py",
+    ],
+    data = ["docs/source/_extra/deprecations.json"],
+    imports = [
+        ".",
+        "docs/source/_ext",
+    ],
+    deps = [":selenium"],
+)
+
 py_binary(
     name = "sphinx-autogen",
     srcs = ["run_sphinx_autogen.py"],
@@ -1476,7 +1504,13 @@ py_console_script_binary(
 
 sphinx_docs(
     name = "docs",
-    srcs = glob(["docs/source/**/*.rst"]),
+    srcs = glob([
+        "docs/source/**/*.rst",
+        # Sphinx extensions loaded by conf.py, and files published verbatim
+        # alongside the HTML via html_extra_path.
+        "docs/source/_ext/*.py",
+        "docs/source/_extra/**",
+    ]),
     config = "docs/source/conf.py",
     sphinx = ":sphinx-build",
 )
