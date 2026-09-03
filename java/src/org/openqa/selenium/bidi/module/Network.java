@@ -197,6 +197,7 @@ public class Network implements AutoCloseable {
   @Override
   public void close() {
     this.bidi.clearListener(beforeRequestSentEvent);
+    this.bidi.clearListener(fetchErrorEvent);
     this.bidi.clearListener(responseStarted);
     this.bidi.clearListener(responseCompleted);
     this.bidi.clearListener(authRequired);
