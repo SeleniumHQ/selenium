@@ -799,6 +799,34 @@ function generateTypeDeclaration(name, node) {
   return { ts: `export type ${tsName} = unknown`, runtimeName: null, kind: 'unknown' }
 }
 
+/**
+ * Follows an alias chain (an alias can point at another alias) to the record/union
+ * it ultimately resolves to, within `types` — one domain's own type map, the same
+ * shape generateDomainFile already has, so this needs no extra generator plumbing.
+ * Only a same-domain target is resolvable this way: a cross-domain alias (by far the
+ * most common case — `-> EmptyResult`, used across every domain) would need the target's
+ * runtime binding imported as a *value*, not just a type, from another domain's compiled
+ * file — real plumbing this doesn't attempt. Left unresolved there deliberately: EmptyResult
+ * has no required fields, so an unchecked cast catches nothing a fromWire() call would
+ * have caught either way — there's no actual validation gap to close for that case, only
+ * for a same-domain alias to a record/union that has real fields (or variants) to check.
+ * @returns {{runtimeName: string, kind: 'record'|'union'}|null}
+ */
+function resolveAliasRuntime(node, types) {
+  const seen = new Set()
+  let current = node
+  while (current?.kind === 'alias' && current.type?.ref && !seen.has(current.type.ref)) {
+    seen.add(current.type.ref)
+    const targetName = current.type.ref
+    const target = types[targetName]
+    if (target === undefined) return null // not in this domain — cross-domain, left unresolved
+    if (target.kind === 'record') return { runtimeName: normalizeDottedName(targetName), kind: 'record' }
+    if (target.kind === 'union') return { runtimeName: `${normalizeDottedName(targetName)}Union`, kind: 'union' }
+    current = target // another alias — keep resolving
+  }
+  return null
+}
+
 function generateDomainFile({ domain, className, types, commands, events, specVersion }) {
   const parts = [LICENSE_HEADER, '', GENERATED_NOTE]
 
@@ -853,6 +881,17 @@ function generateDomainFile({ domain, className, types, commands, events, specVe
           kind: declared.kind,
           fields: node.kind === 'record' ? node.fields : undefined,
         })
+      } else if (declared.kind === 'alias') {
+        // An alias itself has no RecordClass/UnionClass of its own (declared.runtimeName
+        // is null, see generateTypeDeclaration) — but when it ultimately points at a
+        // same-domain record/union, a command whose result *is* that alias (e.g.
+        // browser.CreateUserContextResult -> browser.UserContextInfo) should still
+        // validate inbound through fromWire(), not silently cast an unchecked response.
+        // Resolved by naming convention (a record's runtime const is its own tsName; a
+        // union's is `${tsName}Union`), not by depending on the target having already
+        // been processed — types is a complete map regardless of iteration order.
+        const resolved = resolveAliasRuntime(node, types)
+        if (resolved) runtimeByTsName.set(tsName, { ...resolved, fields: undefined })
       }
       if (declared.kind === 'enum') {
         enumConstants.push({ propertyName: localSchemaName(name, tsName), values: node.values })
