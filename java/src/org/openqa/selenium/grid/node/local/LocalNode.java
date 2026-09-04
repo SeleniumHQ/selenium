@@ -1017,17 +1017,6 @@ public class LocalNode extends Node implements Closeable {
     return new HttpResponse().setContent(asJson(result));
   }
 
-  /** Left here for backward compatibility. Remove this method in Selenium 4.41, 4.42 or 4.43 */
-  @Deprecated
-  private HttpResponse getDownloadedFile(File downloadsDirectory, String fileName)
-      throws IOException {
-    if (fileName.isEmpty()) {
-      throw new WebDriverException("Please specify file to download in URL");
-    }
-    File file = findDownloadedFile(downloadsDirectory, fileName);
-    return fileAsBinaryResponse(file);
-  }
-
   private HttpResponse fileAsBinaryResponse(File file) throws IOException {
     BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
     return new HttpResponse()
