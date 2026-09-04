@@ -115,7 +115,7 @@ disallow_incomplete_defs = false
 # type-checks the interior of functions without type annotations.
 check_untyped_defs = false
 # reports an error whenever a function with type annotations is decorated with a decorator without annotations.
-disallow_untyped_decorators = false
+disallow_untyped_decorators = true
 # changes the treatment of arguments with a default value of None by not implicitly making their type `typing.Optional`.
 no_implicit_optional = true
 # warns about casting an expression to it's inferred type.

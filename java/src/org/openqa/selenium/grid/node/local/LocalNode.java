@@ -29,7 +29,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -956,7 +955,9 @@ public class LocalNode extends Node implements Closeable {
     if (index < 0) {
       throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
     }
-    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
+    // The server has already decoded the path of the request, so the file name needs no
+    // further processing to match the name of the file on disk.
+    return uri.substring(index + prefix.length());
   }
 
   /** User wants to list files that can be downloaded */

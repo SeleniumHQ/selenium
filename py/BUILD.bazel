@@ -878,13 +878,18 @@ ALERT_TESTS = [
 # rendered_webelement_tests.py is the only browser test that imports Color.
 RENDERED_WEBELEMENT_TESTS = ["test/selenium/webdriver/common/rendered_webelement_tests.py"]
 
+# print_pdf_tests.py imports PrintOptions, which lives in its own library
+# (:common_print_page_options) rather than :common.
+PRINT_TESTS = ["test/selenium/webdriver/common/print_pdf_tests.py"]
+
 FEATURE_TESTS = (
     FEDCM_TESTS +
     TIMEOUTS_TESTS +
     VIRTUAL_AUTH_TESTS +
     API_REQUEST_TESTS +
     ALERT_TESTS +
-    RENDERED_WEBELEMENT_TESTS
+    RENDERED_WEBELEMENT_TESTS +
+    PRINT_TESTS
 )
 
 # Test files that import from selenium.webdriver.common.actions / action_chains.
@@ -986,7 +991,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1035,6 +1040,7 @@ FEATURE_SUITE_DEFS = {
     "api-request": (API_REQUEST_TESTS, ":common_api_request_context"),
     "alerts": (ALERT_TESTS, ":common_alert"),
     "rendered": (RENDERED_WEBELEMENT_TESTS, ":support_color"),
+    "print": (PRINT_TESTS, ":common_print_page_options"),
 }
 
 # Generate test-<browser>-<feature> targets (non-bidi, one per feature library)
@@ -1129,7 +1135,7 @@ FEATURE_SUITE_DEFS = {
                 "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
