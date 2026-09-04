@@ -50,9 +50,24 @@ def _center(element):
     return location["x"] + size["width"] // 2, location["y"] + size["height"] // 2
 
 
-def test_basic_key_input(driver, pages):
+def _load_single_text_input(driver, pages):
+    """Return ``#textInput`` once it is the active element.
+
+    ``single_text_input.html`` relies on ``autofocus``, which Firefox may apply after the load event.
+    Dispatching keys before then sends them to ``<body>`` and drops the leading characters, so focus is
+    requested explicitly and confirmed rather than assumed.
+    """
     pages.load("single_text_input.html")
     input_element = driver.find_element(By.ID, "textInput")
+    driver.execute_script("arguments[0].focus();", input_element)
+    WebDriverWait(driver, 5).until(
+        lambda d: d.execute_script("return document.activeElement === arguments[0];", input_element)
+    )
+    return input_element
+
+
+def test_basic_key_input(driver, pages):
+    input_element = _load_single_text_input(driver, pages)
 
     key_actions = KeySourceActions(
         id="keyboard",
@@ -75,8 +90,7 @@ def test_basic_key_input(driver, pages):
 
 
 def test_key_input_with_pause(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
 
     key_actions = KeySourceActions(
         id="keyboard",
@@ -161,8 +175,7 @@ def test_wheel_scroll(driver, pages):
 
 
 def test_combined_input_actions(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
     x, y = _center(input_element)
 
     pointer_actions = PointerSourceActions(
@@ -238,8 +251,7 @@ def test_set_multiple_files(driver):
 
 
 def test_release_actions(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
 
     Input(driver).perform_actions(
         context=driver.current_window_handle,
@@ -255,16 +267,15 @@ def test_release_actions(driver, pages):
 
 
 def test_perform_actions_with_none_source(driver, pages):
-    pages.load("single_text_input.html")
+    input_element = _load_single_text_input(driver, pages)
     none_actions = NoneSourceActions(id="none_id", actions=[PauseAction(duration=100), PauseAction(duration=50)])
     Input(driver).perform_actions(context=driver.current_window_handle, actions=[none_actions])
 
-    assert driver.find_element(By.ID, "textInput").get_attribute("value") == ""
+    assert input_element.get_attribute("value") == ""
 
 
 def test_perform_actions_rapid_key_sequence(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
 
     key_actions = KeySourceActions(
         id="keyboard",
@@ -396,8 +407,7 @@ def test_wheel_scroll_horizontal(driver, pages):
 
 
 def test_key_input_special_characters(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
 
     key_actions = KeySourceActions(
         id="keyboard",
@@ -510,8 +520,7 @@ def test_combined_keyboard_and_wheel_actions(driver, pages):
 
 
 def test_key_input_with_value_attribute(driver, pages):
-    pages.load("single_text_input.html")
-    input_element = driver.find_element(By.ID, "textInput")
+    input_element = _load_single_text_input(driver, pages)
 
     key_actions = KeySourceActions(
         id="keyboard",
