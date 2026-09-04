@@ -74,6 +74,24 @@ jobs:
         --local_test_jobs 1
         --target_pattern_file=remote-targets.txt
 
+  remote-bidi-tests:
+    name: Remote BiDi Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Integration Tests Remote BiDi
+      needs-display: true
+      rerun-with-debug: true
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        { echo "tests(//py:test-remote-bidi) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
+        bazel query --query_file=query.txt --output=label > remote-bidi-targets.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --target_pattern_file=remote-bidi-targets.txt
+
   browser-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
