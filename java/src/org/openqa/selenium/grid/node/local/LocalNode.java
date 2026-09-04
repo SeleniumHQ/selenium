@@ -29,7 +29,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -112,7 +111,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.docker.DockerSession;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
@@ -901,10 +899,11 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
-    // When the session is running in a Docker container, the download file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the download file command needs to be
+    // forwarded to that environment, since the Node does not share a filesystem with the browser.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
     if (!this.managedDownloadsEnabled) {
@@ -956,7 +955,9 @@ public class LocalNode extends Node implements Closeable {
     if (index < 0) {
       throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
     }
-    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
+    // The server has already decoded the path of the request, so the file name needs no
+    // further processing to match the name of the file on disk.
+    return uri.substring(index + prefix.length());
   }
 
   /** User wants to list files that can be downloaded */
@@ -1109,10 +1110,13 @@ public class LocalNode extends Node implements Closeable {
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
-    // When the session is running in a Docker container, the upload file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the upload file command needs to be forwarded
+    // to that environment, since the Node does not share a filesystem with the browser. Otherwise
+    // the file would be written to the Node's filesystem and be unreachable from the browser when
+    // sendKeys runs.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
 

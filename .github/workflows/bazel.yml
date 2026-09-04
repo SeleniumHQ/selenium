@@ -233,6 +233,7 @@ jobs:
       - name: Setup Safari Technology Preview
         if: inputs.safari-preview && inputs.os == 'macos'
         run: |
+          brew update --quiet
           brew install --cask safari-technology-preview
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Import GPG key
@@ -261,17 +262,31 @@ jobs:
         if: steps.run-bazel.outcome == 'failure'
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
-      - name: Collect failed test logs
+      - name: Collect failed logs
         if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
-        run: ./scripts/github-actions/collect-test-logs.sh
-      - name: Upload failed test logs
+        run: ./scripts/github-actions/collect-failed-logs.sh
+      - name: Upload failed logs
         if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
+      - name: Parse flaky results
+        id: parse-flaky
+        if: ${{ !cancelled() && inputs.rerun-with-debug && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk' }}
+        continue-on-error: true
+        shell: bash
+        run: ./scripts/github-actions/parse-flaky-results.sh
+      - name: Upload flaky results
+        if: always() && steps.parse-flaky.outputs.results == 'true'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          retention-days: 60
+          path: build/failures/results.jsonl
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

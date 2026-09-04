@@ -24,50 +24,35 @@ namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module, ISessionModule
 {
-    private static readonly Command<Parameters, StatusResult> StatusCommand = new(
-        "session.status", Default.Parameters, Default.StatusResult);
-
-    private static readonly Command<NewParameters, NewResult> NewCommand = new(
-        "session.new", Default.NewParameters, Default.NewResult);
-
-    private static readonly Command<Parameters, EndResult> EndCommand = new(
-        "session.end", Default.Parameters, Default.EndResult);
-
-    private static readonly Command<SubscribeParameters, SubscribeResult> SubscribeCommand = new(
-        "session.subscribe", Default.SubscribeParameters, Default.SubscribeResult);
-
-    private static readonly Command<UnsubscribeByIdParameters, UnsubscribeResult> UnsubscribeByIdCommand = new(
-        "session.unsubscribe", Default.UnsubscribeByIdParameters, Default.UnsubscribeResult);
-
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(StatusCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("session.status", Parameters.Empty, Default.Parameters, Default.StatusResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(ImmutableArray<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await ExecuteAsync(SubscribeCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("session.subscribe", @params, Default.SubscribeParameters, Default.SubscribeResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<UnsubscribeResult> UnsubscribeAsync(ImmutableArray<Subscription> subscriptions, UnsubscribeByIdOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await ExecuteAsync(UnsubscribeByIdCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("session.unsubscribe", @params, Default.UnsubscribeByIdParameters, Default.UnsubscribeResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilities, NewOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new NewParameters(capabilities);
 
-        return await ExecuteAsync(NewCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("session.new", @params, Default.NewParameters, Default.NewResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<EndResult> EndAsync(EndOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await ExecuteAsync(EndCommand, Parameters.Empty, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("session.end", Parameters.Empty, Default.Parameters, Default.EndResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

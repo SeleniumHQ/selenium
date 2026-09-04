@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
@@ -285,5 +286,123 @@ public class RelaySessionFactoryTest {
     // Remote response value should win over stereotype (merge overlays remote on top)
     assertThat(sessionCaps.getCapability("appium:app")).isEqualTo("http://localhost/app.apk");
     assertThat(sessionCaps.getCapability("browserName")).isEqualTo(null);
+  }
+
+  @Test
+  void doesNotForwardClientRemoteUrlToTheRemoteEnd() {
+    String fakeSessionId = UUID.randomUUID().toString();
+
+    Map<String, Object> responsePayload =
+        Map.of(
+            "value",
+            Map.of(
+                "sessionId",
+                fakeSessionId,
+                "capabilities",
+                Map.of("browserName", "chrome", "platformName", "android")));
+
+    AtomicReference<String> forwardedPayload = new AtomicReference<>();
+    Route route =
+        Route.post("/session")
+            .to(
+                () ->
+                    req -> {
+                      forwardedPayload.set(Contents.string(req));
+                      HttpResponse response = new HttpResponse();
+                      response.setStatus(200);
+                      response.setContent(Contents.asJson(responsePayload));
+                      return response;
+                    });
+
+    PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
+    Tracer tracer = DefaultTestTracer.createTracer();
+
+    Capabilities stereotype =
+        new ImmutableCapabilities("browserName", "chrome", "platformName", "android");
+
+    RelaySessionFactory factory =
+        new RelaySessionFactory(
+            tracer,
+            clientFactory,
+            Duration.ofSeconds(300),
+            URI.create("http://localhost:4723"),
+            null,
+            "",
+            stereotype);
+
+    // se:remoteUrl describes how the client reached this Grid. Forwarding it would let the remote
+    // end advertise a WebSocket URL pointing back here, so this Node would proxy to itself.
+    Capabilities requestCaps =
+        new ImmutableCapabilities(
+            "browserName", "chrome",
+            "platformName", "android",
+            "se:remoteUrl", "http://localhost:4444");
+
+    CreateSessionRequest sessionRequest =
+        new CreateSessionRequest(Set.of(Dialect.W3C), requestCaps, Map.of());
+
+    Either<WebDriverException, ActiveSession> result = factory.apply(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    assertThat(forwardedPayload.get()).doesNotContain("se:remoteUrl");
+    assertThat(forwardedPayload.get()).contains("browserName");
+
+    // The Node still needs it locally to build client-reachable BiDi/CDP/VNC URLs.
+    assertThat(result.right().getCapabilities().getCapability("se:remoteUrl"))
+        .isEqualTo("http://localhost:4444");
+  }
+
+  @Test
+  void relaySessionReportsRemoteFileSystemSoFileCommandsAreForwarded() {
+    String fakeSessionId = UUID.randomUUID().toString();
+
+    Map<String, Object> responsePayload =
+        Map.of(
+            "value",
+            Map.of(
+                "sessionId",
+                fakeSessionId,
+                "capabilities",
+                Map.of("browserName", "chrome", "platformName", "android")));
+
+    Route route =
+        Route.post("/session")
+            .to(
+                () ->
+                    req -> {
+                      HttpResponse response = new HttpResponse();
+                      response.setStatus(200);
+                      response.setContent(Contents.asJson(responsePayload));
+                      return response;
+                    });
+
+    PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
+    Tracer tracer = DefaultTestTracer.createTracer();
+
+    Capabilities stereotype =
+        new ImmutableCapabilities("browserName", "chrome", "platformName", "android");
+
+    RelaySessionFactory factory =
+        new RelaySessionFactory(
+            tracer,
+            clientFactory,
+            Duration.ofSeconds(300),
+            URI.create("http://localhost:4723"),
+            null,
+            "",
+            stereotype);
+
+    Capabilities requestCaps =
+        new ImmutableCapabilities("browserName", "chrome", "platformName", "android");
+
+    CreateSessionRequest sessionRequest =
+        new CreateSessionRequest(Set.of(Dialect.W3C), requestCaps, Map.of());
+
+    Either<WebDriverException, ActiveSession> result = factory.apply(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    // The browser runs on an external endpoint that does not share the Node's filesystem, so
+    // LocalNode must forward file upload/download commands to it instead of handling them locally.
+    assertThat(result.right().isRemoteFileSystem()).isTrue();
   }
 }

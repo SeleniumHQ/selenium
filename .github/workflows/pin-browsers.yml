@@ -31,18 +31,20 @@ jobs:
         with:
           persist-credentials: false
       - name: Download patch
-        id: download
         uses: actions/download-artifact@v8
         with:
-          name: pinned-browsers
-        continue-on-error: true
+          pattern: pinned-browsers
+          merge-multiple: true
       - name: Apply Patch
-        if: steps.download.outcome == 'success'
+        id: apply
         run: |
-          git apply --index changes.patch
-          rm changes.patch
+          if [ -s changes.patch ]; then
+            git apply --index changes.patch
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          rm -f changes.patch
       - name: Create Pull Request
-        if: steps.download.outcome == 'success'
+        if: steps.apply.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}

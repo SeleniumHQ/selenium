@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.48.0.202608101808"
+version = "4.49.0.202608272014"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -115,7 +115,7 @@ disallow_incomplete_defs = false
 # type-checks the interior of functions without type annotations.
 check_untyped_defs = false
 # reports an error whenever a function with type annotations is decorated with a decorator without annotations.
-disallow_untyped_decorators = false
+disallow_untyped_decorators = true
 # changes the treatment of arguments with a default value of None by not implicitly making their type `typing.Optional`.
 no_implicit_optional = true
 # warns about casting an expression to it's inferred type.
@@ -125,11 +125,10 @@ warn_unused_ignores = true
 # warns when returning a value with typing.Any from a function with a non typing.Any return type.
 warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
-warn_unreachable = false
+warn_unreachable = true
 
 [[tool.mypy.overrides]]
 module = [
-    "selenium.webdriver.common.devtools.*",
     "selenium.webdriver.common.bidi.*",
 ]
 ignore_errors = true

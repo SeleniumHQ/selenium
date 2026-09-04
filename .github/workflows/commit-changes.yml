@@ -41,14 +41,19 @@ jobs:
       - name: Download patch
         uses: actions/download-artifact@v8
         with:
-          name: ${{ inputs.artifact-name }}
-        continue-on-error: true
+          pattern: ${{ inputs.artifact-name }}
+          merge-multiple: true
       - name: Apply and commit
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           if [ -s changes.patch ]; then
+            if git apply --reverse --check changes.patch 2>/dev/null; then
+              echo "::notice::Patch already applied on this branch; skipping commit and push."
+              exit 0
+            fi
             git apply --index changes.patch
+            rm -f changes.patch
             git commit -m "$COMMIT_MESSAGE"
             if [ -n "$PUSH_BRANCH" ]; then
               git push --force origin HEAD:"$PUSH_BRANCH"

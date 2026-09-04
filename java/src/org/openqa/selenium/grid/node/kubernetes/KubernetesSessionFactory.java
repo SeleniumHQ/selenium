@@ -441,7 +441,10 @@ public class KubernetesSessionFactory implements SessionFactory {
       HttpClient client = clientFactory.createClient(baseConfig);
 
       Command command =
-          new Command(null, DriverCommand.NEW_SESSION(sessionRequest.getDesiredCapabilities()));
+          new Command(
+              null,
+              DriverCommand.NEW_SESSION(
+                  SessionFactory.stripPerHopCapabilities(sessionRequest.getDesiredCapabilities())));
       ProtocolHandshake.Result result;
       Response response;
       try {

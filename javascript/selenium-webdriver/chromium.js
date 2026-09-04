@@ -506,7 +506,7 @@ class Options extends Capabilities {
    * __Example 1: Using a Pre-configured Device__
    *
    *     let options = new chrome.Options().setMobileEmulation(
-   *         {deviceName: 'Google Nexus 5'});
+   *         {deviceName: 'Pixel 10'});
    *
    *     let driver = chrome.Driver.createSession(options);
    *

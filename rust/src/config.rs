@@ -46,6 +46,7 @@ pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
 pub const MIRROR_PREFIX: &str = "-mirror-url";
 pub const CACHE_PATH_KEY: &str = "cache-path";
+const DO_NOT_TRACK: &str = "DO_NOT_TRACK";
 const UNAME_COMMAND: &str = "uname";
 
 pub struct ManagerConfig {
@@ -133,7 +134,10 @@ impl ManagerConfig {
             avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
             language_binding: StringKey(vec!["language-binding"], "").get_value(),
             selenium_version: StringKey(vec!["selenium-version"], "").get_value(),
-            avoid_stats: BooleanKey("avoid-stats", cfg!(feature = "avoid_stats")).get_value(),
+            avoid_stats: should_avoid_stats(
+                BooleanKey("avoid-stats", cfg!(feature = "avoid_stats")).get_value(),
+                env::var(DO_NOT_TRACK).ok().as_deref(),
+            ),
             skip_driver_in_path: BooleanKey("skip-driver-in-path", false).get_value(),
             skip_browser_in_path: BooleanKey("skip-browser-in-path", false).get_value(),
         }
@@ -272,6 +276,10 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
+fn should_avoid_stats(configured: bool, do_not_track: Option<&str>) -> bool {
+    configured || do_not_track == Some("1")
+}
+
 #[cfg(test)]
 mod env_name_tests {
     use super::*;
@@ -294,6 +302,28 @@ mod env_name_tests {
     #[test]
     fn get_env_name_empty_suffix() {
         assert_eq!(get_env_name(""), "SE_");
+    }
+}
+
+#[cfg(test)]
+mod stats_config_tests {
+    use super::*;
+
+    #[test]
+    fn do_not_track_disables_stats() {
+        assert!(should_avoid_stats(false, Some("1")));
+    }
+
+    #[test]
+    fn existing_opt_out_disables_stats_without_do_not_track() {
+        assert!(should_avoid_stats(true, None));
+    }
+
+    #[test]
+    fn other_do_not_track_values_do_not_disable_stats() {
+        for value in [None, Some(""), Some("0"), Some("true")] {
+            assert!(!should_avoid_stats(false, value));
+        }
     }
 }
 

@@ -180,9 +180,6 @@ class CustomModule : Module
 {
     private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
-    private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
-        new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
-
     private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
         EventDescriptor<SomethingHappenedEventArgs>.Create(
             "log.entryAdded",
@@ -192,7 +189,7 @@ class CustomModule : Module
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
+        return await ExecuteAsync("session.status", Parameters.Empty, JsonContext.Parameters, JsonContext.DoSomethingResult, options, CancellationToken.None);
     }
 }
 

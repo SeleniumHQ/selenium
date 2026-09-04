@@ -36,22 +36,6 @@ desc 'Build, package, and push nupkg files to NuGet'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
 
-  unless nightly
-    already_published = begin
-      Rake::Task['dotnet:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['dotnet:verify'].reenable
-    end
-
-    if already_published
-      puts '.NET packages already published — skipping release.'
-      next
-    end
-  end
-
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
@@ -122,6 +106,7 @@ end
 
 desc 'Update .NET dependencies to latest versions'
 task :update do
+  # Effectively a no-op while paket.dependencies uses exact versions and STRATEGY: MIN
   Bazel.execute('run', [], '//dotnet:paket-update')
   Rake::Task['dotnet:pin'].invoke
 end

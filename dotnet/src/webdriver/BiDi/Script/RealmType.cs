@@ -30,7 +30,7 @@ public enum RealmType
     SharedWorker,
     ServiceWorker,
     Worker,
-    PaintWorker,
-    AudioWorker,
+    PaintWorklet,
+    AudioWorklet,
     Worklet
 }
