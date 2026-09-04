@@ -259,3 +259,42 @@ def rb_integration_test(
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
+
+            # BiDi over Grid: the node rewrites the returned `webSocketUrl` to
+            # ws://<grid>/session/<id>/se/bidi and tunnels it, so the client
+            # talks to Grid's socket rather than the driver's own. Combining
+            # WD_SPEC_DRIVER=remote with WEBDRIVER_BIDI needs no spec change --
+            # `browser` still resolves via WD_REMOTE_BROWSER, so the same
+            # `<browser>_options` builder sets web_socket_url.
+            #
+            # Only generated where a classic Grid target also exists; browsers
+            # marked `classic = False` (ie, safari-preview) have no Grid
+            # coverage to build on.
+            if grid and generate_classic:
+                rb_test(
+                    name = "{}-{}-bidi-remote".format(name, browser),
+                    size = "large",
+                    srcs = srcs,
+                    args = ["rb/spec/"],
+                    data = BROWSERS[browser]["data"] + data + [
+                        "//common/src/web",
+                        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                        "//rb/spec:java-location",
+                        "@bazel_tools//tools/jdk:current_java_runtime",
+                    ],
+                    env = BROWSERS[browser]["env"] | {
+                        "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                        "WD_SPEC_DRIVER": "remote",
+                        "WEBDRIVER_BIDI": "true",
+                    },
+                    main = "@bundle//bin:rspec",
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags +
+                           ["bidi", "{}-remote".format(browser), "{}-bidi-remote".format(browser)] + family_tags,
+                    deps = {d: True for d in (
+                        ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                        BROWSERS[browser]["deps"] +
+                        deps
+                    )}.keys(),
+                    visibility = ["//rb:__subpackages__"],
+                    target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+                )

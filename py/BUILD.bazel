@@ -1242,13 +1242,71 @@ FEATURE_SUITE_DEFS = {
     for feature in FEATURE_SUITE_DEFS
 ]
 
-# Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features
+# Generate test-<browser>-remote-bidi targets.
+#
+# These exercise BiDi through Grid's websocket proxy: the node rewrites the
+# returned `webSocketUrl` to ws://<grid>/session/<id>/se/bidi and tunnels it,
+# so the client talks to the Grid socket rather than the driver's own. Nothing
+# in the client or conftest is remote-aware for BiDi; --bidi only sets
+# `webSocketUrl` on the options, and --remote only swaps in webdriver.Remote.
+REMOTE_BIDI_BROWSERS = [
+    browser
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+    if BROWSER_TESTS[browser].get("bidi", False)
+]
+
+[
+    py_test_suite(
+        name = "test-%s-remote-bidi" % browser,
+        size = "large",
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        args = [
+            "--instafail",
+            "--bidi",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        test_suffix = "%s-remote-bidi" % browser,
+        deps = [
+            ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
+            ":common_alert",  # bidi/browsing_context_tests.py calls EC.alert_is_present()
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in REMOTE_BIDI_BROWSERS
+]
+
+# Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features + remote-bidi
 [test_suite(
     name = "test-%s-remote" % browser,
     tests = [
         ":test-%s-remote-common" % browser,
         ":test-%s-remote-actions" % browser,
-    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
+    ] + [
+        ":test-%s-remote-%s" % (browser, f)
+        for f in FEATURE_SUITE_DEFS
+    ] + [
+        ":test-%s-remote-bidi" % b
+        for b in REMOTE_BIDI_BROWSERS
+        if b == browser
+    ],
 ) for browser in [
     "chrome",
     "firefox",
