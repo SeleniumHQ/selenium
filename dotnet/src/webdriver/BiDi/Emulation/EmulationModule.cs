@@ -24,94 +24,58 @@ namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class EmulationModule : Module, IEmulationModule
 {
-    private static readonly Command<SetTimezoneOverrideParameters, SetTimezoneOverrideResult> SetTimezoneOverrideCommand = new(
-        "emulation.setTimezoneOverride", Default.SetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult);
-
-    private static readonly Command<SetUserAgentOverrideParameters, SetUserAgentOverrideResult> SetUserAgentOverrideCommand = new(
-        "emulation.setUserAgentOverride", Default.SetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult);
-
-    private static readonly Command<SetLocaleOverrideParameters, SetLocaleOverrideResult> SetLocaleOverrideCommand = new(
-        "emulation.setLocaleOverride", Default.SetLocaleOverrideParameters, Default.SetLocaleOverrideResult);
-
-    private static readonly Command<SetMediaFeaturesOverrideParameters, SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideCommand = new(
-        "emulation.setMediaFeaturesOverride", Default.SetMediaFeaturesOverrideParameters, Default.SetMediaFeaturesOverrideResult);
-
-    private static readonly Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideCommand = new(
-        "emulation.setForcedColorsModeThemeOverride", Default.SetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult);
-
-    private static readonly Command<SetScriptingEnabledParameters, SetScriptingEnabledResult> SetScriptingEnabledCommand = new(
-        "emulation.setScriptingEnabled", Default.SetScriptingEnabledParameters, Default.SetScriptingEnabledResult);
-
-    private static readonly Command<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult> SetScreenOrientationOverrideCommand = new(
-        "emulation.setScreenOrientationOverride", Default.SetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult);
-
-    private static readonly Command<SetScreenSettingsOverrideParameters, SetScreenSettingsOverrideResult> SetScreenSettingsOverrideCommand = new(
-        "emulation.setScreenSettingsOverride", Default.SetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult);
-
-    private static readonly Command<SetScrollbarTypeOverrideParameters, SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideCommand = new(
-        "emulation.setScrollbarTypeOverride", Default.SetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult);
-
-    private static readonly Command<SetGeolocationOverrideParameters, SetGeolocationOverrideResult> SetGeolocationOverrideCommand = new(
-        "emulation.setGeolocationOverride", Default.SetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult);
-
-    private static readonly Command<SetTouchOverrideParameters, SetTouchOverrideResult> SetTouchOverrideCommand = new(
-        "emulation.setTouchOverride", Default.SetTouchOverrideParameters, Default.SetTouchOverrideResult);
-
-    private static readonly Command<SetNetworkConditionsParameters, SetNetworkConditionsResult> SetNetworkConditionsCommand = new(
-        "emulation.setNetworkConditions", Default.SetNetworkConditionsParameters, Default.SetNetworkConditionsResult);
-
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetTimezoneOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setTimezoneOverride", @params, Default.SetTimezoneOverrideParameters, Default.SetTimezoneOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetUserAgentOverrideResult> SetUserAgentOverrideAsync(string? userAgent, SetUserAgentOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetUserAgentOverrideParameters(userAgent, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetUserAgentOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setUserAgentOverride", @params, Default.SetUserAgentOverrideParameters, Default.SetUserAgentOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetLocaleOverrideResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetLocaleOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setLocaleOverride", @params, Default.SetLocaleOverrideParameters, Default.SetLocaleOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetMediaFeaturesOverrideResult> SetMediaFeaturesOverrideAsync(MediaFeatures? features, SetMediaFeaturesOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetMediaFeaturesOverrideParameters(features, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetMediaFeaturesOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setMediaFeaturesOverride", @params, Default.SetMediaFeaturesOverrideParameters, Default.SetMediaFeaturesOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetForcedColorsModeThemeOverrideParameters(theme, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetForcedColorsModeThemeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setForcedColorsModeThemeOverride", @params, Default.SetForcedColorsModeThemeOverrideParameters, Default.SetForcedColorsModeThemeOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScriptingEnabledResult> SetScriptingEnabledAsync(bool? enabled, SetScriptingEnabledOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScriptingEnabledParameters(enabled, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetScriptingEnabledCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setScriptingEnabled", @params, Default.SetScriptingEnabledParameters, Default.SetScriptingEnabledResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenOrientationOverrideResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetScreenOrientationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setScreenOrientationOverride", @params, Default.SetScreenOrientationOverrideParameters, Default.SetScreenOrientationOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScreenSettingsOverrideParameters(screenArea, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetScreenSettingsOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setScreenSettingsOverride", @params, Default.SetScreenSettingsOverrideParameters, Default.SetScreenSettingsOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetScrollbarTypeOverrideResult> SetScrollbarTypeOverrideAsync(ScrollbarType? scrollbarType, SetScrollbarTypeOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetScrollbarTypeOverrideParameters(scrollbarType, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetScrollbarTypeOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setScrollbarTypeOverride", @params, Default.SetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationOverrideAsync(GeolocationOverride? geolocationOverride, SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
@@ -128,19 +92,19 @@ internal sealed class EmulationModule : Module, IEmulationModule
             _ => throw new ArgumentException($"Unknown geolocation override type: {geolocationOverride.GetType()}", nameof(geolocationOverride))
         };
 
-        return await ExecuteAsync(SetGeolocationOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setGeolocationOverride", @params, Default.SetGeolocationOverrideParameters, Default.SetGeolocationOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetTouchOverrideResult> SetTouchOverrideAsync(long? maxTouchPoints, SetTouchOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetTouchOverrideParameters(maxTouchPoints, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetTouchOverrideCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setTouchOverride", @params, Default.SetTouchOverrideParameters, Default.SetTouchOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetNetworkConditionsResult> SetNetworkConditionsAsync(NetworkConditions? networkConditions, SetNetworkConditionsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetNetworkConditionsParameters(networkConditions, options?.Contexts, options?.UserContexts);
-        return await ExecuteAsync(SetNetworkConditionsCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("emulation.setNetworkConditions", @params, Default.SetNetworkConditionsParameters, Default.SetNetworkConditionsResult, options, cancellationToken).ConfigureAwait(false);
     }
 }
 

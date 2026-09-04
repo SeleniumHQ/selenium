@@ -32,10 +32,10 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from typing_extensions import Self
 
@@ -173,6 +173,11 @@ def create_matches(options: list[BaseOptions]) -> dict:
     return capabilities
 
 
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+_D = TypeVar("_D", bound="WebDriver")
+
+
 if TYPE_CHECKING:
     from selenium.webdriver.common.api_request_context import APIRequestContext
     from selenium.webdriver.common.fedcm.dialog import Dialog
@@ -181,9 +186,9 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
 
 
-def _required_chromium_based_browser(func):
+def _required_chromium_based_browser(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         assert self.caps["browserName"].lower() not in ["firefox", "safari"], (
             "This only currently works in Chromium based browsers"
         )
@@ -192,10 +197,10 @@ def _required_chromium_based_browser(func):
     return wrapper
 
 
-def _required_virtual_authenticator(func):
+def _required_virtual_authenticator(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
     @_required_chromium_based_browser
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         if not self.virtual_authenticator_id:
             raise ValueError("This function requires a virtual authenticator to be set.")
         return func(self, *args, **kwargs)

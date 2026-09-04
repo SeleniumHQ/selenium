@@ -1,4 +1,4 @@
-// <copyright file="DownloadWillBeginEvent.cs" company="Selenium Committers">
+// <copyright file="StartScreencast.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,26 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Json.Converters;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record DownloadWillBeginEventArgs(
-    Download Download,
-    string SuggestedFilename,
-    BrowsingContext Context,
-    Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url,
-    Browser.UserContext? UserContext)
-    : EventArgs, IBaseNavigationInfo;
+internal sealed record StartScreencastParameters(BrowsingContext Context, string? MimeType, MediaTrackConstraints? Video, bool? Audio) : Parameters;
+
+public sealed record StartScreencastOptions : CommandOptions
+{
+    public string? MimeType { get; init; }
+
+    public MediaTrackConstraints? Video { get; init; }
+
+    public bool? Audio { get; init; }
+}
+
+public record struct MediaTrackConstraints
+{
+    public long? Width { get; init; }
+
+    public long? Height { get; init; }
+
+    public long? FrameRate { get; init; }
+}
+
+public sealed record StartScreencastResult(Screencast Screencast, string Path) : EmptyResult;

@@ -73,6 +73,7 @@ public sealed record EvaluateResultException(
 public sealed record ExceptionDetails(
     long ColumnNumber,
     long LineNumber,
+    RemoteValue Exception,
     StackTrace StackTrace,
     string Text);
 
