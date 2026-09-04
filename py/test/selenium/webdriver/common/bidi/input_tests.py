@@ -636,6 +636,10 @@ def test_wheel_scroll_with_duration(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions])
 
+    # duration spreads the scroll over 500ms, so it can still be in flight when
+    # perform_actions returns; Firefox was observed one pixel short.
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") == 100)
+
     scroll_y = driver.execute_script("return window.pageYOffset;")
     assert scroll_y == 100
 

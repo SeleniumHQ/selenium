@@ -619,6 +619,17 @@ def pages(driver, webserver):
     return Pages()
 
 
+@pytest.fixture
+def headless(request):
+    """Whether the browser under test was started headless.
+
+    Without a window manager some behavior is not modelled at all - notably window
+    focus, which headless Chromium reports as always held by the current window - so
+    tests that assert on it need to know which mode they are running in.
+    """
+    return bool(request.config.option.headless)
+
+
 @pytest.fixture(autouse=True, scope="session")
 def server(request):
     is_remote = request.config.getoption("remote")

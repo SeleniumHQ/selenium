@@ -159,6 +159,7 @@ modules, you will find the main fixtures in `conftest.py`:
 | `webserver` | Test HTTP server reference |
 | `clean_driver` | Fresh driver without parametrization |
 | `clean_options` | Fresh browser options instance |
+| `headless` | Whether the browser was started headless, for tests asserting on behavior a headless browser does not model (e.g. window focus) |
 
 ## Test Organization
 
