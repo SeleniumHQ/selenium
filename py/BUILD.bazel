@@ -1124,6 +1124,48 @@ FEATURE_SUITE_DEFS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
+# Generate test-<browser>-remote-bidi targets (chrome and firefox only).
+# Deliberately not folded into the test-<browser>-remote aggregate: BiDi over Grid's
+# websocket proxy is new coverage, so keep it out of the established remote job until
+# it has proven stable.
+[
+    py_test_suite(
+        name = "test-%s-remote-bidi" % browser,
+        size = "large",
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        args = [
+            "--instafail",
+            "--bidi",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        test_suffix = "%s-remote-bidi" % browser,
+        deps = [
+            ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
+            ":common_alert",  # bidi/browsing_context_tests.py calls EC.alert_is_present()
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
     py_test_suite(
