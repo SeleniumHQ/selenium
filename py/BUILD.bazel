@@ -1305,6 +1305,16 @@ test_suite(
     ],
 )
 
+# Kept out of :test-remote so BiDi-over-Grid runs as its own CI job while it is new.
+test_suite(
+    name = "test-remote-bidi",
+    tags = ["remote"],
+    tests = [
+        ":test-chrome-remote-bidi",
+        ":test-firefox-remote-bidi",
+    ],
+)
+
 py_test_suite(
     name = "test-webkitgtk-common",
     size = "large",

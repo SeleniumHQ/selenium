@@ -43,6 +43,13 @@ bazel test //py:test/selenium/webdriver/common/window_tests-chrome
 # With BiDi protocol
 bazel test //py:test-chrome-bidi
 
+# Against a Grid server (chrome and firefox only). The suite starts its own
+# Selenium standalone server and talks to it with webdriver.Remote.
+bazel test //py:test-chrome-remote       # classic protocol
+bazel test //py:test-chrome-remote-bidi  # BiDi over Grid's websocket proxy
+bazel test //py:test-remote              # every classic remote suite
+bazel test //py:test-remote-bidi         # every BiDi remote suite
+
 # Test filters
 bazel test //py/... --test_tag_filters=chrome
 
@@ -96,6 +103,12 @@ pytest py/test/selenium/webdriver/chrome/ --driver chrome --headless -v
 ```
 > **Note:**
 > For running BiDi tests, use the `--bidi` flag.
+>
+> To run against a Grid server, add `--remote`. It starts a Selenium standalone
+> server and runs the tests through `webdriver.Remote`, so it needs the Grid jar
+> built first (`bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar`).
+> `--bidi --remote` combine: Grid rewrites the `webSocketUrl` capability to its own
+> `/session/<id>/se/bidi` endpoint and proxies the socket through to the node.
 
 ## Skipping Tests
 
