@@ -122,8 +122,9 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  // Configure before subclass constructor arguments can trigger driver discovery logs.
   static {
-    org.openqa.selenium.internal.Debug.configureLogger();
+    Debug.configureLogger();
   }
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -207,6 +208,7 @@ public class RemoteWebDriver
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
+    Debug.configureLogger();
     this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
