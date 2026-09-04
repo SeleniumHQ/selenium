@@ -1152,6 +1152,7 @@ FEATURE_SUITE_DEFS = {
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-bidi" % browser,
         deps = [
             ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
@@ -1198,6 +1199,7 @@ FEATURE_SUITE_DEFS = {
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote" % browser,
         deps = [
             ":init-tree",
@@ -1234,6 +1236,7 @@ FEATURE_SUITE_DEFS = {
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-actions" % browser,
         deps = [
             ":init-tree",
@@ -1270,6 +1273,7 @@ FEATURE_SUITE_DEFS = {
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-%s" % (browser, feature),
         deps = [
             ":init-tree",
