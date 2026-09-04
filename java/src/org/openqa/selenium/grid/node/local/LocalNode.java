@@ -931,11 +931,6 @@ public class LocalNode extends Node implements Closeable {
       if (req.getMethod().equals(HttpMethod.GET) && req.getUri().endsWith("/se/files")) {
         return listDownloadedFiles(downloadsDirectory);
       }
-      if (req.getMethod().equals(HttpMethod.GET)) {
-        // Left here for backward compatibility.
-        // Remove this IF in Selenium 4.41, 4.42 or 4.43
-        return getDownloadedFile(downloadsDirectory, extractFileName(req));
-      }
       if (req.getMethod().equals(HttpMethod.DELETE)) {
         return deleteDownloadedFile(downloadsDirectory);
       }
@@ -943,21 +938,6 @@ public class LocalNode extends Node implements Closeable {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  private String extractFileName(HttpRequest req) {
-    return extractFileName(req.getUri());
-  }
-
-  String extractFileName(String uri) {
-    String prefix = "/se/files/";
-    int index = uri.lastIndexOf(prefix);
-    if (index < 0) {
-      throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
-    }
-    // The server has already decoded the path of the request, so the file name needs no
-    // further processing to match the name of the file on disk.
-    return uri.substring(index + prefix.length());
   }
 
   /** User wants to list files that can be downloaded */

@@ -429,15 +429,6 @@ class LocalNodeTest {
   }
 
   @Test
-  void extractsFileNameFromRequestUri() {
-    assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
-    assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
-        .isEqualTo("файл+with+tähtedega.png");
-    assertThat(node.extractFileName("/session/1234/se/files/attestation pour l'employeur.pdf"))
-        .isEqualTo("attestation pour l'employeur.pdf");
-  }
-
-  @Test
   void commandInterceptorIsCalledForEachWebDriverCommand() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
