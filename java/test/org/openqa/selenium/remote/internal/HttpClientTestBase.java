@@ -336,6 +336,21 @@ public abstract class HttpClientTestBase {
     assertThat(response.contentAsString()).isEqualTo(path);
   }
 
+  @Test
+  void shouldSendRequestWithPathThatNeedsQuotingForNonAsciiCharacters() {
+    // Same scenario as above, but for a file name that also holds non-ASCII characters,
+    // including one outside the Basic Multilingual Plane (a surrogate pair), to exercise the
+    // UTF-8 percent-encoding of a multi-byte code point rather than just a single ASCII byte.
+    String path = "/session/772f83578930be5dce8f626ecf8ea935/se/files/файл tähtedega 😀.pdf";
+
+    HttpResponse response =
+        executeWithinServer(
+            new HttpRequest(GET, path),
+            req -> new HttpResponse().setContent(Contents.utf8String(req.getUri())));
+
+    assertThat(response.contentAsString()).isEqualTo(path);
+  }
+
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
         new HttpRequest(GET, "/foo"),
