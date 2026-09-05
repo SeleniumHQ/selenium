@@ -63,12 +63,17 @@ class MapCoercer<T, I extends T> extends TypeCoercer<T> {
       throw new IllegalArgumentException("Unhandled type: " + type.getClass());
     }
 
+    // JSON should always have a string key, so we can take the fastpath
+    boolean stringKey = String.class.equals(keyType);
+    // Resolve the element coercers once rather than paying a cache lookup per entry.
+    BiFunction<JsonInput, PropertySetting, Object> keyCoercer =
+        stringKey ? null : coercer.lazyResolve(keyType);
+    BiFunction<JsonInput, PropertySetting, Object> valueCoercer = coercer.lazyResolve(valueType);
+
     return (jsonInput, setting) -> {
       jsonInput.beginObject();
       I toReturn = supplier.get();
       BiConsumer<Object, Object> consumer = consumerFactory.apply(toReturn);
-      // JSON should always have a string key, so we can take the fastpath
-      boolean stringKey = String.class.equals(keyType);
 
       while (jsonInput.hasNext()) {
         Object key;
@@ -76,9 +81,9 @@ class MapCoercer<T, I extends T> extends TypeCoercer<T> {
         if (stringKey) {
           key = jsonInput.nextName();
         } else {
-          key = coercer.coerce(jsonInput, keyType, setting);
+          key = keyCoercer.apply(jsonInput, setting);
         }
-        Object value = coercer.coerce(jsonInput, valueType, setting);
+        Object value = valueCoercer.apply(jsonInput, setting);
 
         consumer.accept(key, value);
       }
