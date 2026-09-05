@@ -84,7 +84,7 @@ class WebSocketConnection:
     def __init__(self, url, timeout, interval):
         if not isinstance(timeout, (int, float)) or timeout < 0:
             raise WebDriverException("timeout must be a positive number")
-        if not isinstance(interval, (int, float)) or timeout < 0:
+        if not isinstance(interval, (int, float)) or interval <= 0:
             raise WebDriverException("interval must be a positive number")
 
         self.url = url
