@@ -17,23 +17,17 @@ It also refreshes two companion pins at the same time so they stay in lockstep:
 the per-spec ``dfns`` indexes (same webref commit), and the rendered core spec
 HTML pinned from ``w3c/webdriver-bidi``'s ``gh-pages`` branch (its prose section
 anchors are the source of the readable ``#type-``/``#command-`` spec links, and
-that branch is a separate repo, so it is pinned to its own tip). It regenerates:
+that branch is a separate repo, so it is resolved separately). It regenerates:
 
   - ``_COMMIT``, ``_CDDL_FILES``, ``_DFNS_FILES``, and the ``_BIDI_SPEC_HTML_*``
     pins in ``common/webref_cddl.bzl``
   - the matching ``use_repo(...)`` list for the extension in ``MODULE.bazel``
 
------------------------------------------------------------------------------
-usage: update_cddl.py [-h] [--commit COMMIT] [--branch BRANCH]
-
-options:
-  -h, --help       show this help message and exit
-  --commit COMMIT  pin this exact webref commit instead of the branch tip
-  --branch BRANCH  webref branch to resolve when --commit is omitted (default: main)
------------------------------------------------------------------------------
+Nothing is written unless the consumed webref content changed, so both commit pins record
+where the CDDL content last changed rather than the latest tip. The rendered spec is repinned
+in lockstep with the CDDL, since it only annotates types the grammar defines.
 """
 
-import argparse
 import hashlib
 import json
 import os
@@ -46,6 +40,7 @@ http = urllib3.PoolManager()
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 REPO = "w3c/webref"
+BRANCH = "main"
 CDDL_PATH = "ed/cddl"
 DFNS_PATH = "ed/dfns"
 API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
@@ -72,10 +67,6 @@ BIDI_SPEC_REPO_NAME = "webdriver_bidi_spec_html"
 
 BZL_FILE = root_dir / "common" / "webref_cddl.bzl"
 MODULE_FILE = root_dir / "MODULE.bazel"
-
-
-def resolve_commit(branch):
-    return resolve_commit_for(REPO, branch)
 
 
 def list_cddl_files(commit):
@@ -156,9 +147,18 @@ def sub_once(content, pattern, replacement, where):
     return content
 
 
-def update_pin(commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256):
-    content = BZL_FILE.read_text()
+def current_bidi_pin(content):
+    commit = re.search(r'_BIDI_SPEC_HTML_COMMIT = "([0-9a-f]+)"', content).group(1)
+    sha256 = re.search(r'_BIDI_SPEC_HTML_SHA256 = "([0-9a-f]+)"', content).group(1)
+    return commit, sha256
 
+
+def drop_commit(content):
+    """Content with the webref commit blanked, so a pin bump alone does not read as a change."""
+    return re.sub(r'(?<![A-Z_])_COMMIT = "[0-9a-f]+"', "", content)
+
+
+def update_pin(content, commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256):
     # Anchor so this does not also match the tail of `_BIDI_SPEC_HTML_COMMIT = "…"`.
     content = sub_once(content, r'(?<![A-Z_])_COMMIT = "[0-9a-f]+"', f'_COMMIT = "{commit}"', "_COMMIT assignment")
     content = sub_once(
@@ -180,7 +180,7 @@ def update_pin(commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256):
         "_BIDI_SPEC_HTML_SHA256 assignment",
     )
 
-    BZL_FILE.write_text(content)
+    return content
 
 
 def update_module(repo_names):
@@ -199,19 +199,11 @@ def update_module(repo_names):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--commit", help="pin this exact webref commit instead of the branch tip")
-    parser.add_argument(
-        "--branch",
-        default="main",
-        help="webref branch to resolve when --commit is omitted (default: main)",
-    )
-    args = parser.parse_args()
-
-    commit = args.commit or resolve_commit(args.branch)
+    commit = resolve_commit_for(REPO, BRANCH)
     print(f"Pinning {REPO}@{commit}")
 
-    before = existing_repo_names(BZL_FILE.read_text())
+    old = BZL_FILE.read_text()
+    before = existing_repo_names(old)
 
     filenames = list_cddl_files(commit)
     print(f"Found {len(filenames)} CDDL files in {CDDL_PATH}")
@@ -220,10 +212,16 @@ def main():
     dfns_entries = build_dfns_entries(commit)
     print(f"Refreshed {len(dfns_entries)} dfns indexes in {DFNS_PATH}")
 
+    # Probe with the pin already in the file so a gh-pages rebuild cannot open the gate.
+    webref_only = update_pin(old, commit, cddl_entries, dfns_entries, *current_bidi_pin(old))
+    if drop_commit(webref_only) == drop_commit(old):
+        print("No pinned spec content changed; leaving the pins at their current commits.")
+        return
+
     bidi_commit, bidi_sha256 = resolve_bidi_spec(BIDI_SPEC_BRANCH)
     print(f"Pinning {BIDI_SPEC_REPO}@{bidi_commit} ({BIDI_SPEC_FILE})")
 
-    update_pin(commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256)
+    BZL_FILE.write_text(update_pin(old, commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256))
 
     cddl_names = {name for name, _, _ in cddl_entries}
     repo_names = cddl_names | {name for name, _, _ in dfns_entries} | {BIDI_SPEC_REPO_NAME}
