@@ -32,6 +32,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class InstanceCoercer extends TypeCoercer<Object> {
@@ -168,9 +169,9 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
   private static class TypeAndWriter {
     private final Type type;
-    private final BiConsumer<Object, Object> writer;
+    private final BiConsumer<Object, @Nullable Object> writer;
 
-    TypeAndWriter(Type type, BiConsumer<Object, Object> writer) {
+    TypeAndWriter(Type type, BiConsumer<Object, @Nullable Object> writer) {
       this.type = type;
       this.writer = writer;
     }
@@ -189,7 +190,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
   }
 
-  private static class FieldWriter implements BiConsumer<Object, Object> {
+  private static class FieldWriter implements BiConsumer<Object, @Nullable Object> {
     private final Field field;
 
     FieldWriter(Field field) {
@@ -197,7 +198,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
 
     @Override
-    public void accept(Object instance, Object value) {
+    public void accept(Object instance, @Nullable Object value) {
       try {
         field.set(instance, value);
       } catch (IllegalAccessException e) {
@@ -226,7 +227,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
   }
 
-  private static class SimplePropertyWriter implements BiConsumer<Object, Object> {
+  private static class SimplePropertyWriter implements BiConsumer<Object, @Nullable Object> {
     private final SimplePropertyDescriptor desc;
     private final Method method;
 
@@ -236,7 +237,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
 
     @Override
-    public void accept(Object instance, Object value) {
+    public void accept(Object instance, @Nullable Object value) {
       method.setAccessible(true);
       try {
         method.invoke(instance, value);

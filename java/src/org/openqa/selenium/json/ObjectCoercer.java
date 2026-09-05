@@ -20,6 +20,7 @@ package org.openqa.selenium.json;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class ObjectCoercer extends TypeCoercer<Object> {
@@ -36,7 +37,7 @@ class ObjectCoercer extends TypeCoercer<Object> {
   }
 
   @Override
-  public BiFunction<JsonInput, PropertySetting, Object> apply(Type type) {
+  public BiFunction<JsonInput, PropertySetting, @Nullable Object> apply(Type type) {
     return (jsonInput, setting) -> {
       Type target;
 

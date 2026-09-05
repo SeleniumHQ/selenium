@@ -22,7 +22,7 @@ import static org.openqa.selenium.json.Types.narrow;
 import java.lang.reflect.Type;
 import java.util.function.BiFunction;
 
-public class EnumCoercer<T extends Enum> extends TypeCoercer<T> {
+public class EnumCoercer<T extends Enum<T>> extends TypeCoercer<T> {
 
   @Override
   public boolean test(Class<?> aClass) {
