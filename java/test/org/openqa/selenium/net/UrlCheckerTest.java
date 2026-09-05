@@ -102,4 +102,39 @@ class UrlCheckerTest {
     safelyCall(() -> server.stop());
     safelyCall(executorService::shutdownNow);
   }
+
+  @Test
+  void waitUntilUnavailablePreservesInterruptStatus() throws Exception {
+    // The server must be up and serving so waitUntilUnavailable actually blocks
+    // (it polls while the URL stays available); otherwise it returns immediately and
+    // the interrupt is never observed. Mirrors testWaitUntilUnavailableIsTimely.
+    server.start();
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
+
+    Thread caller = Thread.currentThread();
+    Thread interrupter =
+        new Thread(
+            () -> {
+              try {
+                Thread.sleep(500);
+              } catch (InterruptedException ignored) {
+              }
+              caller.interrupt();
+            });
+    interrupter.start();
+
+    boolean threw = false;
+    boolean preserved = false;
+    try {
+      urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
+    } catch (RuntimeException expected) {
+      threw = true;
+      preserved = Thread.currentThread().isInterrupted();
+      Thread.interrupted();
+    }
+    interrupter.join();
+
+    assertThat(threw).isTrue();
+    assertThat(preserved).isTrue();
+  }
 }
