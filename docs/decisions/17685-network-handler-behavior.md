@@ -1,0 +1,409 @@
+# 17685. The network async/event API
+
+- Status: Proposed
+- Discussion: [#17685](https://github.com/SeleniumHQ/selenium/pull/17685)
+
+## Context
+
+Selenium's network API lets a user observe and rewrite traffic by registering handlers for
+requests, responses, and authentication challenges. This record settles two things together: how
+handlers are registered, removed, and cleared, and how a handler behaves — including how several
+handlers registered for the same phase reconcile to the single response the browser needs.
+
+A user can register more than one handler for the same phase, and matching handlers can disagree: a
+shared framework always adds a test header, the local suite stubs a domain, and one test aborts a
+single call. Selenium must reconcile that into one response, consistently and obviously.
+
+The behavior is unsettled and the bindings diverge — each grew its dispatch independently, so
+ordering, multi-handler resolution, error handling, and what an event exposes are all inconsistent:
+
+| Binding    | Current behavior |
+|------------|------------------|
+| Java       | Only one matching handler runs, chosen in no defined order (handlers are held in a `ConcurrentHashMap`); disposition is always continue; a throwing handler propagates and leaves the request blocked; return-value driven; no response handler or managed body collection. |
+| Python     | An explicit `continue` in a handler fires immediately and wins; otherwise staged outcomes reconcile by `fail` > `provide_response` > `continue`; response handlers have no `fail`; dispatch is FIFO; a throwing handler's staged mutations are still sent; only the mutated event is visible; body is not collected behind the handler. |
+| Ruby       | Handlers run in parallel threads, so multi-handler disposition races; exceptions are logged; dispatch is FIFO with no default-continue; only the mutated event is visible; body collection is user-managed. |
+| .NET       | No request or response handler API. |
+| JavaScript | No request or response handler API. |
+
+Handlers are reached through `driver.network`, the supported protocol-neutral API established by the
+BiDi implementation boundaries decision ([17670](17670-bidi-implementation-boundaries.md));
+nothing here exposes a protocol type.
+
+## Decision
+
+By default, a handler intercepts the event, blocking it until the handler has run, wherever blocking
+interception is available at that stage. The decisions below can be implemented in more than one way;
+the Ruby and Java examples show the user-facing shape, not a prescribed API.
+
+1. **Handlers can be added, removed, and cleared.** Each family — request,
+   response, and authentication — has an add, a remove, and a clear:
+   `addRequestHandler`, `removeRequestHandler`, and `clearRequestHandlers`, with
+   the equivalents for response and authentication. `add` returns a handle
+   object; `remove` takes that handle and unregisters exactly that handler;
+   `clear` removes every handler in the family. Removing a handler stops it being
+   consulted for later events but does not disturb an event already in flight.
+
+   Additionally, a convenience method named `addAuthentication` wraps
+   `addAuthenticationHandler`, taking credentials without a callable for the
+   primary use case. It returns the same handle as the rest of the family and is
+   removed and cleared the same way.
+
+```ruby
+handle = network.add_request_handler { |r| r.fail if blocked?(r.url) }
+network.remove_request_handler(handle)
+network.clear_request_handlers
+```
+
+```java
+RequestHandler handle = network.addRequestHandler(
+    r -> { if (blocked(r.url())) r.fail(); });
+network.removeRequestHandler(handle);
+network.clearRequestHandlers();
+```
+
+2. **URL filtering is declared when a handler is registered.** By default a
+   handler matches every event; patterns narrow it. What they cannot express,
+   the user may filter in the callable.
+
+   The argument name is the equivalent of `urlPatterns`. Its values must
+   support, in a language idiomatic way, one or more strings and/or objects,
+   where the object types are limited to what the BiDi spec directly supports
+   and each component takes an optional string value. A binding may also take
+   its language's native URL object, passing it on as a pattern string rather
+   than deconstructing it to an object. Predicates are not accepted; a user who
+   wants one may write it inside the callable.
+
+   Everything specified by a url pattern argument must be resolvable by the
+   remote end. A binding may serialize a supported input into the remote's
+   pattern form, but it does no URL matching or pattern expansion of its own;
+   patterns are forwarded to the remote for evaluation, and input that is not a
+   valid pattern errors locally before anything is sent. A binding may log a
+   warning when a value looks like a glob, to flag that Selenium forwards it
+   rather than expanding it; that detection is optional and left to the binding
+   rather than specified here.
+
+```ruby
+# A pattern string or components — an event matches any of them
+network.add_request_handler(
+  url_patterns: ["https://api.example.com/orders",
+                 {hostname: "cdn.example.com"}]
+) { |r| r.fail }
+
+# A glob-looking pattern is passed to the remote as-is
+network.add_request_handler(url_patterns: ["https://*.example.com/"])
+# Finer matching goes in the callable instead
+network.add_request_handler(url_patterns: [{hostname: "api.example.com"}]) do |r|
+  r.fail if r.url.end_with?(".json")
+end
+```
+
+```java
+network.addRequestHandler(
+    List.of(UrlPattern.of("https://api.example.com/orders"),
+            UrlPattern.builder().hostname("cdn.example.com").build()),
+    r -> r.fail());
+
+network.addRequestHandler(
+    UrlPattern.builder().hostname("api.example.com").build(),
+    r -> { if (r.url().endsWith(".json")) r.fail(); });
+```
+
+3. **A handler is a callable that acts on the event object.** A request or
+   response handler may read it, change it, or settle its disposition
+   (decisions 4–5); an authentication handler settles a challenge by supplying
+   credentials or cancelling.
+
+```ruby
+network.add_authentication_handler do |e|
+  (c = vault.credentials_for(e.url)) ? e.authenticate(c) : e.cancel
+end
+
+network.add_authentication(username: "user", password: "pass",
+                           url_patterns: [{hostname: "secure.example.com"}])
+```
+
+```java
+network.addAuthenticationHandler(e -> {
+  Credentials c = vault.credentialsFor(e.url());
+  if (c != null) e.authenticate(c); else e.cancel();
+});
+
+network.addAuthentication(UsernameAndPassword.of("user", "pass"),
+    List.of(UrlPattern.builder().hostname("secure.example.com").build()));
+```
+
+4. **When a handler settles a disposition, the first to do so resolves the event and
+   stops the chain.** An event's chain is the registered handlers whose URL patterns (decision 2) and
+   scope (decision 11) match it; a handler outside the event's scope is not consulted, even when a
+   broader handler is what caused the event to be intercepted. The user settles the event by acting on
+   the object the callable receives. A handler that only stages mutations does not settle; it passes
+   the event to the next handler (decision 5).
+   * A request has three: `fail` (BiDi's `FailRequest`) ends it with an error;
+     `respond` (`ProvideResponse`) replies with a mock, so nothing reaches the server; `submit`
+     (`ContinueRequest`) sends it on, with any staged mutations, and consults no further handler.
+   * `submit` is never required — a handler that settles nothing lets the event continue anyway
+     (decision 5) — and because it short-circuits the chain it can override what a shared handler
+     installed. That is occasionally necessary and easy to invoke by accident, so its name should read
+     as a deliberate, terminal override.
+   * A response has `fail` and `submit`. It has already round-tripped, so whether `submit` maps to
+     `ContinueResponse` or `ProvideResponse` follows from whether a replacement body was given.
+   * Within one handler, settling more than once is an error — after it settles, a further
+     disposition call raises rather than overriding the first.
+
+```ruby
+# fail: error out; respond: mock, no round trip; submit: send (mutated) to the server and stop the chain
+network.add_request_handler { |r| r.fail if blocked?(r.url) }
+network.add_request_handler { |r| r.respond(content: mocked_response) if stubbed?(r.url) }        # not sent to the server
+network.add_request_handler { |r| r.add_header("X-Test", true); r.submit if override?(r.url) }    # sent to the server, chain stops
+network.add_response_handler { |r| r.submit(content: mocked_response) if rewrite?(r.url) }
+```
+
+```java
+network.addRequestHandler(r -> { if (blocked(r.url())) r.fail(); });
+network.addRequestHandler(r -> { if (stubbed(r.url())) r.respond(mockedResponse); });             // not sent to the server
+network.addRequestHandler(r -> { if (override(r.url())) { r.addHeader("X-Test", "true"); r.submit(); } }); // sent, chain stops
+network.addResponseHandler(r -> { if (rewrite(r.url())) r.submit(mockedResponse); });
+```
+
+5. **Default disposition is to process other handlers.** If a handler does not specify the
+   disposition, the original event and any staged mutations pass to the next handler. If no handler
+   ever specifies one, the event proceeds with the staged mutations.
+   * In Playwright request interception there is no default; the user must specify fallback if that
+     is the intent.
+
+```ruby
+# Stages a change and passes to the next handler; no disposition specified
+network.add_request_handler { |r| r.add_header("X-Test", true) }
+```
+
+```java
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
+```
+
+6. **Later-registered handlers are consulted first.** This applies to every family — request,
+   response, and authentication. Registering an additional handler can mutate the state used by
+   previously registered ones.
+   * Matches Playwright's Last-In-First-Out (LIFO) behavior.
+   * Allows users to locally override handlers set by a shared library or suite.
+   * The alternative is being stuck with the top-level behavior everywhere, or not being able to set
+     top-level defaults at all.
+
+```ruby
+# Header will be there because removal is attempted before it is added
+network.add_request_handler { |r| r.add_header("X-Test", true) }
+network.add_request_handler { |r| r.remove_header("X-Test") }
+```
+
+```java
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
+network.addRequestHandler(r -> r.removeHeader("X-Test"));
+```
+
+7. **An uncaught exception surfaces to the user and stops the chain.** The handler callable is
+   responsible for its own error handling. An exception it does not catch is not swallowed or merely
+   logged: it surfaces to the user so it can be caught, and it does not on its own end the session.
+   When a handler raises, no further handlers run and the event is submitted with the mutations staged
+   by the handlers that completed before it, the same outcome the chain would reach on its own
+   (decision 5). A handler that raises contributes nothing; its own staged mutations are discarded, so
+   each handler applies all-or-nothing.
+
+```ruby
+# LIFO: the raising handler runs first, so processing stops before the other handler runs.
+# The request is submitted with what completed handlers staged; the exception surfaces to the user.
+network.add_request_handler { |r| r.add_header("X-Test", true) }   # never runs
+network.add_request_handler { |r| raise Exception }                # runs first, then raises
+```
+
+```java
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));      // never runs
+network.addRequestHandler(r -> { throw new RuntimeException(); });   // runs first, surfaces to the user
+```
+
+8. **Return values within the callables are ignored.** No meaning will ever be applied to anything a
+   user explicitly or implicitly returns within the callable.
+   * Playwright also does this, as does Selenium's current Python implementation.
+
+```ruby
+# Ruby: this implicit return value is ignored
+network.add_request_handler { |r| r.add_header("X-Test", true); "this value is ignored" }
+```
+
+```java
+// Java: the handler is a void Consumer, so there is no return value to ignore
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
+```
+
+9. **A handler has access to the original event value.** It may see the changes staged by handlers
+   already executed, but can also read the unmodified event value.
+   * Even when intercepting and mutating, a conditional can be evaluated against the original value
+     rather than the version a prior handler changed.
+
+```ruby
+# Nothing gets raised
+network.add_request_handler { |r| raise unless r.headers.include?("X-Test") }
+network.add_request_handler { |r| raise if r.request.headers.include?("X-Test") }
+network.add_request_handler { |r| r.add_header("X-Test", true) }
+```
+
+```java
+network.addRequestHandler(r -> { if (!r.headers().containsKey("X-Test")) throw new AssertionError(); });
+network.addRequestHandler(r -> { if (r.request().headers().containsKey("X-Test")) throw new AssertionError(); });
+network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
+```
+
+10. **Body data is collected only when a request handler opts in at registration.** A body is not
+    available by default; the handler declares that it needs the body when it is registered — not from
+    inside the callback, since the collector must be in place before the event — and Selenium then owns
+    the collector's lifecycle, size cap, and browser-support quirks. The body is readable on the event
+    inside that handler.
+    * The user never calls `addDataCollector` / `getData` or tears a collector down.
+    * There is no way to collect or read body data outside a handler; collection happens only through
+      the `addRequestHandler` registration.
+    * Only request bodies are collected. Intercepting a response holds it in a blocked state before its
+      body is collected, so a response body is not available while intercepting.
+
+```ruby
+# Declare body collection at registration; the body is then available on the event
+network.add_request_handler(collect_body: true) { |r| log(r.body) }
+```
+
+```java
+network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
+```
+
+11. **Handlers are scoped to one window handle by default.** A window handle is a top-level browsing
+    context; by default a handler applies to the one the session is on when it is registered. Being
+    switched into a frame does not narrow that; a frame is not a scope this API expresses, so narrowing
+    to one belongs in the callable.
+
+    To scope a handler elsewhere the user passes either a window handle or a user context, never both.
+    A window handle targets that one tab, including a background tab that does not have focus. A user
+    context targets every window handle it contains, including ones opened later, so it scopes
+    interception to a whole user context rather than a single known tab. The two are mutually
+    exclusive: a handler is scoped by one or the other, and a binding rejects being given both. A
+    handler must only act on events within its scope.
+
+```ruby
+# Either a window handle or a user context, never both
+network.add_request_handler(window_handle: other_tab) { |r| r.fail if blocked?(r.url) }
+network.add_request_handler(user_context: isolated) { |r| r.fail if blocked?(r.url) }
+```
+
+```java
+network.addRequestHandler(otherTab, r -> { if (blocked(r.url())) r.fail(); });   // one tab
+network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });   // whole user context
+```
+
+## Considered options
+
+- **Registration surface (decision 1).**
+  - Separate top-level driver methods or a handler-collection object — the boundaries decision fixes
+    `driver.network` as the neutral accessor, and one shape keeps the families consistent.
+  - `add` only, no `remove` / `clear` — a handler installed by a shared suite could not be retracted
+    for one test, which the LIFO override (decision 6) relies on.
+  - Remove by passing the original callable rather than a returned handle — an inline block has no
+    stable identity to pass back.
+  - A bare numeric id as the handle — an object is type-safe and cannot be confused with an unrelated
+    id.
+- **Filtering (decision 2).**
+  - No patterns, matching only in the callback — nothing to hand the remote, so every event must be
+    intercepted to answer any question about it.
+  - A predicate, as one binding ships today — cannot cross the wire, so it has the same cost, and adds
+    nothing over a conditional in the callback.
+  - Reject URL strings and require the object form — the spec accepts a pattern string itself, so
+    refusing one buys no safety.
+  - Take a native URL apart into components, erroring on what no component represents — URLs are
+    complicated enough that parsing them is work we would own and get wrong; passing one on as a
+    pattern string leaves that to the spec.
+  - Detect glob-looking patterns and reject them, translate them, or match them client-side. All three
+    make Selenium own matching logic that belongs on the remote, and glob dialects are ambiguous
+    (`/orders/*` matches one segment or any depth depending on the dialect), so doing it ourselves would
+    make the same string quietly mean different things. Input is passed through as given, and users can
+    express anything finer in the callable.
+  - Let each binding choose which forms it accepts — five capability sets, so what a user can express
+    would depend on their language rather than the spec.
+- **Authentication as a callable (decision 3).**
+  - Exclude auth from the callable model and expose only static credentials (an earlier draft) — a
+    callable can compute credentials per challenge, and only a callable can cancel one.
+  - Overload the handler method so it takes either a callable or a username and password — one method
+    per family is tidier, but the two forms do not do the same thing (static credentials can only ever
+    supply, never cancel), and `add_*_handler` would promise a handler the user never wrote.
+  - Give the credentials method its own registry, separate from the handlers — then `remove` and
+    `clear` would silently miss it, and the two would not have a defined order relative to each other.
+  - Ship only the callable form and add the credentials method later if it is asked for — the callable
+    can express everything the credentials method can, so the second method is convenience rather than
+    capability. It is included because supplying a username and password is the overwhelmingly common
+    case, and a signature a user can read without understanding callbacks serves them better than the
+    one general form.
+- **Reconciliation (decisions 4 & 5).**
+  - Run every handler and reconcile by fixed priority (fail > stub > continue) — takes disposition
+    away from the individual handler.
+  - Let `continueRequest` override failures and stubs (current Python) — no obvious reason that
+    command should win.
+- **Verb names (decision 4).**
+  - Playwright's (abort / fulfill / continue / fallback) or BiDi's (failRequest / provideResponse /
+    continueRequest / continueResponse) — either can be matched to spec detail per binding.
+  - Name the pass-through `continue` — reads ambiguously as "continue this request" versus "continue to
+    the next handler"; `submit` names the intent of sending this request now.
+  - Omit a pass-through disposition entirely and only continue after gathering every handler's
+    mutations at the end — safest against an accidental short-circuit, but leaves no way for one handler
+    to override a default a shared handler set, so it is kept as a deliberately named override instead.
+  - Name the override `finish`, `complete`, or `send` instead of `submit`. `submit` was chosen as the
+    clearest terminal "send exactly this now" verb; the alternatives were considered and set aside.
+- **Ordering (decision 6).**
+  - Registration order instead of LIFO — prevents overriding global settings locally.
+- **Failure (decision 7).**
+  - Log the exception instead of raising it — but an uncaught exception is the handler's own bug, so
+    it should error, not disappear into a log.
+  - End the whole session on any uncaught exception — disproportionate to one handler's bug: it closes
+    the browser, whereas decision 7 surfaces the error, stops only this event's chain, and leaves the
+    session running.
+  - Leave the request unresolved on a throw, as Playwright does — a handler that raises without
+    settling leaves the request hanging until it times out. Decision 7 submits the staged state instead
+    so the browser is never left waiting.
+  - Keep running the remaining handlers after the throw, or discard what is staged and send the
+    browser's original request — the first runs a chain past a fault the user is already being told
+    about, the second throws away changes from handlers that completed cleanly; stopping and submitting
+    what completed handlers staged does neither.
+  - Abort or mock-respond on any handler error — deterministic, but turns a handler bug into a failed
+    or empty request instead of letting it proceed.
+- **Return values (decision 8).**
+  - Let a return value set event or handler state instead of acting on the wrapper — not
+    straightforward across all languages.
+- **Original access (decision 9).**
+  - Expose only the modified or only the original event — a conditional may need the original even
+    while mutating.
+- **Data collection (decision 10).**
+  - Always collect bodies — bodies are large and most handlers never read them.
+  - Make the user manage the collector — it has no meaning outside a handler and pushes lifecycle and
+    size-cap bookkeeping onto them.
+  - Collect response bodies too — intercepting a response holds it blocked before its body is
+    collected, so it is not available while intercepting.
+- **Context scoping (decision 11).**
+  - No scoping, so every handler applies globally — cannot target a specific tab, a background tab, or
+    a user context, which network work spanning several contexts needs.
+  - Scope only by window handle — a user context is the natural unit for interception that spans
+    several tabs and covers tabs opened later, so either unit is accepted.
+  - Accept a window handle and a user context together — the two are mutually exclusive, and a handler
+    scoped to one tab is already narrower than the user context that tab belongs to, so combining them
+    has no meaning.
+  - Scope to a frame rather than a window handle — not a scope this API expresses; narrowing to a
+    frame goes in the callable.
+
+## Consequences
+
+- Every binding implements one add / remove / clear surface for request, response, and authentication
+  handlers rather than diverging.
+- Client code can override shared handlers locally and resolve a request its own way, a broken
+  handler stays contained, and the original event remains readable.
+- A handler's mutations apply all-or-nothing, so each handler's changes are staged separately and
+  committed only when it returns cleanly rather than accumulated on one shared event object.
+- Authentication handlers gain a callable form in addition to static credentials, so credentials can
+  be produced — or the challenge cancelled — per challenge.
+- Handlers can be scoped to a single window handle or to a user context, so interception can target a
+  background tab or a whole user context rather than only the current tab. The two are mutually
+  exclusive, so a binding rejects being given both.
+- Handlers with different scopes coexist: each acts only on events in its own scope, so an event a
+  broadly scoped handler intercepts does not invoke a narrower handler whose scope excludes it.
+- This changes handler behavior that several bindings already ship, so it is not backwards
+  compatible.
