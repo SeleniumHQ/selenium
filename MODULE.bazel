@@ -10,7 +10,7 @@ bazel_dep(name = "bazel_features", version = "1.50.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
 bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.8.11")
+bazel_dep(name = "llvm", version = "0.8.18")
 bazel_dep(name = "package_metadata", version = "0.0.10")
 bazel_dep(name = "platforms", version = "1.1.0")
 
@@ -39,7 +39,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
-bazel_dep(name = "rules_rs", version = "0.0.96")
+bazel_dep(name = "rules_rs", version = "0.0.106")
 
 single_version_override(
     module_name = "rules_jvm_external",
@@ -392,7 +392,7 @@ rust_toolchains.toolchain(
 )
 use_repo(rust_toolchains, "default_rust_toolchains")
 
-register_toolchains("@default_rust_toolchains//:all")
+register_toolchains("@default_rust_toolchains//...")
 
 # TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
 llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
