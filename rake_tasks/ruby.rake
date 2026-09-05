@@ -155,6 +155,12 @@ task :install do
   end
 end
 
+desc 'Regenerate the BiDi protocol classes from the pinned CDDL schema'
+task :update_cddl do
+  puts 'Regenerating Ruby BiDi protocol'
+  Bazel.execute('run', [], '//rb/lib/selenium/webdriver:bidi-generate')
+end
+
 desc 'Update Ruby changelog'
 task :changelogs do
   header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="

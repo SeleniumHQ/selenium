@@ -70,10 +70,19 @@ task :update_multitool do |_task, _arguments|
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
 end
 
-desc 'Update pinned CDDL spec files from w3c/webref'
+desc 'Update pinned CDDL spec files from w3c/webref and regenerate what they feed'
 task :update_cddl do |_task, _arguments|
   puts 'Updating pinned CDDL spec references'
   Bazel.execute('run', [], '//scripts:update_cddl')
+
+  if SeleniumRake.git.diff('HEAD').path('common/webref_cddl.bzl').none?
+    puts 'Pins unchanged; skipping regeneration'
+    next
+  end
+
+  puts 'Updating the checked-in BiDi schema'
+  Bazel.execute('run', [], '//common/bidi:update-schema')
+  Rake::Task['rb:update_cddl'].invoke
 end
 
 desc 'Update Chrome DevTools support'
