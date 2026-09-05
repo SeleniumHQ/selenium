@@ -23,6 +23,16 @@ use std::path::Path;
 mod common;
 
 #[test]
+fn help_output_includes_license_and_notice_links() {
+    let mut cmd = get_selenium_manager();
+    cmd.arg("--help").assert().success().code(0);
+
+    let stdout = get_stdout(&mut cmd);
+    assert!(stdout.contains("https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE"));
+    assert!(stdout.contains("https://github.com/SeleniumHQ/selenium/blob/trunk/NOTICE"));
+}
+
+#[test]
 fn json_output_test() {
     let mut cmd = get_selenium_manager();
     cmd.args([

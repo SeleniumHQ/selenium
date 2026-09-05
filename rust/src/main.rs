@@ -41,11 +41,14 @@ use std::sync::mpsc::Receiver;
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
-#[clap(version, about, long_about = None, help_template = "\
+#[clap(version, about, long_about = None, after_help = "\
+License: https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE
+Notices: https://github.com/SeleniumHQ/selenium/blob/trunk/NOTICE", help_template = "\
 {name} {version}
 {about-with-newline}
 {usage-heading} {usage}
-{all-args}")]
+{all-args}
+{after-help}")]
 struct Cli {
     /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, webview2, or electron)
     #[clap(long, value_parser)]
