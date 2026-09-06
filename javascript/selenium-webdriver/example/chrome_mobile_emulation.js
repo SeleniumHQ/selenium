@@ -30,7 +30,7 @@ const { Options } = require('../chrome')
   try {
     driver = await new Builder()
       .forBrowser('chrome')
-      .setChromeOptions(new Options().setMobileEmulation({ deviceName: 'Nexus 5X' }))
+      .setChromeOptions(new Options().setMobileEmulation({ deviceName: 'Pixel 10' }))
       .build()
     await driver.get('http://www.google.com/ncr')
     await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)

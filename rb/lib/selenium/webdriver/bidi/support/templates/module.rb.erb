@@ -40,7 +40,7 @@ module Selenium
           # @see <%= enum.spec_href %>
 <%- end -%>
           <%= enum.constant_name %> = {
-            <%= enum.pairs.map { |key, wire_val| "#{key}: '#{wire_val}'" }.join(",\n            ") %>
+            <%= enum.pairs.map { |key, wire_val| "#{key}: #{BiDiGenerate.ruby_literal(wire_val)}" }.join(",\n            ") %>
           }.freeze
 
 <%- end -%>

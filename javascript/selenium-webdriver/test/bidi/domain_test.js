@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('node:assert')
-const { EventEmitter } = require('node:events')
 const { Domain, event, DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { defineRecord } = require('selenium-webdriver/bidi/serialization/record')
 
@@ -26,21 +25,18 @@ const EntryAdded = defineRecord('test.domain.EntryAdded', [
   { name: 'text', wire: 'text', required: true, type: { primitive: 'string' } },
 ])
 
-// Fake replacing the real BiDi transport (bidi/index.js's Index). Mirrors its
-// actual shape — an EventEmitter with subscribe()/unsubscribe() added — rather
-// than inventing its own addCallback/removeCallback surface, since Domain talks
-// to the connection's real on/off/subscribe/unsubscribe directly.
+// Fake replacing the real BiDi transport (bidi/index.js's Index). Domain#addCallback()
+// is a thin pass-through to the connection's own addCallback() — the subscription
+// lifecycle (remote subscribe/unsubscribe, per-subscription bookkeeping) is Index's
+// job, exercised directly in test/bidi/index_test.js, not re-tested here.
 function fakeBidi() {
-  const bidi = new EventEmitter()
-  bidi.subscribeCalls = []
-  bidi.unsubscribeCalls = []
-  bidi.subscribe = async (method) => {
-    bidi.subscribeCalls.push(method)
+  return {
+    registered: undefined,
+    async addCallback(method, handler) {
+      this.registered = { method, handler }
+      return { id: 'sub-1', unsubscribe: async () => {} }
+    },
   }
-  bidi.unsubscribe = async (method) => {
-    bidi.unsubscribeCalls.push(method)
-  }
-  return bidi
 }
 
 describe('Domain addCallback', function () {
@@ -52,7 +48,7 @@ describe('Domain addCallback', function () {
     const received = []
     await domain.addCallback(descriptor, (params) => received.push(params))
 
-    bidi.emit('test.entryAdded', { text: 'hello' })
+    bidi.registered.handler({ text: 'hello' })
 
     assert.strictEqual(received.length, 1)
     assert.ok(received[0] instanceof EntryAdded)
@@ -67,70 +63,32 @@ describe('Domain addCallback', function () {
     const received = []
     await domain.addCallback(descriptor, (params) => received.push(params))
 
-    bidi.emit('test.untyped', { anything: 'goes' })
+    bidi.registered.handler({ anything: 'goes' })
 
     assert.strictEqual(received.length, 1)
     assert.deepStrictEqual(received[0], { anything: 'goes' })
     assert.ok(!(received[0] instanceof EntryAdded))
   })
 
-  // Placeholder behavior: every addCallback() call subscribes remotely, and every
-  // unsubscribe() call unsubscribes remotely — no ref-counting across callers yet.
-  // See the comment on Domain#addCallback() in domain.js.
-  it('calls bidi.subscribe() on every addCallback call', async function () {
+  it('delegates directly to the connection with the descriptor method', async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
     const descriptor = event('test.entryAdded', EntryAdded)
 
     await domain.addCallback(descriptor, () => {})
-    await domain.addCallback(descriptor, () => {})
 
-    assert.deepStrictEqual(bidi.subscribeCalls, ['test.entryAdded', 'test.entryAdded'])
+    assert.strictEqual(bidi.registered.method, 'test.entryAdded')
   })
 
-  it('calls bidi.unsubscribe() on every unsubscribe() call', async function () {
+  it("returns the connection's subscription handle unchanged", async function () {
     const bidi = fakeBidi()
     const domain = new Domain(bidi, DOMAIN_TOKEN)
     const descriptor = event('test.entryAdded', EntryAdded)
 
-    const first = await domain.addCallback(descriptor, () => {})
-    const second = await domain.addCallback(descriptor, () => {})
+    const subscription = await domain.addCallback(descriptor, () => {})
 
-    await first.unsubscribe()
-    await second.unsubscribe()
-
-    assert.deepStrictEqual(bidi.unsubscribeCalls, ['test.entryAdded', 'test.entryAdded'])
-  })
-
-  it('stops delivering to a handler once its own subscription is unsubscribed', async function () {
-    const bidi = fakeBidi()
-    const domain = new Domain(bidi, DOMAIN_TOKEN)
-    const descriptor = event('test.untyped')
-
-    const received = []
-    const subscription = await domain.addCallback(descriptor, (params) => received.push(params))
-    await subscription.unsubscribe()
-
-    bidi.emit('test.untyped', { anything: 'goes' })
-
-    assert.strictEqual(received.length, 0)
-  })
-
-  it('does not remove another still-active local listener on the same event', async function () {
-    const bidi = fakeBidi()
-    const domain = new Domain(bidi, DOMAIN_TOKEN)
-    const descriptor = event('test.untyped')
-
-    const receivedByFirst = []
-    const receivedBySecond = []
-    const first = await domain.addCallback(descriptor, (params) => receivedByFirst.push(params))
-    await domain.addCallback(descriptor, (params) => receivedBySecond.push(params))
-
-    await first.unsubscribe()
-    bidi.emit('test.untyped', { anything: 'goes' })
-
-    assert.strictEqual(receivedByFirst.length, 0)
-    assert.strictEqual(receivedBySecond.length, 1)
+    assert.strictEqual(subscription.id, 'sub-1')
+    assert.strictEqual(typeof subscription.unsubscribe, 'function')
   })
 })
 

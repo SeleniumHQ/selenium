@@ -1,3 +1,13 @@
+4.48.0 (2026-08-27)
+=========================
+* Support CDP versions: v150, v151, v152
+* add low-level BiDi protocol integration specs (#17878)
+* [build] Automated Browser Version Update (major) with CDP (#17910)
+* fix silent hang on oversized WebSocket frames (#17655)
+* always reject a missing required inbound BiDi field (#17936)
+* accept a whole-valued float for an integer BiDi field (#17939)
+* reject an inbound BiDi scalar outside its union's declared arms (#17947)
+
 4.47.0 (2026-08-10)
 =========================
 * Support CDP versions: v149, v150, v151

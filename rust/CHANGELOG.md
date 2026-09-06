@@ -1,3 +1,7 @@
+0.4.48
+======
+* Honour the `DO_NOT_TRACK` env var (#17931)
+
 0.4.47
 ======
 * honor --browser-version in Selenium Manager Electron driver resolution (#17567)

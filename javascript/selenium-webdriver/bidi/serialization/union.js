@@ -56,7 +56,11 @@ function defineUnion(name, selector, options = {}) {
     kind: 'union',
 
     // Outbound: resolve which variant `data` describes, then delegate to that
-    // variant's own (strict) constructor.
+    // variant's own (strict) constructor. A discriminated selector's `default`
+    // catch-all can itself resolve to another union — not just a record — e.g.
+    // LocalValue's untyped RemoteReference arm (see unionSelector() in
+    // project_bidi_schema.mjs) — so recurse through that union's own dispatch
+    // rather than assuming every resolved ref is a record.
     build(data) {
       if (objectOnly && (typeof data !== 'object' || data === null || Array.isArray(data))) {
         throw new ValidationError(`${name}: expected an object`)
@@ -66,12 +70,15 @@ function defineUnion(name, selector, options = {}) {
         throw new ValidationError(`${name}: value does not match any known variant`)
       }
       const variant = resolve(ref)
+      if (variant.kind === 'union') {
+        return variant.build(data)
+      }
       return new variant.RecordClass(data)
     },
 
     // Inbound: resolve which variant `payload` matches. An unresolvable payload is a
     // closed-vocabulary miss — always an error, never a warning, since there is no
-    // valid typed object to fall back to.
+    // valid typed object to fall back to. Same nested-union case as build() above.
     fromWire(payload) {
       if (objectOnly && (typeof payload !== 'object' || payload === null || Array.isArray(payload))) {
         throw new ValidationError(`${name}: expected an object on the wire, got ${typeof payload}`)
@@ -81,6 +88,9 @@ function defineUnion(name, selector, options = {}) {
         throw new ValidationError(`${name}: received a variant not in this binding's BiDi schema`)
       }
       const variant = resolve(ref)
+      if (variant.kind === 'union') {
+        return variant.fromWire(payload)
+      }
       return variant.RecordClass.fromWire(payload)
     },
   }

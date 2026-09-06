@@ -31,11 +31,20 @@ class ValidationError extends Error {}
 // `direction` only affects how a nested ref-to-record/union is itself validated/parsed.
 function validateValue(typeNode, value, path, direction) {
   if (value === null) {
-    if (typeNode.nullable) return null
+    // `primitive: 'null'` (project_bidi_schema.mjs's projectRef(), for a type whose
+    // every alternative was null) means null itself is the valid value — accept it
+    // even though `nullable` (a *different* value also being permitted alongside a
+    // non-null base type) wasn't separately set.
+    if (typeNode.nullable || typeNode.primitive === 'null') return null
     throw new ValidationError(`${path}: null is not allowed`)
   }
 
   if (typeNode.primitive !== undefined) {
+    // A present, non-null value never satisfies a `primitive: 'null'` node — value
+    // being null is the only thing the branch above would have already returned for.
+    if (typeNode.primitive === 'null') {
+      throw new ValidationError(`${path}: expected null, got ${typeof value}`)
+    }
     const expected = { string: 'string', integer: 'number', number: 'number', boolean: 'boolean' }[typeNode.primitive]
     if (expected && typeof value !== expected) {
       throw new ValidationError(`${path}: expected ${typeNode.primitive}, got ${typeof value}`)

@@ -195,6 +195,33 @@ describe('serialization/record', function () {
     })
   })
 
+  describe('null primitive validation', function () {
+    // project_bidi_schema.mjs's projectRef() emits { primitive: 'null' } for a field
+    // whose every alternative was null (e.g. a discriminator-like field typed as bare
+    // CDDL `null`) — a real, intentional type, distinct from `nullable` on some other
+    // primitive. Only `null` itself is a valid value for it.
+    const NullField = defineRecord('test.record.NullField', [
+      { name: 'value', wire: 'value', required: true, type: { primitive: 'null' } },
+    ])
+
+    it('accepts null outbound and inbound', function () {
+      assert.strictEqual(new NullField({ value: null }).value, null)
+      assert.strictEqual(NullField.fromWire({ value: null }).value, null)
+    })
+
+    it('rejects any non-null value outbound', function () {
+      for (const bad of ['x', 42, true, {}]) {
+        assert.throws(() => new NullField({ value: bad }), ValidationError)
+      }
+    })
+
+    it('rejects any non-null value inbound', function () {
+      for (const bad of ['x', 42, true, {}]) {
+        assert.throws(() => NullField.fromWire({ value: bad }), ValidationError)
+      }
+    })
+  })
+
   describe('extensible types', function () {
     const ExtensibleParams = defineRecord(
       'test.record.ExtensibleParams',

@@ -87,6 +87,38 @@ internal class EmulationTests : BiDiTestFixture
     [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
     [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
     [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    public void CanSetMediaFeaturesOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetMediaFeaturesOverrideAsync(new MediaFeatures
+            {
+                AnyHover = AnyHover.None,
+                PrefersColorScheme = PrefersColorScheme.Dark,
+                Color = 8,
+                ColorGamut = ColorGamut.Rec2020
+            }, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    public void CanSetMediaFeaturesOverrideToDefault()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetMediaFeaturesOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverride()
     {
         Assert.That(async () =>

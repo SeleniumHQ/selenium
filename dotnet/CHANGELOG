@@ -1,3 +1,10 @@
+v4.48.0
+======
+* Support CDP versions: v150, v151, v152
+* [build] Automated Browser Version Update (major) with CDP (#17910)
+* [bidi] Throw in case of unknown discriminator (#17948)
+* [bidi] SetMediaFeaturesOverride command in Emulation module (#17953)
+
 v4.47.0
 ======
 * Support CDP versions: v149, v150, v151

@@ -22,7 +22,7 @@
  * straight mapping into a small vocabulary:
  *
  *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
- *             | { kind: 'enum',   values: [string], specHref? }
+ *             | { kind: 'enum',   values: [scalar], primitive?, specHref? }
  *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
@@ -216,17 +216,32 @@ function projectEntry(e) {
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }
 
+// A wire key that is already an identifier is kept verbatim, so `namespaceURI` stays
+// wire-faithful; a quoted CDDL key that is not (`prefers-color-scheme`) is camelCased so
+// every binding derives an identifier from `name` without re-solving punctuation itself.
+const IDENTIFIER = /^[A-Za-z][A-Za-z0-9]*$/
+
+function fieldName(wire) {
+  if (IDENTIFIER.test(wire)) return wire
+  const [head, ...rest] = wire.split(/[^A-Za-z0-9]+/).filter(Boolean)
+  if (!head) return wire
+  return head + rest.map((part) => part[0].toUpperCase() + part.slice(1)).join('')
+}
+
 function projectField(prop) {
+  // A vendor-prefixed key (moz:allowPrivateBrowsing) keeps its wire form: extractVendor
+  // routes it out of the shared types, and the vendor pipeline drops the namespace itself.
+  const vendor = prop['x-selenium-vendor']
   const field = {
-    name: prop.Name,
+    name: vendor ? prop.Name : fieldName(prop.Name),
     wire: prop.Name,
     required: (prop.Occurrence?.n ?? 1) >= 1,
     type: projectRef(prop.Type),
   }
   // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
   // extractVendor can route it out of the shared schema; stripped there before it ships.
-  if (prop['x-selenium-vendor']) {
-    field.vendor = prop['x-selenium-vendor']
+  if (vendor) {
+    field.vendor = vendor
     field.via = prop['x-selenium-vendor-via']
   }
   return field
@@ -252,7 +267,14 @@ function unionMemberRefs(def) {
 function projectType(def) {
   if (def.Type === 'variable') {
     const pt = def.PropertyType ?? []
-    if (pt.length && pt.every(isLiteral)) return { kind: 'enum', values: pt.map((e) => e.Value) }
+    if (pt.length && pt.every(isLiteral)) {
+      // Carry the literals' shared primitive so every binding reads the value type
+      // rather than re-deriving it from the JSON values (which arrive differently typed
+      // per language). Matches what enumNode does for an un-hoisted inline choice.
+      const values = pt.map((e) => e.Value)
+      const primitive = literalPrimitive(values)
+      return primitive ? { kind: 'enum', values, primitive } : { kind: 'enum', values }
+    }
     // A union of refs is a union even when some arms are inline groups wrapping a
     // ref (e.g. script.LocalValue's date/regexp arms): projectRef resolves those to
     // refs, so promote the all-ref result to a first-class union (it gets a selector)
@@ -595,7 +617,7 @@ function reachableTypes(roots, types) {
  * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
  *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
  *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
- * @returns {{schemaVersion: number, commands: object[], events: object[], types: object, domains: object}} The schema.
+ * @returns {{schemaVersion: number, generatedBy: string, regenerateWith: string, commands: object[], events: object[], types: object, domains: object}} The schema.
  */
 export function projectSchema(ast, model, links = {}) {
   const types = {}
@@ -681,7 +703,15 @@ export function projectSchema(ast, model, links = {}) {
   // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
   // binding that reads only `types`/`commands`/`events` never sees vendor fields.
   const vendor = extractVendor(types)
-  const schema = { schemaVersion: 1, commands, events, types, domains }
+  const schema = {
+    schemaVersion: 1,
+    generatedBy: 'javascript/selenium-webdriver/project_bidi_schema.mjs',
+    regenerateWith: 'bazel run //common/bidi:update-schema',
+    commands,
+    events,
+    types,
+    domains,
+  }
   if (Object.keys(vendor).length) schema.vendor = vendor
   return schema
 }
@@ -784,7 +814,16 @@ export function checkSchema(schema) {
   for (const [name, node] of Object.entries(schema.types)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
-      for (const f of node.fields) report(`${name}.${f.name}`, f.type)
+      const wireByName = new Map()
+      for (const f of node.fields) {
+        report(`${name}.${f.name}`, f.type)
+        // Two wire keys that camelCase to one name would collapse into a single
+        // attribute downstream, silently keeping whichever the binding wrote last.
+        const prior = wireByName.get(f.name)
+        if (prior !== undefined && prior !== f.wire)
+          errors.push(`${name}: wire keys ${prior} and ${f.wire} both project to field name ${f.name}`)
+        wireByName.set(f.name, f.wire)
+      }
       if (node.map) report(`${name}.*`, node.map)
     } else if (node.kind === 'union') {
       for (const v of node.variants) if (!has(v)) errors.push(`${name}: unresolved variant ${v}`)

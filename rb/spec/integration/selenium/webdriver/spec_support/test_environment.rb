@@ -232,9 +232,8 @@ module Selenium
           http_client ||= Remote::Http::Default.new(read_timeout: 30)
           @safari_pairing_attempts ||= 0
 
-          method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client, service: service}.compact
-          instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
+          instance = new_driver_instance(**opts)
           @safari_pairing_attempts = 0
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
@@ -254,6 +253,16 @@ module Selenium
         end
 
         private
+
+        def new_driver_instance(**)
+          method = :"#{driver}_driver"
+          instance = private_methods.include?(method) ? send(method, **) : WebDriver::Driver.for(driver, **)
+          #  new Windows session sometimes silently abandons navigation
+          # TODO - remove when this lands: https://issues.chromium.org/issues/402796660
+          sleep 1 if Platform.windows? && browser_family == :chromium
+
+          instance
+        end
 
         def build_options(**)
           options_method = :"#{browser}_options"

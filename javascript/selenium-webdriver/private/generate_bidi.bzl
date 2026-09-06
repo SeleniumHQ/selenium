@@ -6,6 +6,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 # Language bindings consume the generated schema artifact; the ast/model are
 # internal inputs to it (and to the JS generator) and stay package-private.
 _ARTIFACT_VISIBILITY = [
+    "//common/bidi:__pkg__",
     "//java:__subpackages__",
     "//py:__subpackages__",
     "//rb:__subpackages__",

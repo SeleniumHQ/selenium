@@ -137,14 +137,16 @@ module BiDiGenerate
   # snake_case hash key for an enum value (only a label for the wire value it maps to).
   # Preserves camelCase word boundaries (beforeRequestSent → before_request_sent), maps a
   # leading minus to "neg" (-0 → neg0, -Infinity → neg_infinity; no underscore before a
-  # digit, so the key stays normalcase), and collapses other punctuation
-  # (dedicated-worker → dedicated_worker).
+  # digit, so the key stays normalcase), collapses other punctuation
+  # (dedicated-worker → dedicated_worker), and prefixes a numeric value so the key
+  # is still a valid symbol (0 → _0).
   def self.enum_key(value)
-    camel_to_snake(value.to_s)
-      .sub(/\A-(?=\d)/, 'neg')
-      .sub(/\A-/, 'neg_')
-      .gsub(/[^a-z0-9]+/, '_')
-      .gsub(/\A_+|_+\z/, '')
+    token = camel_to_snake(value.to_s)
+            .sub(/\A-(?=\d)/, 'neg')
+            .sub(/\A-/, 'neg_')
+            .gsub(/[^a-z0-9]+/, '_')
+            .gsub(/\A_+|_+\z/, '')
+    token.empty? || token.match?(/\A\d/) ? "_#{token}" : token
   end
 
   # ruby_name is the snake_case keyword argument; wire_name is the exact key the
@@ -308,9 +310,16 @@ module BiDiGenerate
     def type_entry = "'#{wire_name}' => #{payload_ref || 'nil'}"
   end
 
-  # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
-  # spec_href links to the type's definition in the live spec (nil when the schema has none).
-  Enum = Struct.new(:constant_name, :pairs, :spec_href, keyword_init: true)
+  # The RBS type a schema value primitive maps to; an unrecognized one is untyped.
+  RBS_VALUE_TYPES = {'string' => 'String', 'integer' => 'Integer', 'number' => 'Float',
+                     'boolean' => 'bool'}.freeze
+
+  # constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples;
+  # primitive is the schema's declared value type. spec_href links to the type's definition in
+  # the live spec (nil when the schema has none).
+  Enum = Struct.new(:constant_name, :pairs, :primitive, :spec_href, keyword_init: true) do
+    def rbs_value_type = RBS_VALUE_TYPES.fetch(primitive, 'untyped')
+  end
 
   # The generated Protocol::ErrorCode module (filename 'error_code'): `codes` is the [wire, class_name]
   # pairs in schema order (the full map); `new_classes` is the subset of class names the classic
@@ -694,9 +703,9 @@ module BiDiGenerate
         next unless type['kind'] == 'enum'
         next unless name.start_with?("#{domain}.")
 
-        pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v.to_s] }
+        pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v] }
         Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
-                 spec_href: type['specHref'])
+                 primitive: type['primitive'], spec_href: type['specHref'])
       end
     end
 

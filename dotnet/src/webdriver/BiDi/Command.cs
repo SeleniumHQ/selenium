@@ -20,16 +20,8 @@
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi;
-
-public readonly record struct Command<TParameters, TResult>(
-    string Method,
-    JsonTypeInfo<TParameters> ParamsTypeInfo,
-    JsonTypeInfo<TResult> ResultTypeInfo)
-    where TParameters : Parameters
-    where TResult : EmptyResult;
 
 public record Parameters
 {

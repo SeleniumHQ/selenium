@@ -65,6 +65,23 @@ const RemoteReference = defineUnion(
   { objectOnly: true },
 )
 
+// A discriminated union whose `default` catch-all resolves to another union
+// (RemoteReference, structural, above) rather than a record — mirrors
+// script.LocalValue's untyped RemoteReference arm.
+const NumberValue = defineRecord('test.union.NumberValue', [
+  { name: 'type', wire: 'type', required: true, type: { const: 'number' } },
+  { name: 'value', wire: 'value', required: true, type: { primitive: 'number' } },
+])
+const LocalValue = defineUnion(
+  'test.union.LocalValue',
+  {
+    by: 'type',
+    variants: [{ value: 'number', ref: 'test.union.NumberValue' }],
+    default: 'test.union.RemoteReference',
+  },
+  { objectOnly: true },
+)
+
 describe('serialization/union', function () {
   describe('discriminated (selector.by)', function () {
     it('dispatches outbound to the variant matching the discriminator', function () {
@@ -112,6 +129,23 @@ describe('serialization/union', function () {
 
     it('errors when no variant matches', function () {
       assert.throws(() => RemoteReference.fromWire({ somethingElse: true }), ValidationError)
+    })
+  })
+
+  describe('nested union (selector.default resolving to another union, not a record)', function () {
+    it('still dispatches a tagged variant to its record normally', function () {
+      const built = LocalValue.build({ type: 'number', value: 5 })
+      assert.ok(built instanceof NumberValue)
+    })
+
+    it('dispatches outbound through the default sub-union instead of throwing', function () {
+      const built = LocalValue.build({ sharedId: 'abc' })
+      assert.ok(built instanceof SharedReference)
+    })
+
+    it('dispatches inbound through the default sub-union instead of throwing', function () {
+      const parsed = LocalValue.fromWire({ handle: 'h1' })
+      assert.ok(parsed instanceof RemoteObjectReference)
     })
   })
 })

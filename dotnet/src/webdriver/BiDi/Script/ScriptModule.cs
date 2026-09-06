@@ -25,29 +25,11 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class ScriptModule : Module, IScriptModule
 {
-    private static readonly Command<EvaluateParameters, EvaluateResult> EvaluateCommand = new(
-        "script.evaluate", Default.EvaluateParameters, Default.EvaluateResult);
-
-    private static readonly Command<CallFunctionParameters, EvaluateResult> CallFunctionCommand = new(
-        "script.callFunction", Default.CallFunctionParameters, Default.EvaluateResult);
-
-    private static readonly Command<DisownParameters, DisownResult> DisownCommand = new(
-        "script.disown", Default.DisownParameters, Default.DisownResult);
-
-    private static readonly Command<GetRealmsParameters, GetRealmsResult> GetRealmsCommand = new(
-        "script.getRealms", Default.GetRealmsParameters, Default.GetRealmsResult);
-
-    private static readonly Command<AddPreloadScriptParameters, AddPreloadScriptResult> AddPreloadScriptCommand = new(
-        "script.addPreloadScript", Default.AddPreloadScriptParameters, Default.AddPreloadScriptResult);
-
-    private static readonly Command<RemovePreloadScriptParameters, RemovePreloadScriptResult> RemovePreloadScriptCommand = new(
-        "script.removePreloadScript", Default.RemovePreloadScriptParameters, Default.RemovePreloadScriptResult);
-
     public async Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
 
-        return await ExecuteAsync(EvaluateCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.evaluate", @params, Default.EvaluateParameters, Default.EvaluateResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null, CancellationToken cancellationToken = default)
@@ -61,7 +43,7 @@ internal sealed class ScriptModule : Module, IScriptModule
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await ExecuteAsync(CallFunctionCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.callFunction", @params, Default.CallFunctionParameters, Default.EvaluateResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null, CancellationToken cancellationToken = default)
@@ -75,28 +57,28 @@ internal sealed class ScriptModule : Module, IScriptModule
     {
         var @params = new DisownParameters(handles, target);
 
-        return await ExecuteAsync(DisownCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.disown", @params, Default.DisownParameters, Default.DisownResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
 
-        return await ExecuteAsync(GetRealmsCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.getRealms", @params, Default.GetRealmsParameters, Default.GetRealmsResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, AddPreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.UserContexts, options?.Sandbox);
 
-        return await ExecuteAsync(AddPreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.addPreloadScript", @params, Default.AddPreloadScriptParameters, Default.AddPreloadScriptResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await ExecuteAsync(RemovePreloadScriptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("script.removePreloadScript", @params, Default.RemovePreloadScriptParameters, Default.RemovePreloadScriptResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public IEventSource<MessageEventArgs> Message => _message ?? Interlocked.CompareExchange(ref _message, CreateEventSource(ScriptEvent.Message), null) ?? _message;

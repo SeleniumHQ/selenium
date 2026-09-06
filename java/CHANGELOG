@@ -1,3 +1,11 @@
+v4.48.0
+======
+* Support CDP versions: v150, v151, v152
+* [grid] stop forwarding se:remoteUrl past the Node that consumes it (#17908)
+* [grid] Forward file upload/download for Kubernetes, Docker and relay sessions (#17914)
+* [build] Automated Browser Version Update (major) with CDP (#17910)
+* Add warn annotation for undeclared field while JSON coercion  (#17917)
+
 v4.47.0
 ======
 * Support CDP versions: v149, v150, v151

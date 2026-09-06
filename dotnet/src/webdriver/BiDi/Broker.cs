@@ -65,7 +65,7 @@ internal sealed class Broker : IAsyncDisposable
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    public async Task<TResult> ExecuteAsync<TParameters, TResult>(string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {
@@ -93,7 +93,7 @@ internal sealed class Broker : IAsyncDisposable
             {
                 writer.WriteStartObject();
                 writer.WriteNumber("id"u8, id);
-                writer.WriteString("method"u8, descriptor.Method);
+                writer.WriteString("method"u8, method);
                 writer.WritePropertyName("params"u8);
 
                 if (options is { AdditionalData: { IsEmpty: false } additionalData })
@@ -110,7 +110,7 @@ internal sealed class Broker : IAsyncDisposable
                     }
                 }
 
-                JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
                 if (options is not null)
                 {
                     foreach (var prop in options.AdditionalMessageData)
@@ -128,7 +128,7 @@ internal sealed class Broker : IAsyncDisposable
             throw;
         }
 
-        var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
+        var commandInfo = new CommandInfo(tcs, resultTypeInfo);
         _pendingCommands[id] = commandInfo;
 
         using var ctsRegistration = effectiveToken.Register(() =>

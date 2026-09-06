@@ -43,6 +43,10 @@ module BiDiGenerate
     it 'collapses punctuation' do
       expect(BiDiGenerate.enum_key('dedicated-worker')).to eq('dedicated_worker')
     end
+
+    it 'prefixes a numeric value so the key is a valid symbol' do
+      expect(BiDiGenerate.enum_key(0)).to eq('_0')
+    end
   end
 
   describe '.check_accessor_collisions!' do
