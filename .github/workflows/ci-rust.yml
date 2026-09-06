@@ -99,85 +99,90 @@ jobs:
           retention-days: 6
 
   linux-stable:
-    name: "Linux Stable"
-    runs-on: ubuntu-latest
+    name: "Linux Stable (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runner }}
     needs: tests
     if: ${{ !cancelled() && needs.tests.result != 'failure' && github.event_name != 'schedule' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: selenium-manager-linux
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            artifact: selenium-manager-linux-arm64
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
+      - name: "Install musl toolchain"
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add ${{ matrix.target }}
           rustc -vV
-      - name: "Install cross"
-        run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary (x64)"
-        run: cross build --target x86_64-unknown-linux-musl --release
+      - name: "Build release binary"
+        run: cargo build --target ${{ matrix.target }} --release
         working-directory: rust
-      - name: "Build release binary (arm64)"
-        run: cross build --target aarch64-unknown-linux-musl --release
-        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
       - name: "Rename binary"
-        run: |
-          mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
-          mv rust/target/aarch64-unknown-linux-musl/release/selenium-manager selenium-manager-linux-arm64
+        run: mv rust/target/${{ matrix.target }}/release/selenium-manager ${{ matrix.artifact }}
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
-          name: selenium-manager-linux
-          path: selenium-manager-linux
-          retention-days: 6
-      - name: "Upload release binary"
-        uses: actions/upload-artifact@v7
-        with:
-          name: selenium-manager-linux-arm64
-          path: selenium-manager-linux-arm64
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
           retention-days: 6
 
   linux-debug:
-    name: "Linux Debug"
-    runs-on: ubuntu-latest
+    name: "Linux Debug (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runner }}
     needs: tests
     if: ${{ !cancelled() && needs.tests.result != 'failure' && github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: selenium-manager-linux-debug
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            artifact: selenium-manager-linux-arm64-debug
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
+      - name: "Install musl toolchain"
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add ${{ matrix.target }}
           rustc -vV
-      - name: "Install cross"
+      - name: "Build release binary"
         run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary (x64)"
-        run: |
-          cross build --target x86_64-unknown-linux-musl --profile dev
-          cd target/x86_64-unknown-linux-musl/debug
-          tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
+          cargo build --target ${{ matrix.target }} --profile dev
+          cd target/${{ matrix.target }}/debug
+          tar -cvf ../../../../${{ matrix.artifact }}.tar selenium-manager
         working-directory: rust
-      - name: "Build release binary (arm64)"
-        run: |
-          cross build --target aarch64-unknown-linux-musl --profile dev
-          cd target/aarch64-unknown-linux-musl/debug
-          tar -cvf ../../../../selenium-manager-linux-arm64-debug.tar selenium-manager
-        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
-          name: selenium-manager-linux-debug
-          path: selenium-manager-linux-debug.tar
-          retention-days: 6
-      - name: "Upload release binary"
-        uses: actions/upload-artifact@v7
-        with:
-          name: selenium-manager-linux-arm64-debug
-          path: selenium-manager-linux-arm64-debug.tar
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.tar
           retention-days: 6
 
   macos-stable:
