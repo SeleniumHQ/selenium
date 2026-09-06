@@ -134,14 +134,16 @@ class ClientConfig:
         self.keep_alive = keep_alive
         self.proxy = proxy
         self.ignore_certificates = ignore_certificates
-        self.init_args_for_pool_manager = init_args_for_pool_manager or {}
+        # Copy caller-owned dicts so two ClientConfigs (or the caller's own dict) can't be
+        # aliased into one another and mutated in place.
+        self.init_args_for_pool_manager = dict(init_args_for_pool_manager or {})
         self.timeout = socket.getdefaulttimeout() if timeout is None else timeout
         self.username = username
         self.password = password
         self.auth_type = auth_type
         self.token = token
         self.user_agent = user_agent
-        self.extra_headers = extra_headers
+        self.extra_headers = dict(extra_headers) if extra_headers is not None else None
         self.websocket_timeout = websocket_timeout
         self.websocket_interval = websocket_interval
         self.websocket_max_message_size = websocket_max_message_size

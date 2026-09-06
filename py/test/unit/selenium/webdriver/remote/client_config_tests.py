@@ -46,6 +46,23 @@ def system_config(remote_server_addr="http://localhost:4444"):
     return ClientConfig(remote_server_addr=remote_server_addr, proxy=Proxy(raw={"proxyType": ProxyType.SYSTEM}))
 
 
+def test_extra_headers_are_copied_from_the_callers_dict():
+    """The caller's dict must not be aliased into the config, and two configs must not share one."""
+    caller = {"X-Api-Key": "secret"}
+    cfg = ClientConfig(remote_server_addr="http://localhost:4444", extra_headers=caller)
+    assert cfg.extra_headers == caller
+    assert cfg.extra_headers is not caller
+    caller["X-Api-Key"] = "changed"
+    assert cfg.extra_headers["X-Api-Key"] == "secret"
+
+
+def test_init_args_for_pool_manager_are_copied_from_the_callers_dict():
+    caller = {"maxsize": 10}
+    cfg = ClientConfig(remote_server_addr="http://localhost:4444", init_args_for_pool_manager=caller)
+    assert cfg.init_args_for_pool_manager == caller
+    assert cfg.init_args_for_pool_manager is not caller
+
+
 def test_websocket_max_message_size_defaults_to_none(config):
     assert config.websocket_max_message_size is None
 
