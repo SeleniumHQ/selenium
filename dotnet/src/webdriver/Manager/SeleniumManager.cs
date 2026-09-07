@@ -132,8 +132,7 @@ public static partial class SeleniumManager
                     probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "win", "native", seleniumManagerFileName));
                     break;
                 case SupportedPlatform.Linux:
-                    // NuGet Runtime Identifiers, so "x64"/"arm64" rather than the "x86_64"/"arm64"
-                    // spelling used everywhere else. Alpine resolves through these via linux-musl-*.
+                    // linux-musl-* resolves through these, so no generic "linux" folder is needed.
 #if !NET462
                     var linuxRid = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
                         ? "linux-arm64"

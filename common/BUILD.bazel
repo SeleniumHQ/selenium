@@ -41,7 +41,6 @@ config_setting(
     constraint_values = ["@platforms//os:windows"],
 )
 
-# Per-(OS, arch) host config_settings.
 [
     config_setting(
         name = "{}_{}".format(os, arch),

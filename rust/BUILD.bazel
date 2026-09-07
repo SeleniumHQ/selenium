@@ -13,9 +13,6 @@ rustfmt_config(
 # We tag the compiled versions as `manual` so that when we do a
 # `bazel build //...` we don't do any additional work
 
-# Each platform resolves to a local build on a matching host and the prebuilt
-# artifact everywhere else. Target names spell the platform with a dash; the
-# config_setting and download repo spell it with an underscore.
 SELENIUM_MANAGER_PLATFORMS = [
     "linux-arm64",
     "linux-x86_64",
