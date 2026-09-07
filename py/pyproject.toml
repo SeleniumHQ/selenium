@@ -144,7 +144,26 @@ respect-gitignore = true
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["D", "E", "F", "I", "PT", "UP", "RUF", "TID252"]
+# Whole families are listed bare; individually-named rules are families whose
+# remaining rules are not enforced yet (see https://github.com/SeleniumHQ/selenium/issues/17989).
+select = [
+    "C4",
+    "D",
+    "E",
+    "F",
+    "FLY",
+    "I",
+    "PT",
+    "RUF",
+    "TID252",
+    "UP",
+    "W",
+    "FURB122",
+    "FURB167",
+    "FURB188",
+    "FURB192",
+    "PERF102",
+]
 fixable = ["ALL"]
 extend-ignore = [
     "D100", # Missing docstring in public module

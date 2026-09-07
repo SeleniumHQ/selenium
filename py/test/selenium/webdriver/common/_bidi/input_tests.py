@@ -147,9 +147,15 @@ def test_pointer_with_common_properties(driver, pages):
     x, y = _center(button)
 
     # Generated actions flatten PointerCommonProperties inline, so the common fields spread onto each action.
-    props = dict(
-        width=2, height=2, pressure=0.5, tangential_pressure=0.0, twist=45, altitude_angle=0.5, azimuth_angle=1.0
-    )
+    props = {
+        "width": 2,
+        "height": 2,
+        "pressure": 0.5,
+        "tangential_pressure": 0.0,
+        "twist": 45,
+        "altitude_angle": 0.5,
+        "azimuth_angle": 1.0,
+    }
     pointer_actions = PointerSourceActions(
         id="mouse",
         parameters=PointerParameters(pointer_type=PointerType.MOUSE),
@@ -494,9 +500,15 @@ def test_pointer_common_properties_pressure_values(driver, pages):
     button = driver.find_element(By.ID, "clickField")
     x, y = _center(button)
 
-    props = dict(
-        width=2, height=2, pressure=0.75, tangential_pressure=0.25, twist=90, altitude_angle=0.7, azimuth_angle=1.5
-    )
+    props = {
+        "width": 2,
+        "height": 2,
+        "pressure": 0.75,
+        "tangential_pressure": 0.25,
+        "twist": 90,
+        "altitude_angle": 0.7,
+        "azimuth_angle": 1.5,
+    }
     pointer_actions = PointerSourceActions(
         id="mouse",
         parameters=PointerParameters(pointer_type=PointerType.MOUSE),
