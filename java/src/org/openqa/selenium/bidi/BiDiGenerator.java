@@ -191,6 +191,14 @@ public class BiDiGenerator {
     private final Map<String, List<String>> variantParent;
 
     /**
+     * Maps a scalar-union alias's object (ref) arm to the alias(es) it implements — the same idea
+     * as {@link #variantParent}, but for a scalar-union alias's ref arm (e.g. input.ElementOrigin
+     * implementing input.Origin) rather than a named union's variants. See {@link
+     * #isScalarUnionAlias}.
+     */
+    private final Map<String, List<String>> scalarUnionParent;
+
+    /**
      * Synthetic types (anonymous CDDL constructs hoisted by the normalizer) keyed by their owner
      * type name. They are emitted as nested static classes instead of top-level files.
      */
@@ -215,6 +223,7 @@ public class BiDiGenerator {
       this.senderTypes = computeSenderTypes();
       this.receivableTypes = computeReceivableTypes();
       this.variantParent = computeVariantParent();
+      this.scalarUnionParent = computeScalarUnionParent();
       this.syntheticChildren = computeSyntheticChildren();
     }
 
@@ -342,11 +351,34 @@ public class BiDiGenerator {
       return result;
     }
 
-    /** Reachable parent unions for {@code typeName}, in declaration order. */
+    @SuppressWarnings("unchecked")
+    private Map<String, List<String>> computeScalarUnionParent() {
+      Map<String, List<String>> result = new LinkedHashMap<>();
+      for (Map.Entry<String, Map<String, Object>> e : types.entrySet()) {
+        String aliasName = e.getKey();
+        Map<String, Object> node = e.getValue();
+        if (!isScalarUnionAlias(node)) continue;
+        List<Map<String, Object>> unionArms =
+            (List<Map<String, Object>>) mapField(node, "type").get("union");
+        for (Map<String, Object> arm : unionArms) {
+          String ref = str(arm, "ref");
+          if (ref != null) {
+            result.computeIfAbsent(ref, k -> new ArrayList<>()).add(aliasName);
+          }
+        }
+      }
+      return result;
+    }
+
+    /**
+     * Reachable parent unions (and scalar-union aliases) for {@code typeName}, in declaration
+     * order.
+     */
     private List<String> reachableParents(String typeName) {
-      return variantParent.getOrDefault(typeName, Collections.emptyList()).stream()
-          .filter(reachable::contains)
-          .collect(Collectors.toList());
+      List<String> parents =
+          new ArrayList<>(variantParent.getOrDefault(typeName, Collections.emptyList()));
+      parents.addAll(scalarUnionParent.getOrDefault(typeName, Collections.emptyList()));
+      return parents.stream().filter(reachable::contains).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -393,8 +425,10 @@ public class BiDiGenerator {
             generateUnion(name, node, outDir);
           }
           // correlated unions are protocol-internal; skip code generation
+        } else if (isScalarUnionAlias(node)) {
+          generateScalarUnionAlias(name, node, outDir);
         }
-        // "alias" → resolved inline, no class generated
+        // any other "alias" → resolved inline, no class generated
       }
     }
 
@@ -647,8 +681,11 @@ public class BiDiGenerator {
       sb.append("import java.util.Set;\n");
       sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
-      // BiDiException is needed by nested enum fromString() methods and union fromMap() methods.
+      // BiDiException is needed by nested enum fromString()/fromJson() methods and union
+      // fromMap() methods. ConverterFunctions.JSON is needed by fromJson() (see
+      // appendFromJson) — same condition as the Json/TypeToken imports above.
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
+      sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
       sb.append("import org.openqa.selenium.json.Json;\n");
       sb.append("import org.openqa.selenium.json.TypeToken;\n");
       sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
@@ -892,7 +929,14 @@ public class BiDiGenerator {
 
       // toMap() only for types sent as command params
       if (needsToMap) {
-        boolean overrides = parentUnionRefs.stream().anyMatch(senderTypes::contains);
+        // Only a named-union parent declares toMap() on its interface (see generateUnion) — a
+        // scalar-union-alias parent (e.g. input.Origin) declares toWireValue() instead, handled
+        // separately below, so it must not count here or @Override would target a method that
+        // isn't actually on that supertype.
+        boolean overrides =
+            parentUnionRefs.stream()
+                .filter(r -> !isScalarUnionAlias(types.get(r)))
+                .anyMatch(senderTypes::contains);
         if (overrides) sb.append(m).append("@Override\n");
         sb.append(m).append("public Map<String, Object> toMap() {\n");
         if (fields.isEmpty() && !needsExtrasSend) {
@@ -944,6 +988,17 @@ public class BiDiGenerator {
           sb.append(m).append("  return Collections.unmodifiableMap(map);\n");
         }
         sb.append(m).append("}\n\n");
+
+        // Implements a scalar-union alias's toWireValue() (see generateScalarUnionAlias) by
+        // delegating to the toMap() just generated above — this type is that union's object arm.
+        boolean implementsScalarUnion =
+            parentUnionRefs.stream().anyMatch(r -> isScalarUnionAlias(types.get(r)));
+        if (implementsScalarUnion) {
+          sb.append(m).append("@Override\n");
+          sb.append(m).append("public Object toWireValue() {\n");
+          sb.append(m).append("  return toMap();\n");
+          sb.append(m).append("}\n\n");
+        }
       }
 
       if (needsBuilder) {
@@ -994,7 +1049,11 @@ public class BiDiGenerator {
           .append("private static ")
           .append(cls)
           .append(" fromJson(Map<String, Object> map) {\n");
-      sb.append(m).append("  Json json = new Json();\n");
+      // ConverterFunctions.JSON, not a fresh new Json(): it registers a strict Long coercer and
+      // StaticInitializerCoercer ahead of the shared, lenient defaults (see its own javadoc), so
+      // an integer or enum field here is actually held to its declared type, not silently
+      // accepted from a string/fraction or matched case-insensitively.
+      sb.append(m).append("  Json json = ConverterFunctions.JSON;\n");
       for (FieldInfo f : fields) {
         String decodeType =
             f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);
@@ -1175,12 +1234,23 @@ public class BiDiGenerator {
                       + parentRefs.stream()
                           .map(r -> resolveRefToJavaClass(r, domain))
                           .collect(Collectors.joining(", "));
-          sb.append("\n")
-              .append(m)
-              .append("public static class ")
-              .append(label)
-              .append(implementsClause)
-              .append(" {\n\n");
+          // Same condition generateRecord() uses for a top-level type — a nested synthetic
+          // record (e.g. emulation.MediaFeatures) is just as receivable as one, and was
+          // silently missing this annotation, so an unknown field on it never warned.
+          boolean childIsReceivable = receivableTypes.contains(childName);
+          boolean childExtensible = Boolean.TRUE.equals(childNode.get("extensible"));
+          List<Map<String, Object>> childRawFields =
+              (List<Map<String, Object>>)
+                  Optional.ofNullable(childNode.get("fields")).orElse(Collections.emptyList());
+          boolean childHasReservedWordField =
+              childRawFields.stream().map(this::parseField).anyMatch(f -> !f.name.equals(f.wire));
+          boolean childWarnsOnUnknownFields =
+              childIsReceivable && !childExtensible && !childHasReservedWordField;
+          sb.append("\n").append(m);
+          if (childWarnsOnUnknownFields) {
+            sb.append("@WarnOnUnknownFields\n").append(m);
+          }
+          sb.append("public static class ").append(label).append(implementsClause).append(" {\n\n");
           appendRecordBody(sb, childName, childNode, domain, m + "  ");
           appendNestedSynthetics(sb, childName, domain, m + "  ");
           sb.append(m).append("}\n");
@@ -1345,6 +1415,21 @@ public class BiDiGenerator {
           .append(cls)
           .append(" value: \" + s);\n");
       sb.append(m).append("}\n\n");
+      // The actual inbound-deserialization entry point — StaticInitializerCoercer (registered
+      // via ConverterFunctions.JSON, ahead of the shared EnumCoercer) picks up exactly this
+      // method by name. Unlike fromString above (case-insensitive, existing public API other
+      // code already calls directly), this matches exactly: the spec's own values are a closed,
+      // case-sensitive vocabulary, and a received value outside it must be rejected, not
+      // coerced into a guess.
+      sb.append(m).append("public static ").append(cls).append(" fromJson(String s) {\n");
+      sb.append(m).append("  for (").append(cls).append(" e : values()) {\n");
+      sb.append(m).append("    if (e.value.equals(s)) return e;\n");
+      sb.append(m).append("  }\n");
+      sb.append(m)
+          .append("  throw new BiDiException(\"Unknown ")
+          .append(cls)
+          .append(" value: \" + s);\n");
+      sb.append(m).append("}\n\n");
       sb.append(m).append("@Override\n");
       sb.append(m).append("public String toString() {\n");
       sb.append(m).append("  return value;\n");
@@ -1375,7 +1460,10 @@ public class BiDiGenerator {
       sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
-      sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n\n");
+      sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
+      sb.append("import org.openqa.selenium.json.Json;\n");
+      sb.append("import org.openqa.selenium.json.TypeToken;\n");
+      sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
       // Unions are interfaces, not abstract classes: a union can itself be a variant of more
@@ -1490,6 +1578,87 @@ public class BiDiGenerator {
       writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
     }
 
+    // ─── Scalar union (alias) ────────────────────────────────────
+
+    /**
+     * A union with a bare-scalar arm alongside an object arm (today, only input.Origin: the
+     * literals "viewport"/"pointer", or an input.ElementOrigin) has no name of its own in the
+     * schema — it's carried as an alias's inline type, not a named "union" node — so it never went
+     * through generateUnion, and previously resolved to a bare, unchecked Object. This gives it the
+     * same interface-per-union treatment as a named union: a generated interface, implemented by
+     * both the object arm (the record already generated for the ref arm — see appendRecordBody's
+     * toWireValue() override) and a nested Literal enum for the bare-scalar arm, reusing
+     * appendEnumBody exactly like any other generated enum.
+     */
+    @SuppressWarnings("unchecked")
+    private void generateScalarUnionAlias(String typeName, Map<String, Object> node, Path outDir)
+        throws IOException {
+
+      String domain = domainOf(typeName);
+      String pkg = domainPackage(domain);
+      String cls = simpleNameOf(typeName);
+      Map<String, Object> type = mapField(node, "type");
+      List<?> scalarValues = (List<?>) Objects.requireNonNull(type.get("scalarValues"));
+      List<Map<String, Object>> unionArms = (List<Map<String, Object>>) type.get("union");
+      String refArm =
+          unionArms.stream()
+              .map(a -> str(a, "ref"))
+              .filter(Objects::nonNull)
+              .findFirst()
+              .orElse(null);
+      String refClass = refArm != null ? resolveRefToJavaClass(refArm, domain) : null;
+
+      StringBuilder sb = new StringBuilder();
+      sb.append(LICENSE);
+      sb.append("package ").append(pkg).append(";\n\n");
+      sb.append("import java.util.Map;\n");
+      sb.append("import org.openqa.selenium.Beta;\n");
+      sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
+      sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n\n");
+      sb.append(API_JAVADOC);
+      sb.append("@Beta\n");
+      sb.append("public interface ").append(cls).append(" {\n\n");
+      sb.append("  Object toWireValue();\n\n");
+
+      // Inbound: dispatch on the raw JSON value's own shape — a bare scalar (checked against the
+      // spec's closed vocabulary by Literal.fromJson below) or an object (decoded as the ref
+      // arm). Named fromJson, not fromMap: StaticInitializerCoercer only recognizes that exact
+      // name (see the matching comment on generateUnion's own fromJson wrapper).
+      sb.append("  @SuppressWarnings(\"unchecked\")\n");
+      sb.append("  static ").append(cls).append(" fromJson(Object raw) {\n");
+      sb.append("    if (raw instanceof String) {\n");
+      sb.append("      return Literal.fromJson((String) raw);\n");
+      sb.append("    }\n");
+      if (refClass != null) {
+        sb.append("    if (raw instanceof Map) {\n");
+        sb.append("      return (")
+            .append(cls)
+            .append(") (Object) ConverterFunctions.fromMap(")
+            .append(refClass)
+            .append(".class).apply((Map<String, Object>) raw);\n");
+        sb.append("    }\n");
+      }
+      sb.append("    throw new BiDiException(\"Expected a string or an object for ")
+          .append(cls)
+          .append(", got: \" + raw);\n");
+      sb.append("  }\n\n");
+
+      // The bare-literal arms as a real Java enum — same shape (fromString/fromJson/toString)
+      // every other generated enum already has, so it picks up StaticInitializerCoercer and
+      // ConverterFunctions.JSON's strict handling identically, with no special-casing needed here.
+      sb.append("  enum Literal implements ").append(cls).append(" {\n\n");
+      appendEnumBody(sb, "Literal", scalarValues, "    ");
+      sb.append("\n");
+      sb.append("    @Override\n");
+      sb.append("    public Object toWireValue() {\n");
+      sb.append("      return toString();\n");
+      sb.append("    }\n");
+      sb.append("  }\n");
+
+      sb.append("}\n");
+      writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
+    }
+
     // Emits a `return ConverterFunctions.fromMap(...).apply(map);` line inside a union's fromMap().
     // Always casts through Object: some dispatch targets (multi-parent variants or indirect
     // subtypes) do not statically extend the union class, but are valid protocol representations.
@@ -1549,6 +1718,12 @@ public class BiDiGenerator {
       if (node == null) return resolveRefToJavaClass(ref, contextDomain);
       String kind = str(node, "kind");
       if ("alias".equals(kind)) {
+        // A scalar-union alias (e.g. input.Origin) gets its own generated interface — see
+        // generateScalarUnionAlias — unlike an ordinary alias, which resolves inline with no
+        // class of its own.
+        if (isScalarUnionAlias(node)) {
+          return resolveRefToJavaClass(ref, contextDomain);
+        }
         @SuppressWarnings("unchecked")
         Map<String, Object> aliasType = (Map<String, Object>) node.get("type");
         return aliasType != null ? resolveJavaType(aliasType, contextDomain, box) : "Object";
@@ -1661,6 +1836,11 @@ public class BiDiGenerator {
         if ("record".equals(resolvedKind) || "union".equals(resolvedKind)) {
           return varName + ".toMap()";
         }
+        if ("scalarUnion".equals(resolvedKind)) {
+          // Polymorphic: the value is either a bare-literal Literal enum constant or an object
+          // implementor — toWireValue() (see generateScalarUnionAlias) picks the right one.
+          return varName + ".toWireValue()";
+        }
         // alias: recurse through
         Map<String, Object> aliasNode = types.get(str(typeRef, "ref"));
         if (aliasNode != null && "alias".equals(str(aliasNode, "kind"))) {
@@ -1725,10 +1905,25 @@ public class BiDiGenerator {
     private String resolvedKindFromTypeRef(Map<String, Object> typeRef) {
       if (typeRef == null) return "unknown";
       if (typeRef.containsKey("ref")) return resolvedKindOf(str(typeRef, "ref"));
+      if (isScalarUnion(typeRef)) return "scalarUnion";
       if (typeRef.containsKey("primitive") || typeRef.containsKey("const")) return "primitive";
       if (typeRef.containsKey("list")) return "list";
       if (typeRef.containsKey("map")) return "map";
       return "unknown";
+    }
+
+    // A union with a bare-scalar arm alongside an object (ref) arm — e.g. input.Origin:
+    // "viewport" / "pointer" / input.ElementOrigin. The schema always reaches this shape through
+    // an alias (project_bidi_schema.mjs never hoists it to a named union), carrying the closed
+    // set of literal values a bare scalar may take (scalarValues) alongside the union arms.
+    private boolean isScalarUnion(Map<String, Object> typeRef) {
+      return typeRef != null && typeRef.containsKey("union") && typeRef.containsKey("scalarValues");
+    }
+
+    private boolean isScalarUnionAlias(Map<String, Object> node) {
+      return node != null
+          && "alias".equals(str(node, "kind"))
+          && isScalarUnion(mapField(node, "type"));
     }
 
     private String resolveEventMapper(Map<String, Object> paramsRef, String contextDomain) {
