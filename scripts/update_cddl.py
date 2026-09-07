@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Update the pinned CDDL spec files downloaded from w3c/webref.
 
 The WebDriver BiDi (and related) CDDL grammars are not published as an npm
