@@ -19,6 +19,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Keep in sync with the rust_toolchains version in MODULE.bazel
+  RUST_VERSION: "1.98.1"
+
 jobs:
   tests:
     name: Tests
@@ -50,11 +54,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
-          rustup toolchain install stable-i686-pc-windows-msvc
-          rustup default stable-i686-pc-windows-msvc
+          rustup toolchain install ${{ env.RUST_VERSION }}-i686-pc-windows-msvc
+          rustup default ${{ env.RUST_VERSION }}-i686-pc-windows-msvc
           rustc -vV
       - name: "Build release binary"
         run: cargo build --release
@@ -80,11 +83,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
-          rustup toolchain install stable-i686-pc-windows-msvc
-          rustup default stable-i686-pc-windows-msvc
+          rustup toolchain install ${{ env.RUST_VERSION }}-i686-pc-windows-msvc
+          rustup default ${{ env.RUST_VERSION }}-i686-pc-windows-msvc
           rustc -vV
       - name: "Build release binary"
         run: cargo build --profile dev
@@ -99,85 +101,92 @@ jobs:
           retention-days: 6
 
   linux-stable:
-    name: "Linux Stable"
-    runs-on: ubuntu-latest
+    name: "Linux Stable (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runner }}
     needs: tests
     if: ${{ !cancelled() && needs.tests.result != 'failure' && github.event_name != 'schedule' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: selenium-manager-linux
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            artifact: selenium-manager-linux-aarch64
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install musl toolchain"
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
+          rustup target add ${{ matrix.target }}
           rustc -vV
-      - name: "Install cross"
-        run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary (x64)"
-        run: cross build --target x86_64-unknown-linux-musl --release
+      - name: "Build release binary"
+        run: cargo build --target ${{ matrix.target }} --release
         working-directory: rust
-      - name: "Build release binary (arm64)"
-        run: cross build --target aarch64-unknown-linux-musl --release
-        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
       - name: "Rename binary"
-        run: |
-          mv rust/target/x86_64-unknown-linux-musl/release/selenium-manager selenium-manager-linux
-          mv rust/target/aarch64-unknown-linux-musl/release/selenium-manager selenium-manager-linux-arm64
+        run: mv rust/target/${{ matrix.target }}/release/selenium-manager ${{ matrix.artifact }}
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
-          name: selenium-manager-linux
-          path: selenium-manager-linux
-          retention-days: 6
-      - name: "Upload release binary"
-        uses: actions/upload-artifact@v7
-        with:
-          name: selenium-manager-linux-arm64
-          path: selenium-manager-linux-arm64
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
           retention-days: 6
 
   linux-debug:
-    name: "Linux Debug"
-    runs-on: ubuntu-latest
+    name: "Linux Debug (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runner }}
     needs: tests
     if: ${{ !cancelled() && needs.tests.result != 'failure' && github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: selenium-manager-linux-debug
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            artifact: selenium-manager-linux-aarch64-debug
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install musl toolchain"
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
+          rustup target add ${{ matrix.target }}
           rustc -vV
-      - name: "Install cross"
+      - name: "Build release binary"
         run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-      - name: "Build release binary (x64)"
-        run: |
-          cross build --target x86_64-unknown-linux-musl --profile dev
-          cd target/x86_64-unknown-linux-musl/debug
-          tar -cvf ../../../../selenium-manager-linux-debug.tar selenium-manager
+          cargo build --target ${{ matrix.target }} --profile dev
+          cd target/${{ matrix.target }}/debug
+          tar -cvf ../../../../${{ matrix.artifact }}.tar selenium-manager
         working-directory: rust
-      - name: "Build release binary (arm64)"
-        run: |
-          cross build --target aarch64-unknown-linux-musl --profile dev
-          cd target/aarch64-unknown-linux-musl/debug
-          tar -cvf ../../../../selenium-manager-linux-arm64-debug.tar selenium-manager
-        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
-          name: selenium-manager-linux-debug
-          path: selenium-manager-linux-debug.tar
-          retention-days: 6
-      - name: "Upload release binary"
-        uses: actions/upload-artifact@v7
-        with:
-          name: selenium-manager-linux-arm64-debug
-          path: selenium-manager-linux-arm64-debug.tar
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.tar
           retention-days: 6
 
   macos-stable:
@@ -192,9 +201,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
           rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
@@ -225,9 +235,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
           rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
@@ -258,9 +269,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
-      - name: "Update Rust"
+      - name: "Install Rust toolchain"
         run: |
-          rustup update
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
           rustc -vV
       - name: "Install SBOM tools"
         run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
@@ -297,12 +309,12 @@ jobs:
       - name: "Prepare and Commit"
         run: |
           linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
-          linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
+          linux_aarch64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-aarch64/selenium-manager-linux-aarch64 | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
           sbom_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager.cdx.json | awk '{print $1}')
           notice_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt | awk '{print $1}')
-          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"linux-arm64\": \"$linux_arm64_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"linux-aarch64\": \"$linux_aarch64_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add latest.json
@@ -321,11 +333,11 @@ jobs:
           prerelease: false
           files: |
             artifacts/selenium-manager-linux/selenium-manager-linux
-            artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64
+            artifacts/selenium-manager-linux-aarch64/selenium-manager-linux-aarch64
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
             artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
-            artifacts/selenium-manager-linux-arm64-debug/selenium-manager-linux-arm64-debug.tar
+            artifacts/selenium-manager-linux-aarch64-debug/selenium-manager-linux-aarch64-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
             artifacts/selenium-manager-sbom/selenium-manager.cdx.json

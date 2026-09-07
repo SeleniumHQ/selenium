@@ -5,7 +5,7 @@
     "com.beust:jcommander": -1790778431,
     "com.github.ben-manes.caffeine:caffeine": 1815596219,
     "com.github.javaparser:javaparser-core": -677443473,
-    "com.github.spotbugs:spotbugs": 1352447196,
+    "com.github.spotbugs:spotbugs": -455007267,
     "com.github.stephenc.jcip:jcip-annotations": -1909337358,
     "com.google.auto.service:auto-service": -1729498094,
     "com.google.auto.service:auto-service-annotations": -843120535,
@@ -16,21 +16,21 @@
     "com.google.dagger:dagger-producers": 1903545965,
     "com.google.errorprone:error_prone_annotations": -1035138750,
     "com.google.googlejavaformat:google-java-format": -1066280999,
-    "com.google.guava:guava": -249069712,
+    "com.google.guava:guava": 965079090,
     "com.google.j2objc:j2objc-annotations": 2003271689,
     "com.google.javascript:closure-compiler": -648553916,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
-    "com.google.protobuf:protobuf-java": -559925028,
-    "com.graphql-java:graphql-java": 1011916509,
-    "com.uber.nullaway:nullaway": 133041687,
+    "com.google.protobuf:protobuf-java": -549421924,
+    "com.graphql-java:graphql-java": -795537954,
+    "com.uber.nullaway:nullaway": -1896630319,
     "dev.failsafe:failsafe": -1314791755,
     "io.fabric8:kubernetes-client": -103013102,
     "io.fabric8:kubernetes-client-api": 2073433381,
     "io.fabric8:kubernetes-model-batch": -1033528673,
     "io.fabric8:kubernetes-model-core": 339695642,
     "io.grpc:grpc-context": -1672717261,
-    "io.lettuce:lettuce-core": -850685438,
+    "io.lettuce:lettuce-core": -1695157309,
     "io.netty:netty-all": 41228384,
     "io.netty:netty-bom": -93853147,
     "io.netty:netty-buffer": 74326261,
@@ -52,7 +52,7 @@
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
     "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
-    "net.bytebuddy:byte-buddy": -1875367778,
+    "net.bytebuddy:byte-buddy": 612145055,
     "net.java.dev.javacc:javacc": 520686333,
     "org.apache.logging.log4j:log4j-core": 260343140,
     "org.assertj:assertj-core": -1145412507,
@@ -62,7 +62,7 @@
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
     "org.hsqldb:hsqldb": 1426553323,
-    "org.htmlunit:htmlunit-core-js": 420658461,
+    "org.htmlunit:htmlunit-core-js": -1376292898,
     "org.jboss.marshalling:jboss-marshalling": -970194822,
     "org.jsoup:jsoup": -1040080959,
     "org.jspecify:jspecify": 2105307712,
@@ -121,56 +121,56 @@
     "com.github.docker-java:docker-java-transport:jar:sources": -1920988041,
     "com.github.javaparser:javaparser-core": 561213315,
     "com.github.javaparser:javaparser-core:jar:sources": -1181310143,
-    "com.github.spotbugs:spotbugs": 1090406351,
-    "com.github.spotbugs:spotbugs-annotations": 2037600468,
-    "com.github.spotbugs:spotbugs-annotations:jar:sources": 815976186,
-    "com.github.spotbugs:spotbugs:jar:sources": -1089698051,
+    "com.github.spotbugs:spotbugs": -1560679952,
+    "com.github.spotbugs:spotbugs-annotations": -851079713,
+    "com.github.spotbugs:spotbugs-annotations:jar:sources": 113380347,
+    "com.github.spotbugs:spotbugs:jar:sources": 961059440,
     "com.github.stephenc.jcip:jcip-annotations": 2084352561,
     "com.github.stephenc.jcip:jcip-annotations:jar:sources": 888192437,
-    "com.google.auto.service:auto-service": 656147787,
+    "com.google.auto.service:auto-service": -149967898,
     "com.google.auto.service:auto-service-annotations": 262983930,
     "com.google.auto.service:auto-service-annotations:jar:sources": -1392999316,
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
-    "com.google.auto:auto-common": -36342810,
+    "com.google.auto:auto-common": 201522989,
     "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": 33627368,
+    "com.google.closure-stylesheets:closure-stylesheets": 962192323,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
     "com.google.code.gson:gson": -1465758993,
     "com.google.code.gson:gson:jar:sources": 935710753,
     "com.google.dagger:dagger": -1865829880,
-    "com.google.dagger:dagger-producers": 179745946,
+    "com.google.dagger:dagger-producers": -359556085,
     "com.google.dagger:dagger-producers:jar:sources": -143178918,
     "com.google.dagger:dagger:jar:sources": 1572301086,
     "com.google.errorprone:error_prone_annotations": 967586345,
     "com.google.errorprone:error_prone_annotations:jar:sources": -1304692732,
-    "com.google.googlejavaformat:google-java-format": -1254837530,
+    "com.google.googlejavaformat:google-java-format": -1584481917,
     "com.google.googlejavaformat:google-java-format:jar:sources": 198234778,
     "com.google.guava:failureaccess": 1715931538,
     "com.google.guava:failureaccess:jar:sources": 1303858893,
-    "com.google.guava:guava": 1071122829,
-    "com.google.guava:guava:jar:sources": 129808367,
+    "com.google.guava:guava": 344735750,
+    "com.google.guava:guava:jar:sources": 1172872680,
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
     "com.google.javascript:closure-compiler": 495067644,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": 116902165,
+    "com.google.javascript:closure-compiler-unshaded": 1430227229,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
     "com.google.javascript:closure-compiler:jar:sources": 466877765,
-    "com.google.jimfs:jimfs": 1556497735,
+    "com.google.jimfs:jimfs": -1963852372,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
-    "com.google.protobuf:protobuf-java": 911577887,
-    "com.google.protobuf:protobuf-java:jar:sources": 773608461,
-    "com.graphql-java:graphql-java": 1590831189,
-    "com.graphql-java:graphql-java:jar:sources": -1171565042,
+    "com.google.protobuf:protobuf-java": 1636841810,
+    "com.google.protobuf:protobuf-java:jar:sources": 1511914113,
+    "com.graphql-java:graphql-java": 1178948131,
+    "com.graphql-java:graphql-java:jar:sources": 250541727,
     "com.graphql-java:java-dataloader": -1517887665,
     "com.graphql-java:java-dataloader:jar:sources": -1676833358,
-    "com.uber.nullaway:nullaway": 301768702,
-    "com.uber.nullaway:nullaway:jar:sources": 909840460,
+    "com.uber.nullaway:nullaway": 1242902327,
+    "com.uber.nullaway:nullaway:jar:sources": 1337349372,
     "commons-codec:commons-codec": 1545666683,
     "commons-codec:commons-codec:jar:sources": -1502704019,
     "commons-io:commons-io": 1539755249,
@@ -235,8 +235,8 @@
     "io.grpc:grpc-api:jar:sources": 1614287947,
     "io.grpc:grpc-context": -1756055319,
     "io.grpc:grpc-context:jar:sources": 1414734680,
-    "io.lettuce:lettuce-core": -529688722,
-    "io.lettuce:lettuce-core:jar:sources": -1084012965,
+    "io.lettuce:lettuce-core": -1696940757,
+    "io.lettuce:lettuce-core:jar:sources": -1131248474,
     "io.netty:netty-buffer": -294787265,
     "io.netty:netty-buffer:jar:sources": 215136008,
     "io.netty:netty-codec": 1748283074,
@@ -319,10 +319,10 @@
     "jaxen:jaxen:jar:sources": 1440924454,
     "junit:junit": -149895345,
     "junit:junit:jar:sources": 940567721,
-    "net.bytebuddy:byte-buddy": -2144538556,
+    "net.bytebuddy:byte-buddy": 570606503,
     "net.bytebuddy:byte-buddy-agent": 1099087346,
     "net.bytebuddy:byte-buddy-agent:jar:sources": 1414786109,
-    "net.bytebuddy:byte-buddy:jar:sources": 1602176187,
+    "net.bytebuddy:byte-buddy:jar:sources": -750344117,
     "net.java.dev.javacc:javacc": 1095796166,
     "net.java.dev.javacc:javacc:jar:sources": -1183405047,
     "net.java.dev.jna:jna": 154162148,
@@ -347,7 +347,7 @@
     "org.apache.logging.log4j:log4j-core:jar:sources": -625900064,
     "org.apiguardian:apiguardian-api": 1279798469,
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
-    "org.assertj:assertj-core": -59722598,
+    "org.assertj:assertj-core": 1185991420,
     "org.assertj:assertj-core:jar:sources": -697161745,
     "org.bouncycastle:bcpkix-jdk18on": 955037106,
     "org.bouncycastle:bcpkix-jdk18on:jar:sources": 1945286569,
@@ -359,8 +359,8 @@
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
     "org.checkerframework:checker-qual": 287486786,
     "org.checkerframework:checker-qual:jar:sources": -677703138,
-    "org.checkerframework:dataflow-nullaway": 1489160970,
-    "org.checkerframework:dataflow-nullaway:jar:sources": 1823161277,
+    "org.checkerframework:dataflow-nullaway": -831479400,
+    "org.checkerframework:dataflow-nullaway:jar:sources": 993803352,
     "org.commonmark:commonmark": 1195553091,
     "org.commonmark:commonmark-ext-gfm-tables": -558121472,
     "org.commonmark:commonmark-ext-gfm-tables:jar:sources": 1593227191,
@@ -373,8 +373,8 @@
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:sources": -1002647383,
     "org.hsqldb:hsqldb": 331478029,
     "org.hsqldb:hsqldb:jar:sources": -212896903,
-    "org.htmlunit:htmlunit-core-js": 502402684,
-    "org.htmlunit:htmlunit-core-js:jar:sources": 1618944875,
+    "org.htmlunit:htmlunit-core-js": 484762681,
+    "org.htmlunit:htmlunit-core-js:jar:sources": 1035397071,
     "org.jboss.marshalling:jboss-marshalling": 1584464300,
     "org.jboss.marshalling:jboss-marshalling:jar:sources": -444808379,
     "org.jetbrains:annotations": -845966580,
@@ -399,7 +399,7 @@
     "org.junit.platform:junit-platform-launcher:jar:sources": 1409824250,
     "org.junit.platform:junit-platform-reporting": 1588112906,
     "org.junit.platform:junit-platform-reporting:jar:sources": 1717223596,
-    "org.mockito:mockito-core": 877229911,
+    "org.mockito:mockito-core": -1642334027,
     "org.mockito:mockito-core:jar:sources": 1900207417,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
@@ -419,7 +419,7 @@
     "org.ow2.asm:asm:jar:sources": 1372783843,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": 526268341,
+    "org.redisson:redisson": 2146784211,
     "org.redisson:redisson:jar:sources": -620546522,
     "org.rnorth.duct-tape:duct-tape": -1059401544,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
@@ -433,9 +433,9 @@
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
     "org.seleniumhq.selenium:selenium-os": -2127888353,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -1635323090,
+    "org.seleniumhq.selenium:selenium-remote-driver": 665047247,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": 136017222,
+    "org.seleniumhq.selenium:selenium-support": -904618883,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
     "org.slf4j:slf4j-api": 500377983,
     "org.slf4j:slf4j-api:jar:sources": 1751644771,
@@ -456,9 +456,9 @@
     "org.zeromq:jeromq:jar:sources": -1982898923,
     "redis.clients.authentication:redis-authx-core": 1112364113,
     "redis.clients.authentication:redis-authx-core:jar:sources": -376828222,
-    "uk.org.webcompere:system-stubs-core": 18542739,
+    "uk.org.webcompere:system-stubs-core": 2059326325,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
-    "uk.org.webcompere:system-stubs-jupiter": -1197771128,
+    "uk.org.webcompere:system-stubs-jupiter": -1451025960,
     "uk.org.webcompere:system-stubs-jupiter:jar:sources": 409043156
   },
   "artifacts": {
@@ -576,17 +576,17 @@
     },
     "com.github.spotbugs:spotbugs": {
       "shasums": {
-        "jar": "5b12b471979fd8d664e9772d4c7e7e11b25a55d71dbb0ef2d2dcb749959052e7",
-        "sources": "e00994265d6b771db8cc79edd70500ab8af6334f636d3ac7bf169c5d7daefcbc"
+        "jar": "a88cad2e0ea9bb74b908ce82ae89416c61fa8f8ea5cfcc9368b1baac2da878d2",
+        "sources": "d087c11e3b0714e8445b29f2bef9bb4c62b4ee13ad67caf7a4b64d61e82ea400"
       },
-      "version": "4.10.3"
+      "version": "4.10.4"
     },
     "com.github.spotbugs:spotbugs-annotations": {
       "shasums": {
-        "jar": "3fabaf088f8cd10803cc87dba4666cf874bdcd2e07ad154ed3fe403647ce3f2a",
+        "jar": "28fa4befaddce5d7b79b07c68e7c12fa27c5d9282c4229528717971606661ea3",
         "sources": "87974d23caffbc8c6e66c567747627267b5ed06573cee966d7af6d236b8d65bd"
       },
-      "version": "4.10.3"
+      "version": "4.10.4"
     },
     "com.github.stephenc.jcip:jcip-annotations": {
       "shasums": {
@@ -674,10 +674,10 @@
     },
     "com.google.guava:guava": {
       "shasums": {
-        "jar": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3",
-        "sources": "eff31867dd63a92d63ca856127a424a6836418d8bfa044162cac20430abd3500"
+        "jar": "796d8e28ac64e83a47c4c5935a8fecc4682650a04bbdead738ef0f5a3a0e6c46",
+        "sources": "9d60f1613f9252d1f1bc89847466915cfe711af33b0847b885c9184a8602d166"
       },
-      "version": "33.6.0-jre"
+      "version": "33.7.1-jre"
     },
     "com.google.guava:listenablefuture": {
       "shasums": {
@@ -728,17 +728,17 @@
     },
     "com.google.protobuf:protobuf-java": {
       "shasums": {
-        "jar": "a4345ba2aa009912ff6f90467fea2d104605256b72c50840d75f13256638a472",
-        "sources": "83b680c10572c930de7631cd3376ead12fc11387d3515d8cfb15bd5a381dea1a"
+        "jar": "06515776b10bfed334b610273ffdd8884098a9333cb816314b4e4876bfcd2041",
+        "sources": "66936f18eae13931b3e5ab3d5461c46cd63b740e348fc6fd51b9ee72b0629adf"
       },
-      "version": "4.35.1"
+      "version": "4.36.0"
     },
     "com.graphql-java:graphql-java": {
       "shasums": {
-        "jar": "c5ec18b13e1bd14300cca6535894621e4edc31bda63d9b47377008dd3e9ec05e",
-        "sources": "0569eadd1d4c725341ec3b0eec933c0c32950a4ebab4c36a8ec1726595d30cc1"
+        "jar": "2a87c9b6e64414806696a87a8aab006d32940568299bd6a1fe81c50f9e40f967",
+        "sources": "58c1e5a76a0bc3fea276cb861be2c5fe04a6a62e048f33d9329b3d79767f9c92"
       },
-      "version": "26.0"
+      "version": "26.1"
     },
     "com.graphql-java:java-dataloader": {
       "shasums": {
@@ -749,10 +749,10 @@
     },
     "com.uber.nullaway:nullaway": {
       "shasums": {
-        "jar": "c0dd630589f61ac674d212c73e7f60d36f45c302342f95e5f631c64a018fa0d7",
-        "sources": "16b6021cf2c7bd7af5a4fec7cc9c309ac788aebc6fdfedd10cda8757f030a695"
+        "jar": "a74a5fb5a047537a4bdc362f9c1821279d7122d9d36aa2e6a72b79832fab7e4d",
+        "sources": "5e74a6e95878b7c8195eb2d8ba75a823b10d3329bbfb9f75b75c61f22c928386"
       },
-      "version": "0.13.8"
+      "version": "0.14.1"
     },
     "commons-codec:commons-codec": {
       "shasums": {
@@ -980,10 +980,10 @@
     },
     "io.lettuce:lettuce-core": {
       "shasums": {
-        "jar": "b2ff0d6e623e3bf6d3442c10f5e2d469a816b95ec11548448a5914f670f6555d",
-        "sources": "cfe7f44e6e59e35bb7e969820149576a20492bed03f8a6caf17818a96d1c4828"
+        "jar": "e03b6007cd88af59bf53edee4d38308d33b1ef0d4c4746998cf9855aec3f422a",
+        "sources": "5e2c6547e434712a0bfbfc91ce05dc04bb70f3c60ce9fc119ed63006d6f2ae8c"
       },
-      "version": "7.6.0.RELEASE"
+      "version": "7.7.0.RELEASE"
     },
     "io.netty:netty-buffer": {
       "shasums": {
@@ -1274,10 +1274,10 @@
     },
     "net.bytebuddy:byte-buddy": {
       "shasums": {
-        "jar": "e32f454c2c1f4aca982f9ec764ed892d9a6eee7e8a77f435cbdd180f6ffdb821",
-        "sources": "7f38a50fa7406b61d867a2c81a89610bb816de2fa28696b4a54fcaa8d52530a1"
+        "jar": "2ed11da684a8f5b088e0222baa87461cd757e433a8dc4a03671457229d91d5fa",
+        "sources": "b1d35137942a8bff4199b8a2baa00ed3872923bc6878a6ff2731f9324fe1a2fc"
       },
-      "version": "1.18.11"
+      "version": "1.18.12"
     },
     "net.bytebuddy:byte-buddy-agent": {
       "shasums": {
@@ -1414,10 +1414,10 @@
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
-        "jar": "4038b94f4a58f5895a19dde9c9c04ee4cc8bf25e83d4ef10152428e760783f9a",
-        "sources": "440646716bf06c054ef7437ee3e3006e5be79b9076e9492f4c8124b2aad9587d"
+        "jar": "7642e30918ba238076ef795e93620e7029b47635021cee3cc04737ad933b2a4f",
+        "sources": "a3c73b9366889e5b4a4f7b7b0c5574da970e0b2c811dfcdbbfe689d76524d316"
       },
-      "version": "4.0.0"
+      "version": "4.2.2"
     },
     "org.commonmark:commonmark": {
       "shasums": {
@@ -1463,10 +1463,10 @@
     },
     "org.htmlunit:htmlunit-core-js": {
       "shasums": {
-        "jar": "5baf5e1ab9d4ae0be1cfd8b038d2be50fab24108d5402e454e9ec997125a8a54",
-        "sources": "95fa718c29dcc2e8197718579223e2695b4f50fa721199ed40f6d2ede76aad2b"
+        "jar": "eb5dd014b433a57c8b520436c40adb6cb4f413fded4a99a958feb05cd17198c7",
+        "sources": "77bc66595e6625edf08676269e1eba01cb2f322729c74a896215850110a30614"
       },
-      "version": "5.4.0"
+      "version": "5.5.0"
     },
     "org.jboss.marshalling:jboss-marshalling": {
       "shasums": {
@@ -3033,6 +3033,7 @@
       "com.uber.nullaway.fixserialization.adapters",
       "com.uber.nullaway.fixserialization.location",
       "com.uber.nullaway.fixserialization.out",
+      "com.uber.nullaway.fixserialization.scanners",
       "com.uber.nullaway.generics",
       "com.uber.nullaway.handlers",
       "com.uber.nullaway.handlers.contract",
@@ -3040,6 +3041,7 @@
       "com.uber.nullaway.handlers.stream",
       "com.uber.nullaway.handlers.temporary",
       "com.uber.nullaway.jarinfer",
+      "com.uber.nullaway.libmodel",
       "com.uber.nullaway.librarymodel"
     ],
     "commons-codec:commons-codec": [
@@ -3294,6 +3296,8 @@
       "io.lettuce.core.models.role",
       "io.lettuce.core.models.stream",
       "io.lettuce.core.output",
+      "io.lettuce.core.probabilistic",
+      "io.lettuce.core.probabilistic.arguments",
       "io.lettuce.core.protocol",
       "io.lettuce.core.pubsub",
       "io.lettuce.core.pubsub.api.async",

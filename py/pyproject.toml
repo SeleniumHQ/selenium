@@ -137,13 +137,14 @@ ignore_errors = true
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
     "selenium/webdriver/common/bidi/",
+    "*.md",
 ]
 line-length = 120
 respect-gitignore = true
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["D", "E", "F", "I", "PT", "UP", "RUF", "TID252"]
+select = ["D", "E", "F", "I", "PT", "UP", "RUF", "TID252"]
 fixable = ["ALL"]
 extend-ignore = [
     "D100", # Missing docstring in public module

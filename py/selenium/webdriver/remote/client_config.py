@@ -115,7 +115,7 @@ class ClientConfig:
         self,
         remote_server_addr: str,
         keep_alive: bool | None = True,
-        proxy: Proxy | None = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
+        proxy: Proxy | None = None,
         ignore_certificates: bool | None = False,
         init_args_for_pool_manager: dict | None = None,
         timeout: int | None = None,
@@ -132,7 +132,7 @@ class ClientConfig:
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
-        self.proxy = proxy
+        self.proxy = Proxy(raw={"proxyType": ProxyType.SYSTEM}) if proxy is None else proxy
         self.ignore_certificates = ignore_certificates
         self.init_args_for_pool_manager = init_args_for_pool_manager or {}
         self.timeout = socket.getdefaulttimeout() if timeout is None else timeout

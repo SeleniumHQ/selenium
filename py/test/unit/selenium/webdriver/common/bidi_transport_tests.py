@@ -28,8 +28,9 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import NoSuchFrameException, WebDriverException
 from selenium.webdriver.common._bidi.domain import Domain
+from selenium.webdriver.common._bidi.errors import NoSuchUserContextException
 from selenium.webdriver.common._bidi.serialization import Record, meta, register
 from selenium.webdriver.common._bidi.transport import Transport
 
@@ -51,13 +52,14 @@ class DrivingConnection:
 
     Records the outbound frame and returns a canned reply envelope, so the seam is
     tested against the real send/reply contract rather than a mock of it. Set
-    ``error`` (and optionally ``message``) to return an error envelope instead.
+    ``error`` (and optionally ``message``/``stacktrace``) to return an error envelope instead.
     """
 
-    def __init__(self, reply=None, error=None, message=None):
+    def __init__(self, reply=None, error=None, message=None, stacktrace=None):
         self.reply = reply
         self.error = error
         self.message = message
+        self.stacktrace = stacktrace
         self.sent = None
 
     def send_cmd(self, method, params):
@@ -66,6 +68,8 @@ class DrivingConnection:
             envelope = {"error": self.error}
             if self.message is not None:
                 envelope["message"] = self.message
+            if self.stacktrace is not None:
+                envelope["stacktrace"] = self.stacktrace
             return envelope
         return {"result": self.reply}
 
@@ -117,7 +121,7 @@ def test_execute_with_no_result_type_returns_the_raw_reply():
 def test_execute_raises_when_the_reply_carries_an_error():
     connection = DrivingConnection(error="unknown command", message="no such command")
 
-    with pytest.raises(WebDriverException, match=r"unknown command: no such command"):
+    with pytest.raises(WebDriverException, match=r"no such command"):
         Transport(connection).execute("bad.command", params=Params(context="c"), result=Result)
 
 
@@ -127,6 +131,35 @@ def test_execute_error_without_a_message_raises_with_just_the_error():
     with pytest.raises(WebDriverException) as exc_info:
         Transport(connection).execute("bad.command", result=Result)
     assert exc_info.value.msg == "unknown command"
+
+
+def test_a_shared_error_code_raises_the_classic_exception():
+    connection = DrivingConnection(error="no such frame", message="it is gone")
+
+    with pytest.raises(NoSuchFrameException, match=r"it is gone"):
+        Transport(connection).execute("bad.command", result=Result)
+
+
+def test_a_bidi_only_error_code_raises_a_bidi_specific_exception():
+    connection = DrivingConnection(error="no such user context", message="nope")
+
+    with pytest.raises(NoSuchUserContextException, match=r"nope"):
+        Transport(connection).execute("bad.command", result=Result)
+
+
+def test_an_error_code_this_schema_does_not_declare_still_raises():
+    connection = DrivingConnection(error="brand new code", message="from a newer browser")
+
+    with pytest.raises(WebDriverException, match=r"from a newer browser"):
+        Transport(connection).execute("bad.command", result=Result)
+
+
+def test_a_wire_stacktrace_is_carried_onto_the_exception():
+    connection = DrivingConnection(error="unknown error", message="boom", stacktrace="a\nb")
+
+    with pytest.raises(WebDriverException) as exc_info:
+        Transport(connection).execute("bad.command", result=Result)
+    assert exc_info.value.stacktrace == ["a", "b"]
 
 
 def test_execute_treats_the_presence_of_error_as_an_error_not_its_truthiness():

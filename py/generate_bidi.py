@@ -168,10 +168,10 @@ class CddlType(Enum):
         """Get Python type annotation for a CDDL type."""
         cddl_type = cddl_type.strip().lower()
 
-        # Handle basic types
-        for member in cls:
-            if cddl_type == member.name.lower():
-                return member.value
+        # Handle basic types (``__members__`` includes aliases, iteration does not)
+        member = cls.__members__.get(cddl_type.upper())
+        if member is not None:
+            return member.value
 
         # Handle composite types
         if cddl_type.startswith("["):  # Array
