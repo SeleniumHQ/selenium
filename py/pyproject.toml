@@ -172,9 +172,6 @@ select = [
 fixable = ["ALL"]
 extend-ignore = [
     "B007", # Loop control variable not used within loop body
-    "B017", # `pytest.raises(Exception)` -- 7 findings; narrowing each one needs the
-    # actual exception type confirmed against a live browser, so it is deferred
-    # rather than guessed. See issue #17989
     "B024", # Abstract base class without abstract methods
     "B028", # No explicit `stacklevel` keyword argument found
     "B904", # `raise` without `from` inside `except` -- worth adopting, but it is 17
