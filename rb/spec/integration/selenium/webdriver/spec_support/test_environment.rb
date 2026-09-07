@@ -119,7 +119,7 @@ module Selenium
             port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
-            timeout: 60,
+            timeout: 120,
             args: args
           )
         end
