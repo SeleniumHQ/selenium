@@ -140,15 +140,12 @@ platform(
     parents = ["@platforms//host"],
 )
 
+# Deliberately terse: the name becomes a bazel-out directory segment, and the
+# Rust sysroot paths under it run within a few bytes of Windows MAX_PATH.
 platform(
-    name = "local_windows_gnullvm",
+    name = "winmsvc",
     constraint_values = [
-        # alias -> @llvm//constraints/windows/abi:gnullvm
-        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
-        # rules_rs 0.0.90 (via llvm 0.8.3) requires the CRT to be selected
-        # explicitly; the gnullvm Rust toolchain targets msvcrt, while the crt
-        # constraint otherwise defaults to ucrt and no toolchain would match.
-        "@llvm//constraints/windows/crt:msvcrt",
+        "@llvm//constraints/windows/abi:msvc",
     ],
     parents = ["@platforms//host"],
 )

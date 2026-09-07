@@ -422,6 +422,10 @@ llvm_toolchains.exec(
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
 
+# Registered only for Windows in .bazelrc so it cannot shadow @llvm elsewhere.
+cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension", dev_dependency = True)
+use_repo(cc_configure, "local_config_cc", "local_config_cc_toolchains")
+
 register_toolchains("@llvm_toolchains//:all")
 
 crate = use_extension("@rules_rs//rs:extensions.bzl", "crate")
