@@ -154,6 +154,8 @@ select = [
     "F",
     "FLY",
     "I",
+    "PIE",
+    "PLE",
     "PT",
     "RUF",
     "TID252",

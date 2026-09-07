@@ -154,11 +154,15 @@ def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
 class CddlType(Enum):
     """CDDL type mappings to Python types."""
 
+    # Distinct CDDL types collapse onto the same Python type, so the repeated
+    # values below are deliberate Enum aliases rather than a mistake.
+    # ``get_annotation`` looks members up through ``__members__``, which
+    # includes aliases -- see 9d0ae9e68f.
     TSTR = "str"  # text string
-    TEXT = "str"  # text (alias)
+    TEXT = "str"  # text  # noqa: PIE796
     UINT = "int"  # unsigned integer
-    INT = "int"  # signed integer
-    NINT = "int"  # negative integer
+    INT = "int"  # signed integer  # noqa: PIE796
+    NINT = "int"  # negative integer  # noqa: PIE796
     BOOL = "bool"  # boolean
     NULL = "None"  # null
     ANY = "Any"  # any type
