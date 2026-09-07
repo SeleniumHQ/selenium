@@ -361,7 +361,10 @@ module Selenium
                                  reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Safari does not implement browsingContext.startScreencast'}] do
+                                 reason: 'Safari does not implement browsingContext.startScreencast'},
+                                {browser: :firefox, platform: :linux, version: 'stable',
+                                 exception: {class: Error::UnknownError, message: /startScreencast/},
+                                 reason: 'startScreencast on Linux fails with NS_ERROR_FAILURE; fixed in 156'}] do
             it 'starts and stops a screencast' do
               result = browsing_context.start_screencast(
                 context: driver.window_handle,
