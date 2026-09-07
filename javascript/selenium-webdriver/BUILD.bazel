@@ -165,7 +165,8 @@ npm_package(
     srcs = [
         ":create-bidi-src",
         ":license",
-        ":manager-linux",
+        ":manager-linux-arm64",
+        ":manager-linux-x86_64",
         ":manager-macos",
         ":manager-notice",
         ":manager-sbom",
@@ -324,9 +325,15 @@ genrule(
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "bin/linux/selenium-manager",
+    name = "manager-linux-x86_64",
+    src = "//common/manager:selenium-manager-linux-x86_64",
+    out = "bin/linux-x86_64/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "bin/linux-arm64/selenium-manager",
 )
 
 copy_file(

@@ -13,56 +13,36 @@ rustfmt_config(
 # We tag the compiled versions as `manual` so that when we do a
 # `bazel build //...` we don't do any additional work
 
-# Start with the variants for each platform
-alias(
-    name = "selenium-manager-windows",
-    actual = select({
-        "//common:windows": ":selenium-manager",
-        "//conditions:default": "@download_sm_windows//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
+# Each platform resolves to a local build on a matching host and the prebuilt
+# artifact everywhere else. Target names spell the platform with a dash; the
+# config_setting and download repo spell it with an underscore.
+SELENIUM_MANAGER_PLATFORMS = [
+    "linux-arm64",
+    "linux-x86_64",
+    "macos",
+    "windows",
+]
 
-alias(
-    name = "selenium-manager-macos",
-    actual = select({
-        "//common:macos": ":selenium-manager",
-        "//conditions:default": "@download_sm_macos//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
-
-alias(
-    name = "selenium-manager-linux",
-    actual = select({
-        "//common:linux": ":selenium-manager",
-        "//conditions:default": "@download_sm_linux//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
+[
+    alias(
+        name = "selenium-manager-%s" % platform,
+        actual = select({
+            "//common:%s" % platform.replace("-", "_"): ":selenium-manager",
+            "//conditions:default": "@download_sm_%s//file" % platform.replace("-", "_"),
+        }),
+        tags = [
+            "manual",
+        ],
+        visibility = [
+            "//common/manager:__pkg__",
+        ],
+    )
+    for platform in SELENIUM_MANAGER_PLATFORMS
+]
 
 filegroup(
     name = "selenium-manager-dev",
-    srcs = [
-        ":selenium-manager-linux",
-        ":selenium-manager-macos",
-        ":selenium-manager-windows",
-    ],
+    srcs = [":selenium-manager-%s" % platform for platform in SELENIUM_MANAGER_PLATFORMS],
     tags = [
         "manual",
     ],
