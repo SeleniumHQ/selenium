@@ -10,14 +10,14 @@ bazel_dep(name = "bazel_features", version = "1.50.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
 bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.8.11")
+bazel_dep(name = "llvm", version = "0.8.18")
 bazel_dep(name = "package_metadata", version = "0.0.10")
 bazel_dep(name = "platforms", version = "1.1.0")
 
 # If you update this, also update the prebuilt version of `protoc` we use below
 bazel_dep(name = "protobuf", version = "33.5")
 
-bazel_dep(name = "rules_cc", version = "0.2.20", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.22", dev_dependency = True)
 
 # rules_rs pulls protobuf for optional prost support. Keep Selenium on the
 # explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
@@ -39,16 +39,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
-bazel_dep(name = "rules_rs", version = "0.0.96")
-
-# Remove patch when updating to rules_rs >= 0.0.108
-single_version_override(
-    module_name = "rules_rs",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:rules_rs_zlib_snapshot.patch",
-    ],
-)
+bazel_dep(name = "rules_rs", version = "0.0.108")
 
 single_version_override(
     module_name = "rules_jvm_external",
@@ -392,6 +383,13 @@ use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 register_toolchains("@ruby_toolchains//:all")
 
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
+
+# Carries hermeticbuild/rules_rust#54: gcc <= 12 doesn't pass `-ffile-prefix-map`
+# to the assembler, so ring and zstd-sys `.S` debug info trips the hermeticity check.
+rules_rust.patch(
+    patches = ["//third_party/bazel:rules_rust_debug_prefix_map.patch"],
+    strip = 1,
+)
 use_repo(rules_rust, "rules_rust")
 
 rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
@@ -402,7 +400,7 @@ rust_toolchains.toolchain(
 )
 use_repo(rust_toolchains, "default_rust_toolchains")
 
-register_toolchains("@default_rust_toolchains//:all")
+register_toolchains("@default_rust_toolchains//...")
 
 # TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
 llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
