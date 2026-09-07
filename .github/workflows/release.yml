@@ -347,8 +347,8 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
-    if: always() && !cancelled()
+    needs: [extract-tag, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
+    if: always() && !cancelled() && needs.extract-tag.result != 'skipped'
     steps:
       - uses: actions/checkout@v6
       - name: Slack Notification
