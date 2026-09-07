@@ -1186,7 +1186,8 @@ public class BiDiGenerator {
           sb.append(m).append("}\n");
 
         } else if ("enum".equals(kind)) {
-          List<String> values = (List<String>) Objects.requireNonNull(childNode.get("values"));
+          // Not List<String> — see the matching comment on generateEnum()'s own cast.
+          List<?> values = (List<?>) Objects.requireNonNull(childNode.get("values"));
           sb.append("\n").append(m).append("public enum ").append(label).append(" {\n\n");
           appendEnumBody(sb, label, values, m + "  ");
           sb.append(m).append("}\n");
@@ -1296,7 +1297,10 @@ public class BiDiGenerator {
       String domain = domainOf(typeName);
       String pkg = domainPackage(domain);
       String cls = simpleNameOf(typeName);
-      List<String> values = (List<String>) Objects.requireNonNull(node.get("values"));
+      // Not every BiDi enum is made of strings — e.g. the CSS "grid" media feature is
+      // defined as the number 0 or 1, which the JSON parser hands back as a Long. A
+      // List<String> cast would throw a ClassCastException for that enum.
+      List<?> values = (List<?>) Objects.requireNonNull(node.get("values"));
 
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
@@ -1312,9 +1316,14 @@ public class BiDiGenerator {
       writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
     }
 
-    private void appendEnumBody(StringBuilder sb, String cls, List<String> values, String m) {
+    // The generated enum's stored value is always a String, even for a numeric or
+    // boolean one — converted below via String.valueOf(). Selenium's shared JSON code
+    // already reads and writes every enum in the codebase as a string (not just BiDi's),
+    // so storing a Long or Boolean here wouldn't be honored on the wire anyway; it would
+    // just get converted back to a String before being sent or compared.
+    private void appendEnumBody(StringBuilder sb, String cls, List<?> values, String m) {
       for (int i = 0; i < values.size(); i++) {
-        String v = values.get(i);
+        String v = String.valueOf(values.get(i));
         sb.append(m)
             .append(toEnumConstant(v))
             .append("(\"")
@@ -1842,7 +1851,11 @@ public class BiDiGenerator {
   }
 
   static String toEnumConstant(String wireValue) {
-    return wireValue.toUpperCase(Locale.ROOT).replace('-', '_').replace('.', '_').replace(' ', '_');
+    String key =
+        wireValue.toUpperCase(Locale.ROOT).replace('-', '_').replace('.', '_').replace(' ', '_');
+    // A Java identifier can't start with a digit — a numeric enum value (e.g.
+    // emulation.MediaFeaturesGrid's 0/1) would otherwise produce an invalid constant name.
+    return !key.isEmpty() && Character.isDigit(key.charAt(0)) ? "_" + key : key;
   }
 
   static String primitiveToJava(String primitive, boolean box) {
