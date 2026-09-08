@@ -16,14 +16,14 @@
 # under the License.
 
 
-interface _Bridge
-  def execute: (untyped command, ?Hash[untyped, untyped] opts, ?untyped? command_hash) -> untyped
+module Selenium
+  module WebDriver
+    class WebExtension
+      @id: String
 
-  def bidi?: () -> bool
+      attr_reader id: String
 
-  def web_extension: () -> Selenium::WebDriver::BiDi::Protocol::WebExtension
-
-  def web_extension_data: (String path) -> untyped
-
-  def encode_extension: (String path) -> String
+      def initialize: (String id) -> void
+    end
+  end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,15 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require File.expand_path('../spec_helper', __dir__)
 
-interface _Bridge
-  def execute: (untyped command, ?Hash[untyped, untyped] opts, ?untyped? command_hash) -> untyped
+module Selenium
+  module WebDriver
+    describe WebExtension do
+      let(:extension) { described_class.new('installed-extension-id') }
 
-  def bidi?: () -> bool
-
-  def web_extension: () -> Selenium::WebDriver::BiDi::Protocol::WebExtension
-
-  def web_extension_data: (String path) -> untyped
-
-  def encode_extension: (String path) -> String
+      it 'exposes the identifier assigned by the browser' do
+        expect(extension.id).to eq 'installed-extension-id'
+      end
+    end
+  end
 end

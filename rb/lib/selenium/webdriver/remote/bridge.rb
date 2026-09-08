@@ -593,14 +593,18 @@ module Selenium
           execute :click_fedcm_dialog_button, {}, {dialogButton: 'ConfirmIdpLoginContinue'}
         end
 
-        def bidi
-          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
-          raise(WebDriver::Error::WebDriverError, msg)
+        def bidi(*)
+          raise WebDriver::Error::WebDriverError,
+                'BiDi must be enabled by setting #web_socket_url to true in options class'
         end
+        alias connection bidi
+        alias web_extension bidi
+        alias install_web_extension bidi
+        alias uninstall_web_extension bidi
+        private :web_extension
 
-        def connection
-          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
-          raise(WebDriver::Error::WebDriverError, msg)
+        def bidi?
+          !@bidi.nil?
         end
 
         def command_list
@@ -608,6 +612,16 @@ module Selenium
         end
 
         private
+
+        def encode_extension(path)
+          if File.directory?(path)
+            Zipper.zip(path)
+          elsif File.file?(path)
+            File.open(path, 'rb') { |file| Base64.strict_encode64(file.read) }
+          else
+            path # already base64-encoded bytes
+          end
+        end
 
         #
         # executes a command on the remote server.

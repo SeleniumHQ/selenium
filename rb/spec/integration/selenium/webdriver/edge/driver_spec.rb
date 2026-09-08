@@ -17,100 +17,134 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'tmpdir'
+
 require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
     module Edge
-      describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}] do
-        it 'gets and sets network conditions' do
-          driver.network_conditions = {offline: false, latency: 56, throughput: 789}
-          expect(driver.network_conditions).to eq(
-            'offline' => false,
-            'latency' => 56,
-            'download_throughput' => 789,
-            'upload_throughput' => 789
-          )
-          driver.delete_network_conditions
-        end
+      describe Driver, skip_unless: {browser: :edge} do
+        context 'when BiDi is not enabled', skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+          it 'gets and sets network conditions' do
+            driver.network_conditions = {offline: false, latency: 56, throughput: 789}
+            expect(driver.network_conditions).to eq(
+              'offline' => false,
+              'latency' => 56,
+              'download_throughput' => 789,
+              'upload_throughput' => 789
+            )
+            driver.delete_network_conditions
+          end
 
-        it 'supports default network conditions' do
-          driver.network_conditions = {latency: 56}
-          expect(driver.network_conditions).to eq(
-            'offline' => false,
-            'latency' => 56,
-            'download_throughput' => -1,
-            'upload_throughput' => -1
-          )
-          driver.delete_network_conditions
+          it 'supports default network conditions' do
+            driver.network_conditions = {latency: 56}
+            expect(driver.network_conditions).to eq(
+              'offline' => false,
+              'latency' => 56,
+              'download_throughput' => -1,
+              'upload_throughput' => -1
+            )
+            driver.delete_network_conditions
 
-          # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
-          reset_driver!
-        end
+            # Need to reset because https://bugs.chromium.org/p/chromedriver/issues/detail?id=4790
+            reset_driver!
+          end
 
-        it 'sets download path' do
-          expect { driver.download_path = File.expand_path(__dir__) }.not_to raise_exception
-        end
+          it 'sets download path' do
+            expect { driver.download_path = File.expand_path(__dir__) }.not_to raise_exception
+          end
 
-        it 'can execute CDP commands' do
-          res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
-          expect(res).to have_key('identifier')
+          it 'can execute CDP commands' do
+            res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
+            expect(res).to have_key('identifier')
 
-          begin
-            driver.navigate.to url_for('formPage.html')
+            begin
+              driver.navigate.to url_for('formPage.html')
 
-            tw = driver.execute_script('return window.was_here')
-            expect(tw).to eq('TW')
-          ensure
-            driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
+              tw = driver.execute_script('return window.was_here')
+              expect(tw).to eq('TW')
+            ensure
+              driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
+            end
+          end
+
+          describe '#logs' do
+            before do
+              reset_driver!(logging_prefs: {browser: 'ALL',
+                                            driver: 'ALL',
+                                            performance: 'ALL'})
+              driver.navigate.to url_for('errors.html')
+            end
+
+            after(:all) { reset_driver! }
+
+            it 'can fetch available log types' do
+              expect(driver.logs.available_types).to include(:performance, :browser, :driver)
+            end
+
+            it 'can get the browser log' do
+              driver.find_element(tag_name: 'input').click
+
+              entries = driver.logs.get(:browser)
+              expect(entries).not_to be_empty
+              expect(entries.first).to be_a(LogEntry)
+            end
+
+            it 'can get the driver log' do
+              entries = driver.logs.get(:driver)
+              expect(entries).not_to be_empty
+              expect(entries.first).to be_a(LogEntry)
+            end
+
+            it 'can get the performance log' do
+              entries = driver.logs.get(:performance)
+              expect(entries).not_to be_empty
+              expect(entries.first).to be_a(LogEntry)
+            end
+          end
+
+          # This requires cast sinks to run
+          it 'casts' do
+            # Does not get list correctly the first time for some reason
+            driver.cast_sinks
+            sleep 2
+            sinks = driver.cast_sinks
+            unless sinks.empty?
+              device_name = sinks.first['name']
+              driver.start_cast_tab_mirroring(device_name)
+              expect { driver.stop_casting(device_name) }.not_to raise_exception
+            end
           end
         end
 
-        describe '#logs' do
-          before do
-            reset_driver!(logging_prefs: {browser: 'ALL',
-                                          driver: 'ALL',
-                                          performance: 'ALL'})
-            driver.navigate.to url_for('errors.html')
+        context 'when BiDi is enabled',
+                skip_unless: {bidi: true, reason: 'web extensions install over the webExtension BiDi command'} do
+          let(:directory) do
+            File.expand_path('../../../../../../common/extensions/webextensions-selenium-example', __dir__)
           end
 
-          after(:all) { reset_driver! }
+          describe '#install_web_extension' do
+            it 'installs a packed archive',
+               pending_if: {exception: {class: Error::UnsupportedOperationError},
+                            reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
+              Dir.mktmpdir do |dir|
+                archive = File.join(dir, 'extension.zip')
+                File.binwrite(archive, Base64.decode64(Zipper.zip_root(directory)))
 
-          it 'can fetch available log types' do
-            expect(driver.logs.available_types).to include(:performance, :browser, :driver)
-          end
+                extension = driver.install_web_extension(archive)
+                expect(extension.id).not_to be_empty
+                driver.uninstall_web_extension(extension)
+              end
+            end
 
-          it 'can get the browser log' do
-            driver.find_element(tag_name: 'input').click
-
-            entries = driver.logs.get(:browser)
-            expect(entries).not_to be_empty
-            expect(entries.first).to be_a(LogEntry)
-          end
-
-          it 'can get the driver log' do
-            entries = driver.logs.get(:driver)
-            expect(entries).not_to be_empty
-            expect(entries.first).to be_a(LogEntry)
-          end
-
-          it 'can get the performance log' do
-            entries = driver.logs.get(:performance)
-            expect(entries).not_to be_empty
-            expect(entries.first).to be_a(LogEntry)
-          end
-        end
-
-        # This requires cast sinks to run
-        it 'casts' do
-          # Does not get list correctly the first time for some reason
-          driver.cast_sinks
-          sleep 2
-          sinks = driver.cast_sinks
-          unless sinks.empty?
-            device_name = sinks.first['name']
-            driver.start_cast_tab_mirroring(device_name)
-            expect { driver.stop_casting(device_name) }.not_to raise_exception
+            it 'installs base64-encoded bytes',
+               pending_if: {exception: {class: Error::UnsupportedOperationError},
+                            reason: 'chromium-bidi installs only unpacked directories (SeleniumHQ/selenium#16541)'} do
+              extension = driver.install_web_extension(Zipper.zip_root(directory))
+              expect(extension.id).not_to be_empty
+              driver.uninstall_web_extension(extension)
+            end
           end
         end
       end

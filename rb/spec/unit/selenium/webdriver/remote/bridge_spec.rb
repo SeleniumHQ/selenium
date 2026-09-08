@@ -125,12 +125,39 @@ module Selenium
           end
         end
 
-        describe '#upload' do
-          it 'raises WebDriverError if uploading non-files' do
-            expect {
-              bridge.extend(WebDriver::Remote::Features)
-              bridge.upload('NotAFile')
-            }.to raise_error(Error::WebDriverError)
+        describe '#upload_if_necessary' do
+          before do
+            bridge.extend(WebDriver::Remote::Features)
+            bridge.file_detector = ->((file)) { file }
+          end
+
+          it 'raises WebDriverError when the detected path is not a file' do
+            expect { bridge.upload_if_necessary(['NotAFile']) }
+              .to raise_error(Error::WebDriverError, /isn't a file/)
+          end
+        end
+
+        describe '#install_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+
+            it 'raises for a Chromium session, which has no classic install path' do
+              bridge.extend(WebDriver::Chrome::Features)
+              expect { bridge.install_web_extension('/tmp/ext') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
+          end
+        end
+
+        describe '#uninstall_web_extension' do
+          context 'when BiDi is not enabled' do
+            it 'raises a helpful error telling the user to enable BiDi' do
+              expect { bridge.uninstall_web_extension('an-id') }
+                .to raise_error(Error::WebDriverError, /must be enabled/)
+            end
           end
         end
 

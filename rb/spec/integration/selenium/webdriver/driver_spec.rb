@@ -361,5 +361,41 @@ module Selenium
         end
       end
     end
+
+    describe Driver do
+      context 'when BiDi is enabled',
+              skip_unless: {bidi: true, reason: 'extensions install over the webExtension BiDi command'} do
+        let(:extensions) { '../../../../../common/extensions/' }
+
+        after { |example| reset_driver!(example: example) }
+
+        describe '#install_web_extension' do
+          it 'installs an unpacked directory on any browser' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
+            extension = driver.install_web_extension(ext)
+            expect(extension.id).not_to be_empty
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+          end
+        end
+
+        describe '#uninstall_web_extension' do
+          it 'removes an installed extension on any browser' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__)
+            extension = driver.install_web_extension(ext)
+
+            driver.navigate.to url_for('blank.html')
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
+
+            driver.uninstall_web_extension(extension)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+        end
+      end
+    end
   end # WebDriver
 end # Selenium

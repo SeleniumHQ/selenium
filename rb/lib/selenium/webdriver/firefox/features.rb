@@ -38,19 +38,30 @@ module Selenium
         end
 
         def install_addon(path, temporary)
-          addon = if File.directory?(path)
-                    Zipper.zip(path)
-                  else
-                    File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
-                  end
-
-          payload = {addon: addon}
+          payload = {addon: encode_extension(path)}
           payload[:temporary] = temporary unless temporary.nil?
           execute :install_addon, {}, payload
         end
 
         def uninstall_addon(id)
           execute :uninstall_addon, {}, {id: id}
+        end
+
+        def install_web_extension(path, allow_private_browsing: nil, permanent: nil)
+          unless bidi?
+            temporary = !permanent unless permanent.nil?
+            options = {temporary: temporary, allowPrivateBrowsing: allow_private_browsing}.compact
+            return WebDriver::WebExtension.new(execute(:install_addon, {}, {addon: encode_extension(path), **options}))
+          end
+
+          options = {allow_private_browsing:, permanent:}.compact
+          result = web_extension.moz.install(extension_data: web_extension_data(path), **options)
+          WebDriver::WebExtension.new(result.extension)
+        end
+
+        def uninstall_web_extension(extension_id)
+          bidi? ? web_extension.uninstall(extension: extension_id) : uninstall_addon(extension_id)
+          nil
         end
 
         def full_screenshot
