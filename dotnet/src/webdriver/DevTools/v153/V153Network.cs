@@ -1,4 +1,4 @@
-// <copyright file="V150Network.cs" company="Selenium Committers">
+// <copyright file="V153Network.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -18,26 +18,26 @@
 // </copyright>
 
 using System.Text;
-using OpenQA.Selenium.DevTools.V150.Fetch;
-using OpenQA.Selenium.DevTools.V150.Network;
+using OpenQA.Selenium.DevTools.V153.Fetch;
+using OpenQA.Selenium.DevTools.V153.Network;
 
-namespace OpenQA.Selenium.DevTools.V150;
+namespace OpenQA.Selenium.DevTools.V153;
 
 /// <summary>
-/// Class providing functionality for manipulating network calls using version 150 of the DevTools Protocol
+/// Class providing functionality for manipulating network calls using version 153 of the DevTools Protocol
 /// </summary>
-public class V150Network : DevTools.Network
+public class V153Network : DevTools.Network
 {
     private readonly FetchAdapter fetch;
     private readonly NetworkAdapter network;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V150Network"/> class.
+    /// Initializes a new instance of the <see cref="V153Network"/> class.
     /// </summary>
     /// <param name="network">The adapter for the Network domain.</param>
     /// <param name="fetch">The adapter for the Fetch domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="network"/> or <paramref name="fetch"/> are <see langword="null"/>.</exception>
-    public V150Network(NetworkAdapter network, FetchAdapter fetch)
+    public V153Network(NetworkAdapter network, FetchAdapter fetch)
     {
         ArgumentNullException.ThrowIfNull(network);
         ArgumentNullException.ThrowIfNull(fetch);
@@ -231,9 +231,9 @@ public class V150Network : DevTools.Network
         await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
         {
             RequestId = requestId,
-            AuthChallengeResponse = new V150.Fetch.AuthChallengeResponse()
+            AuthChallengeResponse = new V153.Fetch.AuthChallengeResponse()
             {
-                Response = V150.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
+                Response = V153.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
                 Username = userName,
                 Password = password
             }
@@ -250,9 +250,9 @@ public class V150Network : DevTools.Network
         await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
         {
             RequestId = requestId,
-            AuthChallengeResponse = new OpenQA.Selenium.DevTools.V150.Fetch.AuthChallengeResponse()
+            AuthChallengeResponse = new OpenQA.Selenium.DevTools.V153.Fetch.AuthChallengeResponse()
             {
-                Response = V150.Fetch.AuthChallengeResponseResponseValues.CancelAuth
+                Response = V153.Fetch.AuthChallengeResponseResponseValues.CancelAuth
             }
         }).ConfigureAwait(false);
     }

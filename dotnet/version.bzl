@@ -4,7 +4,7 @@ SE_VERSION = "4.49.0-nightly202608272014"
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v152",
-    "v150",
+    "v153",
     "v151",
 ]
 
