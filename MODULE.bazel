@@ -41,6 +41,15 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
 bazel_dep(name = "rules_rs", version = "0.0.108")
 
+# Shorter toolchain dir names keep Windows sysroot paths under MAX_PATH; drop once upstream does
+single_version_override(
+    module_name = "rules_rs",
+    patch_strip = 1,
+    patches = [
+        "//third_party/bazel:rules_rs_short_toolchain_names.patch",
+    ],
+)
+
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
@@ -421,6 +430,10 @@ llvm_toolchains.exec(
     os = "macos",
 )
 use_repo(llvm_toolchains, "llvm_toolchains")
+
+# Registered only for Windows in .bazelrc so it cannot shadow @llvm elsewhere.
+cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension", dev_dependency = True)
+use_repo(cc_configure, "local_config_cc", "local_config_cc_toolchains")
 
 register_toolchains("@llvm_toolchains//:all")
 
