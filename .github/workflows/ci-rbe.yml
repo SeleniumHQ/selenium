@@ -33,7 +33,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests
-      cache-save: ${{ github.ref_name == 'trunk' }}
       rerun-with-debug: true
       ruby-version: jruby-10.1.0.0
       run: ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}

@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos, windows]
+        os: [ubuntu, macos, windows]
     uses: ./.github/workflows/bazel.yml
     with:
       name: ${{ matrix.os }}
