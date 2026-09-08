@@ -134,8 +134,9 @@ network.addAuthentication(UsernameAndPassword.of("user", "pass"),
 
 4. **When a handler settles a disposition, the first to do so resolves the event and
    stops the chain.** An event's chain is the registered handlers whose URL patterns (decision 2) and
-   scope (decision 11) match it; a handler outside the event's scope is not consulted, even when a
-   broader handler is what caused the event to be intercepted. The user settles the event by acting on
+   scope (decision 11) match it. Interception blocks the event as a whole, not per handler, so one
+   matching handler is enough to block it; a handler the event does not match is not consulted, even
+   though it was blocked on another handler's behalf. The user settles the event by acting on
    the object the callable receives. A handler that only stages mutations does not settle; it passes
    the event to the next handler (decision 5).
    * A request has three: `fail` (BiDi's `FailRequest`) ends it with an error;
@@ -277,7 +278,7 @@ network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
     to one belongs in the callable.
 
     To scope a handler elsewhere the user passes either a window handle or a user context, never both.
-    A window handle targets that one tab, including a background tab that does not have focus. A user
+    A window handle targets that one window or tab, including one in the background without focus. A user
     context targets every window handle it contains, including ones opened later, so it scopes
     interception to a whole user context rather than a single known tab. The two are mutually
     exclusive: a handler is scoped by one or the other, and a binding rejects being given both. A
