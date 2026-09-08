@@ -648,7 +648,6 @@ public class BiDiGenerator {
       String domain = domainOf(typeName);
       String pkg = domainPackage(domain);
       String cls = simpleNameOf(typeName);
-      boolean needsToMap = senderTypes.contains(typeName);
       boolean isReceivable = receivableTypes.contains(typeName);
       boolean extensible = Boolean.TRUE.equals(node.get("extensible"));
       List<Map<String, Object>> rawFields =
@@ -1445,7 +1444,9 @@ public class BiDiGenerator {
       String domain = domainOf(typeName);
       String pkg = domainPackage(domain);
       String cls = simpleNameOf(typeName);
-      List<String> variants = (List<String>) Objects.requireNonNull(node.get("variants"));
+      // Every union variant is discovered structurally below (from the selector), not from this
+      // list directly — the check is only here to fail loudly if a "union" node is missing it.
+      Objects.requireNonNull(node.get("variants"), () -> typeName + ": union node has no variants");
       Map<String, Object> selector = mapField(node, "selector");
 
       StringBuilder sb = new StringBuilder();
@@ -2078,7 +2079,10 @@ public class BiDiGenerator {
   private static void writeFile(Path tempDir, String relativePath, String content)
       throws IOException {
     Path file = tempDir.resolve(relativePath);
-    Files.createDirectories(file.getParent());
+    // getParent() is only ever null for a root path, which tempDir.resolve(relativePath) never
+    // produces here (relativePath always has at least a package-derived directory component) —
+    // requireNonNull makes that explicit instead of an unchecked call SpotBugs can't verify.
+    Files.createDirectories(Objects.requireNonNull(file.getParent()));
     Files.write(file, content.getBytes(UTF_8));
   }
 
@@ -2089,7 +2093,9 @@ public class BiDiGenerator {
   // and zeroing every entry's timestamp makes the output a pure function of the generated
   // content.
   private static void packToJar(Path tempDir, Path outputJar) throws IOException {
-    Files.createDirectories(outputJar.getParent());
+    // Same reasoning as writeFile's requireNonNull: outputJar is always a bazel-supplied path
+    // with a directory component, never a bare root.
+    Files.createDirectories(Objects.requireNonNull(outputJar.getParent()));
     List<Path> paths;
     try (Stream<Path> walk = Files.walk(tempDir)) {
       paths =
