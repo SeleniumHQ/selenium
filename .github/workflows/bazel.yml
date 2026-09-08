@@ -158,7 +158,7 @@ jobs:
         shell: pwsh
         run: ./scripts/github-actions/delete-browsers-drivers.ps1
       - name: Free disk space
-        if: inputs.os == 'ubuntu'
+        if: contains(inputs.os, 'ubuntu')
         shell: bash
         run: |
           . ./scripts/github-actions/disk-status.sh
@@ -209,7 +209,7 @@ jobs:
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
       - name: Setup Fluxbox and Xvfb
-        if: inputs.needs-display && inputs.os == 'ubuntu'
+        if: inputs.needs-display && contains(inputs.os, 'ubuntu')
         run: |
           sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
           Xvfb :99 &

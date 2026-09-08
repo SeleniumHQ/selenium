@@ -10,10 +10,18 @@ package(
 )
 
 alias(
-    name = "selenium-manager-linux",
+    name = "selenium-manager-linux-x86_64",
     actual = select({
-        "//common:use_pinned_browser": "@download_sm_linux//file",
-        "//conditions:default": "//rust:selenium-manager-linux",
+        "//common:use_pinned_browser": "@download_sm_linux_x86_64//file",
+        "//conditions:default": "//rust:selenium-manager-linux-x86_64",
+    }),
+)
+
+alias(
+    name = "selenium-manager-linux-arm64",
+    actual = select({
+        "//common:use_pinned_browser": "@download_sm_linux_arm64//file",
+        "//conditions:default": "//rust:selenium-manager-linux-arm64",
     }),
 )
 
