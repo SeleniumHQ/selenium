@@ -199,17 +199,17 @@ network.addRequestHandler(r -> r.addHeader("X-Test", "true"));
 network.addRequestHandler(r -> r.removeHeader("X-Test"));
 ```
 
-7. **An uncaught exception surfaces to the user and stops the chain.** The handler callable is
+7. **An uncaught exception surfaces to the user and fails the event.** The handler callable is
    responsible for its own error handling. An exception it does not catch is not swallowed or merely
    logged: it surfaces to the user so it can be caught, and it does not on its own end the session.
-   When a handler raises, no further handlers run and the event is submitted with the mutations staged
-   by the handlers that completed before it, the same outcome the chain would reach on its own
-   (decision 5). A handler that raises contributes nothing; its own staged mutations are discarded, so
-   each handler applies all-or-nothing.
+   When a handler raises, no further handlers run and the event is failed (BiDi's `FailRequest`)
+   rather than sent: a request shaped by code that errored partway does not reach the server, and any
+   staged mutations are discarded. The failure is visible on the wire, not only as the raised
+   exception.
 
 ```ruby
 # LIFO: the raising handler runs first, so processing stops before the other handler runs.
-# The request is submitted with what completed handlers staged; the exception surfaces to the user.
+# The request is failed and the header is never applied; the exception surfaces to the user.
 network.add_request_handler { |r| r.add_header("X-Test", true) }   # never runs
 network.add_request_handler { |r| raise Exception }                # runs first, then raises
 ```
@@ -359,14 +359,13 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
     the browser, whereas decision 7 surfaces the error, stops only this event's chain, and leaves the
     session running.
   - Leave the request unresolved on a throw, as Playwright does — a handler that raises without
-    settling leaves the request hanging until it times out. Decision 7 submits the staged state instead
-    so the browser is never left waiting.
-  - Keep running the remaining handlers after the throw, or discard what is staged and send the
-    browser's original request — the first runs a chain past a fault the user is already being told
-    about, the second throws away changes from handlers that completed cleanly; stopping and submitting
-    what completed handlers staged does neither.
-  - Abort or mock-respond on any handler error — deterministic, but turns a handler bug into a failed
-    or empty request instead of letting it proceed.
+    settling leaves the request hanging until it times out. Decision 7 fails the event instead so the
+    browser is never left waiting.
+  - Submit the request anyway, with whatever the completed handlers staged, or keep running the
+    remaining handlers — the first sends a request shaped by code that errored partway; the second runs
+    a chain past a fault the user is already being told about. Failing the event does neither.
+  - Mock-respond on any handler error — deterministic like failing, but fabricates a response for a
+    handler bug instead of surfacing it as a failed request.
 - **Return values (decision 8).**
   - Let a return value set event or handler state instead of acting on the wrapper — not
     straightforward across all languages.
@@ -396,8 +395,6 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
   handlers rather than diverging.
 - Client code can override shared handlers locally and resolve a request its own way, a broken
   handler stays contained, and the original event remains readable.
-- A handler's mutations apply all-or-nothing, so each handler's changes are staged separately and
-  committed only when it returns cleanly rather than accumulated on one shared event object.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
 - Handlers can be scoped to a single window handle or to a user context, so interception can target a
