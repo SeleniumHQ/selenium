@@ -41,8 +41,7 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
 bazel_dep(name = "rules_rs", version = "0.0.108")
 
-# The generated toolchain directory names push Windows sysroot paths past
-# MAX_PATH; shortening them buys back the margin. Drop if upstream shortens them.
+# Shorter toolchain dir names keep Windows sysroot paths under MAX_PATH; drop once upstream does
 single_version_override(
     module_name = "rules_rs",
     patch_strip = 1,

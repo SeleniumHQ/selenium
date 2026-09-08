@@ -140,8 +140,7 @@ platform(
     parents = ["@platforms//host"],
 )
 
-# Deliberately terse: the name becomes a bazel-out directory segment, and the
-# Rust sysroot paths under it run within a few bytes of Windows MAX_PATH.
+# Terse platform name on purpose: it lands in bazel-out paths that sit near Windows MAX_PATH
 platform(
     name = "winmsvc",
     constraint_values = [

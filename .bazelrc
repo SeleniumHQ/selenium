@@ -93,10 +93,9 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 # For build stamping
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
-# The crate universe only lists msvc Windows triples, so the exec platform must
-# be msvc for Rust targets to be compatible. @llvm ships no msvc toolchain, so
-# Bazel's autoconfigured MSVC one supplies the exec C/C++ actions.
+# Must match the crate universe's Windows ABI; a mismatch silently skips every Rust target
 common:windows --host_platform=//:winmsvc
+# @llvm has no msvc toolchain, so outrank it with Bazel's autoconfigured MSVC one
 common:windows --extra_toolchains=@local_config_cc_toolchains//:all
 
 # rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
