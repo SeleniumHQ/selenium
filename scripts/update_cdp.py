@@ -41,8 +41,15 @@ def get_chrome_milestone():
     )[-1]
 
 
+def github_get(url):
+    headers = {"Accept": "application/vnd.github.raw+json"}
+    if "GITHUB_TOKEN" in os.environ:
+        headers["Authorization"] = f"Bearer {os.environ['GITHUB_TOKEN']}"
+    return http.request("GET", url, headers=headers)
+
+
 def fetch_and_save(url, file_path):
-    response = http.request("GET", url)
+    response = github_get(url)
     if response.status != 200:
         raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
     with open(file_path, "wb") as file:
@@ -70,11 +77,13 @@ def flatten_browser_pdl(file_path, chrome_version):
     version_block = version_match.group(1) + "\n\n" if version_match else ""
     # Find all include lines
     includes = re.findall(r"include domains/([A-Za-z0-9_]+\.pdl)", content)
-    base_url = f"https://raw.githubusercontent.com/chromium/chromium/{chrome_version}/third_party/blink/public/devtools_protocol/domains/"
+    base_url = (
+        "https://api.github.com/repos/chromium/chromium/contents/third_party/blink/public/devtools_protocol/domains/"
+    )
     concatenated = ""
     for domain_file in includes:
-        url = base_url + domain_file
-        response = http.request("GET", url)
+        url = f"{base_url}{domain_file}?ref={chrome_version}"
+        response = github_get(url)
         if response.status != 200:
             raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
         concatenated += response.data.decode("utf-8") + "\n"
@@ -97,22 +106,21 @@ def add_pdls(chrome_milestone):
             shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
 
         fetch_and_save(
-            f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/third_party/blink/public/devtools_protocol/browser_protocol.pdl",
+            f"https://api.github.com/repos/chromium/chromium/contents/third_party/blink/public/devtools_protocol/browser_protocol.pdl?ref={chrome_milestone['version']}",
             f"{target_dir}/browser_protocol.pdl",
         )
 
         flatten_browser_pdl(f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"])
 
-        deps_content = http.request(
-            "GET",
-            f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/DEPS",
+        deps_content = github_get(
+            f"https://api.github.com/repos/chromium/chromium/contents/DEPS?ref={chrome_milestone['version']}"
         ).data.decode("utf-8")
         v8_revision_line = next((line for line in deps_content.split("\n") if "v8_revision" in line), None)
         if v8_revision_line is None:
             raise ValueError(f"No v8_revision found in DEPS for Chrome {chrome_milestone['version']}")
         v8_revision = v8_revision_line.split(": ")[1].strip("',")
         fetch_and_save(
-            f"https://raw.githubusercontent.com/v8/v8/{v8_revision}/include/js_protocol.pdl",
+            f"https://api.github.com/repos/v8/v8/contents/include/js_protocol.pdl?ref={v8_revision}",
             f"{target_dir}/js_protocol.pdl",
         )
 
