@@ -83,6 +83,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     aliases = aliases(),
+    compile_data = ["//:license"],
     edition = "2024",
     # clap's `#[clap(about)]` derives the CLI description from
     # CARGO_PKG_DESCRIPTION. Cargo sets this from Cargo.toml automatically, but

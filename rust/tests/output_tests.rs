@@ -22,14 +22,16 @@ use std::path::Path;
 
 mod common;
 
+const LICENSE: &str = include_str!("../../LICENSE");
+const NOTICE: &str = include_str!("../../NOTICE");
+
 #[test]
-fn help_output_includes_license_and_notice_links() {
+fn license_output_includes_license_and_notice() {
     let mut cmd = get_selenium_manager();
-    cmd.arg("--help").assert().success().code(0);
+    cmd.arg("--license").assert().success().code(0);
 
     let stdout = get_stdout(&mut cmd);
-    assert!(stdout.contains("https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE"));
-    assert!(stdout.contains("https://github.com/SeleniumHQ/selenium/blob/trunk/NOTICE"));
+    assert_eq!(stdout, format!("{}\n{}", LICENSE, NOTICE));
 }
 
 #[test]

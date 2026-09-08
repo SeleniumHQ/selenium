@@ -39,16 +39,16 @@ use std::path::Path;
 use std::process::exit;
 use std::sync::mpsc::Receiver;
 
+const LICENSE: &str = include_str!("../../LICENSE");
+const NOTICE: &str = include_str!("../../NOTICE");
+
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
-#[clap(version, about, long_about = None, after_help = "\
-License: https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE
-Notices: https://github.com/SeleniumHQ/selenium/blob/trunk/NOTICE", help_template = "\
+#[clap(version, about, long_about = None, help_template = "\
 {name} {version}
 {about-with-newline}
 {usage-heading} {usage}
-{all-args}
-{after-help}")]
+{all-args}")]
 struct Cli {
     /// Browser name (chrome, firefox, edge, iexplorer, safari, safaritp, webview2, or electron)
     #[clap(long, value_parser)]
@@ -164,6 +164,10 @@ struct Cli {
     #[clap(long)]
     skip_browser_in_path: bool,
 
+    /// Print the license and copyright notices
+    #[clap(long)]
+    license: bool,
+
     /// Add a skills file with Selenium best practices to the repository
     #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
     init_skills: Option<String>,
@@ -175,6 +179,11 @@ struct Cli {
 
 fn main() {
     let mut cli = Cli::parse();
+
+    if cli.license {
+        print!("{}\n{}", LICENSE, NOTICE);
+        return;
+    }
 
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
