@@ -789,11 +789,14 @@ generate_bidi_protocol(
 
 # Build-graph tool: the generator invoked by the rule above (schema + output dir
 # passed as arguments). No baked args, so it is reusable in the exec configuration.
+# Depends on :remote because rendering reads errorhandler's error-code tables to decide
+# which BiDi codes reuse a classic exception rather than declaring a new one.
 py_binary(
     name = "generate-bidi-protocol-tool",
     srcs = ["generate_bidi_protocol.py"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:private"],
+    deps = [":remote"],
 )
 
 # `bazel run //py:generate-bidi-protocol` regenerates the checked-out tree for local
@@ -805,6 +808,7 @@ py_binary(
     data = ["//javascript/selenium-webdriver:create-bidi-src_schema"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:public"],
+    deps = [":remote"],
 )
 
 py_library(
@@ -878,13 +882,18 @@ ALERT_TESTS = [
 # rendered_webelement_tests.py is the only browser test that imports Color.
 RENDERED_WEBELEMENT_TESTS = ["test/selenium/webdriver/common/rendered_webelement_tests.py"]
 
+# print_pdf_tests.py imports PrintOptions, which lives in its own library
+# (:common_print_page_options) rather than :common.
+PRINT_TESTS = ["test/selenium/webdriver/common/print_pdf_tests.py"]
+
 FEATURE_TESTS = (
     FEDCM_TESTS +
     TIMEOUTS_TESTS +
     VIRTUAL_AUTH_TESTS +
     API_REQUEST_TESTS +
     ALERT_TESTS +
-    RENDERED_WEBELEMENT_TESTS
+    RENDERED_WEBELEMENT_TESTS +
+    PRINT_TESTS
 )
 
 # Test files that import from selenium.webdriver.common.actions / action_chains.
@@ -986,7 +995,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1035,6 +1044,7 @@ FEATURE_SUITE_DEFS = {
     "api-request": (API_REQUEST_TESTS, ":common_api_request_context"),
     "alerts": (ALERT_TESTS, ":common_alert"),
     "rendered": (RENDERED_WEBELEMENT_TESTS, ":support_color"),
+    "print": (PRINT_TESTS, ":common_print_page_options"),
 }
 
 # Generate test-<browser>-<feature> targets (non-bidi, one per feature library)
@@ -1118,6 +1128,48 @@ FEATURE_SUITE_DEFS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
+# Generate test-<browser>-remote-bidi targets (chrome and firefox only).
+# Deliberately not folded into the test-<browser>-remote aggregate: BiDi over Grid's
+# websocket proxy is new coverage, so keep it out of the established remote job until
+# it has proven stable.
+[
+    py_test_suite(
+        name = "test-%s-remote-bidi" % browser,
+        size = "large",
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        args = [
+            "--instafail",
+            "--bidi",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+            "remote",
+            "%s-remote" % browser,
+        ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-remote-bidi" % browser,
+        deps = [
+            ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
+            ":common_alert",  # bidi/browsing_context_tests.py calls EC.alert_is_present()
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
     py_test_suite(
@@ -1129,7 +1181,7 @@ FEATURE_SUITE_DEFS = {
                 "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
-            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+            exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
         args = [
@@ -1145,11 +1197,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote" % browser,
         deps = [
             ":init-tree",
@@ -1181,11 +1233,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-actions" % browser,
         deps = [
             ":init-tree",
@@ -1217,11 +1269,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-%s" % (browser, feature),
         deps = [
             ":init-tree",
@@ -1254,6 +1306,16 @@ test_suite(
     tests = [
         ":test-chrome-remote",
         ":test-firefox-remote",
+    ],
+)
+
+# Kept out of :test-remote so BiDi-over-Grid runs as its own CI job while it is new.
+test_suite(
+    name = "test-remote-bidi",
+    tags = ["remote"],
+    tests = [
+        ":test-chrome-remote-bidi",
+        ":test-firefox-remote-bidi",
     ],
 )
 

@@ -4,11 +4,15 @@ set -eufo pipefail
 # We want to see what's going on
 set -x
 
-# Default to auto if no parameter is provided
+# Script runs with reasonable defaults; passing true as an argument runs everything
+FULL_RUN="${1:-false}"
+
+# Bazel only sees the latest `--test_tag_filters`, so this overrides .bazelrc.remote
+TEST_FILTER="--test_tag_filters=-skip-rbe,-chrome-beta,-firefox-beta"
 CACHE_RESULTS="auto"
 
-# If "disable test cache" is passed in and true
-if [ $# -gt 0 ] && [ "$1" = "true" ]; then
+if [ "${FULL_RUN}" = "true" ]; then
+  TEST_FILTER="--test_tag_filters=-skip-rbe"
   CACHE_RESULTS="no"
 fi
 
@@ -18,6 +22,7 @@ fi
 bazel test --config=rbe-ci --build_tests_only \
   --keep_going --flaky_test_attempts=2 \
   --cache_test_results=${CACHE_RESULTS} \
+  "${TEST_FILTER}" \
   //... -- $(cat .skipped-tests | tr '\n' ' ')
 
 # Build the packages we want to ship to users

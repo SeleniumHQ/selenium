@@ -291,7 +291,7 @@ class Record:
         return payload
 
     @classmethod
-    def from_json(cls, payload: dict) -> Any:
+    def from_json(cls, payload: Any) -> Any:
         if not isinstance(payload, dict):
             got = type(payload).__name__
             raise BiDiSerializationError(f"{cls.__name__} expected an object on the wire, got {got} {payload!r}")

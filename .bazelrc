@@ -44,6 +44,10 @@ build --javacopt="-Xep:WildcardImport:ERROR"
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
 
+# Produce execution log for builds
+# See https://bazel.build/advanced/performance/build-performance-metrics#execution-log
+build --execution_log_compact_file=exec.log
+
 # More JS magic
 build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound

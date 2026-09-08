@@ -17,10 +17,7 @@
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command;
-use crate::{
-    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, default_cache_folder,
-    path_to_string,
-};
+use crate::{ARCH_ARM7L, Command, REQUEST_TIMEOUT_SEC, default_cache_folder, path_to_string};
 use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
 use anyhow::Error;
 use anyhow::anyhow;
@@ -34,8 +31,7 @@ use toml::Table;
 use winapi::um::sysinfoapi::{GetNativeSystemInfo, SYSTEM_INFO};
 #[cfg(windows)]
 use winapi::um::winnt::{
-    PROCESSOR_ARCHITECTURE_AMD64, PROCESSOR_ARCHITECTURE_ARM, PROCESSOR_ARCHITECTURE_ARM64,
-    PROCESSOR_ARCHITECTURE_IA64, PROCESSOR_ARCHITECTURE_INTEL,
+    PROCESSOR_ARCHITECTURE_ARM, PROCESSOR_ARCHITECTURE_ARM64, PROCESSOR_ARCHITECTURE_INTEL,
 };
 
 thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_to_string(&default_cache_folder())));
@@ -78,20 +74,7 @@ impl ManagerConfig {
 
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            let mut _architecture = env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default();
-            #[cfg(windows)]
-            {
-                if _architecture.is_empty() {
-                    _architecture = get_win_os_architecture();
-                }
-            }
-            if _architecture.contains("32") {
-                ARCH_X86.to_string()
-            } else if _architecture.contains("ARM") {
-                ARCH_ARM64.to_string()
-            } else {
-                ARCH_X64.to_string()
-            }
+            get_win_os_architecture()
         } else {
             let uname_a_command = Command::new(UNAME_COMMAND, vec![String::from("-a")]);
             if run_shell_command(uname_a_command)
@@ -368,6 +351,11 @@ fn read_cache_path() -> String {
     cache_path
 }
 
+#[cfg(not(windows))]
+fn get_win_os_architecture() -> String {
+    ARCH_X64.to_string()
+}
+
 #[cfg(windows)]
 fn get_win_os_architecture() -> String {
     unsafe {
@@ -375,12 +363,13 @@ fn get_win_os_architecture() -> String {
         GetNativeSystemInfo(&mut system_info);
 
         match system_info.u.s() {
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 => "64-bit",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => "32-bit",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM => "ARM",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 => "ARM64",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 => "Itanium-based",
-            _ => "Unknown",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => ARCH_X86,
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM
+                || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 =>
+            {
+                ARCH_ARM64
+            }
+            _ => ARCH_X64,
         }
         .to_string()
     }
