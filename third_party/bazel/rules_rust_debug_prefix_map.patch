@@ -1,0 +1,17 @@
+diff --git a/cargo/private/cargo_build_script.bzl b/cargo/private/cargo_build_script.bzl
+--- a/cargo/private/cargo_build_script.bzl
++++ b/cargo/private/cargo_build_script.bzl
+@@ -586,8 +586,11 @@ def _cargo_build_script_impl(ctx):
+         # to determine the deployment target when building for apple platforms (`macosx-version-min`
+         # for example, itself derived from the `macos_minimum_os` Bazel argument).
+         if toolchain.target_abi != "msvc":
+-            cc_c_args = cc_c_args + ["-ffile-prefix-map=${pwd}=."]
+-            cc_cxx_args = cc_cxx_args + ["-ffile-prefix-map=${pwd}=."]
++            # gcc forwards only the `-fdebug-prefix-map` spelling to a separate
++            # `as`, so without it `.S` sources keep an absolute `DW_AT_comp_dir`.
++            prefix_map_args = ["-ffile-prefix-map=${pwd}=.", "-fdebug-prefix-map=${pwd}=."]
++            cc_c_args = cc_c_args + prefix_map_args
++            cc_cxx_args = cc_cxx_args + prefix_map_args
+         env["CFLAGS"] = " ".join(_pwd_flags(cc_c_args))
+         env["CXXFLAGS"] = " ".join(_pwd_flags(cc_cxx_args))
+         # It may be tempting to forward ARFLAGS, but cc-rs is opinionated enough
