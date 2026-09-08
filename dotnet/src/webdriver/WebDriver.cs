@@ -604,6 +604,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         {
             Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(capabilities);
 
+            if (this.CommandExecutor is Remote.HttpCommandExecutor httpExecutor)
+            {
+                matchCapabilities["se:remoteUrl"] = httpExecutor.RemoteServerUri.AbsoluteUri;
+            }
+
             List<object> firstMatchCapabilitiesList = new List<object>();
             firstMatchCapabilitiesList.Add(matchCapabilities);
 
@@ -614,7 +619,35 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
         else
         {
-            parameters.Add("capabilities", remoteSettings.ToDictionary());
+            Dictionary<string, object?> remoteSettingsDictionary = remoteSettings.ToDictionary();
+
+            // Advertise se:remoteUrl on the caller's behalf, as every other binding does. It must be
+            // nested in alwaysMatch (the Grid drops top-level metadata), built into a fresh copy so
+            // the caller-owned RemoteSessionSettings is not mutated. Only a matched capability counts
+            // as explicit here: a se:remoteUrl set via AddMetadataSetting stays top-level, is ignored
+            // by the Grid, and does not suppress this injection (the executor URL stays authoritative).
+            // Skip only when se:remoteUrl already lives in alwaysMatch/firstMatch, to preserve that
+            // value and avoid an alwaysMatch/firstMatch overlap. If only one of several firstMatch
+            // alternatives sets it explicitly, injection is suppressed for all of them; that
+            // multi-alternative case is intentionally not supported.
+            if (this.CommandExecutor is Remote.HttpCommandExecutor remoteHttpExecutor
+                && !ContainsMatchCapability(remoteSettingsDictionary, "se:remoteUrl"))
+            {
+                Dictionary<string, object?> alwaysMatch = new Dictionary<string, object?>();
+                if (remoteSettingsDictionary.TryGetValue("alwaysMatch", out object? existingAlwaysMatch)
+                    && existingAlwaysMatch is IDictionary<string, object> existingCapabilities)
+                {
+                    foreach (KeyValuePair<string, object> capability in existingCapabilities)
+                    {
+                        alwaysMatch[capability.Key] = capability.Value;
+                    }
+                }
+
+                alwaysMatch["se:remoteUrl"] = remoteHttpExecutor.RemoteServerUri.AbsoluteUri;
+                remoteSettingsDictionary["alwaysMatch"] = alwaysMatch;
+            }
+
+            parameters.Add("capabilities", remoteSettingsDictionary);
         }
 
         Response response = this.Execute(DriverCommand.NewSession, parameters);
@@ -630,6 +663,31 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
         string sessionId = response.SessionId ?? throw new WebDriverException($"The remote end did not respond with ID of a session when it was required. {response.Value}");
         this.SessionId = new SessionId(sessionId);
+    }
+
+    private static bool ContainsMatchCapability(Dictionary<string, object?> capabilitiesDictionary, string capabilityName)
+    {
+        if (capabilitiesDictionary.TryGetValue("alwaysMatch", out object? alwaysMatch)
+            && alwaysMatch is IDictionary<string, object> alwaysMatchCapabilities
+            && alwaysMatchCapabilities.ContainsKey(capabilityName))
+        {
+            return true;
+        }
+
+        if (capabilitiesDictionary.TryGetValue("firstMatch", out object? firstMatch)
+            && firstMatch is IEnumerable<object> firstMatchCandidates)
+        {
+            foreach (object candidate in firstMatchCandidates)
+            {
+                if (candidate is IDictionary<string, object> firstMatchCapabilities
+                    && firstMatchCapabilities.ContainsKey(capabilityName))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

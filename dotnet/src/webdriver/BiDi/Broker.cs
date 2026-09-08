@@ -65,7 +65,7 @@ internal sealed class Broker : IAsyncDisposable
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    public async Task<TResult> ExecuteAsync<TParameters, TResult>(string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {
@@ -78,12 +78,11 @@ internal sealed class Broker : IAsyncDisposable
 
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        using var cts = cancellationToken.CanBeCanceled
-            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
-            : new CancellationTokenSource();
+        using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
+            ? null
+            : new CancellationTokenSource(DefaultCommandTimeout);
 
-        var timeout = options?.Timeout ?? DefaultCommandTimeout;
-        cts.CancelAfter(timeout);
+        var effectiveToken = cts?.Token ?? cancellationToken;
 
         var sendBuffer = RentBuffer();
 
@@ -94,7 +93,7 @@ internal sealed class Broker : IAsyncDisposable
             {
                 writer.WriteStartObject();
                 writer.WriteNumber("id"u8, id);
-                writer.WriteString("method"u8, descriptor.Method);
+                writer.WriteString("method"u8, method);
                 writer.WritePropertyName("params"u8);
 
                 if (options is { AdditionalData: { IsEmpty: false } additionalData })
@@ -111,7 +110,7 @@ internal sealed class Broker : IAsyncDisposable
                     }
                 }
 
-                JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
+                JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
                 if (options is not null)
                 {
                     foreach (var prop in options.AdditionalMessageData)
@@ -129,12 +128,12 @@ internal sealed class Broker : IAsyncDisposable
             throw;
         }
 
-        var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
+        var commandInfo = new CommandInfo(tcs, resultTypeInfo);
         _pendingCommands[id] = commandInfo;
 
-        using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = effectiveToken.Register(() =>
         {
-            tcs.TrySetCanceled(cts.Token);
+            tcs.TrySetCanceled(effectiveToken);
             _pendingCommands.TryRemove(id, out _);
         });
 
@@ -149,7 +148,7 @@ internal sealed class Broker : IAsyncDisposable
 #endif
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            await _transport.SendAsync(sendBuffer.WrittenMemory, effectiveToken).ConfigureAwait(false);
         }
         catch
         {
@@ -307,12 +306,13 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_bidi.EventDispatcher.TryDeserializeAndDispatch(method, ref paramsReader, additionalMessageData))
+                try
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
-                    }
+                    _bidi.EventDispatcher.DeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex}.\nMessage content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
                 break;

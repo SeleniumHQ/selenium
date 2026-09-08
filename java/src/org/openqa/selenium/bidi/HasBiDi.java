@@ -38,4 +38,6 @@ public interface HasBiDi {
    */
   @Deprecated(since = "4.46", forRemoval = true)
   Optional<BiDi> maybeGetBiDi();
+
+  Handle getHandle();
 }

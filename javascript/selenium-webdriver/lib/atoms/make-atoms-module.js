@@ -26,9 +26,28 @@ if (process.argv.length < 3) {
 
 const buffer = fs.readFileSync(process.argv[2])
 
+// Shared license + note text, copied next to this file by BUILD.bazel — see scripts/*.txt.
+const commentLines = (text) =>
+  text
+    .split('\n')
+    .map((line) => `// ${line}`.trimEnd())
+    .join('\n')
+const LICENSE_HEADER = commentLines(
+  fs.readFileSync(path.join(__dirname, 'license_header.txt'), 'utf8').replace(/\n$/, ''),
+)
+const GENERATED_NOTE = commentLines(
+  fs
+    .readFileSync(path.join(__dirname, 'generated_note_template.txt'), 'utf8')
+    .replace('{generator}', 'javascript/selenium-webdriver/lib/atoms/make-atoms-module.js')
+    .replace('{command}', 'bazel build //javascript/selenium-webdriver/lib/atoms:all')
+    .trim(),
+)
+
 fs.writeFileSync(
   process.argv[3],
-  `// GENERATED CODE - DO NOT EDIT
+  `${LICENSE_HEADER}
+
+${GENERATED_NOTE}
 module.exports = ${buffer.toString('utf8').trim()};
 `,
 )

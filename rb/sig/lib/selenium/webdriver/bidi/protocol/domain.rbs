@@ -23,9 +23,11 @@ module Selenium
         class Domain
           @transport: Transport
 
-          def initialize: (Driver | Transport source) -> void
+          def initialize: (untyped source) -> void
 
           private
+
+          def connection: () -> untyped
 
           def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
         end

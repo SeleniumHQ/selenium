@@ -167,7 +167,7 @@ public class SafariDriver : WebDriver
         ArgumentNullException.ThrowIfNull(service);
         ArgumentNullException.ThrowIfNull(options);
 
-        if (service.DriverServicePath == null)
+        if (service.DriverServicePath == null && service.DriverPathFromEnvironment == null)
         {
             DriverFinder finder = new DriverFinder(options);
             string fullServicePath = await finder.GetDriverPathAsync().ConfigureAwait(false);

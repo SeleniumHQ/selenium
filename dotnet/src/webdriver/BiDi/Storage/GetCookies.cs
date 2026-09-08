@@ -38,8 +38,7 @@ public sealed record ContextGetCookiesOptions : CommandOptions
     internal static GetCookiesOptions WithContext(ContextGetCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Filter = options?.Filter,
-        Partition = new ContextPartitionDescriptor(context),
-        Timeout = options?.Timeout
+        Partition = new ContextPartitionDescriptor(context)
     };
 }
 

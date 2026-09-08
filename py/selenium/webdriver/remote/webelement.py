@@ -507,7 +507,7 @@ class WebElement(BaseWebElement):
         params["id"] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by: str = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -531,7 +531,7 @@ class WebElement(BaseWebElement):
         by, value = self._parent.locator_converter.convert(by, value)
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:

@@ -18,6 +18,8 @@
 use crate::common::{assert_browser, assert_driver, get_selenium_manager};
 
 use rstest::rstest;
+use std::env::consts::ARCH;
+use std::env::consts::OS;
 
 mod common;
 
@@ -26,6 +28,10 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn stable_browser_test(#[case] browser_name: String) {
+    if OS.eq("linux") && ARCH.eq("aarch64") && !browser_name.eq("firefox") {
+        return;
+    }
+
     let mut cmd = get_selenium_manager();
     cmd.args([
         "--browser",

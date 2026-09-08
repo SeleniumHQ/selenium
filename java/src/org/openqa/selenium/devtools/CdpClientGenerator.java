@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.google.devtools.build.runfiles.Runfiles;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,6 +60,37 @@ import org.openqa.selenium.json.JsonInput;
 
 public class CdpClientGenerator {
 
+  // Shared license + note text (see scripts/*.txt); prepended as a raw string because
+  // JavaParser's CompilationUnit#toString() can't carry a file-level leading comment.
+  private static final String FILE_HEADER = loadFileHeader();
+
+  private static String loadFileHeader() {
+    try {
+      Runfiles runfiles = Runfiles.preload().withSourceRepository("");
+      String license = readCommented(runfiles, "_main/scripts/license_header.txt", "// ");
+      String note =
+          readCommented(runfiles, "_main/scripts/generated_note_template.txt", "// ")
+              .replace(
+                  "{generator}", "java/src/org/openqa/selenium/devtools/CdpClientGenerator.java")
+              .replace("{command}", "bazel build //java/src/org/openqa/selenium/devtools/...");
+      return license + "\n\n" + note + "\n\n";
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private static String readCommented(Runfiles runfiles, String rlocation, String prefix)
+      throws IOException {
+    String resolved = runfiles.rlocation(rlocation);
+    if (resolved == null) {
+      throw new IOException("Could not resolve runfile " + rlocation);
+    }
+    Path file = Paths.get(resolved);
+    return Files.readAllLines(file, UTF_8).stream()
+        .map(line -> line.isEmpty() ? prefix.strip() : prefix + line)
+        .collect(joining("\n"));
+  }
+
   public static void main(String[] args) throws IOException {
     Path browserProtocol = Paths.get(args[0]);
     Path jsProtocol = Paths.get(args[1]);
@@ -82,7 +114,8 @@ public class CdpClientGenerator {
     model.dumpTo(target);
 
     Path outputJar = Paths.get(args[3]).toAbsolutePath();
-    Files.createDirectories(outputJar.getParent());
+    Path parent = outputJar.getParent();
+    if (parent != null) Files.createDirectories(parent);
 
     try (OutputStream os = Files.newOutputStream(outputJar);
         JarOutputStream jos = new JarOutputStream(os)) {
@@ -215,7 +248,7 @@ public class CdpClientGenerator {
       TypeDeclaration<?> typeDeclaration =
           type instanceof VoidType
               ? new ClassOrInterfaceDeclaration().setName(capitalize(name)).setPublic(true)
-              : type.toTypeDeclaration().setPublic(true);
+              : Objects.requireNonNull(type.toTypeDeclaration()).setPublic(true);
 
       if (description != null) {
         typeDeclaration.setJavadocComment(sanitizeJavadoc(description));
@@ -322,14 +355,18 @@ public class CdpClientGenerator {
       commands.forEach(
           command -> {
             if (command.type instanceof ObjectType || command.type instanceof EnumType) {
-              classDecl.addMember(command.type.toTypeDeclaration().setPublic(true).setStatic(true));
+              classDecl.addMember(
+                  Objects.requireNonNull(command.type.toTypeDeclaration())
+                      .setPublic(true)
+                      .setStatic(true));
             }
             command.parameters.forEach(
                 parameter -> {
                   if (parameter.type instanceof EnumType) {
                     EnumType parameterType = ((EnumType) parameter.type);
                     parameterType.name = capitalize(command.name) + parameterType.name;
-                    classDecl.addMember(parameter.type.toTypeDeclaration().setPublic(true));
+                    classDecl.addMember(
+                        Objects.requireNonNull(parameter.type.toTypeDeclaration()).setPublic(true));
                   }
                 });
             classDecl.addMember(command.toMethodDeclaration());
@@ -338,7 +375,8 @@ public class CdpClientGenerator {
       events.forEach(
           event -> {
             if (event.type instanceof EnumType) {
-              classDecl.addMember(event.type.toTypeDeclaration().setPublic(true));
+              classDecl.addMember(
+                  Objects.requireNonNull(event.type.toTypeDeclaration()).setPublic(true));
             }
             classDecl.addMember(event.toMethodDeclaration());
           });
@@ -347,7 +385,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(commandFile);
 
       try {
-        Files.write(commandFile, unit.toString().getBytes(UTF_8));
+        Files.write(commandFile, (FILE_HEADER + unit).getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -361,7 +399,7 @@ public class CdpClientGenerator {
           Map.of(
               "domain",
                   (domain, value) -> {
-                    domain.name = (String) value;
+                    domain.name = Objects.requireNonNull((String) value);
                   },
               "dependencies",
                   (domain, value) -> {
@@ -369,7 +407,7 @@ public class CdpClientGenerator {
                   },
               "types",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               TypeSpec type = new TypeSpec(basePackage, domain);
@@ -379,7 +417,7 @@ public class CdpClientGenerator {
                   },
               "commands",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               CommandSpec command = new CommandSpec(domain);
@@ -389,7 +427,7 @@ public class CdpClientGenerator {
                   },
               "events",
                   (domain, value) -> {
-                    ((List<Map<String, Object>>) value)
+                    Objects.requireNonNull((List<Map<String, Object>>) value)
                         .forEach(
                             item -> {
                               EventSpec event = new EventSpec(domain);
@@ -430,7 +468,7 @@ public class CdpClientGenerator {
         ensureFileDoesNotExists(eventFile);
 
         try {
-          Files.write(eventFile, unit.toString().getBytes(UTF_8));
+          Files.write(eventFile, (FILE_HEADER + unit).getBytes(UTF_8));
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -544,7 +582,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(typeFile);
 
       try {
-        Files.write(typeFile, unit.toString().getBytes(UTF_8));
+        Files.write(typeFile, (FILE_HEADER + unit).getBytes(UTF_8));
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -1038,13 +1076,15 @@ public class CdpClientGenerator {
           .getBody()
           .get()
           .addStatement(
-              String.format(
-                  "return java.util.Arrays.stream(%s.values())\n"
-                      + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
-                      + ".findFirst()\n"
-                      + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
-                      + "\"Given value \" + s + \" is not found within %s \"));",
-                  name, name));
+              "return java.util.Arrays.stream("
+                  + name
+                  + ".values())\n"
+                  + ".filter(rs -> rs.value.equalsIgnoreCase(s))\n"
+                  + ".findFirst()\n"
+                  + ".orElseThrow(() -> new org.openqa.selenium.devtools.DevToolsException(\n"
+                  + "\"Given value \" + s + \" is not found within "
+                  + name
+                  + " \"));");
 
       enumDecl
           .addMethod("toString")

@@ -18,6 +18,7 @@
 use crate::common::{assert_browser, assert_driver, get_selenium_manager};
 
 use rstest::rstest;
+use std::env::consts::ARCH;
 use std::env::consts::OS;
 
 mod common;
@@ -27,23 +28,27 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn browser_latest_download_test(#[case] browser: String) {
-    if !browser.eq("edge") || !OS.eq("windows") {
-        let mut cmd = get_selenium_manager();
-        cmd.args([
-            "--browser",
-            &browser,
-            "--force-browser-download",
-            "--output",
-            "json",
-            "--debug",
-        ])
-        .assert()
-        .success()
-        .code(0);
-
-        assert_driver(&mut cmd);
-        assert_browser(&mut cmd);
+    if browser.eq("edge") && OS.eq("windows") {
+        return;
+    } else if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+        return;
     }
+
+    let mut cmd = get_selenium_manager();
+    cmd.args([
+        "--browser",
+        &browser,
+        "--force-browser-download",
+        "--output",
+        "json",
+        "--debug",
+    ])
+    .assert()
+    .success()
+    .code(0);
+
+    assert_driver(&mut cmd);
+    assert_browser(&mut cmd);
 }
 
 #[rstest]
@@ -60,6 +65,18 @@ fn browser_version_download_test(#[case] browser: String, #[case] browser_versio
     if OS.eq("windows") && browser.eq("edge") {
         println!(
             "Skipping Edge download test on Windows since the installation requires admin privileges"
+        );
+    } else if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+        println!(
+            "Skipping non-Firefox download test on Linux arm64 since no other browsers are supported yet"
+        );
+    } else if OS.eq("linux")
+        && ARCH.eq("aarch64")
+        && browser.eq("firefox")
+        && browser_version.starts_with("121")
+    {
+        println!(
+            "Skipping Firefox 121 download test on Linux arm64 since arm64 builds are only available from version 136 onwards"
         );
     } else {
         let mut cmd = get_selenium_manager();

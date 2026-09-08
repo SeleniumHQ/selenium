@@ -48,7 +48,7 @@
     <BaseSeleniumManagerPath>$(MSBuildThisFileDirectory)..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
   </PropertyGroup>
 
-  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14780-->
+  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/15080-->
   <!--<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>-->
@@ -61,7 +61,7 @@
   </ItemGroup>
 
   <Target Name="GenerateBazelArtifacts" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos //dotnet/src/webdriver:resource-utilities //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux-x86_64 //dotnet/src/webdriver:manager-linux-arm64 //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos //dotnet/src/webdriver:resource-utilities //dotnet/src/webdriver/DevTools/..." WorkingDirectory="../../.." />
 
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
@@ -70,7 +70,8 @@
   </Target>
 
   <ItemGroup>
-    <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="runtimes\linux\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\linux\native\selenium-manager" />
+    <None Include="$(BaseSeleniumManagerPath)\linux-x86_64\selenium-manager" Pack="true" PackagePath="runtimes\linux-x64\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\linux-x64\native\selenium-manager" />
+    <None Include="$(BaseSeleniumManagerPath)\linux-arm64\selenium-manager" Pack="true" PackagePath="runtimes\linux-arm64\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\linux-arm64\native\selenium-manager" />
     <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="runtimes\osx\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\osx\native\selenium-manager" />
     <None Include="$(BaseSeleniumManagerPath)\windows\selenium-manager.exe" Pack="true" PackagePath="runtimes\win\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\win\native\selenium-manager.exe" />
   </ItemGroup>

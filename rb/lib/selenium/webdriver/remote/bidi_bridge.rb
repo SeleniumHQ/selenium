@@ -18,40 +18,55 @@
 # under the License.
 
 require 'selenium/webdriver/bidi'
-require 'selenium/webdriver/bidi/transport'
+require 'selenium/webdriver/bidi/protocol'
 
 module Selenium
   module WebDriver
     module Remote
       class BiDiBridge < Bridge
-        attr_reader :bidi, :transport
+        attr_reader :bidi, :connection
+
+        READINESS_STATE = {
+          'none' => :none,
+          'eager' => :interactive,
+          'normal' => :complete
+        }.freeze
 
         def create_session(capabilities)
           super
-          socket_url = @capabilities[:web_socket_url]
-          @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
-          # Share the BiDi object's socket until the bridge owns the connection directly.
-          @transport = BiDi::Transport.new(@bidi.ws)
+
+          begin
+            @bidi = Selenium::WebDriver::BiDi.new(url: validated_socket_url)
+            # Reuse the BiDi object's socket as the connection until the bridge owns it directly.
+            @connection = @bidi.ws
+          rescue StandardError
+            quit
+            raise
+          end
         end
 
         def get(url)
-          browsing_context.navigate(url)
+          browsing_context.navigate(context: window_handle, url: url, wait: readiness_state)
+          nil
         end
 
         def go_back
-          browsing_context.traverse_history(-1)
+          browsing_context.traverse_history(context: window_handle, delta: -1)
+          nil
         end
 
         def go_forward
-          browsing_context.traverse_history(1)
+          browsing_context.traverse_history(context: window_handle, delta: 1)
+          nil
         end
 
         def refresh
-          browsing_context.reload
+          browsing_context.reload(context: window_handle, wait: readiness_state)
+          nil
         end
 
         def quit
-          bidi.close
+          bidi&.close
         rescue *QUIT_ERRORS
           nil
         ensure
@@ -64,8 +79,20 @@ module Selenium
 
         private
 
+        def validated_socket_url
+          url = @capabilities[:web_socket_url]
+          return url if url.is_a?(String) && url.start_with?('ws://', 'wss://')
+
+          raise Error::WebDriverError,
+                "BiDi was enabled, but the remote end did not return a valid webSocketUrl: #{url.inspect}."
+        end
+
         def browsing_context
-          @browsing_context ||= WebDriver::BiDi::BrowsingContext.new(self)
+          @browsing_context ||= BiDi::Protocol::BrowsingContext.new(connection)
+        end
+
+        def readiness_state
+          READINESS_STATE.fetch(capabilities[:page_load_strategy] || 'normal')
         end
       end # BiDiBridge
     end # Remote

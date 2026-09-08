@@ -1,0 +1,8 @@
+; Local copy of w3c/webdriver-bidi#1140: adds the webExtension.install extension point.
+; Overrides the upstream closed InstallParameters. Delete once #1140 merges and the
+; pinned webref carries it. https://github.com/w3c/webdriver-bidi/pull/1140
+webExtension.InstallParameters = {
+  extensionData: webExtension.ExtensionData,
+  webExtension.InstallParametersExtension,
+}
+webExtension.InstallParametersExtension = ( Extensible )

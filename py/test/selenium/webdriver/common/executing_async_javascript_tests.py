@@ -53,7 +53,7 @@ def test_should_be_able_to_return_javascript_primitives_from_async_scripts_null_
 def test_should_be_able_to_return_an_array_literal_from_an_async_script(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1]([]);")
-    assert "Expected not to be null!", result is not None
+    assert result is not None, "Expected not to be null!"
     assert isinstance(result, list)
     assert len(result) == 0
 
@@ -61,7 +61,7 @@ def test_should_be_able_to_return_an_array_literal_from_an_async_script(driver, 
 def test_should_be_able_to_return_an_array_object_from_an_async_script(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](new Array());")
-    assert "Expected not to be null!", result is not None
+    assert result is not None, "Expected not to be null!"
     assert isinstance(result, list)
     assert len(result) == 0
 

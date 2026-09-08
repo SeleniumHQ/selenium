@@ -84,44 +84,8 @@ module Selenium
             expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
           end
 
-          it 'accepts user prompts without text',
-             pending_if: {browser: %i[edge chrome],
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'alert').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: true)
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
-          end
-
-          it 'accepts user prompts with text',
-             pending_if: {browser: %i[edge chrome],
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'prompt').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: true, user_text: 'Hello, world!')
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
-          end
-
-          it 'rejects user prompts',
-             pending_if: {browser: %i[edge chrome],
-                          reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'alert').click
-            wait_for_alert
-            browsing_context.handle_user_prompt(context: driver.window_handle, accept: false)
-            wait_for_no_alert
-
-            expect(driver.title).to eq('Testing Alerts')
-          end
-
           it 'activates a browser context',
-             pending_if: {browser: %i[safari safari_preview], reason: 'Safari does not focus the activated context'} do
+             pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
             window = driver.window_handle
             browsing_context.create(type: :tab)
 

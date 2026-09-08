@@ -54,7 +54,6 @@ end
 
 desc 'Update generated Ruby files for local development'
 task :local_dev do
-  puts 'installing ruby, this may take a minute'
   Bazel.execute('build', [], '@bundle//:bundle')
   Rake::Task['rb:build'].invoke
   Rake::Task['grid'].invoke
@@ -121,9 +120,10 @@ desc 'Verify Ruby packages are published on RubyGems'
 task :verify do
   patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
-  SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-webdriver/versions/#{ruby_version}.json")
+  base = 'https://rubygems.org/api/v2/rubygems'
+  SeleniumRake.verify_package_published("#{base}/selenium-webdriver/versions/#{ruby_version}.json")
   unless patch_release
-    SeleniumRake.verify_package_published("https://rubygems.org/api/v2/rubygems/selenium-devtools/versions/#{devtools_version}.json")
+    SeleniumRake.verify_package_published("#{base}/selenium-devtools/versions/#{devtools_version}.json")
   end
 end
 
@@ -154,6 +154,12 @@ task :install do
   end
 end
 
+desc 'Regenerate the BiDi protocol classes from the pinned CDDL schema'
+task :update_cddl do
+  puts 'Regenerating Ruby BiDi protocol'
+  Bazel.execute('run', [], '//rb/lib/selenium/webdriver:bidi-generate')
+end
+
 desc 'Update Ruby changelog'
 task :changelogs do
   header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
@@ -169,6 +175,9 @@ task :version, [:version] do |_task, arguments|
   file = 'rb/lib/selenium/webdriver/version.rb'
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
+
+  Rake::Task['rb:pin'].reenable
+  Rake::Task['rb:pin'].invoke
 end
 
 desc 'Format Ruby code with rubocop (safe auto-correct only)'
@@ -187,8 +196,10 @@ task :lint do |_task, arguments|
   )
 end
 
-desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+desc 'Reconcile Gemfile.lock and sync gem checksums to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
+  Bazel.execute('run', [], '//rb:bundle-lock')
+
   gemfile_lock = 'rb/Gemfile.lock'
   module_bazel = 'MODULE.bazel'
   force = arguments[:force] == 'force'
@@ -243,7 +254,7 @@ task :pin, [:force] do |_task, arguments|
   File.write(module_bazel, new_content)
 end
 
-desc 'Update Ruby dependencies and sync checksums to MODULE.bazel'
+desc 'Update Ruby dependencies to latest versions within specified range'
 task :update do
   puts 'updating and pinning gem versions'
   Bazel.execute('run', [], '//rb:bundle-update')

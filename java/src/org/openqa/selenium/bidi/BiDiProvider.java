@@ -70,6 +70,11 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
       public BiDi getBiDi() {
         return biDi.get();
       }
+
+      @Override
+      public Handle getHandle() {
+        return biDi.get().asHandle();
+      }
     };
   }
 

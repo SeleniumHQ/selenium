@@ -88,8 +88,8 @@ module Selenium
         expect {
           expect {
             described_class.new(Options.chrome, Service.chrome).driver_path
-          }.to output(/Exception occurred: this error/).to_stderr_from_any_process
-        }.to raise_error(WebDriver::Error::NoSuchDriverError, /driver_location/)
+          }.to raise_error(WebDriver::Error::NoSuchDriverError, /driver_location/)
+        }.to have_error(:driver_finder, 'this error')
       end
 
       it 'creates arguments' do

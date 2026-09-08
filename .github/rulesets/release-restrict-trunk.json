@@ -23,6 +23,11 @@
       "actor_id": 7157452,
       "actor_type": "Team",
       "bypass_mode": "always"
+    },
+    {
+      "actor_id": 19032128,
+      "actor_type": "Team",
+      "bypass_mode": "always"
     }
   ]
 }

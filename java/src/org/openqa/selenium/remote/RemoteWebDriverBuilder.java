@@ -526,11 +526,27 @@ public class RemoteWebDriverBuilder {
         .collect(Collectors.toSet());
   }
 
+  // If any requested capability sets se:remoteUrl explicitly, auto-injection is suppressed for the
+  // whole payload to preserve that value and avoid an alwaysMatch/firstMatch overlap. When several
+  // first-match alternatives are supplied and only some set it, the others do not receive the
+  // client-reachable URL; that multi-alternative case is intentionally not supported.
+  private boolean hasExplicitRemoteUrl() {
+    return additionalCapabilities.containsKey("se:remoteUrl")
+        || requestedCapabilities.stream()
+            .anyMatch(caps -> caps.getCapabilityNames().contains("se:remoteUrl"));
+  }
+
   private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
+    Map<String, Object> alwaysMatch = new TreeMap<>(additionalCapabilities);
+    URI baseUri = getBaseUri();
+    if (baseUri != null && driverService == null && !hasExplicitRemoteUrl()) {
+      alwaysMatch.put("se:remoteUrl", baseUri.toString());
+    }
+
     Map<String, Object> w3cCaps = new TreeMap<>();
-    w3cCaps.put("alwaysMatch", additionalCapabilities);
+    w3cCaps.put("alwaysMatch", alwaysMatch);
     if (!requestedCapabilities.isEmpty()) {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }

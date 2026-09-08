@@ -21,8 +21,6 @@ interface _Proxy
 
   def type: -> untyped
 
-  def ftp: -> untyped
-
   def pac: -> untyped
 
   def http: -> untyped

@@ -44,8 +44,7 @@ public sealed record ContextAddPreloadScriptOptions : CommandOptions
     {
         Contexts = [context],
         Arguments = options?.Arguments,
-        Sandbox = options?.Sandbox,
-        Timeout = options?.Timeout
+        Sandbox = options?.Sandbox
     };
 }
 

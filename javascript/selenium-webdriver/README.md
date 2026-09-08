@@ -3,7 +3,7 @@
 JavaScript language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
 
-Requires Node.js >= 20.
+Requires Node.js >= 22.
 
 ## Installation
 
@@ -63,17 +63,20 @@ SELENIUM_REMOTE_URL="http://localhost:4444" node script.js
 
 ## Node Support Policy
 
-Each `selenium-webdriver` release targets the latest _semver-minor_ of Node's
-[LTS and Current releases](https://github.com/nodejs/release#release-schedule).
+`selenium-webdriver` supports the Node.js versions under active upstream
+support. Each is supported until its
+[end-of-life](https://github.com/nodejs/release#release-schedule) date; after
+that it is unsupported.
 
-| Level         | Guarantee                                                                 |
-| :------------ | :------------------------------------------------------------------------ |
-| _supported_   | API compatible without runtime flags; bugs investigated and fixed.        |
-| _best effort_ | Bugs investigated as time permits; API compatibility only where required. |
-| _unsupported_ | Bug reports closed as will-not-fix; API compatibility not guaranteed.     |
+| Node.js | Support ends |
+| :------ | :----------- |
+| 22      | 2027-04-30   |
+| 24      | 2028-04-30   |
+| 26      | 2029-04-30   |
 
-Versions older than the active LTS, unstable release branches (e.g. `v.Next`),
-and _semver-major_ Node releases outside the LTS / Current pair are _unsupported_.
+CI tests the earliest and latest supported versions available in
+[rules_nodejs](https://github.com/bazel-contrib/rules_nodejs); issues and pull
+requests are welcome for any supported version.
 
 ## Documentation
 

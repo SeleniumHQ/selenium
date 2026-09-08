@@ -25,19 +25,11 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
-
-          around do |example|
-            original_debug = ENV.fetch('SE_DEBUG', nil)
-            ENV.delete('SE_DEBUG')
-            example.run
-          ensure
-            original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
-          end
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['-v'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
             allow(WebDriver.logger).to receive(:debug?).and_return(false)
-            allow(WebDriver.logger).to receive(:warn)
           end
 
           it 'uses default port and nil path' do
@@ -61,7 +53,7 @@ module Selenium
           it 'creates websocket args by default' do
             service = described_class.new
 
-            expect(service.extra_args.count).to eq 2
+            expect(service.extra_args.count).to eq(2 + debug_args.size)
           end
 
           it 'uses sets log path to stdout' do
@@ -98,7 +90,7 @@ module Selenium
             it 'does not uses websocket-port' do
               service = described_class.new(args: ['--connect-existing'])
               expect(service.extra_args).not_to include('--websocket-port')
-              expect(service.extra_args).to eq(['--connect-existing'])
+              expect(service.extra_args).to eq(['--connect-existing'] + debug_args)
             end
           end
 
@@ -106,7 +98,7 @@ module Selenium
             it 'does not add websocket-port' do
               service = described_class.new(args: ['--websocket-port=1234'])
               expect(service.extra_args).not_to include('--websocket-port=0')
-              expect(service.extra_args).to eq(['--websocket-port=1234'])
+              expect(service.extra_args).to eq(['--websocket-port=1234'] + debug_args)
             end
           end
 
@@ -126,26 +118,22 @@ module Selenium
             end
 
             it 'preserves conflicting --log args with value and warns' do
-              service = described_class.new(args: ['--log', 'info'])
+              service = nil
+
+              expect { service = described_class.new(args: ['--log', 'info']) }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('info')
-              expect(WebDriver.logger).to have_received(:warn).with(
-                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
-                id: :se_debug
-              )
             end
 
             it 'preserves conflicting --log= args and warns' do
-              service = described_class.new(args: ['--log=info'])
+              service = nil
+
+              expect { service = described_class.new(args: ['--log=info']) }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log=info')
-              expect(WebDriver.logger).to have_received(:warn).with(
-                'SE_DEBUG is set; preserving user-specified geckodriver --log setting instead of adding -v',
-                id: :se_debug
-              )
             end
 
             it 'does not remove next arg if --log has no value' do
@@ -163,12 +151,11 @@ module Selenium
 
               allow(ServiceManager).to receive(:new).with(service).and_return(manager)
 
-              service.launch
+              expect { service.launch }.to have_warning(:se_debug)
 
               expect(service.extra_args).not_to include('-v')
               expect(service.extra_args).to include('--log')
               expect(service.extra_args).to include('trace')
-              expect(WebDriver.logger).to have_received(:warn).once
             end
           end
         end

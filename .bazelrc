@@ -44,6 +44,10 @@ build --javacopt="-Xep:WildcardImport:ERROR"
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
 
+# Produce execution log for builds
+# See https://bazel.build/advanced/performance/build-performance-metrics#execution-log
+build --execution_log_compact_file=exec.log
+
 # More JS magic
 build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound
@@ -89,7 +93,12 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 # For build stamping
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
-common:windows --host_platform=//:local_windows_gnullvm
+# Must match the crate universe's Windows ABI; a mismatch silently skips every Rust target
+common:windows --host_platform=//:local_windows_msvc
+# Keep the exec output dir short; Rust sysroot paths under it sit near Windows MAX_PATH
+common:windows --experimental_override_name_platform_in_output_dir=//:local_windows_msvc=winmsvc
+# @llvm has no msvc toolchain, so outrank it with Bazel's autoconfigured MSVC one
+common:windows --extra_toolchains=@local_config_cc_toolchains//:all
 
 # rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
 # rejects libtool as the archiver (AR). macOS toolchains use libtool by default,

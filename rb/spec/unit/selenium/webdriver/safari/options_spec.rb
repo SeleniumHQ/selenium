@@ -56,6 +56,23 @@ module Selenium
             expect(opts.set_window_rect).to be(false)
             expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
+
+          it 'enables the experimental capability when web socket url is set' do
+            opts = nil
+            expect { opts = described_class.new(web_socket_url: true) }.to have_warning(:safari_bidi)
+
+            expect(opts.web_socket_url).to be(true)
+            expect(opts.experimental_web_socket_url).to be(true)
+          end
+        end
+
+        describe '#enable_bidi!' do
+          it 'enables the experimental capability and warns it is experimental' do
+            expect { options.enable_bidi! }.to have_warning(:safari_bidi)
+
+            expect(options.web_socket_url).to be(true)
+            expect(options.experimental_web_socket_url).to be(true)
+          end
         end
 
         describe '#add_option' do
@@ -95,6 +112,14 @@ module Selenium
             options.add_option('safari:foo', 'bar')
             expect(options.as_json).to eq('browserName' => 'safari',
                                           'safari:foo' => 'bar')
+          end
+
+          it 'serializes the capabilities enabled by #enable_bidi!' do
+            expect { options.enable_bidi! }.to have_warning(:safari_bidi)
+
+            expect(options.as_json).to eq('browserName' => 'safari',
+                                          'webSocketUrl' => true,
+                                          'safari:experimentalWebSocketUrl' => true)
           end
 
           it 'returns JSON hash' do

@@ -210,6 +210,236 @@ class NodeTest {
   }
 
   @Test
+  void usesClientReachableAddressForProxiedUrlsWhenRemoteUrlProvided() {
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:9999/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void ignoresRemoteUrlPathWhenBuildingProxiedUrls() {
+    // The client's URL path (e.g. "/wd/hub") is its HTTP endpoint, not a Grid sub-path; folding it
+    // into the proxied websocket URLs would produce routes the Node does not serve. Only the
+    // origin (host/port) of se:remoteUrl is used.
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999/wd/hub");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:9999/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void doesNotReturnRemoteUrlInSessionCapabilities() {
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName", "cheese", "se:remoteUrl", "http://user:secret@localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    // se:remoteUrl is transport-only: it is consumed to build the proxied URLs and must not be
+    // echoed back in the session capabilities, where its embedded credentials could leak.
+    Session session = response.right().getSession();
+    assertThat(session.getCapabilities().getCapability("se:remoteUrl")).isNull();
+  }
+
+  @Test
+  void preservesCredentialsFromClientAdvertisedRemoteUrl() {
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://user:secret@localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://user:secret@localhost:9999/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void ignoresRemoteUrlWhenPublicGridUrlIsConfigured() throws URISyntaxException {
+    URI configuredGridUri = new URI("http://grid.example:4444");
+
+    class Handler extends Session implements HttpHandler {
+      private Handler(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
+      }
+    }
+
+    LocalNode node =
+        LocalNode.builder(tracer, bus, uri, configuredGridUri, registrationSecret)
+            .gridUrlSpecified(true)
+            .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+            .build();
+
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://grid.example:4444/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void preservesCredentialsFromConfiguredPublicGridUrl() throws URISyntaxException {
+    URI configuredGridUri = new URI("http://user:secret@grid.example:4444");
+
+    class Handler extends Session implements HttpHandler {
+      private Handler(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
+      }
+    }
+
+    LocalNode node =
+        LocalNode.builder(tracer, bus, uri, configuredGridUri, registrationSecret)
+            .gridUrlSpecified(true)
+            .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+            .build();
+
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://user:secret@grid.example:4444/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void ignoresRemoteUrlWhenGridUrlIsConfiguredEvenIfItEqualsNodeAddress() {
+    // Edge case: grid-url is explicitly configured to the same value as the node's own externalUri.
+    // The explicit configuration must still win over a client-advertised se:remoteUrl.
+    class Handler extends Session implements HttpHandler {
+      private Handler(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
+      }
+    }
+
+    LocalNode node =
+        LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+            .gridUrlSpecified(true)
+            .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+            .build();
+
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "http://localhost:9999");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        node.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:1234/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void ignoresRemoteUrlWithoutHttpScheme() {
+    Capabilities request =
+        new ImmutableCapabilities(
+            "browserName",
+            "cheese",
+            "se:vncLocalAddress",
+            "localhost:5900",
+            "se:remoteUrl",
+            "ftp://evil:21");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:1234/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
+  void fallsBackToGridAddressForProxiedUrlsWithoutRemoteUrl() {
+    Capabilities request =
+        new ImmutableCapabilities("browserName", "cheese", "se:vncLocalAddress", "localhost:5900");
+
+    Either<WebDriverException, CreateSessionResponse> response =
+        local.newSession(createSessionRequest(request));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
+    assertThat(String.valueOf(session.getCapabilities().getCapability("se:vnc")))
+        .isEqualTo("ws://localhost:1234/session/" + session.getId() + "/se/vnc");
+  }
+
+  @Test
   void shouldRetryIfNoMatchingSlotIsAvailable() {
     Node local =
         LocalNode.builder(tracer, bus, uri, uri, registrationSecret)

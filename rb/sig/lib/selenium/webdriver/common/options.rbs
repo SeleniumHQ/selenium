@@ -71,6 +71,8 @@ module Selenium
 
       def process_w3c_options: (untyped options) -> untyped
 
+      def merge_browser_options: (Hash[untyped, untyped] w3c_options, Hash[untyped, untyped] browser_options) -> Hash[untyped, untyped]
+
       def process_browser_options: (untyped _browser_options) -> nil
 
       def camelize?: (untyped _key) -> true

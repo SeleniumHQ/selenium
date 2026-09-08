@@ -27,6 +27,7 @@ public class Page {
   private String[] bodyParts = {};
   private @Nullable String onLoad;
   private @Nullable String onBeforeUnload;
+  private boolean doctype = false;
 
   public Page withTitle(String title) {
     this.title = title;
@@ -58,7 +59,44 @@ public class Page {
     return this;
   }
 
+  /**
+   * Opt-in to a standards-mode document shape: a leading {@code <!DOCTYPE html>} and the {@code
+   * <script>}/{@code <style>} blocks moved inside {@code <head>}, instead of after it closes.
+   * Layout-sensitive tests should use this to get deterministic parsing/quirks-mode behavior;
+   * default output is unchanged for backward compatibility with existing callers.
+   */
+  public Page withDoctype() {
+    this.doctype = true;
+    return this;
+  }
+
   public String toString() {
+    String body =
+        String.format(
+            "<body %s %s>",
+            onLoad == null ? "" : String.format("onload='%s'", onLoad),
+            onBeforeUnload == null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload));
+
+    if (doctype) {
+      return String.join(
+          "\n",
+          "<!DOCTYPE html>",
+          "<html>",
+          "<head>",
+          String.format("<title>%s</title>", title),
+          "<script type='text/javascript'>",
+          String.join("\n", scripts),
+          "</script>",
+          "<style>",
+          String.join("\n", styles),
+          "</style>",
+          "</head>",
+          body,
+          String.join("\n", bodyParts),
+          "</body>",
+          "</html>");
+    }
+
     return String.join(
         "\n",
         "<html>",
@@ -71,10 +109,7 @@ public class Page {
         "<style>",
         String.join("\n", styles),
         "</style>",
-        String.format(
-            "<body %s %s>",
-            onLoad == null ? "" : String.format("onload='%s'", onLoad),
-            onBeforeUnload == null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload)),
+        body,
         String.join("\n", bodyParts),
         "</body>",
         "</html>");

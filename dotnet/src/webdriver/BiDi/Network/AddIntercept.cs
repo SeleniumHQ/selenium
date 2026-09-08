@@ -29,7 +29,6 @@ public record AddInterceptOptions() : CommandOptions
     internal AddInterceptOptions(ContextAddInterceptOptions? options) : this()
     {
         UrlPatterns = options?.UrlPatterns;
-        Timeout = options?.Timeout;
     }
 
     public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }

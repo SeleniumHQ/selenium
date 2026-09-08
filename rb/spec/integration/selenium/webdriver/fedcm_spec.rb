@@ -22,7 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module FedCM
-      describe FedCM, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: %i[chrome edge]}] do
+      describe FedCM,
+               skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser_family: :chromium}] do
         let(:dialog) { driver.fedcm_dialog }
 
         before { driver.get url_for('fedcm/fedcm.html') }
@@ -66,8 +67,8 @@ module Selenium
             expect(dialog.select_account(1)).to be_nil
           end
 
-          it 'clicks the dialog', pending_if: {browser: %i[chrome edge],
-                                           reason: "error: 'Use another account' not supported for this IDP"} do
+          it 'clicks the dialog', pending_if: {browser_family: :chromium,
+                                               reason: "error: 'Use another account' not supported for this IDP"} do
             expect(dialog.click).to be_nil
           end
 

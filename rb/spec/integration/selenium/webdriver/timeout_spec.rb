@@ -86,7 +86,7 @@ module Selenium
           expect { driver.navigate.to url_for('sleep?time=3') }.to raise_error(WebDriver::Error::TimeoutError)
         end
 
-        it 'times out if page takes too long to load after click', pending_if: {browser: %i[safari safari_preview]} do
+        it 'times out if page takes too long to load after click', pending_if: {browser_family: :safari} do
           driver.navigate.to url_for('page_with_link_to_slow_loading_page.html')
 
           expect {

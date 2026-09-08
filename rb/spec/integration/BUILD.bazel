@@ -1,5 +1,12 @@
 package(default_visibility = ["//rb/spec/integration:__subpackages__"])
 
+filegroup(
+    name = "all_srcs",
+    testonly = True,
+    srcs = glob(["**/*.rb"]),
+    visibility = ["//rb/spec:__pkg__"],
+)
+
 BROWSERS = [
     "chrome",
     "chrome-beta",

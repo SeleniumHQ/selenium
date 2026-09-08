@@ -145,7 +145,7 @@ test.suite(function (env) {
         assert.strictEqual(await driver.findElement({ tagName: 'h3' }).getText(), 'This is the proxy landing page')
       })
 
-      // TODO: test ftp and https proxies.
+      // TODO: test https proxies.
     })
 
   // PhantomJS does not support PAC file proxy configuration.

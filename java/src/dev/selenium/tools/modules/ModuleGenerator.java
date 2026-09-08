@@ -176,10 +176,9 @@ public class ModuleGenerator {
               modulePath.stream()
                   .map(
                       (s) -> {
-                        String file = s.getFileName().toString();
-
-                        if (file.startsWith("processed_")) {
-                          Path copy = tmp.resolve(file.substring(10));
+                        Path fileName = s.getFileName();
+                        if (fileName != null && fileName.toString().startsWith("processed_")) {
+                          Path copy = tmp.resolve(fileName.toString().substring(10));
 
                           try {
                             Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
@@ -201,7 +200,7 @@ public class ModuleGenerator {
     PrintStream origErr = System.err;
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    PrintStream printStream = new PrintStream(bos);
+    PrintStream printStream = new PrintStream(bos, false, StandardCharsets.UTF_8);
 
     int result;
     try {
@@ -226,7 +225,8 @@ public class ModuleGenerator {
         new SimpleFileVisitor<>() {
           @Override
           public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-            if ("module-info.java".equals(file.getFileName().toString())) {
+            Path fileName = file.getFileName();
+            if (fileName != null && "module-info.java".equals(fileName.toString())) {
               moduleInfo.set(file);
             }
             return FileVisitResult.TERMINATE;

@@ -97,6 +97,16 @@ function groupRef(value) {
   return { Type: 'group', Value: value, Unwrapped: false }
 }
 
+/** True when `entry` is a string/number/bool literal (`{Type:'literal', Value}`). */
+function isLiteral(entry) {
+  return entry && typeof entry === 'object' && entry.Type === 'literal'
+}
+
+/** True when `entry` is the CDDL null keyword (bare `'null'`) or a `nil`/`null` prelude ref. */
+function isNullArm(entry) {
+  return entry === 'null' || (isGroupRef(entry) && (entry.Value === 'null' || entry.Value === 'nil'))
+}
+
 /**
  * Drop the leading run of `label` that restates `ownerLocal`, backing off to a
  * camelCase boundary, so `ContinueWithAuthParameters` + `ContinueWithAuthCredentials`
@@ -151,9 +161,11 @@ function eachPropertyDeep(properties, fn) {
 }
 
 /**
- * Rewrite fields whose type is a union of >= 2 string literals into a reference
- * to a synthetic enum def, and append those enum defs. Single-literal fields
- * (discriminators) are left untouched. Returns a new AST array.
+ * Rewrite fields whose type is a choice of >= 2 string literals (optionally with a
+ * null alternative) into a reference to a synthetic enum def, and append those enum
+ * defs. A null alternative is kept on the field so the enum stays nullable; the enum
+ * def itself holds only the literals. Single-literal fields (discriminators) are left
+ * untouched. Returns a new AST array.
  * @param {object[]} ast The AST to transform.
  * @returns {object[]} A new AST array with inline enums hoisted to named defs.
  */
@@ -167,9 +179,12 @@ export function hoistInlineEnums(ast) {
     const owner = splitName(def.Name ?? '')
     eachPropertyDeep(def.Properties, (prop) => {
       const entries = typeList(prop.Type)
-      const allLiterals =
-        entries.length >= 2 && entries.every((e) => e && typeof e === 'object' && e.Type === 'literal')
-      if (!allLiterals) return
+      const literals = entries.filter(isLiteral)
+      const nullArms = entries.filter(isNullArm)
+      // Hoist a choice of >= 2 string literals, tolerating a null alternative so a nullable inline
+      // enum (`("a" / "b") / null`) is still named. The null stays on the field (below), never in the
+      // enum def; anything else in the choice (a ref, a single literal discriminator) is left untouched.
+      if (literals.length < 2 || literals.length + nullArms.length !== entries.length) return
 
       const base = pascal(prop.Name) || `Value${created.length}`
       const localName = `${owner.local}${base}`
@@ -179,13 +194,13 @@ export function hoistInlineEnums(ast) {
         Type: 'variable',
         Name: synthName,
         IsChoiceAddition: false,
-        PropertyType: entries.map((e) => structuredClone(e)),
+        PropertyType: literals.map((e) => structuredClone(e)),
         Comments: prop.Comments ?? [],
         'x-selenium-synthetic': true,
         'x-selenium-owner': def.Name,
         'x-selenium-label': base,
       })
-      prop.Type = [groupRef(synthName)]
+      prop.Type = [groupRef(synthName), ...nullArms.map((e) => structuredClone(e))]
     })
   }
 
@@ -450,22 +465,35 @@ export function flattenGroupComposition(ast) {
 // ============================================================
 
 /**
- * Drop duplicate definitions, keeping the first occurrence — the `*-all.cddl`
- * input concatenates local + remote specs that both define shared types. This
- * matches `buildModel`'s `buildDefMap` ("first wins") so the normalized artifact
- * carries one def per name.
+ * Collapse same-named definitions into one. A plain duplicate keeps the first
+ * occurrence — the `*-all.cddl` input concatenates local + remote specs that both
+ * define shared types, matching `buildModel`'s `buildDefMap` ("first wins"). A
+ * choice-addition (`//=` group socket or `/=` type socket, `IsChoiceAddition: true`)
+ * instead folds its members into the retained base, so a group extension point like
+ * `webExtension.InstallParametersExtension //= (...)` is resolved before
+ * `flattenGroupComposition` splices that group into its referents.
+ * Pure — folds into a fresh clone rather than mutating the input def.
  * @param {object[]} ast The AST to dedupe.
- * @returns {object[]} A new AST array with duplicate-named defs removed (first wins).
+ * @returns {object[]} A new AST array with duplicate-named defs collapsed.
  */
 export function dedupeDefs(ast) {
-  const seen = new Set()
+  const indexByName = new Map()
   const out = []
   for (const def of ast) {
-    if (def && typeof def === 'object' && typeof def.Name === 'string') {
-      if (seen.has(def.Name)) continue
-      seen.add(def.Name)
+    const name = def && typeof def === 'object' && typeof def.Name === 'string' ? def.Name : null
+    if (name === null || !indexByName.has(name)) {
+      if (name !== null) indexByName.set(name, out.length)
+      out.push(def)
+      continue
     }
-    out.push(def)
+    if (!def.IsChoiceAddition) continue // plain duplicate: first wins
+    const i = indexByName.get(name)
+    const base = out[i]
+    const merged = { ...base }
+    if (base.Properties || def.Properties) merged.Properties = [...(base.Properties ?? []), ...(def.Properties ?? [])]
+    if (base.PropertyType || def.PropertyType)
+      merged.PropertyType = [...(base.PropertyType ?? []), ...(def.PropertyType ?? [])]
+    out[i] = merged
   }
   return out
 }

@@ -140,9 +140,10 @@ module Selenium
           end
         end
 
-        it 'can get and set context' do
-          reset_driver!(args: ['-remote-allow-system-access'],
-                        prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
+        it 'can get and set context',
+           skip_if: {driver: :remote, reason: 'system access cannot be granted per-session on Grid'} do
+          service = WebDriver::Service.firefox(args: ['--allow-system-access'])
+          reset_driver!(service: service, prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

@@ -35,8 +35,7 @@ public sealed record ContextDeleteCookiesOptions : CommandOptions
     internal static DeleteCookiesOptions WithContext(ContextDeleteCookiesOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Partition = new ContextPartitionDescriptor(context),
-        Filter = options?.Filter,
-        Timeout = options?.Timeout
+        Filter = options?.Filter
     };
 }
 

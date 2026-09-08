@@ -168,7 +168,7 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', pending_if: [{browser: %i[safari safari_preview]},
+      context 'with more than two windows', pending_if: [{browser_family: :safari},
                                                          {driver: :remote, browser: :ie}] do
         it 'closes current window via block' do
           driver.navigate.to url_for('xhtmlTest.html')

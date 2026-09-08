@@ -50,8 +50,7 @@ public sealed record ContextSetViewportOptions : CommandOptions
     {
         Context = context,
         Viewport = options?.Viewport,
-        DevicePixelRatio = options?.DevicePixelRatio,
-        Timeout = options?.Timeout
+        DevicePixelRatio = options?.DevicePixelRatio
     };
 }
 

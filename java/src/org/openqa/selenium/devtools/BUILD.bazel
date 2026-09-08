@@ -84,6 +84,10 @@ java_library(
 java_binary(
     name = "cdp-client-generator",
     srcs = GENERATOR_SOURCES,
+    data = [
+        "//scripts:generated_note_template.txt",
+        "//scripts:license_header.txt",
+    ],
     main_class = "org.openqa.selenium.devtools.CdpClientGenerator",
     visibility = [
         "//java/src/org/openqa/selenium/devtools:__subpackages__",
@@ -92,6 +96,7 @@ java_binary(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/devtools:devtools-prototypes",
         "//java/src/org/openqa/selenium/json",
+        "@rules_java//java/runfiles",
         artifact("com.github.javaparser:javaparser-core"),
         artifact("com.google.guava:guava"),
         artifact("org.jspecify:jspecify"),

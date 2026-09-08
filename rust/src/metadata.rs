@@ -181,6 +181,18 @@ pub fn create_browser_metadata(
     }
 }
 
+/// Determines whether a discovered driver version should be written to the metadata cache.
+///
+/// Returns `false` when the TTL is zero, the major browser version is empty, or the
+/// driver version itself is empty (e.g. a version-less HTTP response).
+pub fn should_cache_driver_version(
+    driver_ttl: u64,
+    major_browser_version: &str,
+    driver_version: &str,
+) -> bool {
+    driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
+}
+
 pub fn create_driver_metadata(
     major_browser_version: &str,
     driver_name: &str,

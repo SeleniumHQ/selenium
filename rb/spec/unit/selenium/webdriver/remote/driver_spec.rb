@@ -30,9 +30,11 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': {}}}}).to_json
           endpoint ||= 'http://127.0.0.1:4444/wd/hub/session'
-          stub_request(:post, endpoint).with(body: body).to_return(valid_response)
+          body ||= {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': {}}}}
+          always_match = body.dig(:capabilities, :alwaysMatch)
+          always_match['se:remoteUrl'] = endpoint.delete_suffix('/session') if always_match
+          stub_request(:post, endpoint).with(body: body.to_json).to_return(valid_response)
         end
 
         it 'requires parameters' do

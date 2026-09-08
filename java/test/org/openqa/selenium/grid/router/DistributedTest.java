@@ -29,11 +29,8 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiProvider;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -43,11 +40,8 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.ExecuteMethod;
-import org.openqa.selenium.remote.RemoteExecuteMethod;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -192,49 +186,6 @@ class DistributedTest {
       }
     } finally {
       Safely.safelyCall(healthy::quit);
-    }
-  }
-
-  @Test
-  void connectionLimitIsRespected() {
-    assertThat(server.isStarted()).isTrue();
-
-    // don't use the RemoteWebDriver.builder here, using it does create an unknown number of
-    // connections
-    RemoteWebDriver driver = new RemoteWebDriver(server.getUrl(), browser.getCapabilities());
-
-    try {
-      Capabilities caps = driver.getCapabilities();
-      BiDiProvider biDiProvider = new BiDiProvider();
-
-      ExecuteMethod executeMethod = new RemoteExecuteMethod(driver);
-      BiDi cnn1 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-      BiDi cnn2 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-      BiDi cnn3 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-
-      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
-          .hasMessageStartingWith("JdkWebSocket initial request execution error");
-      cnn1.close();
-      BiDi cnn4 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-
-      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
-          .hasMessageStartingWith("JdkWebSocket initial request execution error");
-      cnn2.close();
-      cnn3.close();
-      BiDi cnn5 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-      BiDi cnn6 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
-
-      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
-          .isInstanceOf(ConnectionFailedException.class)
-          .hasMessageStartingWith("JdkWebSocket initial request execution error");
-
-      cnn4.close();
-      cnn5.close();
-      cnn6.close();
-    } finally {
-      Safely.safelyCall(driver::quit);
     }
   }
 }

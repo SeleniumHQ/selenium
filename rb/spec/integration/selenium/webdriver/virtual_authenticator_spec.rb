@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe VirtualAuthenticator, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
-                                                 {browser: %i[chrome edge]}] do
+                                                 {browser_family: :chromium}] do
       # A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
       let(:pkcs8_private_key) do
         'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q' \

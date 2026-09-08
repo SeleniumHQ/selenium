@@ -35,8 +35,7 @@ public sealed record ContextGetRealmsOptions : CommandOptions
     internal static GetRealmsOptions WithContext(ContextGetRealmsOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Context = context,
-        Type = options?.Type,
-        Timeout = options?.Timeout
+        Type = options?.Type
     };
 }
 

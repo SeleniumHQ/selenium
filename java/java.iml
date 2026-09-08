@@ -5,20 +5,16 @@
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output url="file://$MODULE_DIR$/build/production" />
-    <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
+    <content url="file://$MODULE_DIR$/src">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-    </content>
-    <content url="file://$MODULE_DIR$/../third_party/js/sizzle">
-      <sourceFolder url="file://$MODULE_DIR$/../third_party/js/sizzle" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/src/dev" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="maven" level="project" />
-    <orderEntry type="library" name="libcdp" level="project" />
     <orderEntry type="library" name="tools" level="project" />
+    <orderEntry type="library" name="java-libs" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

@@ -9,6 +9,8 @@ from pathlib import Path
 import urllib3
 from packaging.version import parse
 
+from scripts.generated_note import generated_note
+
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
@@ -20,6 +22,8 @@ def calculate_hash(url):
     print(f"Calculate hash for {url}", file=sys.stderr)
     h = hashlib.sha256()
     r = http.request("GET", url, preload_content=False)
+    if r.status != 200:
+        raise ValueError(f"Download unavailable (HTTP {r.status}): {url}")
     for b in iter(lambda: r.read(4096), b""):
         h.update(b)
     return h.hexdigest()
@@ -28,14 +32,9 @@ def calculate_hash(url):
 def get_chrome_info_for_channel(channel):
     r = http.request(
         "GET",
-        f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
+        "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json",
     )
-    all_versions = json.loads(r.data)
-    # use the same milestone for all chrome releases, so pick the lowest
-    milestones = [version["milestone"] for version in all_versions if version["milestone"]]
-    if not milestones:
-        raise ValueError(f"No Chrome versions with milestones found for channel '{channel}'")
-    milestone = min(milestones)
+    milestone = json.loads(r.data)["channels"][channel]["version"].split(".")[0]
     r = http.request(
         "GET",
         "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json",
@@ -534,7 +533,7 @@ js_library(
 
 
 if __name__ == "__main__":
-    content = """# This file has been generated using `bazel run scripts:pinned_browsers`
+    content = f"""{generated_note("#", "scripts/pinned_browsers.py", "bazel run //scripts:pinned_browsers")}
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//common/private:deb_archive.bzl", "deb_archive")

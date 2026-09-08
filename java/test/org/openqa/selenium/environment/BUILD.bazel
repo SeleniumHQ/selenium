@@ -116,6 +116,7 @@ java_test_suite(
     deps = [
         ":environment",
         ":test-base",
+        artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.jspecify:jspecify"),
     ] + firefox["deps"] + JUNIT5_DEPS,

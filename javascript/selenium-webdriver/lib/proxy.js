@@ -78,13 +78,6 @@ PacConfig.prototype.proxyAutoconfigUrl
 function ManualConfig() {}
 
 /**
- * The proxy host for FTP requests.
- *
- * @type {(string|undefined)}
- */
-ManualConfig.prototype.ftpProxy
-
-/**
  * The proxy host for HTTP requests.
  *
  * @type {(string|undefined)}
@@ -138,30 +131,24 @@ function direct() {
  * Manually configures the browser proxy.  The following options are
  * supported:
  *
- * - `ftp`: Proxy host to use for FTP requests
  * - `http`: Proxy host to use for HTTP requests
  * - `https`: Proxy host to use for HTTPS requests
  * - `bypass`: A list of hosts requests should directly connect to,
  *     bypassing any other proxies for that request. May be specified as a
  *     comma separated string, or a list of strings.
  *
- * Behavior is undefined for FTP, HTTP, and HTTPS requests if the
+ * Behavior is undefined for HTTP and HTTPS requests if the
  * corresponding key is omitted from the configuration options.
  *
- * @param {{ftp: (string|undefined),
- *          http: (string|undefined),
+ * @param {{http: (string|undefined),
  *          https: (string|undefined),
  *          bypass: (Array<string>|undefined)}} options Proxy
  *     configuration options.
  * @return {!ManualConfig} A new proxy configuration object.
  */
-function manual({ ftp, http, https, bypass }) {
-  if (ftp !== undefined) {
-    console.warn('ftpProxy is deprecated and will be removed in the future')
-  }
+function manual({ http, https, bypass }) {
   return {
     proxyType: Type.MANUAL,
-    ftpProxy: ftp,
     httpProxy: http,
     sslProxy: https,
     noProxy: bypass,

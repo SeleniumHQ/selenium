@@ -111,35 +111,31 @@ internal sealed class EventDispatcher : IAsyncDisposable
         return (EventStream<TEventArgs>)subscription;
     }
 
-    public bool TryDeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
+    public void DeserializeAndDispatch(string method, ref Utf8JsonReader paramsReader, Dictionary<string, JsonElement>? additionalMessageData = null)
     {
-        if (!_events.TryGetValue(method, out var slot))
+        if (_events.TryGetValue(method, out var slot))
         {
-            return false;
-        }
-
-        var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
+            var eventArgs = (EventArgs)(JsonSerializer.Deserialize(ref paramsReader, slot.JsonTypeInfo)
             ?? throw new BiDiException("Remote end returned null event args in the 'params' property."));
 
-        eventArgs.BiDi = _bidi;
+            eventArgs.BiDi = _bidi;
 
-        if (additionalMessageData is not null)
-            eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+            if (additionalMessageData is not null)
+                eventArgs.AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
 
-        foreach (var subscription in slot.GetSnapshot())
-        {
-            try
+            foreach (var subscription in slot.GetSnapshot())
             {
-                subscription.Deliver(eventArgs);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
-                subscription.Complete(ex);
+                try
+                {
+                    subscription.Deliver(eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed to deliver '{method}' event to subscription: {ex.Message}");
+                    subscription.Complete(ex);
+                }
             }
         }
-
-        return true;
     }
 
     public async Task CompleteAllAsync(Exception? error)

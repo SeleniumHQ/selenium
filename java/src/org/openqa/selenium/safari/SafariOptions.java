@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -48,6 +49,8 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
  * </code></pre>
  */
 public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
+
+  private static final Logger LOG = Logger.getLogger(SafariOptions.class.getName());
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
@@ -87,6 +90,19 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
         .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
 
     return newInstance;
+  }
+
+  /**
+   * Enables the WebDriver BiDi protocol. BiDi support in Safari is experimental and requires Safari
+   * Technology Preview; see {@link #setUseTechnologyPreview(boolean)}.
+   *
+   * @return this {@link SafariOptions} instance for chaining
+   */
+  public SafariOptions enableBiDi() {
+    LOG.warning("Safari's WebDriver BiDi support is experimental and may not work as expected.");
+    setCapability("webSocketUrl", true);
+    setCapability(Option.EXPERIMENTAL_WEB_SOCKET_URL, true);
+    return this;
   }
 
   public boolean getAutomaticInspection() {
@@ -156,5 +172,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     // Defined by Apple
     String AUTOMATIC_INSPECTION = "safari:automaticInspection";
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
+    String EXPERIMENTAL_WEB_SOCKET_URL = "safari:experimentalWebSocketUrl";
   }
 }

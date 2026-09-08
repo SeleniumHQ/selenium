@@ -34,8 +34,8 @@ For people looking to get started using Selenium, please check out
 our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
 get stuck, there are several ways to [Get Help](https://www.selenium.dev/support/).
 
-[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
-[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
+[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
+[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
 [![Releases downloads](https://img.shields.io/github/downloads/SeleniumHQ/selenium/total.svg)](https://github.com/SeleniumHQ/selenium/releases)
 
 ## Contributing
@@ -153,6 +153,25 @@ common --repository_cache=/path/to/your/home/.cache/bazel-repo
 dependencies (e.g. `http_archive` tarballs). Both directories grow unbounded over time — prune them
 periodically if disk space matters. Keep the cache on the same filesystem as your checkouts so Bazel
 can hardlink instead of copy.
+
+Bazel also creates a separate **output base** (compiled outputs, analysis cache, and the Bazel
+server) per checkout path. Unlike the caches above, it is **not** removed when you delete a worktree —
+so frequently created and discarded worktrees leak gigabytes of stale output.
+
+On macOS/Linux, make a worktree self-cleaning by pointing its output base inside the worktree. Add
+this to that worktree's `.bazelrc.local`:
+
+```
+startup --output_base=.local/output-base
+```
+
+`.local/` is gitignored and excluded in `.bazelignore`, so removing the worktree removes its output
+base with it. The shared `--disk_cache`/`--repository_cache` above still keep downloads and action
+outputs shared across worktrees.
+
+(Windows users should instead keep `startup --output_user_root=C:/tmp` in `.bazelrc.windows.local` as
+described above, to avoid path-length limits — do not nest the output base deeper inside the repo on
+Windows.)
 
 ## Building
 

@@ -317,6 +317,7 @@ class Options extends Capabilities {
    *
    * @param {...string} paths The paths to the extension XPI files to install.
    * @return {!Options} A self reference.
+   * @deprecated Use {@link Driver#installAddon} instead.
    */
   addExtensions(...paths) {
     this.profile_().addExtensions(paths)

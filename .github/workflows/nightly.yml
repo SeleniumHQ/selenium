@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: "all"
+      ignore_release_check:
+        description: Publish even while a release ruleset is active; set by release.yml, which drives this workflow as part of the release itself
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -36,7 +41,7 @@ jobs:
       language: ${{ steps.parse.outputs.language }}
       artifact-name: ${{ steps.parse.outputs.artifact-name }}
       artifact-path: ${{ steps.parse.outputs.artifact-path }}
-      release-in-progress: ${{ steps.check.outputs.release-in-progress }}
+      skip-publish: ${{ steps.check.outputs.skip-publish }}
     steps:
       - name: Parse inputs
         id: parse
@@ -51,6 +56,7 @@ jobs:
           fi
       - name: Check if release ruleset is active
         id: check
+        if: ${{ !inputs.ignore_release_check }}
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           GH_REPO: ${{ github.repository }}
@@ -58,13 +64,13 @@ jobs:
           set -euo pipefail
           rulesets=$(gh api "repos/$GH_REPO/rulesets" 2>/dev/null || echo '[{"name":"Release: api-error"}]')
           if jq -e 'any(.[]; .name | startswith("Release:"))' <<<"$rulesets" >/dev/null; then
-            echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
+            echo "skip-publish=true" >> "$GITHUB_OUTPUT"
           fi
 
   nightly-release:
     name: Nightly ${{ matrix.language }}
     needs: prepare
-    if: needs.prepare.outputs.release-in-progress != 'true'
+    if: needs.prepare.outputs.skip-publish != 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -80,7 +86,7 @@ jobs:
   release-grid:
     name: Release Grid
     needs: [prepare, nightly-release]
-    if: always() && needs.prepare.outputs.artifact-name
+    if: always() && needs.prepare.outputs.artifact-name && needs.nightly-release.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: write

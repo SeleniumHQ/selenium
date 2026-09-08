@@ -97,7 +97,6 @@ module Selenium
         it 'can configure a manual proxy' do
           proxy = Proxy.new(
             http: 'foo:123',
-            ftp: 'bar:234',
             ssl: 'baz:345',
             no_proxy: 'localhost'
           )
@@ -105,8 +104,6 @@ module Selenium
           profile.proxy = proxy
           expect(read_generated_prefs).to include('user_pref("network.proxy.http", "foo")',
                                                   'user_pref("network.proxy.http_port", 123)',
-                                                  'user_pref("network.proxy.ftp", "bar")',
-                                                  'user_pref("network.proxy.ftp_port", 234)',
                                                   'user_pref("network.proxy.ssl", "baz")',
                                                   'user_pref("network.proxy.ssl_port", 345)',
                                                   'user_pref("network.proxy.no_proxies_on", "localhost")',
@@ -124,28 +121,6 @@ module Selenium
           profile.proxy = Proxy.new(auto_detect: true)
 
           expect(read_generated_prefs).to include('user_pref("network.proxy.type", 4)')
-        end
-
-        it 'can install extension' do
-          firebug = File.expand_path('../../../../../../third_party/firebug/firebug-1.5.0-fx.xpi', __dir__)
-          profile.add_extension(firebug)
-          extension_directory = File.expand_path('extensions/firebug@software.joehewitt.com', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to be(true)
-        end
-
-        it 'can install web extension without id' do
-          mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
-          profile.add_extension(mooltipass)
-          extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to be(true)
-        end
-
-        it 'can install web extension with id' do
-          ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
-          profile.add_extension(ext)
-          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org',
-                                                 profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to be(true)
         end
       end
     end # Firefox

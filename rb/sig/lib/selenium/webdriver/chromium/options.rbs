@@ -32,6 +32,8 @@ module Selenium
 
         @extensions: Array[String]
 
+        @vendor_options: Hash[String | Symbol, untyped]
+
         attr_accessor profile: untyped
 
         attr_accessor logging_prefs: Hash[Symbol | String, untyped]
@@ -53,6 +55,8 @@ module Selenium
         def add_preference: (untyped name, untyped value) -> untyped
 
         def add_emulation: (**untyped opts) -> untyped
+
+        def add_chromium_option: (untyped name, untyped value) -> untyped
 
         def enable_android: (?package: String, ?serial_number: untyped?, ?use_running_app: untyped?, ?activity: untyped?) -> untyped
 

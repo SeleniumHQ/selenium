@@ -47,6 +47,41 @@ class SeleniumTestListener
   end
 end
 
+def create_guards(example)
+  guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
+  guards.add_condition(:driver, GlobalTestEnv.driver)
+  guards.add_condition(:browser, GlobalTestEnv.browser)
+  guards.add_condition(:browser_family, GlobalTestEnv.browser_family)
+  guards.add_condition(:ci, WebDriver::Platform.ci)
+  guards.add_condition(:platform, WebDriver::Platform.os)
+  guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
+  guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
+  guards.add_condition(:rbe, GlobalTestEnv.rbe?)
+  guards.add_condition(:version, GlobalTestEnv.browser_version)
+  guards
+end
+
+# resolves to error instead of pending if provided exception values do not match
+def resolve_pending_exception(procsy, guard)
+  example = procsy.example
+  exception = example.exception
+
+  if exception.nil?
+    RSpec::Core::Pending.mark_pending!(example, guard.message)
+    RSpec::Core::Pending.mark_fixed!(example)
+    raise RSpec::Core::Pending::PendingExampleFixedError
+  elsif guard.matches_exception?(exception)
+    RSpec::Core::Pending.mark_pending!(example, guard.message)
+    example.display_exception = exception
+  else
+    expected = guard.guarded[:exception]
+    example.display_exception = exception.exception(
+      "#{exception.message}\n\nExpected test to fail with " \
+      "#{expected[:class]}: #{expected[:message]&.inspect}; #{guard.message}"
+    )
+  end
+end
+
 RSpec.configure do |c|
   c.define_derived_metadata do |meta|
     meta[:aggregate_failures] = true
@@ -69,18 +104,19 @@ RSpec.configure do |c|
   c.run_all_when_everything_filtered = true
   c.default_formatter = c.files_to_run.count > 1 ? 'progress' : 'doc'
 
-  c.before do |example|
-    guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
-    guards.add_condition(:driver, GlobalTestEnv.driver)
-    guards.add_condition(:browser, GlobalTestEnv.browser)
-    guards.add_condition(:ci, WebDriver::Platform.ci)
-    guards.add_condition(:platform, WebDriver::Platform.os)
-    guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
-    guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
-    guards.add_condition(:rbe, GlobalTestEnv.rbe?)
-    guards.add_condition(:version, GlobalTestEnv.browser_version)
+  c.around do |procsy|
+    @guards = create_guards(procsy)
 
-    results = guards.disposition
+    # our `c.before` hook runs here before the example body
+    procsy.run
+
+    guard = @guards.pending_exception_guard
+    resolve_pending_exception(procsy, guard) if guard
+  end
+
+  # separate c.before hook needed to support traditional skip and pending resolutions
+  c.before do
+    results = @guards.disposition
     send(*results) if results
   end
 end

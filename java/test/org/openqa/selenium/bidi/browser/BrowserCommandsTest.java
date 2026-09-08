@@ -263,9 +263,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
+  private static final Pattern IN_PROGRESS_DOWNLOAD = Pattern.compile(".*\\.(part|crdownload)");
+
   private static List<String> files(Path dir) {
     try (Stream<Path> files = Files.list(dir)) {
-      return files.map(path -> path.getFileName().toString()).collect(toList());
+      // Browsers stage downloads under a temporary name and rename on completion. Those temps
+      // appear and disappear on their own schedule, so including them makes any comparison of
+      // two directory listings depend on timing.
+      return files
+          .map(path -> path.getFileName().toString())
+          .filter(name -> !IN_PROGRESS_DOWNLOAD.matcher(name).matches())
+          .collect(toList());
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to check files in " + dir, e);
     }

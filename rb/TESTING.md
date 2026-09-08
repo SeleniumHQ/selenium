@@ -130,6 +130,7 @@ Conditions are registered in [`spec/integration/selenium/webdriver/spec_helper.r
 | Condition | Values |
 | --- | --- |
 | `browser` | `:chrome`, `:firefox`, `:edge`, `:safari`, `:safari_preview`, `:ie` |
+| `browser_family` | `:chromium` (Chrome/Edge), `:safari` (Safari/Safari Preview), otherwise the `browser` value (e.g. `:firefox`) |
 | `driver` | `:remote` |
 | `platform` | `:linux`, `:macosx`, `:windows` |
 | `headless` | `true`, `false` |
@@ -137,6 +138,11 @@ Conditions are registered in [`spec/integration/selenium/webdriver/spec_helper.r
 | `version` | Browser version string, e.g. `'stable'` (from `WD_BROWSER_VERSION`) |
 | `rbe` | `true`, `false` (running on Remote Build Execution) |
 | `ci` | `:github`, `:jenkins`, `:appveyor` |
+
+Prefer `browser_family` over listing every member browser when a guard applies to a whole engine
+(e.g. `browser_family: :chromium` instead of `browser: %i[chrome edge]`). Use the exact `browser`
+condition when a guard is specific to one channel, such as `browser: :safari_preview` or
+`browser: :chrome, version: 'beta'`.
 
 ### Guard Examples
 
@@ -147,6 +153,10 @@ end
 
 # Pending everywhere except Chrome and Firefox
 it 'does something', pending_unless: {browser: %i[chrome firefox], reason: 'Only implemented in Chrome/Firefox'} do
+end
+
+# Pending on any Chromium-based browser (Chrome and Edge)
+it 'does something', pending_if: {browser_family: :chromium, reason: 'Chromium bug'} do
 end
 
 # Skip on the stable Firefox channel
@@ -169,6 +179,20 @@ it 'something', skip_if: [
 end
 ```
 
+### Exception-Aware Pending
+
+`pending_if`/`except` also accept `exception: {class:, message:}` (`message:` optional — a Regexp matches
+as a pattern, a String matches exactly, like `raise_error`). The example is marked pending only when it
+fails with that exception; a wrong exception, `invalid argument`, assertion failure, or timeout still fails.
+
+```ruby
+it 'does something', pending_if: {browser: :firefox,
+                                  exception: {class: Selenium::WebDriver::Error::WebDriverError,
+                                              message: /\Aunknown command:/},
+                                  reason: 'Firefox does not implement this command'} do
+end
+```
+
 ## Helpers
 
 From `spec_support/helpers.rb`:
@@ -181,6 +205,35 @@ From `spec_support/helpers.rb`:
 | `wait` / `short_wait` / `long_wait` | Wait instances (10s, 3s, 30s). |
 | `wait_for_element(locator)` | Wait for element to appear. |
 | `wait_for_alert` | Wait for alert presence. |
+
+## Asserting Log Output
+
+Every `WebDriver.logger` call should include an `id:` symbol (e.g. `logger.warn(msg, id: :safari_bidi)`).
+To assert on logging content (and hide it from test logs), do not stub the logger, instead use one of
+the [custom matchers](spec/rspec_matchers.rb): `have_error`, `have_warning`, `have_info`, and
+`have_deprecated`.
+
+```ruby
+expect { SeleniumManager.binary }.to have_info(:selenium_manager)      # id was logged, at info level
+expect { save_screenshot(png_path) }.not_to have_warning(:screenshot)  # id was not logged
+```
+
+The match is the exact set of ids at that severity — an unexpected entry fails rather than slipping by
+— so assert several entries by passing the full set, e.g. `have_warning(%i[general specific])`.
+
+The id is provided so you don't have to assert on specific text, but if the message comes from an
+external source, you can assert on the contents as well:
+
+```ruby
+expect { navigate }.to have_error(:ws, /This is fine!/)
+```
+
+Deprecations (`logger.deprecate`) are asserted with `have_deprecated`:
+
+```ruby
+WebDriver.logger.deprecate('Old thing', 'New thing', id: :old_thing)   # lib
+expect { call_old_thing }.to have_deprecated(:old_thing)               # spec
+```
 
 ## Debugging
 

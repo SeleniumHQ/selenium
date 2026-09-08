@@ -28,6 +28,12 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 
 
+@pytest.fixture(autouse=True)
+def _skip_on_grid(request):
+    if request.config.getoption("remote"):
+        pytest.skip("driver-service behaviour is only exercised with a local driver")
+
+
 def test_log_output_as_filename(recwarn) -> None:
     log_file = "geckodriver.log"
     service = Service(log_output=log_file)

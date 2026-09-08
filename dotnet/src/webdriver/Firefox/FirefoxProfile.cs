@@ -33,7 +33,9 @@ public class FirefoxProfile
     private readonly string? sourceProfileDir;
     private readonly bool deleteSource;
     private readonly Preferences profilePreferences;
+#pragma warning disable CS0618 // Type or member is obsolete
     private readonly Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxProfile"/> class.
@@ -103,11 +105,14 @@ public class FirefoxProfile
     /// </summary>
     /// <param name="extensionToInstall">The path to the new extension</param>
     /// <exception cref="ArgumentNullException">If <paramref name="extensionToInstall"/> is <see langword="null"/>.</exception>
+    [Obsolete("Use FirefoxDriver.InstallAddOnFromFile instead.")]
     public void AddExtension(string extensionToInstall)
     {
         ArgumentNullException.ThrowIfNull(extensionToInstall);
 
+#pragma warning disable CS0618 // Type or member is obsolete
         this.extensions.Add(Path.GetFileNameWithoutExtension(extensionToInstall), new FirefoxExtension(extensionToInstall));
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     /// <summary>
@@ -236,10 +241,12 @@ public class FirefoxProfile
     /// </summary>
     private void InstallExtensions(string profileDirectory)
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         foreach (string extensionKey in this.extensions.Keys)
         {
             this.extensions[extensionKey].Install(profileDirectory);
         }
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     /// <summary>

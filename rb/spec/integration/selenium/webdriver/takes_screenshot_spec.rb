@@ -35,21 +35,14 @@ module Selenium
 
       it 'warns if extension of provided path is not png' do
         jpg_path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
-        message = 'name used for saved screenshot does not match file type. ' \
-                  'It should end with .png extension'
-        allow(WebDriver.logger).to receive(:warn)
 
-        save_screenshots_and_assert(jpg_path)
-
-        expect(WebDriver.logger).to have_received(:warn).with(message, id: :screenshot).twice
+        expect { save_screenshot_and_assert(driver, jpg_path) }.to have_warning(:screenshot)
+        expect { save_screenshot_and_assert(element, jpg_path) }.to have_warning(:screenshot)
       end
 
       it 'does not warn if extension of provided path is png' do
-        allow(WebDriver.logger).to receive(:warn)
-
-        save_screenshots_and_assert(path)
-
-        expect(WebDriver.logger).not_to have_received(:warn)
+        expect { save_screenshot_and_assert(driver, path) }.not_to have_warning(:screenshot)
+        expect { save_screenshot_and_assert(element, path) }.not_to have_warning(:screenshot)
       end
 
       it 'returns in the specified format' do

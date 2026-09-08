@@ -30,7 +30,7 @@ module Selenium
           let(:browser) { described_class.new(driver) }
 
           it 'creates a user context',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             user_context = browser.create_user_context
 
@@ -38,7 +38,7 @@ module Selenium
           end
 
           it 'gets user contexts',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             created = browser.create_user_context.user_context
             all_ids = browser.get_user_contexts.user_contexts.map(&:user_context)
@@ -47,7 +47,7 @@ module Selenium
           end
 
           it 'removes a user context',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             to_remove = browser.create_user_context.user_context
             browser.remove_user_context(user_context: to_remove)
@@ -57,7 +57,7 @@ module Selenium
           end
 
           it 'throws an error when removing the default user context',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             expect {
               browser.remove_user_context(user_context: 'default')
@@ -65,7 +65,7 @@ module Selenium
           end
 
           it 'throws an error when removing a non-existent user context',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             expect {
               browser.remove_user_context(user_context: 'fake_context')
@@ -73,7 +73,7 @@ module Selenium
           end
 
           it 'gets client windows',
-             pending_if: {browser: %i[safari safari_preview],
+             pending_if: {browser_family: :safari,
                           reason: 'Safari does not support BiDi user contexts or getClientWindows'} do
             windows = browser.get_client_windows.client_windows
 

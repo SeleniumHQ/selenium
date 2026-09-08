@@ -19,6 +19,8 @@ use crate::common::{assert_browser, assert_driver, get_selenium_manager, get_std
 
 use rstest::rstest;
 
+use std::env::consts::ARCH;
+use std::env::consts::OS;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use tempfile::Builder;
@@ -30,6 +32,9 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn config_test(#[case] browser_name: String) {
+    if OS.eq("linux") && ARCH.eq("aarch64") && !browser_name.eq("firefox") {
+        return;
+    }
     let tmp_dir = Builder::new().prefix("sm-config-test").tempdir().unwrap();
     let config_path = tmp_dir.path().join("se-config.toml");
     let config_file = File::create(config_path.as_path()).unwrap();

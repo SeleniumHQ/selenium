@@ -34,11 +34,16 @@ rb_binary(
         "rb/lib/selenium/webdriver/bidi/protocol",
     ],
     data = [
+        "bidi/support/templates/error_code.rb.erb",
+        "bidi/support/templates/error_code.rbs.erb",
         "bidi/support/templates/module.rb.erb",
         "bidi/support/templates/module.rbs.erb",
+        "common/error.rb",
         "//javascript/selenium-webdriver:create-bidi-src_schema",
+        "//scripts:generated_note_template.txt",
     ],
     main = "bidi/support/bidi_generate.rb",
+    deps = ["//rb/support:generated_note"],
 )
 
 # Fails if a checked-in protocol .rb was hand-edited or left stale after a generator/schema
@@ -51,13 +56,16 @@ rb_test(
     args = ["$(rootpath //javascript/selenium-webdriver:create-bidi-src_schema)"],
     data = [
         "bidi/support/bidi_generate.rb",
+        "bidi/support/templates/error_code.rb.erb",
         "bidi/support/templates/module.rb.erb",
         "//javascript/selenium-webdriver:create-bidi-src_schema",
+        "//scripts:generated_note_template.txt",
     ] + glob(
         ["bidi/protocol/*.rb"],
         exclude = ["bidi/protocol/domain.rb"],
     ),
     main = "bidi/support/check_generated.rb",
+    deps = ["//rb/support:generated_note"],
 )
 
 rb_library(

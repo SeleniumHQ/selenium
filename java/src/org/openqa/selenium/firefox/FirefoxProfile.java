@@ -38,7 +38,10 @@ public class FirefoxProfile {
   private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
   private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
   private final Preferences additionalPrefs;
+
+  @SuppressWarnings("deprecation")
   private final Map<String, Extension> extensions = new HashMap<>();
+
   private @Nullable final File model;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
@@ -145,6 +148,10 @@ public class FirefoxProfile {
     return extensions.containsKey("webdriver");
   }
 
+  /**
+   * @deprecated Use {@link HasExtensions#installExtension} instead.
+   */
+  @Deprecated(forRemoval = true)
   public void addExtension(Class<?> loadResourcesUsing, String loadFrom) {
     // Is loadFrom a file?
     File file = new File(loadFrom);
@@ -160,11 +167,17 @@ public class FirefoxProfile {
    * Attempt to add an extension to install into this instance.
    *
    * @param extensionToInstall File pointing to the extension
+   * @deprecated Use {@link HasExtensions#installExtension} instead.
    */
+  @Deprecated(forRemoval = true)
   public void addExtension(File extensionToInstall) {
     addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
   }
 
+  /**
+   * @deprecated Use {@link HasExtensions#installExtension} instead.
+   */
+  @Deprecated(forRemoval = true)
   public void addExtension(String key, Extension extension) {
     String name = deriveExtensionName(key);
     extensions.put(name, extension);
@@ -248,7 +261,9 @@ public class FirefoxProfile {
    * even if native events are disabled.
    *
    * @return Whether the no focus library should always be loaded for Firefox on Linux.
+   * @deprecated Native events are no longer supported.
    */
+  @Deprecated(forRemoval = true)
   public boolean shouldLoadNoFocusLib() {
     return loadNoFocusLib;
   }
@@ -257,7 +272,9 @@ public class FirefoxProfile {
    * Sets whether the no focus library should always be loaded on Linux.
    *
    * @param loadNoFocusLib Whether to always load the no focus library.
+   * @deprecated Native events are no longer supported.
    */
+  @Deprecated(forRemoval = true)
   public FirefoxProfile setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
     this.loadNoFocusLib = loadNoFocusLib;
     return this;
@@ -268,7 +285,9 @@ public class FirefoxProfile {
    * authority or are generally untrusted. This is set to true by default.
    *
    * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
+   * @deprecated Use {@link FirefoxOptions#setAcceptInsecureCerts(boolean)} instead.
    */
+  @Deprecated(forRemoval = true)
   public FirefoxProfile setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
     this.acceptUntrustedCerts = acceptUntrustedSsl;
     return this;
@@ -287,7 +306,9 @@ public class FirefoxProfile {
    * production certificate served in a testing environment) set this to false.
    *
    * @param untrustedIssuer whether to assume untrusted issuer or not.
+   * @deprecated Use {@link FirefoxOptions#setAcceptInsecureCerts(boolean)} instead.
    */
+  @Deprecated(forRemoval = true)
   public FirefoxProfile setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
     this.untrustedCertIssuer = untrustedIssuer;
     return this;
@@ -347,6 +368,7 @@ public class FirefoxProfile {
     FileHandler.copy(sourceDir, profileDir);
   }
 
+  @SuppressWarnings("deprecation")
   protected void installExtensions(File parentDir) throws IOException {
     File extensionsDir = new File(parentDir, "extensions");
 

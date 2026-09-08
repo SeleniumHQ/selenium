@@ -25,6 +25,10 @@ import java.io.OutputStream;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 
+/**
+ * @deprecated Use {@link HasExtensions#installExtension} instead.
+ */
+@Deprecated(forRemoval = true)
 public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;
   private final String loadFrom;

@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +43,6 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.BiDi;
-import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
@@ -87,7 +84,6 @@ public class ChromiumDriver extends RemoteWebDriver
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
   private final Optional<DevTools> devTools;
-  private final Optional<BiDi> biDi;
 
   /**
    * May be null when the driver does not support casting; initialized during setup if available.
@@ -117,22 +113,6 @@ public class ChromiumDriver extends RemoteWebDriver
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
-
-    Optional<String> webSocketUrl =
-        Optional.ofNullable((String) originalCapabilities.getCapability("webSocketUrl"));
-
-    Optional<URI> biDiUri =
-        webSocketUrl.map(
-            uri -> {
-              try {
-                return new URI(uri);
-              } catch (URISyntaxException e) {
-                LOG.warning(e.getMessage());
-              }
-              return null;
-            });
-
-    this.biDi = createBiDi(biDiUri, clientConfig);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
@@ -294,33 +274,6 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public Optional<DevTools> maybeGetDevTools() {
     return devTools;
-  }
-
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
-    if (biDiUri.isEmpty()) {
-      return Optional.empty();
-    }
-
-    URI wsUri =
-        biDiUri.orElseThrow(
-            () ->
-                new BiDiException(
-                    "Check if this browser version supports BiDi and if the 'webSocketUrl: true'"
-                        + " capability is set."));
-
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    org.openqa.selenium.bidi.Connection biDiConnection =
-        new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
-
-    return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
-  }
-
-  @Override
-  public Optional<BiDi> maybeGetBiDi() {
-    return biDi;
   }
 
   @Override

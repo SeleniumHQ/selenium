@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{assert_output, get_selenium_manager};
+use crate::common::{assert_output, get_selenium_manager, is_linux_arm64};
 
 use exitcode::DATAERR;
 
@@ -28,7 +28,11 @@ async fn wrong_proxy_test() {
         .args([
             "--debug",
             "--browser",
-            "chrome",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
             "--proxy",
             "http://localhost:12345",
         ])
@@ -37,11 +41,21 @@ async fn wrong_proxy_test() {
 
     assert_output(&mut cmd, result, vec!["in PATH"], DATAERR);
 }
+
 #[test]
 fn wrong_protocol_proxy_test() {
     let mut cmd = get_selenium_manager();
     let result = cmd
-        .args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
+        .args([
+            "--browser",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
+            "--proxy",
+            "wrong:://proxy",
+        ])
         .assert()
         .try_success();
 
@@ -54,7 +68,11 @@ fn wrong_port_proxy_test() {
     let result = cmd
         .args([
             "--browser",
-            "chrome",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
             "--proxy",
             "https:://localhost:1234567",
         ])

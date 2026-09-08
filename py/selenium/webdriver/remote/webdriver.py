@@ -32,10 +32,10 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from typing_extensions import Self
 
@@ -150,36 +150,32 @@ def get_remote_connection(
 
 def create_matches(options: list[BaseOptions]) -> dict:
     capabilities: dict[str, Any] = {"capabilities": {}}
-    opts = []
-    for opt in options:
-        opts.append(opt.to_capabilities())
-    opts_size = len(opts)
-    samesies = {}
+    opts = [opt.to_capabilities() for opt in options]
 
-    # Can not use bitwise operations on the dicts or lists due to
-    # https://bugs.python.org/issue38210
-    for i in range(opts_size):
-        min_index = i
-        if i + 1 < opts_size:
-            first_keys = opts[min_index].keys()
-
-            for kys in first_keys:
-                if kys in opts[i + 1].keys():
-                    if opts[min_index][kys] == opts[i + 1][kys]:
-                        samesies.update({kys: opts[min_index][kys]})
-
-    always = {}
-    for k, v in samesies.items():
-        always[k] = v
+    # alwaysMatch holds only the capabilities that are present with an identical value in
+    # *every* option set; everything else stays in the per-option firstMatch entries. A
+    # candidate key must appear in every set, so it must appear in the first one; values
+    # may be dicts/lists and so are compared with ``==`` rather than placed in a set
+    # (see https://bugs.python.org/issue38210).
+    always: dict[str, Any] = {}
+    if opts:
+        for key, value in opts[0].items():
+            if all(key in opt and opt[key] == value for opt in opts[1:]):
+                always[key] = value
 
     for opt_dict in opts:
-        for k in always:
-            del opt_dict[k]
+        for key in always:
+            del opt_dict[key]
 
     capabilities["capabilities"]["alwaysMatch"] = always
     capabilities["capabilities"]["firstMatch"] = opts
 
     return capabilities
+
+
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+_D = TypeVar("_D", bound="WebDriver")
 
 
 if TYPE_CHECKING:
@@ -190,9 +186,9 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
 
 
-def _required_chromium_based_browser(func):
+def _required_chromium_based_browser(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         assert self.caps["browserName"].lower() not in ["firefox", "safari"], (
             "This only currently works in Chromium based browsers"
         )
@@ -201,10 +197,10 @@ def _required_chromium_based_browser(func):
     return wrapper
 
 
-def _required_virtual_authenticator(func):
+def _required_virtual_authenticator(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
     @_required_chromium_based_browser
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         if not self.virtual_authenticator_id:
             raise ValueError("This function requires a virtual authenticator to be set.")
         return func(self, *args, **kwargs)
@@ -253,7 +249,7 @@ class WebDriver(BaseWebDriver):
         Args:
             command_executor: Either a string representing the URL of the remote
                 server or a custom remote_connection.RemoteConnection object.
-                Defaults to 'http://127.0.0.1:4444/wd/hub'.
+                Defaults to 'http://127.0.0.1:4444'.
             keep_alive: (Deprecated) Whether to configure
                 remote_connection.RemoteConnection to use HTTP keep-alive.
                 Defaults to True.
@@ -389,9 +385,20 @@ class WebDriver(BaseWebDriver):
         """Creates a new session with the desired capabilities.
 
         Args:
-            capabilities: A capabilities dict to start the session with.
+            capabilities: Either a flat capabilities dict (from a single options
+                object) or an already-formed W3C ``{"capabilities": {...}}`` object
+                (produced by ``create_matches`` when a list of options is supplied).
         """
-        caps = _create_caps(capabilities)
+        remote_url = self._remote_url()
+        inner = capabilities.get("capabilities")
+        if isinstance(inner, dict) and ("alwaysMatch" in inner or "firstMatch" in inner):
+            caps = copy.deepcopy(capabilities)
+            if remote_url:
+                caps["capabilities"].setdefault("alwaysMatch", {})["se:remoteUrl"] = remote_url
+        else:
+            if remote_url:
+                capabilities = {**capabilities, "se:remoteUrl": remote_url}
+            caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
             self.session_id = response.get("sessionId")
@@ -400,6 +407,13 @@ class WebDriver(BaseWebDriver):
             if hasattr(self, "service") and self.service is not None:
                 self.service.stop()
             raise
+
+    def _remote_url(self) -> str | None:
+        """The address used to reach the Grid, advertised as ``se:remoteUrl`` (None for local drivers)."""
+        if getattr(self, "service", None) is not None:
+            return None
+        client_config = getattr(self.command_executor, "client_config", None)
+        return getattr(client_config, "remote_server_addr", None) or None
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -450,6 +464,8 @@ class WebDriver(BaseWebDriver):
         Example:
             `driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})`
         """
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def execute(
@@ -872,7 +888,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by: str | RelativeBy = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -898,7 +914,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -1171,6 +1187,8 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
+        if self.caps["browserName"].lower() == "firefox":
+            raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):

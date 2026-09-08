@@ -11,8 +11,11 @@ java_export(
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
     resources = [
-        ":manager-linux",
+        ":manager-linux-arm64",
+        ":manager-linux-x86_64",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
     ],
     tags = [
@@ -30,9 +33,15 @@ java_export(
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "linux/selenium-manager",
+    name = "manager-linux-x86_64",
+    src = "//common/manager:selenium-manager-linux-x86_64",
+    out = "linux-x86_64/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "linux-arm64/selenium-manager",
 )
 
 copy_file(
@@ -45,4 +54,16 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
