@@ -39,8 +39,8 @@ use std::path::Path;
 use std::process::exit;
 use std::sync::mpsc::Receiver;
 
-const LICENSE: &str = include_str!("../../LICENSE");
-const NOTICE: &str = include_str!("../../NOTICE");
+const LICENSE: &str = include_str!("../LICENSE");
+const NOTICE: &str = include_str!("../NOTICE");
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]

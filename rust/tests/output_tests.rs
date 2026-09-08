@@ -22,8 +22,8 @@ use std::path::Path;
 
 mod common;
 
-const LICENSE: &str = include_str!("../../LICENSE");
-const NOTICE: &str = include_str!("../../NOTICE");
+const LICENSE: &str = include_str!("../LICENSE");
+const NOTICE: &str = include_str!("../NOTICE");
 
 #[test]
 fn license_output_includes_license_and_notice() {

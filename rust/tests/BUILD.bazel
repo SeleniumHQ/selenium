@@ -10,7 +10,10 @@ rust_test_suite(
     size = "small",
     srcs = glob(["**/*_tests.rs"]),
     aliases = aliases(),
-    compile_data = ["//:license"],
+    compile_data = [
+        "//:license",
+        "//rust:selenium_manager_legal",
+    ],
     data = [
         "//rust:selenium-manager",
     ],

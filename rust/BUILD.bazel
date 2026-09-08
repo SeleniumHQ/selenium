@@ -83,7 +83,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     aliases = aliases(),
-    compile_data = ["//:license"],
+    compile_data = [":selenium_manager_legal"],
     edition = "2024",
     # clap's `#[clap(about)]` derives the CLI description from
     # CARGO_PKG_DESCRIPTION. Cargo sets this from Cargo.toml automatically, but
@@ -96,6 +96,15 @@ rust_binary(
     deps = [
         ":selenium_manager",
     ] + all_crate_deps(normal = True),
+)
+
+filegroup(
+    name = "selenium_manager_legal",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    visibility = ["//rust:__subpackages__"],
 )
 
 rust_library(
