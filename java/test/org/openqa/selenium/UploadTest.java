@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -164,6 +165,9 @@ class UploadTest extends JupiterTestBase {
   @NoDriverAfterTest
   public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {
     createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
+    assumeThat(TestUtilities.getChromeVersion(driver))
+        .as("Chrome 154 raises a JavaScript focus error instead of ElementNotInteractable")
+        .isLessThan(154);
 
     driver.get(appServer.whereIs("upload_invisible.html"));
     WebElement input = driver.findElement(By.id("upload"));

@@ -10,14 +10,14 @@ bazel_dep(name = "bazel_features", version = "1.50.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
 bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.8.11")
+bazel_dep(name = "llvm", version = "0.8.18")
 bazel_dep(name = "package_metadata", version = "0.0.10")
 bazel_dep(name = "platforms", version = "1.1.0")
 
 # If you update this, also update the prebuilt version of `protoc` we use below
 bazel_dep(name = "protobuf", version = "33.5")
 
-bazel_dep(name = "rules_cc", version = "0.2.20", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.22", dev_dependency = True)
 
 # rules_rs pulls protobuf for optional prost support. Keep Selenium on the
 # explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
@@ -39,16 +39,7 @@ bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "1.9.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
-bazel_dep(name = "rules_rs", version = "0.0.96")
-
-# Remove patch when updating to rules_rs >= 0.0.108
-single_version_override(
-    module_name = "rules_rs",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:rules_rs_zlib_snapshot.patch",
-    ],
-)
+bazel_dep(name = "rules_rs", version = "0.0.108")
 
 single_version_override(
     module_name = "rules_jvm_external",
@@ -195,7 +186,7 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "org.checkerframework:checker-qual:4.2.2",
+        "org.checkerframework:checker-qual:4.2.3",
         "com.github.javaparser:javaparser-core:3.28.2",
         "com.github.spotbugs:spotbugs:4.10.4",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
@@ -207,16 +198,16 @@ maven.install(
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:1.36.1",
-        "com.google.protobuf:protobuf-java:4.36.0",
+        "com.google.protobuf:protobuf-java:4.36.1",
         "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:26.1",
         "com.uber.nullaway:nullaway:0.14.1",
         "dev.failsafe:failsafe:3.3.2",
-        "io.grpc:grpc-context:1.83.1",
-        "io.fabric8:kubernetes-client:7.8.0",
-        "io.fabric8:kubernetes-client-api:7.8.0",
-        "io.fabric8:kubernetes-model-batch:7.8.0",
-        "io.fabric8:kubernetes-model-core:7.8.0",
+        "io.grpc:grpc-context:1.84.0",
+        "io.fabric8:kubernetes-client:7.9.0",
+        "io.fabric8:kubernetes-client-api:7.9.0",
+        "io.fabric8:kubernetes-model-batch:7.9.0",
+        "io.fabric8:kubernetes-model-core:7.9.0",
         "io.lettuce:lettuce-core:7.7.0.RELEASE",
         "io.netty:netty-buffer",
         "io.netty:netty-codec-http",
@@ -236,7 +227,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-trace",
         "org.testcontainers:testcontainers:2.0.5",
         "javax.inject:javax.inject:1",
-        "net.bytebuddy:byte-buddy:1.18.12",
+        "net.bytebuddy:byte-buddy:1.18.13",
         "org.htmlunit:htmlunit-core-js:5.5.0",
         "org.apache.logging.log4j:log4j-core:2.26.1",
         "org.assertj:assertj-core:3.27.7",
@@ -254,8 +245,8 @@ maven.install(
         "org.junit.platform:junit-platform-engine",
         "org.mockito:mockito-core:5.23.0",
         "org.redisson:redisson:4.7.0",
-        "org.slf4j:slf4j-api:2.0.18",
-        "org.slf4j:slf4j-jdk14:2.0.18",
+        "org.slf4j:slf4j-api:2.0.19",
+        "org.slf4j:slf4j-jdk14:2.0.19",
         "org.tomlj:tomlj:1.1.1",
         "org.zeromq:jeromq:0.6.0",
         "uk.org.webcompere:system-stubs-jupiter:2.1.8",
@@ -328,14 +319,14 @@ ruby.bundle_fetch(
         "io-console-0.9.2": "efa74f891dd03c0939a931dfc6e74c2813d904763d456ea9762b0525e748db08",
         "io-console-0.9.2-java": "929c09163ad227cda17f5dc57861b995dbecf69c7ca2ce7b0c5f941f1f3da7d3",
         "irb-1.18.0": "de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3",
-        "jar-dependencies-0.5.7": "013ce5f4639414ac8cf1169cdbe763da164b81e2d2c983d11042b5ff7bfcce80",
-        "json-2.21.2": "1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a",
-        "json-2.21.2-java": "f01521cd90639cc26b63040fb00d2b949f18f41ecaab5c82b02fb31d0b8b736c",
+        "jar-dependencies-0.6.0-java": "9f40c13696b7590d890c119c37860ab1ce87ecaa66f4edfa4ca06a443a30d82c",
+        "json-3.0.0": "1ff82a28c05c5cc7b646f3e3a3ac710e4ae2aa933690cba12f1f650b0ecdeb99",
+        "json-3.0.0-java": "6e08c7614cdf00547e174342af74ba517ee1e40d1b7546682dc47e305bb37f72",
         "language_server-protocol-3.17.0.6": "5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0",
         "lint_roller-1.1.0": "2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87",
         "listen-3.10.0": "c6e182db62143aeccc2e1960033bebe7445309c7272061979bb098d03760c9d2",
         "logger-1.7.0": "196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203",
-        "parallel-2.1.0": "b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356",
+        "parallel-2.2.0": "e1059c5fd7b649558a0aec38a769f06a42942bdb40503d005a59c352fe011cd8",
         "parser-3.3.12.0": "21a6d7f755d5a24dfbdc6e6b772e4e879a52e7631a88bc5a3a134606052c9828",
         "pp-0.6.4": "dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570",
         "prettyprint-0.2.0": "2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193",
@@ -366,7 +357,7 @@ ruby.bundle_fetch(
         "rubocop-rake-0.7.1": "3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d",
         "rubocop-rspec-3.10.2": "0b3e2ecc592cd10ecbf0095bb58d1e357905276e069643523cc19eb7495f65e2",
         "ruby-progressbar-1.13.0": "80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33",
-        "rubyzip-3.5.0": "f77c49d737a849b662f6ca4de473f31b4ecd8288f1c9f901a5c820641f0f8d7c",
+        "rubyzip-3.6.0": "268994d44d62282d1cfd99bf10eae48d7267199158ad7ea3e1fee2da9458b695",
         "securerandom-0.4.1": "cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1",
         "steep-2.1.0": "1daf53573283b0e6d404a7273cca41fe5c15b14ece05167934f5ffc179e171d9",
         "strscan-3.1.8": "aae2db611a225559f21ffbb71765c9a4e60fd262534a9ea84f4f11c7f32f679e",
@@ -392,6 +383,13 @@ use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 register_toolchains("@ruby_toolchains//:all")
 
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
+
+# Carries hermeticbuild/rules_rust#54: gcc <= 12 doesn't pass `-ffile-prefix-map`
+# to the assembler, so ring and zstd-sys `.S` debug info trips the hermeticity check.
+rules_rust.patch(
+    patches = ["//third_party/bazel:rules_rust_debug_prefix_map.patch"],
+    strip = 1,
+)
 use_repo(rules_rust, "rules_rust")
 
 rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
@@ -402,7 +400,7 @@ rust_toolchains.toolchain(
 )
 use_repo(rust_toolchains, "default_rust_toolchains")
 
-register_toolchains("@default_rust_toolchains//:all")
+register_toolchains("@default_rust_toolchains//...")
 
 # TODO: Register only Windows exec for now, full @llvm migration can be done as followup.
 llvm_toolchains = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
