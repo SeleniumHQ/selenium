@@ -140,9 +140,8 @@ platform(
     parents = ["@platforms//host"],
 )
 
-# Terse platform name on purpose: it lands in bazel-out paths that sit near Windows MAX_PATH
 platform(
-    name = "winmsvc",
+    name = "local_windows_msvc",
     constraint_values = [
         "@llvm//constraints/windows/abi:msvc",
     ],
