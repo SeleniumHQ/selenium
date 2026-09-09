@@ -203,7 +203,16 @@ jobs:
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
           external-cache: false
-          repository-cache: true
+          repository-cache: |
+            - MODULE.bazel
+            - multitool.lock.json
+            - pnpm-lock.yaml
+            - rust/Cargo.lock
+            - java/maven_install.json
+            - py/requirements_lock.txt
+            - rb/Gemfile.lock
+            - dotnet/paket.lock
+            - common/selenium_manager.bzl
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
