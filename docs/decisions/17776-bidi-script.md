@@ -83,8 +83,9 @@ driver.script().addDomMutationHandler(m -> log(m.getAttributeName()), MutationTy
 
 4. **`add_event_handler(name, script)` subscribes to events a page-side script defines.** The script
    is handed a callback; each call delivers its argument to the handler unchanged — the raw value the
-   script emitted, not a shaped payload. This is the general mechanism the DOM-mutation handler is a
-   specialization of, exposed for events no binding pre-defines. The handler runs the script now and
+   script emitted, not a shaped payload — though the handler still reports which window handle the
+   emission came from, so one watching every tab can tell them apart. This is the general mechanism
+   the DOM-mutation handler is a specialization of, exposed for events no binding pre-defines. The handler runs the script now and
    by default re-arms it on every future load in the same window so it survives navigation; an option
    confines it to the current document. `remove_event_handler` detaches the subscription and stops
    future loads.
@@ -170,12 +171,12 @@ driver.script().pin("(el) => el.offsetParent !== null", otherTab);         // on
 
 **Sandbox**
 
-9. **`execute` and `pin` accept an optional sandbox — an isolated world.** A sandbox shares the page's
-   DOM but keeps its own globals, so an injected script neither reads the page's own scripts nor
-   collides with their names. Naming one creates it on first use; it has no separate lifecycle and
-   goes away with its context, so it is a plain named argument, not an object to close.
-   `add_event_handler`, which leaves a script and an `emit` callback on the page for the session, is
-   the case that most wants it.
+9. **`execute`, `pin`, and `add_event_handler` accept an optional sandbox — an isolated world.** A
+   sandbox shares the page's DOM but keeps its own globals, so an injected script neither reads the
+   page's own scripts nor collides with their names. Naming one creates it on first use; it has no
+   separate lifecycle and goes away with its context, so it is a plain named argument, not an object
+   to close. `add_event_handler`, which leaves a script and an `emit` callback on the page for the
+   session, is the case that most wants it.
 
 ```ruby
 driver.script.execute("window.__probe ??= performance.now()", sandbox: "selenium")
