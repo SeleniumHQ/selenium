@@ -320,7 +320,6 @@ class RemoteWebDriverUnitTest {
 
     assertThat(driver2).isSameAs(fixture.driver);
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
         new CommandPayload(DriverCommand.SWITCH_TO_NEW_WINDOW, Map.of("type", "tab")),
         new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "new window")));
   }
