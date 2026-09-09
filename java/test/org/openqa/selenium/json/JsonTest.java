@@ -168,6 +168,60 @@ class JsonTest {
   }
 
   @Test
+  void convertReturnsNullForANullSource() {
+    String converted = new Json().convert(null, String.class);
+    assertThat(converted).isNull();
+  }
+
+  @Test
+  void convertCoercesAScalarSource() {
+    String text = new Json().convert("cheese", String.class);
+    Boolean flag = new Json().convert(true, Boolean.class);
+    assertThat(text).isEqualTo("cheese");
+    assertThat(flag).isTrue();
+  }
+
+  @Test
+  void convertWidensNumbersTheSameWayAStringParseDoes() {
+    // A parsed JSON integer is a Long; asking for a Double must still widen it, just as
+    // toType("3", Double.class) would.
+    Double widened = new Json().convert(3L, Double.class);
+    assertThat(widened).isEqualTo(3.0d);
+  }
+
+  @Test
+  void convertCoercesAMapSourceIntoABean() {
+    Object source = Map.of("value", "cheese");
+
+    NoDefaultConstructor bean = new Json().convert(source, NoDefaultConstructor.class);
+
+    assertThat(bean.getValue()).isEqualTo("cheese");
+  }
+
+  @Test
+  void convertCoercesAListSourceIntoATypedList() {
+    Object source = List.of(Map.of("value", "brie"), Map.of("value", "cheddar"));
+
+    List<NoDefaultConstructor> beans =
+        new Json().convert(source, new TypeToken<List<NoDefaultConstructor>>() {}.getType());
+
+    assertThat(beans).extracting(NoDefaultConstructor::getValue).containsExactly("brie", "cheddar");
+  }
+
+  @Test
+  void convertingAFieldOfAParsedMapMatchesParsingThatFieldDirectly() {
+    Map<String, Object> parsedOnce =
+        new Json().toType("{\"result\": {\"value\": \"cheese\"}}", MAP_TYPE);
+
+    NoDefaultConstructor viaConvert =
+        new Json().convert(parsedOnce.get("result"), NoDefaultConstructor.class);
+    NoDefaultConstructor viaParse =
+        new Json().toType("{\"value\": \"cheese\"}", NoDefaultConstructor.class);
+
+    assertThat(viaConvert.getValue()).isEqualTo(viaParse.getValue());
+  }
+
+  @Test
   void canPopulateAMap() {
     String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
