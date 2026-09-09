@@ -110,6 +110,8 @@ jobs:
       TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      MSYS_NO_PATHCONV: 1
+      MSYS2_ARG_CONV_EXCL: "*"
     steps:
       - name: Configure Selenium Manager cache path
         shell: bash
@@ -263,9 +265,6 @@ jobs:
         id: run-bazel
         continue-on-error: true
         shell: bash
-        env:
-          MSYS_NO_PATHCONV: 1
-          MSYS2_ARG_CONV_EXCL: "*"
         run: |
           mkdir -p build
           {
