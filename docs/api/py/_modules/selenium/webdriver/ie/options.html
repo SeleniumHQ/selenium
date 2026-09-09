@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.ie.options &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.ie.options &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/ie/options';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -368,7 +368,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_IeOptionsDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;_IeOptionsDescriptor is an implementation of Descriptor Protocol.</span>
+<span class="w">    </span><span class="sd">"""_IeOptionsDescriptor is an implementation of Descriptor Protocol.</span>
 
 <span class="sd">    Any look-up or assignment to the below attributes in `Options` class will be intercepted</span>
 <span class="sd">    by `__get__` and `__set__` method respectively.</span>
@@ -404,7 +404,7 @@
 <span class="sd">        `self.browser_attach_timeout` = 30</span>
 <span class="sd">        `__set__` method sets/updates the value of the key `browserAttachTimeout` in `_options`</span>
 <span class="sd">        dictionary in `Options` class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -415,44 +415,44 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be of type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elementScrollBehavior&quot;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"elementScrollBehavior"</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
             <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span>
             <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span>
         <span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Element Scroll Behavior out of range.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Element Scroll Behavior out of range."</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
 
 <div class="viewcode-block" id="Options">
 <a class="viewcode-back" href="../../../../selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
-    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;se:ieOptions&quot;</span>
-    <span class="n">SWITCHES</span> <span class="o">=</span> <span class="s2">&quot;ie.browserCommandLineSwitches&quot;</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">"se:ieOptions"</span>
+    <span class="n">SWITCHES</span> <span class="o">=</span> <span class="s2">"ie.browserCommandLineSwitches"</span>
 
-    <span class="n">BROWSER_ATTACH_TIMEOUT</span> <span class="o">=</span> <span class="s2">&quot;browserAttachTimeout&quot;</span>
-    <span class="n">ELEMENT_SCROLL_BEHAVIOR</span> <span class="o">=</span> <span class="s2">&quot;elementScrollBehavior&quot;</span>
-    <span class="n">ENSURE_CLEAN_SESSION</span> <span class="o">=</span> <span class="s2">&quot;ie.ensureCleanSession&quot;</span>
-    <span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span> <span class="o">=</span> <span class="s2">&quot;ie.fileUploadDialogTimeout&quot;</span>
-    <span class="n">FORCE_CREATE_PROCESS_API</span> <span class="o">=</span> <span class="s2">&quot;ie.forceCreateProcessApi&quot;</span>
-    <span class="n">FORCE_SHELL_WINDOWS_API</span> <span class="o">=</span> <span class="s2">&quot;ie.forceShellWindowsApi&quot;</span>
-    <span class="n">FULL_PAGE_SCREENSHOT</span> <span class="o">=</span> <span class="s2">&quot;ie.enableFullPageScreenshot&quot;</span>
-    <span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span> <span class="o">=</span> <span class="s2">&quot;ignoreProtectedModeSettings&quot;</span>
-    <span class="n">IGNORE_ZOOM_LEVEL</span> <span class="o">=</span> <span class="s2">&quot;ignoreZoomSetting&quot;</span>
-    <span class="n">INITIAL_BROWSER_URL</span> <span class="o">=</span> <span class="s2">&quot;initialBrowserUrl&quot;</span>
-    <span class="n">NATIVE_EVENTS</span> <span class="o">=</span> <span class="s2">&quot;nativeEvents&quot;</span>
-    <span class="n">PERSISTENT_HOVER</span> <span class="o">=</span> <span class="s2">&quot;enablePersistentHover&quot;</span>
-    <span class="n">REQUIRE_WINDOW_FOCUS</span> <span class="o">=</span> <span class="s2">&quot;requireWindowFocus&quot;</span>
-    <span class="n">USE_PER_PROCESS_PROXY</span> <span class="o">=</span> <span class="s2">&quot;ie.usePerProcessProxy&quot;</span>
-    <span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span> <span class="o">=</span> <span class="s2">&quot;ie.useLegacyFileUploadDialogHandling&quot;</span>
-    <span class="n">ATTACH_TO_EDGE_CHROME</span> <span class="o">=</span> <span class="s2">&quot;ie.edgechromium&quot;</span>
-    <span class="n">EDGE_EXECUTABLE_PATH</span> <span class="o">=</span> <span class="s2">&quot;ie.edgepath&quot;</span>
-    <span class="n">IGNORE_PROCESS_MATCH</span> <span class="o">=</span> <span class="s2">&quot;ie.ignoreprocessmatch&quot;</span>
+    <span class="n">BROWSER_ATTACH_TIMEOUT</span> <span class="o">=</span> <span class="s2">"browserAttachTimeout"</span>
+    <span class="n">ELEMENT_SCROLL_BEHAVIOR</span> <span class="o">=</span> <span class="s2">"elementScrollBehavior"</span>
+    <span class="n">ENSURE_CLEAN_SESSION</span> <span class="o">=</span> <span class="s2">"ie.ensureCleanSession"</span>
+    <span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span> <span class="o">=</span> <span class="s2">"ie.fileUploadDialogTimeout"</span>
+    <span class="n">FORCE_CREATE_PROCESS_API</span> <span class="o">=</span> <span class="s2">"ie.forceCreateProcessApi"</span>
+    <span class="n">FORCE_SHELL_WINDOWS_API</span> <span class="o">=</span> <span class="s2">"ie.forceShellWindowsApi"</span>
+    <span class="n">FULL_PAGE_SCREENSHOT</span> <span class="o">=</span> <span class="s2">"ie.enableFullPageScreenshot"</span>
+    <span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span> <span class="o">=</span> <span class="s2">"ignoreProtectedModeSettings"</span>
+    <span class="n">IGNORE_ZOOM_LEVEL</span> <span class="o">=</span> <span class="s2">"ignoreZoomSetting"</span>
+    <span class="n">INITIAL_BROWSER_URL</span> <span class="o">=</span> <span class="s2">"initialBrowserUrl"</span>
+    <span class="n">NATIVE_EVENTS</span> <span class="o">=</span> <span class="s2">"nativeEvents"</span>
+    <span class="n">PERSISTENT_HOVER</span> <span class="o">=</span> <span class="s2">"enablePersistentHover"</span>
+    <span class="n">REQUIRE_WINDOW_FOCUS</span> <span class="o">=</span> <span class="s2">"requireWindowFocus"</span>
+    <span class="n">USE_PER_PROCESS_PROXY</span> <span class="o">=</span> <span class="s2">"ie.usePerProcessProxy"</span>
+    <span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span> <span class="o">=</span> <span class="s2">"ie.useLegacyFileUploadDialogHandling"</span>
+    <span class="n">ATTACH_TO_EDGE_CHROME</span> <span class="o">=</span> <span class="s2">"ie.edgechromium"</span>
+    <span class="n">EDGE_EXECUTABLE_PATH</span> <span class="o">=</span> <span class="s2">"ie.edgepath"</span>
+    <span class="n">IGNORE_PROCESS_MATCH</span> <span class="o">=</span> <span class="s2">"ie.ignoreprocessmatch"</span>
 
     <span class="c1"># Creating descriptor objects for each of the above IE options</span>
     <span class="n">browser_attach_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `browser_attach_timeout`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `browser_attach_timeout`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.browser_attach_timeout`</span>
@@ -460,10 +460,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: int - Timeout in milliseconds.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">element_scroll_behavior</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `element_scroll_behavior`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `element_scroll_behavior`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.element_scroll_behavior`</span>
@@ -471,10 +471,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: int - Either 0 (Top) or 1 (Bottom).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">ensure_clean_session</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ensure_clean_session`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ensure_clean_session`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.ensure_clean_session`</span>
@@ -482,10 +482,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">file_upload_dialog_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `file_upload_dialog_timeout`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `file_upload_dialog_timeout`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.file_upload_dialog_timeout`</span>
@@ -493,10 +493,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: int - Timeout in milliseconds.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">force_create_process_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `force_create_process_api`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `force_create_process_api`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.force_create_process_api`</span>
@@ -504,10 +504,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">force_shell_windows_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `force_shell_windows_api`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `force_shell_windows_api`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.force_shell_windows_api`</span>
@@ -515,10 +515,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">full_page_screenshot</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `full_page_screenshot`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `full_page_screenshot`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.full_page_screenshot`</span>
@@ -526,10 +526,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">ignore_protected_mode_settings</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ignore_protected_mode_settings`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_protected_mode_settings`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.ignore_protected_mode_settings`</span>
@@ -537,10 +537,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">ignore_zoom_level</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `ignore_zoom_level`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_zoom_level`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.ignore_zoom_level`</span>
@@ -548,10 +548,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">initial_browser_url</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `initial_browser_url`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `initial_browser_url`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.initial_browser_url`</span>
@@ -559,10 +559,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">native_events</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">NATIVE_EVENTS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `native_events`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `native_events`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.native_events`</span>
@@ -570,10 +570,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">persistent_hover</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">PERSISTENT_HOVER</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `persistent_hover`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `persistent_hover`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.persistent_hover`</span>
@@ -581,10 +581,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">require_window_focus</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `require_window_focus`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `require_window_focus`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.require_window_focus`</span>
@@ -592,10 +592,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">use_per_process_proxy</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `use_per_process_proxy`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `use_per_process_proxy`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.use_per_process_proxy`</span>
@@ -603,10 +603,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">use_legacy_file_upload_dialog_handling</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `use_legacy_file_upload_dialog_handling`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `use_legacy_file_upload_dialog_handling`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.use_legacy_file_upload_dialog_handling`</span>
@@ -614,10 +614,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">attach_to_edge_chrome</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `attach_to_edge_chrome`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `attach_to_edge_chrome`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.attach_to_edge_chrome`</span>
@@ -625,10 +625,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">edge_executable_path</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and Sets `edge_executable_path`.</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `edge_executable_path`.</span>
 
 <span class="sd">    Usage:</span>
 <span class="sd">        - Get: `self.edge_executable_path`</span>
@@ -636,7 +636,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -645,35 +645,35 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of browser options.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns a dictionary of browser options."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">additional_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the additional options.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the additional options."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span>
 
 <div class="viewcode-block" id="Options.add_additional_option">
 <a class="viewcode-back" href="../../../../selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.add_additional_option">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_additional_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds an additional option not yet added as a safe option for IE.</span>
+<span class="w">        </span><span class="sd">"""Adds an additional option not yet added as a safe option for IE.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: name of the option to add</span>
 <span class="sd">            value: value of the option to add</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
 <div class="viewcode-block" id="Options.to_capabilities">
 <a class="viewcode-back" href="../../../../selenium_webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marshals the IE options to the correct object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Marshals the IE options to the correct object."""</span>
         <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
 
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SWITCHES</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span>
+            <span class="n">opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SWITCHES</span><span class="p">]</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">:</span>
             <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">)</span>

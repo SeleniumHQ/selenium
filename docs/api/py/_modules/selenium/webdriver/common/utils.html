@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.utils &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.utils &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/utils';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,19 +341,19 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="sd">&quot;&quot;&quot;Utility functions.&quot;&quot;&quot;</span>
+<span class="sd">"""Utility functions."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
@@ -368,30 +368,30 @@
 <div class="viewcode-block" id="free_port">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.free_port">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">free_port</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines a free port using sockets.</span>
+<span class="w">    </span><span class="sd">"""Determines a free port using sockets.</span>
 
-<span class="sd">    First try IPv4, but use IPv6 if it can&#39;t bind (IPv6-only system).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    First try IPv4, but use IPv6 if it can't bind (IPv6-only system).</span>
+<span class="sd">    """</span>
     <span class="n">free_socket</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># IPv4</span>
         <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-        <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">free_socket</span><span class="p">:</span>
             <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="c1"># IPv6</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-            <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s2">&quot;::1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s2">"::1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">free_socket</span><span class="p">:</span>
                 <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find free port (Unable to bind to IPv4 or IPv6)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Can't find free port (Unable to bind to IPv4 or IPv6)"</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t find free port: (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Can't find free port: (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">port</span></div>
@@ -401,9 +401,9 @@
 <div class="viewcode-block" id="find_connectable_ip">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.find_connectable_ip">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_connectable_ip</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a hostname to an IP, preferring IPv4 addresses.</span>
+<span class="w">    </span><span class="sd">"""Resolve a hostname to an IP, preferring IPv4 addresses.</span>
 
-<span class="sd">    We prefer IPv4 so that we don&#39;t change behavior from previous IPv4-only</span>
+<span class="sd">    We prefer IPv4 so that we don't change behavior from previous IPv4-only</span>
 <span class="sd">    implementations, and because some drivers (e.g., FirefoxDriver) do not</span>
 <span class="sd">    support IPv6 connections.</span>
 
@@ -418,7 +418,7 @@
 <span class="sd">        A single IP address, as a string. If any IPv4 address is found, one is</span>
 <span class="sd">        returned. Otherwise, if any IPv6 address is found, one is returned. If</span>
 <span class="sd">        neither, then None is returned.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">addrinfos</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">:</span>
@@ -441,30 +441,30 @@
 <div class="viewcode-block" id="join_host_port">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.join_host_port">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">join_host_port</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Joins a hostname and port together.</span>
+<span class="w">    </span><span class="sd">"""Joins a hostname and port together.</span>
 
 <span class="sd">    This is a minimal implementation intended to cope with IPv6 literals. For</span>
-<span class="sd">    example, _join_host_port(&#39;::1&#39;, 80) == &#39;[::1]:80&#39;.</span>
+<span class="sd">    example, _join_host_port('::1', 80) == '[::1]:80'.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        host: hostname or IP</span>
 <span class="sd">        port: port number</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">host</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">host</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">]:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">host</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">host</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"["</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">]:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
 <div class="viewcode-block" id="is_connectable">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tries to connect to the server at port to see if it is running.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Tries to connect to the server at port to see if it is running.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        port: port number</span>
 <span class="sd">        host: hostname or IP</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">socket_</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">socket_</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">create_connection</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
@@ -486,10 +486,10 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_url_connectable">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_url_connectable</span><span class="p">(</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"http"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Send a request to the HTTP server at the /status endpoint to verify connectivity.</span>
+<span class="w">    </span><span class="sd">"""Send a request to the HTTP server at the /status endpoint to verify connectivity.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        port: port number</span>
@@ -498,24 +498,24 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        True if the service is ready to accept new sessions, False otherwise.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Disable proxy for localhost connections</span>
         <span class="n">proxy_handler</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">ProxyHandler</span><span class="p">({})</span>
         <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">proxy_handler</span><span class="p">)</span>
 
-        <span class="n">request</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">/status&quot;</span><span class="p">)</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">/status"</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">res</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-            <span class="n">body</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
 
-            <span class="c1"># Check top-level and value.ready, some browsers wrap it under &#39;value&#39;, e.g., ChromeDriver</span>
-            <span class="n">ready</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)</span>
+            <span class="c1"># Check top-level and value.ready, some browsers wrap it under 'value', e.g., ChromeDriver</span>
+            <span class="n">ready</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ready"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ready</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">ready</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)</span>
+                <span class="n">ready</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ready"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ready</span> <span class="ow">is</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span></div>
@@ -525,7 +525,7 @@
 <div class="viewcode-block" id="keys_to_typing">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.keys_to_typing">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Processes the values that will be typed in the element.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Processes the values that will be typed in the element."""</span>
     <span class="n">characters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>

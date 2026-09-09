@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/switch_to';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -377,20 +377,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">active_element</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the element with focus, or BODY if nothing has focus.</span>
+<span class="w">        </span><span class="sd">"""Returns the element with focus, or BODY if nothing has focus.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            element = driver.switch_to.active_element</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ACTIVE_ELEMENT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ACTIVE_ELEMENT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">alert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alert</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switches focus to an alert on the page.</span>
+<span class="w">        </span><span class="sd">"""Switches focus to an alert on the page.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            alert = driver.switch_to.alert</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.alert</span><span class="w"> </span><span class="kn">import</span> <span class="n">Alert</span>
 
         <span class="n">alert</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
@@ -400,28 +400,28 @@
 <div class="viewcode-block" id="SwitchTo.default_content">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.default_content">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">default_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switch focus to the default frame.</span>
+<span class="w">        </span><span class="sd">"""Switch focus to the default frame.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            driver.switch_to.default_content()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span></div>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="SwitchTo.frame">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.frame">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_reference</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switch focus to the specified frame by index, name, or element.</span>
+<span class="w">        </span><span class="sd">"""Switch focus to the specified frame by index, name, or element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_reference: The name of the frame to switch to, an integer representing the index,</span>
 <span class="sd">                or a WebElement that is an (i)frame to switch to.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">                driver.switch_to.frame(&quot;frame_name&quot;)</span>
+<span class="sd">                driver.switch_to.frame("frame_name")</span>
 <span class="sd">                driver.switch_to.frame(1)</span>
-<span class="sd">                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, &quot;iframe&quot;)[0])</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame_reference</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">frame_reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">frame_reference</span><span class="p">)</span>
@@ -431,54 +431,54 @@
                 <span class="k">except</span> <span class="n">NoSuchElementException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">NoSuchFrameException</span><span class="p">(</span><span class="n">frame_reference</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">frame_reference</span><span class="p">})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">frame_reference</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="SwitchTo.new_window">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.new_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">new_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_hint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switches to a new top-level browsing context.</span>
+<span class="w">        </span><span class="sd">"""Switches to a new top-level browsing context.</span>
 
-<span class="sd">        The type hint can be one of &quot;tab&quot; or &quot;window&quot;. If not specified the</span>
+<span class="sd">        The type hint can be one of "tab" or "window". If not specified the</span>
 <span class="sd">        browser will automatically select it.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">                driver.switch_to.new_window(&quot;tab&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">type_hint</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_w3c_window</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;handle&quot;</span><span class="p">])</span></div>
+<span class="sd">                driver.switch_to.new_window("tab")</span>
+<span class="sd">        """</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="n">type_hint</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w3c_window</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">"handle"</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="SwitchTo.parent_frame">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.parent_frame">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parent_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switch focus to the parent browsing context.</span>
+<span class="w">        </span><span class="sd">"""Switch focus to the parent browsing context.</span>
 
 <span class="sd">        If the current context is already the top level browsing context, it remains unchanged.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">                driver.switch_to.parent_frame()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_PARENT_FRAME</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SwitchTo.window">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switches focus to the specified window.</span>
+<span class="w">        </span><span class="sd">"""Switches focus to the specified window.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            window_name: The name or window handle of the window to switch to.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            driver.switch_to.window(&quot;main&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            driver.switch_to.window("main")</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_w3c_window</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_w3c_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">send_handle</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;handle&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s2">"handle"</span><span class="p">:</span> <span class="n">h</span><span class="p">})</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Try using it as a handle first.</span>
@@ -489,7 +489,7 @@
             <span class="n">handles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">window_handles</span>
             <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="n">handles</span><span class="p">:</span>
                 <span class="n">send_handle</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
-                <span class="n">current_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return window.name&quot;</span><span class="p">)</span>
+                <span class="n">current_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">"return window.name"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">window_name</span> <span class="o">==</span> <span class="n">current_name</span><span class="p">:</span>
                     <span class="k">return</span>
             <span class="n">send_handle</span><span class="p">(</span><span class="n">original_handle</span><span class="p">)</span>

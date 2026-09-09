@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.by &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.by &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/by';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,45 +341,45 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-<span class="sd">&quot;&quot;&quot;The By implementation.&quot;&quot;&quot;</span>
+<span class="sd">"""The By implementation."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="n">ByType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
-    <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;xpath&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;link text&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;partial link text&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tag name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;class name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;css selector&quot;</span><span class="p">,</span>
+    <span class="s2">"id"</span><span class="p">,</span>
+    <span class="s2">"xpath"</span><span class="p">,</span>
+    <span class="s2">"link text"</span><span class="p">,</span>
+    <span class="s2">"partial link text"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">,</span>
+    <span class="s2">"tag name"</span><span class="p">,</span>
+    <span class="s2">"class name"</span><span class="p">,</span>
+    <span class="s2">"css selector"</span><span class="p">,</span>
 <span class="p">]</span>
 
 
 <div class="viewcode-block" id="By">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">By</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set of supported locator strategies.</span>
+<span class="w">    </span><span class="sd">"""Set of supported locator strategies.</span>
 
 <span class="sd">    ID:</span>
 <span class="sd">    --</span>
 <span class="sd">    Select the element by its ID.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.ID, &quot;myElement&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.ID, "myElement")</span>
 
 <span class="sd">    XPATH:</span>
 <span class="sd">    ------</span>
@@ -387,53 +387,53 @@
 <span class="sd">        - absolute path</span>
 <span class="sd">        - relative path</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.XPATH, &quot;//html/body/div&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.XPATH, "//html/body/div")</span>
 
 <span class="sd">    LINK_TEXT:</span>
 <span class="sd">    ----------</span>
 <span class="sd">    Select the link element having the exact text.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.LINK_TEXT, &quot;myLink&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.LINK_TEXT, "myLink")</span>
 
 <span class="sd">    PARTIAL_LINK_TEXT:</span>
 <span class="sd">    ------------------</span>
 <span class="sd">    Select the link element having the partial text.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.PARTIAL_LINK_TEXT, &quot;my&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.PARTIAL_LINK_TEXT, "my")</span>
 
 <span class="sd">    NAME:</span>
 <span class="sd">    ----</span>
 <span class="sd">    Select the element by its name attribute.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.NAME, &quot;myElement&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.NAME, "myElement")</span>
 
 <span class="sd">    TAG_NAME:</span>
 <span class="sd">    --------</span>
 <span class="sd">    Select the element by its tag name.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.TAG_NAME, &quot;div&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.TAG_NAME, "div")</span>
 
 <span class="sd">    CLASS_NAME:</span>
 <span class="sd">    -----------</span>
 <span class="sd">    Select the element by its class name.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.CLASS_NAME, &quot;myElement&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.CLASS_NAME, "myElement")</span>
 
 <span class="sd">    CSS_SELECTOR:</span>
 <span class="sd">    -------------</span>
 <span class="sd">    Select the element by its CSS selector.</span>
 
-<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.CSS_SELECTOR, &quot;div.myElement&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; element = driver.find_element(By.CSS_SELECTOR, "div.myElement")</span>
+<span class="sd">    """</span>
 
-    <span class="n">ID</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
-    <span class="n">XPATH</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;xpath&quot;</span>
-    <span class="n">LINK_TEXT</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;link text&quot;</span>
-    <span class="n">PARTIAL_LINK_TEXT</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;partial link text&quot;</span>
-    <span class="n">NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
-    <span class="n">TAG_NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;tag name&quot;</span>
-    <span class="n">CLASS_NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;class name&quot;</span>
-    <span class="n">CSS_SELECTOR</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">&quot;css selector&quot;</span>
+    <span class="n">ID</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"id"</span>
+    <span class="n">XPATH</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"xpath"</span>
+    <span class="n">LINK_TEXT</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"link text"</span>
+    <span class="n">PARTIAL_LINK_TEXT</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"partial link text"</span>
+    <span class="n">NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"name"</span>
+    <span class="n">TAG_NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"tag name"</span>
+    <span class="n">CLASS_NAME</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"class name"</span>
+    <span class="n">CSS_SELECTOR</span><span class="p">:</span> <span class="n">ByType</span> <span class="o">=</span> <span class="s2">"css selector"</span>
 
     <span class="n">_custom_finders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/timeouts';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -368,12 +368,12 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_TimeoutsDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get or set the value of the attributes listed below.</span>
+<span class="w">    </span><span class="sd">"""Get or set the value of the attributes listed below.</span>
 
 <span class="sd">    _implicit_wait _page_load _script</span>
 
 <span class="sd">    This does not set the value on the remote end.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -382,7 +382,7 @@
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">converted_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_convert&quot;</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">converted_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">converted_value</span><span class="p">)</span>
 
 
@@ -390,7 +390,7 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.timeouts.html#selenium.webdriver.common.timeouts.Timeouts">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Timeouts</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">implicit_wait</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">page_load</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Timeouts object.</span>
+<span class="w">        </span><span class="sd">"""Create a new Timeouts object.</span>
 
 <span class="sd">        This implements https://w3c.github.io/webdriver/#timeouts.</span>
 
@@ -401,43 +401,43 @@
 <span class="sd">                before throwing an error.</span>
 <span class="sd">            script: Number of seconds to wait for an asynchronous script to</span>
 <span class="sd">                finish execution before throwing an error.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_implicit_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">implicit_wait</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_page_load</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">page_load</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_script</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
 
     <span class="c1"># Creating descriptor objects</span>
-    <span class="n">implicit_wait</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_implicit_wait&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of seconds to wait when searching for elements.</span>
+    <span class="n">implicit_wait</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_implicit_wait"</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait when searching for elements.</span>
 
 <span class="sd">    Note: This does not set the value on the remote end.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">page_load</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_page_load&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of seconds to wait for the page to load.</span>
-
-<span class="sd">    Note: This does not set the value on the remote end.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">script</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">&quot;_script&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of seconds to wait for an asynchronous script to finish execution.</span>
+    <span class="n">page_load</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_page_load"</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait for the page to load.</span>
 
 <span class="sd">    Note: This does not set the value on the remote end.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
+
+    <span class="n">script</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_script"</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait for an asynchronous script to finish execution.</span>
+
+<span class="sd">    Note: This does not set the value on the remote end.</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Timeouts can only be an int or a float&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Timeouts can only be an int or a float"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JSONTimeouts</span><span class="p">:</span>
         <span class="n">timeouts</span><span class="p">:</span> <span class="n">JSONTimeouts</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_implicit_wait</span><span class="p">:</span>
-            <span class="n">timeouts</span><span class="p">[</span><span class="s2">&quot;implicit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_implicit_wait</span>
+            <span class="n">timeouts</span><span class="p">[</span><span class="s2">"implicit"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_implicit_wait</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_load</span><span class="p">:</span>
-            <span class="n">timeouts</span><span class="p">[</span><span class="s2">&quot;pageLoad&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_load</span>
+            <span class="n">timeouts</span><span class="p">[</span><span class="s2">"pageLoad"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_load</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="p">:</span>
-            <span class="n">timeouts</span><span class="p">[</span><span class="s2">&quot;script&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span>
+            <span class="n">timeouts</span><span class="p">[</span><span class="s2">"script"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span>
 
         <span class="k">return</span> <span class="n">timeouts</span></div>
 

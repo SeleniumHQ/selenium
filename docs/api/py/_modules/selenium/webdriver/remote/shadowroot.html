@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.shadowroot &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.remote.shadowroot &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/shadowroot';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -381,10 +381,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">other_shadowroot</span><span class="o">.</span><span class="n">_id</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">md5_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">md5_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session=&quot;</span><span class="si">{1}</span><span class="s1">&quot;, element=&quot;</span><span class="si">{2}</span><span class="s1">&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s1">'&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session="</span><span class="si">{1}</span><span class="s1">", element="</span><span class="si">{2}</span><span class="s1">")&gt;'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
         <span class="p">)</span>
 
@@ -395,7 +395,7 @@
 <div class="viewcode-block" id="ShadowRoot.find_element">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.shadowroot.html#selenium.webdriver.remote.shadowroot.ShadowRoot.find_element">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">By</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find an element inside a shadow root given a By strategy and locator.</span>
+<span class="w">        </span><span class="sd">"""Find an element inside a shadow root given a By strategy and locator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported values include:</span>
@@ -404,7 +404,7 @@
 <span class="sd">                - By.XPATH: Locate by an XPath expression.</span>
 <span class="sd">                - By.CSS_SELECTOR: Locate by a CSS selector.</span>
 <span class="sd">                - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., &quot;input&quot;, &quot;button&quot;).</span>
+<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
 <span class="sd">                - By.LINK_TEXT: Locate a link element by its exact text.</span>
 <span class="sd">                - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
 <span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
@@ -413,27 +413,27 @@
 <span class="sd">            The first matching `WebElement` found on the page.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; element = driver.find_element(By.ID, &quot;foo&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; element = driver.find_element(By.ID, "foo")</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[id=&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;]&#39;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'[id="</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">"]'</span>
         <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">char</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
-                <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s2">&quot;Compound class names are not allowed.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s2">"Compound class names are not allowed."</span><span class="p">)</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[name=&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;]&#39;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'[name="</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">"]'</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT_FROM_SHADOW_ROOT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT_FROM_SHADOW_ROOT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"using"</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ShadowRoot.find_elements">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.shadowroot.html#selenium.webdriver.remote.shadowroot.ShadowRoot.find_elements">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">By</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find elements inside a shadow root given a By strategy and locator.</span>
+<span class="w">        </span><span class="sd">"""Find elements inside a shadow root given a By strategy and locator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported values include:</span>
@@ -442,7 +442,7 @@
 <span class="sd">                - By.XPATH: Locate by an XPath expression.</span>
 <span class="sd">                - By.CSS_SELECTOR: Locate by a CSS selector.</span>
 <span class="sd">                - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., &quot;input&quot;, &quot;button&quot;).</span>
+<span class="sd">                - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
 <span class="sd">                - By.LINK_TEXT: Locate a link element by its exact text.</span>
 <span class="sd">                - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
 <span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
@@ -451,37 +451,37 @@
 <span class="sd">            List of `WebElements` matching locator strategy found on the page.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; element = driver.find_elements(By.ID, &quot;foo&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; element = driver.find_elements(By.ID, "foo")</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[id=&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;]&#39;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'[id="</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">"]'</span>
         <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">char</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
-                <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s2">&quot;Compound class names are not allowed.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s2">"Compound class names are not allowed."</span><span class="p">)</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span>
             <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;[name=&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;]&#39;</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'[name="</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">"]'</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"using"</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
     <span class="c1"># Private Methods</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes a command against the underlying HTML element.</span>
+<span class="w">        </span><span class="sd">"""Executes a command against the underlying HTML element.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">          command: The name of the command to _execute as a string.</span>
 <span class="sd">          params: A dictionary of named parameters to send with the command.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">          The command&#39;s JSON response loaded into a dictionary object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">          The command's JSON response loaded into a dictionary object.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;shadowId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">"shadowId"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
 
 </pre></div>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.actions.pointer_actions &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.actions.pointer_actions &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/actions/pointer_actions';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -364,16 +364,16 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PointerActions</span><span class="p">(</span><span class="n">Interaction</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">PointerInput</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a new PointerActions instance.</span>
+<span class="w">        </span><span class="sd">"""Initialize a new PointerActions instance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            source: Optional PointerInput instance. If not provided, a default</span>
 <span class="sd">                mouse PointerInput will be created.</span>
 <span class="sd">            duration: Override the default 250 msecs of DEFAULT_MOVE_DURATION</span>
 <span class="sd">                in the source.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="n">PointerInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">POINTER_MOUSE</span><span class="p">,</span> <span class="s2">&quot;mouse&quot;</span><span class="p">)</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">PointerInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">POINTER_MOUSE</span><span class="p">,</span> <span class="s2">"mouse"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="o">=</span> <span class="n">duration</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
@@ -394,7 +394,7 @@
         <span class="n">azimuth_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_button_action</span><span class="p">(</span>
-            <span class="s2">&quot;create_pointer_down&quot;</span><span class="p">,</span>
+            <span class="s2">"create_pointer_down"</span><span class="p">,</span>
             <span class="n">button</span><span class="o">=</span><span class="n">button</span><span class="p">,</span>
             <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
             <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
@@ -412,7 +412,7 @@
 <div class="viewcode-block" id="PointerActions.pointer_up">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pointer_up">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pointer_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_button_action</span><span class="p">(</span><span class="s2">&quot;create_pointer_up&quot;</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">button</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_button_action</span><span class="p">(</span><span class="s2">"create_pointer_up"</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">button</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -434,7 +434,7 @@
         <span class="n">azimuth_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;move_to requires a WebElement&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">"move_to requires a WebElement"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pointer_move</span><span class="p">(</span>
             <span class="n">origin</span><span class="o">=</span><span class="n">element</span><span class="p">,</span>
@@ -505,7 +505,7 @@
         <span class="n">azimuth_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pointer_move</span><span class="p">(</span>
-            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;viewport&quot;</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">"viewport"</span><span class="p">,</span>
             <span class="n">duration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_duration</span><span class="p">,</span>
             <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
             <span class="n">y</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>

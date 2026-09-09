@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.actions.action_builder &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.actions.action_builder &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../_static/documentation_options.js?v=82bca589"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_common_actions/selenium.webdriver.common.actions.action_builder';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -419,7 +419,7 @@
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_key_input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;keyboard2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_key_input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"keyboard2"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -445,7 +445,7 @@
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_pointer_input</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;mouse&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mouse&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_pointer_input</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">"mouse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"mouse"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -467,7 +467,7 @@
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_wheel_input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;wheel2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">add_wheel_input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"wheel2"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -479,8 +479,8 @@
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">keyboard</span> <span class="o">=</span> <span class="n">action_builder</span><span class="o">.</span><span class="n">key_input</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">el</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="s2">&quot;some_id&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">el</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">&quot;keys&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">el</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="s2">"some_id"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">el</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">"keys"</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -497,8 +497,8 @@
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">keyboard</span> <span class="o">=</span> <span class="n">action_builder</span><span class="o">.</span><span class="n">key_input</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">el</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;some_id&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">el</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">&quot;keys&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">el</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"some_id"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">el</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">"keys"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_builder</span><span class="o">.</span><span class="n">clear_actions</span><span class="p">()</span>
 </pre></div>
 </div>

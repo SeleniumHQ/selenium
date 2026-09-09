@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../_static/documentation_options.js?v=82bca589"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_common/selenium.webdriver.common.action_chains';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -364,15 +364,15 @@ are queued up.</p>
 </dd>
 </dl>
 <p>ActionChains can be used in a chain pattern:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">menu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">&quot;.nav&quot;</span><span class="p">)</span>
-<span class="n">hidden_submenu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">&quot;.nav #submenu1&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">menu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">".nav"</span><span class="p">)</span>
+<span class="n">hidden_submenu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">".nav #submenu1"</span><span class="p">)</span>
 
 <span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">move_to_element</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">hidden_submenu</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Or actions can be queued up one by one, then performed.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">menu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">&quot;.nav&quot;</span><span class="p">)</span>
-<span class="n">hidden_submenu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">&quot;.nav #submenu1&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">menu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">".nav"</span><span class="p">)</span>
+<span class="n">hidden_submenu</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">".nav #submenu1"</span><span class="p">)</span>
 
 <span class="n">actions</span> <span class="o">=</span> <span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
 <span class="n">actions</span><span class="o">.</span><span class="n">move_to_element</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
@@ -527,7 +527,7 @@ If None, sends a key to current focused element.</p></li>
 </dd>
 </dl>
 <p>Example, pressing ctrl+c:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -549,7 +549,7 @@ If None, sends a key to current focused element.</p></li>
 </dd>
 </dl>
 <p>Example, pressing ctrl+c:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ActionChains</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">CONTROL</span><span class="p">)</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>

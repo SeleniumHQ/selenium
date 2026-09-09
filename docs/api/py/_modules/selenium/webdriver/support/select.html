@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.support.select &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.support.select &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/support/select';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -363,59 +363,59 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Select</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor. A check is made that the given element is a SELECT tag.</span>
+<span class="w">        </span><span class="sd">"""Constructor. A check is made that the given element is a SELECT tag.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            webelement: SELECT element to wrap</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            from selenium.webdriver.support.ui import Select</span>
-<span class="sd">            Select(driver.find_element(By.TAG_NAME, &quot;select&quot;)).select_by_index(2)</span>
+<span class="sd">            Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            UnexpectedTagNameException: If the element is not a SELECT tag</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UnexpectedTagNameException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Select only works on &lt;select&gt; elements, not on </span><span class="si">{</span><span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"select"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedTagNameException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Select only works on &lt;select&gt; elements, not on </span><span class="si">{</span><span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_el</span> <span class="o">=</span> <span class="n">webelement</span>
-        <span class="n">multi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get_dom_attribute</span><span class="p">(</span><span class="s2">&quot;multiple&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span> <span class="o">=</span> <span class="n">multi</span> <span class="ow">and</span> <span class="n">multi</span> <span class="o">!=</span> <span class="s2">&quot;false&quot;</span>
+        <span class="n">multi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">get_dom_attribute</span><span class="p">(</span><span class="s2">"multiple"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span> <span class="o">=</span> <span class="n">multi</span> <span class="ow">and</span> <span class="n">multi</span> <span class="o">!=</span> <span class="s2">"false"</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all options belonging to this select tag.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="s2">&quot;option&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Returns a list of all options belonging to this select tag."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="s2">"option"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">all_selected_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of all selected options belonging to this select tag.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a list of all selected options belonging to this select tag."""</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">opt</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">first_selected_option</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the first selected option or the currently selected option.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the first selected option or the currently selected option."""</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">is_selected</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">opt</span>
-        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s2">&quot;No options are selected&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s2">"No options are selected"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Select.select_by_value">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.select_by_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_by_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select all options that have a value matching the argument.</span>
+<span class="w">        </span><span class="sd">"""Select all options that have a value matching the argument.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            When given &quot;foo&quot; this would select an option like:</span>
+<span class="sd">            When given "foo" this would select an option like:</span>
 
-<span class="sd">                `&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;`</span>
+<span class="sd">                `&lt;option value="foo"&gt;Bar&lt;/option&gt;`</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: The value to match against</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NoSuchElementException: If there is no option with specified value in SELECT</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">css</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;option[value =</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+<span class="sd">        """</span>
+        <span class="n">css</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"option[value =</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">css</span><span class="p">)</span>
         <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
@@ -424,86 +424,86 @@
                 <span class="k">return</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot locate option with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot locate option with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Select.select_by_index">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.select_by_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the option at the given index by examining the &quot;index&quot; attribute.</span>
+<span class="w">        </span><span class="sd">"""Select the option at the given index by examining the "index" attribute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index: The option at this index will be selected</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NoSuchElementException: If there is no option with specified index in SELECT</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">match</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">"index"</span><span class="p">)</span> <span class="o">==</span> <span class="n">match</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
                 <span class="k">return</span>
-        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Select.select_by_visible_text">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.select_by_visible_text">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select all options that display text matching the argument.</span>
+<span class="w">        </span><span class="sd">"""Select all options that display text matching the argument.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            When given &quot;Bar&quot; this would select an option like:</span>
+<span class="sd">            When given "Bar" this would select an option like:</span>
 
-<span class="sd">            `&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;`</span>
+<span class="sd">            `&lt;option value="foo"&gt;Bar&lt;/option&gt;`</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            text: The visible text to match against</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NoSuchElementException: If there is no option with specified text in SELECT</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.//option[normalize-space(.) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+<span class="sd">        """</span>
+        <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".//option[normalize-space(.) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
         <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_css_property_and_visible</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">" "</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
             <span class="n">sub_string_without_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_longest_token</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">sub_string_without_space</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sub_string_without_space</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
                 <span class="n">candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.//option[contains(.,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">sub_string_without_space</span><span class="p">)</span><span class="si">}</span><span class="s2">)]&quot;</span>
+                <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".//option[contains(.,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">sub_string_without_space</span><span class="p">)</span><span class="si">}</span><span class="s2">)]"</span>
                 <span class="n">candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="n">candidate</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_css_property_and_visible</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_set_selected</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
                         <span class="k">return</span>
                     <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with visible text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not locate element with visible text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Select.deselect_all">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.deselect_all">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deselect_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all selected entries.</span>
+<span class="w">        </span><span class="sd">"""Clear all selected entries.</span>
 
 <span class="sd">        This is only valid when the SELECT supports multiple selections.</span>
 <span class="sd">        throws NotImplementedError If the SELECT does not support</span>
 <span class="sd">        multiple selections</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;You may only deselect all options of a multi-select&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect all options of a multi-select"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unset_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span></div>
 
@@ -511,82 +511,82 @@
 <div class="viewcode-block" id="Select.deselect_by_value">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.deselect_by_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deselect_by_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect all options that have a value matching the argument.</span>
+<span class="w">        </span><span class="sd">"""Deselect all options that have a value matching the argument.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            When given &quot;foo&quot; this would deselect an option like:</span>
+<span class="sd">            When given "foo" this would deselect an option like:</span>
 
-<span class="sd">                `&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;`</span>
+<span class="sd">                `&lt;option value="foo"&gt;Bar&lt;/option&gt;`</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: The value to match against</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NoSuchElementException: If there is no option with specified value in SELECT</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
         <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">css</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;option[value = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="n">css</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"option[value = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">css</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unset_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not locate element with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Select.deselect_by_index">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.deselect_by_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deselect_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect the option at the given index by examining the &quot;index&quot; attribute.</span>
+<span class="w">        </span><span class="sd">"""Deselect the option at the given index by examining the "index" attribute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index: The option at this index will be deselected</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NoSuchElementException: If there is no option with specified index in SELECT</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">"index"</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_unset_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
                 <span class="k">return</span>
-        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Select.deselect_by_visible_text">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.ui.html#selenium.webdriver.support.select.Select.deselect_by_visible_text">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deselect_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect all options that display text matching the argument.</span>
+<span class="w">        </span><span class="sd">"""Deselect all options that display text matching the argument.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            when given &quot;Bar&quot; this would deselect an option like:</span>
+<span class="sd">            when given "Bar" this would deselect an option like:</span>
 
-<span class="sd">                `&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;`</span>
+<span class="sd">                `&lt;option value="foo"&gt;Bar&lt;/option&gt;`</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            text: The visible text to match against</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;You may only deselect options of a multi-select&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
         <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.//option[normalize-space(.) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".//option[normalize-space(.) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_css_property_and_visible</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invisible option with text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unset_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with visible text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not locate element with visible text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="o">.</span><span class="n">is_selected</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;You may not select a disabled option&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may not select a disabled option"</span><span class="p">)</span>
             <span class="n">option</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_unset_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -594,33 +594,33 @@
             <span class="n">option</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_escape_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;&quot;&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s2">&quot;&#39;&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">substrings</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;concat(&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">'"'</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s2">"'"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">substrings</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'"'</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"concat("</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">substring</span> <span class="ow">in</span> <span class="n">substrings</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">substring</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;, &#39;</span><span class="se">\&quot;</span><span class="s2">&#39;, &quot;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">substring</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">", '</span><span class="se">\"</span><span class="s2">', "</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;, &#39;</span><span class="se">\&quot;</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'"'</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">", '</span><span class="se">\"</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">+</span> <span class="s2">")"</span>
 
-        <span class="k">if</span> <span class="s1">&#39;&quot;&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="k">if</span> <span class="s1">'"'</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">'"</span>
 
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">"'</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_longest_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-        <span class="n">longest</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+        <span class="n">longest</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">longest</span><span class="p">):</span>
                 <span class="n">longest</span> <span class="o">=</span> <span class="n">item</span>
         <span class="k">return</span> <span class="n">longest</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_has_css_property_and_visible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">css_value_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hidden&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0&quot;</span><span class="p">]</span>
-        <span class="n">css_property_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;visibility&quot;</span><span class="p">,</span> <span class="s2">&quot;display&quot;</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">]</span>
+        <span class="n">css_value_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hidden"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0.0"</span><span class="p">]</span>
+        <span class="n">css_property_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"visibility"</span><span class="p">,</span> <span class="s2">"display"</span><span class="p">,</span> <span class="s2">"opacity"</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">css_property</span> <span class="ow">in</span> <span class="n">css_property_candidates</span><span class="p">:</span>
             <span class="n">css_value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">value_of_css_property</span><span class="p">(</span><span class="n">css_property</span><span class="p">)</span>

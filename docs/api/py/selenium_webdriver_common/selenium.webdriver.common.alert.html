@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.alert &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.alert &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../_static/documentation_options.js?v=82bca589"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_common/selenium.webdriver.common.alert';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -361,13 +361,13 @@ accepting, inputting, and getting text from alert prompts.</p>
 </div>
 <p>Inputting a value into an alert prompt:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name_prompt</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
-<span class="n">name_prompt</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">&quot;Willian Shakesphere&quot;</span><span class="p">)</span>
+<span class="n">name_prompt</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s2">"Willian Shakesphere"</span><span class="p">)</span>
 <span class="n">name_prompt</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Reading a the text of a prompt for verification:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alert_text</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;Do you wish to quit?&quot;</span><span class="p">,</span> <span class="n">alert_text</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">"Do you wish to quit?"</span><span class="p">,</span> <span class="n">alert_text</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Creates a new Alert.</p>

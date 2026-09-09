@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.server &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.remote.server &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/server';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -368,7 +368,7 @@
 <div class="viewcode-block" id="Server">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.server.html#selenium.webdriver.remote.server.Server">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Server</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage a Selenium Grid (Remote) Server in standalone mode.</span>
+<span class="w">    </span><span class="sd">"""Manage a Selenium Grid (Remote) Server in standalone mode.</span>
 
 <span class="sd">    This class contains functionality for downloading the server and starting/stopping it.</span>
 
@@ -380,16 +380,16 @@
 <span class="sd">        port: Port to listen on (4444 if not specified).</span>
 <span class="sd">        path: Path/filename of existing server .jar file (Selenium Manager is used if not specified).</span>
 <span class="sd">        version: Version of server to download (latest version if not specified).</span>
-<span class="sd">        log_level: Logging level to control logging output (&quot;INFO&quot; if not specified).</span>
-<span class="sd">            Available levels: &quot;SEVERE&quot;, &quot;WARNING&quot;, &quot;INFO&quot;, &quot;CONFIG&quot;, &quot;FINE&quot;, &quot;FINER&quot;, &quot;FINEST&quot;.</span>
+<span class="sd">        log_level: Logging level to control logging output ("INFO" if not specified).</span>
+<span class="sd">            Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".</span>
 <span class="sd">        env: Mapping that defines the environment variables for the server process.</span>
 <span class="sd">        java_path: Path to the java executable to run the server.</span>
 <span class="sd">        args: Arguments for the standalone server command. Defaults to enabling Selenium</span>
 <span class="sd">            Manager and managed downloads; pass a list to override these entirely (e.g. to</span>
-<span class="sd">            pin drivers with &quot;--driver-configuration&quot;).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">            pin drivers with "--driver-configuration").</span>
+<span class="sd">    """</span>
 
-    <span class="n">DEFAULT_ARGS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;--selenium-manager&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;--enable-managed-downloads&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="n">DEFAULT_ARGS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"--selenium-manager"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"--enable-managed-downloads"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -397,14 +397,14 @@
         <span class="n">port</span><span class="o">=</span><span class="mi">4444</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+        <span class="n">log_level</span><span class="o">=</span><span class="s2">"INFO"</span><span class="p">,</span>
         <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">java_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">startup_timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="n">version</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not allowed to specify a version when using an existing server path&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Not allowed to specify a version when using an existing server path"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
@@ -427,8 +427,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">status_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;localhost&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">/status&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"localhost"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">/status"</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -437,7 +437,7 @@
     <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t find server .jar located at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Can't find server .jar located at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="nd">@property</span>
@@ -449,9 +449,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.__init__() got an invalid port: &#39;</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.__init__() got an invalid port: '</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">port</span> <span class="o">&lt;=</span> <span class="mi">65535</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;port must be 0-65535&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"port must be 0-65535"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
 
     <span class="nd">@property</span>
@@ -461,8 +461,8 @@
     <span class="nd">@version</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\d+\.\d+\.\d+$&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.__init__() got an invalid version: &#39;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^\d+\.\d+\.\d+$"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.__init__() got an invalid version: '</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">version</span>
 
     <span class="nd">@property</span>
@@ -471,9 +471,9 @@
 
     <span class="nd">@log_level</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
-        <span class="n">levels</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;CONFIG&quot;</span><span class="p">,</span> <span class="s2">&quot;FINE&quot;</span><span class="p">,</span> <span class="s2">&quot;FINER&quot;</span><span class="p">,</span> <span class="s2">&quot;FINEST&quot;</span><span class="p">)</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SEVERE"</span><span class="p">,</span> <span class="s2">"WARNING"</span><span class="p">,</span> <span class="s2">"INFO"</span><span class="p">,</span> <span class="s2">"CONFIG"</span><span class="p">,</span> <span class="s2">"FINE"</span><span class="p">,</span> <span class="s2">"FINER"</span><span class="p">,</span> <span class="s2">"FINEST"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">log_level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;log_level must be one of: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"log_level must be one of: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_level</span> <span class="o">=</span> <span class="n">log_level</span>
 
     <span class="nd">@property</span>
@@ -483,7 +483,7 @@
     <span class="nd">@env</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;env must be a mapping of environment variables&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"env must be a mapping of environment variables"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">env</span>
 
     <span class="nd">@property</span>
@@ -493,7 +493,7 @@
     <span class="nd">@java_path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">java_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">java_path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">java_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">java_path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t find java executable located at </span><span class="si">{</span><span class="n">java_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Can't find java executable located at </span><span class="si">{</span><span class="n">java_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_java_path</span> <span class="o">=</span> <span class="n">java_path</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_wait_for_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -509,72 +509,72 @@
 <div class="viewcode-block" id="Server.download_if_needed">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.server.html#selenium.webdriver.remote.server.Server.download_if_needed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">download_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download the server if it doesn&#39;t already exist.</span>
+<span class="w">        </span><span class="sd">"""Download the server if it doesn't already exist.</span>
 
 <span class="sd">        Latest version is downloaded unless specified.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;--grid&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"--grid"</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">SeleniumManager</span><span class="p">()</span><span class="o">.</span><span class="n">binary_paths</span><span class="p">(</span><span class="n">args</span><span class="p">)[</span><span class="s2">&quot;driver_path&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">SeleniumManager</span><span class="p">()</span><span class="o">.</span><span class="n">binary_paths</span><span class="p">(</span><span class="n">args</span><span class="p">)[</span><span class="s2">"driver_path"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Server.start">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.server.html#selenium.webdriver.remote.server.Server.start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the server.</span>
+<span class="w">        </span><span class="sd">"""Start the server.</span>
 
 <span class="sd">        Selenium Manager will detect the server location and download it if necessary,</span>
 <span class="sd">        unless an existing server path was specified.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
 
-        <span class="n">java_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">java_path</span> <span class="ow">or</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;java&quot;</span><span class="p">)</span>
+        <span class="n">java_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">java_path</span> <span class="ow">or</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"java"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">java_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find java on system PATH. JRE is required to run the Selenium server&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">"Can't find java on system PATH. JRE is required to run the Selenium server"</span><span class="p">)</span>
 
         <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">java_path</span><span class="p">,</span>
-            <span class="s2">&quot;-jar&quot;</span><span class="p">,</span>
+            <span class="s2">"-jar"</span><span class="p">,</span>
             <span class="n">path</span><span class="p">,</span>
-            <span class="s2">&quot;standalone&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;--port&quot;</span><span class="p">,</span>
+            <span class="s2">"standalone"</span><span class="p">,</span>
+            <span class="s2">"--port"</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span>
-            <span class="s2">&quot;--log-level&quot;</span><span class="p">,</span>
+            <span class="s2">"--log-level"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
             <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">command</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--host&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">])</span>
+            <span class="n">command</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"--host"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">])</span>
 
-        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;localhost&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"localhost"</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">sock</span><span class="p">:</span>
                 <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
-            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selenium server is already running, or something else is using port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selenium server is already running, or something else is using port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting Selenium server...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Starting Selenium server..."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selenium server running as process: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selenium server running as process: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_server</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">startup_timeout</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timed out waiting for Selenium server at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selenium server is ready&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Timed out waiting for Selenium server at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Selenium server is ready"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span></div>
 
 
 <div class="viewcode-block" id="Server.stop">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.server.html#selenium.webdriver.remote.server.Server.stop">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the server.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Stop the server."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Selenium server isn&#39;t running&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Selenium server isn't running"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selenium server has been terminated&quot;</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Selenium server has been terminated"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

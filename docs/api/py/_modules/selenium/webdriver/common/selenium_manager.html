@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.selenium_manager &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.selenium_manager &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/selenium_manager';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -370,36 +370,36 @@
 <div class="viewcode-block" id="SeleniumManager">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.selenium_manager.html#selenium.webdriver.common.selenium_manager.SeleniumManager">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SeleniumManager</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper for getting information from the Selenium Manager binaries.</span>
+<span class="w">    </span><span class="sd">"""Wrapper for getting information from the Selenium Manager binaries.</span>
 
 <span class="sd">    This implementation is still in beta, and may change.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="SeleniumManager.binary_paths">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.selenium_manager.html#selenium.webdriver.common.selenium_manager.SeleniumManager.binary_paths">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">binary_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the locations of the requested assets.</span>
+<span class="w">        </span><span class="sd">"""Determines the locations of the requested assets.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            args: the commands to send to the selenium manager binary.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dictionary of assets and their path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_binary</span><span class="p">())]</span> <span class="o">+</span> <span class="n">args</span>
         <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">==</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--debug&quot;</span><span class="p">)</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--language-binding&quot;</span><span class="p">)</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--output&quot;</span><span class="p">)</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--debug"</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--language-binding"</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"python"</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--output"</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"json"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_binary</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the path of the Selenium Manager binary.</span>
+<span class="w">        </span><span class="sd">"""Determines the path of the Selenium Manager binary.</span>
 
 <span class="sd">        Location of the binary is checked in this order:</span>
 
@@ -412,100 +412,105 @@
 <span class="sd">            The Selenium Manager executable location.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            WebDriverException: If the platform is unsupported or Selenium Manager executable can&#39;t be found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">compiled_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;selenium-manager&quot;</span><span class="p">)</span>
-        <span class="n">exe</span> <span class="o">=</span> <span class="n">sysconfig</span><span class="o">.</span><span class="n">get_config_var</span><span class="p">(</span><span class="s2">&quot;EXE&quot;</span><span class="p">)</span>
+<span class="sd">            WebDriverException: If the platform is unsupported or Selenium Manager executable can't be found.</span>
+<span class="sd">        """</span>
+        <span class="n">compiled_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"selenium-manager"</span><span class="p">)</span>
+        <span class="n">exe</span> <span class="o">=</span> <span class="n">sysconfig</span><span class="o">.</span><span class="n">get_config_var</span><span class="p">(</span><span class="s2">"EXE"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compiled_path</span> <span class="o">=</span> <span class="n">compiled_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">exe</span><span class="p">)</span>
 
         <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">env_path</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SE_MANAGER_PATH&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selenium Manager set by env SE_MANAGER_PATH to: </span><span class="si">{</span><span class="n">env_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">env_path</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"SE_MANAGER_PATH"</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selenium Manager set by env SE_MANAGER_PATH to: </span><span class="si">{</span><span class="n">env_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">path_candidate</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">env_path</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path_candidate</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SE_MANAGER_PATH does not point to a file: </span><span class="si">{</span><span class="n">env_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SE_MANAGER_PATH does not point to a file: </span><span class="si">{</span><span class="n">env_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">path_candidate</span>
         <span class="k">elif</span> <span class="n">compiled_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">compiled_path</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">allowed</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="p">(</span><span class="s2">&quot;darwin&quot;</span><span class="p">,</span> <span class="s2">&quot;any&quot;</span><span class="p">):</span> <span class="s2">&quot;macos/selenium-manager&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">&quot;win32&quot;</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">):</span> <span class="s2">&quot;windows/selenium-manager.exe&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">&quot;cygwin&quot;</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">):</span> <span class="s2">&quot;windows/selenium-manager.exe&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">&quot;linux&quot;</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">):</span> <span class="s2">&quot;linux/selenium-manager&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">&quot;freebsd&quot;</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">):</span> <span class="s2">&quot;linux/selenium-manager&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="s2">&quot;openbsd&quot;</span><span class="p">,</span> <span class="s2">&quot;x86_64&quot;</span><span class="p">):</span> <span class="s2">&quot;linux/selenium-manager&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"darwin"</span><span class="p">,</span> <span class="s2">"any"</span><span class="p">):</span> <span class="s2">"macos/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"win32"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"win32"</span><span class="p">,</span> <span class="s2">"arm64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"cygwin"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"cygwin"</span><span class="p">,</span> <span class="s2">"arm64"</span><span class="p">):</span> <span class="s2">"windows/selenium-manager.exe"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"linux"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux-x86_64/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"linux"</span><span class="p">,</span> <span class="s2">"aarch64"</span><span class="p">):</span> <span class="s2">"linux-arm64/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"freebsd"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux-x86_64/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"freebsd"</span><span class="p">,</span> <span class="s2">"aarch64"</span><span class="p">):</span> <span class="s2">"linux-arm64/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"openbsd"</span><span class="p">,</span> <span class="s2">"x86_64"</span><span class="p">):</span> <span class="s2">"linux-x86_64/selenium-manager"</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">"openbsd"</span><span class="p">,</span> <span class="s2">"aarch64"</span><span class="p">):</span> <span class="s2">"linux-arm64/selenium-manager"</span><span class="p">,</span>
             <span class="p">}</span>
 
             <span class="c1"># some operating systems report x86-64 architecture as amd64/AMD64</span>
             <span class="n">platform_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span>
-            <span class="n">arch</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span> <span class="k">if</span> <span class="n">platform_name</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span> <span class="k">else</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="n">arch</span> <span class="o">=</span> <span class="s2">&quot;x86_64&quot;</span> <span class="k">if</span> <span class="n">arch</span> <span class="o">==</span> <span class="s2">&quot;amd64&quot;</span> <span class="k">else</span> <span class="n">arch</span>
+            <span class="n">arch</span> <span class="o">=</span> <span class="s2">"any"</span> <span class="k">if</span> <span class="n">platform_name</span> <span class="o">==</span> <span class="s2">"darwin"</span> <span class="k">else</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">arch</span> <span class="o">=</span> <span class="s2">"x86_64"</span> <span class="k">if</span> <span class="n">arch</span> <span class="o">==</span> <span class="s2">"amd64"</span> <span class="k">else</span> <span class="n">arch</span>
 
             <span class="c1"># in Python &lt; 3.14, sys.platform appends version number to BSD platform names</span>
-            <span class="k">if</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;freebsd&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"freebsd"</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Selenium Manager binary may not be compatible with FreeBSD; you may need to run &quot;</span>
-                    <span class="s2">&quot;&#39;brandelf -t linux&#39; on it and load linux64.ko&quot;</span>
+                    <span class="s2">"Selenium Manager binary may not be compatible with FreeBSD; you may need to run "</span>
+                    <span class="s2">"'brandelf -t linux' on it and load linux64.ko"</span>
                 <span class="p">)</span>
-                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">&quot;freebsd&quot;</span>
-            <span class="k">elif</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;openbsd&quot;</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Selenium Manager binary may not be compatible with OpenBSD; verify settings&quot;</span><span class="p">)</span>
-                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">&quot;openbsd&quot;</span>
+                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">"freebsd"</span>
+            <span class="k">elif</span> <span class="n">platform_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"openbsd"</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Selenium Manager binary may not be compatible with OpenBSD; verify settings"</span><span class="p">)</span>
+                <span class="n">platform_name</span> <span class="o">=</span> <span class="s2">"openbsd"</span>
 
             <span class="n">location</span> <span class="o">=</span> <span class="n">allowed</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">platform_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported platform/architecture combination: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported platform/architecture combination: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to obtain working Selenium Manager binary; </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unable to obtain working Selenium Manager binary; </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selenium Manager binary found at: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selenium Manager binary found at: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">path</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the Selenium Manager Binary.</span>
+<span class="w">        </span><span class="sd">"""Executes the Selenium Manager Binary.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            args: the components of the command being executed.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The log string containing the driver location.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Executing process: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Executing process: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">"win32"</span><span class="p">:</span>
                 <span class="n">completed_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">creationflags</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CREATE_NO_WINDOW</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">completed_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">stdout</span> <span class="o">=</span> <span class="n">completed_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">stderr</span> <span class="o">=</span> <span class="n">completed_proc</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">stdout</span><span class="p">)</span> <span class="k">if</span> <span class="n">stdout</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;logs&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+            <span class="n">stdout</span> <span class="o">=</span> <span class="n">completed_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">stderr</span> <span class="o">=</span> <span class="n">completed_proc</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">stdout</span><span class="p">)</span> <span class="k">if</span> <span class="n">stdout</span> <span class="o">!=</span> <span class="s2">""</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"logs"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"result"</span><span class="p">:</span> <span class="p">{}}</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsuccessful command executed: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsuccessful command executed: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
-        <span class="n">SeleniumManager</span><span class="o">.</span><span class="n">_process_logs</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;logs&quot;</span><span class="p">])</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
+        <span class="n">SeleniumManager</span><span class="o">.</span><span class="n">_process_logs</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">"logs"</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">completed_proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unsuccessful command executed: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">; code: </span><span class="si">{</span><span class="n">completed_proc</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">stderr</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"Unsuccessful command executed: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">; code: </span><span class="si">{</span><span class="n">completed_proc</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">stderr</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_logs</span><span class="p">(</span><span class="n">log_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">log_items</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;WARN&quot;</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">]:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">])</span></div>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">"level"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"WARN"</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"message"</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">item</span><span class="p">[</span><span class="s2">"level"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"DEBUG"</span><span class="p">,</span> <span class="s2">"INFO"</span><span class="p">]:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"message"</span><span class="p">])</span></div>
 
 </pre></div>
 

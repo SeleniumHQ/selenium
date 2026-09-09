@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.edge.options &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.edge.options &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/edge/options';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -360,45 +360,45 @@
 <div class="viewcode-block" id="Options">
 <a class="viewcode-back" href="../../../../selenium_webdriver_edge/selenium.webdriver.edge.options.html#selenium.webdriver.edge.options.Options">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Options</span><span class="p">(</span><span class="n">ChromiumOptions</span><span class="p">):</span>
-    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;ms:edgeOptions&quot;</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">"ms:edgeOptions"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize EdgeOptions with default settings.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize EdgeOptions with default settings."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">use_webview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Whether WebView2 is enabled for Edge browser.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns Whether WebView2 is enabled for Edge browser."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span>
 
     <span class="nd">@use_webview</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">use_webview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enables or disables WebView2 support for Edge browser.</span>
+<span class="w">        </span><span class="sd">"""Enables or disables WebView2 support for Edge browser.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: True to enable WebView2 support, False to disable.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Options.to_capabilities">
 <a class="viewcode-back" href="../../../../selenium_webdriver_edge/selenium.webdriver.edge.options.html#selenium.webdriver.edge.options.Options.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a capabilities with all the options that have been set.</span>
+<span class="w">        </span><span class="sd">"""Creates a capabilities with all the options that have been set.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A dictionary with all set options for Edge browser.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">caps</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span><span class="p">:</span>
-            <span class="n">caps</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;webview2&quot;</span>
+            <span class="n">caps</span><span class="p">[</span><span class="s2">"browserName"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"webview2"</span>
 
         <span class="k">return</span> <span class="n">caps</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">default_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the default capabilities for Edge browser.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the default capabilities for Edge browser."""</span>
         <span class="k">return</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">EDGE</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 </pre></div>

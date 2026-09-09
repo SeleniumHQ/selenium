@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common._bidi.serialization &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common._bidi.serialization &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/_bidi/serialization';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,19 +341,19 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="sd">&quot;&quot;&quot;Serialization runtime for the generated WebDriver BiDi protocol layer.</span>
+<span class="sd">"""Serialization runtime for the generated WebDriver BiDi protocol layer.</span>
 
 <span class="sd">Hand-written support for the generated ``selenium.webdriver.common._bidi.*`` modules</span>
 <span class="sd">(not itself generated). Provides the immutable value-type base (:class:`Record`),</span>
@@ -361,12 +361,12 @@
 <span class="sd">sentinel that distinguishes an omitted optional from an explicit wire ``null``.</span>
 
 <span class="sd">Each generated field carries its wire facts as dataclass field metadata (see</span>
-<span class="sd">:func:`meta`), so a record&#39;s Python fields are its single source of truth — there</span>
+<span class="sd">:func:`meta`), so a record's Python fields are its single source of truth — there</span>
 <span class="sd">is no parallel field table.</span>
 
 <span class="sd">This is internal, unsupported implementation. See</span>
 <span class="sd">https://www.selenium.dev/documentation/warnings/bidi-implementation/</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -387,7 +387,7 @@
 <div class="viewcode-block" id="BiDiSerializationError">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.BiDiSerializationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BiDiSerializationError</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A payload could not be (de)serialized against this Selenium&#39;s BiDi schema.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""A payload could not be (de)serialized against this Selenium's BiDi schema."""</span></div>
 
 
 
@@ -398,17 +398,17 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_summarize</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bounded ``owner: kind &#39;a&#39;, &#39;b&#39;, … (+N more) (suffix)`` message.&quot;&quot;&quot;</span>
-    <span class="n">shown</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="n">_MAX_KEYS_SHOWN</span><span class="p">])</span>
+<span class="w">    </span><span class="sd">"""A bounded ``owner: kind 'a', 'b', … (+N more) (suffix)`` message."""</span>
+    <span class="n">shown</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="n">_MAX_KEYS_SHOWN</span><span class="p">])</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_MAX_KEYS_SHOWN</span><span class="p">:</span>
-        <span class="n">shown</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, … (+</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_MAX_KEYS_SHOWN</span><span class="si">}</span><span class="s2"> more)&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shown</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">shown</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">", … (+</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_MAX_KEYS_SHOWN</span><span class="si">}</span><span class="s2"> more)"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shown</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">)"</span>
 
 
 <div class="viewcode-block" id="UnsetType">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.UnsetType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnsetType</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type of the :data:`UNSET` sentinel (an omitted optional, not ``None``).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Type of the :data:`UNSET` sentinel (an omitted optional, not ``None``)."""</span>
 
     <span class="n">_instance</span><span class="p">:</span> <span class="n">UnsetType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -418,7 +418,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;UNSET&quot;</span>
+        <span class="k">return</span> <span class="s2">"UNSET"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span></div>
@@ -426,12 +426,12 @@
 
 
 <span class="n">UNSET</span><span class="p">:</span> <span class="n">UnsetType</span> <span class="o">=</span> <span class="n">UnsetType</span><span class="p">()</span>
-<span class="sd">&quot;&quot;&quot;Marks an omitted optional. Dropped from the wire; distinct from ``None`` (explicit null).&quot;&quot;&quot;</span>
+<span class="sd">"""Marks an omitted optional. Dropped from the wire; distinct from ``None`` (explicit null)."""</span>
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">_Wire</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wire facts for one record field, attached as its dataclass field metadata.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Wire facts for one record field, attached as its dataclass field metadata."""</span>
 
     <span class="n">wire</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -444,7 +444,7 @@
     <span class="n">fixed</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">UNSET</span>
 
 
-<span class="n">_META_KEY</span> <span class="o">=</span> <span class="s2">&quot;bidi&quot;</span>
+<span class="n">_META_KEY</span> <span class="o">=</span> <span class="s2">"bidi"</span>
 
 
 <div class="viewcode-block" id="meta">
@@ -461,16 +461,16 @@
     <span class="n">scalar</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fixed</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass field metadata carrying one field&#39;s BiDi wire facts.</span>
+<span class="w">    </span><span class="sd">"""Dataclass field metadata carrying one field's BiDi wire facts.</span>
 
 <span class="sd">    Used as ``x: T = field(metadata=meta(...))`` in the generated modules — a plain</span>
 <span class="sd">    ``dataclasses.field`` so it reads as an ordinary dataclass field. A baked</span>
 <span class="sd">    discriminator additionally sets ``default=&lt;const&gt;, init=False`` on the field.</span>
 
 <span class="sd">    ``scalar`` marks a map field (a ``[key, value]`` list whose value type is an</span>
-<span class="sd">    object-only union): the union&#39;s string keys pass through when they match this</span>
+<span class="sd">    object-only union): the union's string keys pass through when they match this</span>
 <span class="sd">    primitive, rather than being rejected as non-objects.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">descriptor</span> <span class="o">=</span> <span class="n">_Wire</span><span class="p">(</span>
         <span class="n">wire</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span>
@@ -495,7 +495,7 @@
 <div class="viewcode-block" id="register">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.register">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="n">schema_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">type</span><span class="p">],</span> <span class="nb">type</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class decorator registering a generated class under its schema type name.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Class decorator registering a generated class under its schema type name."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">decorate</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
         <span class="n">_REGISTRY</span><span class="p">[</span><span class="n">schema_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
@@ -506,9 +506,9 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;``browsingContext`` -&gt; ``browsing_context`` (mirrors the generator&#39;s domain-&gt;module map).&quot;&quot;&quot;</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([A-Z]+)([A-Z][a-z])&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\1_\2&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-z\d])([A-Z])&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\1_\2&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""``browsingContext`` -&gt; ``browsing_context`` (mirrors the generator's domain-&gt;module map)."""</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"([A-Z]+)([A-Z][a-z])"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1_\2"</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"([a-z\d])([A-Z])"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1_\2"</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
 
@@ -522,11 +522,11 @@
     <span class="c1"># owning module may not have run its @register decorators yet. Import it now (a no-op if</span>
     <span class="c1"># already loaded) and retry, so e.g. resolving `script.NodeRemoteValue` works even when the</span>
     <span class="c1"># caller only imported `browsing_context`.</span>
-    <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">__package__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">_camel_to_snake</span><span class="p">(</span><span class="n">schema_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">__package__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">_camel_to_snake</span><span class="p">(</span><span class="n">schema_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">import_module</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="c1"># Only the target module itself being absent means &quot;unknown type&quot; (handled below). If the</span>
+        <span class="c1"># Only the target module itself being absent means "unknown type" (handled below). If the</span>
         <span class="c1"># module exists but one of *its* imports is missing, surface that real failure rather than</span>
         <span class="c1"># masking it — likewise a non-ModuleNotFoundError ImportError propagates untouched.</span>
         <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">target</span><span class="p">:</span>
@@ -534,12 +534,12 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_REGISTRY</span><span class="p">[</span><span class="n">schema_name</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown BiDi type </span><span class="si">{</span><span class="n">schema_name</span><span class="si">!r}</span><span class="s2"> (module not imported?)&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown BiDi type </span><span class="si">{</span><span class="n">schema_name</span><span class="si">!r}</span><span class="s2"> (module not imported?)"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_fields</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">Field</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;``dataclasses.fields`` for a Record subclass; the ``Record`` base is not itself a dataclass.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""``dataclasses.fields`` for a Record subclass; the ``Record`` base is not itself a dataclass."""</span>
     <span class="k">return</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
 
@@ -562,7 +562,7 @@
 <div class="viewcode-block" id="Record">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.Record">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Record</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Immutable value-type base for generated params/results/event payloads.</span>
+<span class="w">    </span><span class="sd">"""Immutable value-type base for generated params/results/event payloads.</span>
 
 <span class="sd">    Subclasses are ``@dataclass(frozen=True)`` whose fields are declared with</span>
 <span class="sd">    :func:`meta`. The object itself is permissive; validation lives at the boundaries.</span>
@@ -570,13 +570,13 @@
 <span class="sd">    and errors if a required field is unset. Inbound (:meth:`from_json`) errors on a</span>
 <span class="sd">    corrupt value or a missing required field, and tolerates only an undeclared property,</span>
 <span class="sd">    so a browser that adds a field does not break a client generated from an older schema.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_EXTENSIBLE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;extensions&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"extensions"</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">_wire_of</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -585,14 +585,14 @@
                 <span class="c1"># is settable and must be its literal or null.</span>
                 <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> must be </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="si">!r}</span><span class="s2"> or None&quot;</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> must be </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="si">!r}</span><span class="s2"> or None"</span>
                     <span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">UNSET</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> cannot be None&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> cannot be None"</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">enum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_validate_enum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -603,10 +603,14 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">enum_cls</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">enum_cls</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">enum_cls</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># bool is a subclass of int, so each resolves to the other's member and would</span>
+            <span class="c1"># then serialize as the wrong JSON type: True as a number, or 1 as a boolean.</span>
+            <span class="k">if</span> <span class="n">member</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="si">!r}</span><span class="s2"> is not a valid </span><span class="si">{</span><span class="n">enum_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="si">!r}</span><span class="s2"> is not a valid </span><span class="si">{</span><span class="n">enum_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
 <div class="viewcode-block" id="Record.as_json">
@@ -615,7 +619,7 @@
         <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">declared</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;extensions&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"extensions"</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">_wire_of</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">declared</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">wire</span><span class="p">)</span>
@@ -625,20 +629,20 @@
                 <span class="c1"># caller that passed the UNSET sentinel explicitly, so an unset required</span>
                 <span class="c1"># field can never reach the wire as an omission.</span>
                 <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: required </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">wire</span><span class="si">!r}</span><span class="s2"> is not set&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: required </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">wire</span><span class="si">!r}</span><span class="s2"> is not set"</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">_validate_outbound</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">payload</span><span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">wire</span><span class="p">]</span> <span class="o">=</span> <span class="n">_as_json</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_EXTENSIBLE</span><span class="p">:</span>
-            <span class="n">extras</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">extras</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"extensions"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
             <span class="c1"># A key the type declares must never appear in the extras map, so an</span>
             <span class="c1"># extra can never shadow a declared field on the wire — whether or not that field is set.</span>
             <span class="n">shadowed</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">extras</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">declared</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">shadowed</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                    <span class="n">_summarize</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;extension shadows declared field&quot;</span><span class="p">,</span> <span class="n">shadowed</span><span class="p">,</span> <span class="s2">&quot;not allowed&quot;</span><span class="p">)</span>
+                    <span class="n">_summarize</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">"extension shadows declared field"</span><span class="p">,</span> <span class="n">shadowed</span><span class="p">,</span> <span class="s2">"not allowed"</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">payload</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">_as_json</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
         <span class="k">return</span> <span class="n">payload</span></div>
@@ -647,10 +651,10 @@
 <div class="viewcode-block" id="Record.from_json">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.Record.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected an object on the wire, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected an object on the wire, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">known</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">missing_required</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -659,7 +663,7 @@
             <span class="n">known</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">wire</span><span class="p">)</span>
             <span class="c1"># A baked discriminator (non-nullable const) is forced, not read from the wire; a</span>
             <span class="c1"># nullable const is read and held to its literal-or-null like any field (in _read_scalar).</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span><span class="p">)</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;extensions&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span><span class="p">)</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"extensions"</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">wire</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
@@ -675,12 +679,12 @@
         <span class="c1"># name at most a bounded number of keys, so a verbose payload cannot flood the log.</span>
         <span class="k">if</span> <span class="n">missing_required</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="n">_summarize</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;missing required&quot;</span><span class="p">,</span> <span class="n">missing_required</span><span class="p">,</span> <span class="s2">&quot;absent from the response&quot;</span><span class="p">)</span>
+                <span class="n">_summarize</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">"missing required"</span><span class="p">,</span> <span class="n">missing_required</span><span class="p">,</span> <span class="s2">"absent from the response"</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_EXTENSIBLE</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;extensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">payload</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">undeclared</span><span class="p">}</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"extensions"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">payload</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">undeclared</span><span class="p">}</span>
         <span class="k">elif</span> <span class="n">undeclared</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">_summarize</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;undeclared&quot;</span><span class="p">,</span> <span class="n">undeclared</span><span class="p">,</span> <span class="s2">&quot;dropped&quot;</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">_summarize</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">"undeclared"</span><span class="p">,</span> <span class="n">undeclared</span><span class="p">,</span> <span class="s2">"dropped"</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
 
@@ -693,10 +697,10 @@
     <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">nullable</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> received null but is not nullable&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> received null but is not nullable"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_list</span> <span class="o">!=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">is_list</span> <span class="ow">or</span> <span class="n">w</span><span class="o">.</span><span class="n">enum</span> <span class="ow">or</span> <span class="n">w</span><span class="o">.</span><span class="n">ref</span> <span class="ow">or</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="p">):</span>
-        <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;a list&quot;</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_list</span> <span class="k">else</span> <span class="s2">&quot;a single value&quot;</span>
-        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="s2">"a list"</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_list</span> <span class="k">else</span> <span class="s2">"a single value"</span>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> expected </span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">scalar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">_read_map_entry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">]</span>
@@ -705,15 +709,15 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_map_entry</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read one ``[key, value]`` map entry into typed key/value.</span>
+<span class="w">    </span><span class="sd">"""Read one ``[key, value]`` map entry into typed key/value.</span>
 
 <span class="sd">    A map arrives as ``[[key, value], ...]``. The key is ``ref / text``: an object</span>
-<span class="sd">    key deserializes; a bare-scalar key passes through once it matches the arm&#39;s</span>
+<span class="sd">    key deserializes; a bare-scalar key passes through once it matches the arm's</span>
 <span class="sd">    ``scalar`` primitive. The value is the object-only ref and always deserializes,</span>
 <span class="sd">    so a bare scalar there is rejected. A non-pair element is malformed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> expected a [key, value] pair, got </span><span class="si">{</span><span class="n">element</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> expected a [key, value] pair, got </span><span class="si">{</span><span class="n">element</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">klass</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">ref</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
     <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">element</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">_check_scalar</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
@@ -721,18 +725,18 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_scalar</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bare map key must match one of the union&#39;s scalar-arm primitives.</span>
+<span class="w">    </span><span class="sd">"""A bare map key must match one of the union's scalar-arm primitives.</span>
 
 <span class="sd">    A wrong-typed scalar (a number where a string is expected) is a wire error, not</span>
 <span class="sd">    something to pass through. An unrecognized primitive is left unchecked, matching</span>
 <span class="sd">    the lenient default elsewhere.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">scalars</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">scalar</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">scalar</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">scalar</span><span class="p">])</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
     <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">_PRIMITIVE_CHECKS</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scalars</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_PRIMITIVE_CHECKS</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">checks</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">check</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">value</span>
     <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map key expected </span><span class="si">{</span><span class="s1">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scalars</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map key expected </span><span class="si">{</span><span class="s1">' or '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scalars</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_whole</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -749,10 +753,10 @@
 <span class="c1"># not Python type: ``integer`` admits any whole number, ``number`` an int or a float. ``bool``</span>
 <span class="c1"># is excluded from the numeric checks: it is an ``int`` subclass but is not a number.</span>
 <span class="n">_PRIMITIVE_CHECKS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;str&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-    <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
-    <span class="s2">&quot;int&quot;</span><span class="p">:</span> <span class="n">_is_whole</span><span class="p">,</span>
-    <span class="s2">&quot;float&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+    <span class="s2">"str"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+    <span class="s2">"bool"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+    <span class="s2">"int"</span><span class="p">:</span> <span class="n">_is_whole</span><span class="p">,</span>
+    <span class="s2">"float"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
 <span class="p">}</span>
 
 
@@ -762,44 +766,49 @@
         <span class="c1"># the literal, else it is invalid. A null took the nullable</span>
         <span class="c1"># path in _read_field before reaching here.</span>
         <span class="k">if</span> <span class="n">raw</span> <span class="o">!=</span> <span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2"> is not the constant </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2"> is not the constant </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">fixed</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">raw</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">enum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">enum_cls</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">enum</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">enum_cls</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="n">enum_cls</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2"> is not a valid </span><span class="si">{</span><span class="n">enum_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Same bool/int exclusion the primitive checks make: True would otherwise resolve</span>
+        <span class="c1"># to an int-valued member, and 1 to a boolean one.</span>
+        <span class="k">if</span> <span class="n">member</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2"> is not a valid </span><span class="si">{</span><span class="n">enum_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="k">return</span> <span class="n">member</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">klass</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">ref</span><span class="p">)</span>
         <span class="c1"># A record must arrive as an object; a union may legitimately be a bare scalar</span>
-        <span class="c1"># arm (e.g. input.Origin&#39;s &quot;viewport&quot;), so let its from_json handle non-objects.</span>
+        <span class="c1"># arm (e.g. input.Origin's "viewport"), so let its from_json handle non-objects.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">Union</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected an object, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected an object, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">klass</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">check</span> <span class="o">=</span> <span class="n">_PRIMITIVE_CHECKS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="o">==</span> <span class="s2">"int"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="c1"># A whole number is exact in both types, so the declared type is held with nothing lost.</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">raw</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_outbound</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reject an outbound value that violates its wire type before it is sent.</span>
+<span class="w">    </span><span class="sd">"""Reject an outbound value that violates its wire type before it is sent.</span>
 
 <span class="sd">    A caller mistake — a wrong primitive, a scalar where a list is expected, a raw dict where a</span>
 <span class="sd">    typed record belongs — surfaces here as a local error rather than a remote protocol error.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>  <span class="c1"># nullability is handled by as_json</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_list</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a list, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a list, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">validate_item</span> <span class="o">=</span> <span class="n">_validate_outbound_map_entry</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">scalar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_validate_outbound_scalar</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="n">validate_item</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
@@ -808,29 +817,29 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_ref_value</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">klass</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate an outbound value against its ref type: a record instance, or a union variant.</span>
+<span class="w">    </span><span class="sd">"""Validate an outbound value against its ref type: a record instance, or a union variant.</span>
 
 <span class="sd">    A record ref requires an instance of that record; a union ref requires one of its variants (or a</span>
 <span class="sd">    permitted bare scalar). An enum or opaque ref is left permissive, matching the inbound reader.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">klass</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">klass</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">klass</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">Union</span><span class="p">):</span>
         <span class="n">klass</span><span class="o">.</span><span class="n">validate_outbound</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_outbound_map_entry</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate one outbound ``[key, value]`` map entry: pair shape, key type, object-only value.</span>
+<span class="w">    </span><span class="sd">"""Validate one outbound ``[key, value]`` map entry: pair shape, key type, object-only value.</span>
 
 <span class="sd">    Mirrors the inbound :func:`_read_map_entry` checks: an object key is a valid variant of the ref</span>
-<span class="sd">    and a bare-scalar key must match the arm&#39;s ``scalar`` primitive, while the value is always a</span>
+<span class="sd">    and a bare-scalar key must match the arm's ``scalar`` primitive, while the value is always a</span>
 <span class="sd">    variant object of the ref.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a [key, value] pair, got </span><span class="si">{</span><span class="n">element</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a [key, value] pair, got </span><span class="si">{</span><span class="n">element</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">element</span>
     <span class="n">klass</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">ref</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
@@ -840,11 +849,11 @@
         <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">_PRIMITIVE_CHECKS</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scalars</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_PRIMITIVE_CHECKS</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">checks</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">check</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map key expected </span><span class="si">{</span><span class="s1">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scalars</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">key</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map key expected </span><span class="si">{</span><span class="s1">' or '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scalars</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">key</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map value expected an object, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: map value expected an object, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
         <span class="p">)</span>
     <span class="n">_validate_ref_value</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">klass</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -861,20 +870,20 @@
         <span class="n">check</span> <span class="o">=</span> <span class="n">_PRIMITIVE_CHECKS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
 
 
 <div class="viewcode-block" id="Union">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.Union">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Union</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispatch base for a discriminated union; subclassed, never instantiated.</span>
+<span class="w">    </span><span class="sd">"""Dispatch base for a discriminated union; subclassed, never instantiated.</span>
 
-<span class="sd">    Carries the schema&#39;s authoritative ``selector`` as class attributes: a</span>
+<span class="sd">    Carries the schema's authoritative ``selector`` as class attributes: a</span>
 <span class="sd">    discriminator wire key + tag-&gt;variant table, and/or presence-ordered rules, and</span>
 <span class="sd">    an optional declared fallback. Inbound (:meth:`from_json`) resolves a payload to a</span>
-<span class="sd">    variant; outbound (:meth:`build`) selects the variant a command&#39;s kwargs describe.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    variant; outbound (:meth:`build`) selects the variant a command's kwargs describe.</span>
+<span class="sd">    """</span>
 
     <span class="n">_DISCRIMINATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_VARIANTS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -887,17 +896,17 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_variant_classes</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The record classes this union resolves to, recursing through nested union arms.</span>
+<span class="w">        </span><span class="sd">"""The record classes this union resolves to, recursing through nested union arms.</span>
 
 <span class="sd">        A union arm may itself be a union (e.g. ``LocalValue`` includes the ``RemoteReference``</span>
 <span class="sd">        union, whose arms are ``SharedReference``/``RemoteObjectReference``), so a value can be a</span>
 <span class="sd">        valid member transitively. Inbound dispatch recurses through ``from_json``; this mirrors it.</span>
 
-<span class="sd">        Cached per class after the first call: a union&#39;s variant set is fixed by the schema, and</span>
-<span class="sd">        outbound validation only runs once the value&#39;s whole type graph is imported and registered,</span>
+<span class="sd">        Cached per class after the first call: a union's variant set is fixed by the schema, and</span>
+<span class="sd">        outbound validation only runs once the value's whole type graph is imported and registered,</span>
 <span class="sd">        so the first computation is complete. ``__dict__`` keeps the cache off the shared base class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cached</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_VARIANT_CLASSES&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"_VARIANT_CLASSES"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cached</span>
         <span class="n">classes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -926,62 +935,62 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.Union.validate_outbound">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_outbound</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reject an outbound value that is not one of this union&#39;s variants.</span>
+<span class="w">        </span><span class="sd">"""Reject an outbound value that is not one of this union's variants.</span>
 
 <span class="sd">        A variant instance passes. A bare scalar passes only for a union that has a scalar arm, and</span>
 <span class="sd">        only as one of the literals that arm declares, so a stray string is a caller error rather</span>
 <span class="sd">        than a wire round-trip. This mirrors inbound dispatch, which errors on the same values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_variant_classes</span><span class="p">()):</span>
                 <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not a variant of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not a variant of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_OBJECT_ONLY</span><span class="p">:</span>
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected an object variant of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected an object variant of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_scalar_arm</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is not one of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_arms</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is not one of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_arms</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_scalar_arm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether a bare scalar is one of the literals this union&#39;s scalar arm declares.</span>
+<span class="w">        </span><span class="sd">"""Whether a bare scalar is one of the literals this union's scalar arm declares.</span>
 
 <span class="sd">        Compared by equality rather than set membership so an unhashable payload (a list where</span>
 <span class="sd">        a scalar belongs) answers False instead of raising and masking the real error.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="n">arm</span> <span class="k">for</span> <span class="n">arm</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_SCALAR_VALUES</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_arms</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="c1"># Sorted by repr, not value: the arms of one union need not share a primitive type.</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;s arms (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_SCALAR_VALUES</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="nb">repr</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">'s arms (</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_SCALAR_VALUES</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="nb">repr</span><span class="p">))</span><span class="si">}</span><span class="s2">)"</span>
 
 <div class="viewcode-block" id="Union.from_json">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common__bidi/selenium.webdriver.common._bidi.serialization.html#selenium.webdriver.common._bidi.serialization.Union.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="c1"># Every arm is an object (the schema&#39;s ``objectOnly`` signal), so a</span>
+            <span class="c1"># Every arm is an object (the schema's ``objectOnly`` signal), so a</span>
             <span class="c1"># non-object payload can match no variant and is a wire error.</span>
             <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_OBJECT_ONLY</span><span class="p">:</span>
                 <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-                <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected an object on the wire, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="c1"># A bare scalar arm (e.g. input.Origin&#39;s &quot;viewport&quot;) has no object to dispatch</span>
+                <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expected an object on the wire, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># A bare scalar arm (e.g. input.Origin's "viewport") has no object to dispatch</span>
             <span class="c1"># on, so it stands for itself — but only as a literal the schema pins.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_scalar_arm</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> received a scalar not in this Selenium&#39;s BiDi schema: </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> received a scalar not in this Selenium's BiDi schema: </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">payload</span>
         <span class="n">variant</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">variant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> received a variant not in this Selenium&#39;s BiDi schema: </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> received a variant not in this Selenium's BiDi schema: </span><span class="si">{</span><span class="n">payload</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">resolve</span><span class="p">(</span><span class="n">variant</span><span class="p">)</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span></div>
 
@@ -1004,13 +1013,13 @@
         <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_discriminator</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">variant</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_outbound</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">variant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> variant matches </span><span class="si">{</span><span class="n">kwargs</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> variant matches </span><span class="si">{</span><span class="n">kwargs</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">klass</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">variant</span><span class="p">)</span>
         <span class="n">provided</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">}</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_fields</span><span class="p">(</span><span class="n">klass</span><span class="p">)}</span>
         <span class="n">invalid</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">provided</span><span class="p">)</span> <span class="o">-</span> <span class="n">fields</span>
         <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid combination for </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">invalid</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"invalid combination for </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">invalid</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="c1"># A baked discriminator (init=False) is forced to its const, so drop it from</span>
         <span class="c1"># the constructor kwargs even though it is a valid field to have named.</span>
         <span class="n">settable</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_fields</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span> <span class="k">if</span> <span class="n">_wire_of</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">fixed</span> <span class="ow">is</span> <span class="n">UNSET</span><span class="p">}</span>
@@ -1027,7 +1036,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_DISCRIMINATOR_VALUES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_DISCRIMINATOR</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is not a valid discriminator&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_DISCRIMINATOR</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is not a valid discriminator"</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_outbound</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>

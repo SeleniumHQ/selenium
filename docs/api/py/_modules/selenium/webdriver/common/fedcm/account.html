@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.fedcm.account &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.fedcm.account &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/fedcm/account';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -359,8 +359,8 @@
 <div class="viewcode-block" id="LoginState">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.LoginState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LoginState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">SIGN_IN</span> <span class="o">=</span> <span class="s2">&quot;SignIn&quot;</span>
-    <span class="n">SIGN_UP</span> <span class="o">=</span> <span class="s2">&quot;SignUp&quot;</span></div>
+    <span class="n">SIGN_IN</span> <span class="o">=</span> <span class="s2">"SignIn"</span>
+    <span class="n">SIGN_UP</span> <span class="o">=</span> <span class="s2">"SignUp"</span></div>
 
 
 
@@ -372,27 +372,27 @@
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_account_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot set readonly attribute&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">"Cannot set readonly attribute"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Account">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.account.html#selenium.webdriver.common.fedcm.account.Account">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Account</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an account displayed in a FedCM account list.</span>
+<span class="w">    </span><span class="sd">"""Represents an account displayed in a FedCM account list.</span>
 
 <span class="sd">    See: https://w3c-fedid.github.io/FedCM/#dictdef-identityprovideraccount</span>
 <span class="sd">         https://w3c-fedid.github.io/FedCM/#webdriver-accountlist</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">account_id</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;accountId&quot;</span><span class="p">)</span>
-    <span class="n">email</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
-    <span class="n">given_name</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;givenName&quot;</span><span class="p">)</span>
-    <span class="n">picture_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;pictureUrl&quot;</span><span class="p">)</span>
-    <span class="n">idp_config_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;idpConfigUrl&quot;</span><span class="p">)</span>
-    <span class="n">terms_of_service_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;termsOfServiceUrl&quot;</span><span class="p">)</span>
-    <span class="n">privacy_policy_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;privacyPolicyUrl&quot;</span><span class="p">)</span>
-    <span class="n">login_state</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">&quot;loginState&quot;</span><span class="p">)</span>
+    <span class="n">account_id</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"accountId"</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"email"</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span>
+    <span class="n">given_name</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"givenName"</span><span class="p">)</span>
+    <span class="n">picture_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"pictureUrl"</span><span class="p">)</span>
+    <span class="n">idp_config_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"idpConfigUrl"</span><span class="p">)</span>
+    <span class="n">terms_of_service_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"termsOfServiceUrl"</span><span class="p">)</span>
+    <span class="n">privacy_policy_url</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"privacyPolicyUrl"</span><span class="p">)</span>
+    <span class="n">login_state</span> <span class="o">=</span> <span class="n">_AccountDescriptor</span><span class="p">(</span><span class="s2">"loginState"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_account_data</span> <span class="o">=</span> <span class="n">account_data</span></div>

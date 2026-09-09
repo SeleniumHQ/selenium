@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.fedcm &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.remote.fedcm &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/fedcm';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -365,63 +365,63 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the title of the dialog.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_TITLE</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Gets the title of the dialog."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_TITLE</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">subtitle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the subtitle of the dialog.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_TITLE</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subtitle&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Gets the subtitle of the dialog."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_TITLE</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"subtitle"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dialog_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the type of the dialog currently being shown.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_DIALOG_TYPE</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Gets the type of the dialog currently being shown."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_DIALOG_TYPE</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">account_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the list of accounts shown in the dialog.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_ACCOUNT_LIST</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Gets the list of accounts shown in the dialog."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_FEDCM_ACCOUNT_LIST</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FedCM.select_account">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.select_account">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selects an account from the dialog by index.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SELECT_FEDCM_ACCOUNT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;accountIndex&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">})</span></div>
+<span class="w">        </span><span class="sd">"""Selects an account from the dialog by index."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SELECT_FEDCM_ACCOUNT</span><span class="p">,</span> <span class="p">{</span><span class="s2">"accountIndex"</span><span class="p">:</span> <span class="n">index</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.accept">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.accept">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clicks the continue button in the dialog.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK_FEDCM_DIALOG_BUTTON</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;dialogButton&quot;</span><span class="p">:</span> <span class="s2">&quot;ConfirmIdpLoginContinue&quot;</span><span class="p">})</span></div>
+<span class="w">        </span><span class="sd">"""Clicks the continue button in the dialog."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK_FEDCM_DIALOG_BUTTON</span><span class="p">,</span> <span class="p">{</span><span class="s2">"dialogButton"</span><span class="p">:</span> <span class="s2">"ConfirmIdpLoginContinue"</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.dismiss">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.dismiss">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dismiss</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancels/dismisses the FedCM dialog.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Cancels/dismisses the FedCM dialog."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CANCEL_FEDCM_DIALOG</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FedCM.enable_delay">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.enable_delay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">enable_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Re-enables the promise rejection delay for FedCM.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+<span class="w">        </span><span class="sd">"""Re-enables the promise rejection delay for FedCM."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.disable_delay">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.disable_delay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disable_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disables the promise rejection delay for FedCM.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span></div>
+<span class="w">        </span><span class="sd">"""Disables the promise rejection delay for FedCM."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_FEDCM_DELAY</span><span class="p">,</span> <span class="p">{</span><span class="s2">"enabled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="FedCM.reset_cooldown">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM.reset_cooldown">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_cooldown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the FedCM dialog cooldown, allowing immediate retriggers.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Resets the FedCM dialog cooldown, allowing immediate retriggers."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">RESET_FEDCM_COOLDOWN</span><span class="p">)</span></div>
 </div>
 

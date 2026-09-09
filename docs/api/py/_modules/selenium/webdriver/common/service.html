@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.service &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.service &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/service';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -360,7 +360,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">IOBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">subprocess</span><span class="w"> </span><span class="kn">import</span> <span class="n">PIPE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Any</span>
@@ -376,7 +375,7 @@
 <div class="viewcode-block" id="Service">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.service.html#selenium.webdriver.chrome.service.Service">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Service</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for all service objects that manage driver processes.</span>
+<span class="w">    </span><span class="sd">"""Abstract base class for all service objects that manage driver processes.</span>
 
 <span class="sd">    Services typically launch a child program in a new process as an interim process to</span>
 <span class="sd">    communicate with a browser.</span>
@@ -387,7 +386,7 @@
 <span class="sd">        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.</span>
 <span class="sd">        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.</span>
 <span class="sd">        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -401,7 +400,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">IO</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="s2">"a+"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">elif</span> <span class="n">log_output</span> <span class="o">==</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="kc">None</span>
@@ -412,28 +411,28 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
         <span class="c1"># Default value for every python subprocess: subprocess.Popen(..., creationflags=0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;popen_kw&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;creation_flags&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"popen_kw"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"creation_flags"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DRIVER_PATH_ENV_KEY</span> <span class="o">=</span> <span class="n">driver_path_env_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_path</span><span class="p">()</span> <span class="ow">or</span> <span class="n">executable_path</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the url of the Service.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="sd">"""Gets the url of the Service."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"http://</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="s1">'localhost'</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
 
 <div class="viewcode-block" id="Service.command_line_args">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.service.html#selenium.webdriver.chrome.service.Service.command_line_args">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">command_line_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A List of program arguments (excluding the executable).&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method needs to be implemented in a sub class&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""A List of program arguments (excluding the executable)."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"This method needs to be implemented in a sub class"</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="ow">or</span> <span class="s2">""</span>
 
     <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -442,14 +441,14 @@
 <div class="viewcode-block" id="Service.start">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.chrome.service.Service.start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Starts the Service.</span>
+<span class="w">        </span><span class="sd">"""Starts the Service.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            WebDriverException: Raised either when it can&#39;t start the service</span>
-<span class="sd">                or when it can&#39;t connect to the service</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            WebDriverException: Raised either when it can't start the service</span>
+<span class="sd">                or when it can't connect to the service</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Service path cannot be None.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Service path cannot be None."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
 
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -462,43 +461,43 @@
                 <span class="n">sleep</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">+</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">count</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
                 <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">70</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can not connect to the Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Can not connect to the Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error stopping service after a failed start.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error stopping service after a failed start."</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">raise</span></div>
 
 
 <div class="viewcode-block" id="Service.assert_process_still_running">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.chrome.service.Service.assert_process_still_running">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">assert_process_still_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the underlying process is still running.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if the underlying process is still running."""</span>
         <span class="n">return_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">return_code</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="si">}</span><span class="s2"> unexpectedly exited. Status code was: </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="si">}</span><span class="s2"> unexpectedly exited. Status code was: </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Service.is_connectable">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.chrome.service.Service.is_connectable">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the service is ready via the W3C WebDriver /status endpoint.</span>
+<span class="w">        </span><span class="sd">"""Check if the service is ready via the W3C WebDriver /status endpoint.</span>
 
 <span class="sd">        This makes an HTTP request to the /status endpoint and verifies if it is ready to accept new sessions.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if the service is ready to accept new sessions, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_url_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Service.send_remote_shutdown_command">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.chrome.service.Service.send_remote_shutdown_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispatch an HTTP request to the shutdown endpoint to stop the service.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Dispatch an HTTP request to the shutdown endpoint to stop the service."""</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="si">}</span><span class="s2">/shutdown&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="si">}</span><span class="s2">/shutdown"</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">URLError</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">):</span>
             <span class="k">return</span>
 
@@ -511,12 +510,12 @@
 <div class="viewcode-block" id="Service.stop">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.service.html#selenium.webdriver.chrome.service.Service.stop">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stops the service.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Stops the service."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">}:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owns_log_output</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -529,12 +528,12 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_terminate_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Terminate the child process.</span>
+<span class="w">        </span><span class="sd">"""Terminate the child process.</span>
 
 <span class="sd">        On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,</span>
 <span class="sd">        on a Windows OS kill is an alias to terminate. Terminating does</span>
 <span class="sd">        not raise itself if something has gone wrong but ignores errors here.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -542,7 +541,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">TimeoutExpired</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="s2">&quot;Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.&quot;</span><span class="p">,</span>
+                        <span class="s2">"Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL."</span><span class="p">,</span>
                         <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
@@ -556,10 +555,10 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error terminating service process.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error terminating service process."</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># `subprocess.Popen` doesn&#39;t send signal on `__del__`;</span>
+        <span class="c1"># `subprocess.Popen` doesn't send signal on `__del__`;</span>
         <span class="c1"># so we attempt to close the launched process when `__del__`</span>
         <span class="c1"># is triggered.</span>
         <span class="c1"># do not use globals here; interpreter shutdown may have already cleaned them up</span>
@@ -570,17 +569,17 @@
             <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_start_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a subprocess by executing the command provided.</span>
+<span class="w">        </span><span class="sd">"""Creates a subprocess by executing the command provided.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: full command to execute</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_line_args</span><span class="p">())</span>
-        <span class="n">close_file_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;close_fds&quot;</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s2">&quot;win32&quot;</span><span class="p">)</span>
+        <span class="n">close_file_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"close_fds"</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s2">"win32"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">start_info</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">"win32"</span><span class="p">:</span>
                 <span class="n">start_info</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTUPINFO</span><span class="p">()</span>
                 <span class="n">start_info</span><span class="o">.</span><span class="n">dwFlags</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CREATE_NEW_CONSOLE</span> <span class="o">|</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTF_USESHOWWINDOW</span>
                 <span class="n">start_info</span><span class="o">.</span><span class="n">wShowWindow</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">SW_HIDE</span>
@@ -597,7 +596,7 @@
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;Started executable: `</span><span class="si">%s</span><span class="s2">` in a child process with pid: </span><span class="si">%s</span><span class="s2"> using </span><span class="si">%s</span><span class="s2"> to output </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"Started executable: `</span><span class="si">%s</span><span class="s2">` in a child process with pid: </span><span class="si">%s</span><span class="s2"> using </span><span class="si">%s</span><span class="s2"> to output </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span><span class="p">,</span>
@@ -608,9 +607,9 @@
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EACCES</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Service path cannot be None.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Service path cannot be None."</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; executable may have wrong permissions.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span><span class="si">}</span><span class="s2">' executable may have wrong permissions."</span>
                 <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
             <span class="k">raise</span>
 

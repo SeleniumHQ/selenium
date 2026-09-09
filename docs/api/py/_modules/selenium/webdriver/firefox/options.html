@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.firefox.options &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.firefox.options &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/firefox/options';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -364,13 +364,13 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Log">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Log</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Log.to_capabilities">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Log.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;log&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">}}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"log"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"level"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">}}</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 </div>
 
@@ -379,50 +379,50 @@
 <div class="viewcode-block" id="Options">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
-    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;moz:firefoxOptions&quot;</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s2">"moz:firefoxOptions"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.</span>
         <span class="c1"># Enable BiDi only</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="s2">&quot;remote.active-protocols&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="s2">"remote.active-protocols"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="p">:</span> <span class="n">FirefoxProfile</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the location of the binary.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the location of the binary."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the location of the browser binary by string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Sets the location of the browser binary by string."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BINARY_LOCATION_ERROR</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict of preferences.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns a dict of preferences."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
 
 <div class="viewcode-block" id="Options.set_preference">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.set_preference">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a preference.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Sets a preference."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FirefoxProfile</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Firefox profile to use.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the Firefox profile to use."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span>
 
     <span class="nd">@profile</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">FirefoxProfile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the location of the browser profile to use (string or FirefoxProfile object).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the location of the browser profile to use (string or FirefoxProfile object)."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_profile</span><span class="p">,</span> <span class="n">FirefoxProfile</span><span class="p">):</span>
             <span class="n">new_profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">(</span><span class="n">new_profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">new_profile</span>
@@ -430,7 +430,7 @@
 <div class="viewcode-block" id="Options.enable_mobile">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.enable_mobile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">enable_mobile</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">android_package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;org.mozilla.firefox&quot;</span><span class="p">,</span> <span class="n">android_activity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_serial</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">android_package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"org.mozilla.firefox"</span><span class="p">,</span> <span class="n">android_activity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_serial</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">enable_mobile</span><span class="p">(</span><span class="n">android_package</span><span class="p">,</span> <span class="n">android_activity</span><span class="p">,</span> <span class="n">device_serial</span><span class="p">)</span></div>
 
@@ -438,7 +438,7 @@
 <div class="viewcode-block" id="Options.to_capabilities">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions` object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Marshals the Firefox options to a `moz:firefoxOptions` object."""</span>
         <span class="c1"># This intentionally looks at the internal properties</span>
         <span class="c1"># so if a binary or profile has _not_ been set,</span>
         <span class="c1"># it will defer to geckodriver to find the system Firefox</span>
@@ -447,13 +447,13 @@
         <span class="n">opts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s2">"binary"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;prefs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s2">"prefs"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">encoded</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s2">"profile"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">encoded</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
-            <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s2">"args"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_options</span><span class="p">:</span>
             <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_options</span><span class="p">)</span>
 

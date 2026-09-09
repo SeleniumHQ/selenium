@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/log';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -371,36 +371,36 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">import_cdp</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">cdp</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cdp</span><span class="p">:</span>
-        <span class="n">cdp</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;selenium.webdriver.common.bidi.cdp&quot;</span><span class="p">)</span></div>
+        <span class="n">cdp</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">"selenium.webdriver.common.bidi.cdp"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="Log">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Log</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for accessing logging APIs using the WebDriver Bidi protocol.</span>
+<span class="w">    </span><span class="sd">"""Class for accessing logging APIs using the WebDriver Bidi protocol.</span>
 
 <span class="sd">    This class is not to be used directly and should be used from the</span>
 <span class="sd">    webdriver base classes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">bidi_session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">bidi_session</span><span class="o">.</span><span class="n">session</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span> <span class="o">=</span> <span class="n">bidi_session</span><span class="o">.</span><span class="n">cdp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devtools</span> <span class="o">=</span> <span class="n">bidi_session</span><span class="o">.</span><span class="n">devtools</span>
-        <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="c1"># Ensure _mutation_listener_js is not None before decoding</span>
-        <span class="n">_mutation_listener_js_bytes</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">&quot;mutation-listener.js&quot;</span><span class="p">)</span>
+        <span class="n">_mutation_listener_js_bytes</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">"mutation-listener.js"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_mutation_listener_js_bytes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to load mutation-listener.js&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span> <span class="o">=</span> <span class="n">_mutation_listener_js_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Failed to load mutation-listener.js"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span> <span class="o">=</span> <span class="n">_mutation_listener_js_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf8"</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Log.mutation_events">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.mutation_events">[docs]</a>
     <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mutation_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for mutation events and emit them as they are found.</span>
+<span class="w">        </span><span class="sd">"""Listen for mutation events and emit them as they are found.</span>
 
 <span class="sd">        .. deprecated::</span>
 <span class="sd">            Use ``driver.script.add_dom_mutation_handler()`` instead,</span>
@@ -408,55 +408,55 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">               async with driver.log.mutation_events() as event:</span>
-<span class="sd">                    pages.load(&quot;dynamic.html&quot;)</span>
-<span class="sd">                    driver.find_element(By.ID, &quot;reveal&quot;).click()</span>
+<span class="sd">                    pages.load("dynamic.html")</span>
+<span class="sd">                    driver.find_element(By.ID, "reveal").click()</span>
 <span class="sd">                    WebDriverWait(driver, 5)\</span>
-<span class="sd">                        .until(EC.visibility_of(driver.find_element(By.ID, &quot;revealed&quot;)))</span>
+<span class="sd">                        .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))</span>
 
-<span class="sd">                assert event[&quot;attribute_name&quot;] == &quot;style&quot;</span>
-<span class="sd">                assert event[&quot;current_value&quot;] == &quot;&quot;</span>
-<span class="sd">                assert event[&quot;old_value&quot;] == &quot;display:none;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                assert event["attribute_name"] == "style"</span>
+<span class="sd">                assert event["current_value"] == ""</span>
+<span class="sd">                assert event["old_value"] == "display:none;"</span>
+<span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;mutation_events is deprecated, use driver.script.add_dom_mutation_handler() instead&quot;</span><span class="p">,</span>
+            <span class="s2">"mutation_events is deprecated, use driver.script.add_dom_mutation_handler() instead"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;page.enable&quot;</span><span class="p">)</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"page.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="n">runtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;runtime.enable&quot;</span><span class="p">)</span>
+        <span class="n">runtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"runtime.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">runtime</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">runtime</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">add_binding</span><span class="p">(</span><span class="s2">&quot;__webdriver_attribute&quot;</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">runtime</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">add_binding</span><span class="p">(</span><span class="s2">"__webdriver_attribute"</span><span class="p">))</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="p">)</span>
         <span class="n">script_key</span> <span class="o">=</span> <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">add_script_to_evaluate_on_new_document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="p">,</span> <span class="n">script_key</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;return </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="sa">f</span><span class="s2">"return </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mutation_listener_js</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">runtime</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">BindingCalled</span><span class="p">)</span> <span class="k">as</span> <span class="n">evnt</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">event</span>
 
         <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">evnt</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
-        <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;*[data-__webdriver_id=&quot;</span><span class="si">{</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;]&#39;</span><span class="p">)</span>
+        <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'*[data-__webdriver_id="</span><span class="si">{</span><span class="n">payload</span><span class="p">[</span><span class="s2">"target"</span><span class="p">]</span><span class="si">}</span><span class="s1">"]'</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">elements</span><span class="p">:</span>
             <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="n">event</span><span class="p">[</span><span class="s2">&quot;element&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">event</span><span class="p">[</span><span class="s2">&quot;attribute_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">event</span><span class="p">[</span><span class="s2">&quot;current_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="n">event</span><span class="p">[</span><span class="s2">&quot;old_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;oldValue&quot;</span><span class="p">]</span></div>
+        <span class="n">event</span><span class="p">[</span><span class="s2">"element"</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">event</span><span class="p">[</span><span class="s2">"attribute_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+        <span class="n">event</span><span class="p">[</span><span class="s2">"current_value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span>
+        <span class="n">event</span><span class="p">[</span><span class="s2">"old_value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"oldValue"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Log.add_js_error_listener">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_js_error_listener">[docs]</a>
     <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">add_js_error_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for JS errors and check if they occurred when the context manager exits.</span>
+<span class="w">        </span><span class="sd">"""Listen for JS errors and check if they occurred when the context manager exits.</span>
 
 <span class="sd">        .. deprecated::</span>
 <span class="sd">            Use ``driver.script.add_javascript_error_handler()`` instead,</span>
@@ -464,18 +464,18 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">                async with driver.log.add_js_error_listener() as error:</span>
-<span class="sd">                    driver.find_element(By.ID, &quot;throwing-mouseover&quot;).click()</span>
+<span class="sd">                    driver.find_element(By.ID, "throwing-mouseover").click()</span>
 <span class="sd">                assert bool(error)</span>
-<span class="sd">                assert error.exception_details.stack_trace.call_frames[0].function_name == &quot;onmouseover&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"</span>
+<span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;add_js_error_listener is deprecated, use driver.script.add_javascript_error_handler() instead&quot;</span><span class="p">,</span>
+            <span class="s2">"add_js_error_listener is deprecated, use driver.script.add_javascript_error_handler() instead"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;page.enable&quot;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"page.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;runtime.enable&quot;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"runtime.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
         <span class="n">js_exception</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ExceptionThrown</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ExceptionThrown</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
@@ -488,7 +488,7 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_listener">[docs]</a>
     <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen for certain events that are passed in.</span>
+<span class="w">        </span><span class="sd">"""Listen for certain events that are passed in.</span>
 
 <span class="sd">        .. deprecated::</span>
 <span class="sd">            Use ``driver.script.add_console_message_handler()`` instead,</span>
@@ -499,27 +499,27 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">                async with driver.log.add_listener(Console.log) as messages:</span>
-<span class="sd">                    driver.execute_script(&quot;console.log(&#39;I like cheese&#39;)&quot;)</span>
-<span class="sd">                assert messages[&quot;message&quot;] == &quot;I love cheese&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                    driver.execute_script("console.log('I like cheese')")</span>
+<span class="sd">                assert messages["message"] == "I love cheese"</span>
+<span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;add_listener is deprecated, use driver.script.add_console_message_handler() instead&quot;</span><span class="p">,</span>
+            <span class="s2">"add_listener is deprecated, use driver.script.add_console_message_handler() instead"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
 
-        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;page.enable&quot;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"page.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">&quot;runtime.enable&quot;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s2">"runtime.enable"</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-        <span class="n">console</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">console</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"level"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ConsoleAPICalled</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">console</span>
 
         <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ALL</span> <span class="ow">or</span> <span class="n">event_type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">type_</span><span class="p">:</span>
-            <span class="n">console</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">console</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type_</span></div>
+            <span class="n">console</span><span class="p">[</span><span class="s2">"message"</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">console</span><span class="p">[</span><span class="s2">"level"</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type_</span></div>
 </div>
 
 </pre></div>

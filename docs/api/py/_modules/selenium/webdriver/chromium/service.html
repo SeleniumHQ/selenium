@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.chromium.service &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.chromium.service &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/chromium/service';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -365,7 +365,7 @@
 <div class="viewcode-block" id="ChromiumService">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.service.html#selenium.webdriver.chromium.service.ChromiumService">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChromiumService</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Service class responsible for starting and stopping the ChromiumDriver WebDriver instance.</span>
+<span class="w">    </span><span class="sd">"""Service class responsible for starting and stopping the ChromiumDriver WebDriver instance.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        executable_path: (Optional) Install path of the executable.</span>
@@ -374,7 +374,7 @@
 <span class="sd">        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.</span>
 <span class="sd">        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.</span>
 <span class="sd">        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -387,27 +387,27 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">service_args</span> <span class="ow">or</span> <span class="p">[])</span>
-        <span class="n">driver_path_env_key</span> <span class="o">=</span> <span class="n">driver_path_env_key</span> <span class="ow">or</span> <span class="s2">&quot;SE_CHROMEDRIVER&quot;</span>
+        <span class="n">driver_path_env_key</span> <span class="o">=</span> <span class="n">driver_path_env_key</span> <span class="ow">or</span> <span class="s2">"SE_CHROMEDRIVER"</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--log-path=</span><span class="si">{</span><span class="n">log_output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--log-path=</span><span class="si">{</span><span class="n">log_output</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="n">log_output</span>
 
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SE_DEBUG&quot;</span><span class="p">):</span>
-            <span class="n">has_arg_conflicts</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;log-level&quot;</span><span class="p">,</span> <span class="s2">&quot;log-path&quot;</span><span class="p">,</span> <span class="s2">&quot;silent&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"SE_DEBUG"</span><span class="p">):</span>
+            <span class="n">has_arg_conflicts</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-path"</span><span class="p">,</span> <span class="s2">"silent"</span><span class="p">))</span>
             <span class="n">has_output_conflict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">has_arg_conflicts</span> <span class="ow">or</span> <span class="n">has_output_conflict</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Environment Variable `SE_DEBUG` is set; &quot;</span>
-                    <span class="s2">&quot;forcing ChromiumDriver --verbose and overriding log-level/log-output/silent settings.&quot;</span>
+                    <span class="s2">"Environment Variable `SE_DEBUG` is set; "</span>
+                    <span class="s2">"forcing ChromiumDriver --verbose and overriding log-level/log-output/silent settings."</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">has_arg_conflicts</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;log-level&quot;</span><span class="p">,</span> <span class="s2">&quot;log-path&quot;</span><span class="p">,</span> <span class="s2">&quot;silent&quot;</span><span class="p">))</span>
+                    <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-path"</span><span class="p">,</span> <span class="s2">"silent"</span><span class="p">))</span>
                 <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--verbose&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--verbose"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log_output</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -422,18 +422,18 @@
 <div class="viewcode-block" id="ChromiumService.command_line_args">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.service.html#selenium.webdriver.chromium.service.ChromiumService.command_line_args">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">command_line_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;--port=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"--port=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">service_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the sequence of service arguments.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the sequence of service arguments."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span>
 
     <span class="nd">@service_args</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">service_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;service_args must be a sequence&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"service_args must be a sequence"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 </pre></div>

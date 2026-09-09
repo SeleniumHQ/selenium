@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/safari/webdriver';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -364,7 +364,7 @@
 <div class="viewcode-block" id="WebDriver">
 <a class="viewcode-back" href="../../../../selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebDriver</span><span class="p">(</span><span class="n">LocalWebDriver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controls the SafariDriver and allows you to drive the browser.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Controls the SafariDriver and allows you to drive the browser."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -372,13 +372,13 @@
         <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Safari driver instance and launch or find a running safaridriver service.</span>
+<span class="w">        </span><span class="sd">"""Create a new Safari driver instance and launch or find a running safaridriver service.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            options: Instance of Options.</span>
 <span class="sd">            service: Service object for handling the browser driver if you need to pass extra details.</span>
 <span class="sd">            keep_alive: Whether to configure SafariRemoteConnection to use HTTP keep-alive.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
 
@@ -402,11 +402,11 @@
 <div class="viewcode-block" id="WebDriver.quit">
 <a class="viewcode-back" href="../../../../selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.quit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Closes the browser and shuts down the SafariDriver executable.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Closes the browser and shuts down the SafariDriver executable."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="c1"># We don&#39;t care about the message because something probably has gone wrong</span>
+            <span class="c1"># We don't care about the message because something probably has gone wrong</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">reuse_service</span><span class="p">:</span>
@@ -421,18 +421,18 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.set_permission">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Value of a session permission must be set to True or False.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Value of a session permission must be set to True or False."</span><span class="p">)</span>
 
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="n">permission</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET_PERMISSIONS&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="p">})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SET_PERMISSIONS"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"permissions"</span><span class="p">:</span> <span class="n">payload</span><span class="p">})</span></div>
 
 
     <span class="c1"># First available in Safari 11.1 and Safari Technology Preview 41.</span>
 <div class="viewcode-block" id="WebDriver.get_permission">
 <a class="viewcode-back" href="../../../../selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.get_permission">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;GET_PERMISSIONS&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="n">permissions</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;permissions&quot;</span><span class="p">]</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"GET_PERMISSIONS"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
+        <span class="n">permissions</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">"permissions"</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">permissions</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -450,8 +450,8 @@
 <div class="viewcode-block" id="WebDriver.debug">
 <a class="viewcode-back" href="../../../../selenium_webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver.debug">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;ATTACH_DEBUGGER&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;debugger;&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"ATTACH_DEBUGGER"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">"debugger;"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

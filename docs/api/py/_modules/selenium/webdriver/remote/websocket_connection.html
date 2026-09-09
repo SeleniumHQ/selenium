@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.websocket_connection &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.remote.websocket_connection &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/websocket_connection';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -367,21 +367,21 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_snake_to_camel</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert snake_case field name to camelCase for BiDi protocol.&quot;&quot;&quot;</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="w">    </span><span class="sd">"""Convert snake_case field name to camelCase for BiDi protocol."""</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_BiDiEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;JSON encoder for BiDi dataclass instances.</span>
+<span class="w">    </span><span class="sd">"""JSON encoder for BiDi dataclass instances.</span>
 
 <span class="sd">    Converts snake_case field names to camelCase, strips ``None`` values,</span>
 <span class="sd">    and flattens a ``properties`` field (e.g. ``PointerCommonProperties``)</span>
 <span class="sd">    directly into its parent action dict as required by the BiDi spec.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively convert a value, handling nested dataclasses, lists, and dicts.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Recursively convert a value, handling nested dataclasses, lists, and dicts."""</span>
         <span class="k">if</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -398,11 +398,11 @@
                 <span class="c1"># Skip None values unless the field is explicitly marked</span>
                 <span class="c1"># retain_none=True in its metadata (e.g. for required-but-nullable</span>
                 <span class="c1"># BiDi fields that must be sent as JSON null rather than omitted).</span>
-                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;retain_none&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"retain_none"</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">camel_key</span> <span class="o">=</span> <span class="n">_snake_to_camel</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="c1"># Flatten PointerCommonProperties fields inline into the parent</span>
-                <span class="k">if</span> <span class="n">camel_key</span> <span class="o">==</span> <span class="s2">&quot;properties&quot;</span> <span class="ow">and</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">camel_key</span> <span class="o">==</span> <span class="s2">"properties"</span> <span class="ow">and</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                         <span class="n">pv</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pf</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">pv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -423,9 +423,9 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;timeout must be a positive number&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"timeout must be a positive number"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;interval must be a positive number&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"interval must be a positive number"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">response_wait_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
@@ -451,7 +451,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while closing websocket connection: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error while closing websocket connection: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ws_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ws_thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">response_wait_timeout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="kc">False</span>
@@ -459,36 +459,36 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_round_trip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign an id, envelope and send the frame, and return the correlated raw reply.</span>
+<span class="w">        </span><span class="sd">"""Assign an id, envelope and send the frame, and return the correlated raw reply.</span>
 
 <span class="sd">        Shared by ``execute`` (coroutine path) and ``send_cmd`` (direct path). Raises on</span>
 <span class="sd">        timeout; the caller decides what to do with a reply that carries ``error``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_lock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">current_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
-        <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_id</span>
+        <span class="n">payload</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span>
-            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">"sessionId"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">_BiDiEncoder</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-&gt; </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_message_size</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"-&gt; </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">"</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_message_size</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">current_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timed out waiting for response to BiDi command </span><span class="si">{</span><span class="n">current_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Timed out waiting for response to BiDi command </span><span class="si">{</span><span class="n">current_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">current_id</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebSocketConnection.send_cmd">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.websocket_connection.html#selenium.webdriver.remote.websocket_connection.WebSocketConnection.send_cmd">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">send_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send one command and return its raw reply (``result`` or ``error`` left intact).</span>
+<span class="w">        </span><span class="sd">"""Send one command and return its raw reply (``result`` or ``error`` left intact).</span>
 
 <span class="sd">        The dumb-send counterpart to ``execute``: no coroutine, no error raising. The</span>
 <span class="sd">        caller parses the reply into its declared type and raises on ``error`` itself.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_trip</span><span class="p">({</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">})</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_trip</span><span class="p">({</span><span class="s2">"method"</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="n">params</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="WebSocketConnection.execute">
@@ -496,15 +496,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_round_trip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_serialize_command</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;message&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
-                <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="s2">"error"</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"error"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"message"</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="p">[</span><span class="s1">'message'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span></div>
 
 
@@ -541,7 +541,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_deserialize_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;The command&#39;s generator function did not exit when expected!&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"The command's generator function did not exit when expected!"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">exit</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">exit</span><span class="o">.</span><span class="n">value</span>
 
@@ -553,12 +553,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">ws</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">run_socket</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;wss://&quot;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">sslopt</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cert_reqs&quot;</span><span class="p">:</span> <span class="n">CERT_NONE</span><span class="p">},</span> <span class="n">suppress_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"wss://"</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">sslopt</span><span class="o">=</span><span class="p">{</span><span class="s2">"cert_reqs"</span><span class="p">:</span> <span class="n">CERT_NONE</span><span class="p">},</span> <span class="n">suppress_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">run_forever</span><span class="p">(</span><span class="n">suppress_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -568,14 +568,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;- </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_message_size</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;- </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_message_size</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">[</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="k">if</span> <span class="s2">"id"</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">[</span><span class="n">message</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]]</span> <span class="o">=</span> <span class="n">message</span>
 
-        <span class="k">if</span> <span class="s2">&quot;method&quot;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="p">[]):</span>
+        <span class="k">if</span> <span class="s2">"method"</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">"params"</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">"method"</span><span class="p">],</span> <span class="p">[]):</span>
                 <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">params</span><span class="p">,),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_wait_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>

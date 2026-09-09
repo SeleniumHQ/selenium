@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.48.0 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.49.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=f369efd0"></script>
+    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/firefox/webdriver';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.48" />
+  <meta name="docsearch:version" content="4.49" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.48.0 documentation</p>
+    <p class="title logo__title">Selenium 4.49.0 documentation</p>
   
 </a></div>
     
@@ -341,14 +341,14 @@
 <span class="c1"># distributed with this work for additional information</span>
 <span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
 <span class="c1"># to you under the Apache License, Version 2.0 (the</span>
-<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
 <span class="c1"># with the License.  You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing,</span>
 <span class="c1"># software distributed under the License is distributed on an</span>
-<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
@@ -370,10 +370,10 @@
 <div class="viewcode-block" id="WebDriver">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebDriver</span><span class="p">(</span><span class="n">LocalWebDriver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controls the GeckoDriver and allows you to drive the browser.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Controls the GeckoDriver and allows you to drive the browser."""</span>
 
-    <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s2">&quot;chrome&quot;</span>
-    <span class="n">CONTEXT_CONTENT</span> <span class="o">=</span> <span class="s2">&quot;content&quot;</span>
+    <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s2">"chrome"</span>
+    <span class="n">CONTEXT_CONTENT</span> <span class="o">=</span> <span class="s2">"content"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -381,13 +381,13 @@
         <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new instance of the Firefox driver, start the service, and create new instance.</span>
+<span class="w">        </span><span class="sd">"""Create a new instance of the Firefox driver, start the service, and create new instance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            options: Instance of Options.</span>
 <span class="sd">            service: Service object for handling the browser driver if you need to pass extra details.</span>
 <span class="sd">            keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
 
@@ -414,19 +414,19 @@
 <div class="viewcode-block" id="WebDriver.set_context">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.set_context">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the context that Selenium commands are running in.</span>
+<span class="w">        </span><span class="sd">"""Sets the context that Selenium commands are running in.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Context to set, should be one of CONTEXT_CHROME or CONTEXT_CONTENT.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET_CONTEXT&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">})</span></div>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SET_CONTEXT"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"context"</span><span class="p">:</span> <span class="n">context</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.context">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.context">[docs]</a>
     <span class="nd">@contextmanager</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the context that Selenium commands are running in using a `with` statement.</span>
+<span class="w">        </span><span class="sd">"""Set the context that Selenium commands are running in using a `with` statement.</span>
 
 <span class="sd">        The state of the context on the server is saved before entering the block,</span>
 <span class="sd">        and restored upon exiting it.</span>
@@ -439,8 +439,8 @@
 <span class="sd">            with selenium.context(selenium.CONTEXT_CHROME):</span>
 <span class="sd">                # chrome scope</span>
 <span class="sd">                ... do stuff ...</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">initial_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;GET_CONTEXT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">initial_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"GET_CONTEXT"</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">yield</span>
@@ -451,7 +451,7 @@
 <div class="viewcode-block" id="WebDriver.install_addon">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.install_addon">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">install_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Installs Firefox addon.</span>
+<span class="w">        </span><span class="sd">"""Installs Firefox addon.</span>
 
 <span class="sd">        Returns identifier of installed addon. This identifier can later</span>
 <span class="sd">        be used to uninstall addon.</span>
@@ -464,46 +464,46 @@
 <span class="sd">            Identifier of installed addon.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            driver.install_addon(&quot;/path/to/firebug.xpi&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            driver.install_addon("/path/to/firebug.xpi")</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
             <span class="c1"># filter all trailing slash found in path</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="c1"># account for trailing slash that will be added by os.walk()</span>
             <span class="n">path_root</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">strict_timestamps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">strict_timestamps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">fyle</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">fyle</span><span class="p">)</span>
                         <span class="n">zipped</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename</span><span class="p">[</span><span class="n">path_root</span><span class="p">:])</span>
-            <span class="n">addon</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+            <span class="n">addon</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">addon</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">addon</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
 
-        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;addon&quot;</span><span class="p">:</span> <span class="n">addon</span><span class="p">,</span> <span class="s2">&quot;temporary&quot;</span><span class="p">:</span> <span class="n">temporary</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSTALL_ADDON&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"addon"</span><span class="p">:</span> <span class="n">addon</span><span class="p">,</span> <span class="s2">"temporary"</span><span class="p">:</span> <span class="n">temporary</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"INSTALL_ADDON"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.uninstall_addon">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">uninstall_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Uninstalls Firefox addon using its identifier.</span>
+<span class="w">        </span><span class="sd">"""Uninstalls Firefox addon using its identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: The addon identifier to uninstall.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            driver.uninstall_addon(&quot;addon@foo.com&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UNINSTALL_ADDON&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">})</span></div>
+<span class="sd">            driver.uninstall_addon("addon@foo.com")</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"UNINSTALL_ADDON"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">identifier</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_file">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a full document screenshot of the current window to a PNG image file.</span>
+<span class="w">        </span><span class="sd">"""Save a full document screenshot of the current window to a PNG image file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
@@ -513,16 +513,16 @@
 <span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            driver.get_full_page_screenshot_as_file(&quot;/Screenshots/foo.png&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">):</span>
+<span class="sd">            driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".png"</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;name used for saved screenshot does not match file type. It should end with a `.png` extension&quot;</span><span class="p">,</span>
+                <span class="s2">"name used for saved screenshot does not match file type. It should end with a `.png` extension"</span><span class="p">,</span>
                 <span class="ne">UserWarning</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_png</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">png</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -534,7 +534,7 @@
 <div class="viewcode-block" id="WebDriver.save_full_page_screenshot">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.save_full_page_screenshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a full document screenshot of the current window to a PNG image file.</span>
+<span class="w">        </span><span class="sd">"""Save a full document screenshot of the current window to a PNG image file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
@@ -544,37 +544,37 @@
 <span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            driver.save_full_page_screenshot(&quot;/Screenshots/foo.png&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            driver.save_full_page_screenshot("/Screenshots/foo.png")</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_png">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the full document screenshot of the current window as binary data.</span>
+<span class="w">        </span><span class="sd">"""Get the full document screenshot of the current window as binary data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Binary data of the screenshot.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            driver.get_full_page_screenshot_as_png()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_base64">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the full document screenshot of the current window as a base64-encoded string.</span>
+<span class="w">        </span><span class="sd">"""Get the full document screenshot of the current window as a base64-encoded string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Base64 encoded string of the screenshot.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            driver.get_full_page_screenshot_as_base64()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;FULL_PAGE_SCREENSHOT&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"FULL_PAGE_SCREENSHOT"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 </div>
 
 </pre></div>
