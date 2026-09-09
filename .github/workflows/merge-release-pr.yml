@@ -1,0 +1,50 @@
+name: Merge Release PR
+
+# Trunk is locked by a ruleset during a release and GitHub's auto-merge cannot use bypass
+# permissions, so the bot (a bypass actor) merges the release PR once its required checks pass.
+# Both listed workflows fire this on completion and whichever finishes last performs the merge.
+# CI - Lint is always done long before either, so it is only verified, never waited on.
+on:
+  workflow_run:
+    workflows: ["CI", "CI - RBE"]
+    types: [completed]
+    branches: ["release-preparation-*"]
+
+permissions: {}
+
+concurrency:
+  group: merge-release-pr-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  merge:
+    name: Merge
+    if: github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Find the open release PR
+        id: pr
+        env:
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          number=$(gh pr list --head "$BRANCH" --base trunk --state open --json number --jq '.[0].number')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Check required checks
+        id: checks
+        if: steps.pr.outputs.number
+        env:
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          # Exits non-zero while checks are pending or when the release rulesets are absent.
+          checks=$(gh pr checks "$PR" --required --json name,bucket 2>/dev/null || echo '[]')
+          jq -r '.[] | "\(.bucket)\t\(.name)"' <<<"$checks"
+          echo "passed=$(jq 'length > 0 and all(.bucket == "pass")' <<<"$checks")" >> "$GITHUB_OUTPUT"
+      - name: Merge
+        if: steps.checks.outputs.passed == 'true'
+        env:
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: gh pr merge "$PR" --squash --match-head-commit "$SHA"
