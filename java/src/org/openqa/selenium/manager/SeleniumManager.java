@@ -211,18 +211,16 @@ public class SeleniumManager {
         } else if (current.is(MAC)) {
           folder = "macos";
         } else if (current.is(LINUX)) {
-          if (System.getProperty("os.arch").contains("arm")
-              || System.getProperty("os.arch").contains("aarch64")) {
-            throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
-          } else {
-            folder = "linux";
-          }
+          folder =
+              System.getProperty("os.arch", "").toLowerCase().contains("aarch64")
+                  ? "linux-arm64"
+                  : "linux-x86_64";
         } else if (current.is(UNIX)) {
           LOG.warning(
               String.format(
                   "Selenium Manager binary may not be compatible with %s; verify settings",
                   current));
-          folder = "linux";
+          folder = "linux-x86_64";
         } else {
           throw new WebDriverException("Unsupported platform: " + current);
         }
