@@ -194,7 +194,7 @@ end
 
 desc 'Build Java Client Jars'
 task :build do |_task, arguments|
-  java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
+  Bazel.execute('build', arguments.to_a, java_release_targets)
 end
 
 desc 'Build the selenium client jars'
