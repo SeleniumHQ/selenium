@@ -73,6 +73,11 @@ build --incompatible_strict_action_env
 # Creates a harmless empty repo instead of failing on missing API platforms.
 common --repo_env=ANDROID_HOME=
 
+# Add a Launchpad fallback for the pinned zlib .deb that rules_rs fetches from
+# snapshot.ubuntu.com, so an intermittent snapshot.ubuntu.com outage no longer
+# aborts every Rust-touching build. See third_party/bazel/downloader.cfg.
+common --downloader_config=third_party/bazel/downloader.cfg
+
 # Required for prebuilt protoc to be used
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
 
