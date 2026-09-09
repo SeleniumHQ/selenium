@@ -439,9 +439,9 @@ def test_invalid_max_age_ignored():
     assert "expiry" not in c
 
 
-def test_no_equals_returns_empty():
+def test_no_equals_returns_none():
     c = _parse_set_cookie("malformed")
-    assert c == {}
+    assert c is None
 
 
 def test_value_with_equals_sign():

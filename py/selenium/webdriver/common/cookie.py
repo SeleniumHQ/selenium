@@ -18,7 +18,7 @@
 from typing_extensions import NotRequired, TypedDict
 
 
-class Cookie(TypedDict, total=False):
+class Cookie(TypedDict):
     """A WebDriver cookie dictionary."""
 
     name: str

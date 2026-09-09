@@ -24,7 +24,7 @@ import time
 import urllib.parse
 from email.utils import parsedate_to_datetime
 from http.client import responses as http_status_phrases
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import urllib3
 from urllib3.util.retry import Retry
@@ -153,7 +153,7 @@ def _cookie_matches(cookie: Cookie, url: str, default_domain: str = "") -> bool:
     return True
 
 
-def _parse_set_cookie(header_value: str) -> Cookie:
+def _parse_set_cookie(header_value: str) -> Cookie | None:
     """Parse a single Set-Cookie header value into a cookie dict.
 
     Uses manual parsing instead of http.cookies.SimpleCookie which is too
@@ -163,13 +163,14 @@ def _parse_set_cookie(header_value: str) -> Cookie:
         header_value: The Set-Cookie header string.
 
     Returns:
-        A dict with cookie attributes suitable for driver.add_cookie().
+        A dict with cookie attributes suitable for driver.add_cookie(), or None
+        if the header does not contain a name-value pair.
     """
     parts = header_value.split(";")
     name_value = parts[0].strip()
     eq_idx = name_value.find("=")
     if eq_idx == -1:
-        return {}
+        return None
     name = name_value[:eq_idx].strip()
     value = name_value[eq_idx + 1 :].strip()
 
@@ -609,7 +610,7 @@ class APIRequestContext(_BaseRequestContext):
     def _get_cookies_for_request(self, url: str) -> list[Cookie]:
         """Get matching browser cookies for the request URL."""
         try:
-            browser_cookies = self._driver.get_cookies()
+            browser_cookies = cast(list[Cookie], self._driver.get_cookies())
         except Exception:
             logger.debug("Could not retrieve browser cookies", exc_info=True)
             return []
@@ -628,7 +629,7 @@ class APIRequestContext(_BaseRequestContext):
         parsed_url = urllib.parse.urlparse(url)
         for sc_header in set_cookie_headers:
             cookie = _parse_set_cookie(sc_header)
-            if not cookie.get("name"):
+            if cookie is None or not cookie["name"]:
                 continue
             cookie.setdefault("domain", parsed_url.hostname or "")
             cookie.setdefault("path", "/")
@@ -689,7 +690,7 @@ class _IsolatedAPIRequestContext(_BaseRequestContext):
         now = int(time.time())
         for sc_header in set_cookie_headers:
             cookie = _parse_set_cookie(sc_header)
-            if not cookie.get("name"):
+            if cookie is None or not cookie["name"]:
                 continue
             cookie.setdefault("domain", parsed_url.hostname or "")
             cookie.setdefault("path", "/")
