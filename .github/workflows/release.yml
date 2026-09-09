@@ -278,6 +278,7 @@ jobs:
     with:
       name: Verify packages
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
+    secrets: inherit
 
   reset-version:
     name: Generate Nightly Versions

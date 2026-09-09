@@ -237,9 +237,6 @@ def test_is_element_displayed(driver, pages):
     assert not not_visible
 
 
-@pytest.mark.xfail_edge
-@pytest.mark.xfail_firefox(reason="https://github.com/mozilla/geckodriver/issues/2224")
-@pytest.mark.xfail_remote(reason="https://github.com/mozilla/geckodriver/issues/2224")
 @pytest.mark.xfail_safari
 def test_move_window_position(driver, pages):
     pages.load("blank.html")
@@ -260,8 +257,6 @@ def test_move_window_position(driver, pages):
     assert loc["x"] != original["x"] or loc["y"] != original["y"]
 
 
-@pytest.mark.xfail_edge(reason="Window sometimes does not resize")
-@pytest.mark.xfail_remote(reason="Window sometimes does not resize")
 def test_change_window_size(driver, pages):
     pages.load("blank.html")
     size = driver.get_window_size()

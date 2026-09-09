@@ -371,7 +371,6 @@ class WebDriver(BaseWebDriver):
 
         This method may be overridden to define custom startup behavior.
         """
-        pass
 
     def stop_client(self) -> None:
         """Called after executing a quit command.
@@ -379,7 +378,6 @@ class WebDriver(BaseWebDriver):
         This method may be overridden to define custom shutdown
         behavior.
         """
-        pass
 
     def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.
@@ -426,7 +424,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(value, self._shadowroot_cls):
             return {"shadow-6066-11e4-a52e-4f735466cecf": value.id}
         if isinstance(value, list):
-            return list(self._wrap_value(item) for item in value)
+            return [self._wrap_value(item) for item in value]
         return value
 
     def create_web_element(self, element_id: str) -> WebElement:
@@ -443,7 +441,7 @@ class WebDriver(BaseWebDriver):
                 value[key] = self._unwrap_value(val)
             return value
         if isinstance(value, list):
-            return list(self._unwrap_value(item) for item in value)
+            return [self._unwrap_value(item) for item in value]
         return value
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):

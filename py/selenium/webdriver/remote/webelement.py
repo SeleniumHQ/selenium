@@ -52,8 +52,6 @@ class BaseWebElement(metaclass=ABCMeta):
     pass type checks.
     """
 
-    pass
-
 
 class WebElement(BaseWebElement):
     """Represents a DOM element.
@@ -261,12 +259,10 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(
-                map(
-                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
-                    "".join(map(str, value)).split("\n"),
-                )
-            )
+            local_files = [
+                self.parent.file_detector.is_local_file(str(keys_to_send))
+                for keys_to_send in "".join(map(str, value)).split("\n")
+            ]
             if None not in local_files:
                 remote_files = []
                 for file in local_files:

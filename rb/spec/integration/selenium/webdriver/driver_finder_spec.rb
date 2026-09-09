@@ -25,7 +25,7 @@ module Selenium
   module WebDriver
     describe DriverFinder, skip_if: {driver: :remote} do
       let(:browser) { GlobalTestEnv.browser }
-      let(:options) { WebDriver::Options.send(browser) }
+      let(:options) { WebDriver::Options.send(browser, browser_version: GlobalTestEnv.browser_version) }
       let(:service) { WebDriver::Service.send(browser) }
       let(:driver_finder) { described_class.new(options, service) }
 

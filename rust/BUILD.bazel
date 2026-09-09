@@ -13,56 +13,33 @@ rustfmt_config(
 # We tag the compiled versions as `manual` so that when we do a
 # `bazel build //...` we don't do any additional work
 
-# Start with the variants for each platform
-alias(
-    name = "selenium-manager-windows",
-    actual = select({
-        "//common:windows": ":selenium-manager",
-        "//conditions:default": "@download_sm_windows//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
+SELENIUM_MANAGER_PLATFORMS = [
+    "linux-arm64",
+    "linux-x86_64",
+    "macos",
+    "windows",
+]
 
-alias(
-    name = "selenium-manager-macos",
-    actual = select({
-        "//common:macos": ":selenium-manager",
-        "//conditions:default": "@download_sm_macos//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
-
-alias(
-    name = "selenium-manager-linux",
-    actual = select({
-        "//common:linux": ":selenium-manager",
-        "//conditions:default": "@download_sm_linux//file",
-    }),
-    tags = [
-        "manual",
-    ],
-    visibility = [
-        "//common/manager:__pkg__",
-    ],
-)
+[
+    alias(
+        name = "selenium-manager-%s" % platform,
+        actual = select({
+            "//common:%s" % platform.replace("-", "_"): ":selenium-manager",
+            "//conditions:default": "@download_sm_%s//file" % platform.replace("-", "_"),
+        }),
+        tags = [
+            "manual",
+        ],
+        visibility = [
+            "//common/manager:__pkg__",
+        ],
+    )
+    for platform in SELENIUM_MANAGER_PLATFORMS
+]
 
 filegroup(
     name = "selenium-manager-dev",
-    srcs = [
-        ":selenium-manager-linux",
-        ":selenium-manager-macos",
-        ":selenium-manager-windows",
-    ],
+    srcs = [":selenium-manager-%s" % platform for platform in SELENIUM_MANAGER_PLATFORMS],
     tags = [
         "manual",
     ],
@@ -83,6 +60,7 @@ rust_binary(
     name = "selenium-manager",
     srcs = ["src/main.rs"],
     aliases = aliases(),
+    compile_data = [":selenium_manager_legal"],
     edition = "2024",
     # clap's `#[clap(about)]` derives the CLI description from
     # CARGO_PKG_DESCRIPTION. Cargo sets this from Cargo.toml automatically, but
@@ -90,11 +68,20 @@ rust_binary(
     rustc_env = {
         "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
     },
-    version = "0.4.49-nightly",
+    version = "0.4.50-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",
     ] + all_crate_deps(normal = True),
+)
+
+filegroup(
+    name = "selenium_manager_legal",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    visibility = ["//rust:__subpackages__"],
 )
 
 rust_library(

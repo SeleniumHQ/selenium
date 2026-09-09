@@ -112,11 +112,11 @@ jobs:
           - arch: x86_64
             runner: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            artifact: selenium-manager-linux
+            artifact: selenium-manager-linux-x86_64
           - arch: aarch64
             runner: ubuntu-24.04-arm
             target: aarch64-unknown-linux-musl
-            artifact: selenium-manager-linux-aarch64
+            artifact: selenium-manager-linux-arm64
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
@@ -156,11 +156,11 @@ jobs:
           - arch: x86_64
             runner: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            artifact: selenium-manager-linux-debug
+            artifact: selenium-manager-linux-x86_64-debug
           - arch: aarch64
             runner: ubuntu-24.04-arm
             target: aarch64-unknown-linux-musl
-            artifact: selenium-manager-linux-aarch64-debug
+            artifact: selenium-manager-linux-arm64-debug
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
@@ -308,13 +308,13 @@ jobs:
           path: artifacts
       - name: "Prepare and Commit"
         run: |
-          linux_sha=$(shasum -a 256 artifacts/selenium-manager-linux/selenium-manager-linux | awk '{print $1}')
-          linux_aarch64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-aarch64/selenium-manager-linux-aarch64 | awk '{print $1}')
+          linux_x86_64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-x86_64/selenium-manager-linux-x86_64 | awk '{print $1}')
+          linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
           macos_sha=$(shasum -a 256 artifacts/selenium-manager-macos/selenium-manager-macos | awk '{print $1}')
           windows_sha=$(shasum -a 256 artifacts/selenium-manager-windows/selenium-manager-windows.exe | awk '{print $1}')
           sbom_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager.cdx.json | awk '{print $1}')
           notice_sha=$(shasum -a 256 artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt | awk '{print $1}')
-          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux\": \"$linux_sha\", \"linux-aarch64\": \"$linux_aarch64_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
+          echo "{\"macos\": \"$macos_sha\", \"windows\": \"$windows_sha\", \"linux-x86_64\": \"$linux_x86_64_sha\", \"linux-arm64\": \"$linux_arm64_sha\", \"sbom\": \"$sbom_sha\", \"notice\": \"$notice_sha\"}" > latest.json
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add latest.json
@@ -332,12 +332,12 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/selenium-manager-linux/selenium-manager-linux
-            artifacts/selenium-manager-linux-aarch64/selenium-manager-linux-aarch64
+            artifacts/selenium-manager-linux-x86_64/selenium-manager-linux-x86_64
+            artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64
             artifacts/selenium-manager-macos/selenium-manager-macos
             artifacts/selenium-manager-windows/selenium-manager-windows.exe
-            artifacts/selenium-manager-linux-debug/selenium-manager-linux-debug.tar
-            artifacts/selenium-manager-linux-aarch64-debug/selenium-manager-linux-aarch64-debug.tar
+            artifacts/selenium-manager-linux-x86_64-debug/selenium-manager-linux-x86_64-debug.tar
+            artifacts/selenium-manager-linux-arm64-debug/selenium-manager-linux-arm64-debug.tar
             artifacts/selenium-manager-macos-debug/selenium-manager-macos-debug.tar
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
             artifacts/selenium-manager-sbom/selenium-manager.cdx.json
