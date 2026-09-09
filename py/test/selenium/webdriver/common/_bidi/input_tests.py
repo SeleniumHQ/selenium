@@ -41,6 +41,7 @@ from selenium.webdriver.common._bidi.input import (
 )
 from selenium.webdriver.common._bidi.script import SharedReference
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -48,6 +49,19 @@ def _center(element):
     location = element.location
     size = element.size
     return location["x"] + size["width"] // 2, location["y"] + size["height"] // 2
+
+
+def _write_temp_file(contents):
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as temp_file:
+        temp_file.write(contents)
+        return temp_file.name
+
+
+def _typing_actions(text):
+    actions = []
+    for character in text:
+        actions.extend([KeyDownAction(value=character), KeyUpAction(value=character)])
+    return KeySourceActions(id="keyboard", actions=actions)
 
 
 def _load_single_text_input(driver, pages):
@@ -553,3 +567,87 @@ def test_wheel_scroll_with_element_origin(driver, pages):
     Input(driver).perform_actions(context=driver.current_window_handle, actions=[wheel_actions])
 
     assert driver.execute_script("return window.pageYOffset;") >= 0
+
+
+def test_set_files_posts_file_to_server(driver, pages):
+    """Mirror of ``upload_tests.test_can_upload_file``.
+
+    The other ``set_files`` tests stop at the input's ``value``, which only shows the filename string was
+    accepted. Submitting the form and reading what the endpoint echoed back is what proves the bytes were
+    actually attached and transmitted.
+    """
+    pages.load("upload.html")
+    upload_element = driver.find_element(By.ID, "upload")
+    file_path = _write_temp_file("bidi single upload marker")
+
+    try:
+        Input(driver).set_files(
+            context=driver.current_window_handle,
+            element=SharedReference(shared_id=upload_element.id),
+            files=[file_path],
+        )
+        driver.find_element(By.ID, "go").click()
+        driver.switch_to.frame(driver.find_element(By.ID, "upload_target"))
+
+        body = (By.CSS_SELECTOR, "body")
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(body, os.path.basename(file_path)))
+        WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(body, "bidi single upload marker"))
+    finally:
+        if os.path.exists(file_path):
+            os.unlink(file_path)
+
+
+def test_set_files_posts_two_files_to_server(driver, pages):
+    """Mirror of ``upload_tests.test_can_upload_two_files``."""
+    pages.load("upload.html")
+    upload_element = driver.find_element(By.ID, "upload")
+    file_paths = [_write_temp_file(f"bidi multi upload marker {index}") for index in range(2)]
+
+    try:
+        Input(driver).set_files(
+            context=driver.current_window_handle,
+            element=SharedReference(shared_id=upload_element.id),
+            files=file_paths,
+        )
+        driver.find_element(By.ID, "go").click()
+        driver.switch_to.frame(driver.find_element(By.ID, "upload_target"))
+
+        body = (By.CSS_SELECTOR, "body")
+        for index, file_path in enumerate(file_paths):
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(body, os.path.basename(file_path)))
+            WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element(body, f"bidi multi upload marker {index}"))
+    finally:
+        for file_path in file_paths:
+            if os.path.exists(file_path):
+                os.unlink(file_path)
+
+
+def test_type_and_set_files_in_same_form(driver, pages):
+    """Filling a form means typing into text fields *and* attaching a file, so exercise both in one flow."""
+    pages.load("formPage.html")
+    text_element = driver.find_element(By.ID, "working")
+    upload_element = driver.find_element(By.ID, "upload")
+    assert driver.find_element(By.ID, "fileResults").text == ""
+
+    driver.execute_script("arguments[0].focus();", text_element)
+    WebDriverWait(driver, 5).until(
+        lambda d: d.execute_script("return document.activeElement === arguments[0];", text_element)
+    )
+    Input(driver).perform_actions(context=driver.current_window_handle, actions=[_typing_actions("selenium")])
+    WebDriverWait(driver, 5).until(lambda d: text_element.get_attribute("value") == "selenium")
+
+    file_path = _write_temp_file("typed and attached")
+    try:
+        Input(driver).set_files(
+            context=driver.current_window_handle,
+            element=SharedReference(shared_id=upload_element.id),
+            files=[file_path],
+        )
+        # `#upload` writes to `#fileResults` from its onchange handler, so this asserts a real change event
+        # fired rather than only that the value was set.
+        WebDriverWait(driver, 5).until(lambda d: d.find_element(By.ID, "fileResults").text == "changed")
+        assert os.path.basename(file_path) in upload_element.get_attribute("value")
+        assert text_element.get_attribute("value") == "selenium"
+    finally:
+        if os.path.exists(file_path):
+            os.unlink(file_path)
