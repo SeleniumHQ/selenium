@@ -7,6 +7,7 @@ license = "Apache-2.0"
 homepage = "https://www.selenium.dev/"
 repository = "https://github.com/SeleniumHQ/selenium"
 documentation = "https://www.selenium.dev/documentation/"
+exclude = ["tests/legal_sync_tests.rs"]
 description = """
 Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.
 """
