@@ -102,7 +102,7 @@ Class ProxyConfiguration  <a class="header-action link-secondary" title="View so
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPolymorphic(TypeDiscriminatorPropertyName = &quot;proxyType&quot;)]
-[JsonDerivedType(typeof(AutoDetectProxyConfiguration), &quot;autodetect&quot;)]
+[JsonDerivedType(typeof(AutodetectProxyConfiguration), &quot;autodetect&quot;)]
 [JsonDerivedType(typeof(DirectProxyConfiguration), &quot;direct&quot;)]
 [JsonDerivedType(typeof(ManualProxyConfiguration), &quot;manual&quot;)]
 [JsonDerivedType(typeof(PacProxyConfiguration), &quot;pac&quot;)]
@@ -131,7 +131,7 @@ public abstract record ProxyConfiguration : IEquatable&lt;ProxyConfiguration&gt;
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.AutoDetectProxyConfiguration.html">AutoDetectProxyConfiguration</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.AutodetectProxyConfiguration.html">AutodetectProxyConfiguration</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.DirectProxyConfiguration.html">DirectProxyConfiguration</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.ManualProxyConfiguration.html">ManualProxyConfiguration</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.PacProxyConfiguration.html">PacProxyConfiguration</a></div>

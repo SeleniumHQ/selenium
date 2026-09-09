@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Module" data-uid="OpenQA.Selenium.BiDi.Module" class="text-break">
-Class Module  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class Module  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -156,7 +156,7 @@ Class Module  <a class="header-action link-secondary" title="View source" href="
 
   <h3 id="OpenQA_Selenium_BiDi_Module_CreateEventSource__1_OpenQA_Selenium_BiDi_EventDescriptor___0__" data-uid="OpenQA.Selenium.BiDi.Module.CreateEventSource``1(OpenQA.Selenium.BiDi.EventDescriptor{``0})">
   CreateEventSource&lt;TEventArgs&gt;(EventDescriptor&lt;TEventArgs&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -195,23 +195,27 @@ Class Module  <a class="header-action link-secondary" title="View source" href="
 
   <a id="OpenQA_Selenium_BiDi_Module_ExecuteAsync_" data-uid="OpenQA.Selenium.BiDi.Module.ExecuteAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Module_ExecuteAsync__2_OpenQA_Selenium_BiDi_Command___0___1____0_OpenQA_Selenium_BiDi_CommandOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Module.ExecuteAsync``2(OpenQA.Selenium.BiDi.Command{``0,``1},``0,OpenQA.Selenium.BiDi.CommandOptions,System.Threading.CancellationToken)">
-  ExecuteAsync&lt;TParameters, TResult&gt;(Command&lt;TParameters, TResult&gt;, TParameters, CommandOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Module_ExecuteAsync__2_System_String___0_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__System_Text_Json_Serialization_Metadata_JsonTypeInfo___1__OpenQA_Selenium_BiDi_CommandOptions_System_Threading_CancellationToken_" data-uid="OpenQA.Selenium.BiDi.Module.ExecuteAsync``2(System.String,``0,System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0},System.Text.Json.Serialization.Metadata.JsonTypeInfo{``1},OpenQA.Selenium.BiDi.CommandOptions,System.Threading.CancellationToken)">
+  ExecuteAsync&lt;TParameters, TResult&gt;(string, TParameters, JsonTypeInfo&lt;TParameters&gt;, JsonTypeInfo&lt;TResult&gt;, CommandOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; ExecuteAsync&lt;TParameters, TResult&gt;(Command&lt;TParameters, TResult&gt; descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken) where TParameters : Parameters where TResult : EmptyResult</code></pre>
+    <pre><code class="lang-csharp hljs">protected Task&lt;TResult&gt; ExecuteAsync&lt;TParameters, TResult&gt;(string method, TParameters @params, JsonTypeInfo&lt;TParameters&gt; paramsTypeInfo, JsonTypeInfo&lt;TResult&gt; resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken) where TParameters : Parameters where TResult : EmptyResult</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>descriptor</code> <a class="xref" href="OpenQA.Selenium.BiDi.Command-2.html">Command</a>&lt;TParameters, TResult&gt;</dt>
+    <dt><code>method</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>params</code> <span class="xref">TParameters</span></dt>
+    <dd></dd>
+    <dt><code>paramsTypeInfo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.serialization.metadata.jsontypeinfo-1">JsonTypeInfo</a>&lt;TParameters&gt;</dt>
+    <dd></dd>
+    <dt><code>resultTypeInfo</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.serialization.metadata.jsontypeinfo-1">JsonTypeInfo</a>&lt;TResult&gt;</dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.CommandOptions.html">CommandOptions</a></dt>
     <dd></dd>
@@ -246,7 +250,7 @@ Class Module  <a class="header-action link-secondary" title="View source" href="
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Module.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -157,8 +157,8 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
 
   <a id="OpenQA_Selenium_BiDi_Script_ExceptionDetails__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails__ctor_System_Int64_System_Int64_OpenQA_Selenium_BiDi_Script_StackTrace_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.#ctor(System.Int64,System.Int64,OpenQA.Selenium.BiDi.Script.StackTrace,System.String)">
-  ExceptionDetails(long, long, StackTrace, string)
+  <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails__ctor_System_Int64_System_Int64_OpenQA_Selenium_BiDi_Script_RemoteValue_OpenQA_Selenium_BiDi_Script_StackTrace_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.#ctor(System.Int64,System.Int64,OpenQA.Selenium.BiDi.Script.RemoteValue,OpenQA.Selenium.BiDi.Script.StackTrace,System.String)">
+  ExceptionDetails(long, long, RemoteValue, StackTrace, string)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -166,7 +166,7 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text)</code></pre>
+    <pre><code class="lang-csharp hljs">public ExceptionDetails(long ColumnNumber, long LineNumber, RemoteValue Exception, StackTrace StackTrace, string Text)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -174,6 +174,8 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
     <dt><code>ColumnNumber</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
     <dt><code>LineNumber</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+    <dt><code>Exception</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.RemoteValue.html">RemoteValue</a></dt>
     <dd></dd>
     <dt><code>StackTrace</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.StackTrace.html">StackTrace</a></dt>
     <dd></dd>
@@ -227,6 +229,37 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
 
 
 
+  <a id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_Exception_" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.Exception*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_Exception" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.Exception">
+  Exception
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RemoteValue Exception { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Script.RemoteValue.html">RemoteValue</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_LineNumber_" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.LineNumber*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_LineNumber" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.LineNumber">
@@ -262,7 +295,7 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_StackTrace" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.StackTrace">
   StackTrace
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -293,7 +326,7 @@ Class ExceptionDetails  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_BiDi_Script_ExceptionDetails_Text" data-uid="OpenQA.Selenium.BiDi.Script.ExceptionDetails.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Evaluate.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>

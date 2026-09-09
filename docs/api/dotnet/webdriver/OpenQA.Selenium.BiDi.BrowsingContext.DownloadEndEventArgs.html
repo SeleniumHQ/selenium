@@ -102,7 +102,7 @@ Class DownloadEndEventArgs  <a class="header-action link-secondary" title="View 
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonConverter(typeof(DownloadEndEventArgsConverter))]
-public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;DownloadEndEventArgs&gt;</code></pre>
+public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IBaseNavigationInfo, IEquatable&lt;DownloadEndEventArgs&gt;</code></pre>
   </div>
 
 
@@ -121,6 +121,7 @@ public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBaseNavigationInfo.html">IBaseNavigationInfo</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</div>
     </dd>
   </dl>
@@ -179,8 +180,8 @@ public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
-  DownloadEndEventArgs(BrowsingContext)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String,OpenQA.Selenium.BiDi.Browser.UserContext)">
+  DownloadEndEventArgs(BrowsingContext, Navigation?, DateTimeOffset, string, UserContext?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEvent.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -188,12 +189,20 @@ public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected DownloadEndEventArgs(BrowsingContext Context)</code></pre>
+    <pre><code class="lang-csharp hljs">protected DownloadEndEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, UserContext? UserContext)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+    <dt><code>Navigation</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.html">Navigation</a></dt>
+    <dd></dd>
+    <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd></dd>
+    <dt><code>Url</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>UserContext</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 
@@ -233,6 +242,131 @@ public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Navigation_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Navigation*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Navigation">
+  Navigation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEvent.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Navigation? Navigation { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.html">Navigation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Timestamp_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Timestamp*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Timestamp" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Timestamp">
+  Timestamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEvent.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(DateTimeOffsetConverter))]
+public DateTimeOffset Timestamp { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Url_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Url*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Url" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Url">
+  Url
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEvent.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Url { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_UserContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.UserContext*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_UserContext" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.UserContext">
+  UserContext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEvent.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserContext? UserContext { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a></dt>
     <dd></dd>
   </dl>
 
