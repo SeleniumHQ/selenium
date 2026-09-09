@@ -208,6 +208,11 @@ jobs:
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
+      - name: Clear old repository cache
+        if: inputs.cache-save
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then rm -rf /d/b-repo; else rm -rf "$HOME/.cache/bazel-repo"; fi
       - name: Setup Fluxbox and Xvfb
         if: inputs.needs-display && contains(inputs.os, 'ubuntu')
         run: |
