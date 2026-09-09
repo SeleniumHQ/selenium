@@ -638,7 +638,8 @@
   <span class='label'>context:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>context</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>origin:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>origin</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>format:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>format</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ImageFormat</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>clip:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clip</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ClipRectangle</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+  <span class='label'>clip:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>clip</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ClipRectangle</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>image_size:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>imageSize</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::ImageSize</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="ImageFormat-constant" class="">ImageFormat =
@@ -669,6 +670,36 @@
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>type:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>quality:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>quality</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>number</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
+      
+        <dt id="ImageSize-constant" class="">ImageSize =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimagesize" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimagesize">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimagesize</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>max_width:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxWidth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>max_height:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxHeight</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="ElementClipRectangle-constant" class="">ElementClipRectangle =
@@ -1780,7 +1811,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#capture_screenshot-instance_method" title="#capture_screenshot (instance method)">#<strong>capture_screenshot</strong>(context:, origin: Serialization::UNSET, format: Serialization::UNSET, clip: Serialization::UNSET)  &#x21d2; Object </a>
+      <a href="#capture_screenshot-instance_method" title="#capture_screenshot (instance method)">#<strong>capture_screenshot</strong>(context:, origin: Serialization::UNSET, format: Serialization::UNSET, clip: Serialization::UNSET, image_size: Serialization::UNSET)  &#x21d2; Object </a>
     
 
     
@@ -2001,6 +2032,28 @@
   <span class="summary_signature">
     
       <a href="#image_format-instance_method" title="#image_format (instance method)">#<strong>image_format</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#image_size-instance_method" title="#image_size (instance method)">#<strong>image_size</strong>  &#x21d2; Object </a>
     
 
     
@@ -2427,10 +2480,10 @@
       <pre class="lines">
 
 
-582</pre>
+591</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 582</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 591</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accessibility_locator'>accessibility_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AccessibilityLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator (constant)">AccessibilityLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2466,10 +2519,10 @@
       <pre class="lines">
 
 
-595</pre>
+605</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 595</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 605</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accessibility_locator_value'>accessibility_locator_value</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AccessibilityLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::AccessibilityLocator (constant)">AccessibilityLocator</a></span></span><span class='op'>::</span><span class='const'>Value</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2514,13 +2567,13 @@
       <pre class="lines">
 
 
-601
-602
-603
-604</pre>
+611
+612
+613
+614</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 601</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 611</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_activate'>activate</span><span class='lparen'>(</span><span class='label'>context:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ActivateParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ActivateParameters (constant)">ActivateParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='rparen'>)</span>
@@ -2559,10 +2612,10 @@
       <pre class="lines">
 
 
-590</pre>
+600</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 590</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 600</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_box_clip_rectangle'>box_clip_rectangle</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#BoxClipRectangle-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::BoxClipRectangle (constant)">BoxClipRectangle</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2573,7 +2626,7 @@
       <div class="method_details ">
   <h3 class="signature " id="capture_screenshot-instance_method">
   
-    #<strong>capture_screenshot</strong>(context:, origin: Serialization::UNSET, format: Serialization::UNSET, clip: Serialization::UNSET)  &#x21d2; <tt>Object</tt> 
+    #<strong>capture_screenshot</strong>(context:, origin: Serialization::UNSET, format: Serialization::UNSET, clip: Serialization::UNSET, image_size: Serialization::UNSET)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -2607,32 +2660,46 @@
       <pre class="lines">
 
 
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
 619
 620
 621
-622</pre>
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 609</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 619</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capture_screenshot'>capture_screenshot</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
   <span class='label'>origin:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
   <span class='label'>format:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
-  <span class='label'>clip:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span>
+  <span class='label'>clip:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
+  <span class='label'>image_size:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span>
 <span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>origin</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_origin'>origin</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN (constant)">CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN</a></span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CaptureScreenshotParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotParameters (constant)">CaptureScreenshotParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>origin:</span> <span class='id identifier rubyid_origin'>origin</span><span class='comma'>,</span> <span class='label'>format:</span> <span class='id identifier rubyid_format'>format</span><span class='comma'>,</span> <span class='label'>clip:</span> <span class='id identifier rubyid_clip'>clip</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CaptureScreenshotParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotParameters (constant)">CaptureScreenshotParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span>
+    <span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span>
+    <span class='label'>origin:</span> <span class='id identifier rubyid_origin'>origin</span><span class='comma'>,</span>
+    <span class='label'>format:</span> <span class='id identifier rubyid_format'>format</span><span class='comma'>,</span>
+    <span class='label'>clip:</span> <span class='id identifier rubyid_clip'>clip</span><span class='comma'>,</span>
+    <span class='label'>image_size:</span> <span class='id identifier rubyid_image_size'>image_size</span>
+  <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span>
     <span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.captureScreenshot</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
     <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span>
@@ -2672,10 +2739,10 @@
       <pre class="lines">
 
 
-588</pre>
+598</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 588</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 598</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clip_rectangle'>clip_rectangle</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="BrowsingContext/ClipRectangle.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ClipRectangle (class)">ClipRectangle</a></span></span></pre>
     </td>
@@ -2720,13 +2787,13 @@
       <pre class="lines">
 
 
-627
-628
-629
-630</pre>
+644
+645
+646
+647</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 627</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 644</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>prompt_unload:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CloseParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CloseParameters (constant)">CloseParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>prompt_unload:</span> <span class='id identifier rubyid_prompt_unload'>prompt_unload</span><span class='rparen'>)</span>
@@ -2765,10 +2832,10 @@
       <pre class="lines">
 
 
-584</pre>
+593</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 584</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 593</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_locator'>context_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ContextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator (constant)">ContextLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2804,10 +2871,10 @@
       <pre class="lines">
 
 
-596</pre>
+606</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 596</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 606</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_locator_value'>context_locator_value</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ContextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ContextLocator (constant)">ContextLocator</a></span></span><span class='op'>::</span><span class='const'>Value</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2852,24 +2919,24 @@
       <pre class="lines">
 
 
-635
-636
-637
-638
-639
-640
-641
-642
-643
-644
-645
-646
-647
-648
-649</pre>
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 635</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 652</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span>
   <span class='label'>type:</span><span class='comma'>,</span>
@@ -2919,10 +2986,10 @@
       <pre class="lines">
 
 
-583</pre>
+592</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 583</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 592</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_css_locator'>css_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CssLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CssLocator (constant)">CssLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -2958,10 +3025,10 @@
       <pre class="lines">
 
 
-589</pre>
+599</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 589</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 599</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_clip_rectangle'>element_clip_rectangle</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ElementClipRectangle-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ElementClipRectangle (constant)">ElementClipRectangle</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3006,13 +3073,13 @@
       <pre class="lines">
 
 
-654
-655
-656
-657</pre>
+671
+672
+673
+674</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 654</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 671</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_tree'>get_tree</span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>root:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#GetTreeParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeParameters (constant)">GetTreeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='id identifier rubyid_max_depth'>max_depth</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
@@ -3060,13 +3127,13 @@
       <pre class="lines">
 
 
-662
-663
-664
-665</pre>
+679
+680
+681
+682</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 662</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 679</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_handle_user_prompt'>handle_user_prompt</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>user_text:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#HandleUserPromptParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::HandleUserPromptParameters (constant)">HandleUserPromptParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='id identifier rubyid_accept'>accept</span><span class='comma'>,</span> <span class='label'>user_text:</span> <span class='id identifier rubyid_user_text'>user_text</span><span class='rparen'>)</span>
@@ -3105,12 +3172,51 @@
       <pre class="lines">
 
 
-587</pre>
+596</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 587</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 596</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_image_format'>image_format</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ImageFormat-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat (constant)">ImageFormat</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="image_size-instance_method">
+  
+    #<strong>image_size</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+597</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 597</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_image_size'>image_size</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ImageSize-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageSize (constant)">ImageSize</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -3144,10 +3250,10 @@
       <pre class="lines">
 
 
-585</pre>
+594</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 585</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 594</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inner_text_locator'>inner_text_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#InnerTextLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::InnerTextLocator (constant)">InnerTextLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3192,25 +3298,25 @@
       <pre class="lines">
 
 
-670
-671
-672
-673
-674
-675
-676
-677
-678
-679
-680
-681
-682
-683
-684
-685</pre>
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 670</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 687</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_locate_nodes'>locate_nodes</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -3261,10 +3367,10 @@
       <pre class="lines">
 
 
-581</pre>
+590</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 581</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 590</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_locator'>locator</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="BrowsingContext/Locator.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Locator (class)">Locator</a></span></span></pre>
     </td>
@@ -3300,10 +3406,10 @@
       <pre class="lines">
 
 
-594</pre>
+604</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 594</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 604</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_media_track_constraints'>media_track_constraints</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#MediaTrackConstraints-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints (constant)">MediaTrackConstraints</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3348,14 +3454,14 @@
       <pre class="lines">
 
 
-690
-691
-692
-693
-694</pre>
+707
+708
+709
+710
+711</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 690</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 707</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_navigate'>navigate</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>url:</span><span class='comma'>,</span> <span class='label'>wait:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_wait'>wait</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#READINESS_STATE-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::READINESS_STATE (constant)">READINESS_STATE</a></span></span><span class='rparen'>)</span>
@@ -3404,32 +3510,32 @@
       <pre class="lines">
 
 
-699
-700
-701
-702
-703
-704
-705
-706
-707
-708
-709
-710
-711
-712
-713
-714
-715
 716
 717
 718
 719
 720
-721</pre>
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 699</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 716</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print'>print</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -3487,10 +3593,10 @@
       <pre class="lines">
 
 
-591</pre>
+601</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 591</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 601</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print_margin_parameters'>print_margin_parameters</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#PrintMarginParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters (constant)">PrintMarginParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3526,10 +3632,10 @@
       <pre class="lines">
 
 
-592</pre>
+602</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 592</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 602</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print_page_parameters'>print_page_parameters</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#PrintPageParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters (constant)">PrintPageParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3574,14 +3680,14 @@
       <pre class="lines">
 
 
-726
-727
-728
-729
-730</pre>
+743
+744
+745
+746
+747</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 726</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 743</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reload'>reload</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>ignore_cache:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>wait:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wait</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_wait'>wait</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#READINESS_STATE-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::READINESS_STATE (constant)">READINESS_STATE</a></span></span><span class='rparen'>)</span>
@@ -3630,13 +3736,13 @@
       <pre class="lines">
 
 
-735
-736
-737
-738</pre>
+752
+753
+754
+755</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 735</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 752</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_bypass_csp'>set_bypass_csp</span><span class='lparen'>(</span><span class='label'>bypass:</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#SetBypassCSPParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::SetBypassCSPParameters (constant)">SetBypassCSPParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>bypass:</span> <span class='id identifier rubyid_bypass'>bypass</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_contexts'>contexts</span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='id identifier rubyid_user_contexts'>user_contexts</span><span class='rparen'>)</span>
@@ -3684,23 +3790,23 @@
       <pre class="lines">
 
 
-743
-744
-745
-746
-747
-748
-749
-750
-751
-752
-753
-754
-755
-756</pre>
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 743</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 760</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_viewport'>set_viewport</span><span class='lparen'>(</span>
   <span class='label'>context:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span>
@@ -3758,22 +3864,22 @@
       <pre class="lines">
 
 
-761
-762
-763
-764
-765
-766
-767
-768
-769
-770
-771
-772
-773</pre>
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 761</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 778</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_screencast'>start_screencast</span><span class='lparen'>(</span>
   <span class='label'>context:</span><span class='comma'>,</span>
@@ -3830,17 +3936,17 @@
       <pre class="lines">
 
 
-778
-779
-780
-781
-782
-783
-784
-785</pre>
+795
+796
+797
+798
+799
+800
+801
+802</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 778</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 795</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop_screencast'>stop_screencast</span><span class='lparen'>(</span><span class='label'>screencast:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#StopScreencastParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StopScreencastParameters (constant)">StopScreencastParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>screencast:</span> <span class='id identifier rubyid_screencast'>screencast</span><span class='rparen'>)</span>
@@ -3892,13 +3998,13 @@
       <pre class="lines">
 
 
-790
-791
-792
-793</pre>
+807
+808
+809
+810</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 790</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 807</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_traverse_history'>traverse_history</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='label'>delta:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#TraverseHistoryParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::TraverseHistoryParameters (constant)">TraverseHistoryParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>context:</span> <span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='label'>delta:</span> <span class='id identifier rubyid_delta'>delta</span><span class='rparen'>)</span>
@@ -3937,10 +4043,10 @@
       <pre class="lines">
 
 
-593</pre>
+603</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 593</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 603</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_viewport'>viewport</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#Viewport-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport (constant)">Viewport</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3976,10 +4082,10 @@
       <pre class="lines">
 
 
-586</pre>
+595</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 586</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 595</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_x_path_locator'>x_path_locator</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#XPathLocator-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::XPathLocator (constant)">XPathLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -3992,7 +4098,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 27 20:16:13 2026 by
+  Generated on Wed Sep  9 15:38:46 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.11).
 </div>

@@ -110,8 +110,9 @@
   <strong>This class is part of a private API.</strong>
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
-<p>constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples.
-spec_href links to the type's definition in the live spec (nil when the schema has none).</p>
+<p>constant_name is the SCREAMING_SNAKE hash name; pairs are [symbol_key, wire_value] tuples;
+primitive is the schema's declared value type. spec_href links to the type's definition in
+the live spec (nil when the schema has none).</p>
 
   </div>
 </div>
@@ -178,6 +179,31 @@ spec_href links to the type's definition in the live spec (nil when the schema h
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#primitive-instance_method" title="#primitive (instance method)">#<strong>primitive</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute primitive.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#spec_href-instance_method" title="#spec_href (instance method)">#<strong>spec_href</strong>  &#x21d2; Object </a>
     
 
@@ -204,6 +230,40 @@ spec_href links to the type's definition in the live spec (nil when the schema h
 
 
 
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rbs_value_type-instance_method" title="#rbs_value_type (instance method)">#<strong>rbs_value_type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
 
 
   
@@ -252,12 +312,12 @@ spec_href links to the type's definition in the live spec (nil when the schema h
       <pre class="lines">
 
 
-313
-314
-315</pre>
+320
+321
+322</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 320</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_constant_name'>constant_name</span>
   <span class='ivar'>@constant_name</span>
@@ -309,15 +369,72 @@ spec_href links to the type's definition in the live spec (nil when the schema h
       <pre class="lines">
 
 
-313
-314
-315</pre>
+320
+321
+322</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 320</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pairs'>pairs</span>
   <span class='ivar'>@pairs</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="primitive=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="primitive-instance_method">
+  
+    #<strong>primitive</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute primitive</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of primitive</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+320
+321
+322</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 320</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_primitive'>primitive</span>
+  <span class='ivar'>@primitive</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -366,12 +483,12 @@ spec_href links to the type's definition in the live spec (nil when the schema h
       <pre class="lines">
 
 
-313
-314
-315</pre>
+320
+321
+322</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 320</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_spec_href'>spec_href</span>
   <span class='ivar'>@spec_href</span>
@@ -384,10 +501,55 @@ spec_href links to the type's definition in the live spec (nil when the schema h
   </div>
 
 
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="rbs_value_type-instance_method">
+  
+    #<strong>rbs_value_type</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+321</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 321</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_rbs_value_type'>rbs_value_type</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../BiDiGenerate.html#RBS_VALUE_TYPES-constant" title="BiDiGenerate::RBS_VALUE_TYPES (constant)">RBS_VALUE_TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_primitive'>primitive</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>untyped</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 27 20:16:12 2026 by
+  Generated on Wed Sep  9 15:38:45 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.11).
 </div>
