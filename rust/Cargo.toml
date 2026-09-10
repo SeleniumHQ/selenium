@@ -1,12 +1,13 @@
 [package]
 name = "selenium-manager"
-version = "0.4.49-nightly" # don't forget to update rust/BUILD.bazel
+version = "0.4.50-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2024"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
 homepage = "https://www.selenium.dev/"
 repository = "https://github.com/SeleniumHQ/selenium"
 documentation = "https://www.selenium.dev/documentation/"
+exclude = ["tests/legal_sync_tests.rs"]
 description = """
 Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.
 """

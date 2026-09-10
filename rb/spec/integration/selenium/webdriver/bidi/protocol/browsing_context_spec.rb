@@ -196,10 +196,7 @@ module Selenium
             end
           end
 
-          describe '#locate_nodes',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari does not implement browsingContext.locateNodes'} do
+          describe '#locate_nodes' do
             it 'finds nodes by CSS selector' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('xhtmlTest.html'), wait: :complete)
 
@@ -212,10 +209,25 @@ module Selenium
               expect(result.nodes).to contain_exactly(be_a(Script::NodeRemoteValue))
               expect(result.nodes.first.value.local_name).to eq('div')
               expect(result.nodes.first.value.attributes).to include('class' => 'content')
+            end
+
+            it 'returns a shared reference for a located node',
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari does not return sharedId for a located node'} do
+              browsing_context.navigate(context: driver.window_handle, url: url_for('xhtmlTest.html'), wait: :complete)
+
+              result = browsing_context.locate_nodes(
+                context: driver.window_handle,
+                locator: BrowsingContext::CssLocator.new(value: 'div.content'),
+                max_node_count: 1
+              )
+
               expect(result.nodes.first.shared_id).to be_a(String)
             end
 
-            it 'accepts serialization options and start nodes' do
+            it 'accepts serialization options and start nodes',
+               pending_if: {browser_family: :safari,
+                            reason: 'Safari does not return sharedId for a located node'} do
               browsing_context.navigate(context: driver.window_handle, url: url_for('formPage.html'), wait: :complete)
               forms = browsing_context.locate_nodes(
                 context: driver.window_handle,
@@ -298,13 +310,13 @@ module Selenium
           end
 
           describe '#set_bypass_csp',
-                   pending_if: [{browser: :chrome,
+                   pending_if: [{browser_family: :chromium,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /browsingContext\.setBypassCSP/},
-                                 reason: 'Chrome returns unsupported operation for browsingContext.setBypassCSP'},
-                                {browser: %i[edge firefox],
+                                 reason: 'Chromium returns unsupported operation for browsingContext.setBypassCSP'},
+                                {browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Edge and Firefox return unknown command for browsingContext.setBypassCSP'},
+                                 reason: 'Firefox returns unknown command for browsingContext.setBypassCSP'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Safari does not implement browsingContext.setBypassCSP'}] do
@@ -343,19 +355,16 @@ module Selenium
           end
 
           describe '#start_screencast',
-                   pending_if: [{browser: :chrome,
+                   pending_if: [{browser_family: :chromium,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /browsingContext\.startScreencast/},
-                                 reason: 'Chrome returns unsupported operation for browsingContext.startScreencast'},
-                                {browser: :edge,
-                                 exception: {class: Error::UnknownCommandError},
-                                 reason: 'Edge returns unknown command for browsingContext.startScreencast'},
+                                 reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Safari does not implement browsingContext.startScreencast'},
-                                {browser: :firefox, platform: :linux,
+                                {browser: :firefox, platform: :linux, version: 'stable',
                                  exception: {class: Error::UnknownError, message: /startScreencast/},
-                                 reason: 'Firefox startScreencast fails with NS_ERROR_FAILURE on Linux'}] do
+                                 reason: 'startScreencast on Linux fails with NS_ERROR_FAILURE; fixed in 156'}] do
             it 'starts and stops a screencast' do
               result = browsing_context.start_screencast(
                 context: driver.window_handle,

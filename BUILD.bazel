@@ -141,14 +141,9 @@ platform(
 )
 
 platform(
-    name = "local_windows_gnullvm",
+    name = "local_windows_msvc",
     constraint_values = [
-        # alias -> @llvm//constraints/windows/abi:gnullvm
-        "@rules_rs//rs/platforms/constraints:windows_gnullvm",
-        # rules_rs 0.0.90 (via llvm 0.8.3) requires the CRT to be selected
-        # explicitly; the gnullvm Rust toolchain targets msvcrt, while the crt
-        # constraint otherwise defaults to ucrt and no toolchain would match.
-        "@llvm//constraints/windows/crt:msvcrt",
+        "@llvm//constraints/windows/abi:msvc",
     ],
     parents = ["@platforms//host"],
 )

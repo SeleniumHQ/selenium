@@ -65,6 +65,7 @@ const CFT_MACOS_APP_NAME: &str =
     "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing";
 const MIN_CHROME_VERSION_CFT: i32 = 113;
 const MIN_CHROMEDRIVER_VERSION_CFT: i32 = 115;
+const MIN_CHROME_VERSION_LINUX_ARM64: i32 = 153;
 const CHROMIUM_SNAP_LINK: &str = "/snap/bin/chromium";
 const CHROMIUM_SNAP_BINARY: &str = "/snap/chromium/current/usr/lib/chromium-browser/chrome";
 
@@ -132,6 +133,23 @@ impl ChromeManager {
         self.create_cft_url(&self.get_driver_mirror_url_or_default(CFT_URL), endpoint)
     }
 
+    fn find_platform_url<'a>(&self, downloads: &'a [PlatformUrl]) -> Option<&'a str> {
+        downloads
+            .iter()
+            .find(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
+            .map(|p| p.url.as_str())
+    }
+
+    // CfT publishes Linux arm64 binaries later than the rest of the platforms, so the minimum
+    // version available for download is higher there than the general CfT minimum.
+    fn min_version_for_platform(&self, min_cft_version: i32) -> i32 {
+        if LINUX.is(self.get_os()) && ARM64.is(self.get_arch()) {
+            MIN_CHROME_VERSION_LINUX_ARM64.max(min_cft_version)
+        } else {
+            min_cft_version
+        }
+    }
+
     fn request_driver_version_from_latest(&self, driver_url: &str) -> Result<String, Error> {
         self.log.debug(format!(
             "Reading {} version from {}",
@@ -169,18 +187,16 @@ impl ChromeManager {
             return self.request_driver_version_from_latest(&self.create_latest_release_url());
         }
 
-        let platform_url: Vec<&PlatformUrl> = chromedriver
-            .as_ref()
-            .unwrap()
-            .iter()
-            .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-            .collect();
+        let platform_url = self.find_platform_url(chromedriver.as_ref().unwrap());
         self.log.trace(format!(
-            "CfT URLs for downloading {}: {:?}",
+            "CfT URL for downloading {}: {:?}",
             self.get_driver_name(),
             platform_url
         ));
-        self.driver_url = Some(platform_url.first().unwrap().url.to_string());
+        match platform_url {
+            Some(url) => self.driver_url = Some(url.to_string()),
+            None => return self.unavailable_discovery(),
+        }
 
         Ok(stable_channel.version)
     }
@@ -203,10 +219,19 @@ impl ChromeManager {
         let good_versions_url = self.create_cft_url_for_drivers(GOOD_VERSIONS_ENDPOINT);
         let all_versions =
             self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
+        // Not every version is published for every platform, so the availability of a download
+        // for the current platform is part of the filter (and not a later check) to let the most
+        // recent usable version win
         let filtered_versions: Vec<Version> = all_versions
             .versions
             .into_iter()
-            .filter(|r| r.version.starts_with(version_for_filtering.as_str()))
+            .filter(|r| {
+                r.version.starts_with(version_for_filtering.as_str())
+                    && r.downloads
+                        .chromedriver
+                        .as_deref()
+                        .is_some_and(|d| self.find_platform_url(d).is_some())
+            })
             .collect();
         if filtered_versions.is_empty() {
             return Err(anyhow!(format!(
@@ -216,23 +241,25 @@ impl ChromeManager {
                     self.get_driver_name(),
                     version_for_filtering.as_str(),
                     self.get_arch(),
-                    &MIN_CHROMEDRIVER_VERSION_CFT.to_string(),
+                    &self
+                        .min_version_for_platform(MIN_CHROMEDRIVER_VERSION_CFT)
+                        .to_string(),
                 ),
                 CFT_URL
             )));
         }
 
         let driver_version = filtered_versions.last().unwrap();
-        let url: Vec<&PlatformUrl> = driver_version
+        let url = driver_version
             .downloads
             .chromedriver
-            .as_ref()
-            .unwrap()
-            .iter()
-            .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-            .collect();
-        self.log.trace(format!("URLs for CfT: {:?}", url));
-        self.driver_url = Some(url.first().unwrap().url.to_string());
+            .as_deref()
+            .and_then(|d| self.find_platform_url(d));
+        self.log.trace(format!("URL for CfT: {:?}", url));
+        match url {
+            Some(url) => self.driver_url = Some(url.to_string()),
+            None => return self.unavailable_discovery(),
+        }
 
         Ok(driver_version.version.to_string())
     }
@@ -420,9 +447,12 @@ impl SeleniumManager for ChromeManager {
                 "mac64"
             }
         } else if LINUX.is(os) && ARM64.is(arch) {
-            return Err(anyhow!(
-                "Linux arm64 is not supported yet by Google Chrome. Please try another browser."
-            ));
+            // This URL scheme only serves chromedriver 114-, which was never published for Linux
+            // arm64. Newer versions are served by the CfT endpoints and never reach this point.
+            return Err(anyhow!(format!(
+                "Linux arm64 requires {} {} or above",
+                self.driver_name, MIN_CHROME_VERSION_LINUX_ARM64
+            )));
         } else {
             "linux64"
         };
@@ -484,6 +514,8 @@ impl SeleniumManager for ChromeManager {
             } else {
                 "mac-x64"
             }
+        } else if ARM64.is(arch) {
+            "linux-arm64"
         } else {
             "linux64"
         }
@@ -494,14 +526,6 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
-        let os = self.get_os();
-        let arch = self.get_arch();
-        if LINUX.is(os) && ARM64.is(arch) {
-            return Err(anyhow!(format!(
-                "Linux arm64 is not supported yet by {}. Please try another browser.",
-                browser_name
-            )));
-        }
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out latest stable {} version",
             browser_name
@@ -511,21 +535,19 @@ impl SeleniumManager for ChromeManager {
         let versions_with_downloads =
             self.request_versions_from_online::<LatestVersionsWithDownloads>(&latest_versions_url)?;
         let stable_channel = versions_with_downloads.channels.stable;
-        let chrome = stable_channel.downloads.chrome;
 
-        let platform_url: Vec<&PlatformUrl> = chrome
-            .iter()
-            .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-            .collect();
+        let platform_url = self.find_platform_url(&stable_channel.downloads.chrome);
         self.log.trace(format!(
-            "CfT URLs for downloading {}: {:?}",
+            "CfT URL for downloading {}: {:?}",
             self.get_browser_name(),
             platform_url
         ));
-        let browser_version = stable_channel.version;
-        self.browser_url = Some(platform_url.first().unwrap().url.to_string());
+        match platform_url {
+            Some(url) => self.browser_url = Some(url.to_string()),
+            None => return self.unavailable_discovery(),
+        }
 
-        Ok(browser_version)
+        Ok(stable_channel.version)
     }
 
     fn request_fixed_browser_version_from_online(
@@ -533,7 +555,7 @@ impl SeleniumManager for ChromeManager {
         _browser_version: &str,
     ) -> Result<String, Error> {
         let browser_name = self.browser_name;
-        let mut browser_version = self.get_browser_version().to_string();
+        let browser_version = self.get_browser_version().to_string();
         let major_browser_version = self.get_major_browser_version();
         self.get_logger().trace(format!(
             "Using Chrome for Testing (CfT) endpoints to find out {} {}",
@@ -553,48 +575,50 @@ impl SeleniumManager for ChromeManager {
             } else {
                 versions_with_downloads.channels.canary
             };
-            browser_version = channel.version;
-            let platform_url: Vec<&PlatformUrl> = channel
-                .downloads
-                .chrome
-                .iter()
-                .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-                .collect();
-            self.browser_url = Some(platform_url.first().unwrap().url.to_string());
+            let platform_url = self.find_platform_url(&channel.downloads.chrome);
+            match platform_url {
+                Some(url) => self.browser_url = Some(url.to_string()),
+                None => return self.unavailable_discovery(),
+            }
 
-            Ok(browser_version)
+            Ok(channel.version)
         } else {
             let good_versions_url = self.create_cft_url_for_browsers(GOOD_VERSIONS_ENDPOINT);
             let all_versions =
                 self.request_versions_from_online::<VersionsWithDownloads>(&good_versions_url)?;
-            let iter_versions = all_versions.versions.into_iter();
-            let filtered_versions: Vec<Version> = if self.is_browser_version_specific() {
-                iter_versions
-                    .filter(|r| r.version.eq(browser_version.as_str()))
-                    .collect()
-            } else {
-                iter_versions
-                    .filter(|r| r.version.starts_with(major_browser_version.as_str()))
-                    .collect()
+            let version_matches = |r: &Version| {
+                if self.is_browser_version_specific() {
+                    r.version.eq(browser_version.as_str())
+                } else {
+                    r.version.starts_with(major_browser_version.as_str())
+                }
             };
+            // Not every version is published for every platform, so the availability of a download
+            // for the current platform is part of the filter (and not a later check) to let the
+            // most recent usable version win
+            let filtered_versions: Vec<Version> = all_versions
+                .versions
+                .into_iter()
+                .filter(|r| {
+                    version_matches(r) && self.find_platform_url(&r.downloads.chrome).is_some()
+                })
+                .collect();
             if filtered_versions.is_empty() {
                 return self.unavailable_download();
             }
             let last_browser = filtered_versions.last().unwrap();
-            let platform_url: Vec<&PlatformUrl> = last_browser
-                .downloads
-                .chrome
-                .iter()
-                .filter(|p| p.platform.eq_ignore_ascii_case(self.get_platform_label()))
-                .collect();
-            self.browser_url = Some(platform_url.first().unwrap().url.to_string());
+            let platform_url = self.find_platform_url(&last_browser.downloads.chrome);
+            match platform_url {
+                Some(url) => self.browser_url = Some(url.to_string()),
+                None => return self.unavailable_discovery(),
+            }
 
             Ok(last_browser.version.to_string())
         }
     }
 
     fn get_min_browser_version_for_download(&self) -> Result<i32, Error> {
-        Ok(MIN_CHROME_VERSION_CFT)
+        Ok(self.min_version_for_platform(MIN_CHROME_VERSION_CFT))
     }
 
     fn get_browser_binary_path(&mut self, _browser_version: &str) -> Result<PathBuf, Error> {

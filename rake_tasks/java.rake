@@ -9,7 +9,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v152:v152.publish
-  //java/src/org/openqa/selenium/devtools/v150:v150.publish
+  //java/src/org/openqa/selenium/devtools/v153:v153.publish
   //java/src/org/openqa/selenium/devtools/v151:v151.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
@@ -178,11 +178,23 @@ module Sonatype
     puts "#{version} is already deployed — skipping the deploy."
     true
   end
+
+  def deployment_status(version)
+    staging_repositories.filter_map { |repo| repo['portal_deployment_id'] }.each do |id|
+      req = Net::HTTP::Post.new(URI("https://central.sonatype.com/api/v1/publisher/status?id=#{id}"))
+      req['Authorization'] = "Bearer #{auth_token}"
+      req['Content-Length'] = '0'
+      status = request_json(req)
+      purls = status.fetch('purls', [])
+      return status if purls.empty? || purls.any? { |purl| purl.end_with?("@#{version}") }
+    end
+    nil
+  end
 end
 
 desc 'Build Java Client Jars'
 task :build do |_task, arguments|
-  java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
+  Bazel.execute('build', arguments.to_a, java_release_targets)
 end
 
 desc 'Build the selenium client jars'
@@ -359,20 +371,39 @@ def maven_central_pom_url
   "#{base}/#{java_version}/selenium-java-#{java_version}.pom"
 end
 
-desc 'Verify Java packages are published on Maven Central'
+desc 'Verify Sonatype accepted the Java deployment for Maven Central'
 task :verify do
   deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
+  deployments = 'https://central.sonatype.com/publishing/deployments'
 
-  begin
-    SeleniumRake.verify_package_published(maven_central_pom_url)
-  rescue StandardError => e
-    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
-      raise "#{e.class}: #{e.message}; check https://central.sonatype.com/publishing/deployments"
+  loop do
+    begin
+      status = Sonatype.deployment_status(java_version)
+    rescue StandardError => e
+      puts "  #{e.class}: #{e.message}"
+      status = nil
+    end
+    state = status&.fetch('deploymentState', nil)
+
+    case state
+    when 'PUBLISHED'
+      puts "#{java_version} is published on Maven Central"
+      break
+    when 'PUBLISHING'
+      puts "#{java_version} is accepted; Maven Central sync pending at #{maven_central_pom_url}"
+      break
+    when 'FAILED'
+      raise "Sonatype rejected #{java_version}: #{status['errors'].to_json}; check #{deployments}"
+    when 'VALIDATED'
+      raise "#{java_version} validated but automatic publishing did not engage; publish it at #{deployments}"
     end
 
-    puts "  #{e.class}: #{e.message}; Maven Central may still be indexing, retrying in 15s"
+    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      raise "#{java_version} is still #{state || 'missing'} at Sonatype; check #{deployments}"
+    end
+
+    puts "  #{java_version} is #{state || 'not yet visible'} at Sonatype, retrying in 15s"
     sleep 15
-    retry
   end
 end
 

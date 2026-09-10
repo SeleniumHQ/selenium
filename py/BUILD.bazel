@@ -76,11 +76,11 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.49.0.202608272014"
+SE_VERSION = "4.50.0.202609091537"
 
 BROWSER_VERSIONS = [
     "v152",
-    "v150",
+    "v153",
     "v151",
 ]
 
@@ -104,9 +104,15 @@ genrule(
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "selenium/webdriver/common/linux/selenium-manager",
+    name = "manager-linux-x86_64",
+    src = "//common/manager:selenium-manager-linux-x86_64",
+    out = "selenium/webdriver/common/linux-x86_64/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "selenium/webdriver/common/linux-arm64/selenium-manager",
 )
 
 copy_file(
@@ -321,7 +327,8 @@ py_library(
         ],
     ),
     data = [
-        ":manager-linux",
+        ":manager-linux-arm64",
+        ":manager-linux-x86_64",
         ":manager-macos",
         ":manager-notice",
         ":manager-sbom",
@@ -606,7 +613,8 @@ pkg_files(
         "//rust:selenium_manager_srcs",
     ],
     excludes = [
-        ":manager-linux",
+        ":manager-linux-x86_64",
+        ":manager-linux-arm64",
         ":manager-macos",
         ":manager-notice",
         ":manager-sbom",
@@ -789,11 +797,14 @@ generate_bidi_protocol(
 
 # Build-graph tool: the generator invoked by the rule above (schema + output dir
 # passed as arguments). No baked args, so it is reusable in the exec configuration.
+# Depends on :remote because rendering reads errorhandler's error-code tables to decide
+# which BiDi codes reuse a classic exception rather than declaring a new one.
 py_binary(
     name = "generate-bidi-protocol-tool",
     srcs = ["generate_bidi_protocol.py"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:private"],
+    deps = [":remote"],
 )
 
 # `bazel run //py:generate-bidi-protocol` regenerates the checked-out tree for local
@@ -805,6 +816,7 @@ py_binary(
     data = ["//javascript/selenium-webdriver:create-bidi-src_schema"],
     main = "generate_bidi_protocol.py",
     visibility = ["//visibility:public"],
+    deps = [":remote"],
 )
 
 py_library(
@@ -1124,6 +1136,48 @@ FEATURE_SUITE_DEFS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
+# Generate test-<browser>-remote-bidi targets (chrome and firefox only).
+# Deliberately not folded into the test-<browser>-remote aggregate: BiDi over Grid's
+# websocket proxy is new coverage, so keep it out of the established remote job until
+# it has proven stable.
+[
+    py_test_suite(
+        name = "test-%s-remote-bidi" % browser,
+        size = "large",
+        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        args = [
+            "--instafail",
+            "--bidi",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+            "remote",
+            "%s-remote" % browser,
+        ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-remote-bidi" % browser,
+        deps = [
+            ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
+            ":common_alert",  # bidi/browsing_context_tests.py calls EC.alert_is_present()
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
     py_test_suite(
@@ -1151,11 +1205,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote" % browser,
         deps = [
             ":init-tree",
@@ -1187,11 +1241,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-actions" % browser,
         deps = [
             ":init-tree",
@@ -1223,11 +1277,11 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = [
-            "no-sandbox",
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-%s" % (browser, feature),
         deps = [
             ":init-tree",
@@ -1260,6 +1314,16 @@ test_suite(
     tests = [
         ":test-chrome-remote",
         ":test-firefox-remote",
+    ],
+)
+
+# Kept out of :test-remote so BiDi-over-Grid runs as its own CI job while it is new.
+test_suite(
+    name = "test-remote-bidi",
+    tags = ["remote"],
+    tests = [
+        ":test-chrome-remote-bidi",
+        ":test-firefox-remote-bidi",
     ],
 )
 

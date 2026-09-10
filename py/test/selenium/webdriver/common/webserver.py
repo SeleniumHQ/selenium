@@ -203,7 +203,6 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
         """Override default to avoid trashing stderr."""
-        pass
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
@@ -216,7 +215,6 @@ class SimpleWebServer:
     def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
         host = host if host else DEFAULT_HOST_IP
-        port = port
         while True:
             try:
                 self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)

@@ -176,8 +176,6 @@ class CdpConnectionClosed(WsConnectionClosed):
 class InternalError(Exception):
     """This exception is only raised when there is faulty logic in TrioCDP or the integration with PyCDP."""
 
-    pass
-
 
 @dataclass
 class CmEventProxy:
@@ -487,8 +485,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
             else:
                 self._handle_data(data)
 
-        for _, session in self.sessions.items():
-            for _, senders in session.channels.items():
+        for session in self.sessions.values():
+            for senders in session.channels.values():
                 for sender in senders:
                     sender.close()
 

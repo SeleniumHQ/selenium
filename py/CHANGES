@@ -1,3 +1,12 @@
+Selenium 4.49.0
+* Support CDP versions: v151, v152, v153
+* derive BiDi field names and enum value types in the schema (#17966)
+* chore fix for unreachable mypy warnings (#17969)
+* chore: enable mypy disallow untyped decorators and update type hints (#17974)
+* raise typed WebDriver errors for BiDi wire error codes (#17952)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* adopt the worthwhile ruff 0.16 rule families (tranches 1 and 2) (#17992)
+
 Selenium 4.48.0
 * Support CDP versions: v150, v151, v152
 * fix W3C capabilities built from a list of options (create_matches) (#17897)
