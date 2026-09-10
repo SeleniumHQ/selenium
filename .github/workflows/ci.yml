@@ -146,8 +146,6 @@ jobs:
     name: Rust
     needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
 
   javascript:
