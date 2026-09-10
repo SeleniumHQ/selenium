@@ -1,7 +1,8 @@
 # 17786. Behavioral contract for the low-level WebDriver BiDi layer
 
-- Status: Proposed
+- Status: Accepted
 - Discussion: https://github.com/SeleniumHQ/selenium/pull/17786
+- Tracking: https://github.com/SeleniumHQ/selenium/issues/18020
 
 ## Context
 
