@@ -306,21 +306,32 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  # The mirror indexes the nightly release, which publishing deletes, so recreate it from the release
-  # packages rather than waiting for the next nightly build.
+  # The mirror indexes the nightly release, which publishing deletes, and both it and Selenium Manager
+  # only recognise a SNAPSHOT-named server jar there, so build one rather than reuse the release packages.
   nightly-grid:
-    name: Publish Nightly Grid
+    name: Build Nightly Grid
     needs: [parse-tag, publish, github-release-publish]
+    if: needs.parse-tag.outputs.language == 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Nightly Grid
+      run: ./go java:version nightly && ./go java:package
+      artifact-name: nightly-grid
+      artifact-path: build/dist/*.*
+
+  publish-nightly-grid:
+    name: Publish Nightly Grid
+    needs: [parse-tag, nightly-grid]
     if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
     uses: ./.github/workflows/release-grid.yml
     with:
-      artifact-name: release-packages-java
+      artifact-name: nightly-grid
 
   mirror:
     name: Update Release Mirror
-    needs: [parse-tag, update-version, nightly-grid]
+    needs: [parse-tag, update-version, publish-nightly-grid]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
@@ -344,7 +355,7 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [extract-tag, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid, mirror, verify, unrestrict-trunk]
+    needs: [extract-tag, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, publish-nightly-grid, mirror, verify, unrestrict-trunk]
     if: always() && !cancelled() && needs.extract-tag.result != 'skipped'
     steps:
       - uses: actions/checkout@v6
@@ -364,7 +375,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Grid: ${{ needs.nightly-grid.result }}
+            • Nightly Grid: ${{ needs.publish-nightly-grid.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
