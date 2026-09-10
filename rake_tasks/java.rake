@@ -9,7 +9,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v152:v152.publish
-  //java/src/org/openqa/selenium/devtools/v150:v150.publish
+  //java/src/org/openqa/selenium/devtools/v153:v153.publish
   //java/src/org/openqa/selenium/devtools/v151:v151.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
@@ -194,7 +194,7 @@ end
 
 desc 'Build Java Client Jars'
 task :build do |_task, arguments|
-  java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
+  Bazel.execute('build', arguments.to_a, java_release_targets)
 end
 
 desc 'Build the selenium client jars'

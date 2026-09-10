@@ -59,7 +59,7 @@ class _PageSettingsDescriptor:
         return obj._page.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
-        getattr(obj, "_validate_num_property")(self.name, value)
+        obj._validate_num_property(self.name, value)
         obj._page[self.name] = value
         obj._print_options["page"] = obj._page
 
@@ -80,7 +80,7 @@ class _MarginSettingsDescriptor:
         return obj._margin.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
-        getattr(obj, "_validate_num_property")(f"Margin {self.name}", value)
+        obj._validate_num_property(f"Margin {self.name}", value)
         obj._margin[self.name] = value
         obj._print_options["margin"] = obj._margin
 
@@ -95,7 +95,7 @@ class _ScaleDescriptor:
         return obj._print_options.get(self.name)
 
     def __set__(self, obj, value) -> None:
-        getattr(obj, "_validate_num_property")(self.name, value)
+        obj._validate_num_property(self.name, value)
         if value < 0.1 or value > 2:
             raise ValueError("Value of scale should be between 0.1 and 2")
         obj._print_options[self.name] = value

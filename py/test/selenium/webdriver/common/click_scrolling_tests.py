@@ -174,7 +174,7 @@ def test_should_be_able_to_click_element_that_is_out_of_view_in_anested_frame_th
 def test_should_not_scroll_when_getting_element_size(driver, pages):
     pages.load("scroll3.html")
     scrollTop = get_scroll_top(driver)
-    driver.find_element(By.ID, "button1").size
+    _ = driver.find_element(By.ID, "button1").size
     assert scrollTop == get_scroll_top(driver)
 
 

@@ -3,9 +3,7 @@ name: GitHub Cache
 on:
   push:
     branches: [trunk]
-    # Browser pins (common/repositories.bzl, common/browsers.bzl) are deliberately
-    # absent: this job populates with --pin_browsers=false, so those repositories
-    # are never fetched and a run triggered by them has nothing new to cache.
+    # Keep in sync with the repository-cache key files in bazel.yml.
     paths:
       - 'MODULE.bazel'
       - 'multitool.lock.json'
@@ -15,6 +13,7 @@ on:
       - 'py/requirements_lock.txt'
       - 'rb/Gemfile.lock'
       - 'dotnet/paket.lock'
+      - 'common/selenium_manager.bzl'
   schedule:
     - cron: '30 6 * * *'
   workflow_dispatch:
@@ -38,7 +37,10 @@ jobs:
       name: ${{ matrix.os }}
       os: ${{ matrix.os }}
       cache-save: true
+      # Cache Selenium Manager binaries but not the pinned browser/driver binaries
       run: >-
         bazel build --nobuild --build_tests_only --keep_going --pin_browsers=false
         //java/test/... //py:* //rb/spec/... //rust/tests/...
-        //javascript/selenium-webdriver:* //dotnet/test/...
+        //javascript/selenium-webdriver:* //dotnet/test/... &&
+        bazel fetch --repo=@download_sm_linux_x86_64 --repo=@download_sm_linux_arm64
+        --repo=@download_sm_macos --repo=@download_sm_windows
