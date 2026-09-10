@@ -30,6 +30,7 @@ module Selenium
           let(:network) { described_class.new(driver) }
           let(:browsing_context) { BrowsingContext.new(driver) }
           let(:session) { Session.new(driver) }
+          let(:connection) { driver.send(:bridge).connection }
 
           def bytes(value)
             Network::StringValue.new(value: value)
@@ -41,7 +42,7 @@ module Selenium
 
           def subscribe(event)
             events = []
-            callback = driver.bidi.add_callback(event) { |params| events << params }
+            callback = connection.add_callback(event) { |params| events << params }
             session.subscribe(events: [event])
             [events, callback]
           end
@@ -49,7 +50,7 @@ module Selenium
           def unsubscribe(event, callback)
             session.unsubscribe(events: [event])
           ensure
-            driver.bidi.remove_callback(event, callback) if callback
+            connection.remove_callback(event, callback) if callback
           end
 
           def blocked_event(events, intercept)
@@ -119,7 +120,7 @@ module Selenium
               intercept = network.add_intercept(phases: [:before_request_sent])
               events, callback = subscribe('network.beforeRequestSent')
 
-              driver.bidi.add_callback('network.beforeRequestSent') do |event|
+              connection.add_callback('network.beforeRequestSent') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.continue_request(request: event['request']['request'])
@@ -143,7 +144,7 @@ module Selenium
               )
               events, callback = subscribe('network.beforeRequestSent')
 
-              driver.bidi.add_callback('network.beforeRequestSent') do |event|
+              connection.add_callback('network.beforeRequestSent') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.continue_request(
@@ -177,7 +178,7 @@ module Selenium
               intercept = network.add_intercept(phases: [:response_started])
               events, callback = subscribe('network.responseStarted')
 
-              driver.bidi.add_callback('network.responseStarted') do |event|
+              connection.add_callback('network.responseStarted') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.continue_response(request: event['request']['request'])
@@ -198,7 +199,7 @@ module Selenium
               intercept = network.add_intercept(phases: [:response_started])
               events, callback = subscribe('network.responseStarted')
 
-              driver.bidi.add_callback('network.responseStarted') do |event|
+              connection.add_callback('network.responseStarted') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.continue_response(
@@ -229,7 +230,7 @@ module Selenium
               intercept = network.add_intercept(phases: [:auth_required])
               _events, callback = subscribe('network.authRequired')
 
-              driver.bidi.add_callback('network.authRequired') do |event|
+              connection.add_callback('network.authRequired') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.continue_with_auth(
@@ -261,7 +262,7 @@ module Selenium
               )
               _events, callback = subscribe('network.beforeRequestSent')
 
-              driver.bidi.add_callback('network.beforeRequestSent') do |event|
+              connection.add_callback('network.beforeRequestSent') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.fail_request(request: event['request']['request'])
@@ -322,7 +323,7 @@ module Selenium
               )
               _events, callback = subscribe('network.beforeRequestSent')
 
-              driver.bidi.add_callback('network.beforeRequestSent') do |event|
+              connection.add_callback('network.beforeRequestSent') do |event|
                 next unless event['isBlocked'] && Array(event['intercepts']).include?(intercept.intercept)
 
                 network.provide_response(
