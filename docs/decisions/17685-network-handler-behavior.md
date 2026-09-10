@@ -1,7 +1,8 @@
 # 17685. The network async/event API
 
-- Status: Proposed
+- Status: Accepted
 - Discussion: [#17685](https://github.com/SeleniumHQ/selenium/pull/17685)
+- Tracking: https://github.com/SeleniumHQ/selenium/issues/18019
 
 ## Context
 
