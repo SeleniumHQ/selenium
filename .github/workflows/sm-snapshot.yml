@@ -23,6 +23,10 @@ on:
         type: string
         default: trunk
 
+concurrency:
+  group: sm-snapshot-${{ inputs.branch || github.ref_name }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
