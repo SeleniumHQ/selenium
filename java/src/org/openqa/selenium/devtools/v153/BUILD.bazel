@@ -3,7 +3,7 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
-cdp_version = "v150"
+cdp_version = "v153"
 
 java_export(
     name = cdp_version,
@@ -13,6 +13,7 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    stub_javadoc = True,
     tags = [
         "release-artifact",
     ],

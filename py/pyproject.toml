@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.49.0.202608272014"
+version = "4.50.0.202609091537"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -137,15 +137,45 @@ ignore_errors = true
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
     "selenium/webdriver/common/bidi/",
+    "*.md",
 ]
 line-length = 120
 respect-gitignore = true
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["D", "E", "F", "I", "PT", "UP", "RUF", "TID252"]
+# Whole families are listed bare; individually-named rules are families whose
+# remaining rules are not enforced yet (see https://github.com/SeleniumHQ/selenium/issues/17989).
+select = [
+    "B",
+    "C4",
+    "D",
+    "E",
+    "EXE",
+    "F",
+    "FLY",
+    "I",
+    "PIE",
+    "PLE",
+    "PT",
+    "RUF",
+    "TID252",
+    "UP",
+    "W",
+    "FURB122",
+    "FURB167",
+    "FURB188",
+    "FURB192",
+    "PERF102",
+    "PLR0133",
+]
 fixable = ["ALL"]
 extend-ignore = [
+    "B007", # Loop control variable not used within loop body
+    "B024", # Abstract base class without abstract methods
+    "B028", # No explicit `stacklevel` keyword argument found
+    "B904", # `raise` without `from` inside `except` -- worth adopting, but it is 17
+    # findings concentrated in py/selenium; see issue #17989
     "D100", # Missing docstring in public module
     "D101", # Missing docstring in public class
     "D102", # Missing docstring in public method
@@ -160,6 +190,16 @@ extend-ignore = [
     "RUF012", # Mutable default values in class attributes
     "RUF059", # Unpacked variable is never used
 ]
+
+# These globs are matched against paths relative to the working directory, not to
+# this file. py/private/ruff.py runs ruff from the workspace root, so they are
+# spelled "py/..." -- they silently stop matching if ruff is invoked from py/.
+[tool.ruff.lint.per-file-ignores]
+# Accessing a property to assert that it raises, inside `with pytest.raises(...)`,
+# is the idiomatic spelling; `_ = alert.text` would be strictly worse.
+"py/test/**" = ["B018"]
+# Same pattern, in a driver-liveness probe rather than a test assertion.
+"py/conftest.py" = ["B018"]
 
 [tool.ruff.format]
 docstring-code-format = true

@@ -154,11 +154,15 @@ def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
 class CddlType(Enum):
     """CDDL type mappings to Python types."""
 
+    # Distinct CDDL types collapse onto the same Python type, so the repeated
+    # values below are deliberate Enum aliases rather than a mistake.
+    # ``get_annotation`` looks members up through ``__members__``, which
+    # includes aliases -- see 9d0ae9e68f.
     TSTR = "str"  # text string
-    TEXT = "str"  # text (alias)
+    TEXT = "str"  # text  # noqa: PIE796
     UINT = "int"  # unsigned integer
-    INT = "int"  # signed integer
-    NINT = "int"  # negative integer
+    INT = "int"  # signed integer  # noqa: PIE796
+    NINT = "int"  # negative integer  # noqa: PIE796
     BOOL = "bool"  # boolean
     NULL = "None"  # null
     ANY = "Any"  # any type
@@ -168,10 +172,10 @@ class CddlType(Enum):
         """Get Python type annotation for a CDDL type."""
         cddl_type = cddl_type.strip().lower()
 
-        # Handle basic types
-        for member in cls:
-            if cddl_type == member.name.lower():
-                return member.value
+        # Handle basic types (``__members__`` includes aliases, iteration does not)
+        member = cls.__members__.get(cddl_type.upper())
+        if member is not None:
+            return member.value
 
         # Handle composite types
         if cddl_type.startswith("["):  # Array
@@ -1243,11 +1247,7 @@ class CddlParser:
         fields = {}
 
         # Remove outer braces
-        clean_def = type_definition.strip()
-        if clean_def.startswith("{"):
-            clean_def = clean_def[1:]
-        if clean_def.endswith("}"):
-            clean_def = clean_def[:-1]
+        clean_def = type_definition.strip().removeprefix("{").removesuffix("}")
 
         # Parse each line for field: type patterns
         for line in clean_def.split("\n"):
@@ -1409,11 +1409,7 @@ class CddlParser:
 
         # Remove the outer curly braces and split by comma
         # Then parse each line for key: type patterns
-        clean_def = stripped
-        if clean_def.startswith("{"):
-            clean_def = clean_def[1:]
-        if clean_def.endswith("}"):
-            clean_def = clean_def[:-1]
+        clean_def = stripped.removeprefix("{").removesuffix("}")
 
         # Split by newlines and process each line
         for line in clean_def.split("\n"):

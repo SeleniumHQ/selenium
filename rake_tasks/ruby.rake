@@ -54,7 +54,6 @@ end
 
 desc 'Update generated Ruby files for local development'
 task :local_dev do
-  puts 'installing ruby, this may take a minute'
   Bazel.execute('build', [], '@bundle//:bundle')
   Rake::Task['rb:build'].invoke
   Rake::Task['grid'].invoke
@@ -153,6 +152,12 @@ task :install do
   Dir.glob('bazel-bin/rb/selenium-webdriver-*.gem').each do |gem|
     sh 'gem', 'install', gem
   end
+end
+
+desc 'Regenerate the BiDi protocol classes from the pinned CDDL schema'
+task :update_cddl do
+  puts 'Regenerating Ruby BiDi protocol'
+  Bazel.execute('run', [], '//rb/lib/selenium/webdriver:bidi-generate')
 end
 
 desc 'Update Ruby changelog'

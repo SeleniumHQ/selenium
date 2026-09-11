@@ -17,6 +17,7 @@ def java_export(
         uses = [],
         opens_to = [],
         exports = [],
+        stub_javadoc = False,
         tags = [],
         testonly = None,
         visibility = None,
@@ -74,12 +75,31 @@ def java_export(
         output_group = "module_jar",
     )
 
-    javadoc(
-        name = "%s-docs" % name,
-        deps = [
-            ":%s-project" % name,
-        ],
-    )
+    if stub_javadoc:
+        # Central requires a javadoc artifact to exist, not to have content.
+        native.genrule(
+            name = "%s-docs" % name,
+            outs = ["%s-docs.jar" % name],
+            srcs = ["//java/private:stub-javadoc.html"],
+            cmd = "$(location @bazel_tools//tools/zip:zipper) c $@ index.html=$(location //java/private:stub-javadoc.html)",
+            tools = ["@bazel_tools//tools/zip:zipper"],
+        )
+    else:
+        javadoc(
+            name = "%s-docs" % name,
+            deps = [
+                ":%s-project" % name,
+            ],
+            javadocopts = [
+                "-notimestamp",
+                "-use",
+                "-quiet",
+                "-Xdoclint:-missing",
+                "-encoding",
+                "UTF8",
+                "--no-fonts",
+            ],
+        )
 
     pom_file(
         name = "%s-pom" % name,

@@ -41,6 +41,24 @@ config_setting(
     constraint_values = ["@platforms//os:windows"],
 )
 
+[
+    config_setting(
+        name = "{}_{}".format(os, arch),
+        constraint_values = [
+            "@platforms//os:{}".format(os),
+            "@platforms//cpu:{}".format(arch),
+        ],
+    )
+    for (os, arch) in [
+        ("linux", "arm64"),
+        ("linux", "x86_64"),
+        ("macos", "arm64"),
+        ("macos", "x86_64"),
+        ("windows", "arm64"),
+        ("windows", "x86_64"),
+    ]
+]
+
 # Are we creating a stamped build?
 config_setting(
     name = "stamp",

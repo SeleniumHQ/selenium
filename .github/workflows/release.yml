@@ -163,7 +163,7 @@ jobs:
         else
           echo skipping
         fi
-      artifact-name: ${{ (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
+      artifact-name: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && (needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language) && format('release-packages-{0}', matrix.language) || '' }}
       artifact-path: ${{ (matrix.language == 'java' || matrix.language == 'dotnet') && 'build/dist/*.*' || '' }}
     secrets: inherit
 
@@ -218,18 +218,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: Download all release packages
-        if: needs.parse-tag.outputs.language == 'all'
+      - name: Download release packages
         uses: actions/download-artifact@v8
         with:
           pattern: release-packages-*
           merge-multiple: true
-          path: "build/dist/"
-      - name: Download release packages
-        if: needs.parse-tag.outputs.language != 'all'
-        uses: actions/download-artifact@v8
-        with:
-          name: release-packages-${{ needs.parse-tag.outputs.language }}
           path: "build/dist/"
       - name: Delete nightly release and tag
         if: needs.parse-tag.outputs.language == 'all'
@@ -285,6 +278,7 @@ jobs:
     with:
       name: Verify packages
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
+    secrets: inherit
 
   reset-version:
     name: Generate Nightly Versions
@@ -312,25 +306,32 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  nightly:
-    name: Publish Nightly Packages
-    needs: [parse-tag, update-version, github-release-publish]
-    if: >-
-      always() && !cancelled() &&
-      needs.update-version.result == 'success' &&
-      (needs.github-release-publish.result == 'success' || needs.github-release-publish.result == 'skipped')
+  # The mirror indexes the nightly release, which publishing deletes, and both it and Selenium Manager
+  # only recognise a SNAPSHOT-named server jar there, so build one rather than reuse the release packages.
+  nightly-grid:
+    name: Build Nightly Grid
+    needs: [parse-tag, publish, github-release-publish]
+    if: needs.parse-tag.outputs.language == 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Nightly Grid
+      run: ./go java:version nightly && ./go java:package
+      artifact-name: nightly-grid
+      artifact-path: build/dist/*.*
+
+  publish-nightly-grid:
+    name: Publish Nightly Grid
+    needs: [parse-tag, nightly-grid]
+    if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
-      packages: write
-    uses: ./.github/workflows/nightly.yml
+    uses: ./.github/workflows/release-grid.yml
     with:
-      language: ${{ needs.parse-tag.outputs.language }}
-      ignore_release_check: true
-    secrets: inherit
+      artifact-name: nightly-grid
 
   mirror:
     name: Update Release Mirror
-    needs: [parse-tag, nightly]
+    needs: [parse-tag, update-version, publish-nightly-grid]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
@@ -354,8 +355,8 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
-    if: always() && !cancelled()
+    needs: [extract-tag, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, publish-nightly-grid, mirror, verify, unrestrict-trunk]
+    if: always() && !cancelled() && needs.extract-tag.result != 'skipped'
     steps:
       - uses: actions/checkout@v6
       - name: Slack Notification
@@ -374,7 +375,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Packages: ${{ needs.nightly.result }}
+            • Nightly Grid: ${{ needs.publish-nightly-grid.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
