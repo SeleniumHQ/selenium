@@ -15,6 +15,8 @@ on:
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
+      SLACK_WEBHOOK_URL:
+        required: false
   workflow_dispatch:
     inputs:
       branch:
@@ -321,3 +323,47 @@ jobs:
             artifacts/selenium-manager-windows-debug/selenium-manager-windows-debug.exe
             artifacts/selenium-manager-sbom/selenium-manager.cdx.json
             artifacts/selenium-manager-sbom/selenium-manager-THIRD-PARTY-NOTICES.txt
+
+  update-pin:
+    name: "Update Bazel Pin"
+    needs: publish
+    # Only trunk snapshots feed the pin; release builds bump it from pre-release.yml
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.branch == 'trunk')
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: "Update Bazel Pin"
+      run: ./go update_manager
+      artifact-name: selenium-manager-pin
+
+  commit-pin:
+    name: "Commit Bazel Pin"
+    needs: update-pin
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      artifact-name: selenium-manager-pin
+      commit-message: "[build] Automated Selenium Manager Update"
+      ref: trunk
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  on-pin-failure:
+    name: "On Pin Update Failure"
+    runs-on: ubuntu-latest
+    needs: [update-pin, commit-pin]
+    # Same gate as update-pin: the release flow reports its own failures
+    if: failure() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.branch == 'trunk'))
+    steps:
+      - name: "Slack Notification"
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: Needs Investigation
+          SLACK_MESSAGE: "Unable to update the Selenium Manager pin on trunk"
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
