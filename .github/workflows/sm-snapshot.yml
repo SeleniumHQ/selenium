@@ -332,6 +332,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: "Update Bazel Pin"
+      ref: trunk
       run: ./go update_manager
       artifact-name: selenium-manager-pin
 
