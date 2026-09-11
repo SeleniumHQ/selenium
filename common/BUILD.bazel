@@ -15,6 +15,18 @@ config_setting(
 )
 
 bool_flag(
+    name = "compile_manager",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "manager_from_source",
+    flag_values = {
+        ":compile_manager": "true",
+    },
+)
+
+bool_flag(
     name = "headless",
     build_setting_default = False,
 )
