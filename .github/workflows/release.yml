@@ -306,11 +306,11 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  # The mirror indexes the nightly release, which publishing deletes, and both it and Selenium Manager
-  # only recognise a SNAPSHOT-named server jar there, so build one rather than reuse the release packages.
+  # github-release-publish deletes the nightly tag, and mirror needs a nightly grid jar back under it.
+  # The build can run any time; only publish-nightly-grid has to sit between those two jobs.
   nightly-grid:
     name: Build Nightly Grid
-    needs: [parse-tag, publish, github-release-publish]
+    needs: [parse-tag, get-approval]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
@@ -321,7 +321,7 @@ jobs:
 
   publish-nightly-grid:
     name: Publish Nightly Grid
-    needs: [parse-tag, nightly-grid]
+    needs: [parse-tag, nightly-grid, github-release-publish]
     if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
