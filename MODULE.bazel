@@ -404,7 +404,7 @@ use_repo(rules_rust, "rules_rust")
 rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
 rust_toolchains.toolchain(
     edition = "2024",
-    # Keep in sync with RUST_VERSION in .github/workflows/ci-rust.yml
+    # Keep in sync with RUST_VERSION in .github/workflows/sm-snapshot.yml
     version = "1.98.1",
 )
 use_repo(rust_toolchains, "default_rust_toolchains")

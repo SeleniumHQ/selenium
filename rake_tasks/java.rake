@@ -194,7 +194,7 @@ end
 
 desc 'Build Java Client Jars'
 task :build do |_task, arguments|
-  java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
+  Bazel.execute('build', arguments.to_a, java_release_targets)
 end
 
 desc 'Build the selenium client jars'
@@ -353,8 +353,8 @@ task :release do |_task, arguments|
   end
 
   puts 'Packaging Java artifacts...'
-  Rake::Task['java:package'].invoke('--config=release')
   Rake::Task['java:build'].invoke('--config=release')
+  Rake::Task['java:package'].invoke('--config=release')
 
   next if !nightly && Sonatype.already_deployed?(java_version)
 

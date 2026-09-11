@@ -19,7 +19,7 @@ jobs:
 
   generate-rust-version:
     name: Generate Rust Version
-    needs: [parse-tag, restrict-trunk]
+    needs: [parse-tag, verify-cdp]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
@@ -44,9 +44,8 @@ jobs:
   selenium-manager:
     name: Release Selenium Manager
     needs: [parse-tag, push-rust-version]
-    uses: ./.github/workflows/ci-rust.yml
+    uses: ./.github/workflows/sm-snapshot.yml
     with:
-      release: true
       branch: rust-release-${{ needs.parse-tag.outputs.version }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

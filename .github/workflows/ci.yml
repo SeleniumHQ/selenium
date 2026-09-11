@@ -37,7 +37,8 @@ jobs:
       run: |
         if [ "${{ github.event_name }}" == "schedule" ] || \
         [ "${{ github.event_name }}" == "workflow_call" ] || \
-        [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+        [ "${{ github.event_name }}" == "workflow_dispatch" ] || \
+        [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" == "true" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
         else
@@ -145,8 +146,6 @@ jobs:
     name: Rust
     needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
 
   javascript:
