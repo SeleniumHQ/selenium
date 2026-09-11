@@ -133,7 +133,7 @@ jobs:
         --local_test_jobs 1
         --flaky_test_attempts 3
         --pin_browsers=false
-        ${{ inputs.compile-manager && '--compile_manager' || '' }}
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --build_tests_only
         --skip_incompatible_explicit_targets
         --test_tag_filters=se-manager

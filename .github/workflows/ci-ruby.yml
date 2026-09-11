@@ -87,7 +87,7 @@ jobs:
         --local_test_jobs 1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
-        ${{ inputs.compile-manager && '--compile_manager' || '' }}
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true

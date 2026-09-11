@@ -331,7 +331,7 @@ There are a number of bazel configurations specific for testing.
 
 Here are examples of arguments we make use of in testing the Selenium code:
 * `--pin_browsers=false` - use Selenium Manager to locate browsers/drivers
-* `--compile_manager` - compile Selenium Manager from source instead of downloading the pinned binary
+* `--manager=host` - compile Selenium Manager from source instead of downloading the pinned binary
 * `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests

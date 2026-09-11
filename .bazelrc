@@ -19,7 +19,7 @@ build --enable_runfiles
 
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
-build --flag_alias=compile_manager=//common:compile_manager
+build --flag_alias=manager=//common:manager
 
 # Set the default java toolchain.
 # When bumping these, also update java_runtime in //common/remote-build/java to match.
