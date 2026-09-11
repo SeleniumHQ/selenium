@@ -1146,7 +1146,7 @@ FEATURE_SUITE_DEFS = {
     py_test_suite(
         name = "test-%s-remote-bidi" % browser,
         size = "large",
-        srcs = REMOTE_BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        srcs = REMOTE_BIDI_TESTS,
         args = [
             "--instafail",
             "--bidi",
@@ -1300,7 +1300,6 @@ FEATURE_SUITE_DEFS = {
 ]
 
 # Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features
-# (+ remote-bidi once REMOTE_BIDI_TESTS has entries)
 [test_suite(
     name = "test-%s-remote" % browser,
     tests = [
