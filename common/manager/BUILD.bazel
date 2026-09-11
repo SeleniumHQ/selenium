@@ -12,6 +12,7 @@ package(
 alias(
     name = "selenium-manager-linux-x86_64",
     actual = select({
+        "//common:manager_all": "//rust:_xc_file-linux-x86_64",
         "//common:manager_host": "//rust:selenium-manager-linux-x86_64",
         "//conditions:default": "@download_sm_linux_x86_64//file",
     }),
@@ -20,6 +21,7 @@ alias(
 alias(
     name = "selenium-manager-linux-arm64",
     actual = select({
+        "//common:manager_all": "//rust:_xc_file-linux-arm64",
         "//common:manager_host": "//rust:selenium-manager-linux-arm64",
         "//conditions:default": "@download_sm_linux_arm64//file",
     }),
@@ -28,6 +30,7 @@ alias(
 alias(
     name = "selenium-manager-macos",
     actual = select({
+        "//common:manager_all": "//rust:_xc_file-macos",
         "//common:manager_host": "//rust:selenium-manager-macos",
         "//conditions:default": "@download_sm_macos//file",
     }),
@@ -36,6 +39,7 @@ alias(
 alias(
     name = "selenium-manager-windows",
     actual = select({
+        "//common:manager_all": "//rust:_xc_file-windows",
         "//common:manager_host": "//rust:selenium-manager-windows",
         "//conditions:default": "@download_sm_windows//file",
     }),
