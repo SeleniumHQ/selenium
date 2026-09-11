@@ -869,6 +869,10 @@ BIDI_TESTS = glob([
 # Tests that have bidi and classic implementations.
 BIDI_IMPLEMENTATIONS = []
 
+# BiDi test files with Grid-specific behavior, run through Grid as well. Empty
+# generates no targets: an empty test_suite would mean every test in the package.
+REMOTE_BIDI_TESTS = []
+
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
 # library only triggers that group's targets, not the full ~700-target suite.
@@ -1136,6 +1140,47 @@ FEATURE_SUITE_DEFS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
+# Generate test-<browser>-remote-bidi targets (chrome and firefox only), folded
+# into test-<browser>-remote below.
+[
+    py_test_suite(
+        name = "test-%s-remote-bidi" % browser,
+        size = "large",
+        srcs = REMOTE_BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        args = [
+            "--instafail",
+            "--bidi",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+            "remote",
+            "%s-remote" % browser,
+        ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-remote-bidi" % browser,
+        deps = [
+            ":bidi_protocol",
+            ":common_alert",
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+    if REMOTE_BIDI_TESTS
+]
+
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
 [
     py_test_suite(
@@ -1255,12 +1300,13 @@ FEATURE_SUITE_DEFS = {
 ]
 
 # Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features
+# (+ remote-bidi once REMOTE_BIDI_TESTS has entries)
 [test_suite(
     name = "test-%s-remote" % browser,
     tests = [
         ":test-%s-remote-common" % browser,
         ":test-%s-remote-actions" % browser,
-    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
+    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS] + ([":test-%s-remote-bidi" % browser] if REMOTE_BIDI_TESTS else []),
 ) for browser in [
     "chrome",
     "firefox",

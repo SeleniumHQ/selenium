@@ -105,6 +105,10 @@ pytest py/test/selenium/webdriver/chrome/ --driver chrome --headless -v
 > To run against a Grid server, add `--remote`. It starts a Selenium standalone
 > server and runs the tests through `webdriver.Remote`, so it needs the Grid jar
 > built first (`bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar`).
+>
+> A BiDi test file with Grid-specific behavior can be listed in `REMOTE_BIDI_TESTS`
+> in `py/BUILD.bazel`; it then also runs with `--bidi --remote` as part of
+> `test-<browser>-remote`.
 
 ## Skipping Tests
 
