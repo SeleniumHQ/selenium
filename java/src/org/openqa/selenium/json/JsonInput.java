@@ -540,8 +540,8 @@ public class JsonInput implements Closeable {
    * @throws JsonException if coercion of the next element to the specified type fails
    * @throws UncheckedIOException if an I/O exception is encountered
    */
-  public <T> List<T> readArray(Type type) {
-    List<T> toReturn = new ArrayList<>();
+  public <T> List<@Nullable T> readArray(Type type) {
+    List<@Nullable T> toReturn = new ArrayList<>();
 
     beginArray();
     while (hasNext()) {
