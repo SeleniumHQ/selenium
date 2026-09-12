@@ -1,0 +1,27 @@
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+
+SM_VERSION = "4.45.0"
+
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+npm_package(
+    name = "selenium-manager",
+    srcs = [
+        "bin/selenium-manager.js",
+        "package.json",
+        ":license",
+    ],
+    package = "@selenium/manager",
+    publishable = True,
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+)
