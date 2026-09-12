@@ -6,8 +6,8 @@ rustfmt_config(
 )
 
 # We want the release versions of Selenium to include the prebuilt
-# binaries, but if we're doing day-to-day dev work, then we should
-# use a local build.
+# binaries, but if we're working on Selenium Manager itself, then
+# `--manager=host` should swap in a local build.
 #
 # We tag the compiled versions as `manual` so that when we do a
 # `bazel build //...` we don't do any additional work
