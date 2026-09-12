@@ -18,38 +18,43 @@
 package org.openqa.selenium.bidi;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.Json;
 
 @Beta
 public class ConverterFunctions {
+
+  private static final Json JSON = new Json();
 
   private ConverterFunctions() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Type typeOfX) {
+  /**
+   * Build a {@link Command} result mapper for the common case where the useful value is a single
+   * field of the response's {@code result} object.
+   *
+   * <p>The returned function is applied to a command's {@code result} value, which {@link
+   * org.openqa.selenium.bidi.Connection} has already parsed into a {@code Map<String, Object>}. It
+   * reads {@code keyName} from that map and deserializes it to {@code typeOfX} via {@link
+   * Json#convert(Object, Type)}, without re-parsing any JSON text. Both the {@code result} and the
+   * field are required: a missing {@code result} or a {@code null}/absent field is an error.
+   *
+   * @param keyName the field to read from the command's {@code result} object
+   * @param typeOfX the type to deserialize that field to (class or {@link
+   *     org.openqa.selenium.json.TypeToken})
+   */
+  public static <X> Function<@Nullable Object, X> map(String keyName, Type typeOfX) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Type to convert to", typeOfX);
 
-    return input -> {
-      X value = null;
-
-      input.beginObject();
-      while (input.hasNext()) {
-        String name = input.nextName();
-        if (keyName.equals(name)) {
-          value = input.read(typeOfX);
-        } else {
-          input.skipValue();
-        }
-      }
-      input.endObject();
-
-      return value;
+    return result -> {
+      Object value = ((Map<?, ?>) Require.nonNull("Command result", result)).get(keyName);
+      return Require.nonNull("Field '" + keyName + "'", JSON.convert(value, typeOfX));
     };
   }
 }
