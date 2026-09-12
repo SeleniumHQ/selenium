@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -83,11 +84,12 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void testRelayNodeMatchByRemovingBrowserNameWhenAppSet() {
+  public void testRelayNodeDoesNotBypassBrowserNameWhenAppSet() {
     /*
-    Relay node stereotype does not have browserName (where user wants to restrict to run a native app only)
-    Request capabilities have both browserName (it might initialize by ChromeOptions) and app set
-    The browserName will be filter out when validating match
+    DefaultSlotMatcher requires explicit parity: a stereotype that doesn't declare browserName
+    or automationName must not match a request carrying app-relay capabilities. The old
+    "filter out browserName when app is set" leniency now lives in AppiumRelaySlotMatcher,
+    which relay-node operators can opt into via the "slot-matcher" config.
      */
     Capabilities stereotype =
         new ImmutableCapabilities(
@@ -104,16 +106,16 @@ class DefaultSlotMatcherTest {
             "link.to.apk",
             "appium:automationName",
             "uiautomator2");
-    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
   @Test
-  public void testRelayNodeNotMatchHybridBrowserVersionWhenStereotypeWithoutBrowserName() {
+  public void testRelayNodeRequiresExplicitAutomationNameParity() {
     /*
-    Relay node 1 has stereotype does not have browserName (where user wants to restrict to run a native app only)
-    Request capabilities want to run a hybrid app (browserName is set) and app isn't set
-    Request capabilities should not match the stereotype
-    Relay node 2 has stereotype with browserName set should match the request capabilities
+    Neither relay stereotype declares automationName, so neither matches a hybrid request that
+    specifies it -- even the stereotype declaring browserName. Unlike the old gated behavior,
+    being Appium-aware (declaring appium:platformVersion) is not enough on its own; the
+    stereotype must declare the same automationName the request asks for.
      */
     Capabilities stereotype1 =
         new ImmutableCapabilities(
@@ -137,7 +139,7 @@ class DefaultSlotMatcherTest {
             Platform.ANDROID,
             "appium:platformVersion",
             "14");
-    assertThat(slotMatcher.matches(stereotype2, capabilities)).isTrue();
+    assertThat(slotMatcher.matches(stereotype2, capabilities)).isFalse();
   }
 
   @Test
@@ -162,9 +164,7 @@ class DefaultSlotMatcherTest {
             CapabilityType.PLATFORM_NAME,
             Platform.ANDROID,
             "platformVersion",
-            "15",
-            "appium:automationName",
-            "uiautomator2");
+            "15");
     assertThat(slotMatcher.matches(stereotype1, capabilities)).isFalse();
     Capabilities stereotype2 =
         new ImmutableCapabilities(
@@ -751,5 +751,70 @@ class DefaultSlotMatcherTest {
             "iPhone 13");
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  void automationNameDoesNotMatchWhenStereotypeDeclaresNoExtensionCapabilities() {
+    /*
+    A plain browser stereotype must not match a request that only asks for automationName.
+    Regression test for https://github.com/SeleniumHQ/selenium/issues/17845
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10);
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:automationName", "Windows", CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void automationNameDoesNotMatchWhenStereotypeHasUnrelatedExtensionCapability() {
+    /*
+    A stereotype's unrelated, non-Appium extension capability must not be treated as a signal
+    that it can serve an automationName-differentiated request.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10,
+            "prefixed:cheese",
+            "amsterdam");
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:automationName", "Windows", CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  void automationNameDoesNotMatchWhenNestedInsideOptionsMap() {
+    /*
+    A plain browser stereotype must not match a request that nests automationName inside an
+    options map (e.g. appium:options) instead of sending it as a top-level capability.
+     */
+    Capabilities stereotype =
+        new ImmutableCapabilities(
+            CapabilityType.BROWSER_NAME,
+            "MicrosoftEdge",
+            CapabilityType.PLATFORM_NAME,
+            Platform.WIN10);
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "appium:options",
+            Map.of("automationName", "Windows"),
+            CapabilityType.PLATFORM_NAME,
+            Platform.WINDOWS);
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 }
