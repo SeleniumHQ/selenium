@@ -732,7 +732,7 @@ class WebDriver(BaseWebDriver):
         """Refreshes the current page."""
         self.execute(Command.REFRESH)
 
-    def get_cookies(self) -> list[dict]:
+    def get_cookies(self) -> list[dict[str, object]]:
         """Get all cookies visible to the current WebDriver instance.
 
         Returns:
