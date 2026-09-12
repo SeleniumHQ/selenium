@@ -160,6 +160,7 @@ public class Contents {
   public static Supplier asJson(Object obj) {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     try (JsonOutput out = JSON.newOutput(new OutputStreamWriter(output, UTF_8))) {
+      out.setPrettyPrint(false);
       out.writeClassName(false);
       out.write(obj);
     }

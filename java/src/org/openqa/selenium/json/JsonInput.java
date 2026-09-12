@@ -24,13 +24,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
@@ -38,27 +37,42 @@ import org.openqa.selenium.internal.Require;
 /**
  * The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java
  * objects.
+ *
+ * <p>Instances of this class are not thread-safe: each instance wraps a single character stream and
+ * must be confined to one thread.
  */
 public class JsonInput implements Closeable {
 
-  private final Reader source;
+  private final @Nullable Reader source;
   private boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
   private final Input input;
-  // Used when reading maps and collections so that we handle de-nesting and
-  // figuring out whether we're expecting a NAME properly.
-  private final Deque<Container> stack = new ArrayDeque<>();
+  // Stack of open containers, used to handle de-nesting and to figure out
+  // whether we're expecting a NAME. Kept as plain arrays (rather than a deque
+  // of objects) because the top of the stack is touched for every value read.
+  private byte[] containerState = new byte[16];
   // Parallel stack tracking whether the current container has seen at least
   // one element. Used by hasNext() to enforce comma separators between
   // elements while remaining lenient about a single trailing comma.
-  private final Deque<Boolean> containerHasElement = new ArrayDeque<>();
+  private boolean[] containerHasElement = new boolean[16];
+  private int containerDepth;
+  // Memoized type of the pending token; cleared whenever the token is consumed.
+  private @Nullable JsonType peekedType;
 
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
 
     this.source = Require.nonNull("Source", source);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
+    this.setter = Require.nonNull("Setter", setter);
+  }
+
+  JsonInput(String source, JsonTypeCoercer coercer, PropertySetting setter) {
+
+    this.source = null;
+    this.coercer = Require.nonNull("Coercer", coercer);
+    this.input = new Input(Require.nonNull("Source", source));
     this.setter = Require.nonNull("Setter", setter);
   }
 
@@ -93,13 +107,11 @@ public class JsonInput implements Closeable {
    * @throws JsonException if this {@code JsonInput} has already begun processing its input
    */
   public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
-    synchronized (this) {
-      if (readPerformed) {
-        throw new JsonException("JsonInput has already been used and may not be modified");
-      }
-
-      this.coercer = new JsonTypeCoercer(coercer, coercers);
+    if (readPerformed) {
+      throw new JsonException("JsonInput has already been used and may not be modified");
     }
+
+    this.coercer = new JsonTypeCoercer(coercer, coercers);
 
     return this;
   }
@@ -111,6 +123,10 @@ public class JsonInput implements Closeable {
    */
   @Override
   public void close() {
+    if (source == null) {
+      return;
+    }
+
     try {
       source.close();
     } catch (IOException e) {
@@ -126,15 +142,24 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public JsonType peek() {
+    // A single token is typically peeked at several times on its way through the coercers, so
+    // the computed type is memoized until the token is consumed.
+    JsonType type = peekedType;
+    if (type != null) {
+      return type;
+    }
+
     skipWhitespace(input);
 
     switch (input.peek()) {
       case 'f':
       case 't':
-        return JsonType.BOOLEAN;
+        type = JsonType.BOOLEAN;
+        break;
 
       case 'n':
-        return JsonType.NULL;
+        type = JsonType.NULL;
+        break;
 
       case '-':
       case '0':
@@ -147,30 +172,40 @@ public class JsonInput implements Closeable {
       case '7':
       case '8':
       case '9':
-        return JsonType.NUMBER;
+        type = JsonType.NUMBER;
+        break;
 
       case '"':
-        return isReadingName() ? JsonType.NAME : JsonType.STRING;
+        type = isReadingName() ? JsonType.NAME : JsonType.STRING;
+        break;
 
       case '{':
-        return JsonType.START_MAP;
+        type = JsonType.START_MAP;
+        break;
 
       case '}':
-        return JsonType.END_MAP;
+        type = JsonType.END_MAP;
+        break;
 
       case '[':
-        return JsonType.START_COLLECTION;
+        type = JsonType.START_COLLECTION;
+        break;
 
       case ']':
-        return JsonType.END_COLLECTION;
+        type = JsonType.END_COLLECTION;
+        break;
 
       case Input.EOF:
-        return JsonType.END;
+        type = JsonType.END;
+        break;
 
       default:
         int c = input.read();
         throw new JsonException("Unable to determine type from: " + (char) c + ". " + input);
     }
+
+    peekedType = type;
+    return type;
   }
 
   /**
@@ -243,9 +278,7 @@ public class JsonInput implements Closeable {
         throw new JsonException("Leading zeros are not permitted in JSON numbers. " + input);
       }
     } else if (first >= '1' && first <= '9') {
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     } else {
       throw new JsonException("Expected digit but saw " + describeChar(first) + ". " + input);
     }
@@ -261,9 +294,7 @@ public class JsonInput implements Closeable {
                 + ". "
                 + input);
       }
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     }
 
     // Optional exponent part: ('e' | 'E') ('+' | '-')? 1*DIGIT
@@ -280,17 +311,21 @@ public class JsonInput implements Closeable {
                 + ". "
                 + input);
       }
-      while (isDigit(input.peek())) {
-        builder.append((char) input.read());
-      }
+      input.appendDigits(builder);
     }
 
     try {
       // Fast path for integers: Long-valued when no fraction/exponent was present.
       if (!isDecimal) {
+        // At most 18 digits (plus a sign) always fits in a long, so the allocation-free parse
+        // cannot overflow. Longer inputs take the String path, which reports overflow with the
+        // historical NumberFormatException message.
+        if (builder.length() <= (builder.charAt(0) == '-' ? 19 : 18)) {
+          return Long.parseLong(builder, 0, builder.length(), 10);
+        }
         return Long.valueOf(builder.toString());
       }
-      double value = new BigDecimal(builder.toString()).doubleValue();
+      double value = parseDouble(builder);
       if (Double.isInfinite(value) || Double.isNaN(value)) {
         throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
       }
@@ -302,6 +337,96 @@ public class JsonInput implements Closeable {
 
   private static boolean isDigit(int c) {
     return c >= '0' && c <= '9';
+  }
+
+  /** Powers of ten that are exactly representable as doubles. */
+  private static final double[] POW_10 = {
+    1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16,
+    1e17, 1e18, 1e19, 1e20, 1e21, 1e22
+  };
+
+  /**
+   * Parse a JSON number that contains a fraction or exponent, as lexed into {@code raw} by {@link
+   * #nextNumber}.
+   *
+   * <p>Uses Clinger's fast path where possible: when the significand has at most 15 digits it is
+   * exactly representable as a double, as are powers of ten up to 10^22, so a single floating-point
+   * multiply or divide performs the one correctly-rounded step the conversion needs. Everything
+   * else (long significands, large exponents) falls back to {@link Double#parseDouble}, so results
+   * are always bit-for-bit identical to the JDK.
+   */
+  private static double parseDouble(StringBuilder raw) {
+    int length = raw.length();
+    int index = 0;
+    boolean negative = false;
+    if (raw.charAt(0) == '-') {
+      negative = true;
+      index = 1;
+    }
+
+    long significand = 0;
+    int digits = 0;
+    int fractionDigits = 0;
+
+    while (index < length) {
+      char c = raw.charAt(index);
+      if (c < '0' || c > '9') {
+        break;
+      }
+      significand = significand * 10 + (c - '0');
+      digits++;
+      index++;
+    }
+
+    if (index < length && raw.charAt(index) == '.') {
+      index++;
+      while (index < length) {
+        char c = raw.charAt(index);
+        if (c < '0' || c > '9') {
+          break;
+        }
+        significand = significand * 10 + (c - '0');
+        digits++;
+        fractionDigits++;
+        index++;
+      }
+    }
+
+    int exponent = 0;
+    if (index < length) {
+      // By construction the remainder is ('e' | 'E') ('+' | '-')? 1*DIGIT.
+      index++;
+      boolean exponentNegative = false;
+      char sign = raw.charAt(index);
+      if (sign == '+' || sign == '-') {
+        exponentNegative = sign == '-';
+        index++;
+      }
+      while (index < length) {
+        // Clamp rather than overflow; anything this large falls back below anyway.
+        if (exponent < 100_000) {
+          exponent = exponent * 10 + (raw.charAt(index) - '0');
+        }
+        index++;
+      }
+      if (exponentNegative) {
+        exponent = -exponent;
+      }
+    }
+
+    int netExponent = exponent - fractionDigits;
+
+    if (digits <= 15 && netExponent >= -22 && netExponent <= 22) {
+      double value = (double) significand;
+      if (netExponent > 0) {
+        value = value * POW_10[netExponent];
+      } else if (netExponent < 0) {
+        value = value / POW_10[-netExponent];
+      }
+      return negative ? -value : value;
+    }
+
+    return Double.parseDouble(raw.toString());
   }
 
   private static String describeChar(int c) {
@@ -351,19 +476,20 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public boolean hasNext() {
-    if (stack.isEmpty()) {
+    if (containerDepth == 0) {
       throw new JsonException(
           "Unable to determine if an item has next when not in a container type. " + input);
     }
 
     skipWhitespace(input);
-    boolean seenElement = Boolean.TRUE.equals(containerHasElement.peekFirst());
+    boolean seenElement = containerDepth > 0 && containerHasElement[containerDepth - 1];
 
     if (input.peek() == ',') {
       if (!seenElement) {
         throw new JsonException("Unexpected ',' before first element of container. " + input);
       }
       input.read();
+      peekedType = null;
       // We've moved past the separator, so we're once again expecting an element rather than
       // another comma. Clear the flag so a repeat hasNext() before reading is a no-op.
       clearSeenElement();
@@ -390,8 +516,7 @@ public class JsonInput implements Closeable {
    */
   public void beginArray() {
     expect(JsonType.START_COLLECTION);
-    stack.addFirst(Container.COLLECTION);
-    containerHasElement.addFirst(false);
+    pushContainer(COLLECTION);
     input.read();
   }
 
@@ -402,13 +527,12 @@ public class JsonInput implements Closeable {
    */
   public void endArray() {
     expect(JsonType.END_COLLECTION);
-    if (stack.peekFirst() != Container.COLLECTION) {
+    if (topContainer() != COLLECTION) {
       // The only other thing we could be closing is a map
       throw new JsonException(
           "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
-    stack.removeFirst();
-    containerHasElement.removeFirst();
+    containerDepth--;
     input.read();
   }
 
@@ -419,8 +543,7 @@ public class JsonInput implements Closeable {
    */
   public void beginObject() {
     expect(JsonType.START_MAP);
-    stack.addFirst(Container.MAP_NAME);
-    containerHasElement.addFirst(false);
+    pushContainer(MAP_NAME);
     input.read();
   }
 
@@ -431,11 +554,10 @@ public class JsonInput implements Closeable {
    */
   public void endObject() {
     expect(JsonType.END_MAP);
-    if (stack.peekFirst() != Container.MAP_NAME) {
+    if (topContainer() != MAP_NAME) {
       throw new JsonException("Attempt to close a JSON Map, but not ready to. " + input);
     }
-    stack.removeFirst();
-    containerHasElement.removeFirst();
+    containerDepth--;
     input.read();
   }
 
@@ -540,12 +662,14 @@ public class JsonInput implements Closeable {
    * @throws JsonException if coercion of the next element to the specified type fails
    * @throws UncheckedIOException if an I/O exception is encountered
    */
+  @SuppressWarnings("unchecked")
   public <T> List<T> readArray(Type type) {
     List<T> toReturn = new ArrayList<>();
+    BiFunction<JsonInput, PropertySetting, Object> elementCoercer = coercer.resolve(type);
 
     beginArray();
     while (hasNext()) {
-      toReturn.add(coercer.coerce(this, type, setter));
+      toReturn.add((T) elementCoercer.apply(this, setter));
     }
     endArray();
 
@@ -558,7 +682,7 @@ public class JsonInput implements Closeable {
    * @return {@code true} is awaiting a property name; otherwise {@code false}
    */
   private boolean isReadingName() {
-    return stack.peekFirst() == Container.MAP_NAME;
+    return topContainer() == MAP_NAME;
   }
 
   /**
@@ -574,15 +698,17 @@ public class JsonInput implements Closeable {
           "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
     }
 
+    // The pending token is about to be consumed, so the memoized type is no longer valid.
+    peekedType = null;
+
     // Special map handling. Woo!
-    Container top = stack.peekFirst();
+    byte top = topContainer();
 
     if (type == JsonType.NAME) {
-      if (top == Container.MAP_NAME) {
-        stack.removeFirst();
-        stack.addFirst(Container.MAP_VALUE);
+      if (top == MAP_NAME) {
+        containerState[containerDepth - 1] = MAP_VALUE;
         return;
-      } else if (top != null) {
+      } else if (top != NONE) {
         throw new JsonException("Unexpected attempt to read name. " + input);
       }
 
@@ -594,26 +720,37 @@ public class JsonInput implements Closeable {
       // Closing the container - don't treat as a new element in it.
       return;
     }
-    if (top == Container.MAP_VALUE) {
-      stack.removeFirst();
-      stack.addFirst(Container.MAP_NAME);
+    if (top == MAP_VALUE) {
+      containerState[containerDepth - 1] = MAP_NAME;
       markElementRead();
-    } else if (top == Container.COLLECTION) {
+    } else if (top == COLLECTION) {
       markElementRead();
     }
   }
 
+  private byte topContainer() {
+    return containerDepth == 0 ? NONE : containerState[containerDepth - 1];
+  }
+
+  private void pushContainer(byte state) {
+    if (containerDepth == containerState.length) {
+      containerState = Arrays.copyOf(containerState, containerDepth * 2);
+      containerHasElement = Arrays.copyOf(containerHasElement, containerDepth * 2);
+    }
+    containerState[containerDepth] = state;
+    containerHasElement[containerDepth] = false;
+    containerDepth++;
+  }
+
   private void markElementRead() {
-    if (!containerHasElement.isEmpty()) {
-      containerHasElement.removeFirst();
-      containerHasElement.addFirst(true);
+    if (containerDepth > 0) {
+      containerHasElement[containerDepth - 1] = true;
     }
   }
 
   private void clearSeenElement() {
-    if (!containerHasElement.isEmpty()) {
-      containerHasElement.removeFirst();
-      containerHasElement.addFirst(false);
+    if (containerDepth > 0) {
+      containerHasElement[containerDepth - 1] = false;
     }
   }
 
@@ -653,25 +790,30 @@ public class JsonInput implements Closeable {
   private String readString() {
     input.read(); // Skip leading quote
 
+    // Fast path: an escape-free string that is fully buffered needs no intermediate copies.
+    String simple = input.readSimpleString();
+    if (simple != null) {
+      return simple;
+    }
+
     StringBuilder builder = new StringBuilder();
     while (true) {
-      int c = input.read();
+      int c = input.appendStringContent(builder);
       switch (c) {
         case Input.EOF:
           throw new JsonException("Unterminated string: " + builder + ". " + input);
         case '"': // terminate string
+          input.read();
           return builder.toString();
         case '\\': // quoted char
+          input.read();
           readEscape(builder);
           break;
         default:
           // RFC 8259 §7: characters U+0000..U+001F MUST be escaped.
-          if (c < 0x20) {
-            throw new JsonException(
-                String.format(
-                    "Illegal unescaped control character U+%04X in string. %s", c, input));
-          }
-          builder.append((char) c);
+          input.read();
+          throw new JsonException(
+              String.format("Illegal unescaped control character U+%04X in string. %s", c, input));
       }
     }
   }
@@ -743,19 +885,18 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   private void skipWhitespace(Input input) {
-    while (input.peek() != Input.EOF && Character.isWhitespace(input.peek())) {
-      input.read();
-    }
+    input.skipWhitespace();
   }
 
-  /** Used to track the current container processing state. */
-  private enum Container {
+  /** Container processing states: not in a container. */
+  private static final byte NONE = 0;
 
-    /** Processing a JSON array */
-    COLLECTION,
-    /** Processing a JSON object property name */
-    MAP_NAME,
-    /** Processing a JSON object property value */
-    MAP_VALUE,
-  }
+  /** Container processing states: processing a JSON array. */
+  private static final byte COLLECTION = 1;
+
+  /** Container processing states: processing a JSON object property name. */
+  private static final byte MAP_NAME = 2;
+
+  /** Container processing states: processing a JSON object property value. */
+  private static final byte MAP_VALUE = 3;
 }

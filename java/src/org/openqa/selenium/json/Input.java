@@ -20,6 +20,7 @@ package org.openqa.selenium.json;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -38,12 +39,12 @@ class Input {
   public static final int EOF = -1;
 
   /** the number of chars to buffer */
-  private static final int BUFFER_SIZE = 4096;
+  private static final int BUFFER_SIZE = 16384;
 
   /** the number of chars to remember, safe to set to 0 */
   private static final int MEMORY_SIZE = 128;
 
-  private final Reader source;
+  private final @Nullable Reader source;
 
   /** a buffer used to minimize read calls and to keep the chars to remember */
   private final char[] buffer;
@@ -67,12 +68,33 @@ class Input {
   }
 
   /**
+   * Initialize a new instance of the {@link Input} class that reads directly from a string.
+   *
+   * <p>The entire input is buffered up front, sized exactly to the source. This avoids the large
+   * read buffer and per-chunk {@link Reader} calls of the streaming constructor, which dominate the
+   * cost of parsing the small payloads typical of WebDriver commands and responses.
+   *
+   * @param source string that supplies the input to be processed
+   */
+  public Input(String source) {
+    Require.nonNull("Source", source);
+    this.source = null;
+    this.buffer = source.toCharArray();
+    this.filled = buffer.length;
+    this.position = -1;
+  }
+
+  /**
    * Extract the next character from the input without consuming it.
    *
    * @return the next input character as an unsigned UTF-16 code unit (0-65535); {@link #EOF} if
    *     input is exhausted
    */
   public int peek() {
+    int next = position + 1;
+    if (next < filled) {
+      return buffer[next];
+    }
     return fill() ? buffer[position + 1] : EOF;
   }
 
@@ -83,7 +105,123 @@ class Input {
    *     input is exhausted
    */
   public int read() {
+    int next = position + 1;
+    if (next < filled) {
+      position = next;
+      return buffer[next];
+    }
     return fill() ? buffer[++position] : EOF;
+  }
+
+  /**
+   * Attempt to consume the body of a JSON string (with the leading quote already consumed) directly
+   * from the buffered input, including its closing quote.
+   *
+   * <p>This is the fast path for strings that contain no escape sequences and whose closing quote
+   * is already buffered: the result is created straight from the buffer without copying through a
+   * {@link StringBuilder}. When the string cannot be read this way, nothing is consumed.
+   *
+   * @return the string body; {@code null} if the caller must fall back to reading char by char
+   */
+  public @Nullable String readSimpleString() {
+    if (!fill()) {
+      return null;
+    }
+
+    int start = position + 1;
+    for (int i = start; i < filled; i++) {
+      char c = buffer[i];
+      if (c == '"') {
+        position = i;
+        return new String(buffer, start, i - start);
+      }
+      if (c == '\\' || c < 0x20) {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Consume characters that need no special handling within a JSON string, appending them to the
+   * supplied builder in bulk. Stops before the next '"', '\\', or control character, which is left
+   * unconsumed.
+   *
+   * @param sink {@link StringBuilder} that accumulates the string body
+   * @return the unconsumed special character as an unsigned UTF-16 code unit; {@link #EOF} if input
+   *     is exhausted
+   */
+  public int appendStringContent(StringBuilder sink) {
+    while (fill()) {
+      int start = position + 1;
+      for (int i = start; i < filled; i++) {
+        char c = buffer[i];
+        if (c == '"' || c == '\\' || c < 0x20) {
+          sink.append(buffer, start, i - start);
+          position = i - 1;
+          return c;
+        }
+      }
+      sink.append(buffer, start, filled - start);
+      position = filled - 1;
+    }
+
+    return EOF;
+  }
+
+  /**
+   * Consume whitespace characters in bulk, leaving the first non-whitespace character unconsumed.
+   */
+  public void skipWhitespace() {
+    while (fill()) {
+      int start = position + 1;
+      for (int i = start; i < filled; i++) {
+        if (!isWhitespace(buffer[i])) {
+          position = i - 1;
+          return;
+        }
+      }
+      position = filled - 1;
+    }
+  }
+
+  /**
+   * Test for whitespace, checking the JSON whitespace characters (RFC 8259 §2) directly before
+   * consulting {@link Character#isWhitespace}, whose table lookups are measurably slower and which
+   * is retained only to stay lenient about exotic whitespace between tokens.
+   */
+  private static boolean isWhitespace(char c) {
+    if (c == ' ' || c == '\n' || c == '\t' || c == '\r') {
+      return true;
+    }
+    return Character.isWhitespace(c);
+  }
+
+  /**
+   * Consume ASCII digits, appending them to the supplied builder in bulk. Stops before the first
+   * non-digit character, which is left unconsumed.
+   *
+   * @param sink {@link StringBuilder} that accumulates the digits
+   * @return the unconsumed non-digit character as an unsigned UTF-16 code unit; {@link #EOF} if
+   *     input is exhausted
+   */
+  public int appendDigits(StringBuilder sink) {
+    while (fill()) {
+      int start = position + 1;
+      for (int i = start; i < filled; i++) {
+        char c = buffer[i];
+        if (c < '0' || c > '9') {
+          sink.append(buffer, start, i - start);
+          position = i - 1;
+          return c;
+        }
+      }
+      sink.append(buffer, start, filled - start);
+      position = filled - 1;
+    }
+
+    return EOF;
   }
 
   /**
@@ -129,6 +267,11 @@ class Input {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   private boolean fill() {
+    if (source == null) {
+      // String-backed input is fully buffered on construction.
+      return filled > position + 1;
+    }
+
     // do we need to fill the buffer?
     while (filled == position + 1) {
       try {

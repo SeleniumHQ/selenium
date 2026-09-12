@@ -229,6 +229,13 @@ class ConstructorCoercer extends TypeCoercer<Object> {
   }
 
   private Object coerceValue(Object value, Type type, PropertySetting setting) {
+    if (value != null && type instanceof Class) {
+      Object direct = tryDirectCoercion(value, (Class<?>) type);
+      if (direct != null) {
+        return direct;
+      }
+    }
+
     StringWriter rawJson = new StringWriter();
     try (JsonOutput output = new JsonOutput(rawJson)) {
       output.write(value);
@@ -237,6 +244,70 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     try (JsonInput input = new JsonInput(new StringReader(rawJson.toString()), coercer, setting)) {
       return coercer.coerce(input, type, setting);
     }
+  }
+
+  /**
+   * Coerce the already-parsed value directly when the target is a scalar type, mirroring the
+   * behavior of the corresponding {@link TypeCoercer}s without serializing the value back to JSON
+   * text and re-parsing it.
+   *
+   * @return the coerced value; {@code null} if the caller must fall back to the JSON round trip
+   */
+  private static Object tryDirectCoercion(Object value, Class<?> target) {
+    if (target == String.class) {
+      return (value instanceof String || value instanceof Number || value instanceof Boolean)
+          ? String.valueOf(value)
+          : null;
+    }
+
+    if ((target == Boolean.class || target == boolean.class) && value instanceof Boolean) {
+      return value;
+    }
+
+    if (value instanceof Number) {
+      Number number = (Number) value;
+      if (target == Integer.class || target == int.class) {
+        return number.intValue();
+      }
+      if (target == Long.class || target == long.class) {
+        return number.longValue();
+      }
+      if (target == Double.class || target == double.class) {
+        return number.doubleValue();
+      }
+      if (target == Float.class || target == float.class) {
+        return number.floatValue();
+      }
+      if (target == Short.class || target == short.class) {
+        return number.shortValue();
+      }
+      if (target == Byte.class || target == byte.class) {
+        return number.byteValue();
+      }
+      if (target == Number.class) {
+        if (number instanceof Long) {
+          return number;
+        }
+        double doubleValue = number.doubleValue();
+        if (doubleValue % 1 != 0 || doubleValue < Long.MIN_VALUE || doubleValue > Long.MAX_VALUE) {
+          return doubleValue;
+        }
+        return number.longValue();
+      }
+      return null;
+    }
+
+    if (target.isEnum() && value instanceof String) {
+      for (Object constant : target.getEnumConstants()) {
+        if (constant.toString().equalsIgnoreCase((String) value)) {
+          return constant;
+        }
+      }
+      throw new JsonException(
+          String.format("Unable to find matching enum value for %s in %s", value, target));
+    }
+
+    return null;
   }
 
   private class ConstructorCandidate {
