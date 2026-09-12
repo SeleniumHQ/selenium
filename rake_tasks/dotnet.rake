@@ -35,6 +35,7 @@ end
 desc 'Build, package, and push nupkg files to NuGet'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+  config = arguments.to_a.include?('rbe') ? 'rbe_release' : 'release'
 
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
@@ -48,10 +49,10 @@ task :release do |_task, arguments|
   end
 
   puts 'Building and packaging .NET artifacts...'
-  Rake::Task['dotnet:package'].invoke('--config=release')
+  Rake::Task['dotnet:package'].invoke("--config=#{config}")
 
   puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
-  Bazel.execute('run', ['--config=release'], '//dotnet:publish')
+  Bazel.execute('run', ["--config=#{config}"], '//dotnet:publish')
 end
 
 desc 'Verify .NET packages are published on NuGet'
