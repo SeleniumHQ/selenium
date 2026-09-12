@@ -707,6 +707,25 @@ class LocalSessionMapTest {
     executor.shutdown();
   }
 
+  @Test
+  void assertionFailuresInsideWorkerTasksMustFailTheTest() throws InterruptedException {
+    CountDownLatch completeLatch = new CountDownLatch(1);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+
+    executor.submit(
+        () -> {
+          try {
+            assertThat(false).as("deliberately failing assertion inside a worker task").isTrue();
+          } finally {
+            completeLatch.countDown();
+          }
+        });
+
+    assertThat(completeLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+    executor.shutdown();
+  }
+
   /**
    * Blocks until an operation the caller depends on has finished. Replaces sleeping for an
    * arbitrary period, which both slows the test down and only probabilistically orders the
