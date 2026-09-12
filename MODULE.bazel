@@ -50,6 +50,11 @@ single_version_override(
     ],
 )
 
+# Build the `*-sys` C sources with the LLVM cc toolchain so they cross-compile to musl.
+bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
+bazel_dep(name = "xz", version = "5.4.5.bcr.8")
+bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
+
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
@@ -429,6 +434,14 @@ llvm_toolchains.exec(
     arch = "x86_64",
     os = "macos",
 )
+llvm_toolchains.exec(
+    arch = "x86_64",
+    os = "linux",
+)
+llvm_toolchains.exec(
+    arch = "aarch64",
+    os = "linux",
+)
 use_repo(llvm_toolchains, "llvm_toolchains")
 
 # Registered only for Windows in .bazelrc so it cannot shadow @llvm elsewhere.
@@ -446,23 +459,36 @@ crate.from_cargo(
         "aarch64-apple-darwin",
         "aarch64-pc-windows-msvc",
         "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
         "x86_64-apple-darwin",
+        "x86_64-pc-windows-gnullvm",
         "x86_64-pc-windows-msvc",
         "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-linux-musl",
     ],
 )
 crate.annotation(
     crate = "bzip2-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@bzip2//:bz2"],
 )
 crate.annotation(
     crate = "lzma-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@xz//:lzma"],
 )
 crate.annotation(
     crate = "zstd-sys",
-    gen_build_script = "on",
+    gen_build_script = "off",
+    deps = ["@zstd"],
 )
+
+inject_repo(crate, "bzip2")
+
+inject_repo(crate, "xz")
+
+inject_repo(crate, "zstd")
+
 use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
