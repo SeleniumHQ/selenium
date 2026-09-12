@@ -53,29 +53,6 @@ public abstract class ChromiumOptions : DriverOptions
     private ChromiumMobileEmulationDeviceSettings? mobileEmulationDeviceSettings;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ChromiumOptions"/> class.
-    /// </summary>
-    public ChromiumOptions() : base()
-    {
-        this.AddKnownCapabilityName(this.CapabilityName, "current ChromiumOptions class instance");
-        this.AddKnownCapabilityName(CapabilityType.LoggingPreferences, "SetLoggingPreference method");
-        this.AddKnownCapabilityName(this.LoggingPreferencesChromeOption, "SetLoggingPreference method");
-        this.AddKnownCapabilityName(ChromiumOptions.ArgumentsChromeOption, "AddArguments method");
-        this.AddKnownCapabilityName(ChromiumOptions.BinaryChromeOption, "BinaryLocation property");
-        this.AddKnownCapabilityName(ChromiumOptions.ExtensionsChromeOption, "AddExtensions method");
-        this.AddKnownCapabilityName(ChromiumOptions.LocalStateChromeOption, "AddLocalStatePreference method");
-        this.AddKnownCapabilityName(ChromiumOptions.PreferencesChromeOption, "AddUserProfilePreference method");
-        this.AddKnownCapabilityName(ChromiumOptions.DetachChromeOption, "LeaveBrowserRunning property");
-        this.AddKnownCapabilityName(ChromiumOptions.DebuggerAddressChromeOption, "DebuggerAddress property");
-        this.AddKnownCapabilityName(ChromiumOptions.ExcludeSwitchesChromeOption, "AddExcludedArgument property");
-        this.AddKnownCapabilityName(ChromiumOptions.MinidumpPathChromeOption, "MinidumpPath property");
-        this.AddKnownCapabilityName(ChromiumOptions.MobileEmulationChromeOption, "EnableMobileEmulation method");
-        this.AddKnownCapabilityName(ChromiumOptions.PerformanceLoggingPreferencesChromeOption, "PerformanceLoggingPreferences property");
-        this.AddKnownCapabilityName(ChromiumOptions.WindowTypesChromeOption, "AddWindowTypes method");
-        this.AddKnownCapabilityName(ChromiumOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
-    }
-
-    /// <summary>
     /// Gets the vendor prefix to apply to Chromium-specific capability names.
     /// </summary>
     protected abstract string VendorPrefix { get; }
