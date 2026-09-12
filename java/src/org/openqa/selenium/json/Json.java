@@ -114,7 +114,21 @@ public class Json {
   /** Specifier for {@code Object} input/output type */
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
-  private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
+  private final JsonTypeCoercer fromJson;
+
+  public Json() {
+    this(List.of());
+  }
+
+  /**
+   * @param extraCoercers Additional {@link TypeCoercer}s, tried in the given order before the
+   *     built-in ones — lets a caller customize how a particular type is converted to or from JSON
+   *     (a stricter check, a different wire representation, support for a type the built-in
+   *     coercers don't handle, etc.) for just this {@code Json} instance.
+   */
+  public Json(Iterable<TypeCoercer<?>> extraCoercers) {
+    this.fromJson = new JsonTypeCoercer(new JsonTypeCoercer(), extraCoercers);
+  }
 
   /**
    * Serialize the specified object to JSON string representation.<br>
