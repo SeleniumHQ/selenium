@@ -72,6 +72,26 @@ class JsonTest {
   }
 
   @Test
+  void shouldRejectIntegerOverflow() {
+    Json json = new Json();
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> json.toType("2147483648", Integer.class))
+        .withMessageContaining("out of range")
+        .withMessageContaining("Integer");
+  }
+
+  @Test
+  void shouldRejectFractionalValueForInteger() {
+    Json json = new Json();
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> json.toType("1.2", Integer.class))
+        .withMessageContaining("Expected an integer value")
+        .withMessageContaining("Integer");
+  }
+
+  @Test
   void canRoundTripNumbers() {
     Map<String, Object> original = Map.of("options", Map.of("args", List.of(1L, "hello")));
 
