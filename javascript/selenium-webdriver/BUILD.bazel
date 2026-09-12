@@ -32,10 +32,11 @@ js_binary(
     name = "generate_bidi_script",
     data = [
         "generate_bidi.mjs",
+        "normalize_bidi_ast.mjs",
+        "project_bidi_schema.mjs",
         ":generated_note_local",
         ":license_header_local",
         ":node_modules/cddl",
-        ":node_modules/cddl2ts",
     ],
     entry_point = "generate_bidi.mjs",
 )
@@ -98,7 +99,6 @@ generate_bidi_library(
         "@ua_client_hints_dfns//file:dfns.json",
         "@web_bluetooth_dfns//file:dfns.json",
     ],
-    enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
     extra_cddl_files = [
         "@permissions_all_cddl//file:spec.cddl",
         "@prefetch_all_cddl//file:spec.cddl",

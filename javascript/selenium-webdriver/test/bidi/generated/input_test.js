@@ -179,7 +179,7 @@ suite(
     ignore(env.browsers(Browser.FIREFOX)).describe('onFileDialogOpened', function () {
       it('receives event when a file input is clicked', async function () {
         let dialogEvent = null
-        await input.onFileDialogOpened((params) => {
+        await input.addCallback(Input.FILE_DIALOG_OPENED, (params) => {
           dialogEvent = params
           assert.ok(params.context, 'event should have a context')
         })

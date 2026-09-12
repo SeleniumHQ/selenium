@@ -1,11 +1,3 @@
-load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
-
-copy_to_bin(
-    name = "bidi_enhancements_manifest",
-    srcs = ["bidi_enhancements_manifest.json"],
-    visibility = ["//javascript/selenium-webdriver:__subpackages__"],
-)
-
-exports_files([
-    "bidi_enhancements_manifest.json",
-])
+# Marks this directory as a Bazel package so //javascript/selenium-webdriver/private:generate_bidi.bzl
+# can be loaded by label — a load() using full package-label syntax requires the package to exist,
+# even though generate_bidi.bzl itself declares no targets consumed from here directly.

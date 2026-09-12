@@ -45,7 +45,7 @@ suite(
       it('receives event when a page is loaded', async function () {
         let event = null
 
-        await network.onBeforeRequestSent((params) => {
+        await network.addCallback(Network.BEFORE_REQUEST_SENT, (params) => {
           if (params.request.url.includes('emptyPage') || params.request.url.includes('empty')) {
             event = params
           }
@@ -62,7 +62,7 @@ suite(
       it('receives cookies in beforeRequestSent', async function () {
         let cookieEvent = null
 
-        await network.onBeforeRequestSent((params) => {
+        await network.addCallback(Network.BEFORE_REQUEST_SENT, (params) => {
           // Capture the first event that carries our test cookie
           if (params.request.cookies && params.request.cookies.some((c) => c.name === 'bidi-test')) {
             cookieEvent = params
@@ -85,7 +85,7 @@ suite(
       it('receives event when a response completes', async function () {
         let event = null
 
-        await network.onResponseCompleted((params) => {
+        await network.addCallback(Network.RESPONSE_COMPLETED, (params) => {
           // Capture the first responseCompleted event — no URL filter needed.
           if (!event) {
             event = params
@@ -106,7 +106,7 @@ suite(
       it('receives event on network fetch error', async function () {
         let errorEvent = null
 
-        await network.onFetchError((params) => {
+        await network.addCallback(Network.FETCH_ERROR, (params) => {
           errorEvent = params
         })
 
@@ -146,7 +146,7 @@ suite(
         })
 
         let counter = 0
-        await network.onBeforeRequestSent(async (params) => {
+        await network.addCallback(Network.BEFORE_REQUEST_SENT, async (params) => {
           if (params.isBlocked) {
             counter++
             try {
@@ -183,7 +183,7 @@ suite(
         })
 
         let interceptHandled = false
-        await network.onBeforeRequestSent(async (params) => {
+        await network.addCallback(Network.BEFORE_REQUEST_SENT, async (params) => {
           if (params.isBlocked && params.request.url.includes('emptyText') && !interceptHandled) {
             interceptHandled = true
             try {
@@ -252,7 +252,7 @@ suite(
       it('receives event when a response starts', async function () {
         let event = null
 
-        await network.onResponseStarted((params) => {
+        await network.addCallback(Network.RESPONSE_STARTED, (params) => {
           if (!event) {
             event = params
           }

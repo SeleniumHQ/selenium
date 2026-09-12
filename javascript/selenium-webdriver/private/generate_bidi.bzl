@@ -1,6 +1,7 @@
 """Bazel rules for generating WebDriver BiDi TypeScript modules from CDDL specification."""
 
 load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 
 # Language bindings consume the generated schema artifact; the ast/model are
@@ -31,8 +32,25 @@ _DOMAIN_TS_FILES = [
     "webextension.ts",
 ]
 
+# Hand-written runtime the generated domain files import by relative path (e.g.
+# '../domain.js', '../serialization/record.js') — package-relative to output_path's
+# parent, so staging them at the matching bin-tree path (see generate_bidi_library)
+# puts them exactly where those imports expect to find them.
+_RUNTIME_FILES = [
+    "domain.js",
+    "domain.d.ts",
+    "serialization/record.js",
+    "serialization/record.d.ts",
+    "serialization/enum.js",
+    "serialization/enum.d.ts",
+    "serialization/union.js",
+    "serialization/union.d.ts",
+    "serialization/registry.js",
+]
+
 def _compile_bidi_ts_impl(ctx):
     ts_files = ctx.files.srcs
+    runtime_files = ctx.files.runtime_srcs
     output_subdir = ctx.attr.output_subdir
     tsc = ctx.executable.tsc
 
@@ -56,7 +74,10 @@ def _compile_bidi_ts_impl(ctx):
         args.add(f.path)
 
     ctx.actions.run(
-        inputs = ts_files,
+        # runtime_files aren't compiled — they're already .js/.d.ts — but tsc's
+        # NodeNext resolver still needs them physically present at the relative
+        # path each generated file's '../domain.js' etc. import expects.
+        inputs = ts_files + runtime_files,
         outputs = all_outputs,
         executable = tsc,
         arguments = [args],
@@ -78,6 +99,7 @@ _compile_bidi_ts = rule(
     implementation = _compile_bidi_ts_impl,
     attrs = {
         "output_subdir": attr.string(mandatory = True),
+        "runtime_srcs": attr.label_list(allow_files = True),
         "srcs": attr.label_list(allow_files = True, mandatory = True),
         "tsc": attr.label(
             executable = True,
@@ -96,7 +118,6 @@ def generate_bidi_library(
         vendor_cddl_files = [],
         dfns_files = [],
         spec_html = None,
-        enhancements_manifest = None,
         generator = None,
         schema_generator = None,
         anchors_extractor = None,
@@ -121,7 +142,6 @@ def generate_bidi_library(
         spec_html: the pinned rendered core spec HTML. When given, its prose section
             anchors are extracted and joined, upgrading type links to `#type-*` sections
             and adding `#command-*` / `#event-*` / `#module-*` links. Optional.
-        enhancements_manifest: JSON manifest for per-domain customisations.
         generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
         schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
         anchors_extractor: The extract_bidi_anchors.mjs js_binary label. Defaults to :extract_bidi_anchors_script.
@@ -283,9 +303,6 @@ def generate_bidi_library(
         "--spec-version",
         spec_version,
     ]
-    if enhancements_manifest:
-        gen_srcs.append(enhancements_manifest)
-        gen_args += ["--enhancements", "$(location " + enhancements_manifest + ")"]
 
     ts_target = name + "_ts"
     js_run_binary(
@@ -297,8 +314,21 @@ def generate_bidi_library(
     )
 
     # Step 5: compile .ts → .js + .d.ts via tsc (custom rule for ctx.bin_dir.path).
+    # Every generated domain file imports the hand-written runtime by relative path
+    # (e.g. '../domain.js', assuming it sits one level up from output_path). tsc's
+    # NodeNext resolver needs those files physically present at that same relative
+    # path in the bin tree — they're source files today, not generated, so mirror
+    # them into the bin tree at their natural path (copy_file's src/out would collide
+    # with the source's own label at an identical package-relative path).
+    runtime_staged = name + "_runtime"
+    copy_to_bin(
+        name = runtime_staged,
+        srcs = ["bidi/" + f for f in _RUNTIME_FILES],
+    )
+
     _compile_bidi_ts(
         name = name,
         srcs = [":" + ts_target],
+        runtime_srcs = [":" + runtime_staged],
         output_subdir = output_path,
     )
