@@ -282,20 +282,22 @@ jobs:
 
   reset-version:
     name: Generate Nightly Versions
-    needs: [parse-tag, publish, publish-python]
-    if: >-
-      always() && !cancelled() &&
-      needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+    needs: [parse-tag, get-approval]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 
+  # A rerun builds from trunk HEAD, so the nightly versions must not land there until every publish has succeeded.
   update-version:
     name: Push Nightly Versions
-    needs: [parse-tag, reset-version]
+    needs: [parse-tag, reset-version, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.reset-version.result == 'success' &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     permissions:
       contents: write
       actions: read
