@@ -23,13 +23,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +58,8 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 class LocalSessionMapTest {
+
+  private static final long PREREQUISITE_TIMEOUT_SECONDS = 30;
 
   private LocalSessionMap sessionMap;
   private EventBus eventBus;
@@ -711,17 +718,25 @@ class LocalSessionMapTest {
   void assertionFailuresInsideWorkerTasksMustFailTheTest() throws InterruptedException {
     CountDownLatch completeLatch = new CountDownLatch(1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
+    List<Future<?>> tasks = new ArrayList<>();
 
-    executor.submit(
-        () -> {
-          try {
-            assertThat(false).as("deliberately failing assertion inside a worker task").isTrue();
-          } finally {
-            completeLatch.countDown();
-          }
-        });
+    tasks.add(
+        executor.submit(
+            () -> {
+              try {
+                assertThat(false)
+                    .as("deliberately failing assertion inside a worker task")
+                    .isTrue();
+              } finally {
+                completeLatch.countDown();
+              }
+            }));
 
     assertThat(completeLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+    assertThatThrownBy(() -> rethrowTaskFailures(tasks))
+        .isInstanceOf(AssertionError.class)
+        .hasMessageNotContaining("deliberately failing assertion inside a worker task");
 
     executor.shutdown();
   }
@@ -732,9 +747,33 @@ class LocalSessionMapTest {
    * operations it is meant to sequence.
    */
   private static void awaitPrerequisite(CountDownLatch latch) throws InterruptedException {
-    assertThat(latch.await(30, TimeUnit.SECONDS))
+    assertThat(latch.await(PREREQUISITE_TIMEOUT_SECONDS, TimeUnit.SECONDS))
         .as("Timed out waiting for a prerequisite operation to complete")
         .isTrue();
+  }
+
+  /**
+   * Propagates failures raised inside executor tasks to the test thread. Without this an {@link
+   * AssertionError} thrown inside a submitted task is captured by its {@link Future} and never
+   * surfaces, so the test passes even though one of its assertions failed.
+   */
+  private static void rethrowTaskFailures(List<Future<?>> tasks) throws InterruptedException {
+    for (Future<?> task : tasks) {
+      try {
+        task.get(PREREQUISITE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+      } catch (ExecutionException e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof Error) {
+          throw (Error) cause;
+        }
+        if (cause instanceof RuntimeException) {
+          throw (RuntimeException) cause;
+        }
+        throw new AssertionError("A concurrent task failed", cause);
+      } catch (TimeoutException e) {
+        throw new AssertionError("A concurrent task did not complete in time", e);
+      }
+    }
   }
 
   private Session createSession(SessionId sessionId, URI nodeUri) {
