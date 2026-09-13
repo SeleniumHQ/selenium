@@ -108,8 +108,8 @@ class Server:
     def port(self, port):
         try:
             port = int(port)
-        except ValueError:
-            raise TypeError(f"{__class__.__name__}.__init__() got an invalid port: '{port}'")
+        except ValueError as err:
+            raise TypeError(f"{__class__.__name__}.__init__() got an invalid port: '{port}'") from err
         if not (0 <= port <= 65535):
             raise ValueError("port must be 0-65535")
         self._port = port
@@ -213,7 +213,7 @@ class Server:
             self.process = subprocess.Popen(command, env=self.env)
             print(f"Selenium server running as process: {self.process.pid}")
             if not self._wait_for_server(timeout=self.startup_timeout):
-                raise TimeoutError(f"Timed out waiting for Selenium server at {self.status_url}")
+                raise TimeoutError(f"Timed out waiting for Selenium server at {self.status_url}") from None
             print("Selenium server is ready")
         return self.process
 
