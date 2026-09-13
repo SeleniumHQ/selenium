@@ -605,10 +605,11 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if isinstance(script, ScriptKey):
+            script_id = script.id
             try:
-                script = self.pinned_scripts[script.id]
+                script = self.pinned_scripts[script_id]
             except KeyError:
-                raise JavascriptException(f"Pinned script could not be found: {script.id}") from None
+                raise JavascriptException(f"Pinned script could not be found: {script_id}") from None
 
         converted_args = list(args)
         command = Command.W3C_EXECUTE_SCRIPT
