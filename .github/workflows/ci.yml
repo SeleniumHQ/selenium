@@ -58,7 +58,9 @@ jobs:
           fi
         fi
       artifact-name: check-targets
-      artifact-path: bazel-targets.txt
+      artifact-path: |
+        bazel-targets.txt
+        compile-manager.txt
 
   read-targets:
     name: Read Targets
@@ -72,6 +74,7 @@ jobs:
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
       js: ${{ steps.read.outputs.js }}
+      compile-manager: ${{ steps.read.outputs.compile-manager }}
     steps:
       - name: Download targets
         uses: actions/download-artifact@v8
@@ -84,6 +87,9 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
+          if [ "$(cat compile-manager.txt 2>/dev/null)" = "true" ]; then
+            echo "compile-manager=true" >> "$GITHUB_OUTPUT"
+          fi
           check_binding() {
             local pattern=$1 tag=$2
             if [[ "$targets" == *"${pattern}/"* ]] || [[ "$targets" == *"${pattern}:"* ]] || [[ "$COMMIT_MESSAGES" == *"[$tag]"* ]] || [[ "$PR_TITLE" == *"[$tag]"* ]]; then
@@ -135,12 +141,16 @@ jobs:
     needs: read-targets
     uses: ./.github/workflows/ci-python.yml
     if: needs.read-targets.outputs.py != ''
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   ruby:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
     if: needs.read-targets.outputs.rb != ''
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   rust:
     name: Rust

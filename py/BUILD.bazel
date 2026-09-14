@@ -869,6 +869,10 @@ BIDI_TESTS = glob([
 # Tests that have bidi and classic implementations.
 BIDI_IMPLEMENTATIONS = []
 
+# BiDi test files with Grid-specific behavior, run through Grid as well. Empty
+# generates no targets: an empty test_suite would mean every test in the package.
+REMOTE_BIDI_TESTS = []
+
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
 # library only triggers that group's targets, not the full ~700-target suite.
@@ -1136,15 +1140,13 @@ FEATURE_SUITE_DEFS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
-# Generate test-<browser>-remote-bidi targets (chrome and firefox only).
-# Deliberately not folded into the test-<browser>-remote aggregate: BiDi over Grid's
-# websocket proxy is new coverage, so keep it out of the established remote job until
-# it has proven stable.
+# Generate test-<browser>-remote-bidi targets (chrome and firefox only), folded
+# into test-<browser>-remote below.
 [
     py_test_suite(
         name = "test-%s-remote-bidi" % browser,
         size = "large",
-        srcs = BIDI_TESTS + BIDI_IMPLEMENTATIONS,
+        srcs = REMOTE_BIDI_TESTS,
         args = [
             "--instafail",
             "--bidi",
@@ -1166,8 +1168,8 @@ FEATURE_SUITE_DEFS = {
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-remote-bidi" % browser,
         deps = [
-            ":bidi_protocol",  # bidi/protocol_tests.py imports the generated _bidi layer directly
-            ":common_alert",  # bidi/browsing_context_tests.py calls EC.alert_is_present()
+            ":bidi_protocol",
+            ":common_alert",
             ":init-tree",
             ":webserver",
         ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
@@ -1176,6 +1178,7 @@ FEATURE_SUITE_DEFS = {
         "chrome",
         "firefox",
     ]
+    if REMOTE_BIDI_TESTS
 ]
 
 # Generate test-<browser>-remote-common targets (chrome and firefox only)
@@ -1302,7 +1305,7 @@ FEATURE_SUITE_DEFS = {
     tests = [
         ":test-%s-remote-common" % browser,
         ":test-%s-remote-actions" % browser,
-    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
+    ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS] + ([":test-%s-remote-bidi" % browser] if REMOTE_BIDI_TESTS else []),
 ) for browser in [
     "chrome",
     "firefox",
@@ -1315,200 +1318,6 @@ test_suite(
         ":test-chrome-remote",
         ":test-firefox-remote",
     ],
-)
-
-# Kept out of :test-remote so BiDi-over-Grid runs as its own CI job while it is new.
-test_suite(
-    name = "test-remote-bidi",
-    tags = ["remote"],
-    tests = [
-        ":test-chrome-remote-bidi",
-        ":test-firefox-remote-bidi",
-    ],
-)
-
-py_test_suite(
-    name = "test-webkitgtk-common",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
-        ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=webkitgtk",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "webkitgtk",
-    deps = [
-        ":common",
-        ":init-tree",
-        ":support",
-        ":webkitgtk",
-        ":webserver",
-    ] + TEST_DEPS,
-)
-
-py_test_suite(
-    name = "test-webkitgtk-actions",
-    size = "large",
-    srcs = ACTIONS_TESTS,
-    args = [
-        "--instafail",
-        "--driver=webkitgtk",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "webkitgtk-actions",
-    deps = [
-        ":common_actions",
-        ":init-tree",
-        ":support",
-        ":webkitgtk",
-        ":webserver",
-    ] + TEST_DEPS,
-)
-
-[
-    py_test_suite(
-        name = "test-webkitgtk-%s" % feature,
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--driver=webkitgtk",
-            "--browser-binary=MiniBrowser",
-            "--browser-args=--automation",
-        ],
-        tags = [
-            "exclusive-if-local",
-            "no-sandbox",
-            "skip-rbe",
-        ],
-        test_suffix = "webkitgtk-%s" % feature,
-        deps = [
-            ":init-tree",
-            ":support",
-            ":webkitgtk",
-            ":webserver",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + TEST_DEPS,
-    )
-    for feature in FEATURE_SUITE_DEFS
-]
-
-test_suite(
-    name = "test-webkitgtk",
-    tests = [
-        ":test-webkitgtk-actions",
-        ":test-webkitgtk-common",
-    ] + [":test-webkitgtk-%s" % f for f in FEATURE_SUITE_DEFS],
-)
-
-py_test_suite(
-    name = "test-wpewebkit-common",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
-        ],
-        exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=wpewebkit",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation --headless",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "wpewebkit",
-    deps = [
-        ":common",
-        ":init-tree",
-        ":support",
-        ":webserver",
-        ":wpewebkit",
-    ] + TEST_DEPS,
-)
-
-py_test_suite(
-    name = "test-wpewebkit-actions",
-    size = "large",
-    srcs = ACTIONS_TESTS,
-    args = [
-        "--instafail",
-        "--driver=wpewebkit",
-        "--browser-binary=MiniBrowser",
-        "--browser-args=--automation --headless",
-    ],
-    tags = [
-        "exclusive-if-local",
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    test_suffix = "wpewebkit-actions",
-    deps = [
-        ":common_actions",
-        ":init-tree",
-        ":support",
-        ":webserver",
-        ":wpewebkit",
-    ] + TEST_DEPS,
-)
-
-[
-    py_test_suite(
-        name = "test-wpewebkit-%s" % feature,
-        size = "large",
-        srcs = FEATURE_SUITE_DEFS[feature][0],
-        args = [
-            "--instafail",
-            "--driver=wpewebkit",
-            "--browser-binary=MiniBrowser",
-            "--browser-args=--automation --headless",
-        ],
-        tags = [
-            "exclusive-if-local",
-            "no-sandbox",
-            "skip-rbe",
-        ],
-        test_suffix = "wpewebkit-%s" % feature,
-        deps = [
-            ":init-tree",
-            ":support",
-            ":webserver",
-            ":wpewebkit",
-            FEATURE_SUITE_DEFS[feature][1],
-        ] + TEST_DEPS,
-    )
-    for feature in FEATURE_SUITE_DEFS
-]
-
-test_suite(
-    name = "test-wpewebkit",
-    tests = [
-        ":test-wpewebkit-actions",
-        ":test-wpewebkit-common",
-    ] + [":test-wpewebkit-%s" % f for f in FEATURE_SUITE_DEFS],
 )
 
 py_binary(

@@ -8,10 +8,20 @@ on:
         required: false
         type: boolean
         default: true
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       smoke:
         description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
         type: boolean
         default: false
@@ -77,6 +87,7 @@ jobs:
         --local_test_jobs 1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
