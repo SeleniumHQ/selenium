@@ -88,9 +88,8 @@ Selenium Documentation
 """
             )
             for module in modules:
-                if base_module in module:
-                    if len(module.split(".")) - len(base_module.split(".")) == 1:
-                        f.write(f"   {module}\n")
+                if base_module in module and len(module.split(".")) - len(base_module.split(".")) == 1:
+                    f.write(f"   {module}\n")
         f.write(
             """
 Indices and tables
