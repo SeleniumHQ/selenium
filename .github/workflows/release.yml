@@ -32,7 +32,7 @@ jobs:
       github.event.pull_request.merged == false
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: false
+      unlock: true
       message: "Trunk has been unlocked: ${{ github.event.pull_request.head.ref }} was closed without merging."
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -344,7 +344,7 @@ jobs:
       (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: false
+      unlock: true
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

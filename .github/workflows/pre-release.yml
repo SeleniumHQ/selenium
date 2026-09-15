@@ -85,12 +85,11 @@ jobs:
     needs: [parse-tag, verify-cdp]
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: true
       message: |
         Trunk branch has been restricted for release preparation (${{ inputs.tag }}).
         To abandon the release, close the release preparation PR without merging and trunk will unlock automatically.
-        If trunk is still locked, run the "Unlock Trunk" workflow:
-        https://github.com/${{ github.repository }}/actions/workflows/unlock-trunk.yml
+        If trunk is still locked, run the "Manage Trunk Restrictions" workflow, which unlocks by default:
+        https://github.com/${{ github.repository }}/actions/workflows/restrict-trunk.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -302,7 +301,7 @@ jobs:
     if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: false
+      unlock: true
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
