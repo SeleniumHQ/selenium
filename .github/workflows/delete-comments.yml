@@ -1,4 +1,4 @@
-name: Delete Comments
+name: Bot - Delete Comments
 
 on:
   issue_comment:

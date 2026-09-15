@@ -1,4 +1,4 @@
-name: Prune CodeQL caches
+name: Bot - Prune CodeQL Caches
 
 on:
   workflow_run:

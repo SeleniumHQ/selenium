@@ -1,4 +1,4 @@
-name: Dependency Updates
+name: Scheduled - Update Dependencies
 
 on:
   schedule:

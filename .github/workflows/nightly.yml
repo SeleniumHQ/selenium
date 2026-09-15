@@ -1,4 +1,4 @@
-name: Nightly
+name: Release - Nightly
 on:
   schedule:
     - cron: 0 0 * * *

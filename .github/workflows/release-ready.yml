@@ -1,4 +1,4 @@
-name: Release Ready Alert
+name: Bot - Release Ready
 
 on:
   pull_request:

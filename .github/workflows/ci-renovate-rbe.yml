@@ -1,4 +1,4 @@
-name: CI - Renovate - RBE
+name: Bot - Renovate
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Issue Form Labeler
+name: Bot - Issue Labeler
 on:
   issues:
     types: [ opened ]
