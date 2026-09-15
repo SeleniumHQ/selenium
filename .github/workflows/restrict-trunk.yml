@@ -24,11 +24,6 @@ on:
         required: false
         type: string
         default: ''
-      skip_approval:
-        description: 'Skip the approval step (used for automatic failure recovery)'
-        required: false
-        type: boolean
-        default: false
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -36,21 +31,16 @@ on:
         required: true
 
 jobs:
-  get-approval:
-    name: Get Approval
-    if: ${{ !inputs.skip_approval && (inputs.restrict || github.event_name == 'workflow_dispatch') }}
-    uses: ./.github/workflows/get-approval.yml
-    with:
-      title: ${{ inputs.restrict && 'Trunk branch locking' || 'Trunk branch unlocking' }}
-      message: ${{ inputs.restrict && 'Approval is required to begin release process.' || 'Approval is required to unlock trunk.' }}
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  check-authorization:
+    name: Check Authorization
+    if: ${{ inputs.restrict || github.event_name == 'workflow_dispatch' }}
+    uses: ./.github/workflows/check-authorization.yml
 
   manage-trunk:
     name: Manage Trunk Branch
-    needs: [get-approval]
+    needs: [check-authorization]
     runs-on: ubuntu-latest
-    if: always() && (needs.get-approval.result == 'success' || inputs.skip_approval || (!inputs.restrict && github.event_name != 'workflow_dispatch'))
+    if: ${{ !cancelled() && needs.check-authorization.result != 'failure' }}
     env:
       GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       GH_REPO: ${{ github.repository }}
