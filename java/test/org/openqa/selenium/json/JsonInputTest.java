@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -234,7 +233,7 @@ class JsonInputTest {
     String raw = "{\"text\": \"\\u003Chtml\"}";
 
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
-      Map<String, Object> map = in.read(MAP_TYPE);
+      Map<String, Object> map = in.readMap();
 
       assertThat(map.get("text")).isEqualTo("<html");
     }
@@ -245,7 +244,8 @@ class JsonInputTest {
     String raw = "{\"message\": \"Cheese!\"}";
 
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
-      HasFromJsonWithJsonInputParameter obj = in.read(HasFromJsonWithJsonInputParameter.class);
+      HasFromJsonWithJsonInputParameter obj =
+          in.readNonNull(HasFromJsonWithJsonInputParameter.class);
 
       assertThat(obj.getMessage()).isEqualTo("Cheese!");
     }
@@ -256,9 +256,20 @@ class JsonInputTest {
     String raw = " [ 1 , 2 , 3 , 4 ] ";
 
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
-      List<Integer> array = in.readArray(Integer.class);
+      var array = in.readArray(Integer.class);
 
       assertThat(array).containsExactly(1, 2, 3, 4);
+    }
+  }
+
+  @Test
+  void canReadListOfType_null() {
+    String raw = "[null, null]";
+
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
+      var array = in.readArray(Integer.class);
+
+      assertThat(array).containsExactly(null, null);
     }
   }
 

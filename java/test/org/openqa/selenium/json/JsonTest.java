@@ -168,6 +168,13 @@ class JsonTest {
   }
 
   @Test
+  void toTypeReturnsNullForTopLevelJsonNull() {
+    String text = new Json().toType("null", String.class);
+
+    assertThat(text).isNull();
+  }
+
+  @Test
   void canPopulateAMap() {
     String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 

@@ -24,20 +24,21 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-class CollectionCoercer<T extends Collection, I extends T> extends TypeCoercer<T> {
+class CollectionCoercer<T extends Collection<?>, I extends T> extends TypeCoercer<T> {
 
   private final Class<T> stereotype;
   private final JsonTypeCoercer coercer;
   private final Supplier<I> supplier;
-  private final Function<I, Consumer<Object>> consumerFactory;
+  private final Function<I, Consumer<@Nullable Object>> consumerFactory;
 
   public CollectionCoercer(
       Class<T> stereotype,
       JsonTypeCoercer coercer,
       Supplier<I> supplier,
-      Function<I, Consumer<Object>> consumerFactory) {
+      Function<I, Consumer<@Nullable Object>> consumerFactory) {
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.supplier = Require.nonNull("Supplier", supplier);
@@ -65,7 +66,7 @@ class CollectionCoercer<T extends Collection, I extends T> extends TypeCoercer<T
     return (jsonInput, setting) -> {
       jsonInput.beginArray();
       I toReturn = supplier.get();
-      Consumer<Object> consumer = consumerFactory.apply(toReturn);
+      Consumer<@Nullable Object> consumer = consumerFactory.apply(toReturn);
       while (jsonInput.hasNext()) {
         consumer.accept(coercer.coerce(jsonInput, valueType, setting));
       }
