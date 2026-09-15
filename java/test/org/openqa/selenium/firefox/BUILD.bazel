@@ -4,6 +4,7 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite
 
 LARGE_TESTS = [
     "ExtensionsTest.java",
+    "WebExtensionsTest.java",
     "FirefoxDriverTest.java",
     "FirefoxDriverBuilderTest.java",
     "FirefoxDriverPreferenceTest.java",
@@ -67,6 +68,7 @@ java_selenium_test_suite(
     ],
     deps = [
         ":assumptions",
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
@@ -102,6 +104,7 @@ java_selenium_test_suite(
     ],
     deps = [
         ":assumptions",
+        "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/build",
