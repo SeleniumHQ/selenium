@@ -89,8 +89,9 @@ class FirefoxProfile:
             os.chmod(user_prefs, 0o644)
             self._read_existing_userjs(user_prefs)
         with open(user_prefs, "w", encoding="utf-8") as f:
-            for key, value in self._desired_preferences.items():
-                f.write(f'user_pref("{key}", {json.dumps(value)});\n')
+            f.writelines(
+                f'user_pref("{key}", {json.dumps(value)});\n' for key, value in self._desired_preferences.items()
+            )
 
     # Properties
 

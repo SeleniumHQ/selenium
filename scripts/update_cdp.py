@@ -35,10 +35,10 @@ def get_chrome_milestone():
     )
     versions = json.loads(r.data)["versions"]
 
-    return sorted(
+    return max(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
-    )[-1]
+    )
 
 
 def github_get(url):

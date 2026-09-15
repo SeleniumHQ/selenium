@@ -67,41 +67,29 @@ def test_hidden_input_elements_are_never_visible(driver, pages):
 def test_should_not_be_able_to_click_on_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
-    try:
+    with pytest.raises((ElementNotVisibleException, ElementNotInteractableException)):
         element.click()
-        assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException):
-        pass
 
 
 def test_should_not_be_able_to_toggle_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
-    try:
+    with pytest.raises((ElementNotVisibleException, ElementNotInteractableException)):
         element.click()
-        assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException):
-        pass
 
 
 def test_should_not_be_able_to_select_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
-    try:
+    with pytest.raises((ElementNotVisibleException, ElementNotInteractableException)):
         element.click()
-        assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException):
-        pass
 
 
 def test_should_not_be_able_to_type_an_element_that_is_not_displayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
-    try:
+    with pytest.raises((ElementNotVisibleException, ElementNotInteractableException)):
         element.send_keys("You don't see me")
-        assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException):
-        pass
     assert element.get_attribute("value") != "You don't see me"
 
 

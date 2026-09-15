@@ -1,3 +1,9 @@
+0.4.49
+======
+* fix Windows architecture detection under WOW64 (#17987)
+* Add license and notice links to Selenium Manager help (#17986)
+* Add support for Chrome arm64 on Linux (#17915)
+
 0.4.48
 ======
 * Honour the `DO_NOT_TRACK` env var (#17931)

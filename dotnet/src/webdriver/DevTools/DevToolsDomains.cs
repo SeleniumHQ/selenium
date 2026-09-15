@@ -34,14 +34,14 @@ public abstract class DevToolsDomains
     private static int[] SupportedDevToolsVersions =>
     [
         151,
-        150,
+        153,
         152,
     ];
 
     private static DevToolsDomains? CreateDevToolsDomain(int protocolVersion, DevToolsSession session) => protocolVersion switch
     {
         151 => new V151.V151Domains(session),
-        150 => new V150.V150Domains(session),
+        153 => new V153.V153Domains(session),
         152 => new V152.V152Domains(session),
         _ => null
     };

@@ -30,7 +30,7 @@ if os.environ.get("SE_DEBUG"):
         "Selenium is forcing verbose logging which may override user-specified settings."
     )
 
-__version__ = "4.49.0.202608272014"
+__version__ = "4.50.0.202609091537"
 
 # Lazy import mapping: name -> (module_path, attribute_name)
 _LAZY_IMPORTS = {
@@ -107,4 +107,8 @@ def __dir__():
     return sorted(set(__all__) | set(_LAZY_SUBMODULES.keys()))
 
 
-__all__ = sorted(_LAZY_IMPORTS.keys())
+# PLE0605 wants a literal list/tuple so that the export list is statically
+# readable. Type checkers read __init__.pyi, which re-exports every name
+# explicitly, so deriving __all__ from _LAZY_IMPORTS here costs nothing
+# statically and keeps the two from drifting apart at runtime.
+__all__ = sorted(_LAZY_IMPORTS.keys())  # noqa: PLE0605

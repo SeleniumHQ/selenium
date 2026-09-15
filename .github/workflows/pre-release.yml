@@ -19,7 +19,7 @@ jobs:
 
   generate-rust-version:
     name: Generate Rust Version
-    needs: [parse-tag, restrict-trunk]
+    needs: [parse-tag, verify-cdp]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:

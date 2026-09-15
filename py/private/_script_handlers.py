@@ -550,7 +550,7 @@ class DomMutationRegistry:
     def _listener_declaration(self, types: set[str]) -> str:
         # script.addPreloadScript arguments may only be channels, so the
         # observation options are inlined into the function declaration.
-        options = json.dumps({name: True for name in sorted(types)})
+        options = json.dumps(dict.fromkeys(sorted(types), True))
         return "function(channel) { return (" + DOM_MUTATION_LISTENER_JS + ")(channel, " + options + "); }"
 
     def _observe_types(self, channel_arg: dict, types: set[str]) -> None:

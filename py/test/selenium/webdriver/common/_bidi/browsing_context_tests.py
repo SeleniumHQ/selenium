@@ -21,7 +21,7 @@ import base64
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchFrameException, TimeoutException
 from selenium.webdriver.common._bidi.browser import Browser
 from selenium.webdriver.common._bidi.browsing_context import (
     BoxClipRectangle,
@@ -177,7 +177,7 @@ def test_close_window(driver):
 
     bc.close(context=window2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchFrameException):
         bc.get_tree(root=window2)
 
     bc.close(context=window1)
@@ -190,7 +190,7 @@ def test_close_tab(driver):
 
     bc.close(context=tab2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchFrameException):
         bc.get_tree(root=tab2)
 
     bc.close(context=tab1)

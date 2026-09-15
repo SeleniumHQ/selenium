@@ -1,3 +1,13 @@
+## 4.49.0
+
+- Support CDP versions: v151, v152, v153
+- [build] track the generated BiDi schema (#17962)
+- derive BiDi field names and enum value types in the schema (#17966)
+- [build] Automated Dependency Update (#17937)
+- [build] Automated Dependency Update (#17991)
+- [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+- [build] Automated Browser Version Update (major) with CDP (#18005)
+
 ## 4.48.0
 
 - Support CDP versions: v150, v151, v152

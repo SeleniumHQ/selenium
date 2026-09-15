@@ -1,3 +1,15 @@
+v4.49.0
+======
+* Support CDP versions: v151, v152, v153
+* [bidi] Fix various missing fields in DTO (#17961)
+* [bidi] Fix mismatch of proxy json property names (#17960)
+* [bidi] Fix realm type enum serialization (#17959)
+* [bidi] Fix NamespaceUri json property name (#17958)
+* [bidi] Avoid massive command descriptors allocation (#17965)
+* [bidi] Add browsing context screencast support (#17941)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+
 v4.48.0
 ======
 * Support CDP versions: v150, v151, v152
