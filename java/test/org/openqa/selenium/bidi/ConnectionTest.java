@@ -179,7 +179,6 @@ class ConnectionTest {
     public void close() {}
   }
 
-  @SuppressWarnings("removal")
   private static class FakeHttpClient implements HttpClient {
 
     private interface SocketOpener {
@@ -200,18 +199,6 @@ class ConnectionTest {
     @Override
     public HttpResponse execute(HttpRequest request) {
       throw new UnsupportedOperationException("execute");
-    }
-
-    @Override
-    public <T> CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
-      throw new UnsupportedOperationException("sendAsyncNative");
-    }
-
-    @Override
-    public <T> java.net.http.HttpResponse<T> sendNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
-      throw new UnsupportedOperationException("sendNative");
     }
   }
 }
