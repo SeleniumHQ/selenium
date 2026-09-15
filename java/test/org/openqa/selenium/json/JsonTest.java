@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -219,6 +220,22 @@ class JsonTest {
         new Json().toType("{\"value\": \"cheese\"}", NoDefaultConstructor.class);
 
     assertThat(viaConvert.getValue()).isEqualTo(viaParse.getValue());
+  }
+
+  @Test
+  void convertRejectsASourceNestedDeeperThanTheOutputDepthLimit() {
+    // convert() round-trips the source through toJson(), so it inherits JsonOutput.MAX_DEPTH.
+    Map<String, Object> deep = new HashMap<>();
+    Map<String, Object> cursor = deep;
+    for (int i = 0; i < JsonOutput.MAX_DEPTH + 5; i++) {
+      Map<String, Object> next = new HashMap<>();
+      cursor.put("child", next);
+      cursor = next;
+    }
+
+    assertThatThrownBy(() -> new Json().convert(deep, MAP_TYPE))
+        .isInstanceOf(JsonException.class)
+        .hasMessageContaining("maximum depth");
   }
 
   @Test
