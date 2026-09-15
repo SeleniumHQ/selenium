@@ -1,3 +1,5 @@
+load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
+load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_binary")
 load("@crates//:defs.bzl", "aliases", "all_crate_deps")
 load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
@@ -18,6 +20,60 @@ SELENIUM_MANAGER_PLATFORMS = [
     "macos",
     "windows",
 ]
+
+# musl: Rust's glibc stdlib needs `-lgcc_s`, which @llvm doesn't ship.
+# gnullvm: @llvm links a PE binary without a Windows SDK.
+SELENIUM_MANAGER_TRIPLES = {
+    "linux-arm64": "aarch64-unknown-linux-musl",
+    "linux-x86_64": "x86_64-unknown-linux-musl",
+    "macos-arm64": "aarch64-apple-darwin",
+    "macos-x86_64": "x86_64-apple-darwin",
+    "windows": "x86_64-pc-windows-gnullvm",
+}
+
+[
+    platform_transition_binary(
+        name = "_xc-%s" % target,
+        basename = "selenium-manager.exe" if target == "windows" else "selenium-manager",
+        binary = ":selenium-manager",
+        tags = ["manual"],
+        target_platform = "@rules_rs//rs/platforms:%s" % triple,
+    )
+    for (target, triple) in SELENIUM_MANAGER_TRIPLES.items()
+]
+
+# platform_transition_binary also forwards the rust_binary at a colliding path; keep only the wrapper.
+# Windows hosts can't cross-compile until upstream fixes ship.
+[
+    output_files(
+        name = "_xc_file-%s" % target,
+        paths = ["rust/_xc-%s/selenium-manager%s" % (
+            target,
+            ".exe" if target == "windows" else "",
+        )],
+        tags = ["manual"],
+        target = ":_xc-%s" % target,
+        target_compatible_with = select({
+            "//common:windows": ["@platforms//:incompatible"],
+            "//conditions:default": [],
+        }),
+        visibility = ["//common/manager:__pkg__"],
+    )
+    for target in SELENIUM_MANAGER_TRIPLES
+]
+
+genrule(
+    name = "_xc_file-macos",
+    srcs = [
+        ":_xc_file-macos-arm64",
+        ":_xc_file-macos-x86_64",
+    ],
+    outs = ["_xc-macos/selenium-manager"],
+    cmd = "$(execpath @llvm//tools:llvm-lipo) -create -output $@ $(execpath :_xc_file-macos-arm64) $(execpath :_xc_file-macos-x86_64)",
+    tags = ["manual"],
+    tools = ["@llvm//tools:llvm-lipo"],
+    visibility = ["//common/manager:__pkg__"],
+)
 
 [
     alias(

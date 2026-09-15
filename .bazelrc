@@ -154,8 +154,14 @@ test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"
 
 
+# @llvm defaults to 14.0.
+build --macos_minimum_os=11.0
+
 build:release --stamp
 build:release --compilation_mode=opt
+# Match [profile.release] in rust/Cargo.toml, which Bazel doesn't read.
+build:release --@rules_rust//rust/settings:lto=fat
+build:release --@rules_rust//rust/settings:extra_rustc_flags=-Copt-level=z,-Ccodegen-units=1,-Cpanic=abort,-Cstrip=symbols
 
 # As regular `release` but all the build work happens on the RBE
 build:rbe_release --config=release
