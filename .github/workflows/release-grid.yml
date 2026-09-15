@@ -1,0 +1,31 @@
+name: Release Grid
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: Artifact holding the Grid packages to attach to the nightly release
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release Grid
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download grid packages
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: build/dist
+      - name: Create nightly release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: nightly
+          title: Nightly
+          prerelease: true
+          files: build/dist/*.*

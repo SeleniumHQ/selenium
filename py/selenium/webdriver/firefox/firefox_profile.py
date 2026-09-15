@@ -21,7 +21,6 @@ import json
 import os
 import re
 import shutil
-import sys
 import tempfile
 import warnings
 import zipfile
@@ -116,8 +115,8 @@ class FirefoxProfile:
             port = int(port)
             if port < 1 or port > 65535:
                 raise WebDriverException("Port number must be in the range 1..65535")
-        except (ValueError, TypeError):
-            raise WebDriverException("Port needs to be an integer")
+        except (ValueError, TypeError) as err:
+            raise WebDriverException("Port needs to be an integer") from err
         self._port = port
         self.set_preference("webdriver_firefox_port", self._port)
 
@@ -293,7 +292,7 @@ class FirefoxProfile:
             else:
                 raise OSError(f"Add-on path is neither an XPI nor a directory: {addon_path}")
         except (OSError, KeyError) as e:
-            raise AddonFormatError(str(e), sys.exc_info()[2])
+            raise AddonFormatError(str(e)) from e
 
         try:
             doc = minidom.parseString(manifest)
@@ -316,7 +315,7 @@ class FirefoxProfile:
                     if attribute.name == em + "id":
                         details.update({"id": attribute.value})
         except Exception as e:
-            raise AddonFormatError(str(e), sys.exc_info()[2])
+            raise AddonFormatError(str(e)) from e
 
         # turn unpack into a true/false value
         if isinstance(details["unpack"], str):

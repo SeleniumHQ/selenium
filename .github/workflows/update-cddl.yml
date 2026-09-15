@@ -41,7 +41,11 @@ jobs:
         run: |
           if [ -s changes.patch ]; then
             git apply --index changes.patch
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+            if git diff --cached --quiet -- common/bidi/schema.json; then
+              echo "Projected BiDi schema unchanged; not opening a PR"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
           fi
           rm -f changes.patch
       - name: Create Pull Request
