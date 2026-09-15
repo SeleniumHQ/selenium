@@ -71,8 +71,8 @@ on:
         required: false
         type: boolean
         default: false
-      fetch-depth:
-        description: Number of commits to fetch (0 for full history, empty for auto-detect)
+      since-tag:
+        description: Release tag to fetch the checked-out ref's history back to, along with that release's tags
         required: false
         type: string
         default: ''
@@ -120,14 +120,10 @@ jobs:
         id: depth
         shell: bash
         env:
-          FETCH_DEPTH: ${{ inputs.fetch-depth }}
           PR_COMMITS: ${{ github.event.pull_request.commits }}
         run: |
-          # Use explicit value if provided
-          if [ -n "$FETCH_DEPTH" ]; then
-            echo "val=$FETCH_DEPTH" >> "$GITHUB_OUTPUT"
           # For PRs, use commit count plus buffer for merge base
-          elif [ -n "$PR_COMMITS" ]; then
+          if [ -n "$PR_COMMITS" ]; then
             echo "val=$((PR_COMMITS + 2))" >> "$GITHUB_OUTPUT"
           # For push events, read commit count from event payload
           else
@@ -139,7 +135,17 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
-          fetch-tags: ${{ inputs.fetch-depth != '' }}
+      - name: Fetch history back through the previous release
+        if: inputs.since-tag != ''
+        shell: bash
+        env:
+          SINCE_TAG: ${{ inputs.since-tag }}
+          GIT_REF: ${{ inputs.ref || github.ref }}
+        run: |
+          git fetch --no-tags --shallow-exclude="$SINCE_TAG" origin "$GIT_REF"
+          git fetch --no-tags --deepen=1 origin "$GIT_REF"
+          release_line="${SINCE_TAG%.*}."
+          git fetch --no-tags --depth=1 origin "+refs/tags/${release_line}*:refs/tags/${release_line}*"
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         shell: bash
