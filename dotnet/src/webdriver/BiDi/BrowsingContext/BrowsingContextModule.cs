@@ -54,7 +54,7 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
+        var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip, options?.ImageSize);
 
         return await ExecuteAsync("browsingContext.captureScreenshot", @params, Default.CaptureScreenshotParameters, Default.CaptureScreenshotResult, options, cancellationToken).ConfigureAwait(false);
     }

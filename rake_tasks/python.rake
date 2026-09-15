@@ -80,7 +80,8 @@ task :local_dev, [:all] do |_task, arguments|
     files = %w[
       remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
       common/mutation-listener.js common/bidi-mutation-listener.js
-      common/linux/selenium-manager common/macos/selenium-manager common/windows/selenium-manager.exe
+      common/linux-x86_64/selenium-manager common/linux-arm64/selenium-manager
+      common/macos/selenium-manager common/windows/selenium-manager.exe
       firefox/webdriver_prefs.json
     ]
   end

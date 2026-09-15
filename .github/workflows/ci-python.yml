@@ -2,7 +2,19 @@ name: CI - Python
 
 on:
   workflow_call:
+    inputs:
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
+    inputs:
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -121,6 +133,7 @@ jobs:
         --local_test_jobs 1
         --flaky_test_attempts 3
         --pin_browsers=false
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --build_tests_only
         --skip_incompatible_explicit_targets
         --test_tag_filters=se-manager

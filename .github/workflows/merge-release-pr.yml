@@ -1,0 +1,72 @@
+name: Merge Release PR
+
+on:
+  workflow_run:
+    workflows: ["CI", "CI - RBE"]
+    types: [completed]
+    branches: ["release-preparation-*"]
+
+permissions: {}
+
+concurrency:
+  group: merge-release-pr-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    name: Merge
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Find the open release PR
+        id: pr
+        env:
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          number=$(gh pr list --head "$BRANCH" --base trunk --author selenium-ci --state open --json number --jq '.[0].number')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Check required checks
+        id: checks
+        if: steps.pr.outputs.number
+        env:
+          PR: ${{ steps.pr.outputs.number }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WORKFLOW: ${{ github.event.workflow_run.name }}
+        run: |
+          if ! checks=$(gh pr checks "$PR" --required --json name,bucket,workflow 2>"$RUNNER_TEMP/checks.err"); then
+            grep -q 'no required checks reported' "$RUNNER_TEMP/checks.err" || { cat "$RUNNER_TEMP/checks.err"; exit 1; }
+            checks='[]'
+          fi
+          jq -r '.[] | "\(.bucket)\t\(.workflow) / \(.name)"' <<<"$checks"
+          echo "passed=$(jq 'length > 0 and all(.bucket == "pass")' <<<"$checks")" >> "$GITHUB_OUTPUT"
+          echo "notify=$(jq --arg conclusion "$CONCLUSION" --arg workflow "$WORKFLOW" --argjson triggers '["CI", "CI - RBE"]' '
+            def failed: .bucket != "pass" and .bucket != "pending";
+            def trigger: .workflow | IN($triggers[]);
+            length > 0 and
+            if $conclusion == "failure"
+            then any(failed and trigger and .workflow != $workflow) | not
+            else all(.bucket != "pending") and any(failed and (trigger | not))
+            end' <<<"$checks")" >> "$GITHUB_OUTPUT"
+      - name: Merge
+        if: steps.checks.outputs.passed == 'true'
+        env:
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: gh pr merge "$PR" --squash --admin --match-head-commit "$SHA"
+      - name: Notify on failure
+        if: failure() || steps.checks.outputs.notify == 'true'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ':rotating_light:'
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: Release PR not merged
+          SLACK_MESSAGE: "${{ github.event.workflow_run.conclusion == 'failure' && format('{0} failed on', github.event.workflow_run.name) || (steps.checks.outputs.notify == 'true' && 'Required checks did not pass on' || 'Merging failed for') }} ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.pr.outputs.number }}. Re-run the failed workflow once fixed, or close the PR to unlock trunk."
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -22,7 +22,7 @@ jobs:
     name: Check Authorization
     runs-on: ubuntu-latest
     outputs:
-      required: ${{ !contains(fromJSON('["AutomatedTester","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}
+      required: ${{ !contains(fromJSON('["AutomatedTester","selenium-ci","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}
     steps:
       - run: echo "Triggered by ${{ github.actor }}"
 

@@ -63,6 +63,13 @@ def test_init_args_for_pool_manager_are_copied_from_the_callers_dict():
     assert cfg.init_args_for_pool_manager is not caller
 
 
+def test_default_proxy_is_not_shared_between_instances():
+    first = ClientConfig(remote_server_addr="http://localhost:4444")
+    second = ClientConfig(remote_server_addr="http://localhost:4444")
+    assert first.proxy.proxy_type is ProxyType.SYSTEM
+    assert first.proxy is not second.proxy
+
+
 def test_websocket_max_message_size_defaults_to_none(config):
     assert config.websocket_max_message_size is None
 

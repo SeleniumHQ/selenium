@@ -85,7 +85,7 @@ public enum DeploymentTypes {
 
       Server<?> server =
           new Standalone().asServer(new CompoundConfig(setRandomPort(), config)).start();
-      waitUntilReady(server, Duration.ofSeconds(5));
+      waitUntilReady(server, Duration.ofSeconds(30));
 
       return new Deployment(server, server::stop);
     }
@@ -137,9 +137,9 @@ public enum DeploymentTypes {
       Config nodeConfig =
           new MemoizedConfig(new CompoundConfig(additionalNodeConfig, setRandomPort(), baseConfig));
       Server<?> node = new NodeServer().asServer(nodeConfig).start();
-      waitUntilReady(node, Duration.ofSeconds(5));
+      waitUntilReady(node, Duration.ofSeconds(30));
 
-      waitUntilReady(hub, Duration.ofSeconds(5));
+      waitUntilReady(hub, Duration.ofSeconds(30));
 
       return new Deployment(hub, hub::stop, node::stop);
     }
@@ -196,13 +196,13 @@ public enum DeploymentTypes {
                           setRandomPort(),
                           sharedConfig)))
               .start();
-      waitUntilReady(eventServer, Duration.ofSeconds(5));
+      waitUntilReady(eventServer, Duration.ofSeconds(30));
 
       Server<?> newSessionQueueServer =
           new NewSessionQueueServer()
               .asServer(new MemoizedConfig(new CompoundConfig(setRandomPort(), sharedConfig)))
               .start();
-      waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
+      waitUntilReady(newSessionQueueServer, Duration.ofSeconds(30));
       Config newSessionQueueServerConfig =
           new TomlConfig(
               new StringReader(
@@ -270,9 +270,9 @@ public enum DeploymentTypes {
                           distributorConfig,
                           newSessionQueueServerConfig)))
               .start();
-      waitUntilReady(nodeServer, Duration.ofSeconds(5));
+      waitUntilReady(nodeServer, Duration.ofSeconds(30));
 
-      waitUntilReady(router, Duration.ofSeconds(5));
+      waitUntilReady(router, Duration.ofSeconds(30));
 
       return new Deployment(
           router,

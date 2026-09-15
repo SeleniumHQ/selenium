@@ -1,4 +1,4 @@
-load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -11,6 +11,22 @@ config_setting(
     name = "use_pinned_browser",
     flag_values = {
         ":pin_browsers": "true",
+    },
+)
+
+string_flag(
+    name = "manager",
+    build_setting_default = "download",
+    values = [
+        "download",
+        "host",
+    ],
+)
+
+config_setting(
+    name = "manager_host",
+    flag_values = {
+        ":manager": "host",
     },
 )
 
@@ -40,6 +56,24 @@ config_setting(
     name = "windows",
     constraint_values = ["@platforms//os:windows"],
 )
+
+[
+    config_setting(
+        name = "{}_{}".format(os, arch),
+        constraint_values = [
+            "@platforms//os:{}".format(os),
+            "@platforms//cpu:{}".format(arch),
+        ],
+    )
+    for (os, arch) in [
+        ("linux", "arm64"),
+        ("linux", "x86_64"),
+        ("macos", "arm64"),
+        ("macos", "x86_64"),
+        ("windows", "arm64"),
+        ("windows", "x86_64"),
+    ]
+]
 
 # Are we creating a stamped build?
 config_setting(

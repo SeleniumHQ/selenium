@@ -45,6 +45,7 @@ module Selenium
           let(:bluetooth) { described_class.new(driver) }
           let(:script) { Script.new(driver) }
           let(:session) { Session.new(driver) }
+          let(:connection) { driver.send(:bridge).connection }
 
           def target
             Script::ContextTarget.new(context: driver.window_handle)
@@ -105,11 +106,11 @@ module Selenium
 
           def subscribe(event)
             events = []
-            callback = driver.bidi.add_callback(event) { |params| events << params }
+            callback = connection.add_callback(event) { |params| events << params }
             session.subscribe(events: [event])
             [events, callback]
           rescue StandardError
-            driver.bidi.remove_callback(event, callback) if callback
+            connection.remove_callback(event, callback) if callback
             raise
           end
 
@@ -120,7 +121,7 @@ module Selenium
               nil
             end
           ensure
-            driver.bidi.remove_callback(event, callback) if callback
+            connection.remove_callback(event, callback) if callback
           end
 
           def evaluate_value(expression, await_promise: false, user_activation: WebDriver::BiDi::Serialization::UNSET)

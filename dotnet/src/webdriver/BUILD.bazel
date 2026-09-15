@@ -150,9 +150,16 @@ copy_file(
 )
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "manager/linux/selenium-manager",
+    name = "manager-linux-x86_64",
+    src = "//common/manager:selenium-manager-linux-x86_64",
+    out = "manager/linux-x86_64/selenium-manager",
+    visibility = ["//dotnet/test/webdriver:__pkg__"],
+)
+
+copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "manager/linux-arm64/selenium-manager",
     visibility = ["//dotnet/test/webdriver:__pkg__"],
 )
 
@@ -174,7 +181,8 @@ nuget_pack(
     name = "webdriver-pack",
     files = {
         "//common/images:selenium_logo_small.png": "icon.png",
-        "//common/manager:selenium-manager-linux": "manager/linux/selenium-manager",
+        "//common/manager:selenium-manager-linux-x86_64": "manager/linux-x86_64/selenium-manager",
+        "//common/manager:selenium-manager-linux-arm64": "manager/linux-arm64/selenium-manager",
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-notice": "selenium-manager-THIRD-PARTY-NOTICES.txt",
         "//common/manager:selenium-manager-sbom": "selenium-manager.cdx.json",

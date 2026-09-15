@@ -3682,6 +3682,14 @@
           "type": {
             "ref": "browsingContext.ClipRectangle"
           }
+        },
+        {
+          "name": "imageSize",
+          "wire": "imageSize",
+          "required": false,
+          "type": {
+            "ref": "browsingContext.ImageSize"
+          }
         }
       ],
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcapturescreenshotparameters",
@@ -3709,6 +3717,30 @@
         }
       ],
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimageformat",
+      "outbound": true,
+      "inbound": false
+    },
+    "browsingContext.ImageSize": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "maxWidth",
+          "wire": "maxWidth",
+          "required": false,
+          "type": {
+            "ref": "js-uint"
+          }
+        },
+        {
+          "name": "maxHeight",
+          "wire": "maxHeight",
+          "required": false,
+          "type": {
+            "ref": "js-uint"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimagesize",
       "outbound": true,
       "inbound": false
     },

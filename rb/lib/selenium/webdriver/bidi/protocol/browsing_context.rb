@@ -209,7 +209,8 @@ module Selenium
             context: {wire_key: 'context', primitive: 'string'},
             origin: {wire_key: 'origin', required: false, enum: 'BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN'},
             format: {wire_key: 'format', required: false, ref: 'BrowsingContext::ImageFormat'},
-            clip: {wire_key: 'clip', required: false, ref: 'BrowsingContext::ClipRectangle'}
+            clip: {wire_key: 'clip', required: false, ref: 'BrowsingContext::ClipRectangle'},
+            image_size: {wire_key: 'imageSize', required: false, ref: 'BrowsingContext::ImageSize'}
           )
 
           # @api private
@@ -218,6 +219,14 @@ module Selenium
           ImageFormat = Serialization::Record.define(
             type: {wire_key: 'type', primitive: 'string'},
             quality: {wire_key: 'quality', required: false, primitive: 'number'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextimagesize
+          ImageSize = Serialization::Record.define(
+            max_width: {wire_key: 'maxWidth', required: false, primitive: 'integer'},
+            max_height: {wire_key: 'maxHeight', required: false, primitive: 'integer'}
           )
 
           # @api private
@@ -585,6 +594,7 @@ module Selenium
           def inner_text_locator(**) = InnerTextLocator.new(**)
           def x_path_locator(**) = XPathLocator.new(**)
           def image_format(**) = ImageFormat.new(**)
+          def image_size(**) = ImageSize.new(**)
           def clip_rectangle = ClipRectangle
           def element_clip_rectangle(**) = ElementClipRectangle.new(**)
           def box_clip_rectangle(**) = BoxClipRectangle.new(**)
@@ -610,10 +620,17 @@ module Selenium
             context:,
             origin: Serialization::UNSET,
             format: Serialization::UNSET,
-            clip: Serialization::UNSET
+            clip: Serialization::UNSET,
+            image_size: Serialization::UNSET
           )
             Serialization.validate!('origin', origin, BrowsingContext::CAPTURE_SCREENSHOT_PARAMETERS_ORIGIN)
-            params = CaptureScreenshotParameters.new(context: context, origin: origin, format: format, clip: clip)
+            params = CaptureScreenshotParameters.new(
+              context: context,
+              origin: origin,
+              format: format,
+              clip: clip,
+              image_size: image_size
+            )
             execute(
               cmd: 'browsingContext.captureScreenshot',
               params: params,

@@ -11,6 +11,12 @@ exports_files(
     visibility = ["//visibility:public"],
 )
 
+config_setting(
+    name = "stamp_enabled",
+    values = {"stamp": "1"},
+    visibility = ["//dotnet:__subpackages__"],
+)
+
 # The NUnit3TestAdapter NuGet package ships its assemblies under build/<tfm>/
 # (intended for MSBuild .targets-based wiring) instead of the standard
 # lib/<tfm>/ layout, so rules_dotnet's paket extractor leaves the

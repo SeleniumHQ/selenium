@@ -5,9 +5,11 @@ already-projected, binding-neutral schema JSON and emits the generated domain mo
 The hand-written runtime (``serialization``/``transport``/``domain``) is not produced here.
 """
 
-# Generated domain modules, snake_case (one per BiDi domain in the schema). The
-# package ``__init__.py`` is hand-written and checked in, so it is not generated here.
+# Generated domain modules, snake_case (one per BiDi domain in the schema), plus the
+# domain-less error classes. The package ``__init__.py`` is hand-written and checked
+# in, so it is not generated here.
 _MODULES = [
+    "errors",
     "bluetooth",
     "browser",
     "browsing_context",

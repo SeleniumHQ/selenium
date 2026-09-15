@@ -32,10 +32,10 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from typing_extensions import Self
 
@@ -173,6 +173,11 @@ def create_matches(options: list[BaseOptions]) -> dict:
     return capabilities
 
 
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+_D = TypeVar("_D", bound="WebDriver")
+
+
 if TYPE_CHECKING:
     from selenium.webdriver.common.api_request_context import APIRequestContext
     from selenium.webdriver.common.fedcm.dialog import Dialog
@@ -181,9 +186,9 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.virtual_authenticator import Credential, VirtualAuthenticatorOptions
 
 
-def _required_chromium_based_browser(func):
+def _required_chromium_based_browser(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         assert self.caps["browserName"].lower() not in ["firefox", "safari"], (
             "This only currently works in Chromium based browsers"
         )
@@ -192,10 +197,10 @@ def _required_chromium_based_browser(func):
     return wrapper
 
 
-def _required_virtual_authenticator(func):
+def _required_virtual_authenticator(func: Callable[Concatenate[_D, _P], _R]) -> Callable[Concatenate[_D, _P], _R]:
     @functools.wraps(func)
     @_required_chromium_based_browser
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: _D, *args: _P.args, **kwargs: _P.kwargs) -> _R:
         if not self.virtual_authenticator_id:
             raise ValueError("This function requires a virtual authenticator to be set.")
         return func(self, *args, **kwargs)
@@ -366,7 +371,6 @@ class WebDriver(BaseWebDriver):
 
         This method may be overridden to define custom startup behavior.
         """
-        pass
 
     def stop_client(self) -> None:
         """Called after executing a quit command.
@@ -374,7 +378,6 @@ class WebDriver(BaseWebDriver):
         This method may be overridden to define custom shutdown
         behavior.
         """
-        pass
 
     def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.
@@ -421,7 +424,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(value, self._shadowroot_cls):
             return {"shadow-6066-11e4-a52e-4f735466cecf": value.id}
         if isinstance(value, list):
-            return list(self._wrap_value(item) for item in value)
+            return [self._wrap_value(item) for item in value]
         return value
 
     def create_web_element(self, element_id: str) -> WebElement:
@@ -438,7 +441,7 @@ class WebDriver(BaseWebDriver):
                 value[key] = self._unwrap_value(val)
             return value
         if isinstance(value, list):
-            return list(self._unwrap_value(item) for item in value)
+            return [self._unwrap_value(item) for item in value]
         return value
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
@@ -602,10 +605,11 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if isinstance(script, ScriptKey):
+            script_id = script.id
             try:
-                script = self.pinned_scripts[script.id]
+                script = self.pinned_scripts[script_id]
             except KeyError:
-                raise JavascriptException("Pinned script could not be found")
+                raise JavascriptException(f"Pinned script could not be found: {script_id}") from None
 
         converted_args = list(args)
         command = Command.W3C_EXECUTE_SCRIPT
@@ -1446,8 +1450,8 @@ class WebDriver(BaseWebDriver):
                 debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
             elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
                 debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
-        except AttributeError:
-            raise WebDriverException("Can't get debugger address.")
+        except AttributeError as err:
+            raise WebDriverException("Can't get debugger address.") from err
 
         res = http.request("GET", f"http://{debugger_address}/json/version")
         data = json.loads(res.data)

@@ -13,6 +13,7 @@ java_export(
         "org.seleniumhq.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
+    stub_javadoc = True,
     tags = [
         "release-artifact",
     ],

@@ -1,3 +1,15 @@
+v4.49.0
+======
+* Support CDP versions: v151, v152, v153
+* [grid] Fix 500 when downloading a file whose name contains spaces (#17968)
+* add the LICENSE and NOTICE files to the jars created (#17601)
+* Remove deprecated GET /session/{sessionId}/se/files/{fileName} endpoint (#17982)
+* shrink published javadoc jars (#17957)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* remove try-catch while opening a new window #17754 (#17996)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+* remove let's guess URI encoding (#17995)
+
 v4.48.0
 ======
 * Support CDP versions: v150, v151, v152

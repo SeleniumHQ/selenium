@@ -15,6 +15,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:chrome"],
         "tags": [],
         "target_compatible_with": [],
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "chrome",
             "WD_SPEC_DRIVER": "chrome",
@@ -87,6 +88,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:firefox"],
         "tags": [],
         "target_compatible_with": [],
+        "bidi": True,
         "env": {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",

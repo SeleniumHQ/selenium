@@ -16,7 +16,8 @@ rb_library(
         "spec_support.rb",
     ] + glob(["spec_support/**/*"]),
     data = [
-        "//rb:manager-linux",
+        "//rb:manager-linux-arm64",
+        "//rb:manager-linux-x86_64",
         "//rb:manager-macos",
         "//rb:manager-windows",
     ],
@@ -124,7 +125,6 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/devtools",
             "//rb/lib/selenium/webdriver:devtools",

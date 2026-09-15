@@ -37,7 +37,8 @@ jobs:
       run: |
         if [ "${{ github.event_name }}" == "schedule" ] || \
         [ "${{ github.event_name }}" == "workflow_call" ] || \
-        [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+        [ "${{ github.event_name }}" == "workflow_dispatch" ] || \
+        [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" == "true" ]; then
           echo "Running all targets for ${{ github.event_name }} event"
           echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
         else
@@ -57,7 +58,9 @@ jobs:
           fi
         fi
       artifact-name: check-targets
-      artifact-path: bazel-targets.txt
+      artifact-path: |
+        bazel-targets.txt
+        compile-manager.txt
 
   read-targets:
     name: Read Targets
@@ -71,6 +74,7 @@ jobs:
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
       js: ${{ steps.read.outputs.js }}
+      compile-manager: ${{ steps.read.outputs.compile-manager }}
     steps:
       - name: Download targets
         uses: actions/download-artifact@v8
@@ -83,6 +87,9 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
+          if [ "$(cat compile-manager.txt 2>/dev/null)" = "true" ]; then
+            echo "compile-manager=true" >> "$GITHUB_OUTPUT"
+          fi
           check_binding() {
             local pattern=$1 tag=$2
             if [[ "$targets" == *"${pattern}/"* ]] || [[ "$targets" == *"${pattern}:"* ]] || [[ "$COMMIT_MESSAGES" == *"[$tag]"* ]] || [[ "$PR_TITLE" == *"[$tag]"* ]]; then
@@ -134,6 +141,8 @@ jobs:
     needs: read-targets
     uses: ./.github/workflows/ci-python.yml
     if: needs.read-targets.outputs.py != ''
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   ruby:
     name: Ruby
@@ -141,14 +150,12 @@ jobs:
     uses: ./.github/workflows/ci-ruby.yml
     if: needs.read-targets.outputs.rb != ''
     with:
-      smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   rust:
     name: Rust
     needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
     if: needs.read-targets.outputs.rust != ''
 
   javascript:
