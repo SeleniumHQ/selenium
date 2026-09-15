@@ -109,6 +109,9 @@ import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
+import org.openqa.selenium.webextension.HasWebExtensions;
+import org.openqa.selenium.webextension.WebExtension;
+import org.openqa.selenium.webextension.WebExtensionOptions;
 
 @Augmentable
 public class RemoteWebDriver
@@ -121,7 +124,8 @@ public class RemoteWebDriver
         HasVirtualAuthenticator,
         Interactive,
         PrintsPage,
-        TakesScreenshot {
+        TakesScreenshot,
+        HasWebExtensions {
 
   // Configure before subclass constructor arguments can trigger driver discovery logs.
   static {
@@ -155,6 +159,8 @@ public class RemoteWebDriver
   @Nullable private Network remoteNetwork;
 
   private Optional<BiDi> biDi = Optional.empty();
+
+  @Nullable private HasWebExtensions webExtensions;
 
   // For cglib
   @SuppressWarnings("DataFlowIssue")
@@ -447,6 +453,38 @@ public class RemoteWebDriver
 
     Object result = response.getValue();
     return new Pdf((String) requireNonNull(result));
+  }
+
+  private HasWebExtensions webExtensions() {
+    if (webExtensions == null) {
+      webExtensions = new RemoteWebExtensions(this);
+    }
+    return webExtensions;
+  }
+
+  @Override
+  public WebExtension installWebExtension(Path path) {
+    return webExtensions().installWebExtension(path);
+  }
+
+  @Override
+  public WebExtension installWebExtension(Path path, WebExtensionOptions options) {
+    return webExtensions().installWebExtension(path, options);
+  }
+
+  @Override
+  public WebExtension installWebExtension(String base64Encoded) {
+    return webExtensions().installWebExtension(base64Encoded);
+  }
+
+  @Override
+  public WebExtension installWebExtension(String base64Encoded, WebExtensionOptions options) {
+    return webExtensions().installWebExtension(base64Encoded, options);
+  }
+
+  @Override
+  public void uninstallWebExtension(WebExtension extension) {
+    webExtensions().uninstallWebExtension(extension);
   }
 
   @Override
