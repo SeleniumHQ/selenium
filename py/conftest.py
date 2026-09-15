@@ -414,6 +414,8 @@ class Driver:
 
         if cls_name.lower() in ("chrome", "edge"):
             self._options.add_argument("--disable-dev-shm-usage")
+            if self.exe_platform == "Linux":
+                self._options.add_argument("--no-sandbox")
 
         if self.is_remote:
             self._options.enable_downloads = True
