@@ -28,6 +28,7 @@ import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
@@ -87,7 +88,7 @@ public class Network implements AutoCloseable {
         new Command<>(
             "network.addIntercept",
             parameters.toMap(),
-            jsonInput -> jsonInput.readMapElement("intercept")));
+            ConverterFunctions.map("intercept", String.class)));
   }
 
   public void removeIntercept(String interceptId) {
