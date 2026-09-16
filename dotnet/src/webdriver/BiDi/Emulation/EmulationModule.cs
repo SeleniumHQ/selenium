@@ -78,6 +78,12 @@ internal sealed class EmulationModule : Module, IEmulationModule
         return await ExecuteAsync("emulation.setScrollbarTypeOverride", @params, Default.SetScrollbarTypeOverrideParameters, Default.SetScrollbarTypeOverrideResult, options, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<SetTextLayoutModeOverrideResult> SetTextLayoutModeOverrideAsync(TextLayoutMode? textLayoutMode, SetTextLayoutModeOverrideOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var @params = new SetTextLayoutModeOverrideParameters(textLayoutMode, options?.Contexts, options?.UserContexts);
+        return await ExecuteAsync("emulation.setTextLayoutModeOverride", @params, Default.SetTextLayoutModeOverrideParameters, Default.SetTextLayoutModeOverrideResult, options, cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<SetGeolocationOverrideResult> SetGeolocationOverrideAsync(GeolocationOverride? geolocationOverride, SetGeolocationOverrideOptions? options = null, CancellationToken cancellationToken = default)
     {
         SetGeolocationOverrideParameters @params = geolocationOverride switch
@@ -126,6 +132,8 @@ internal sealed class EmulationModule : Module, IEmulationModule
 [JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
 [JsonSerializable(typeof(SetScrollbarTypeOverrideParameters))]
 [JsonSerializable(typeof(SetScrollbarTypeOverrideResult))]
+[JsonSerializable(typeof(SetTextLayoutModeOverrideParameters))]
+[JsonSerializable(typeof(SetTextLayoutModeOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideParameters))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
 [JsonSerializable(typeof(SetTouchOverrideParameters))]

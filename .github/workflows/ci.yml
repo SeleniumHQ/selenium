@@ -25,37 +25,46 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
+  targets-mode:
+    name: Targets Mode
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+    steps:
+      - name: Decide whether to compute affected targets
+        id: mode
+        run: |
+          if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
+            mode=none
+          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" = "true" ]; then
+            mode=all
+          else
+            mode=check
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+
   check:
     name: Check Targets
-    if: >
-      github.event.repository.fork == false &&
-        (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
+    needs: targets-mode
+    if: needs.targets-mode.outputs.mode == 'check'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Targets
       cache-name: bazel-test-file-index
       run: |
-        if [ "${{ github.event_name }}" == "schedule" ] || \
-        [ "${{ github.event_name }}" == "workflow_call" ] || \
-        [ "${{ github.event_name }}" == "workflow_dispatch" ] || \
-        [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" == "true" ]; then
-          echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
+        if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+          BASE_SHA="HEAD^1"
+        elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
+          BASE_SHA="${{ github.event.before }}"
         else
-          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
-            BASE_SHA="HEAD^1"
-          elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
-            BASE_SHA="${{ github.event.before }}"
-          else
-            ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
-            git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
-            BASE_SHA="HEAD~$ahead"
-          fi
-          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
-          else
-            ./go bazel:affected_targets bazel-test-file-index
-          fi
+          ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
+          git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
+          BASE_SHA="HEAD~$ahead"
+        fi
+        if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+          ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
+        else
+          ./go bazel:affected_targets bazel-test-file-index
         fi
       artifact-name: check-targets
       artifact-path: |
@@ -64,7 +73,8 @@ jobs:
 
   read-targets:
     name: Read Targets
-    needs: check
+    needs: [targets-mode, check]
+    if: "!cancelled() && (needs.targets-mode.outputs.mode == 'all' || needs.check.result == 'success')"
     runs-on: ubuntu-latest
     outputs:
       java: ${{ steps.read.outputs.java }}
@@ -77,9 +87,13 @@ jobs:
       compile-manager: ${{ steps.read.outputs.compile-manager }}
     steps:
       - name: Download targets
+        if: needs.targets-mode.outputs.mode == 'check'
         uses: actions/download-artifact@v8
         with:
           name: check-targets
+      - name: Use every target
+        if: needs.targets-mode.outputs.mode == 'all'
+        run: echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
       - name: Read targets
         id: read
         env:
@@ -194,7 +208,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded
