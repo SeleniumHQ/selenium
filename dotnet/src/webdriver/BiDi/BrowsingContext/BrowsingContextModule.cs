@@ -110,7 +110,7 @@ internal sealed class BrowsingContextModule : Module, IBrowsingContextModule
 
     public async Task<StartScreencastResult> StartScreencastAsync(BrowsingContext context, StartScreencastOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new StartScreencastParameters(context, options?.MimeType, options?.Video, options?.Audio);
+        var @params = new StartScreencastParameters(context, options?.DestinationFolder, options?.MimeType, options?.Video, options?.Audio);
 
         return await ExecuteAsync("browsingContext.startScreencast", @params, Default.StartScreencastParameters, Default.StartScreencastResult, options, cancellationToken).ConfigureAwait(false);
     }
