@@ -9,5 +9,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium:core",
         artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("uk.org.webcompere:system-stubs-core"),
+        artifact("uk.org.webcompere:system-stubs-jupiter"),
     ] + JUNIT5_DEPS,
 )

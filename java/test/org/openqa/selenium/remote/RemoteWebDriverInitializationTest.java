@@ -41,7 +41,11 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +53,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -58,7 +63,52 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 @Tag("UnitTests")
 class RemoteWebDriverInitializationTest {
+  private static Logger seleniumLogger() {
+    return Logger.getLogger("org.openqa.selenium");
+  }
+
   private boolean quitCalled = false;
+  private String oldDebugProperty;
+  private String oldVerboseProperty;
+  private Level oldLoggerLevel;
+
+  @BeforeEach
+  void storeDebugState() {
+    oldDebugProperty = System.getProperty("selenium.debug");
+    oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
+    oldLoggerLevel = seleniumLogger().getLevel();
+    System.clearProperty("selenium.debug");
+    System.clearProperty("selenium.webdriver.verbose");
+  }
+
+  @AfterEach
+  void restoreDebugState() {
+    if (oldDebugProperty != null) {
+      System.setProperty("selenium.debug", oldDebugProperty);
+    } else {
+      System.clearProperty("selenium.debug");
+    }
+    if (oldVerboseProperty != null) {
+      System.setProperty("selenium.webdriver.verbose", oldVerboseProperty);
+    } else {
+      System.clearProperty("selenium.webdriver.verbose");
+    }
+    Debug.configureLogger();
+    seleniumLogger().setLevel(oldLoggerLevel);
+  }
+
+  @Test
+  void constructingASecondDriverPicksUpADebugPropertyChangedAfterTheFirst() {
+    CommandExecutor inMemoryExecutor = command -> echoCapabilities.apply(command);
+
+    new RemoteWebDriver(inMemoryExecutor, new ImmutableCapabilities());
+
+    System.setProperty("selenium.debug", "true");
+
+    new RemoteWebDriver(inMemoryExecutor, new ImmutableCapabilities());
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+  }
 
   @Test
   void testQuitsIfStartSessionFails() {
