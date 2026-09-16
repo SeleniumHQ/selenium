@@ -137,5 +137,5 @@ jobs:
         --local_test_jobs 1
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=-os-sensitive,-se-manager
+        --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe
         //py:test-${{ matrix.browser }}
