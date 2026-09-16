@@ -74,7 +74,6 @@ compile_pip_requirements(
         "--no-strip-extras",
     ],
     requirements_txt = ":requirements_lock.txt",
-    tags = ["manual"],  # needs network; run explicitly with lint jobs
 )
 
 SE_VERSION = "4.50.0.202609091537"
