@@ -69,11 +69,11 @@ compile_pip_requirements(
         "pyproject.toml",
         "requirements.txt",
     ],
-    extra_args = ["--no-strip-extras"],
-    requirements_txt = ":requirements_lock.txt",
-    tags = [
-        "skip-rbe",  # This test won't run on the RBE because of a lack of network connectivity
+    extra_args = [
+        "--no-annotate",  # keep lock check platform agnostic
+        "--no-strip-extras",
     ],
+    requirements_txt = ":requirements_lock.txt",
 )
 
 SE_VERSION = "4.50.0.202609091537"
