@@ -164,7 +164,7 @@ end
 desc 'Update Ruby changelog'
 task :changelogs do
   header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
-  SeleniumRake.update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
+  SeleniumRake.update_changelog(ruby_version, 'ruby', 'rb/lib/', 'rb/CHANGES', header)
 end
 
 desc 'Update Ruby version'
