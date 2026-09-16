@@ -215,6 +215,34 @@ public class Json {
   }
 
   /**
+   * Deserialize an already-parsed JSON value into an object of the specified type. The source is
+   * the {@link java.util.Map}/{@link java.util.List}/{@link String}/{@link Number}/{@link
+   * Boolean}/{@code null} structure that {@link #toType(String, Type)} returns for {@link
+   * #MAP_TYPE} or {@link #OBJECT_TYPE} - not a JSON string.
+   *
+   * <p>This is the object-input counterpart of {@link #toType(String, Type)}. Use it when a value
+   * has already been parsed out of a larger document - typically one field of a {@code Map<String,
+   * Object>} - so that the surrounding document does not have to be parsed a second time to reach
+   * it. The value itself is still round-tripped once, via {@link #toJson(Object)} then {@link
+   * #toType(String, Type)}, and therefore inherits {@link JsonOutput#MAX_DEPTH} - a source nested
+   * deeper than that limit is rejected. A {@code null} source yields {@code null}.
+   *
+   * @param source an already-parsed JSON value ({@code Map}, {@code List}, {@code String}, {@code
+   *     Number}, {@code Boolean}, or {@code null})
+   * @param typeOfT data type for deserialization (class or {@link TypeToken})
+   * @return object of the specified type, or {@code null} if {@code source} is {@code null}
+   * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if the source cannot be coerced to the specified type, or is nested
+   *     deeper than {@link JsonOutput#MAX_DEPTH}
+   */
+  public <T> @Nullable T convert(@Nullable Object source, Type typeOfT) {
+    if (source == null) {
+      return null;
+    }
+    return toType(toJson(source), typeOfT);
+  }
+
+  /**
    * Create a new {@code JsonInput} object to traverse the JSON string supplied the specified {@code
    * Reader}.<br>
    * <b>NOTE</b>: The {@code JsonInput} object returned by this method uses the {@link

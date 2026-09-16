@@ -605,10 +605,11 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if isinstance(script, ScriptKey):
+            script_id = script.id
             try:
-                script = self.pinned_scripts[script.id]
+                script = self.pinned_scripts[script_id]
             except KeyError:
-                raise JavascriptException("Pinned script could not be found")
+                raise JavascriptException(f"Pinned script could not be found: {script_id}") from None
 
         converted_args = list(args)
         command = Command.W3C_EXECUTE_SCRIPT
@@ -1449,8 +1450,8 @@ class WebDriver(BaseWebDriver):
                 debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
             elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
                 debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
-        except AttributeError:
-            raise WebDriverException("Can't get debugger address.")
+        except AttributeError as err:
+            raise WebDriverException("Can't get debugger address.") from err
 
         res = http.request("GET", f"http://{debugger_address}/json/version")
         data = json.loads(res.data)
