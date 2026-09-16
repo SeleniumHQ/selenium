@@ -137,14 +137,13 @@ jobs:
       - name: Fetch history back through the previous release
         if: inputs.since-tag != ''
         shell: bash
-        env:
-          SINCE_TAG: ${{ inputs.since-tag }}
-          GIT_REF: ${{ inputs.ref || github.ref }}
         run: |
-          git fetch --no-tags --shallow-exclude="$SINCE_TAG" origin "$GIT_REF"
-          git fetch --no-tags --deepen=1 origin "$GIT_REF"
-          release_line="${SINCE_TAG%.*}."
-          git fetch --no-tags --depth=1 origin "+refs/tags/${release_line}*:refs/tags/${release_line}*"
+          git fetch --no-tags --shallow-exclude=${{ inputs.since-tag }} origin ${{ inputs.ref || github.ref }}
+          git fetch --no-tags --deepen=1 origin ${{ inputs.ref || github.ref }}
+          release_line="${{ inputs.since-tag }}"
+          git ls-remote --tags --refs origin "${release_line%.*}.*" | while read -r sha ref; do
+            if git cat-file -e "$sha" 2>/dev/null; then git update-ref "$ref" "$sha"; fi
+          done
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         shell: bash
