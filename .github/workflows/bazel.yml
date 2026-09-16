@@ -125,7 +125,6 @@ jobs:
           # For PRs, use commit count plus buffer for merge base
           if [ -n "$PR_COMMITS" ]; then
             echo "val=$((PR_COMMITS + 2))" >> "$GITHUB_OUTPUT"
-          # For push events, read commit count from event payload
           else
             COMMIT_COUNT=$(jq -e '.commits | length // 0' "$GITHUB_EVENT_PATH" 2>/dev/null) || COMMIT_COUNT=0
             echo "val=$((COMMIT_COUNT + 1))" >> "$GITHUB_OUTPUT"
