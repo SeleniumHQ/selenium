@@ -21,38 +21,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browser.ClientWindowInfo;
 import org.openqa.selenium.bidi.browser.SetDownloadBehaviorParameters;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.internal.Require;
 
 @Beta
 public class Browser {
   private final BiDi bidi;
 
-  private static final Function<JsonInput, String> userContextInfoMapper =
-      json -> json.readMapElement("userContext");
+  private static final Function<@Nullable Object, String> userContextInfoMapper =
+      ConverterFunctions.map("userContext", String.class);
 
-  private static final Function<JsonInput, List<String>> userContextsInfoMapper =
-      json -> {
-        List<Map<String, String>> userContexts = json.readMapElement("userContexts");
-
+  private static final Function<@Nullable Object, List<String>> userContextsInfoMapper =
+      result -> {
+        List<Map<String, String>> userContexts = asList(result, "userContexts");
         return userContexts.stream()
             .map(map -> map.get("userContext"))
             .collect(Collectors.toList());
       };
 
-  private static final Function<JsonInput, List<ClientWindowInfo>> clientWindowsInfoMapper =
-      json -> {
-        List<Map<String, Object>> clientWindows = json.readMapElement("clientWindows");
-        return clientWindows.stream()
-            .map(map -> ClientWindowInfo.fromJson(map))
-            .collect(Collectors.toList());
+  private static final Function<@Nullable Object, List<ClientWindowInfo>> clientWindowsInfoMapper =
+      result -> {
+        List<Map<String, Object>> clientWindows = asList(result, "clientWindows");
+        return clientWindows.stream().map(ClientWindowInfo::fromJson).collect(Collectors.toList());
       };
+
+  @SuppressWarnings("unchecked")
+  private static <T> List<T> asList(@Nullable Object result, String key) {
+    return (List<T>)
+        Require.nonNull(
+            "Field " + key, ((Map<?, ?>) Require.nonNull("Command result", result)).get(key));
+  }
 
   public Browser(WebDriver driver) {
     this.bidi = ((HasBiDi) driver).getBiDi();

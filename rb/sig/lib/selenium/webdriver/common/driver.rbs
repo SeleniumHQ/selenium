@@ -71,6 +71,10 @@ module Selenium
 
       def add_virtual_authenticator: (untyped options) -> VirtualAuthenticator
 
+      def install_web_extension: (String path, **untyped options) -> WebExtension
+
+      def uninstall_web_extension: (WebExtension extension) -> void
+
       alias first find_element
 
       alias all find_elements

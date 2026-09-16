@@ -1,0 +1,19 @@
+name: Check Authorization
+
+permissions: {}
+
+on:
+  workflow_call:
+
+jobs:
+  check-authorization:
+    name: Check Authorization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail for unauthorized actor
+        if: ${{ !contains(fromJSON('["AutomatedTester","selenium-ci","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          echo "::error::@${ACTOR} is not authorized to run this workflow"
+          exit 1

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.bidi.module;
 
-import java.io.StringReader;
-import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.storage.DeleteCookiesParameters;
 import org.openqa.selenium.bidi.storage.GetCookiesParameters;
@@ -31,26 +31,14 @@ import org.openqa.selenium.bidi.storage.GetCookiesResult;
 import org.openqa.selenium.bidi.storage.PartitionKey;
 import org.openqa.selenium.bidi.storage.SetCookieParameters;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
 public class Storage {
-  private static final Json JSON = new Json();
 
   private final BiDi bidi;
 
-  private static final Function<JsonInput, GetCookiesResult> getCookiesResultMapper =
-      jsonInput -> jsonInput.readNonNull(GetCookiesResult.class);
-
-  private static final Function<JsonInput, PartitionKey> partitionKeyResultMapper =
-      jsonInput -> {
-        Map<String, String> partitionKey = jsonInput.readMapElement("partitionKey");
-        try (StringReader reader = new StringReader(JSON.toJson(partitionKey));
-            JsonInput input = JSON.newInput(reader)) {
-          return input.readNonNull(PartitionKey.class);
-        }
-      };
+  private static final Function<@Nullable Object, PartitionKey> partitionKeyResultMapper =
+      ConverterFunctions.map("partitionKey", PartitionKey.class);
 
   public Storage(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
@@ -64,7 +52,7 @@ public class Storage {
 
   public GetCookiesResult getCookies(GetCookiesParameters params) {
     return this.bidi.send(
-        new Command<>("storage.getCookies", params.toMap(), getCookiesResultMapper));
+        new Command<>("storage.getCookies", params.toMap(), GetCookiesResult.class));
   }
 
   public PartitionKey setCookie(SetCookieParameters params) {
