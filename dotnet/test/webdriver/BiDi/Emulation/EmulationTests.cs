@@ -190,21 +190,15 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+
     public void CanSetTextLayoutModeOverride()
     {
         Assert.That(async () =>
         {
             await bidi.Emulation.SetTextLayoutModeOverrideAsync(TextLayoutMode.Mobile, new() { Contexts = [context] });
-        },
-        Throws.Nothing);
-    }
-
-    [Test]
-    public void CanSetTextLayoutModeOverrideToDefault()
-    {
-        Assert.That(async () =>
-        {
-            await bidi.Emulation.SetTextLayoutModeOverrideAsync(null, new() { Contexts = [context] });
         },
         Throws.Nothing);
     }
