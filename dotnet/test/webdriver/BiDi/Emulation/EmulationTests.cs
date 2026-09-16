@@ -190,6 +190,26 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    public void CanSetTextLayoutModeOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetTextLayoutModeOverrideAsync(TextLayoutMode.Mobile, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetTextLayoutModeOverrideToDefault()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetTextLayoutModeOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new OpenQA.Selenium.BiDi.Emulation.ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
