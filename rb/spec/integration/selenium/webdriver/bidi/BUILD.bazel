@@ -13,6 +13,7 @@ filegroup(
         srcs = [file],
         bidi = True,
         classic = False,
+        grid_bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],

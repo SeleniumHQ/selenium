@@ -47,7 +47,7 @@ _BIDI_IMPLEMENTATIONS = [
     "navigation_spec.rb",
 ]
 
-# bidi implementations that must also run over a Grid
+# bidi specs that need the packed extension fixtures on the runfiles tree
 _GRID_BIDI = [
     "driver_spec.rb",
 ]
@@ -106,6 +106,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
         name = f[:-8],
         srcs = [f],
         bidi = True,
+        grid_bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
@@ -133,6 +134,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
         srcs = [f],
         bidi = True,
         classic = False,
+        grid_bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
