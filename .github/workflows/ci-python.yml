@@ -88,7 +88,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows, macos]
+        os: [windows, macos]
+        tag_filters: ["os-sensitive,se-manager,skip-rbe"]
+        include:
+          # RBE already runs the os-sensitive targets on Linux; ubuntu is here for what needs network.
+          - os: ubuntu
+            tag_filters: se-manager,skip-rbe
     with:
       name: ${{ matrix.os }}
       needs-display: true
@@ -105,7 +110,7 @@ jobs:
         --skip_incompatible_explicit_targets
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=os-sensitive,se-manager,skip-rbe
+        --test_tag_filters=${{ matrix.tag_filters }}
         --target_pattern_file=bazel-targets-py.txt
 
   remote-tests:
