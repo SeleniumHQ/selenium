@@ -54,6 +54,8 @@ csharp_sourcelink_library(
 nuget_pack(
     name = "support-pack",
     files = {
+        "//:LICENSE": "LICENSE",
+        "//:NOTICE": "NOTICE",
         "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support",
