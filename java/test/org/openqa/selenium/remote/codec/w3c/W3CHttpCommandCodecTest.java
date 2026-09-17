@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.codec.w3c;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Tag;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -62,6 +64,27 @@ class W3CHttpCommandCodecTest {
         .containsEntry("using", "css selector")
         .containsEntry("value", ".٥foo");
     assertThat(arabicIndicFive.get("value")).isNotEqualTo(asciiFive.get("value"));
+  }
+
+  @Test
+  void childFindKeepsRelativeLocatorValueAsJsonObject() {
+    RemoteWebElement anchor = new RemoteWebElement();
+    anchor.setId("anchor");
+    Map<String, Object> value =
+        Map.of(
+            "root",
+            Map.of("tag name", "p"),
+            "filters",
+            List.of(Map.of("kind", "below", "args", List.of(anchor))));
+
+    HttpRequest request =
+        codec.encode(
+            new Command(sessionId, DriverCommand.FIND_CHILD_ELEMENTS("scope", "relative", value)));
+    String body = request.contentAsString();
+
+    assertThat(body).doesNotContain("filters=[");
+    Map<String, Object> params = json.toType(body, MAP_TYPE);
+    assertThat(params.get("value")).isInstanceOf(Map.class);
   }
 
   private Map<String, Object> encodeFindElement(String strategy, Object value) {

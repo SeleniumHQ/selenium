@@ -255,12 +255,13 @@ public interface DriverCommand {
     return new CommandPayload(FIND_ELEMENTS, Map.of("using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, String value) {
+  // Custom locators (relative) send a nested map. A String value becomes Map.toString() on the wire.
+  static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, Object value) {
     return new CommandPayload(
         FIND_CHILD_ELEMENT, Map.of("id", id, "using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, String value) {
+  static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, Object value) {
     return new CommandPayload(
         FIND_CHILD_ELEMENTS, Map.of("id", id, "using", strategy, "value", value));
   }
