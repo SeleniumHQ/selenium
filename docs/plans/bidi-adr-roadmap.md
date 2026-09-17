@@ -24,8 +24,8 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 
 | | Item | Form |
 |---|---|---|
-| A | Backwards compatibility with BiDi enabled | Inventory first; record only if the findings need one |
-| B | Browsing context representation | Use cases first; likely deferred past Selenium 5 |
+| A | Where BiDi cannot express classic behavior | Gap list; each gap goes to the record that owns the behavior |
+| B | Browsing context representation | Two cheap use cases for 5; the object model defers past it |
 | 1 | Navigation, waits, and timeouts | Record |
 | 2 | Prompt handling | Record |
 | 3 | File handling | Record |
@@ -39,79 +39,90 @@ already answers the scoping question, none of the records below is blocked on B.
 
 ---
 
-## A. Backwards compatibility with BiDi enabled — inventory first
+## A. Where BiDi cannot express classic behavior
 
-The rule is easy to state and worth nothing until the specifics are known: enabling BiDi should not
-change the behavior of any existing API. Writing that as a record before knowing where it is
-already violated would produce a principle no one can check. The useful first step is an inventory
-of the places where enabling BiDi changes, or could change, classic behavior today — verified
-against real drivers, not read off the specifications.
+Testing the bindings with the websocket on and off is already planned and is not this. The question
+here is narrower and answerable from the specifications: which classic behaviors can a remote end
+*not* reproduce over BiDi, however well it is implemented? Those are the places where a binding has
+to build the behavior locally or accept a difference, and each one needs an owner.
 
-**Deliverable.** A table: what changes, which drivers and bindings it affects, whether it is
-Selenium's to fix or the driver's, and which record (if any) should own it. The inventory decides
-whether a compatibility record is needed at all, and if so what it contains.
+The list is short, and each entry below is confirmed against the specification rather than
+suspected.
 
-**Places to check.** Each needs a session with `webSocketUrl: true` and the same program run with
-and without it, across Chrome, Firefox, and Edge:
+1. **Prompt handling — the notify variants and the timing.** BiDi applies the handler when the
+   prompt opens (index.bs:6516) and offers only `accept`, `dismiss`, `ignore` (index.bs:2003). The
+   word "notify" does not appear in the specification, so classic's `dismiss and notify`, `accept
+   and notify`, and the classic default cannot be expressed at all. **Owner: record 2**, which is
+   why that record is about behavior rather than capability mapping.
 
-1. **Prompt handling.** Whether the driver applies the handler when the prompt opens rather than at
-   the next command, what becomes of the classic notify behavior, and whether `switchTo().alert()`
-   still finds a prompt. Feeds record 2 directly, and is the sharpest known case.
-2. **Timeouts.** Page load and script timeouts are classic session timeouts with no BiDi
-   equivalent — the specification defines none, and the only mentions are TODOs against script
-   evaluation (index.bs:13571, 13757). What happens today when a BiDi command does not return, and
-   whether the classic `timeouts` capability still governs anything on a BiDi path. Feeds record 1.
-3. **Element references.** Whether a node obtained through BiDi (`script.SharedReference`) and a
-   classic element reference are interchangeable, and whether staleness behaves the same.
-4. **Session lifetime.** What happens to the classic session when the websocket drops, what happens
-   to the websocket when the classic session ends, and whether `quit` closes both cleanly in every
-   binding.
-5. **Window handles and contexts.** Whether handles stay stable and aligned with context ids when a
-   tab is created through BiDi rather than through `switchTo().newWindow`.
-6. **Error types.** Classic and BiDi error codes surfacing as different exception types for the
-   same user-visible condition. The bindings already diverge on the prompt case alone — Java
-   raises `UnhandledAlertException`, Python `UnexpectedAlertPresentException`.
-7. **Capability round-trip.** A context created through `browser.createUserContext` takes its own
-   `acceptInsecureCerts`, `proxy`, and `unhandledPromptBehavior` (index.bs:2825) and does not
-   inherit what the user set on the session — so "the session's capabilities" is no longer one
-   thing.
-8. **Cost of enabling.** What a user pays for turning BiDi on when they do not use it: the
-   connection, any subscriptions the binding opens by default, and the events delivered as a
-   result.
+2. **Timeouts.** `session.CapabilityRequest` has no `timeouts` member (index.bs:1881) and the only
+   occurrences of the word are TODOs proposing one for script evaluation (index.bs:13571, 13757).
+   A page load timeout and a script timeout have no protocol equivalent; only the client can bound
+   them. **Owner: record 1** for the navigation case, and the script and logging record for script
+   evaluation if it wants it.
 
-**Open question.** Whether the inventory produces a record or a set of bug reports. Several of
-these are driver behavior rather than binding behavior, and those belong upstream rather than in a
-Selenium decision.
+3. **Implicit wait.** `browsingContext.locateNodes` takes a context, locator, node count,
+   serialization options, and start nodes (index.bs:4537) — there is no wait, and nothing retries
+   in the remote end. Classic's implicit wait is remote-end behavior with no BiDi counterpart.
+   **Owner: nobody yet**, and it does not need one while element location stays on the classic
+   path. It becomes urgent the moment locating moves to BiDi.
+
+4. **Stale element semantics.** BiDi defines no stale element error. The closest is "no such node",
+   for deserializing an unknown `SharedReference`, and the specification carries an open issue to
+   "handle the stale object reference case" (index.bs:12357). A classic
+   `StaleElementReferenceException` has no protocol equivalent. **Owner: nobody yet**, same
+   condition as implicit wait — it matters when elements come from BiDi rather than classic.
+
+Checked and **not** gaps, so nothing needs to be built for them: window rect and state
+(`browser.setClientWindowState` takes `normal` with x, y, width, height, plus fullscreen,
+maximized, and minimized — index.bs:3060), page load strategy (the readiness states cover all
+three classic values and add one), element screenshots (the screenshot clip), and frames
+(addressable
+directly as contexts).
+
+**What follows from this.** Two gaps already have a record. Two are conditional on work that is
+not in this release. That is not enough to justify a compatibility record of its own — the rule
+belongs
+in the charter as a stated expectation, and each gap is handled by the record that owns the
+behavior.
 
 ---
 
-## B. Browsing context representation — use cases first
+## B. Browsing context representation — which use case would justify a new API
 
-Whether new APIs identify a context by the window handle strings used today or by context objects,
-and whether `switchTo` gains an object-oriented alternative.
+A new API needs a record; the question is whether any use case is important enough to need the API
+before Selenium 5. Five candidates, with what each would cost.
 
-This is not ready to be a record, and it may not belong to Selenium 5 at all. The minimum answer
-costs nothing: [17685](../decisions/17685-network-handler-behavior.md) already scopes handlers by
-window handle or user context, so the records below can be written against that without deciding
-anything further. What is missing is agreement on which use cases an object model would serve well
-enough to justify its size.
+1. **Scoping a handler to a tab that is not the active one.** Already served: window handle strings,
+   per [17685](../decisions/17685-network-handler-behavior.md). No new API.
 
-**Use cases to rank before deciding.** For each: is it wanted in 5, and is it already served?
+2. **Waiting for a new tab or popup to appear.** Today users diff the window handle set in a poll
+   loop. `browsingContext.contextCreated` replaces that with an event. This needs a handler, not an
+   object model, and it fits the pattern the other records already use. Cheapest real improvement
+   on this list.
 
-- Scoping a handler to a tab that is not the active one — already served by window handles.
-- Acting on a background tab without switching to it — would require commands, not just handlers,
-  to take a context; this is where an object model earns its keep.
-- Addressing frames without `switchTo().frame()` — the largest of these, and the one that turns
-  the decision into a rewrite of how commands target a document.
-- User contexts as a supported cross-binding type — partly done already: Python exposes
-  `driver.browser.create_user_context()` (`py/selenium/webdriver/remote/webdriver.py:1260`).
-- Observing tabs being created and destroyed — the `browsingContext.contextCreated` and
-  `contextDestroyed` events, currently deferred with the browser context API.
+3. **A supported user context type.** Partly forced already: 17685 scopes handlers by user context,
+   so the concept is in the public API whether or not a type exists for it, and Python already
+   exposes `driver.browser.create_user_context()`
+   (`py/selenium/webdriver/remote/webdriver.py:1260`). The open part is whether every binding gets
+   the same type and whether it is more than an identifier.
 
-**Decision checkpoint.** If only the first and last matter, there is no record: the charter states
-that new APIs take window handles, and the object model is deferred past 5. If acting on background
-tabs or addressing frames matters, it is a large record that the rest of the release should not
-wait on.
+4. **Acting on a background tab without switching to it.** Not served, and the first use case that
+   genuinely needs an object model: commands, not just handlers, would have to take a context.
+   Large, and it changes how every command targets a document.
+
+5. **Addressing frames without `switchTo().frame()`.** Same shape as 4 and larger. BiDi addresses
+   frames as contexts, so the protocol allows it; the cost is on our side.
+
+**Recommendation.** 2 and 3 are worth doing for 5 and neither requires an object model — 2 is an
+event handler, 3 is an identifier that already half exists. 4 and 5 are the object model, and they
+should be one record proposed on their own schedule, after 5. If the TLC wants 4 or 5 in the
+release, that decision should be made before records 1 and 3 are written, because they would then
+name a context object in their scoping arguments rather than a handle.
+
+If 2 is adopted, `browsingContext.contextCreated` and `contextDestroyed` need an owner: either a
+small record of their own or an addition to record 1, since "a navigation opened a new tab" is
+adjacent to the navigation story.
 
 ---
 
