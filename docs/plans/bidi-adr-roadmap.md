@@ -6,159 +6,124 @@
 ## Purpose
 
 This is a planning document, not a decision. It describes the records that still need to be written
-for the BiDi surface of Selenium 5, so each can be proposed with its scope already agreed and the
-boundaries between them settled once rather than in six review threads.
+for the BiDi surface of Selenium 5, and — for two questions not yet ready to be records — the
+work that has to happen before one can be proposed.
 
-The release charter ([selenium-5.md](selenium-5.md)) carries one line per record. The detail —
-what each settles, what it must not absorb from its neighbors, the protocol facts that constrain
-it, and the questions the TLC has to answer — lives here until the records themselves exist.
+The release charter ([selenium-5.md](selenium-5.md)) carries one line per record. The detail lives
+here until the records themselves exist.
 
-Each entry below is sized to the scope test in [decisions/README.md](../decisions/README.md): a
-record captures one coherent decision, and a sub-choice splits out only when its rationale stands
-without the others. Where a boundary between two records is arguable, the entry says which one owns
-it and why.
+Each entry is sized to the scope test in [decisions/README.md](../decisions/README.md): a record
+captures one coherent decision, and a sub-choice splits out only when its rationale stands without
+the others. Where a boundary between two records is arguable, the entry says which one owns it.
 
 Protocol references are to the WebDriver BiDi specification source (`index.bs` in
 [w3c/webdriver-bidi](https://github.com/w3c/webdriver-bidi)); line numbers are from the September
-2026 editor's draft and are given to locate the algorithm, not as stable citations.
+2026 editor's draft and locate the algorithm rather than serving as stable citations.
 
-## Sequencing
+## Summary
 
-Two orderings are load-bearing. Proposing against them means rewriting a record after review:
+| | Item | Form |
+|---|---|---|
+| A | Backwards compatibility with BiDi enabled | Inventory first; record only if the findings need one |
+| B | Browsing context representation | Use cases first; likely deferred past Selenium 5 |
+| 1 | Navigation, waits, and timeouts | Record |
+| 2 | Prompt handling | Record |
+| 3 | File handling | Record |
 
-```
-Classic behavior with BiDi enabled ──▶ Prompt handling
-Browsing context representation ──┬──▶ Navigation async/event API
-                                  ├──▶ File uploads
-                                  └──▶ Downloads
-```
-
-**Context representation comes first** because navigation, uploads, and downloads each name a
-context type in their scoping arguments. Settling it once is the difference between three
-consistent records and three that each invented an answer.
-
-**The compatibility rule comes before prompt handling** because prompt handling is its sharpest
-instance. A general rule inferred from the hardest case tends to be the wrong general rule.
+Three records, two pieces of work that decide whether there is a fourth and fifth.
 
 Every record that adds a family of event handlers inherits the handler lifecycle and scoping
 settled in [17685](../decisions/17685-network-handler-behavior.md) — add, remove, clear, and
-scoping by window handle or user context — or states why that family differs. That is an
-expectation, not a dependency; it does not gate proposal order.
+scoping by window handle or user context — or states why that family differs. Because 17685
+already answers the scoping question, none of the records below is blocked on B.
 
 ---
 
-## 1. Classic behavior when BiDi is enabled
+## A. Backwards compatibility with BiDi enabled — inventory first
 
-**Decision.** Enabling BiDi does not change the behavior of any existing API. BiDi adds capability;
-it never silently changes a default, an error type, or the timing of the classic surface. Where
-BiDi cannot express a classic semantic, the binding emulates it locally rather than degrading it.
+The rule is easy to state and worth nothing until the specifics are known: enabling BiDi should not
+change the behavior of any existing API. Writing that as a record before knowing where it is
+already violated would produce a principle no one can check. The useful first step is an inventory
+of the places where enabling BiDi changes, or could change, classic behavior today — verified
+against real drivers, not read off the specifications.
 
-**Why a record.** The project has agreed that routing classic commands through BiDi is lower
-priority, but sessions with both are already the common case, and every record that follows will
-otherwise re-argue the same question: when the protocol offers something adjacent to a classic
-behavior but not identical to it, does the user get the classic behavior or the protocol's? Without
-a stated rule each record answers locally and the bindings drift apart again.
+**Deliverable.** A table: what changes, which drivers and bindings it affects, whether it is
+Selenium's to fix or the driver's, and which record (if any) should own it. The inventory decides
+whether a compatibility record is needed at all, and if so what it contains.
 
-**In scope**
+**Places to check.** Each needs a session with `webSocketUrl: true` and the same program run with
+and without it, across Chrome, Firefox, and Edge:
 
-- The rule itself, and what "emulate locally" permits: holding protocol state, deferring an action
-  to a later command, synthesizing an error the protocol does not define.
-- What may change when BiDi is enabled, stated positively — new APIs, new events, capabilities
-  that only BiDi can serve — so the rule does not read as a freeze.
-- Where the burden falls when a classic behavior costs significant local machinery: is the bar
-  "always emulate", or "emulate unless the record says otherwise, with a reason"?
-- How a binding behaves when BiDi is enabled and the remote end does not implement the feature the
-  emulation needs.
+1. **Prompt handling.** Whether the driver applies the handler when the prompt opens rather than at
+   the next command, what becomes of the classic notify behavior, and whether `switchTo().alert()`
+   still finds a prompt. Feeds record 2 directly, and is the sharpest known case.
+2. **Timeouts.** Page load and script timeouts are classic session timeouts with no BiDi
+   equivalent — the specification defines none, and the only mentions are TODOs against script
+   evaluation (index.bs:13571, 13757). What happens today when a BiDi command does not return, and
+   whether the classic `timeouts` capability still governs anything on a BiDi path. Feeds record 1.
+3. **Element references.** Whether a node obtained through BiDi (`script.SharedReference`) and a
+   classic element reference are interchangeable, and whether staleness behaves the same.
+4. **Session lifetime.** What happens to the classic session when the websocket drops, what happens
+   to the websocket when the classic session ends, and whether `quit` closes both cleanly in every
+   binding.
+5. **Window handles and contexts.** Whether handles stay stable and aligned with context ids when a
+   tab is created through BiDi rather than through `switchTo().newWindow`.
+6. **Error types.** Classic and BiDi error codes surfacing as different exception types for the
+   same user-visible condition. The bindings already diverge on the prompt case alone — Java
+   raises `UnhandledAlertException`, Python `UnexpectedAlertPresentException`.
+7. **Capability round-trip.** A context created through `browser.createUserContext` takes its own
+   `acceptInsecureCerts`, `proxy`, and `unhandledPromptBehavior` (index.bs:2825) and does not
+   inherit what the user set on the session — so "the session's capabilities" is no longer one
+   thing.
+8. **Cost of enabling.** What a user pays for turning BiDi on when they do not use it: the
+   connection, any subscriptions the binding opens by default, and the events delivered as a
+   result.
 
-**Not in scope**
-
-- Routing classic commands over BiDi, and choosing a path per session — both already deferred in
-  the charter.
-- The specific emulations. Each belongs to the record that owns the behavior; prompt handling is
-  the first and hardest of them.
-
-**Protocol constraints**
-
-- BiDi is enabled by a capability (`webSocketUrl`), so a session can have both surfaces active and
-  a user can reach them at the same time.
-- Capabilities are no longer session-global: `browser.createUserContext` accepts
-  `acceptInsecureCerts`, `proxy`, and `unhandledPromptBehavior` per user context (index.bs:2825),
-  and an overrides map is consulted ahead of the session-level handler (index.bs:6463). "Classic
-  behavior" therefore has to be defined for a session that contains contexts configured
-  differently.
-
-**Open questions**
-
-- Is this a rule with teeth — a record a later proposal can be held against — or a stated
-  preference? The former is more useful and harder to agree.
-- Does it bind only the bindings, or also Grid's handling of a BiDi-enabled session?
-
-**Depends on.** Nothing. This should be proposed first.
+**Open question.** Whether the inventory produces a record or a set of bug reports. Several of
+these are driver behavior rather than binding behavior, and those belong upstream rather than in a
+Selenium decision.
 
 ---
 
-## 2. Browsing context representation
+## B. Browsing context representation — use cases first
 
-**Decision.** What identifies a browsing context in every API added in this release: the window
-handle strings used today, or context objects — and whether `switchTo` gains an object-oriented
-alternative with a deprecation path.
+Whether new APIs identify a context by the window handle strings used today or by context objects,
+and whether `switchTo` gains an object-oriented alternative.
 
-**Why a record.** Three of the records below need a type to name when a handler is scoped, and
-[17685](../decisions/17685-network-handler-behavior.md) already made window handle and user context
-the scoping currency for network handlers. If this is not settled first, each later record either
-copies 17685 without deciding whether that is right, or invents something different. The record may
-legitimately conclude "handles stay as they are" — what it may not do is leave the question open.
+This is not ready to be a record, and it may not belong to Selenium 5 at all. The minimum answer
+costs nothing: [17685](../decisions/17685-network-handler-behavior.md) already scopes handlers by
+window handle or user context, so the records below can be written against that without deciding
+anything further. What is missing is agreement on which use cases an object model would serve well
+enough to justify its size.
 
-**In scope**
+**Use cases to rank before deciding.** For each: is it wanted in 5, and is it already served?
 
-- The identity type for a top-level context in new APIs, and whether it is the same type users get
-  from the existing window handle APIs.
-- Whether frames are addressable in the same way. BiDi contexts include nested navigables, so an
-  object model that stops at top-level contexts leaves `switchTo().frame()` where it is, and one
-  that does not is a much larger change.
-- User contexts: Python already exposes `driver.browser.create_user_context()` publicly
-  (`py/selenium/webdriver/remote/webdriver.py:1260`), and Java exposes the module through
-  `org.openqa.selenium.bidi.module.Browser`. Whether that becomes a supported cross-binding type is
-  part of this decision, not a separate one, because 17685 already scopes handlers by it.
-- If objects are adopted: the deprecation path for `switchTo()`, and whether the object is a handle
-  wrapper or something with behavior on it.
+- Scoping a handler to a tab that is not the active one — already served by window handles.
+- Acting on a background tab without switching to it — would require commands, not just handlers,
+  to take a context; this is where an object model earns its keep.
+- Addressing frames without `switchTo().frame()` — the largest of these, and the one that turns
+  the decision into a rewrite of how commands target a document.
+- User contexts as a supported cross-binding type — partly done already: Python exposes
+  `driver.browser.create_user_context()` (`py/selenium/webdriver/remote/webdriver.py:1260`).
+- Observing tabs being created and destroyed — the `browsingContext.contextCreated` and
+  `contextDestroyed` events, currently deferred with the browser context API.
 
-**Not in scope**
-
-- A high-level API for managing contexts — creating and closing them as objects, walking the
-  context tree, handlers for `browsingContext.contextCreated` and `contextDestroyed`. That is the
-  charter's deferred "Browser context API" and stays deferred; this record settles identity only.
-
-**Protocol constraints**
-
-- A window handle is a top-level traversable; a BiDi context id also names nested navigables, so
-  the two are not interchangeable and a mapping has to be stated in one direction or both.
-- `session.subscribe` takes optional `contexts` and `userContexts` (index.bs:2020). Declining to
-  expose subscribe-time scoping is viable, but then every event a user receives is session-wide and
-  filtering is theirs to do — which is a user-visible consequence of this record, not of the event
-  records.
-
-**Open questions**
-
-- Is the minimal answer — handles stay strings, new APIs take handles, `switchTo` is untouched —
-  acceptable for 5? It is cheap, consistent with 17685, and defers the object model; it also means
-  frames stay addressable only through `switchTo`.
-- If objects are adopted, does the charter need to move the deferred "Browser context API" item, or
-  can representation genuinely ship without management?
-
-**Depends on.** Nothing, but it gates three records, so it should be proposed early.
+**Decision checkpoint.** If only the first and last matter, there is no record: the charter states
+that new APIs take window handles, and the object model is deferred past 5. If acting on background
+tabs or addressing frames matters, it is a large record that the rest of the release should not
+wait on.
 
 ---
 
-## 3. Navigation async/event API
+## 1. Navigation, waits, and timeouts
 
-**Decision.** The cross-binding API for navigation lifecycle handlers, and the navigation behavior
-that goes with them.
+**Decision.** The cross-binding API for navigation lifecycle handlers, and the waiting behavior
+that goes with navigation now that the remote end no longer enforces it.
 
-**Why a record.** It is one design with one rationale: the events, what `get` waits for, and how
-both relate to the page load timeout cannot be understood separately. A reader who has the handler
-API but not the readiness mapping does not know when a handler fires relative to the command
-returning.
+**Why a record.** The events and the waits are one design. BiDi defines no timeouts, so every wait
+Selenium offers over it is enforced by the client — a change in where the responsibility lives,
+not just in how a wait is expressed. A record that settled the handlers and left the waits unstated
+would leave the harder half undone.
 
 **In scope**
 
@@ -167,65 +132,70 @@ returning.
 - `historyUpdated`, with the explicit statement that it is a URL-change signal and not a
   navigation: no navigation id, no completion of a pending wait, no firing of a
   navigation-complete handler.
-- What `get` waits for, and its relationship to `pageLoadStrategy` (today a capability with
-  `normal` / `eager` / `none`) and to the page load timeout.
+- **Who enforces the wait.** BiDi has no timeouts, so a client-side deadline is the only kind
+  available. The record settles where a user sets it, whether it is the same surface as the classic
+  `timeouts` capability, and what error is raised when it expires.
+- **What happens after a client-side timeout.** The navigation keeps running in the browser; the
+  classic equivalent left the remote end in a known state. The record has to say what the session
+  looks like afterwards and whether anything is cancelled.
+- `pageLoadStrategy` and readiness: whether the capability remains how a user expresses readiness,
+  and whether `committed` becomes reachable.
 - The correlation contract: events from one navigation share a navigation id, and that id may be
   absent.
 - The terminating cases: same-document navigation never produces a load; a navigation that becomes
-  a download ends the wait (this record owns that rule, the downloads record owns what happens
-  next).
+  a download ends the wait (this record owns that rule, record 3 owns what happens next).
 
 **Not in scope**
 
-- One-shot waiters (`expect_*`), already deferred by the charter as a convenience layer. This
-  record settles handlers and the implicit waits that already exist.
-- Download behavior beyond the handoff rule.
+- One-shot waiters (`expect_*`), deferred by the charter as a convenience layer.
+- Implicit wait and element location. Classic retries locating in the remote end and BiDi's
+  `browsingContext.locateNodes` does not, so it is the same class of problem — but locating over
+  BiDi is not otherwise in this release, and the record should say so rather than absorb it.
+- Script timeout, for the same reason, unless the script and logging record wants it.
 
 **Protocol constraints**
 
 - `domContentLoaded` and `load` carry `browsingContext.NavigationInfo`, the same params type as the
   navigation events, and are triggered from the same navigation status struct (index.bs:3737).
-  They are not a separate lifecycle.
 - Readiness maps to those events directly: `committed` → `navigationCommitted`, `interactive` →
-  `domContentLoaded`, `complete` → `load` (index.bs:3628). `browsingContext.navigate` is defined
-  in terms of awaiting them, which makes the classic `pageLoadStrategy` values a near-mapping —
-  `normal`/`eager`/`none` against four readiness states, with `committed` having no classic
-  equivalent.
+  `domContentLoaded`, `complete` → `load` (index.bs:3628). That makes classic's `pageLoadStrategy`
+  a near-mapping — `normal`/`eager`/`none` against four readiness states, with `committed` having
+  no classic equivalent.
+- **The specification defines no timeouts.** `session.CapabilityRequest` has no `timeouts` member
+  (index.bs:1881), and the only occurrences of the word are TODOs proposing one for script
+  evaluation (index.bs:13571, 13757). Nothing bounds a `browsingContext.navigate` that never
+  completes except the client.
 - `navigation` is nullable (index.bs:3739): null when a navigation is canceled before making
   progress.
 - `historyUpdated` carries only `context`, `timestamp`, `url` (index.bs:5997).
-- `downloadWillBegin` resumes a pending navigate (index.bs:6166), so a navigation that becomes a
-  download never reaches `load`.
+- `downloadWillBegin` resumes a pending navigate (index.bs:6166).
 
-**Current state.** No binding exposes navigation handlers as supported API. .NET models readiness
-on the protocol layer (`dotnet/src/webdriver/BiDi/BrowsingContext/Navigate.cs`); the others do not
-surface it. The divergence table for the record's Context section still needs to be built per
-binding.
+**Current state.** No binding exposes navigation handlers as supported API. Client-side timeouts
+already exist ad hoc at the transport layer — Java's BiDi layer carries a `Duration` per send
+(`java/src/org/openqa/selenium/bidi/BiDi.java:48`) — which is a websocket deadline, not a
+navigation wait, and the record should be explicit that they are different things.
 
 **Open questions**
 
-- Does `pageLoadStrategy` remain the way a user expresses readiness, or does the navigation API
-  take it per call? A capability that configures a per-call protocol parameter is the kind of thing
-  that ages badly, but changing it is a compatibility question for record 1.
-- Does `committed` become reachable, and if so, how does a user ask for it?
-- Is `historyUpdated` exposed at all in 5, or noted and deferred? It has no classic analogue, which
-  cuts both ways: nothing to keep compatible, and nothing users are asking to replace.
+- One timeout surface for both protocols, or separate ones? Users have one mental model today and
+  reusing `timeouts` is tempting, but it is a classic capability configuring client-side behavior.
+- Does a client-side timeout attempt to stop the navigation, or only stop waiting?
+- Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
 
-**Depends on.** Browsing context representation (2), for the scoping argument. Should state its
-relationship to record 1 if readiness changes any existing default.
+**Depends on.** Nothing blocking. Uses 17685's scoping unless B changes it, and item 2 of the
+inventory feeds its Context section.
 
 ---
 
-## 4. Prompt handling
+## 2. Prompt handling
 
 **Decision.** How `unhandledPromptBehavior` is expressed and honored now that BiDi applies the
 handler when the prompt opens, and what keeps the existing alert API working.
 
 **Why a record.** This is not a capability rename. The classic capability describes what happens to
-a prompt that is still open when the next command arrives; the BiDi handler is consulted at the
-moment the prompt opens and decides whether it opens at all. Keeping the classic contract means
-building a local state machine, which is behavior, not mapping — and it is the first real test of
-record 1.
+a prompt still open when the next command arrives; the BiDi handler is consulted when the prompt
+opens and decides whether it opens at all. Preserving the classic contract means holding protocol
+state locally, which is behavior rather than mapping.
 
 **In scope**
 
@@ -233,161 +203,122 @@ record 1.
   be set per user context.
 - The local behavior that preserves the classic contract: holding the prompt open, applying the
   configured behavior at the next command, and synthesizing the unexpected-alert error for the
-  notify variants that BiDi does not define.
-- What happens to `switchTo().alert()` and the `Alert` type, including whether they gain anything.
-- File dialogs, which the protocol treats as one more prompt type: the `file` key, the
-  `input.fileDialogOpened` event, and what a handler for it can actually do.
-- Whether `userPromptOpened` / `userPromptClosed` are exposed as handlers in 5, or held back with
-  the rest of the prompt module.
+  notify variants BiDi does not define.
+- What happens to `switchTo().alert()` and the `Alert` type.
+- Whether `userPromptOpened` and `userPromptClosed` are exposed as handlers in 5.
+- The `file` key: whether a file dialog is allowed to open at all. The dialog *handler* belongs to
+  record 3; the capability that decides whether there is a dialog to handle belongs here, and the
+  two records have to agree on what happens when a user registers an upload handler while `file` is
+  configured to dismiss.
 
 **Not in scope**
 
 - A high-level prompts module — the charter's deferred capability mapping.
-- Setting files on an element, which belongs to uploads (5). The dialog and the element are
-  different problems; see the protocol constraint below.
+- Setting files on an element, and handlers for file dialogs — record 3.
 
 **Protocol constraints**
 
 - The handler is applied when the prompt opens: the "user prompt opened" steps return it to the
   browser (index.bs:6516). There is no next-command moment in the protocol.
 - Only `accept`, `dismiss`, `ignore` exist (index.bs:2003). The specification contains no notify
-  variants at all, so classic's `dismiss and notify`, `accept and notify`, and the classic default
-  are inexpressible.
+  variants, so classic's `dismiss and notify`, `accept and notify`, and the classic default are
+  inexpressible.
 - `ignore` is special-cased to "none" (index.bs:6514) — the prompt stays open. It is the only mode
   in which the events and `browsingContext.handleUserPrompt` are useful.
 - Per-user-context overrides are consulted before the session handler (index.bs:6463).
-- File dialogs invert the default: the dialog is allowed to open unless configured otherwise, and
-  any value other than `ignore` dismisses it (index.bs:15356, 15404).
-- `input.fileDialogOpened` carries the element only when there is one (index.bs:15338) — a
-  `showOpenFilePicker()` call has none — while `input.setFiles` requires an element
-  (index.bs:15251). A dialog handler therefore cannot always fulfill the dialog.
+- File dialogs invert the default: the dialog opens unless configured otherwise, and any value
+  other than `ignore` dismisses it (index.bs:15356, 15406).
 
-**Current state.** The bindings already diverge. .NET models the capability as uniform-or-per-type
+**Current state.** .NET models the capability as uniform-or-per-type
 (`dotnet/src/webdriver/UserPromptHandler.cs`); Java carries it as a string constant
 (`java/src/org/openqa/selenium/remote/CapabilityType.java:32`); Python exposes a descriptor over
-the raw value (`py/selenium/webdriver/common/options.py:265`). The error type diverges too — Java
-raises `UnhandledAlertException`, Python `UnexpectedAlertPresentException` — which this record
-should note even if it does not fix it.
+the raw value (`py/selenium/webdriver/common/options.py:265`).
 
 **Open questions**
 
 - How much local machinery is the classic contract worth? Holding every prompt open to reapply the
-  classic behavior later is a real behavioral change under the hood, and a crash or disconnect
-  leaves a prompt open that classic would have dismissed.
-- Does the per-type map get exposed in 5, or does the capability stay a single value with the map
-  as a later addition?
-- Is the file dialog in this record or held entirely for a later one? It is the same capability
-  struct, but it is also the part users have never had.
+  classic behavior later is a real change under the hood, and a crash leaves a prompt open that
+  classic would have dismissed.
+- Does the per-type map get exposed in 5, or does the capability stay a single value?
 
-**Depends on.** Classic behavior when BiDi is enabled (1).
+**Depends on.** The inventory (A), item 1 — what drivers actually do today decides how much of
+this is Selenium's problem.
 
 ---
 
-## 5. File uploads
+## 3. File handling
 
-**Decision.** An element-scoped upload method, and the deprecation path for the current mechanism.
+**Decision.** A `driver.file` namespace covering both directions: handlers for file dialogs and for
+downloads, an element-scoped upload method, and what becomes of the download retrieval API.
 
-**Why a record.** Uploads today work by overloading `sendKeys` with a path and by a file detector
-that guesses whether a string is a file — behavior users hit accidentally and cannot easily turn
-off. `input.setFiles` makes an explicit method possible for the first time. The deprecation is
-user-visible in every binding, which is what makes it a record rather than an implementation
-choice.
-
-**In scope**
-
-- The method: where it lives, what it accepts, and behavior for multiple files and for elements
-  that are not file inputs.
-- The deprecation path for passing paths to `sendKeys`, and for the file detector types.
-- How uploads reach a remote browser, and what replaces the file detector's role there.
-
-**Not in scope**
-
-- File dialogs and any handler for them — prompt handling (4) owns the dialog.
-- Downloads (6). They share a "files move between the test machine and the browser host" framing,
-  but nothing else: uploads are element-scoped and synchronous, downloads are context-scoped and
-  asynchronous with a Grid retrieval story.
-
-**Protocol constraints**
-
-- `input.setFiles` takes a context, an element, and a list of files (index.bs:15251). It is
-  element-scoped by definition, and the files are named on the machine running the browser.
-
-**Current state.** `LocalFileDetector` is the default in Python
-(`py/selenium/webdriver/remote/webdriver.py:291`, with `file_detector_context` and
-`UselessFileDetector` as escape hatches); Java exposes `setFileDetector` on `RemoteWebDriver`. The
-record should tabulate what each binding does today before proposing the replacement.
-
-**Open questions**
-
-- Does the remote upload path (`POST /session/{id}/file`) stay as it is, with the new method only
-  changing the local API, or does BiDi change how files get to a remote browser?
-- Does the file detector become inert immediately when the new method exists, or only when
-  `sendKeys`-with-path is removed?
-
-**Depends on.** Browsing context representation (2), if the method or its remote path names a
-context.
-
----
-
-## 6. Downloads
-
-**Decision.** Configuring download behavior, handlers for a download beginning and ending, and how
-both relate to the downloadable-files API Grid already serves.
-
-**Why a record.** Downloads have a rationale that stands entirely on its own: where the file lands,
-who can read it when the browser is remote, and what `se:downloadsEnabled` means once the protocol
-can configure download behavior directly. It would be debated by different people than the
-navigation record and can be reversed without disturbing it.
+**Why a record.** Uploads and downloads are one namespace and one event story for the user — files
+moving between the machine running the test and the machine running the browser — and the same
+handler pattern serves both: `add_upload_handler`, `add_download_handler`, each with a remove and a
+clear, following [17685](../decisions/17685-network-handler-behavior.md). Splitting them would put
+the same pattern decision in two records.
 
 **In scope**
 
-- Handlers for `downloadWillBegin` and `downloadEnd`, following the 17685 lifecycle.
-- Download behavior configuration, and its relationship to the browser-specific options users set
-  today.
+- The namespace and the handler pattern: `driver.file.add_upload_handler`,
+  `add_download_handler`, and the remove/clear pairs, over `input.fileDialogOpened`,
+  `browsingContext.downloadWillBegin`, and `browsingContext.downloadEnd`.
+- **That these handlers observe rather than intercept.** Network handlers block by design; these
+  cannot — see the constraints below. The record has to say so plainly, because the shared pattern
+  invites the assumption that they behave the same way.
+- An element-scoped upload method over `input.setFiles`, and the deprecation path for passing paths
+  to `sendKeys` and for the file detector types.
+- Download behavior configuration, and its relationship to the browser options users set today.
 - The existing `HasDownloads` surface (`getDownloadableFiles`, `downloadFile`,
-  `deleteDownloadableFiles`, gated on `se:downloadsEnabled`): what it becomes when the protocol can
-  report a completed download's path directly, and whether the two paths converge or stay separate
-  for local and Grid sessions.
+  `deleteDownloadableFiles`, gated on `se:downloadsEnabled`): what it becomes when the protocol
+  reports a completed download's path directly, and whether local and Grid sessions converge.
+- What an upload handler can do when the event carries no element.
 
 **Not in scope**
 
-- The rule that a navigation becoming a download ends the navigation wait — stated by navigation
-  (3); this record picks up from there.
-- Uploads (5).
+- Whether a file dialog is allowed to open — the `file` key in the prompt handler, owned by record
+  2. This record owns what happens to a dialog that does open.
+- The rule that a navigation becoming a download ends the navigation wait — stated by record 1.
 
 **Protocol constraints**
 
+- **Neither event can be blocked on.** The file dialog steps emit the event, then compute whether
+  to dismiss from the session's prompt handler, and return — nothing waits for a client response
+  (index.bs:15338 onward). `downloadWillBegin` likewise emits and returns the configured download
+  behavior (index.bs:6166). Only the network events define blocking interception, which 17685's
+  model depends on.
+- `input.setFiles` requires an element (index.bs:15251); `input.fileDialogOpened` carries one only
+  when there is one (index.bs:15338) — a `showOpenFilePicker()` call has none. An upload handler
+  therefore cannot always fulfill the dialog it observes.
 - `downloadWillBegin` and `downloadEnd` extend `BaseNavigationInfo` (index.bs:6127), so a download
-  carries the navigation id of the navigation that produced it, plus a download id and suggested
-  filename.
-- `downloadWillBegin` resumes a pending navigate (index.bs:6166).
-- The completed download's path comes from the navigation status (index.bs:3273), which is a local
-  path on the machine running the browser — the same distinction `se:downloadsEnabled` exists to
-  paper over.
+  carries the navigation id that produced it, plus a download id and suggested filename.
+- The completed download's path comes from the navigation status (index.bs:3273) and is a path on
+  the machine running the browser — the distinction `se:downloadsEnabled` exists to paper over.
 
-**Current state.** `java/src/org/openqa/selenium/HasDownloads.java` and the equivalents in Python
-and Ruby are Grid-oriented and capability-gated; no binding exposes download events as supported
-API.
+**Current state.** Uploads work by overloading `sendKeys` with a path and by a file detector that
+guesses whether a string is one — `LocalFileDetector` is Python's default
+(`py/selenium/webdriver/remote/webdriver.py:291`), Java exposes `setFileDetector` on
+`RemoteWebDriver`. Downloads are Grid-oriented and capability-gated
+(`java/src/org/openqa/selenium/HasDownloads.java`). No binding exposes either event.
 
 **Open questions**
 
-- Does `se:downloadsEnabled` remain the switch, or does BiDi's download behavior configuration
-  replace it for sessions that have BiDi?
-- Is a completed download's path exposed directly for local sessions, accepting that the same
-  program does not work unchanged against Grid?
+- Is an upload handler worth having given it cannot block and cannot always act? An observational
+  handler that sometimes lets a user call `setFiles` in time may be worse than no handler.
+- Does the remote upload path (`POST /session/{id}/file`) stay as it is, with the new method only
+  changing the local API?
+- Does `se:downloadsEnabled` remain the switch once BiDi can configure download behavior directly?
 
-**Depends on.** Browsing context representation (2). Reads the handoff rule from navigation (3).
+**Depends on.** Nothing blocking. Coordinates with record 2 on the `file` capability key.
 
 ---
 
 ## Records already indexed
 
-Two entries on the charter are unaffected by this roadmap and are noted only for completeness.
-
-**Script and logging async/event API** — pinned scripts and the console-message, JavaScript-error,
-and DOM-mutation handlers. One gap worth closing while it is being written: `script.realmCreated`
-and `script.realmDestroyed` are not claimed by any planned record. The script record should either
-take them or say they are deferred.
+**Script and logging async/event API** — pinned scripts and the console-message,
+JavaScript-error, and DOM-mutation handlers. One gap to close while it is written:
+`script.realmCreated` and `script.realmDestroyed` are claimed by nothing here. The record should
+take them or say they are deferred. Script timeout has the same no-timeout problem as navigation
+(index.bs:13571) and is a candidate for the same treatment.
 
 **Selenium Manager released API** — unrelated to the BiDi surface.
 
@@ -401,8 +332,8 @@ events; three more come from extension specifications.
 | `network.beforeRequestSent`, `responseStarted`, `responseCompleted`, `fetchError`, `authRequired` | [17685](../decisions/17685-network-handler-behavior.md), accepted |
 | `log.entryAdded`, `script.message` | Script and logging |
 | `script.realmCreated`, `realmDestroyed` | Script and logging, if it claims them |
-| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation (3) |
-| `browsingContext.downloadWillBegin`, `downloadEnd` | Downloads (6) |
-| `browsingContext.userPromptOpened`, `userPromptClosed`, `input.fileDialogOpened` | Prompt handling (4) |
-| `browsingContext.contextCreated`, `contextDestroyed` | Deferred with the browser context API |
+| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation (1) |
+| `browsingContext.userPromptOpened`, `userPromptClosed` | Prompt handling (2) |
+| `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling (3) |
+| `browsingContext.contextCreated`, `contextDestroyed` | Open — see B; deferred with the browser context API |
 | `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
