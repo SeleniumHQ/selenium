@@ -32,10 +32,11 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 
 Three records, two pieces of work that decide whether there is a fourth and fifth.
 
-Every record that adds a family of event handlers inherits the handler lifecycle and scoping
-settled in [17685](../decisions/17685-network-handler-behavior.md) — add, remove, clear, and
-scoping by window handle or user context — or states why that family differs. Because 17685
-already answers the scoping question, none of the records below is blocked on B.
+Each record that adds a family of event handlers settles its own registration — how a handler is
+added, removed, and cleared, and what it can be filtered by. Consistency between families is
+worth aiming for, but no existing record decides it for them: the network record settles network
+request and response handling, including that those handlers can be filtered by window handle or
+user context, and nothing more.
 
 ---
 
@@ -77,14 +78,12 @@ Checked and **not** gaps, so nothing needs to be built for them: window rect and
 (`browser.setClientWindowState` takes `normal` with x, y, width, height, plus fullscreen,
 maximized, and minimized — index.bs:3060), page load strategy (the readiness states cover all
 three classic values and add one), element screenshots (the screenshot clip), and frames
-(addressable
-directly as contexts).
+(addressable directly as contexts).
 
 **What follows from this.** Two gaps already have a record. Two are conditional on work that is
 not in this release. That is not enough to justify a compatibility record of its own — the rule
-belongs
-in the charter as a stated expectation, and each gap is handled by the record that owns the
-behavior.
+belongs in the charter as a stated expectation, and each gap is handled by the record that owns
+the behavior.
 
 ---
 
@@ -93,19 +92,18 @@ behavior.
 A new API needs a record; the question is whether any use case is important enough to need the API
 before Selenium 5. Five candidates, with what each would cost.
 
-1. **Scoping a handler to a tab that is not the active one.** Already served: window handle strings,
-   per [17685](../decisions/17685-network-handler-behavior.md). No new API.
+1. **Filtering a handler to a tab that is not the active one.** Window handles already serve this
+   where a handler family offers the filter — network handlers do. Any new family decides the same
+   question for itself; neither needs a context type to do it. No new API.
 
 2. **Waiting for a new tab or popup to appear.** Today users diff the window handle set in a poll
-   loop. `browsingContext.contextCreated` replaces that with an event. This needs a handler, not an
-   object model, and it fits the pattern the other records already use. Cheapest real improvement
-   on this list.
+   loop. `browsingContext.contextCreated` replaces that with an event. This needs a handler, not
+   an object model. Cheapest real improvement on this list.
 
-3. **A supported user context type.** Partly forced already: 17685 scopes handlers by user context,
-   so the concept is in the public API whether or not a type exists for it, and Python already
-   exposes `driver.browser.create_user_context()`
-   (`py/selenium/webdriver/remote/webdriver.py:1260`). The open part is whether every binding gets
-   the same type and whether it is more than an identifier.
+3. **A supported user context type.** Python already exposes
+   `driver.browser.create_user_context()` (`py/selenium/webdriver/remote/webdriver.py:1260`), so
+   the concept is public in at least one binding. The open part is whether every binding gets the
+   same type, and whether it is more than an identifier.
 
 4. **Acting on a background tab without switching to it.** Not served, and the first use case that
    genuinely needs an object model: commands, not just handlers, would have to take a context.
@@ -133,8 +131,8 @@ that goes with navigation now that the remote end no longer enforces it.
 
 **Why a record.** The events and the waits are one design. BiDi defines no timeouts, so every wait
 Selenium offers over it is enforced by the client — a change in where the responsibility lives,
-not just in how a wait is expressed. A record that settled the handlers and left the waits unstated
-would leave the harder half undone.
+not just in how a wait is expressed. A record that settled the handlers and left the waits
+unstated would leave the harder half undone.
 
 **In scope**
 
@@ -193,8 +191,8 @@ navigation wait, and the record should be explicit that they are different thing
 - Does a client-side timeout attempt to stop the navigation, or only stop waiting?
 - Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
 
-**Depends on.** Nothing blocking. Uses 17685's scoping unless B changes it, and item 2 of the
-inventory feeds its Context section.
+**Depends on.** Nothing blocking. Gap 2 in section A is the evidence for its waits and timeouts
+decisions.
 
 ---
 
@@ -264,9 +262,8 @@ downloads, an element-scoped upload method, and what becomes of the download ret
 
 **Why a record.** Uploads and downloads are one namespace and one event story for the user — files
 moving between the machine running the test and the machine running the browser — and the same
-handler pattern serves both: `add_upload_handler`, `add_download_handler`, each with a remove and a
-clear, following [17685](../decisions/17685-network-handler-behavior.md). Splitting them would put
-the same pattern decision in two records.
+handler pattern serves both: `add_upload_handler`, `add_download_handler`, each with a remove and
+a clear. Splitting them would put the same pattern decision in two records.
 
 **In scope**
 
@@ -295,8 +292,8 @@ the same pattern decision in two records.
 - **Neither event can be blocked on.** The file dialog steps emit the event, then compute whether
   to dismiss from the session's prompt handler, and return — nothing waits for a client response
   (index.bs:15338 onward). `downloadWillBegin` likewise emits and returns the configured download
-  behavior (index.bs:6166). Only the network events define blocking interception, which 17685's
-  model depends on.
+  behavior (index.bs:6166). Of the BiDi events, only the network ones define blocking
+  interception.
 - `input.setFiles` requires an element (index.bs:15251); `input.fileDialogOpened` carries one only
   when there is one (index.bs:15338) — a `showOpenFilePicker()` call has none. An upload handler
   therefore cannot always fulfill the dialog it observes.
