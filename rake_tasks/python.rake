@@ -158,7 +158,7 @@ end
 desc 'Update Python changelog'
 task :changelogs do
   header = "Selenium #{python_version}"
-  SeleniumRake.update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
+  SeleniumRake.update_changelog(python_version, 'python', 'py/selenium/webdriver', 'py/CHANGES', header)
 end
 
 desc 'Update Python version'
