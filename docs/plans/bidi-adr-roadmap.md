@@ -24,13 +24,13 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 
 | | Item | Form |
 |---|---|---|
-| A | Where BiDi cannot express classic behavior | Gap list; each gap goes to the record that owns the behavior |
-| B | Browsing context representation | Two cheap use cases for 5; the object model defers past it |
-| 1 | Navigation, waits, and timeouts | Record |
-| 2 | Prompt handling | Record |
+| A | Where BiDi cannot express classic behavior | Gap list; two gaps go to record 1, two are issues |
+| B | Browsing context representation | Deferred past Selenium 5; switch-then-act stays |
+| 1 | Capabilities: timeouts and prompt behavior | Record |
+| 2 | Navigation and waits | Record |
 | 3 | File handling | Record |
 
-Three records, two pieces of work that decide whether there is a fourth and fifth.
+Three records. Neither open question adds a fourth.
 
 Each record that adds a family of event handlers settles its own registration — how a handler is
 added, removed, and cleared, and what it can be filtered by. Consistency between families is
@@ -53,25 +53,25 @@ suspected.
 1. **Prompt handling — the notify variants and the timing.** BiDi applies the handler when the
    prompt opens (index.bs:6516) and offers only `accept`, `dismiss`, `ignore` (index.bs:2003). The
    word "notify" does not appear in the specification, so classic's `dismiss and notify`, `accept
-   and notify`, and the classic default cannot be expressed at all. **Owner: record 2**, which is
-   why that record is about behavior rather than capability mapping.
+   and notify`, and the classic default cannot be expressed at all. **Owner: record 1** — a
+   capability whose behavior the remote end no longer implements the classic way.
 
 2. **Timeouts.** `session.CapabilityRequest` has no `timeouts` member (index.bs:1881) and the only
    occurrences of the word are TODOs proposing one for script evaluation (index.bs:13571, 13757).
    A page load timeout and a script timeout have no protocol equivalent; only the client can bound
-   them. **Owner: record 1** for the navigation case, and the script and logging record for script
-   evaluation if it wants it.
+   them. **Owner: record 1** for the capability itself; record 2 for what a navigation wait does
+   when its deadline expires; the script and logging record for script evaluation if it wants it.
 
 3. **Implicit wait.** `browsingContext.locateNodes` takes a context, locator, node count,
    serialization options, and start nodes (index.bs:4537) — there is no wait, and nothing retries
    in the remote end. Classic's implicit wait is remote-end behavior with no BiDi counterpart.
-   **Owner: nobody yet**, and it does not need one while element location stays on the classic
-   path. It becomes urgent the moment locating moves to BiDi.
+   **Track as an issue.** Nothing needs to decide this while element location stays on the classic
+   path; it becomes a decision the moment locating moves to BiDi.
 
 4. **Stale element semantics.** BiDi defines no stale element error. The closest is "no such node",
    for deserializing an unknown `SharedReference`, and the specification carries an open issue to
    "handle the stale object reference case" (index.bs:12357). A classic
-   `StaleElementReferenceException` has no protocol equivalent. **Owner: nobody yet**, same
+   `StaleElementReferenceException` has no protocol equivalent. **Track as an issue**, same
    condition as implicit wait — it matters when elements come from BiDi rather than classic.
 
 Checked and **not** gaps, so nothing needs to be built for them: window rect and state
@@ -80,133 +80,47 @@ maximized, and minimized — index.bs:3060), page load strategy (the readiness s
 three classic values and add one), element screenshots (the screenshot clip), and frames
 (addressable directly as contexts).
 
-**What follows from this.** Two gaps already have a record. Two are conditional on work that is
-not in this release. That is not enough to justify a compatibility record of its own — the rule
-belongs in the charter as a stated expectation, and each gap is handled by the record that owns
-the behavior.
+**What follows from this.** Both expressible gaps are capability behavior, which is what record 1
+settles. The other two are conditional on work outside this release and are tracked as issues. No
+separate compatibility record is needed; the expectation belongs in the charter as one line.
 
 ---
 
-## B. Browsing context representation — which use case would justify a new API
+## B. Browsing context representation — deferred
 
-A new API needs a record; the question is whether any use case is important enough to need the API
-before Selenium 5. Five candidates, with what each would cost.
+**Resolved: no new context API for Selenium 5.** The explicit switch-then-act model stays. New
+APIs identify a context by window handle, as they do today, and nothing in the records below needs
+a context object.
 
-1. **Filtering a handler to a tab that is not the active one.** Window handles already serve this
-   where a handler family offers the filter — network handlers do. Any new family decides the same
-   question for itself; neither needs a context type to do it. No new API.
+The two cases that would have justified one — acting on a background tab without switching to it,
+and addressing frames without `switchTo().frame()` — both require commands rather than handlers to
+take a context, which changes how every command targets a document. That is a record of its own,
+proposed on its own schedule after 5.
 
-2. **Waiting for a new tab or popup to appear.** Today users diff the window handle set in a poll
-   loop. `browsingContext.contextCreated` replaces that with an event. This needs a handler, not
-   an object model. Cheapest real improvement on this list.
+One use case survives the deferral without needing any of that: **waiting for a new window**.
+Today that is a poll over the window handle set; `browsingContext.contextCreated` makes it an
+event. It returns a window handle, needs no new type, and leaves switch-then-act intact, so record
+2 picks it up — see the sketch there.
 
-3. **A supported user context type.** Python already exposes
-   `driver.browser.create_user_context()` (`py/selenium/webdriver/remote/webdriver.py:1260`), so
-   the concept is public in at least one binding. The open part is whether every binding gets the
-   same type, and whether it is more than an identifier.
-
-4. **Acting on a background tab without switching to it.** Not served, and the first use case that
-   genuinely needs an object model: commands, not just handlers, would have to take a context.
-   Large, and it changes how every command targets a document.
-
-5. **Addressing frames without `switchTo().frame()`.** Same shape as 4 and larger. BiDi addresses
-   frames as contexts, so the protocol allows it; the cost is on our side.
-
-**Recommendation.** 2 and 3 are worth doing for 5 and neither requires an object model — 2 is an
-event handler, 3 is an identifier that already half exists. 4 and 5 are the object model, and they
-should be one record proposed on their own schedule, after 5. If the TLC wants 4 or 5 in the
-release, that decision should be made before records 1 and 3 are written, because they would then
-name a context object in their scoping arguments rather than a handle.
-
-If 2 is adopted, `browsingContext.contextCreated` and `contextDestroyed` need an owner: either a
-small record of their own or an addition to record 1, since "a navigation opened a new tab" is
-adjacent to the navigation story.
+Existing BiDi surface in the bindings is not evidence of a decision here. Several bindings shipped
+methods ahead of any accepted record, and some of those will be removed; a record that wants to
+cite current behavior should cite the classic API, not the BiDi-era additions.
 
 ---
 
-## 1. Navigation, waits, and timeouts
+## 1. Capabilities: timeouts and prompt behavior
 
-**Decision.** The cross-binding API for navigation lifecycle handlers, and the waiting behavior
-that goes with navigation now that the remote end no longer enforces it.
+**Decision.** How `timeouts` and `unhandledPromptBehavior` are expressed and honored now that the
+remote end no longer enforces either the classic way.
 
-**Why a record.** The events and the waits are one design. BiDi defines no timeouts, so every wait
-Selenium offers over it is enforced by the client — a change in where the responsibility lives,
-not just in how a wait is expressed. A record that settled the handlers and left the waits
-unstated would leave the harder half undone.
+**Why a record.** These are two instances of one problem, which is what makes them one record. Both
+are classic capabilities; both describe behavior the remote end used to guarantee; and under BiDi
+one has no protocol expression at all and the other is applied at a different moment with a smaller
+set of values. In both cases the binding either reproduces the classic behavior locally or the user
+sees a difference, and the decision is the same shape twice: what the capability accepts, what it
+now means, and how much local machinery its classic meaning is worth.
 
-**In scope**
-
-- Handlers for the navigation-shaped events: `navigationStarted`, `navigationCommitted`,
-  `fragmentNavigated`, `navigationAborted`, `navigationFailed`, `domContentLoaded`, `load`.
-- `historyUpdated`, with the explicit statement that it is a URL-change signal and not a
-  navigation: no navigation id, no completion of a pending wait, no firing of a
-  navigation-complete handler.
-- **Who enforces the wait.** BiDi has no timeouts, so a client-side deadline is the only kind
-  available. The record settles where a user sets it, whether it is the same surface as the classic
-  `timeouts` capability, and what error is raised when it expires.
-- **What happens after a client-side timeout.** The navigation keeps running in the browser; the
-  classic equivalent left the remote end in a known state. The record has to say what the session
-  looks like afterwards and whether anything is cancelled.
-- `pageLoadStrategy` and readiness: whether the capability remains how a user expresses readiness,
-  and whether `committed` becomes reachable.
-- The correlation contract: events from one navigation share a navigation id, and that id may be
-  absent.
-- The terminating cases: same-document navigation never produces a load; a navigation that becomes
-  a download ends the wait (this record owns that rule, record 3 owns what happens next).
-
-**Not in scope**
-
-- One-shot waiters (`expect_*`), deferred by the charter as a convenience layer.
-- Implicit wait and element location. Classic retries locating in the remote end and BiDi's
-  `browsingContext.locateNodes` does not, so it is the same class of problem — but locating over
-  BiDi is not otherwise in this release, and the record should say so rather than absorb it.
-- Script timeout, for the same reason, unless the script and logging record wants it.
-
-**Protocol constraints**
-
-- `domContentLoaded` and `load` carry `browsingContext.NavigationInfo`, the same params type as the
-  navigation events, and are triggered from the same navigation status struct (index.bs:3737).
-- Readiness maps to those events directly: `committed` → `navigationCommitted`, `interactive` →
-  `domContentLoaded`, `complete` → `load` (index.bs:3628). That makes classic's `pageLoadStrategy`
-  a near-mapping — `normal`/`eager`/`none` against four readiness states, with `committed` having
-  no classic equivalent.
-- **The specification defines no timeouts.** `session.CapabilityRequest` has no `timeouts` member
-  (index.bs:1881), and the only occurrences of the word are TODOs proposing one for script
-  evaluation (index.bs:13571, 13757). Nothing bounds a `browsingContext.navigate` that never
-  completes except the client.
-- `navigation` is nullable (index.bs:3739): null when a navigation is canceled before making
-  progress.
-- `historyUpdated` carries only `context`, `timestamp`, `url` (index.bs:5997).
-- `downloadWillBegin` resumes a pending navigate (index.bs:6166).
-
-**Current state.** No binding exposes navigation handlers as supported API. Client-side timeouts
-already exist ad hoc at the transport layer — Java's BiDi layer carries a `Duration` per send
-(`java/src/org/openqa/selenium/bidi/BiDi.java:48`) — which is a websocket deadline, not a
-navigation wait, and the record should be explicit that they are different things.
-
-**Open questions**
-
-- One timeout surface for both protocols, or separate ones? Users have one mental model today and
-  reusing `timeouts` is tempting, but it is a classic capability configuring client-side behavior.
-- Does a client-side timeout attempt to stop the navigation, or only stop waiting?
-- Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
-
-**Depends on.** Nothing blocking. Gap 2 in section A is the evidence for its waits and timeouts
-decisions.
-
----
-
-## 2. Prompt handling
-
-**Decision.** How `unhandledPromptBehavior` is expressed and honored now that BiDi applies the
-handler when the prompt opens, and what keeps the existing alert API working.
-
-**Why a record.** This is not a capability rename. The classic capability describes what happens to
-a prompt still open when the next command arrives; the BiDi handler is consulted when the prompt
-opens and decides whether it opens at all. Preserving the classic contract means holding protocol
-state locally, which is behavior rather than mapping.
-
-**In scope**
+**In scope — prompt behavior**
 
 - The capability shape: a single value or a per-type map, what the bindings accept, and that it can
   be set per user context.
@@ -217,41 +131,172 @@ state locally, which is behavior rather than mapping.
 - Whether `userPromptOpened` and `userPromptClosed` are exposed as handlers in 5.
 - The `file` key: whether a file dialog is allowed to open at all. The dialog *handler* belongs to
   record 3; the capability that decides whether there is a dialog to handle belongs here, and the
-  two records have to agree on what happens when a user registers an upload handler while `file` is
-  configured to dismiss.
+  two records have to agree on what happens when a user registers an upload handler while `file`
+  is configured to dismiss.
+
+**In scope — timeouts**
+
+- Whether `timeouts` remains the surface when the value is enforced by the client rather than the
+  remote end, and whether that is stated to users.
+- Which of the three classic timeouts still mean anything on a BiDi path: page load (record 2 uses
+  it), script (the script and logging record, if it wants it), implicit (gap A3 — nothing to
+  decide while element location stays classic).
+- What error a client-enforced timeout raises, and whether it matches the classic one.
+- Whether a timeout set through the capability and a timeout passed to a call can disagree.
 
 **Not in scope**
 
+- What a navigation wait does when its deadline expires — record 2 owns the behavior, this record
+  owns where the number comes from.
 - A high-level prompts module — the charter's deferred capability mapping.
-- Setting files on an element, and handlers for file dialogs — record 3.
+- Per-user-context capabilities in general. `browser.createUserContext` also takes
+  `acceptInsecureCerts` and `proxy` (index.bs:2825); if the record needs a rule for those it should
+  say so, but the two capabilities above are what force the decision.
 
 **Protocol constraints**
 
-- The handler is applied when the prompt opens: the "user prompt opened" steps return it to the
-  browser (index.bs:6516). There is no next-command moment in the protocol.
+- The prompt handler is applied when the prompt opens: the "user prompt opened" steps return it to
+  the browser (index.bs:6516). There is no next-command moment in the protocol.
 - Only `accept`, `dismiss`, `ignore` exist (index.bs:2003). The specification contains no notify
   variants, so classic's `dismiss and notify`, `accept and notify`, and the classic default are
   inexpressible.
 - `ignore` is special-cased to "none" (index.bs:6514) — the prompt stays open. It is the only mode
   in which the events and `browsingContext.handleUserPrompt` are useful.
-- Per-user-context overrides are consulted before the session handler (index.bs:6463).
+- Per-user-context prompt overrides are consulted before the session handler (index.bs:6463).
 - File dialogs invert the default: the dialog opens unless configured otherwise, and any value
   other than `ignore` dismisses it (index.bs:15356, 15406).
+- `session.CapabilityRequest` has no `timeouts` member (index.bs:1881); the only occurrences of the
+  word in the specification are TODOs proposing one for script evaluation (index.bs:13571, 13757).
 
-**Current state.** .NET models the capability as uniform-or-per-type
+**Current state.** .NET models the prompt capability as uniform-or-per-type
 (`dotnet/src/webdriver/UserPromptHandler.cs`); Java carries it as a string constant
 (`java/src/org/openqa/selenium/remote/CapabilityType.java:32`); Python exposes a descriptor over
-the raw value (`py/selenium/webdriver/common/options.py:265`).
+the raw value (`py/selenium/webdriver/common/options.py:265`). Client-side deadlines exist ad hoc
+at the transport layer — Java's BiDi layer carries a `Duration` per send
+(`java/src/org/openqa/selenium/bidi/BiDi.java:48`) — which is a websocket deadline, not a session
+timeout, and the record should be explicit that they are different things.
 
 **Open questions**
 
-- How much local machinery is the classic contract worth? Holding every prompt open to reapply the
-  classic behavior later is a real change under the hood, and a crash leaves a prompt open that
-  classic would have dismissed.
-- Does the per-type map get exposed in 5, or does the capability stay a single value?
+- How much local machinery is the classic prompt contract worth? Holding every prompt open to
+  reapply the classic behavior later is a real change under the hood, and a crash leaves a prompt
+  open that classic would have dismissed.
+- Does the per-type prompt map get exposed in 5, or does the capability stay a single value?
+- Does a client-enforced timeout keep the classic error, or does a different failure mode deserve a
+  different error?
 
-**Depends on.** The inventory (A), item 1 — what drivers actually do today decides how much of
-this is Selenium's problem.
+**Depends on.** Nothing. Gaps A1 and A2 are its evidence.
+
+---
+
+## 2. Navigation and waits
+
+**Decision.** The cross-binding API for navigation lifecycle handlers, what a navigation wait does
+now that the client enforces it, and — if adopted — waiting for a new window.
+
+**Why a record.** The events and the waits are one design: a reader who has the handlers but not
+the wait behavior does not know when a handler fires relative to the command returning. Waiting for
+a new window belongs here rather than in a record of its own because it is the same mechanism —
+an event, a client-side deadline, a handle returned — and splitting it would duplicate the
+deadline decision.
+
+**In scope**
+
+- Handlers for the navigation-shaped events: `navigationStarted`, `navigationCommitted`,
+  `fragmentNavigated`, `navigationAborted`, `navigationFailed`, `domContentLoaded`, `load`.
+- `historyUpdated`, with the explicit statement that it is a URL-change signal and not a
+  navigation: no navigation id, no completion of a pending wait, no firing of a
+  navigation-complete handler.
+- What a navigation wait does when its client-side deadline expires. The navigation keeps running
+  in the browser; classic left the remote end in a known state. The record says what the session
+  looks like afterwards and whether anything is cancelled. Where the deadline comes from is record
+  1.
+- `pageLoadStrategy` and readiness: whether the capability remains how a user expresses readiness,
+  and whether `committed` becomes reachable.
+- The correlation contract: events from one navigation share a navigation id, and that id may be
+  absent.
+- The terminating cases: same-document navigation never produces a load; a navigation that becomes
+  a download ends the wait (this record owns that rule, record 3 owns what happens next).
+- **Waiting for a new window**, and with it the ownership of `browsingContext.contextCreated`.
+
+**Not in scope**
+
+- A context object model — deferred, see B. The wait below returns a window handle.
+- Implicit wait and element location (gap A3), and script timeout, for the reasons in A.
+
+**Protocol constraints**
+
+- `domContentLoaded` and `load` carry `browsingContext.NavigationInfo`, the same params type as the
+  navigation events, and are triggered from the same navigation status struct (index.bs:3737).
+- Readiness maps to those events directly: `committed` → `navigationCommitted`, `interactive` →
+  `domContentLoaded`, `complete` → `load` (index.bs:3628). That makes classic's `pageLoadStrategy`
+  a near-mapping — `normal`/`eager`/`none` against four readiness states, with `committed` having
+  no classic equivalent.
+- Nothing bounds a `browsingContext.navigate` that never completes except the client; see gap A2.
+- `navigation` is nullable (index.bs:3739): null when a navigation is canceled before making
+  progress.
+- `historyUpdated` carries only `context`, `timestamp`, `url` (index.bs:5997).
+- `downloadWillBegin` resumes a pending navigate (index.bs:6166).
+
+### Waiting for a new window — what it would take
+
+Three specification facts make this cheap:
+
+1. **A context id is a window handle.** For a navigable with an associated window handle, "the
+   navigable id must be the same as the window handle" (index.bs:3462). The event already carries
+   the value `switchTo().window` expects, so nothing needs mapping and no new type appears.
+2. **Top-level contexts are distinguishable.** `browsingContext.Info` carries `parent`
+   (index.bs:3494), set for child navigables. Filtering to `parent` null or absent turns a
+   per-navigable event into a per-window one; without that filter every iframe looks like a new
+   window.
+3. **The replay burst is bounded.** `contextCreated` defines remote end subscribe steps
+   (index.bs:5841), so subscribing emits it for contexts that already exist — and those emissions
+   run before `session.subscribe` returns its result (index.bs:2332). Everything received after the
+   subscribe response is genuinely new.
+
+That makes the whole implementation: subscribe, ignore what arrives before the subscribe response,
+filter on `parent`, and block on a queue with a client-side deadline.
+
+The shape that costs least and leaves switch-then-act intact is scoped to the action that opens the
+window, so there is no persistent subscription and no ambiguity about which windows count as new:
+
+```ruby
+handle = driver.wait_for_new_window { link.click }
+driver.switch_to.window(handle)
+```
+
+```java
+String handle = driver.waitForNewWindow(() -> link.click());
+driver.switchTo().window(handle);
+```
+
+Per binding that is a subscribe/unsubscribe pair, one filter, a blocking queue, and one method —
+no new types, no handler family, no context objects. The alternative shape, a bare
+`wait_for_new_window(timeout)` with no block, needs an eager subscription held for the session and
+"new since when" semantics the user cannot see, which is more machinery for a worse contract.
+
+Two things the record has to settle if it takes this on:
+
+- **It is a one-shot waiter**, which the charter defers as a convenience layer. Either this is a
+  deliberate carve-out — one waiter, because polling the handle set is the workaround it
+  replaces — or the deferred item is re-opened. It should not arrive by accident.
+- **`contextDestroyed` gets no use case from this.** It stays deferred unless something else wants
+  it.
+
+**Current state.** No binding exposes navigation handlers as supported API. Waiting for a window is
+a polled condition today — `ExpectedConditions.numberOfWindowsToBe`
+(`java/src/org/openqa/selenium/support/ui/ExpectedConditions.java:954`) and
+`expected_conditions.new_window_is_opened`
+(`py/selenium/webdriver/support/expected_conditions.py:677`).
+
+**Open questions**
+
+- One timeout surface for both protocols, or separate ones? That is record 1's call; this record
+  should state what it needs.
+- Does a client-side timeout attempt to stop the navigation, or only stop waiting?
+- Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
+
+**Depends on.** Record 1 for where a deadline comes from. Not blocked by B.
 
 ---
 
@@ -283,9 +328,9 @@ a clear. Splitting them would put the same pattern decision in two records.
 
 **Not in scope**
 
-- Whether a file dialog is allowed to open — the `file` key in the prompt handler, owned by record
-  2. This record owns what happens to a dialog that does open.
-- The rule that a navigation becoming a download ends the navigation wait — stated by record 1.
+- Whether a file dialog is allowed to open — the `file` key in the prompt handler, owned by
+  record 1. This record owns what happens to a dialog that does open.
+- The rule that a navigation becoming a download ends the navigation wait — stated by record 2.
 
 **Protocol constraints**
 
@@ -316,7 +361,7 @@ guesses whether a string is one — `LocalFileDetector` is Python's default
   changing the local API?
 - Does `se:downloadsEnabled` remain the switch once BiDi can configure download behavior directly?
 
-**Depends on.** Nothing blocking. Coordinates with record 2 on the `file` capability key.
+**Depends on.** Nothing blocking. Coordinates with record 1 on the `file` capability key.
 
 ---
 
@@ -340,8 +385,9 @@ events; three more come from extension specifications.
 | `network.beforeRequestSent`, `responseStarted`, `responseCompleted`, `fetchError`, `authRequired` | [17685](../decisions/17685-network-handler-behavior.md), accepted |
 | `log.entryAdded`, `script.message` | Script and logging |
 | `script.realmCreated`, `realmDestroyed` | Script and logging, if it claims them |
-| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation (1) |
-| `browsingContext.userPromptOpened`, `userPromptClosed` | Prompt handling (2) |
+| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation and waits (2) |
+| `browsingContext.userPromptOpened`, `userPromptClosed` | Capabilities (1), if it exposes them |
 | `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling (3) |
-| `browsingContext.contextCreated`, `contextDestroyed` | Open — see B; deferred with the browser context API |
+| `browsingContext.contextCreated` | Navigation and waits (2), for waiting on a new window |
+| `browsingContext.contextDestroyed` | Deferred; no use case asks for it |
 | `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
