@@ -98,7 +98,6 @@ import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.jdk.ConnectionException;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
@@ -320,15 +319,12 @@ public class RemoteWebDriver
       sessionId = new SessionId(response.getSessionId());
       this.biDi = createBiDi();
     } catch (Exception e) {
-      // If session creation fails, stop the driver service to prevent zombie processes
-      if (executor instanceof DriverCommandExecutor) {
-        try {
-          ((DriverCommandExecutor) executor).close();
-        } catch (Exception ignored) {
-          // Ignore cleanup exceptions, we'll propagate the original failure
-        }
+      // If session creation fails, stop the driver service to prevent zombie processes or zombie
+      // http clients
+      try (var hce =
+          executor instanceof HttpCommandExecutor ? (HttpCommandExecutor) executor : null) {
+        throw e;
       }
-      throw e;
     }
   }
 
@@ -556,7 +552,8 @@ public class RemoteWebDriver
       return;
     }
 
-    try {
+    try (HttpCommandExecutor httpCommandExecutor =
+        (executor instanceof HttpCommandExecutor) ? (HttpCommandExecutor) executor : null) {
       if (this instanceof HasDevTools) {
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
       }
