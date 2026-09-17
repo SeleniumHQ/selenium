@@ -117,72 +117,36 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  previous-release-tag:
-    name: Previous Release Tag
-    needs: [parse-tag, commit-versions]
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.prev.outputs.tag }}
-    steps:
-      - name: Find the previous release tag
-        id: prev
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.parse-tag.outputs.version }}
-          LANGUAGE: ${{ needs.parse-tag.outputs.language }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
-            MAJOR=${BASH_REMATCH[1]}
-            MINOR=${BASH_REMATCH[2]}
-            PATCH=${BASH_REMATCH[3]}
-
-            if [ "$PATCH" -gt 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.$((PATCH-1))-${LANGUAGE}"
-            elif [ "$PATCH" -eq 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.0"
-            elif [ "$MINOR" -gt 0 ]; then
-              PREV="selenium-${MAJOR}.$((MINOR-1)).0"
-            else
-              PREV=$(gh api --paginate "repos/${{ github.repository }}/git/matching-refs/tags/selenium-$((MAJOR-1))." --jq '.[].ref' | sed 's|refs/tags/||' | grep -E '^selenium-[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
-            fi
-            echo "tag=$PREV" >> "$GITHUB_OUTPUT"
-          fi
-
   update-changelogs:
     name: Generate Changelogs
-    needs: [parse-tag, previous-release-tag]
+    needs: [parse-tag, commit-versions]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
-      since-tag: ${{ needs.previous-release-tag.outputs.tag }}
 
   update-rust-changelogs:
     name: Update Rust Changelogs
-    needs: [parse-tag, commit-versions, previous-release-tag]
+    needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Rust Changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go rust:changelogs
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go rust:changelogs
       artifact-name: patch-rust-changelogs
-      since-tag: ${{ needs.previous-release-tag.outputs.tag }}
 
   update-authors:
     name: Update Authors
-    needs: [parse-tag, previous-release-tag]
+    needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Authors
-      run: ./go authors
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go authors
       artifact-name: patch-authors
-      since-tag: ${{ needs.previous-release-tag.outputs.tag }}
 
   update-manager:
     name: Update Selenium Manager Binaries
@@ -287,7 +251,7 @@ jobs:
 
   unlock-trunk-on-failure:
     name: Unlock Trunk on Failure
-    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, previous-release-tag, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
@@ -299,7 +263,7 @@ jobs:
   on-prerelease-failure:
     name: On Pre-release Failure
     runs-on: ubuntu-latest
-    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, previous-release-tag, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
+    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: failure() || cancelled()
     steps:
       - name: Slack Notification

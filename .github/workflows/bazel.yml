@@ -71,11 +71,6 @@ on:
         required: false
         type: boolean
         default: false
-      since-tag:
-        description: Release tag to fetch the checked-out ref's history back to, along with that release's tags
-        required: false
-        type: string
-        default: ''
       cache-name:
         description: Name for cache restore (restores {name}.gz with key {name}-)
         required: false
@@ -134,16 +129,6 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
-      - name: Fetch history back through the previous release
-        if: inputs.since-tag != ''
-        shell: bash
-        run: |
-          git fetch --no-tags --shallow-exclude=${{ inputs.since-tag }} origin ${{ inputs.ref || github.ref }}
-          git fetch --no-tags --deepen=1 origin ${{ inputs.ref || github.ref }}
-          release_line="${{ inputs.since-tag }}"
-          git ls-remote --tags --refs origin "${release_line%.*}.*" | while read -r sha ref; do
-            if git cat-file -e "$sha" 2>/dev/null; then git update-ref "$ref" "$sha"; fi
-          done
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         shell: bash
