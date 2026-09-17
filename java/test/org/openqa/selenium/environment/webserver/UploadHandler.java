@@ -67,6 +67,7 @@ class UploadHandler implements HttpHandler {
         if (splits[i].startsWith(boundary)) {
           inHeaders = true;
           allParts.add(values);
+          values = new HashMap<>();
           continue;
         }
 
@@ -89,14 +90,17 @@ class UploadHandler implements HttpHandler {
         }
       }
 
-      Object value =
+      List<String> uploadedContents =
           allParts.stream()
               .filter(map -> "upload".equals(map.get("name")))
-              .findFirst()
-              .map(map -> map.get("content"))
-              .orElseThrow(() -> new RuntimeException("Cannot find uploaded data"));
+              .map(map -> (String) map.getOrDefault("content", ""))
+              .collect(toList());
 
-      content.append(value);
+      if (uploadedContents.isEmpty()) {
+        throw new RuntimeException("Cannot find uploaded data");
+      }
+
+      content.append(String.join("", uploadedContents));
     } catch (UnsupportedEncodingException e) {
       throw new UncheckedIOException(e);
     }
