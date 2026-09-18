@@ -78,13 +78,17 @@ import { normalizeAst } from './normalize_bidi_ast.mjs'
 // normalizer turns into a `union`. A scan of all spec comments confirms none, so
 // no separate constraint representation is carried.
 
-// Events that parse into the AST but are not wired into the model because the
-// upstream bluetooth spec does not fully define them. This is an external spec
-// issue, not a Selenium/buildModel bug, and is intentionally not fixed here.
-// Allowlisted so it does not fail the build; checkCompleteness() flags an entry
+// Methods that parse into the AST but are not wired into the model because the
+// upstream spec leaves them out of its command/event aggregate (Bluetooth lists two
+// of its four events; Digital Credentials defines no command aggregate at all).
+// Allowlisted so they do not fail the build; checkCompleteness() flags an entry
 // as stale once it becomes emitted (e.g. after the spec is fixed upstream), so
 // this list cannot silently rot.
-const KNOWN_INCOMPLETE = new Set(['bluetooth.characteristicEventGenerated', 'bluetooth.descriptorEventGenerated'])
+const KNOWN_INCOMPLETE = new Set([
+  'bluetooth.characteristicEventGenerated',
+  'bluetooth.descriptorEventGenerated',
+  'digitalCredentials.setVirtualWalletBehavior',
+])
 
 const PRIMITIVES = {
   text: 'string',
