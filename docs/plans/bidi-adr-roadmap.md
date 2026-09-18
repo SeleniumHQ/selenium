@@ -25,7 +25,7 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 | | Item | Form |
 |---|---|---|
 | A | Where BiDi cannot express classic behavior | Gap list; two gaps go to record 1, two are issues |
-| B | Browsing context representation | Deferred past Selenium 5; switch-then-act stays |
+| B | Browsing context and window APIs | Deferred past Selenium 5; switch-then-act stays |
 | 1 | Capabilities: timeouts and prompt behavior | Record |
 | 2 | Navigation and waits | Record |
 | 3 | File handling | Record |
@@ -86,7 +86,7 @@ separate compatibility record is needed; the expectation belongs in the charter 
 
 ---
 
-## B. Browsing context representation — deferred
+## B. Browsing context and window APIs — deferred
 
 **Resolved: no new context API for Selenium 5.** The explicit switch-then-act model stays. New
 APIs identify a context by window handle, as they do today, and nothing in the records below needs
@@ -97,11 +97,35 @@ and addressing frames without `switchTo().frame()` — both require commands rat
 take a context, which changes how every command targets a document. That is a record of its own,
 proposed on its own schedule after 5.
 
-One use case survives the deferral without needing any of that: **knowing when a new window
-opens**. Today that is a poll over the window handle set; `browsingContext.contextCreated` makes
-it an event that also says who opened the window and where it went. It yields a window handle,
-needs no new type, and leaves switch-then-act intact, so record 2 picks it up — see the design
-there.
+**The window events defer with it.** Knowing when a new window opens is the one case that looked
+cheap enough to carry forward on its own, and it is not: every home for it either extends a shape
+we do not want to extend or forces the decision being deferred. `manage.window` is a stateless
+facade over the current window, so session-wide events do not belong on it; a new window manager
+competes with that facade and has to absorb it to avoid two window objects; and putting `activate`,
+`close`, or `switch_to` on a window value turns it into the context object above. When a small
+feature cannot find a home without forcing a larger decision, the larger decision comes first.
+
+Nothing is lost by waiting. Waiting for a window works today by polling handles
+(`ExpectedConditions.numberOfWindowsToBe`,
+`expected_conditions.new_window_is_opened`), no record below depends on the events, and the
+genuinely new capabilities — opening a tab in the background, activating a window, reading
+OS-level client windows, setting a viewport independently of window size — are one coherent
+surface that deserves designing at once rather than accreting around an events-only object.
+
+**What the issue should capture**, so this is not re-derived later:
+
+- A context id is a window handle: for a navigable with an associated window handle, "the navigable
+  id must be the same as the window handle" (index.bs:3462). No mapping, no new type.
+- `browsingContext.Info` carries `parent` (index.bs:3494), set for child navigables, so windows are
+  distinguishable from frames by filtering it.
+- `contextCreated` defines remote end subscribe steps (index.bs:5841): subscribing replays it for
+  existing contexts, and those emissions land before `session.subscribe` returns (index.bs:2332).
+  Everything after the subscribe response is new. A binding that ignores that boundary reports every
+  open window as new.
+- The event carries `originalOpener`, `url`, `userContext`, and `clientWindow` — none of which
+  polling handles can reconstruct, which is the reason to expose the event rather than a waiter.
+- Handlers and the current-window facade are different scopes, and the placement question above is
+  the first thing the eventual record has to settle.
 
 Existing BiDi surface in the bindings is not evidence of a decision here. Several bindings shipped
 methods ahead of any accepted record, and some of those will be removed; a record that wants to
@@ -192,14 +216,13 @@ timeout, and the record should be explicit that they are different things.
 
 ## 2. Navigation and waits
 
-**Decision.** The cross-binding API for navigation lifecycle handlers, what a navigation wait does
-now that the client enforces it, and how new windows are surfaced.
+**Decision.** The cross-binding API for navigation lifecycle handlers, and what a navigation wait
+does now that the client enforces it.
 
 **Why a record.** The events and the waits are one design: a reader who has the handlers but not
-the wait behavior does not know when a handler fires relative to the command returning. New
-windows belong here rather than in a record of their own because they are the same mechanism — an
-event surfaced as a handler — and because this record has to settle the handler conventions
-anyway.
+the wait behavior does not know when a handler fires relative to the command returning. BiDi
+defines no timeouts, so the client enforces every wait it offers — a change in where the
+responsibility lives, not just in how a wait is expressed.
 
 **In scope**
 
@@ -218,12 +241,11 @@ anyway.
   absent.
 - The terminating cases: same-document navigation never produces a load; a navigation that becomes
   a download ends the wait (this record owns that rule, record 3 owns what happens next).
-- **New windows**, surfaced as a handler, and with them the ownership of
-  `browsingContext.contextCreated`.
 
 **Not in scope**
 
-- A context object model — deferred, see B. The handler below yields a window handle.
+- Window and context APIs of any kind, including the `contextCreated` and `contextDestroyed`
+  events — deferred, see B.
 - Implicit wait and element location (gap A3), and script timeout, for the reasons in A.
 
 **Protocol constraints**
@@ -240,76 +262,10 @@ anyway.
 - `historyUpdated` carries only `context`, `timestamp`, `url` (index.bs:5997).
 - `downloadWillBegin` resumes a pending navigate (index.bs:6166).
 
-### Exposing new windows
-
-Three specification facts make this cheap:
-
-1. **A context id is a window handle.** For a navigable with an associated window handle, "the
-   navigable id must be the same as the window handle" (index.bs:3462). The event already carries
-   the value `switchTo().window` expects, so nothing needs mapping and no new type appears.
-2. **Top-level contexts are distinguishable.** `browsingContext.Info` carries `parent`
-   (index.bs:3494), set for child navigables, so a per-navigable event can be presented as a
-   per-window one.
-3. **The replay burst is bounded.** `contextCreated` defines remote end subscribe steps
-   (index.bs:5841), so subscribing emits it for contexts that already exist — and those emissions
-   run before `session.subscribe` returns its result (index.bs:2332). Everything received after
-   the subscribe response is genuinely new.
-
-**Expose it as a handler, not as a waiter.** Handlers are the shape the bindings already use for
-BiDi events — `driver.script.add_console_message_handler`,
-`driver.network.add_request_handler`, and Java's low-level
-`BrowsingContextInspector.onBrowsingContextCreated`. A method that takes a block of user code to
-run while Selenium watches has no precedent in the API at all, and nothing about this event
-justifies inventing one.
-
-A handler is also the more flexible primitive, because the event carries information that polling
-the handle set cannot reconstruct:
-
-- `originalOpener` — which existing window opened this one
-- `url` at creation
-- `userContext` and `clientWindow` — whether it is a tab in the same OS window or a separate one
-- `parent` — a frame rather than a window, if the user wants those too
-
-So the record decides what a handler receives, not what a wait returns. A user who wants a wait
-composes one from their own synchronization primitive and the handler, registering it once at
-setup rather than around each action:
-
-```ruby
-new_windows = Queue.new
-driver.<namespace>.add_window_opened_handler { |window| new_windows << window.handle }
-
-link.click
-driver.switch_to.window(new_windows.pop)
-```
-
-`ExpectedConditions.numberOfWindowsToBe` and `new_window_is_opened` keep working for anyone who
-just wants the poll.
-
-**What the record has to settle**
-
-- **Where it lives.** Not a new method on `driver` — that namespace is crowded and this is not a
-  driver-level concern. The natural home is whatever namespace this record establishes for the
-  other browsing-context events, which is a naming decision it owns.
-- **Whether top-level is the default.** Filtering on `parent` gives "windows"; not filtering gives
-  every navigable including frames. Either is defensible; silently doing one of them is not.
-- **Threading.** These handlers fire on the event connection, and the obvious thing a user does in
-  one is issue a WebDriver command. Whether that is supported, and what happens if it is not, is a
-  guarantee this record states rather than leaves to each binding. It applies to every handler
-  family here, not just this event.
-- **Subscription lifecycle.** Whether registering a handler subscribes lazily and unsubscribes on
-  the last removal, and what the replay burst means for a handler registered mid-session — the
-  subscribe response is the boundary, and a binding that ignores it will report every existing
-  window as new.
-
-**Not a waiter, for now.** A one-shot `wait_for_new_window` is a convenience layer, which the
-charter defers. If demand justifies one later it arrives through that item, built on this handler,
-rather than as a carve-out negotiated now.
-
-**Current state.** No binding exposes navigation handlers as supported API. Waiting for a window is
-a polled condition today — `ExpectedConditions.numberOfWindowsToBe`
-(`java/src/org/openqa/selenium/support/ui/ExpectedConditions.java:954`) and
-`expected_conditions.new_window_is_opened`
-(`py/selenium/webdriver/support/expected_conditions.py:677`).
+**Current state.** No binding exposes navigation handlers as supported API. Client-side deadlines
+exist ad hoc at the transport layer — Java's BiDi layer carries a `Duration` per send
+(`java/src/org/openqa/selenium/bidi/BiDi.java:48`) — which is a websocket deadline, not a
+navigation wait, and the record should be explicit that they are different things.
 
 **Open questions**
 
@@ -317,6 +273,9 @@ a polled condition today — `ExpectedConditions.numberOfWindowsToBe`
   should state what it needs.
 - Does a client-side timeout attempt to stop the navigation, or only stop waiting?
 - Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
+- What are the threading guarantees for a handler? Whether a user may issue a WebDriver command
+  from inside one applies to every handler family, and this is the first record that has to say
+  so.
 
 **Depends on.** Record 1 for where a deadline comes from. Not blocked by B.
 
@@ -410,6 +369,5 @@ events; three more come from extension specifications.
 | `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation and waits (2) |
 | `browsingContext.userPromptOpened`, `userPromptClosed` | Capabilities (1), if it exposes them |
 | `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling (3) |
-| `browsingContext.contextCreated` | Navigation and waits (2), surfaced as a new-window handler |
-| `browsingContext.contextDestroyed` | Deferred; no use case asks for it |
+| `browsingContext.contextCreated`, `contextDestroyed` | Deferred with the window and context APIs — see B |
 | `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
