@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -39,7 +40,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class HttpCommandExecutor implements CommandExecutor {
+public class HttpCommandExecutor implements CommandExecutor, Closeable {
 
   private final URL remoteServer;
   protected final Map<String, CommandInfo> additionalCommands;
@@ -240,5 +241,10 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
       throw e;
     }
+  }
+
+  @Override
+  public void close() {
+    client.close();
   }
 }

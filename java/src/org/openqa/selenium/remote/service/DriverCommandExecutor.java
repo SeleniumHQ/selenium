@@ -219,6 +219,14 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
 
   @Override
   public void close() {
-    shutdownGracefully(NAME, executorService);
+    try (var closeSuper =
+        new Closeable() {
+          @Override
+          public void close() {
+            DriverCommandExecutor.super.close();
+          }
+        }) {
+      shutdownGracefully(NAME, executorService);
+    }
   }
 }
