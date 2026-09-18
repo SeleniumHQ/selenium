@@ -635,6 +635,20 @@ class CddlModule:
         s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", method_suffix)
         return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
+    def _emitted_commands(self, enhancements: dict[str, Any]) -> list[CddlCommand]:
+        """The commands whose methods this module actually generates.
+
+        A manifest ``extra_methods`` entry replaces the generated method of the same name, so a
+        module can have commands and still generate none of their bodies — which decides whether
+        it needs the ``command_builder`` import.
+        """
+        exclude = list(enhancements.get("exclude_methods", []))
+        for extra_method in enhancements.get("extra_methods", []):
+            match = re.search(r"def\s+(\w+)\s*\(", extra_method)
+            if match:
+                exclude.append(match.group(1))
+        return [c for c in self.commands if CddlCommand._camel_to_snake(c.name) not in exclude]
+
     def generate_code(self, enhancements: dict[str, Any] | None = None) -> str:
         """Generate Python code for this module.
 
@@ -648,8 +662,11 @@ class CddlModule:
             code += _emit_docstring(module_docstring, 0) + "\n"
         code += _MODULE_HEADER_IMPORTS
 
-        # Collect needed imports to avoid duplicates
-        needs_command_builder = bool(self.commands)
+        # Collect needed imports to avoid duplicates. A module needs command_builder if it still
+        # generates a command body, or if a hand-written method in the manifest builds its own.
+        needs_command_builder = bool(self._emitted_commands(enhancements)) or any(
+            "command_builder(" in extra_method for extra_method in enhancements.get("extra_methods", [])
+        )
         needs_dataclass = self.commands or self.types or self.events
         needs_callable = self.events
 
@@ -669,6 +686,9 @@ class CddlModule:
             local_imports.append(
                 "from selenium.webdriver.common.bidi._event_manager import EventConfig, _EventWrapper, _EventManager"
             )
+        # A module that delegates to the internal `_bidi` protocol layer declares the imports it
+        # needs here, rather than repeating a local import inside every method that uses them.
+        local_imports.extend(enhancements.get("extra_imports", []))
 
         code += "\n".join(stdlib_imports) + "\n"
         if local_imports:
@@ -882,26 +902,15 @@ class CddlModule:
 
         code += "\n"
 
-        # Generate command methods
-        exclude_methods = enhancements.get("exclude_methods", [])
+        # Generate command methods; a manifest extra_method replaces the one it shadows.
+        emitted_commands = self._emitted_commands(enhancements)
 
-        # Automatically exclude methods that are defined in extra_methods
-        # to prevent generating duplicates
-        if "extra_methods" in enhancements:
-            for extra_method in enhancements["extra_methods"]:
-                # Extract method name from "def method_name("
-                match = re.search(r"def\s+(\w+)\s*\(", extra_method)
-                if match:
-                    exclude_methods = list(exclude_methods) + [match.group(1)]
-
-        if self.commands:
+        if emitted_commands:
             command_docstrings = enhancements.get("command_docstrings", {})
-            for command in self.commands:
+            for command in emitted_commands:
                 # Get method-specific enhancements
                 # Convert command name to snake_case to match enhancement manifest keys
                 method_name_snake = command._camel_to_snake(command.name)
-                if method_name_snake in exclude_methods:
-                    continue
                 method_enhancements = enhancements.get(method_name_snake, {})
                 # Inject command_docstrings entry if no per-method docstring is set
                 if method_name_snake in command_docstrings and "docstring" not in method_enhancements:

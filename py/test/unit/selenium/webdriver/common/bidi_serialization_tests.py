@@ -88,6 +88,12 @@ class Tags(Record):
     tags: list[str] = field(metadata=meta("tags", required=True, is_list=True, primitive="str"))
 
 
+@register("test.Tally")
+@dataclass(frozen=True)
+class Tally(Record):
+    counts: list[int] = field(metadata=meta("counts", required=True, is_list=True, primitive="int"))
+
+
 @register("test.Line")
 @dataclass(frozen=True)
 class Line(Record):
@@ -302,6 +308,29 @@ def test_as_json_rejects_a_wrong_typed_primitive():
 def test_as_json_rejects_a_fractional_value_on_an_integer_field():
     with pytest.raises(BiDiSerializationError, match=r"Point.x: expected int, got float"):
         Point(x=1.5, y=2).as_json()
+
+
+def test_as_json_normalizes_a_whole_float_on_an_integer_field():
+    # A whole float is a valid integer (it is accepted, not rejected), but it must reach the
+    # wire as an integer: the inbound reader normalizes the same value, and a remote end
+    # holding the field to `js-uint` need not accept `5.0`.
+    payload = Point(x=5.0, y=2).as_json()
+
+    assert payload == {"x": 5, "y": 2}
+    assert type(payload["x"]) is int
+
+
+def test_as_json_leaves_a_whole_float_alone_on_a_number_field():
+    payload = Scalars(count=1, ratio=2.0, flag=True, name="n").as_json()
+
+    assert type(payload["ratio"]) is float
+
+
+def test_as_json_normalizes_a_whole_float_inside_a_list():
+    # `2.0 == 2` in Python, so the types are asserted rather than the values.
+    counts = Tally(counts=[1, 2.0]).as_json()["counts"]
+
+    assert [type(c) for c in counts] == [int, int]
 
 
 def test_as_json_rejects_a_scalar_where_a_list_is_expected():
@@ -549,11 +578,21 @@ def test_an_extensible_record_merges_captured_keys_back_on_serialization():
     assert Extensible(known="k", extensions={"extra": "e"}).as_json() == {"known": "k", "extra": "e"}
 
 
-def test_an_extension_may_not_shadow_a_declared_field_on_serialization():
-    # A key the type declares must never appear in the extras map, so an extra
-    # cannot overwrite a declared field on the wire.
+def test_an_extension_may_not_shadow_a_declared_field():
+    # A key the type declares must never appear in the extras map. That is an invariant of the
+    # representation, so it holds from construction rather than only once something serializes.
     with pytest.raises(BiDiSerializationError, match=r"shadows declared field 'known'"):
-        Extensible(known="k", extensions={"known": "evil"}).as_json()
+        Extensible(known="k", extensions={"known": "evil"})
+
+
+def test_the_shadowing_check_still_backstops_serialization():
+    # dataclasses.replace and object.__setattr__ can put a value on a frozen record without
+    # re-running __post_init__, so as_json keeps checking rather than trusting construction.
+    record = Extensible(known="k")
+    object.__setattr__(record, "extensions", {"known": "evil"})
+
+    with pytest.raises(BiDiSerializationError, match=r"shadows declared field 'known'"):
+        record.as_json()
 
 
 # --- nullable constants ---
