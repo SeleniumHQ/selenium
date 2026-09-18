@@ -873,7 +873,6 @@ BIDI_IMPLEMENTATIONS = []
 # generates no targets: an empty test_suite would mean every test in the package.
 REMOTE_BIDI_TESTS = []
 
-# Tests of Grid-specific behavior, kept apart so the scheduled Grid jobs can run just these.
 GRID_TESTS = glob(["test/selenium/webdriver/remote/**/*.py"])
 
 # Test files that only run against browsers supporting the given feature.
@@ -1238,7 +1237,6 @@ FEATURE_SUITE_DEFS = {
     ]
 ]
 
-# Generate test-<browser>-remote-grid targets (chrome and firefox only)
 [
     py_test_suite(
         name = "test-%s-remote-grid" % browser,
@@ -1370,8 +1368,7 @@ test_suite(
     ],
 )
 
-# Aggregate test-<browser>-grid = the Grid-specific tests alone, classic and (once opted in) BiDi,
-# for jobs that check Grid works on an OS without paying for the whole remote suite.
+# Lets an OS job check Grid works without paying for the whole remote suite.
 [test_suite(
     name = "test-%s-grid" % browser,
     tests = [":test-%s-remote-grid" % browser] + ([":test-%s-remote-bidi" % browser] if REMOTE_BIDI_TESTS else []),
