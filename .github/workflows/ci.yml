@@ -136,25 +136,25 @@ jobs:
     name: .NET
     needs: read-targets
     uses: ./.github/workflows/ci-dotnet.yml
-    if: needs.read-targets.outputs.dotnet != ''
+    if: "!cancelled() && needs.read-targets.outputs.dotnet != ''"
 
   java:
     name: Java
     needs: read-targets
     uses: ./.github/workflows/ci-java.yml
-    if: needs.read-targets.outputs.java != ''
+    if: "!cancelled() && needs.read-targets.outputs.java != ''"
 
   grid:
     name: Grid
     needs: read-targets
     uses: ./.github/workflows/ci-grid.yml
-    if: needs.read-targets.outputs.grid != ''
+    if: "!cancelled() && needs.read-targets.outputs.grid != ''"
 
   python:
     name: Python
     needs: read-targets
     uses: ./.github/workflows/ci-python.yml
-    if: needs.read-targets.outputs.py != ''
+    if: "!cancelled() && needs.read-targets.outputs.py != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
@@ -162,7 +162,7 @@ jobs:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb != ''
+    if: "!cancelled() && needs.read-targets.outputs.rb != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
@@ -170,13 +170,13 @@ jobs:
     name: Rust
     needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
-    if: needs.read-targets.outputs.rust != ''
+    if: "!cancelled() && needs.read-targets.outputs.rust != ''"
 
   javascript:
     name: JavaScript
     needs: read-targets
     uses: ./.github/workflows/ci-javascript.yml
-    if: needs.read-targets.outputs.js != ''
+    if: "!cancelled() && needs.read-targets.outputs.js != ''"
 
   merge-flaky-results:
     name: Merge Flaky Results
