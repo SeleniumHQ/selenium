@@ -656,6 +656,12 @@ class CddlModule:
         stdlib_imports = []
         local_imports = []
 
+        # Plain "import x" lines sort ahead of "from x import y", so enhancement
+        # imports are emitted first.
+        for extra_import in enhancements.get("extra_imports", []):
+            if extra_import not in stdlib_imports:
+                stdlib_imports.append(extra_import)
+
         # Add imports (field import will be added conditionally after code generation)
         if needs_callable:
             stdlib_imports.append("from collections.abc import Callable")
@@ -864,7 +870,9 @@ class CddlModule:
         if self.events:
             code += "    EVENT_CONFIGS: dict[str, EventConfig] = {}\n"  # Will be populated after types are defined
 
-        if self.name == "script":
+        # The network module needs the driver to resolve the window handle a
+        # handler is scoped to by default.
+        if self.name in ("script", "network"):
             code += "    def __init__(self, conn, driver=None) -> None:\n"
             code += "        self._conn = conn\n"
             code += "        self._driver = driver\n"
