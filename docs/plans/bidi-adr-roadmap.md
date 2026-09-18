@@ -28,9 +28,12 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 | B | Browsing context and window APIs | Deferred past Selenium 5; switch-then-act stays |
 | 1 | Capabilities: timeouts and prompt behavior | Record |
 | 2 | Navigation and waits | Record |
-| 3 | File handling | Record |
+| 3 | File handling | Record — the one to cut if the release sheds scope |
 
-Three records. Neither open question adds a fourth.
+Three records. Neither open question adds a fourth, and no BiDi event is exposed as a handler in
+5 beyond the navigation lifecycle: every other event family in this plan is deferred, because
+each is additive, nothing depends on it, and each raises a placement question that a later record
+is better placed to answer.
 
 Each record that adds a family of event handlers settles its own registration — how a handler is
 added, removed, and cleared, and what it can be filtered by. Consistency between families is
@@ -147,17 +150,13 @@ now means, and how much local machinery its classic meaning is worth.
 
 **In scope — prompt behavior**
 
-- The capability shape: a single value or a per-type map, what the bindings accept, and that it can
-  be set per user context.
+- The capability shape: a single value or a per-type map, and what the bindings accept.
 - The local behavior that preserves the classic contract: holding the prompt open, applying the
   configured behavior at the next command, and synthesizing the unexpected-alert error for the
   notify variants BiDi does not define.
 - What happens to `switchTo().alert()` and the `Alert` type.
-- Whether `userPromptOpened` and `userPromptClosed` are exposed as handlers in 5.
-- The `file` key: whether a file dialog is allowed to open at all. The dialog *handler* belongs to
-  record 3; the capability that decides whether there is a dialog to handle belongs here, and the
-  two records have to agree on what happens when a user registers an upload handler while `file`
-  is configured to dismiss.
+- The `file` key: that the capability accepts it and what it means. Nothing consumes file dialog
+  events in 5, so this is about parsing and behavior, not about handlers.
 
 **In scope — timeouts**
 
@@ -174,9 +173,13 @@ now means, and how much local machinery its classic meaning is worth.
 - What a navigation wait does when its deadline expires — record 2 owns the behavior, this record
   owns where the number comes from.
 - A high-level prompts module — the charter's deferred capability mapping.
-- Per-user-context capabilities in general. `browser.createUserContext` also takes
-  `acceptInsecureCerts` and `proxy` (index.bs:2825); if the record needs a rule for those it should
-  say so, but the two capabilities above are what force the decision.
+- `userPromptOpened` and `userPromptClosed` handlers. They are only useful under `ignore`, nothing
+  depends on them, and exposing them raises the same placement question as the window events — see
+  B. Deferred.
+- Setting capabilities per user context. `browser.createUserContext` takes `acceptInsecureCerts`,
+  `proxy`, and `unhandledPromptBehavior` (index.bs:2825), but user contexts are deferred with the
+  context API, so capabilities stay session-level in 5 and the record does not have to define what
+  a session containing differently-configured contexts means.
 
 **Protocol constraints**
 
@@ -187,7 +190,8 @@ now means, and how much local machinery its classic meaning is worth.
   inexpressible.
 - `ignore` is special-cased to "none" (index.bs:6514) — the prompt stays open. It is the only mode
   in which the events and `browsingContext.handleUserPrompt` are useful.
-- Per-user-context prompt overrides are consulted before the session handler (index.bs:6463).
+- Per-user-context prompt overrides are consulted before the session handler (index.bs:6463) —
+  reachable only through a deferred API, so nothing in 5 sets them.
 - File dialogs invert the default: the dialog opens unless configured otherwise, and any value
   other than `ignore` dismisses it (index.bs:15356, 15406).
 - `session.CapabilityRequest` has no `timeouts` member (index.bs:1881); the only occurrences of the
@@ -206,7 +210,8 @@ timeout, and the record should be explicit that they are different things.
 - How much local machinery is the classic prompt contract worth? Holding every prompt open to
   reapply the classic behavior later is a real change under the hood, and a crash leaves a prompt
   open that classic would have dismissed.
-- Does the per-type prompt map get exposed in 5, or does the capability stay a single value?
+- Does the per-type prompt map get exposed in 5, or does the capability stay a single value? The
+  bindings already disagree, so this one is alignment rather than new surface.
 - Does a client-enforced timeout keep the classic error, or does a different failure mode deserve a
   different error?
 
@@ -228,15 +233,15 @@ responsibility lives, not just in how a wait is expressed.
 
 - Handlers for the navigation-shaped events: `navigationStarted`, `navigationCommitted`,
   `fragmentNavigated`, `navigationAborted`, `navigationFailed`, `domContentLoaded`, `load`.
-- `historyUpdated`, with the explicit statement that it is a URL-change signal and not a
-  navigation: no navigation id, no completion of a pending wait, no firing of a
-  navigation-complete handler.
+- The statement that `historyUpdated` is a URL-change signal and not a navigation, so that
+  whenever it is exposed it cannot satisfy a navigation wait or fire a navigation-complete
+  handler. Exposing it is deferred; ruling it out of the navigation contract is not.
 - What a navigation wait does when its client-side deadline expires. The navigation keeps running
   in the browser; classic left the remote end in a known state. The record says what the session
   looks like afterwards and whether anything is cancelled. Where the deadline comes from is record
   1.
-- `pageLoadStrategy` and readiness: whether the capability remains how a user expresses readiness,
-  and whether `committed` becomes reachable.
+- `pageLoadStrategy` and readiness: whether the capability remains how a user expresses readiness.
+  Making `committed` reachable is additive and defers with the rest.
 - The correlation contract: events from one navigation share a navigation id, and that id may be
   absent.
 - The terminating cases: same-document navigation never produces a load; a navigation that becomes
@@ -246,6 +251,8 @@ responsibility lives, not just in how a wait is expressed.
 
 - Window and context APIs of any kind, including the `contextCreated` and `contextDestroyed`
   events — deferred, see B.
+- Exposing `historyUpdated` as a handler, and reaching the `committed` readiness state. Both are
+  additive, nothing depends on either, and neither has a classic behavior to preserve.
 - Implicit wait and element location (gap A3), and script timeout, for the reasons in A.
 
 **Protocol constraints**
@@ -272,7 +279,6 @@ navigation wait, and the record should be explicit that they are different thing
 - One timeout surface for both protocols, or separate ones? That is record 1's call; this record
   should state what it needs.
 - Does a client-side timeout attempt to stop the navigation, or only stop waiting?
-- Is `historyUpdated` exposed in 5, or noted and deferred? It has no classic analogue.
 - What are the threading guarantees for a handler? Whether a user may issue a WebDriver command
   from inside one applies to every handler family, and this is the first record that has to say
   so.
@@ -283,66 +289,64 @@ navigation wait, and the record should be explicit that they are different thing
 
 ## 3. File handling
 
-**Decision.** A `driver.file` namespace covering both directions: handlers for file dialogs and for
-downloads, an element-scoped upload method, and what becomes of the download retrieval API.
+**Decision.** An element-scoped upload method with a deprecation path for the current mechanism,
+and what becomes of the download retrieval API.
 
-**Why a record.** Uploads and downloads are one namespace and one event story for the user — files
-moving between the machine running the test and the machine running the browser — and the same
-handler pattern serves both: `add_upload_handler`, `add_download_handler`, each with a remove and
-a clear. Splitting them would put the same pattern decision in two records.
+**Why a record.** Not because BiDi breaks anything — uploads and downloads work today and keep
+working. Because the bindings diverge, the deprecation clock is two releases long, and 5 is the
+alignment release: uploads are a `sendKeys` overload plus a detector that guesses whether a string
+is a path, and downloads are a Grid-only API that only some bindings expose. Both are alignment
+work that `input.setFiles` and the download commands now make possible.
+
+**This record is the most deferrable of the three.** Nothing in it is forced by BiDi; the case for
+doing it in 5 is the deprecation timeline and cross-binding consistency, not compatibility. If the
+release needs to shed scope, this is what goes.
 
 **In scope**
 
-- The namespace and the handler pattern: `driver.file.add_upload_handler`,
-  `add_download_handler`, and the remove/clear pairs, over `input.fileDialogOpened`,
-  `browsingContext.downloadWillBegin`, and `browsingContext.downloadEnd`.
-- **That these handlers observe rather than intercept.** Network handlers block by design; these
-  cannot — see the constraints below. The record has to say so plainly, because the shared pattern
-  invites the assumption that they behave the same way.
-- An element-scoped upload method over `input.setFiles`, and the deprecation path for passing paths
-  to `sendKeys` and for the file detector types.
+- An element-scoped upload method over `input.setFiles`, and the deprecation path for passing
+  paths to `sendKeys` and for the file detector types.
+- How uploads reach a remote browser, and what replaces the file detector's role there.
 - Download behavior configuration, and its relationship to the browser options users set today.
 - The existing `HasDownloads` surface (`getDownloadableFiles`, `downloadFile`,
   `deleteDownloadableFiles`, gated on `se:downloadsEnabled`): what it becomes when the protocol
   reports a completed download's path directly, and whether local and Grid sessions converge.
-- What an upload handler can do when the event carries no element.
 
 **Not in scope**
 
-- Whether a file dialog is allowed to open — the `file` key in the prompt handler, owned by
-  record 1. This record owns what happens to a dialog that does open.
+- **Handlers for file dialogs and downloads, and the `driver.file` namespace that would hold
+  them.** Deferred. They are additive, nothing depends on them, and the protocol makes them the
+  weakest handlers in the plan: neither event can be blocked on, and an upload handler cannot act
+  at all when the event carries no element. That is a design worth getting right later rather than
+  shipping as the one handler family that behaves unlike the others.
+- Whether a file dialog is allowed to open — the `file` capability key, owned by record 1.
 - The rule that a navigation becoming a download ends the navigation wait — stated by record 2.
 
 **Protocol constraints**
 
-- **Neither event can be blocked on.** The file dialog steps emit the event, then compute whether
-  to dismiss from the session's prompt handler, and return — nothing waits for a client response
-  (index.bs:15338 onward). `downloadWillBegin` likewise emits and returns the configured download
-  behavior (index.bs:6166). Of the BiDi events, only the network ones define blocking
-  interception.
-- `input.setFiles` requires an element (index.bs:15251); `input.fileDialogOpened` carries one only
-  when there is one (index.bs:15338) — a `showOpenFilePicker()` call has none. An upload handler
-  therefore cannot always fulfill the dialog it observes.
-- `downloadWillBegin` and `downloadEnd` extend `BaseNavigationInfo` (index.bs:6127), so a download
-  carries the navigation id that produced it, plus a download id and suggested filename.
+- `input.setFiles` requires an element (index.bs:15251), so an element-scoped method is the shape
+  the protocol supports directly.
 - The completed download's path comes from the navigation status (index.bs:3273) and is a path on
   the machine running the browser — the distinction `se:downloadsEnabled` exists to paper over.
+- For the deferred handlers, the constraints that make them awkward, recorded so they are not
+  rediscovered: neither `input.fileDialogOpened` nor `browsingContext.downloadWillBegin` waits for
+  a client response (index.bs:15338 onward, 6166) — of the BiDi events only the network ones
+  define blocking interception — and `fileDialogOpened` carries an element only when there is one
+  (index.bs:15338), which a `showOpenFilePicker()` call has not.
 
-**Current state.** Uploads work by overloading `sendKeys` with a path and by a file detector that
-guesses whether a string is one — `LocalFileDetector` is Python's default
+**Current state.** `LocalFileDetector` is Python's default
 (`py/selenium/webdriver/remote/webdriver.py:291`), Java exposes `setFileDetector` on
 `RemoteWebDriver`. Downloads are Grid-oriented and capability-gated
-(`java/src/org/openqa/selenium/HasDownloads.java`). No binding exposes either event.
+(`java/src/org/openqa/selenium/HasDownloads.java`).
 
 **Open questions**
 
-- Is an upload handler worth having given it cannot block and cannot always act? An observational
-  handler that sometimes lets a user call `setFiles` in time may be worse than no handler.
 - Does the remote upload path (`POST /session/{id}/file`) stay as it is, with the new method only
   changing the local API?
 - Does `se:downloadsEnabled` remain the switch once BiDi can configure download behavior directly?
+- Is the deprecation clock reason enough to do this in 5 at all?
 
-**Depends on.** Nothing blocking. Coordinates with record 1 on the `file` capability key.
+**Depends on.** Nothing.
 
 ---
 
@@ -366,8 +370,9 @@ events; three more come from extension specifications.
 | `network.beforeRequestSent`, `responseStarted`, `responseCompleted`, `fetchError`, `authRequired` | [17685](../decisions/17685-network-handler-behavior.md), accepted |
 | `log.entryAdded`, `script.message` | Script and logging |
 | `script.realmCreated`, `realmDestroyed` | Script and logging, if it claims them |
-| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation and waits (2) |
-| `browsingContext.userPromptOpened`, `userPromptClosed` | Capabilities (1), if it exposes them |
-| `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling (3) |
+| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load` | Navigation and waits (2) |
+| `browsingContext.historyUpdated` | Deferred; record 2 only rules it out of the navigation contract |
+| `browsingContext.userPromptOpened`, `userPromptClosed` | Deferred; capabilities (1) covers the behavior, not the events |
+| `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | Deferred; the file record covers the commands, not the events |
 | `browsingContext.contextCreated`, `contextDestroyed` | Deferred with the window and context APIs — see B |
 | `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
