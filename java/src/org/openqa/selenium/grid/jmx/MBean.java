@@ -126,7 +126,7 @@ public class MBean implements DynamicMBean {
       return null;
     }
     try {
-      String name = "".equals(ma.name()) ? m.getName() : ma.name();
+      String name = ma.name().isEmpty() ? m.getName() : ma.name();
       return new AttributeInfo(name, ma.description(), findGetter(m), findSetter(m));
     } catch (Throwable t) {
       LOG.severe("Error during execution: " + t.getMessage());
@@ -137,7 +137,7 @@ public class MBean implements DynamicMBean {
   private @Nullable Method findGetter(Method annotatedMethod) {
     ManagedAttribute ma = annotatedMethod.getAnnotation(ManagedAttribute.class);
     try {
-      if (!"".equals(ma.getter())) {
+      if (!ma.getter().isEmpty()) {
         return annotatedMethod.getDeclaringClass().getMethod(ma.getter());
       } else {
         String name = annotatedMethod.getName();
@@ -157,7 +157,7 @@ public class MBean implements DynamicMBean {
 
   private @Nullable Method findSetter(Method annotatedMethod) {
     ManagedAttribute ma = annotatedMethod.getAnnotation(ManagedAttribute.class);
-    if (!"".equals(ma.setter())) {
+    if (!ma.setter().isEmpty()) {
       return findMethod(annotatedMethod.getDeclaringClass(), ma.setter());
     } else {
       String name = annotatedMethod.getName();
@@ -200,7 +200,7 @@ public class MBean implements DynamicMBean {
     ManagedService mBean = bean.getClass().getAnnotation(ManagedService.class);
     try {
       String name = mBean.objectName();
-      if ("".equals(name)) {
+      if (name.isEmpty()) {
         try {
           return (ObjectName) bean.getClass().getMethod("getObjectName").invoke(bean);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
