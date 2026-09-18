@@ -1,4 +1,4 @@
-name: Bot - Renovate
+name: Webhook - Renovate
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Bot - Issue Labeler
+name: Webhook - Issue Labeler
 on:
   issues:
     types: [ opened ]

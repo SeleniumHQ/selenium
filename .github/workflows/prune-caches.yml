@@ -1,4 +1,4 @@
-name: Bot - Prune CodeQL Caches
+name: Webhook - Prune CodeQL Caches
 
 on:
   workflow_run:

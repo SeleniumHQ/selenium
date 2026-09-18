@@ -1,5 +1,5 @@
 # Configuration for Label Generation - ./.github/pr-labeler-config.yml
-name: Bot - PR Labeler
+name: Webhook - PR Labeler
 
 on:
   pull_request_target:

@@ -1,4 +1,4 @@
-name: Bot - Release Ready
+name: Webhook - Release Ready
 
 on:
   pull_request:
