@@ -23,6 +23,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.network import Request, Response
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.window import WindowTypes
 
 
 def test_network_initialized(driver):
@@ -80,7 +81,7 @@ def test_continue_request(driver, pages):
 
     def callback(request: Request):
         try:
-            request.continue_request()
+            request.submit()
         except WebDriverException as e:
             exceptions.append(e)
 
@@ -126,7 +127,7 @@ def test_handler_with_classic_navigation(driver, pages):
 
     def callback(request: Request):
         try:
-            request.continue_request()
+            request.submit()
         except WebDriverException as e:
             exceptions.append(e)
 
@@ -146,7 +147,7 @@ def test_handler_with_data_url_request(driver, pages):
         if request.url.startswith("data:"):
             data_requests.append(request)
         try:
-            request.continue_request()
+            request.submit()
         except WebDriverException as e:
             exceptions.append(e)
 
@@ -164,9 +165,11 @@ def test_handler_with_data_url_request(driver, pages):
 # ---------------------------------------------------------------------------
 # High-level request handler API
 #
-# These tests double as usage examples: handlers receive a Request, may
-# observe, mutate, fail or stub it, and Selenium reconciles the outcome and
-# continues the request automatically.
+# These tests double as usage examples: handlers receive a Request and may
+# observe it, stage mutations on it, or settle it with fail(), respond() or
+# submit(). Handlers are consulted last-registered first, the first to settle
+# stops the chain, and a request nothing settles is sent with whatever was
+# staged — so an observer never stalls the page.
 # ---------------------------------------------------------------------------
 
 
@@ -197,7 +200,7 @@ def test_fail_requests_matching_url_pattern(driver, pages):
     def block_request(request: Request):
         request.fail()
 
-    driver.network.add_request_handler(["**/formPage.html"], block_request)
+    driver.network.add_request_handler([pages.url("formPage.html")], block_request)
     try:
         with pytest.raises(WebDriverException):
             _navigate(driver, pages.url("formPage.html"))
@@ -207,13 +210,13 @@ def test_fail_requests_matching_url_pattern(driver, pages):
 
 def test_provide_stubbed_response(driver, pages):
     def stub_response(request: Request):
-        request.provide_response(
+        request.respond(
             200,
             {"content-type": "text/html"},
             "<html><head><title>Stubbed</title></head><body><p id='stubbed'>stubbed response</p></body></html>",
         )
 
-    handler_id = driver.network.add_request_handler(["**/formPage.html"], stub_response)
+    handler_id = driver.network.add_request_handler([pages.url("formPage.html")], stub_response)
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert driver.find_element(By.ID, "stubbed").text == "stubbed response"
@@ -240,7 +243,7 @@ def test_change_request_url(driver, pages):
     def rewrite_url(request: Request):
         request.set_url(pages.url("simpleTest.html"))
 
-    handler_id = driver.network.add_request_handler(["**/formPage.html"], rewrite_url)
+    handler_id = driver.network.add_request_handler([pages.url("formPage.html")], rewrite_url)
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert driver.find_element(By.ID, "oneline").text == "A single line of text"
@@ -248,28 +251,99 @@ def test_change_request_url(driver, pages):
         driver.network.remove_request_handler(handler_id)
 
 
-def test_fail_wins_when_multiple_handlers_disagree(driver, pages):
+def test_last_registered_handler_settles_the_request(driver, pages):
+    """Handlers are consulted last-registered first and the first to settle wins."""
+    mutated = []
+
     def mutate(request: Request):
-        headers = request.headers.copy()
-        headers["x-mutated"] = "true"
-        request.set_headers(headers)
+        mutated.append(request.url)
+        request.add_header("x-mutated", "true")
 
     def block_request(request: Request):
         request.fail()
 
-    driver.network.add_request_handler(["**/formPage.html"], mutate)
-    driver.network.add_request_handler(["**/formPage.html"], block_request)
+    driver.network.add_request_handler([pages.url("formPage.html")], mutate)
+    driver.network.add_request_handler([pages.url("formPage.html")], block_request)
     try:
         with pytest.raises(WebDriverException):
             _navigate(driver, pages.url("formPage.html"))
+        assert not mutated, "The chain should stop at the handler that settled the request"
     finally:
         driver.network.clear_request_handlers()
+
+
+def test_locally_registered_handler_overrides_a_shared_one(driver, pages):
+    """A handler registered later can override what an earlier one staged."""
+    seen = []
+
+    driver.network.add_request_handler([pages.url("formPage.html")], lambda request: seen.append("shared"))
+    driver.network.add_request_handler([pages.url("formPage.html")], lambda request: request.submit())
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Submitted request not sent"
+        assert not seen, "submit() should short-circuit the earlier handler"
+    finally:
+        driver.network.clear_request_handlers()
+
+
+def test_handler_exception_fails_the_request_and_surfaces(driver, pages):
+    def broken(request: Request):
+        raise RuntimeError("handler blew up")
+
+    driver.network.add_request_handler([pages.url("formPage.html")], broken)
+    try:
+        with pytest.raises(WebDriverException):
+            _navigate(driver, pages.url("formPage.html"))
+        with pytest.raises(RuntimeError, match="handler blew up"):
+            driver.network.clear_request_handlers()
+    finally:
+        driver.network.clear_request_handlers()
+
+
+def test_handler_reads_the_original_request_value(driver, pages):
+    seen = []
+
+    def observe(request: Request):
+        seen.append((dict(request.headers), dict(request.original.headers)))
+
+    driver.network.add_request_handler([pages.url("formPage.html")], observe)
+    driver.network.add_request_handler([pages.url("formPage.html")], lambda request: request.add_header("x-test", "1"))
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert seen, "Observer did not run"
+        staged, original = seen[0]
+        assert staged.get("x-test") == "1", "Staged mutation not visible to the next handler"
+        assert "x-test" not in original, "The original value must not carry staged mutations"
+    finally:
+        driver.network.clear_request_handlers()
+
+
+def test_handler_scoped_to_another_window_handle_is_not_consulted(driver, pages):
+    seen = []
+    other_tab = driver.browsing_context.create(type=WindowTypes.TAB)
+    try:
+        driver.network.add_request_handler(lambda request: seen.append(request.url), window_handle=other_tab)
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+        assert not seen, "A handler scoped to another window handle must not be consulted"
+    finally:
+        driver.network.clear_request_handlers()
+        driver.browsing_context.close(other_tab)
+
+
+def test_window_handle_and_user_context_together_are_rejected(driver):
+    with pytest.raises(ValueError, match="never both"):
+        driver.network.add_request_handler(
+            lambda request: None, window_handle=driver.current_window_handle, user_context="some-context"
+        )
 
 
 def test_url_patterns_scope_handlers(driver, pages):
     seen = []
 
-    handler_id = driver.network.add_request_handler(["**/simpleTest.html"], lambda request: seen.append(request.url))
+    handler_id = driver.network.add_request_handler(
+        [pages.url("simpleTest.html")], lambda request: seen.append(request.url)
+    )
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert not seen, "Handler ran for a non-matching URL"
@@ -280,6 +354,68 @@ def test_url_patterns_scope_handlers(driver, pages):
         assert all("simpleTest.html" in url for url in seen)
     finally:
         driver.network.remove_request_handler(handler_id)
+
+
+def test_request_body_is_absent_unless_collected(driver, pages):
+    seen = []
+
+    handler_id = driver.network.add_request_handler(
+        [pages.url("formPage.html")], lambda request: seen.append(request.body)
+    )
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert seen, "Handler did not run"
+        assert all(body is None for body in seen), "A body must not be collected unless the handler opted in"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_collect_body_reads_the_posted_body(driver, pages):
+    """A handler that opted in reads the body on the event (decision 10)."""
+    seen = []
+
+    _navigate(driver, pages.url("simpleTest.html"))
+    handler_id = driver.network.add_request_handler(
+        [pages.url("formPage.html")], lambda request: seen.append(request.body), collect_body=True
+    )
+    try:
+        driver.execute_script("fetch(arguments[0], {method: 'POST', body: 'hello=world'});", pages.url("formPage.html"))
+        deadline = time.time() + 20
+        while not seen and time.time() < deadline:
+            time.sleep(0.2)
+        assert seen == ["hello=world"], f"Body not collected inside the handler: {seen}"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_collect_body_does_not_stall_a_bodyless_request(driver, pages):
+    """A GET has no body to collect, and asking for one must not hold the page."""
+    seen = []
+
+    handler_id = driver.network.add_request_handler(
+        [pages.url("formPage.html")], lambda request: seen.append(request.body), collect_body=True
+    )
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+        assert seen, "Handler did not run"
+        assert all(body is None for body in seen), f"A bodyless request must report no body: {seen}"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+
+
+def test_collect_body_installs_and_tears_down_the_collector(driver, pages):
+    """Selenium owns the collector, so the user never adds or removes one."""
+    handler_id = driver.network.add_request_handler(
+        [pages.url("formPage.html")], lambda request: request.body, collect_body=True
+    )
+    assert driver.network._data_collectors != [], "Collector not installed with the handler"
+    try:
+        _navigate(driver, pages.url("formPage.html"))
+        assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+    assert driver.network._data_collectors == [], "Collector not removed with the handler"
 
 
 def test_remove_handler_by_id_stops_observation(driver, pages):
@@ -296,9 +432,10 @@ def test_remove_handler_by_id_stops_observation(driver, pages):
 # ---------------------------------------------------------------------------
 # High-level response handler API
 #
-# These tests double as usage examples: handlers receive a Response, may
-# observe or mutate it, and Selenium reconciles the outcome and continues the
-# response automatically.
+# These tests double as usage examples: handlers receive a Response and may
+# observe it, stage mutations on it, or settle it with fail() or submit().
+# Intercepting a response holds it before its body is collected, so a response
+# body is not readable while intercepting.
 # ---------------------------------------------------------------------------
 
 
@@ -327,7 +464,7 @@ def test_change_response_headers(driver, pages):
         headers["x-modified"] = "true"
         response.set_headers(headers)
 
-    handler_id = driver.network.add_response_handler(["**/formPage.html"], add_header)
+    handler_id = driver.network.add_response_handler([pages.url("formPage.html")], add_header)
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert driver.find_element(By.NAME, "login").is_displayed(), "Mutated response not continued"
@@ -344,7 +481,7 @@ def test_change_response_body(driver, pages):
             "<html><head><title>Replaced</title></head><body><p id='replaced'>replaced response</p></body></html>"
         )
 
-    handler_id = driver.network.add_response_handler(["**/formPage.html"], rewrite_body)
+    handler_id = driver.network.add_response_handler([pages.url("formPage.html")], rewrite_body)
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert driver.find_element(By.ID, "replaced").text == "replaced response"
@@ -355,7 +492,9 @@ def test_change_response_body(driver, pages):
 def test_response_url_patterns_scope_handlers(driver, pages):
     seen = []
 
-    handler_id = driver.network.add_response_handler(["**/simpleTest.html"], lambda response: seen.append(response.url))
+    handler_id = driver.network.add_response_handler(
+        [pages.url("simpleTest.html")], lambda response: seen.append(response.url)
+    )
     try:
         _navigate(driver, pages.url("formPage.html"))
         assert not seen, "Handler ran for a non-matching URL"
@@ -383,10 +522,10 @@ def test_request_and_response_handlers_compose(driver, pages):
     events = []
 
     request_handler_id = driver.network.add_request_handler(
-        ["**/simpleTest.html"], lambda request: events.append(("request", request.url))
+        [pages.url("simpleTest.html")], lambda request: events.append(("request", request.url))
     )
     response_handler_id = driver.network.add_response_handler(
-        ["**/simpleTest.html"], lambda response: events.append(("response", response.status))
+        [pages.url("simpleTest.html")], lambda response: events.append(("response", response.status))
     )
     try:
         _navigate(driver, pages.url("simpleTest.html"))
@@ -402,8 +541,8 @@ def test_request_and_response_handlers_compose(driver, pages):
 # High-level authentication handler API
 #
 # These tests double as usage examples: handlers receive an
-# AuthenticationRequest and may provide credentials or cancel the challenge;
-# Selenium reconciles the outcome and continues the challenge automatically.
+# AuthenticationRequest and settle it with authenticate() or cancel(). A
+# challenge nothing settles falls through to the browser's own behavior.
 # ---------------------------------------------------------------------------
 
 
@@ -412,9 +551,9 @@ def test_request_and_response_handlers_compose(driver, pages):
 @pytest.mark.needs_fresh_driver
 def test_provide_credentials_for_matching_url(driver, pages):
     def handle_authentication(auth):
-        auth.provide_credentials("postman", "password")
+        auth.authenticate("postman", "password")
 
-    handler_id = driver.network.add_authentication_handler(["**/basic-auth"], handle_authentication)
+    handler_id = driver.network.add_authentication_handler([pages.url("basic-auth")], handle_authentication)
     try:
         _navigate(driver, pages.url("basic-auth"))
         assert "authenticated" in driver.page_source, "Authorization failed"
@@ -440,7 +579,7 @@ def test_authentication_handler_observes_challenge_details(driver, pages):
 
     def handle_authentication(auth):
         challenges.append((auth.url, auth.realm, auth.scheme))
-        auth.provide_credentials("postman", "password")
+        auth.authenticate("postman", "password")
 
     handler_id = driver.network.add_authentication_handler(handle_authentication)
     try:
@@ -451,6 +590,22 @@ def test_authentication_handler_observes_challenge_details(driver, pages):
         driver.network.remove_authentication_handler(handler_id)
 
 
+@pytest.mark.needs_fresh_driver
+def test_add_authentication_supplies_fixed_credentials(driver, pages):
+    handler_id = driver.network.add_authentication("postman", "password", [pages.url("basic-auth")])
+    try:
+        _navigate(driver, pages.url("basic-auth"))
+        assert "authenticated" in driver.page_source, "Authorization failed"
+    finally:
+        driver.network.remove_authentication_handler(handler_id)
+
+
+def test_add_authentication_is_cleared_with_the_family(driver):
+    driver.network.add_authentication("user", "passwd")
+    driver.network.clear_authentication_handlers()
+    assert driver.network.intercepts == [], "Intercept not removed"
+
+
 def test_remove_authentication_handler_removes_intercept(driver):
     handler_id = driver.network.add_authentication_handler(lambda auth: None)
     driver.network.remove_authentication_handler(handler_id)
@@ -459,7 +614,7 @@ def test_remove_authentication_handler_removes_intercept(driver):
 
 def test_clear_authentication_handlers_removes_all_intercepts(driver):
     driver.network.add_authentication_handler(lambda auth: None)
-    driver.network.add_authentication_handler(["https://example.com/**"], lambda auth: None)
+    driver.network.add_authentication_handler([{"hostname": "example.com"}], lambda auth: None)
     driver.network.clear_authentication_handlers()
     assert driver.network.intercepts == [], "Intercepts not removed"
 
