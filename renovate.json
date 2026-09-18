@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "dependencyDashboardLabels": ["B-dependencies"],
-  "dependencyDashboardHeader": "This dashboard exists for visibility into Renovate's state and for surfacing problems. Renovate creates a branch per eligible update and validates it with the CI - Renovate - RBE workflow. If the check passes, Renovate merges the branch directly into `trunk` with no PR. If the check fails, Renovate raises a draft PR as a fallback so a human can investigate.",
+  "dependencyDashboardHeader": "This dashboard exists for visibility into Renovate's state and for surfacing problems. Renovate creates a branch per eligible update and validates it with the Bot - Renovate workflow. If the check passes, Renovate merges the branch directly into `trunk` with no PR. If the check fails, Renovate raises a draft PR as a fallback so a human can investigate.",
   "automerge": true,
   "automergeType": "branch",
   "draftPR": true,

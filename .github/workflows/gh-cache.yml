@@ -1,4 +1,4 @@
-name: GitHub Cache
+name: Scheduled - Update Bazel Cache
 
 on:
   push:

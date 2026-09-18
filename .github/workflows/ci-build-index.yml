@@ -1,4 +1,4 @@
-name: CI - Build Index
+name: Shared - Build Index
 
 permissions:
   contents: read

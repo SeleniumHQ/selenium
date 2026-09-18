@@ -1,4 +1,4 @@
-name: Update CDDL
+name: Scheduled - Update CDDL
 
 on:
   schedule:

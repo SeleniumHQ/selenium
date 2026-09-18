@@ -1,5 +1,5 @@
 # Configuration for Lock Threads - https://github.com/dessant/lock-threads
-name: 'Lock Issues'
+name: Scheduled - Lock Issues
 
 on:
   workflow_dispatch:

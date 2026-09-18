@@ -1,4 +1,4 @@
-name: Release Preparation
+name: Release - Start
 
 on:
   workflow_dispatch:
@@ -88,7 +88,7 @@ jobs:
       message: |
         Trunk branch has been restricted for release preparation (${{ inputs.tag }}).
         To abandon the release, close the release preparation PR without merging and trunk will unlock automatically.
-        If trunk is still locked, run the "Manage Trunk Restrictions" workflow, which unlocks by default:
+        If trunk is still locked, run the "Release - Lock and Unlock Trunk" workflow, which unlocks by default:
         https://github.com/${{ github.repository }}/actions/workflows/restrict-trunk.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

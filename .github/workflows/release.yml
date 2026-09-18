@@ -1,4 +1,4 @@
-name: Release Selenium
+name: Release - Finish
 
 on:
   pull_request:

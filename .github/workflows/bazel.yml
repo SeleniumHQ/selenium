@@ -1,4 +1,4 @@
-name: Bazel
+name: Shared - Bazel
 
 on:
   workflow_call:
