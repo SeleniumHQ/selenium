@@ -120,7 +120,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-bidi, edge]
+        browser: [chrome, firefox, chrome-bidi, edge, chrome-grid, firefox-grid]
         os: [windows]
         include:
           - browser: safari
