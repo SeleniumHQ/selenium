@@ -1245,7 +1245,9 @@ class WebDriver(BaseWebDriver):
         assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
             assert self._websocket_connection is not None
-            self._network = Network(self._websocket_connection)
+            # The driver is passed so a handler can be scoped to the window
+            # handle the session is on when it is registered.
+            self._network = Network(self._websocket_connection, self)
 
         return self._network
 
