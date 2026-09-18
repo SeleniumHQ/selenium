@@ -242,11 +242,10 @@ class FirefoxProfile:
             attributes = doc.documentElement.attributes
             namespace = ""
             for i in range(attributes.length):
-                if attributes.item(i).value == url:
-                    if ":" in attributes.item(i).name:
-                        # If the namespace is not the default one remove 'xlmns:'
-                        namespace = attributes.item(i).name.split(":")[1] + ":"
-                        break
+                if attributes.item(i).value == url and ":" in attributes.item(i).name:
+                    # If the namespace is not the default one remove 'xlmns:'
+                    namespace = attributes.item(i).name.split(":")[1] + ":"
+                    break
             return namespace
 
         def get_text(element):
