@@ -122,6 +122,41 @@ line.
 
 ---
 
+## What these plans do not cover
+
+The event inventory below is complete. Several other things discussed while drafting these records
+are not settled anywhere, and are listed so they are chosen rather than missed.
+
+**Commands, as opposed to events.** The records cover the commands they need and no others.
+`browsingContext.startScreencast` and `stopScreencast` (which write a file rather than emitting
+events), `setBypassCSP`, `locateNodes` beyond the implicit wait note, `network.setExtraHeaders`,
+the network data collectors, and `userAgentClientHints.setClientHintsOverride` have no record and
+appear in no deferred list. The emulation, storage, and permissions modules are deferred by the
+charter as capability mapping; the others are simply unclaimed.
+
+**Subscription mechanics.** `session.subscribe` accepts module names as well as event names, so
+subscribing to `browsingContext` subscribes to fourteen events at once; it returns a subscription
+id; and `session.unsubscribe` takes either ids or the older attribute form. Three records now
+register handlers that subscribe lazily, and none says which form they use. It matters for
+correctness rather than style: removing one handler must not unsubscribe the events another handler
+is still using.
+
+**Grid.** Only `se:downloadsEnabled` is discussed, in the file record. Nothing says whether these
+decisions bind Grid, or what a Grid session does differently for any of them.
+
+**The compatibility expectation.** "Enabling BiDi does not change the behavior of an existing API"
+is the premise the capabilities record rests on, and it currently exists only inside that record,
+as a decision about two capabilities. If it is meant to constrain later records, it belongs in the
+charter.
+
+**Two issues that have not been filed.** Implicit wait and stale element semantics have no BiDi
+equivalent and no record; they were agreed to be issues, and the issues do not exist yet.
+
+**The charter is out of step.** [selenium-5.md](selenium-5.md) does not index these records, and
+two of its deferred entries now contradict them: "Browser context API" is deferred while a windows
+record exists, and "Capability mapping" lists user prompts while the capabilities record settles
+them.
+
 ## Records already indexed
 
 **Script and logging async/event API** — pinned scripts and the console-message,
