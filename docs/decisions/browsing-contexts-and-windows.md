@@ -1,5 +1,41 @@
 # NNNN. Windows are managed through a windows namespace, and switching stays explicit
 
+<!-- Working context for whoever takes this record up, independent of any other session.
+
+     Process: docs/decisions/README.md has the rules. This record is numbered by its own pull
+     request, so it needs its own branch and PR — open it with the ADR template by appending
+     ?expand=1&template=adr.md to the compare URL, then rename this file to NNNN-short-title.md
+     using the number GitHub assigns and fill in the Discussion field. Keep per-binding
+     convergence out of the record; that goes in the tracking issue after acceptance. Run
+     ./scripts/format.sh --pre-push before pushing.
+
+     Protocol text: the WebDriver BiDi specification source is index.bs in
+     https://github.com/w3c/webdriver-bidi. Everything this record relies on from it is stated
+     below in prose, so the record can be read without opening the specification; cite sections
+     rather than line numbers, which move.
+
+     Accepted records that bear on this one. Their substance is restated wherever this record
+     depends on it, so none of them needs to be read first:
+       - 17670, BiDi implementation boundaries: where supported Selenium API ends and internal
+         implementation begins, and how each binding marks the line.
+       - 17786, low-level behavioral contract: the low-level layer mirrors the specification, so
+         every command is a typed call and every event a typed payload. Protocol coverage is
+         therefore never the question; only whether something deserves supported high-level API.
+       - 17685, network handler behavior: settles handlers for network requests, responses and
+         authentication — registration, multi-handler resolution, blocking interception, and
+         filtering by window handle or user context. It settles those for network traffic only
+         and decides nothing for other event families.
+
+     Sibling drafts, none of which this record depends on:
+       - capabilities-timeouts-and-prompt-behavior: `timeouts` and `unhandledPromptBehavior`
+         keep their classic meaning, with the binding enforcing what the remote end no longer
+         does.
+       - navigation-and-waits: navigation lifecycle events as handlers, and client-enforced
+         navigation waits.
+       - file-handling: an element upload method, download retrieval, and handlers for file
+         dialogs and downloads.
+-->
+
 - Status: Proposed
 - Discussion:
 
@@ -129,6 +165,11 @@ be argued in review, and the record should be read as taking a position on the c
 rather than as an inconsistency: values stay inert precisely so that adopting the model later is a
 decision someone makes rather than one that accumulates.
 
-Follow-up decisions this makes necessary: frames and contexts as command targets; user context
-lifecycle and per-user-context capabilities; and whether the handler conventions this record shares
-with the navigation and file records should be lifted into one place rather than restated.
+Follow-up decisions this makes necessary: frames and contexts as command targets; the lifecycle of
+user contexts, and how capabilities apply to one; and whether handler conventions belong in one
+place. This record states its own — how a handler is added, removed and cleared, that it cannot
+block, and that frames are filtered out — and other records adding handler families state theirs.
+Only the blocking answer genuinely differs between families, and only because the protocol differs:
+the network events support blocking interception and these do not. If a third or fourth record
+restates the same conventions, lifting them into one record would be worth more than the dependency
+it creates.

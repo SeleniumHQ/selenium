@@ -1,5 +1,41 @@
 # NNNN. Files are uploaded and downloaded through a file namespace
 
+<!-- Working context for whoever takes this record up, independent of any other session.
+
+     Process: docs/decisions/README.md has the rules. This record is numbered by its own pull
+     request, so it needs its own branch and PR — open it with the ADR template by appending
+     ?expand=1&template=adr.md to the compare URL, then rename this file to NNNN-short-title.md
+     using the number GitHub assigns and fill in the Discussion field. Keep per-binding
+     convergence out of the record; that goes in the tracking issue after acceptance. Run
+     ./scripts/format.sh --pre-push before pushing.
+
+     Protocol text: the WebDriver BiDi specification source is index.bs in
+     https://github.com/w3c/webdriver-bidi. Everything this record relies on from it is stated
+     below in prose, so the record can be read without opening the specification; cite sections
+     rather than line numbers, which move.
+
+     Accepted records that bear on this one. Their substance is restated wherever this record
+     depends on it, so none of them needs to be read first:
+       - 17670, BiDi implementation boundaries: where supported Selenium API ends and internal
+         implementation begins, and how each binding marks the line.
+       - 17786, low-level behavioral contract: the low-level layer mirrors the specification, so
+         every command is a typed call and every event a typed payload. Protocol coverage is
+         therefore never the question; only whether something deserves supported high-level API.
+       - 17685, network handler behavior: settles handlers for network requests, responses and
+         authentication — registration, multi-handler resolution, blocking interception, and
+         filtering by window handle or user context. It settles those for network traffic only
+         and decides nothing for other event families.
+
+     Sibling drafts, none of which this record depends on:
+       - capabilities-timeouts-and-prompt-behavior: `timeouts` and `unhandledPromptBehavior`
+         keep their classic meaning. It owns the prompt handler capability, including the
+         `file` key that decides whether a file dialog opens at all.
+       - navigation-and-waits: navigation lifecycle events as handlers, and client-enforced
+         navigation waits, including what happens when a navigation turns into a download.
+       - browsing-contexts-and-windows: a windows namespace, window values, client windows and
+         viewport, with switching left explicit and context objects left undecided.
+-->
+
 - Status: Proposed
 - Discussion:
 
@@ -29,9 +65,11 @@ file dialog steps emit the event, compute whether to dismiss from the prompt han
 events, neither can be blocked on. And `fileDialogOpened` carries the element only when there
 is one, which a `showOpenFilePicker()` call has not, while `input.setFiles` requires an element.
 
-Whether a file dialog opens at all is the `file` key of the prompt handler capability, decided by
-the capabilities record: the dialog is allowed to open unless configured otherwise, and any value
-other than `ignore` dismisses it.
+Whether a file dialog opens at all is not decided here. It is the `file` key of the
+`unhandledPromptBehavior` capability, which treats a file picker as one more kind of prompt: the
+specification lets the dialog open unless the handler says otherwise, and any value other than
+`ignore` dismisses it. That capability is settled by its own record; this record takes its behavior
+as given and decides what happens to a dialog that does open.
 
 | Binding    | Current behavior |
 |------------|------------------|
@@ -123,5 +161,7 @@ reason by analogy from the network handlers will expect otherwise. That is the m
 record takes: the naming is parallel, the contract is not.
 
 Follow-up decisions: whether `element.upload` should accept anything other than a path, such as
-content the binding writes to a temporary file; and how downloads interact with a navigation wait,
-which the navigation record settles from its side.
+content the binding writes to a temporary file; and the navigation side of a download, since a
+navigation that turns into a download never finishes loading — the protocol resumes the pending
+navigation when the download begins — which is a rule about when a navigation wait ends rather
+than about files, and is settled where navigation waits are.

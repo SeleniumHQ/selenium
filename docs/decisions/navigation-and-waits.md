@@ -1,5 +1,42 @@
 # NNNN. Navigation waits are enforced by the binding, and navigation is observable
 
+<!-- Working context for whoever takes this record up, independent of any other session.
+
+     Process: docs/decisions/README.md has the rules. This record is numbered by its own pull
+     request, so it needs its own branch and PR — open it with the ADR template by appending
+     ?expand=1&template=adr.md to the compare URL, then rename this file to NNNN-short-title.md
+     using the number GitHub assigns and fill in the Discussion field. Keep per-binding
+     convergence out of the record; that goes in the tracking issue after acceptance. Run
+     ./scripts/format.sh --pre-push before pushing.
+
+     Protocol text: the WebDriver BiDi specification source is index.bs in
+     https://github.com/w3c/webdriver-bidi. Everything this record relies on from it is stated
+     below in prose, so the record can be read without opening the specification; cite sections
+     rather than line numbers, which move.
+
+     Accepted records that bear on this one. Their substance is restated wherever this record
+     depends on it, so none of them needs to be read first:
+       - 17670, BiDi implementation boundaries: where supported Selenium API ends and internal
+         implementation begins, and how each binding marks the line.
+       - 17786, low-level behavioral contract: the low-level layer mirrors the specification, so
+         every command is a typed call and every event a typed payload. Protocol coverage is
+         therefore never the question; only whether something deserves supported high-level API.
+       - 17685, network handler behavior: settles handlers for network requests, responses and
+         authentication — registration, multi-handler resolution, blocking interception, and
+         filtering by window handle or user context. It settles those for network traffic only
+         and decides nothing for other event families.
+
+     Sibling drafts, none of which this record depends on:
+       - capabilities-timeouts-and-prompt-behavior: `timeouts` and `unhandledPromptBehavior`
+         keep their classic meaning, with the binding enforcing what the remote end no longer
+         does. It owns where a timeout value comes from; this record owns what a navigation
+         wait does with one.
+       - file-handling: an element upload method, download retrieval, and handlers for file
+         dialogs and downloads.
+       - browsing-contexts-and-windows: a windows namespace, window values, client windows and
+         viewport, with switching left explicit and context objects left undecided.
+-->
+
 - Status: Proposed
 - Discussion:
 
@@ -69,8 +106,11 @@ is where the fourth state lives, because it has no classic capability value to i
 session-wide default of "committed" is not a thing classic users can ask for.
 
 **7. The binding enforces the page load timeout.** A navigation command that waits for a readiness
-state is bounded by the classic page load timeout, enforced client-side, raising the binding's
-existing page-load timeout error.
+state is bounded by the classic page load timeout — the value a user sets through the `timeouts`
+capability, which is where it has always come from — enforced client-side because the protocol
+enforces nothing, and raising the binding's existing page-load timeout error. This record takes the
+value as given and decides only what a navigation wait does with it; the capability surface itself
+is settled separately, and nothing here changes how a user sets it.
 
 **8. An expired wait does not cancel the navigation, and the session stays usable.** The browser
 continues loading. After the error, the session is in the same state it would be in after any
@@ -121,5 +161,8 @@ commands that did not have one. Bindings that already model readiness internally
 what they have; the others add it.
 
 Follow-up decisions this makes necessary: what a handler receives for events on a context that is
-not a top-level window, once frames or contexts become addressable; and whether the script timeout
-gets the same client-side enforcement, which belongs to the script and logging record.
+not a top-level window, which only arises if frames or browsing contexts become addressable in
+their own right; and whether script evaluation gets the same client-side enforcement of the script
+timeout, which has the same cause — BiDi defines no timeouts — but belongs with whatever record
+settles the script and logging API, since that is where the operations it would bound are
+decided.
