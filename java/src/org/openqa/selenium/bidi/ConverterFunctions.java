@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,5 +57,35 @@ public class ConverterFunctions {
       Object value = ((Map<?, ?>) Require.nonNull("Command result", result)).get(keyName);
       return Require.nonNull("Field '" + keyName + "'", JSON.convert(value, typeOfX));
     };
+  }
+
+  /**
+   * A stricter replacement for the shared {@code NumberCoercer<Long>}: that one accepts a JSON
+   * string by re-parsing it as a number, and silently truncates a fractional value. Every BiDi
+   * "integer" field (e.g. a spec'd js-int/js-uint) is required to hold a value strictly to its
+   * declared type inbound — see the low-level behavioral contract ADR — so this rejects both
+   * instead. Private: only ever instantiated once, for {@link #JSON} above.
+   */
+  private static class StrictLongCoercer extends TypeCoercer<Long> {
+
+    @Override
+    public boolean test(Class<?> aClass) {
+      return Long.class.equals(aClass) || long.class.equals(aClass);
+    }
+
+    @Override
+    public BiFunction<JsonInput, PropertySetting, Long> apply(Type ignored) {
+      return (jsonInput, setting) -> {
+        if (jsonInput.peek() != JsonType.NUMBER) {
+          throw new JsonException(
+              "Expected a JSON number for an integer value, got: " + jsonInput.peek());
+        }
+        Number number = jsonInput.nextNumber();
+        if (number.doubleValue() % 1 != 0) {
+          throw new JsonException("Expected an integer, got a fractional value: " + number);
+        }
+        return number.longValue();
+      };
+    }
   }
 }
