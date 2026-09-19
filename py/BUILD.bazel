@@ -299,6 +299,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        ":bidi_protocol",  # the supported modules build their wire frames with the generated types
         ":exceptions",
         ":remote",
         requirement("trio"),

@@ -56,6 +56,19 @@ from typing import Any
 
 ENHANCEMENTS: dict[str, dict[str, Any]] = {
     "browser": {
+        # set_client_window_state still builds its own frame: the supported `state` argument
+        # folds the spec's named-state and rect-state variants together (and adds a "normal"
+        # the spec's enum does not have), so it is not a straight translation.
+        "extra_imports": [
+            "from selenium.webdriver.common._bidi.browser import Browser as _ProtocolBrowser",
+            "from selenium.webdriver.common._bidi.browser import DownloadBehaviorAllowed as _DownloadAllowed",
+            "from selenium.webdriver.common._bidi.browser import DownloadBehaviorDenied as _DownloadDenied",
+            "from selenium.webdriver.common._bidi.serialization import UNSET as _UNSET",
+            "from selenium.webdriver.common._bidi.transport import Transport as _Transport",
+        ],
+        "extra_init_code": [
+            "self._protocol = _ProtocolBrowser(_Transport(conn))",
+        ],
         # Dataclass custom methods
         "__dataclass_methods__": {
             "ClientWindowInfo": [
@@ -153,14 +166,19 @@ class SetClientWindowStateParameters:
             destination_folder=destination_folder,
             user_contexts=user_contexts,
         )
-        download_behavior = transform_download_params(allowed, destination_folder)
-        # downloadBehavior is a REQUIRED field in the BiDi spec (can be null but
-        # must be present).  Do NOT use a generic None-filter on it.
-        params: dict = {"downloadBehavior": download_behavior}
-        if user_contexts is not None:
-            params["userContexts"] = user_contexts
-        cmd = command_builder("browser.setDownloadBehavior", params)
-        return self._conn.execute(cmd)''',
+        # downloadBehavior is required-but-nullable: None is sent as an explicit null to reset
+        # the browser default, which the layer keeps distinct from an omitted field.
+        if allowed is None:
+            download_behavior: Any = None
+        elif allowed:
+            download_behavior = _DownloadAllowed(destination_folder=str(destination_folder))
+        else:
+            download_behavior = _DownloadDenied()
+
+        return self._protocol.set_download_behavior(
+            download_behavior=download_behavior,
+            user_contexts=_UNSET if user_contexts is None else user_contexts,
+        )''',
             '''    def set_client_window_state(
         self,
         client_window: Any | None = None,
@@ -203,6 +221,17 @@ class SetClientWindowStateParameters:
     "browsingContext": {
         # Method enhancements
         "exclude_methods": ["set_viewport"],
+        # setViewport's omitted-vs-null rule is the layer's UNSET/None distinction, so the
+        # hand-rolled `...` sentinel only has to be translated rather than re-implemented.
+        "extra_imports": [
+            "from selenium.webdriver.common._bidi.browsing_context import BrowsingContext as _ProtocolBrowsingContext",
+            "from selenium.webdriver.common._bidi.browsing_context import Viewport as _Viewport",
+            "from selenium.webdriver.common._bidi.serialization import UNSET as _UNSET",
+            "from selenium.webdriver.common._bidi.transport import Transport as _Transport",
+        ],
+        "extra_init_code": [
+            "self._protocol = _ProtocolBrowsingContext(_Transport(conn))",
+        ],
         "create": {
             "extract_field": "context",
         },
@@ -255,19 +284,20 @@ class SetClientWindowStateParameters:
         Uses sentinel defaults so explicit None is serialized for viewport/devicePixelRatio,
         while omitted arguments are not sent.
         """
-        params = {}
-        if context is not None:
-            params["context"] = context
-        if user_contexts is not None:
-            params["userContexts"] = user_contexts
-        if viewport is not ...:
-            params["viewport"] = viewport
-        if device_pixel_ratio is not ...:
-            params["devicePixelRatio"] = device_pixel_ratio
+        if viewport is ...:
+            viewport_value: Any = _UNSET
+        elif isinstance(viewport, dict):
+            # Viewport is width/height only, so the caller's keys are already the field names.
+            viewport_value = _Viewport(**viewport)
+        else:
+            viewport_value = viewport
 
-        cmd = command_builder("browsingContext.setViewport", params)
-        result = self._conn.execute(cmd)
-        return result''',
+        return self._protocol.set_viewport(
+            context=_UNSET if context is None else context,
+            viewport=viewport_value,
+            user_contexts=_UNSET if user_contexts is None else user_contexts,
+            device_pixel_ratio=_UNSET if device_pixel_ratio is ... else device_pixel_ratio,
+        )''',
         ],
         # Non-CDDL download event dataclasses (Chromium-specific)
         "extra_dataclasses": [
@@ -1736,6 +1766,17 @@ class UserPromptHandler:
     "webExtension": {
         # Suppress the raw generated stubs; hand-written versions follow below
         "exclude_methods": ["install", "uninstall"],
+        # The extensionData variant is picked by the schema's union, not by a hand-built dict.
+        "extra_imports": [
+            "from selenium.webdriver.common._bidi.web_extension import ExtensionArchivePath as _ArchivePath",
+            "from selenium.webdriver.common._bidi.web_extension import ExtensionBase64Encoded as _Base64Encoded",
+            "from selenium.webdriver.common._bidi.web_extension import ExtensionPath as _Path",
+            "from selenium.webdriver.common._bidi.web_extension import WebExtension as _ProtocolWebExtension",
+            "from selenium.webdriver.common._bidi.transport import Transport as _Transport",
+        ],
+        "extra_init_code": [
+            "self._protocol = _ProtocolWebExtension(_Transport(conn))",
+        ],
         "extra_methods": [
             '''    def install(
         self,
@@ -1770,16 +1811,14 @@ class UserPromptHandler:
                 f"Exactly one of path, archive_path, or base64_value must be provided; got: {provided}"
             )
         if path is not None:
-            extension_data = {"type": "path", "path": path}
+            extension_data: Any = _Path(path=path)
         elif archive_path is not None:
-            extension_data = {"type": "archivePath", "path": archive_path}
+            extension_data = _ArchivePath(path=archive_path)
         else:
             assert base64_value is not None
-            extension_data = {"type": "base64", "value": base64_value}
-        params = {"extensionData": extension_data}
-        cmd = command_builder("webExtension.install", params)
+            extension_data = _Base64Encoded(value=base64_value)
         try:
-            return self._conn.execute(cmd)
+            return {"extension": self._protocol.install(extension_data=extension_data).extension}
         except Exception as e:
             if "Method not available" in str(e):
                 raise RuntimeError(
@@ -1808,9 +1847,7 @@ class UserPromptHandler:
         if extension_id is None:
             raise ValueError("extension parameter is required")
 
-        params = {"extension": extension_id}
-        cmd = command_builder("webExtension.uninstall", params)
-        return self._conn.execute(cmd)''',
+        return self._protocol.uninstall(extension=extension_id)''',
         ],
     },
     "input": {
@@ -1891,6 +1928,18 @@ class PointerDownAction:
                 "BiDi interface for controlling browser permissions.\n\nAccess via ``driver.permissions``."
             ),
         },
+        # The wire frame is built by the generated protocol types, so this module declares only
+        # the supported surface: argument coercion and the errors its docstrings promise.
+        "extra_imports": [
+            "from selenium.webdriver.common._bidi.permissions import PermissionDescriptor as _ProtocolDescriptor",
+            "from selenium.webdriver.common._bidi.permissions import PermissionState as _ProtocolState",
+            "from selenium.webdriver.common._bidi.permissions import Permissions as _ProtocolPermissions",
+            "from selenium.webdriver.common._bidi.serialization import UNSET as _UNSET",
+            "from selenium.webdriver.common._bidi.transport import Transport as _Transport",
+        ],
+        "extra_init_code": [
+            "self._protocol = _ProtocolPermissions(_Transport(conn))",
+        ],
         "extra_dataclasses": [
             '''class PermissionDescriptor:
     """Descriptor identifying a permission by name.
@@ -1926,7 +1975,8 @@ class PointerDownAction:
                 iframes; scopes the permission to that iframe's origin.
 
         Raises:
-            ValueError: If *state* is not a valid permission state.
+            ValueError: If *state* is not a valid permission state, or *origin*
+                is missing (the specification requires it).
         """
         state_value = state.value if isinstance(state, PermissionState) else state
         valid_states = {"granted", "denied", "prompt"}
@@ -1935,22 +1985,17 @@ class PointerDownAction:
                 f"Invalid permission state: {state_value!r}. "
                 f"Must be one of {sorted(valid_states)}"
             )
+        if origin is None:
+            raise ValueError("origin is required to scope a permission")
 
-        descriptor_dict = {"name": descriptor} if isinstance(descriptor, str) else {"name": descriptor.name}
-
-        params: dict = {
-            "descriptor": descriptor_dict,
-            "state": state_value,
-        }
-        if origin is not None:
-            params["origin"] = origin
-        if embedded_origin is not None:
-            params["embeddedOrigin"] = embedded_origin
-        if user_context is not None:
-            params["userContext"] = user_context
-
-        cmd = command_builder("permissions.setPermission", params)
-        self._conn.execute(cmd)''',
+        name = descriptor if isinstance(descriptor, str) else descriptor.name
+        self._protocol.set_permission(
+            descriptor=_ProtocolDescriptor(name=name),
+            state=_ProtocolState(state_value),
+            origin=origin,
+            embedded_origin=_UNSET if embedded_origin is None else embedded_origin,
+            user_context=_UNSET if user_context is None else user_context,
+        )''',
         ],
     },
     "bluetooth": {

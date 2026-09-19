@@ -241,6 +241,25 @@ class Record:
                 continue
             if w.enum is not None:
                 self._validate_enum(f.name, w, value)
+        if self._EXTENSIBLE:
+            self._checked_extensions()
+
+    def _checked_extensions(self) -> dict:
+        """The extras map, held to the rule that a declared key must never appear in it.
+
+        An extra can therefore never shadow a declared field on the wire — whether or not that
+        field is set. This is an invariant of the representation, so it is checked at
+        construction; :meth:`as_json` re-checks because a frozen record can still be mutated
+        through ``object.__setattr__``.
+        """
+        extras = getattr(self, "extensions", None) or {}
+        declared = {_wire_of(f).wire for f in _fields(self) if f.name != "extensions"}
+        shadowed = [k for k in extras if k in declared]
+        if shadowed:
+            raise BiDiSerializationError(
+                _summarize(type(self).__name__, "extension shadows declared field", shadowed, "not allowed")
+            )
+        return extras
 
     def _validate_enum(self, name: str, w: _Wire, value: Any) -> None:
         enum_cls = resolve(w.enum)  # type: ignore[arg-type]
@@ -260,12 +279,10 @@ class Record:
 
     def as_json(self) -> dict:
         payload: dict = {}
-        declared: set[str] = set()
         for f in _fields(self):
             if f.name == "extensions":
                 continue
             w = _wire_of(f)
-            declared.add(w.wire)
             value = getattr(self, f.name)
             if value is UNSET:
                 # The constructor already requires every required field; this backstops a
@@ -276,18 +293,9 @@ class Record:
                 continue
             if value is None and not w.nullable:
                 continue
-            _validate_outbound(type(self).__name__, f.name, w, value)
-            payload[w.wire] = _as_json(value)
+            payload[w.wire] = _as_json(_prepare_outbound(type(self).__name__, f.name, w, value))
         if self._EXTENSIBLE:
-            extras = getattr(self, "extensions", None) or {}
-            # A key the type declares must never appear in the extras map, so an
-            # extra can never shadow a declared field on the wire — whether or not that field is set.
-            shadowed = [k for k in extras if k in declared]
-            if shadowed:
-                raise BiDiSerializationError(
-                    _summarize(type(self).__name__, "extension shadows declared field", shadowed, "not allowed")
-                )
-            payload.update({k: _as_json(v) for k, v in extras.items()})
+            payload.update({k: _as_json(v) for k, v in self._checked_extensions().items()})
         return payload
 
     @classmethod
@@ -436,22 +444,25 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     return raw
 
 
-def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
-    """Reject an outbound value that violates its wire type before it is sent.
+def _prepare_outbound(owner: str, name: str, w: _Wire, value: Any) -> Any:
+    """Check an outbound value against its wire type and return it in wire form.
 
     A caller mistake — a wrong primitive, a scalar where a list is expected, a raw dict where a
     typed record belongs — surfaces here as a local error rather than a remote protocol error.
+    The value is returned rather than only inspected because a whole float on an integer field
+    is valid but is narrowed to an int before it is sent (see :func:`_prepare_outbound_scalar`).
     """
     if value is None:
-        return  # nullability is handled by as_json
+        return value  # nullability is handled by as_json
     if w.is_list:
         if not isinstance(value, list):
             raise BiDiSerializationError(f"{owner}.{name}: expected a list, got {type(value).__name__} {value!r}")
-        validate_item = _validate_outbound_map_entry if w.scalar is not None else _validate_outbound_scalar
-        for item in value:
-            validate_item(owner, name, w, item)
-        return
-    _validate_outbound_scalar(owner, name, w, value)
+        if w.scalar is not None:
+            for item in value:
+                _validate_outbound_map_entry(owner, name, w, item)
+            return value
+        return [_prepare_outbound_scalar(owner, name, w, item) for item in value]
+    return _prepare_outbound_scalar(owner, name, w, value)
 
 
 def _validate_ref_value(owner: str, name: str, klass: Any, value: Any) -> None:
@@ -496,20 +507,26 @@ def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) 
     _validate_ref_value(owner, name, klass, value)
 
 
-def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
+def _prepare_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> Any:
     if value is None:
-        return  # null is handled upstream
+        return value  # null is handled upstream
     if w.enum is not None:
-        return  # enum membership is validated at construction (__post_init__)
+        return value  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:
         _validate_ref_value(owner, name, resolve(w.ref), value)
-        return
+        return value
     if w.primitive is not None:
         check = _PRIMITIVE_CHECKS.get(w.primitive)
         if check and not check(value):
             raise BiDiSerializationError(
                 f"{owner}.{name}: expected {w.primitive}, got {type(value).__name__} {value!r}"
             )
+        if w.primitive == "int" and isinstance(value, float):
+            # A whole float is a valid integer inbound, so it is accepted outbound too — but it
+            # goes on the wire as an integer, mirroring _read_scalar. A remote end holding the
+            # field to `js-uint` need not accept `5.0`, and the value is exact in both types.
+            return int(value)
+    return value
 
 
 class Union:
