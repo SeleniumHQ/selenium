@@ -22,8 +22,12 @@ import org.openqa.selenium.Beta;
 
 /**
  * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ *
+ * @deprecated use {@link org.openqa.selenium.webextension.HasWebExtensions}, which every driver
+ *     exposes and which also works over WebDriver BiDi and the Grid.
  */
 @Beta
+@Deprecated(since = "4.49", forRemoval = true)
 public interface HasExtensions {
 
   /**
