@@ -179,7 +179,7 @@ class WebElement(BaseWebElement):
         """
         return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
 
-    def get_attribute(self, name) -> str | None:
+    def get_attribute(self, name: str) -> str | None:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
