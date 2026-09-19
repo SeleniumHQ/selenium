@@ -63,6 +63,7 @@ binding = "Exec"
     "*.json",
     "*.xpi",
     "*.js",
+    "llms.txt",
     "py.typed",
     "prune*",
     "selenium.egg-info*",
