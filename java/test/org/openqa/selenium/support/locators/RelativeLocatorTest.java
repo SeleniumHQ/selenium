@@ -405,4 +405,39 @@ class RelativeLocatorTest extends JupiterTestBase {
 
     assertThat(cell.getAttribute("id")).isEqualTo("maria");
   }
+
+  @Test
+  void shouldOnlySearchWithinTheContextElement() {
+    String url =
+        appServer.create(
+            new Page()
+                .withTitle("Scoped Relative Locator")
+                .withBody(
+                    "<div id=\"scope\" style=\"position: absolute; left: 0; top: 0;\">\n"
+                        + "    <div id=\"anchor\" style=\"position: absolute; left: 0; top: 0;"
+                        + " width: 50px; height: 20px;\">anchor</div>\n"
+                        + "    <p id=\"inside\" style=\"position: absolute; left: 0;"
+                        + " top: 40px;\">inside</p>\n"
+                        + "  </div>\n"
+                        + "  <p id=\"outside\" style=\"position: absolute; left: 0;"
+                        + " top: 80px;\">outside</p>"));
+    driver.get(url);
+
+    WebElement scope = driver.findElement(By.id("scope"));
+    WebElement anchor = driver.findElement(By.id("anchor"));
+
+    // Both paragraphs are below the anchor, but only "inside" is within the scope element.
+    List<String> scoped =
+        scope.findElements(with(tagName("p")).below(anchor)).stream()
+            .map(e -> e.getAttribute("id"))
+            .collect(Collectors.toList());
+    assertThat(scoped).containsExactly("inside");
+
+    // The same locator from the driver is not scoped, so it sees both.
+    List<String> fromDriver =
+        driver.findElements(with(tagName("p")).below(anchor)).stream()
+            .map(e -> e.getAttribute("id"))
+            .collect(Collectors.toList());
+    assertThat(fromDriver).containsExactly("inside", "outside");
+  }
 }
