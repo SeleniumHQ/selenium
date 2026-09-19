@@ -117,8 +117,8 @@ three classic values and add one), element screenshots (the screenshot clip), an
 (addressable directly as contexts).
 
 **What follows from this.** Three of the four are capability behavior, which the capabilities
-record settles. Stale element semantics is the exception and is tracked as its own issue. No
-separate compatibility record is needed.
+record settles. Stale element semantics is the exception: it is its own decision, to be filed as
+an issue — that issue does not exist yet. No separate compatibility record is needed.
 
 ---
 
@@ -142,6 +142,20 @@ is the user-facing part: handlers are added, removed, and cleared independently.
 **The compatibility expectation is implicit.** That enabling BiDi does not change an existing API's
 behavior underlies all of these records; the only place it currently has anything concrete to say
 is the capabilities record, which is where it is stated.
+
+## Proposing these
+
+A record's number is its own pull request's number, so the four records need four pull requests —
+one each, against separate branches. A single pull request carrying all four can only take one
+number, and three of the records would be misnumbered for the rest of their lives.
+
+For each: open the pull request with the ADR template (append `?expand=1&template=adr.md` to the
+compare URL, since GitHub offers no picker), rename the file to `NNNN-short-title.md` with the
+number GitHub assigns, and fill in the record's `Discussion:` field with the pull request link.
+Once the numbers exist, the links in this document point at the old filenames and need updating.
+
+The acceptance requirements are in [decisions/README.md](../decisions/README.md) and apply
+unchanged: a week open, a TLC agenda slot, and consensus with no unresolved objection.
 
 ## Records already indexed
 
