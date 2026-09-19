@@ -507,8 +507,8 @@ use_repo(
 webref_cddl_extension = use_extension("//common:webref_cddl.bzl", "webref_cddl_extension")
 use_repo(
     webref_cddl_extension,
-    "at_driver_all_cddl",
     "digital_credentials_all_cddl",
+    "digital_credentials_dfns",
     "permissions_all_cddl",
     "permissions_dfns",
     "prefetch_all_cddl",
