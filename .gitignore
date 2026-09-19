@@ -141,7 +141,7 @@ rust/.idea
 # Bazel stuff
 /bazel-*
 MODULE.bazel.lock
-/exec.log
+exec.log
 
 /.vscode/
 /.scannerwork/

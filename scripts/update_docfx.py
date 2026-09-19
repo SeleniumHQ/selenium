@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Update docfx_repo.bzl to the latest DocFX package on NuGet.
 
 This script fetches the latest stable DocFX version (or a user-specified one),

@@ -190,6 +190,20 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+
+    public void CanSetTextLayoutModeOverride()
+    {
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetTextLayoutModeOverrideAsync(TextLayoutMode.Mobile, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new OpenQA.Selenium.BiDi.Emulation.ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);

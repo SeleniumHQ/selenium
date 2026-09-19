@@ -82,6 +82,7 @@ module Selenium
           driver.find_element(id: 'file-1').click
           driver.find_element(id: 'file-2').click
 
+          wait.until { driver.downloadable_files.include? 'file_1.txt' }
           wait.until { driver.downloadable_files.include? 'file_2.jpg' }
         end
       end

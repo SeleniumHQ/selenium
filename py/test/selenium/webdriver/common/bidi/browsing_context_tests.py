@@ -22,6 +22,7 @@ import time
 
 import pytest
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.window import WindowTypes
@@ -205,17 +206,27 @@ def test_close_tab(driver):
     driver.browsing_context.close(tab1)
 
 
-def test_activate_browsing_context(driver):
+def test_activate_browsing_context(driver, headless):
     """Test activating a browsing context."""
     window1 = driver.current_window_handle
     # 2nd window is focused
     window2 = driver.browsing_context.create(type=WindowTypes.WINDOW)
 
+    # Focus is handed over asynchronously, so poll rather than reading once. Headless
+    # Chromium has no window manager and never hands it over at all, so skip there
+    # instead of failing; headless Firefox does, and keeps the full assertions.
     # We did not switch the driver, so we are running the script to check focus on 1st window
-    assert not driver.execute_script("return document.hasFocus();")
+    try:
+        WebDriverWait(driver, 5).until_not(lambda d: d.execute_script("return document.hasFocus();"))
+    except TimeoutException:
+        if headless:
+            driver.browsing_context.close(window2)
+            pytest.skip("this headless browser does not move focus between windows")
+        raise
 
     driver.browsing_context.activate(window1)
 
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return document.hasFocus();"))
     assert driver.execute_script("return document.hasFocus();")
 
     # Clean up

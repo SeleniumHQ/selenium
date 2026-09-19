@@ -1,4 +1,4 @@
-name: Nightly
+name: Release - Nightly
 on:
   schedule:
     - cron: 0 0 * * *
@@ -22,11 +22,6 @@ on:
         required: false
         type: string
         default: "all"
-      ignore_release_check:
-        description: Publish even while a release ruleset is active; set by release.yml, which drives this workflow as part of the release itself
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -56,7 +51,6 @@ jobs:
           fi
       - name: Check if release ruleset is active
         id: check
-        if: ${{ !inputs.ignore_release_check }}
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           GH_REPO: ${{ github.repository }}
@@ -67,9 +61,20 @@ jobs:
             echo "skip-publish=true" >> "$GITHUB_OUTPUT"
           fi
 
+  # Same warm cache the release gets, so the nightly timings are the release timings
+  prepare-release:
+    name: Prepare Release
+    needs: prepare
+    if: needs.prepare.outputs.skip-publish != 'true'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Prepare Release
+      ruby-version: jruby-10.1.0.0
+      run: ./scripts/github-actions/prepare-release.sh
+
   nightly-release:
     name: Nightly ${{ matrix.language }}
-    needs: prepare
+    needs: [prepare, prepare-release]
     if: needs.prepare.outputs.skip-publish != 'true'
     strategy:
       fail-fast: false
@@ -78,7 +83,8 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly ${{ matrix.language }} Release
-      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly', matrix.language) || 'echo skipping' }}
+      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
+      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly rbe', matrix.language) || 'echo skipping' }}
       artifact-name: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-name || '' }}
       artifact-path: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-path || '' }}
     secrets: inherit
@@ -87,28 +93,16 @@ jobs:
     name: Release Grid
     needs: [prepare, nightly-release]
     if: always() && needs.prepare.outputs.artifact-name && needs.nightly-release.result != 'skipped'
-    runs-on: ubuntu-latest
     permissions:
       contents: write
-    steps:
-      - name: Download grid packages
-        uses: actions/download-artifact@v8
-        with:
-          name: nightly-grid
-          path: build/dist
-      - name: Create nightly release
-        uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: nightly
-          title: Nightly
-          prerelease: true
-          files: build/dist/*.*
+    uses: ./.github/workflows/release-grid.yml
+    with:
+      artifact-name: ${{ needs.prepare.outputs.artifact-name }}
 
   on-failure:
     name: Notify on Failure
     runs-on: ubuntu-latest
-    needs: [prepare, nightly-release, release-grid]
+    needs: [prepare, prepare-release, nightly-release, release-grid]
     if: failure()
     steps:
       - uses: actions/checkout@v6

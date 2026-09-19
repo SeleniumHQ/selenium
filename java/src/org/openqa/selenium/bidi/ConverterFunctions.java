@@ -19,76 +19,43 @@ package org.openqa.selenium.bidi;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonType;
-import org.openqa.selenium.json.PropertySetting;
-import org.openqa.selenium.json.StaticInitializerCoercer;
-import org.openqa.selenium.json.TypeCoercer;
 
 @Beta
 public class ConverterFunctions {
 
-  /**
-   * The shared {@link Json} every generated BiDi type is decoded through, including via {@link
-   * #fromMap}. Adds {@code StrictLongCoercer} (rejects a string or fractional value for an integer
-   * field) and {@link StaticInitializerCoercer} ahead of {@code EnumCoercer} (so a generated enum's
-   * exact-match {@code fromJson} runs, not the case-insensitive default) — both scoped to this
-   * instance only.
-   */
-  public static final Json JSON =
-      new Json(List.of(new StrictLongCoercer(), new StaticInitializerCoercer()));
+  private static final Json JSON = new Json();
 
   private ConverterFunctions() {
     throw new IllegalStateException("Utility class");
   }
 
   /**
-   * Returns a function that deserializes a {@code Map<String, Object>} event payload into an
-   * instance of {@code type} via the Selenium JSON library (ConstructorCoercer).
+   * Build a {@link Command} result mapper for the common case where the useful value is a single
+   * field of the response's {@code result} object.
    *
-   * @param type the class to deserialize the map into
-   * @param <T> the deserialized type
-   * @return a function that converts a raw event payload into an instance of {@code type}
+   * <p>The returned function is applied to a command's {@code result} value, which {@link
+   * org.openqa.selenium.bidi.Connection} has already parsed into a {@code Map<String, Object>}. It
+   * reads {@code keyName} from that map and deserializes it to {@code typeOfX} via {@link
+   * Json#convert(Object, Type)}, without re-parsing any JSON text. Both the {@code result} and the
+   * field are required: a missing {@code result} or a {@code null}/absent field is an error.
+   *
+   * @param keyName the field to read from the command's {@code result} object
+   * @param typeOfX the type to deserialize that field to (class or {@link
+   *     org.openqa.selenium.json.TypeToken})
    */
-  public static <T> Function<Map<String, Object>, T> fromMap(Class<T> type) {
-    Require.nonNull("Type", type);
-    return map -> {
-      String json = JSON.toJson(map);
-      try (StringReader reader = new StringReader(json);
-          JsonInput input = JSON.newInput(reader)) {
-        return input.readNonNull(type);
-      }
-    };
-  }
-
-  public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Type typeOfX) {
+  public static <X> Function<@Nullable Object, X> map(String keyName, Type typeOfX) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Type to convert to", typeOfX);
 
-    return input -> {
-      X value = null;
-
-      input.beginObject();
-      while (input.hasNext()) {
-        String name = input.nextName();
-        if (keyName.equals(name)) {
-          value = input.read(typeOfX);
-        } else {
-          input.skipValue();
-        }
-      }
-      input.endObject();
-
-      return value;
+    return result -> {
+      Object value = ((Map<?, ?>) Require.nonNull("Command result", result)).get(keyName);
+      return Require.nonNull("Field '" + keyName + "'", JSON.convert(value, typeOfX));
     };
   }
 

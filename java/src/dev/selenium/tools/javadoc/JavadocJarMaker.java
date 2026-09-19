@@ -72,6 +72,8 @@ public class JavadocJarMaker {
         case "--out":
           out = Paths.get(next);
           break;
+        default:
+          throw new IllegalArgumentException(String.format("Unknown argument: %s", flag));
       }
     }
 
@@ -214,7 +216,8 @@ public class JavadocJarMaker {
             throw new IOException("Attempt to write out of working directory");
           }
 
-          Files.createDirectories(target.getParent());
+          Path parent = target.getParent();
+          if (parent != null) Files.createDirectories(parent);
           try (OutputStream out = Files.newOutputStream(target)) {
             zis.transferTo(out);
           }
