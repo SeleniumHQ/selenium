@@ -5,22 +5,19 @@
 
 ## Purpose
 
-This is a planning document, not a decision. It indexes the BiDi decision records drafted so far,
-sizes each one, and records the protocol gaps they answer.
+This is a planning document, not a decision. Four BiDi decision records are drafted; each stands on
+its own and carries its own context. This document is what the records cannot hold individually:
+how they size against each other, which events they account for between them, and the few loose
+ends that belong to none of them.
 
-The decisions live in the records themselves; this document exists so the set can be read whole.
-Writing a record does not put it in a release: what a given release carries is decided separately,
-with the end state visible, and the charter ([selenium-5.md](selenium-5.md)) picks up whichever
-records are scoped into Selenium 5.
+Writing a record does not put it in a release. What a given release carries is decided separately,
+and the charter ([selenium-5.md](selenium-5.md)) picks up whichever records are scoped into
+Selenium 5.
 
-Protocol references are to the WebDriver BiDi specification source (`index.bs` in
-[w3c/webdriver-bidi](https://github.com/w3c/webdriver-bidi)); line numbers are from the September
-2026 editor's draft and locate the algorithm rather than serving as stable citations.
+Once the four are accepted, only the event coverage table below has a continuing reason to exist,
+and it could move to the charter. This document can be deleted then.
 
 ## The records
-
-All four are drafted. Being drafted says nothing about which release carries them — the point is
-to see the end state whole and size each one before that question is answered.
 
 | Record | Settles | Size |
 |---|---|---|
@@ -29,8 +26,9 @@ to see the end state whole and size each one before that question is answered.
 | [File handling](../decisions/file-handling.md) | A `driver.file` namespace, an element upload method, download retrieval, dialog and download handlers | Large |
 | [Browsing contexts and windows](../decisions/browsing-contexts-and-windows.md) | A windows namespace, window values, client windows, viewport, window events; switching stays explicit | Extra large |
 
-The drafts state decisions rather than options, so they can be argued with. Every one of them is a
-position to revise in review, not a conclusion already reached.
+Each is numbered by its own pull request, so each needs its own branch and PR; the process is in
+[decisions/README.md](../decisions/README.md) and repeated in each record's header. When a record
+is renamed to `NNNN-title.md`, the link to it above needs updating.
 
 ## What drives the size
 
@@ -46,7 +44,7 @@ blast radius is wider than its surface suggests.
 **Navigation and waits — medium.** Almost entirely additive: eight handler families of the same
 shape, one value type, a readiness argument on navigation commands, and the page load deadline.
 No deprecations. Python needs a navigation object or an explicit decision not to have one. The one
-entanglement is the deadline, which record 1 owns and this record consumes.
+entanglement is the deadline, which the capabilities record owns and this record consumes.
 
 **File handling — large, mostly deprecation.** The new surface is modest — a namespace, an element
 method, two handler families, and download retrieval moving. The weight is in retiring
@@ -60,67 +58,34 @@ windows, viewport), window events, and the deprecation of `manage().window()` in
 Python's flat window methods. It is also the record with the least compatibility pressure behind
 it, which makes it the natural thing to stage across releases if the whole does not fit.
 
-## One thing worth deciding before the records are argued
+## Event coverage
 
-Three of the four define handler conventions of their own — how a handler is registered, removed,
-and cleared, what it can be filtered by, whether it can block, and what thread it runs on. Only the
-blocking answer differs between them, and only because the protocol differs. Three records
-answering the same four questions is three chances to answer them differently, and the drafts
-already say so in their own consequences.
+Where each subscribable event lands if all four records are accepted as drafted. The core
+specification defines 24 events; three more come from extension specifications.
 
-Lifting those conventions into one short record would shrink all three and remove that risk. It
-would also add a dependency: nothing else could be accepted until it was. Worth deciding on
-purpose rather than discovering in the third review.
+| Events | Record |
+|---|---|
+| `network.beforeRequestSent`, `responseStarted`, `responseCompleted`, `fetchError`, `authRequired` | [17685](../decisions/17685-network-handler-behavior.md), accepted |
+| `log.entryAdded`, `script.message` | Script and logging |
+| `script.realmCreated`, `realmDestroyed` | Unclaimed — see below |
+| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load`, `historyUpdated` | Navigation and waits |
+| `browsingContext.userPromptOpened`, `userPromptClosed` | Capabilities |
+| `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling |
+| `browsingContext.contextCreated`, `contextDestroyed` | Browsing contexts and windows |
+| `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
 
-## A. Where BiDi cannot express classic behavior
+## What BiDi can express, and does not need a decision
 
-Testing the bindings with the websocket on and off is already planned and is not this. The question
-here is narrower and answerable from the specifications: which classic behaviors can a remote end
-*not* reproduce over BiDi, however well it is implemented? Those are the places where a binding has
-to build the behavior locally or accept a difference, and each one needs an owner.
+Checked while drafting, so the gap list in the capabilities record can be read as complete rather
+than merely long. None of these needs anything built: window rect and state
+(`browser.setClientWindowState` takes `normal` with x, y, width, and height, plus fullscreen,
+maximized, and minimized), page load strategy (the readiness states cover all three classic values
+and add a fourth), element screenshots (the screenshot clip), and frames (addressable directly as
+contexts).
 
-The list is short, and each entry below is confirmed against the specification rather than
-suspected.
-
-1. **Prompt handling — the notify variants and the timing.** BiDi applies the handler when the
-   prompt opens (index.bs:6516) and offers only `accept`, `dismiss`, `ignore` (index.bs:2003). The
-   word "notify" does not appear in the specification, so classic's `dismiss and notify`, `accept
-   and notify`, and the classic default cannot be expressed at all. **Owner: the capabilities record** — a
-   capability whose behavior the remote end no longer implements the classic way.
-
-2. **Timeouts.** `session.CapabilityRequest` has no `timeouts` member (index.bs:1881) and the only
-   occurrences of the word are TODOs proposing one for script evaluation (index.bs:13571, 13757).
-   A page load timeout and a script timeout have no protocol equivalent; only the client can bound
-   them. **Owner: the capabilities record** for the capability itself; the navigation record for
-   what a wait does when its deadline expires; the script and logging record for script
-   evaluation if it wants it.
-
-3. **Implicit wait.** `browsingContext.locateNodes` takes a context, locator, node count,
-   serialization options, and start nodes (index.bs:4537) — there is no wait, and nothing retries
-   in the remote end. Classic's implicit wait is remote-end behavior with no BiDi counterpart.
-   **Owner: the capabilities record**, which covers all three classic timeouts: implicit wait keeps
-   its meaning, stays remote-enforced while element location is classic, and becomes the binding's
-   to enforce if location moves to BiDi.
-
-4. **Stale element semantics.** BiDi defines no stale element error. The closest is "no such node",
-   for deserializing an unknown `SharedReference`, and the specification carries an open issue to
-   "handle the stale object reference case" (index.bs:12357). A classic
-   `StaleElementReferenceException` has no protocol equivalent. **Its own decision**, tracked as an
-   issue rather than folded into a record here: unlike the timeouts, there is no classic capability
-   it hangs off, and it only matters once elements come from BiDi rather than classic. The
-   capabilities record notes it as adjacent.
-
-Checked and **not** gaps, so nothing needs to be built for them: window rect and state
-(`browser.setClientWindowState` takes `normal` with x, y, width, height, plus fullscreen,
-maximized, and minimized — index.bs:3060), page load strategy (the readiness states cover all
-three classic values and add one), element screenshots (the screenshot clip), and frames
-(addressable directly as contexts).
-
-**What follows from this.** Three of the four are capability behavior, which the capabilities
-record settles. Stale element semantics is the exception: it is its own decision, to be filed as
-an issue — that issue does not exist yet. No separate compatibility record is needed.
-
----
+The classic behaviors BiDi genuinely cannot express — the prompt handler's notify variants and
+timing, and the three classic timeouts — are stated in full in the capabilities record, which
+settles them.
 
 ## Notes on scope
 
@@ -143,43 +108,20 @@ is the user-facing part: handlers are added, removed, and cleared independently.
 behavior underlies all of these records; the only place it currently has anything concrete to say
 is the capabilities record, which is where it is stated.
 
-## Proposing these
+## Loose ends belonging to no record
 
-A record's number is its own pull request's number, so the four records need four pull requests —
-one each, against separate branches. A single pull request carrying all four can only take one
-number, and three of the records would be misnumbered for the rest of their lives.
+**Realm events.** `script.realmCreated` and `script.realmDestroyed` are claimed by nothing. The
+pending script and logging record should take them or say they are deferred.
 
-For each: open the pull request with the ADR template (append `?expand=1&template=adr.md` to the
-compare URL, since GitHub offers no picker), rename the file to `NNNN-short-title.md` with the
-number GitHub assigns, and fill in the record's `Discussion:` field with the pull request link.
-Once the numbers exist, the links in this document point at the old filenames and need updating.
+**Stale element semantics.** BiDi defines no stale element error — the nearest is "no such node",
+for an unknown reference, and the specification carries an open issue on the stale object reference
+case — so a classic `StaleElementReferenceException` has no protocol equivalent. It hangs off no
+capability, and only bites once elements come from BiDi rather than Classic. It needs an issue;
+none has been filed. The capabilities record notes it as adjacent so a reader of that record does
+not conclude its gap list is the whole story.
 
-The acceptance requirements are in [decisions/README.md](../decisions/README.md) and apply
-unchanged: a week open, a TLC agenda slot, and consensus with no unresolved objection.
-
-## Records already indexed
-
-**Script and logging async/event API** — pinned scripts and the console-message,
-JavaScript-error, and DOM-mutation handlers. One gap to close while it is written:
-`script.realmCreated` and `script.realmDestroyed` are claimed by nothing here. The record should
-take them or say they are deferred. Script timeout has the same no-timeout problem as navigation
-(index.bs:13571) and is a candidate for the same treatment.
-
-**Selenium Manager released API** — unrelated to the BiDi surface.
-
-## Event coverage
-
-Where each subscribable event lands if all four records are accepted as drafted. The core
-specification defines 24 events; three more come from extension specifications.
-
-| Events | Record |
-|---|---|
-| `network.beforeRequestSent`, `responseStarted`, `responseCompleted`, `fetchError`, `authRequired` | [17685](../decisions/17685-network-handler-behavior.md), accepted |
-| `log.entryAdded`, `script.message` | Script and logging |
-| `script.realmCreated`, `realmDestroyed` | Script and logging, if it claims them |
-| `browsingContext.navigationStarted`, `navigationCommitted`, `navigationAborted`, `navigationFailed`, `fragmentNavigated`, `domContentLoaded`, `load` | Navigation and waits |
-| `browsingContext.historyUpdated` | Navigation and waits — exposed, and ruled out of the navigation contract |
-| `browsingContext.userPromptOpened`, `userPromptClosed` | Capabilities |
-| `input.fileDialogOpened`, `browsingContext.downloadWillBegin`, `downloadEnd` | File handling |
-| `browsingContext.contextCreated`, `contextDestroyed` | Browsing contexts and windows |
-| `bluetooth.requestDevicePromptUpdated`, `gattConnectionAttempted`, `speculation.prefetchStatusUpdated` | Deferred; defined outside the core specification |
+**Handler conventions.** Three records each state how a handler is added, removed, cleared, and
+filtered, and whether it can block. Only the blocking answer differs, and only because the protocol
+differs. Lifting the rest into one record would shrink all three, at the cost of a dependency
+nothing else could be accepted ahead of. Worth deciding on purpose rather than discovering in the
+third review.
