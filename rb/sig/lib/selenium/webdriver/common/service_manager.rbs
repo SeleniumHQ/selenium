@@ -43,6 +43,20 @@ module Selenium
 
       STOP_TIMEOUT: Integer
 
+      self.@running: Array[ServiceManager]
+
+      self.@running_mutex: Thread::Mutex
+
+      self.@exit_hook_pid: Integer?
+
+      def self.stop_running: () -> void
+
+      def self.track: (ServiceManager manager) -> void
+
+      def self.untrack: (ServiceManager manager) -> void
+
+      private def self.claim_for_this_process: () -> void
+
       def initialize: (untyped config) -> void
 
       def start: () -> untyped
