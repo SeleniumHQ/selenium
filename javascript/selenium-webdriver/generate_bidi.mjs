@@ -36,29 +36,11 @@ import { parseArgs } from 'node:util'
 // Domain configuration
 // ============================================================
 
-// Maps the domain segment in a BiDi method string (e.g. "browsingContext"
-// from "browsingContext.activate") to a canonical domain key.
-const METHOD_DOMAIN_MAP = {
-  browser: 'browser',
-  browsingContext: 'browsingContext',
-  emulation: 'emulation',
-  input: 'input',
-  log: 'log',
-  network: 'network',
-  permissions: 'permissions',
-  script: 'script',
-  session: 'session',
-  speculation: 'speculation',
-  storage: 'storage',
-  userAgentClientHints: 'userAgentClientHints',
-  webExtension: 'webExtension',
-  bluetooth: 'bluetooth',
-}
-
 // Maps TypeScript export name prefixes to domain keys.
 // Ordered longest-first so the most specific prefix always wins.
 const NAME_PREFIX_TO_DOMAIN = [
   ['UserAgentClientHints', 'userAgentClientHints'],
+  ['DigitalCredentials', 'digitalCredentials'],
   ['BrowsingContext', 'browsingContext'],
   ['WebExtension', 'webExtension'],
   ['Permissions', 'permissions'],
@@ -90,6 +72,7 @@ const DOMAIN_FILES = {
   userAgentClientHints: 'user_agent_client_hints.ts',
   webExtension: 'webextension.ts',
   bluetooth: 'bluetooth.ts',
+  digitalCredentials: 'digital_credentials.ts',
   common: 'common.ts',
 }
 
@@ -110,6 +93,7 @@ const DOMAIN_CLASSES = {
   userAgentClientHints: 'UserAgentClientHints',
   webExtension: 'WebExtension',
   bluetooth: 'Bluetooth',
+  digitalCredentials: 'DigitalCredentials',
 }
 
 // ============================================================
@@ -299,6 +283,11 @@ function generateTypeScript(ast, model, args) {
   const outputDir = resolve(args['output-dir'])
   const specVersion = args['spec-version']
   const enhancements = loadEnhancements(args.enhancements)
+
+  const unmapped = Object.keys(model).filter((d) => !(d in DOMAIN_FILES))
+  if (unmapped.length) {
+    throw new Error(`model domains without a DOMAIN_FILES/DOMAIN_CLASSES entry: ${unmapped.join(', ')}`)
+  }
 
   console.log('Pass 1: generating types via cddl2ts…')
   const rawTypes = transform(ast)
@@ -648,9 +637,8 @@ function parseLeafDef(def) {
   const dotIdx = methodStr.indexOf('.')
   if (dotIdx === -1) return null
 
-  const domainRaw = methodStr.slice(0, dotIdx)
+  const domain = methodStr.slice(0, dotIdx)
   const operationName = methodStr.slice(dotIdx + 1)
-  const domain = METHOD_DOMAIN_MAP[domainRaw] ?? 'common'
 
   const paramsTypeEntries = Array.isArray(paramsProp.Type) ? paramsProp.Type : [paramsProp.Type]
   let paramsCddl = null
