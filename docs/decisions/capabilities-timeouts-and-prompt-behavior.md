@@ -19,9 +19,9 @@ open, and is the only value under which a prompt can still be inspected or answe
 
 **`timeouts`.** BiDi has no timeouts at all. `session.CapabilityRequest` has no `timeouts` member,
 and the only occurrences of the word in the specification are open TODOs proposing one for script
-evaluation. Nothing bounds a `browsingContext.navigate` that never completes except the client.
-The classic page load and script timeouts therefore have no protocol equivalent; implicit wait has
-none either, but nothing in this release locates elements over BiDi.
+evaluation. Nothing bounds a `browsingContext.navigate` that never completes except the client. All
+three classic timeouts are affected in principle — page load, script, and implicit — though only
+the first two govern operations that run over BiDi today, since element location does not.
 
 The result is that turning on `webSocketUrl` can change what a program does without the program
 changing. That is the problem this record solves, for these two capabilities.
@@ -58,11 +58,14 @@ capability does not define — that is, using the BiDi value `ignore` — means 
 prompt opens and stays open, and the binding does not apply anything at the next command. This is
 the escape hatch for users who want the protocol's semantics; it is never the default.
 
-**5. `timeouts` remains the single surface, and the binding enforces it.** Page load and script
-timeouts apply to operations that run over BiDi, enforced client-side, raising the same error the
-binding raises today for the classic path. A binding must not silently wait forever for a protocol
-operation that has a classic timeout governing it. The transport's own websocket deadline is a
-separate concern and is not user-configurable through `timeouts`.
+**5. `timeouts` remains the single surface for all three timeouts, and the binding enforces
+whichever of them governs an operation running over BiDi.** Page load and script timeouts apply to
+BiDi operations today, enforced client-side, raising the same error the binding raises for the
+classic path. A binding must not silently wait forever for a protocol operation that has a classic
+timeout governing it. Implicit wait keeps its meaning and stays remote-enforced while element
+location runs over Classic; if location moves to BiDi it is enforced by the binding on the same
+terms as the other two, with no change to how a user sets it. The transport's own websocket
+deadline is a separate concern and is not user-configurable through `timeouts`.
 
 **6. An expired client-side timeout does not cancel the operation.** The browser keeps doing what
 it was doing; the binding stops waiting and reports. What the session looks like afterwards is
@@ -126,3 +129,11 @@ enforced in as many places as there are waits.
 Deferred by this record, each needing its own decision later: per-user-context capabilities, which
 arrive with the browsing context APIs; aligning the unexpected-alert error across bindings; and
 script timeout behavior on the BiDi path, which belongs to the script and logging record.
+
+One adjacent gap is deliberately not settled here. BiDi defines no stale element error — the
+nearest is "no such node", for an unknown reference, and the specification carries an open issue on
+the stale object reference case — so a classic `StaleElementReferenceException` has no protocol
+equivalent. It is not a capability and hangs off nothing this record decides, and like implicit
+wait it only bites once elements come from BiDi rather than Classic. It is tracked separately, and
+noted here because anyone reading this record for "what classic behavior does BiDi fail to
+express" should find it.

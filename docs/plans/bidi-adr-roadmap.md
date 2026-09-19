@@ -5,15 +5,13 @@
 
 ## Purpose
 
-This is a planning document, not a decision. It indexes the BiDi decision records drafted for
-Selenium 5, sizes each one, and records the protocol gaps they answer.
+This is a planning document, not a decision. It indexes the BiDi decision records drafted so far,
+sizes each one, and records the protocol gaps they answer.
 
-The decisions live in the records themselves; this document exists so the set can be read whole
-and scoped as a set. Nothing here is deferred — what a release carries is a judgement to make with
-the end state visible, not one to make by leaving records unwritten.
-
-The release charter ([selenium-5.md](selenium-5.md)) gains a line per record as each is
-proposed.
+The decisions live in the records themselves; this document exists so the set can be read whole.
+Writing a record does not put it in a release: what a given release carries is decided separately,
+with the end state visible, and the charter ([selenium-5.md](selenium-5.md)) picks up whichever
+records are scoped into Selenium 5.
 
 Protocol references are to the WebDriver BiDi specification source (`index.bs` in
 [w3c/webdriver-bidi](https://github.com/w3c/webdriver-bidi)); line numbers are from the September
@@ -21,8 +19,8 @@ Protocol references are to the WebDriver BiDi specification source (`index.bs` i
 
 ## The records
 
-All four are drafted. None is deferred: the point of writing them is to see the end state whole,
-and to size each one before deciding what a release can carry.
+All four are drafted. Being drafted says nothing about which release carries them — the point is
+to see the end state whole and size each one before that question is answered.
 
 | Record | Settles | Size |
 |---|---|---|
@@ -100,14 +98,17 @@ suspected.
 3. **Implicit wait.** `browsingContext.locateNodes` takes a context, locator, node count,
    serialization options, and start nodes (index.bs:4537) — there is no wait, and nothing retries
    in the remote end. Classic's implicit wait is remote-end behavior with no BiDi counterpart.
-   **Track as an issue.** Nothing needs to decide this while element location stays on the classic
-   path; it becomes a decision the moment locating moves to BiDi.
+   **Owner: the capabilities record**, which covers all three classic timeouts: implicit wait keeps
+   its meaning, stays remote-enforced while element location is classic, and becomes the binding's
+   to enforce if location moves to BiDi.
 
 4. **Stale element semantics.** BiDi defines no stale element error. The closest is "no such node",
    for deserializing an unknown `SharedReference`, and the specification carries an open issue to
    "handle the stale object reference case" (index.bs:12357). A classic
-   `StaleElementReferenceException` has no protocol equivalent. **Track as an issue**, same
-   condition as implicit wait — it matters when elements come from BiDi rather than classic.
+   `StaleElementReferenceException` has no protocol equivalent. **Its own decision**, tracked as an
+   issue rather than folded into a record here: unlike the timeouts, there is no classic capability
+   it hangs off, and it only matters once elements come from BiDi rather than classic. The
+   capabilities record notes it as adjacent.
 
 Checked and **not** gaps, so nothing needs to be built for them: window rect and state
 (`browser.setClientWindowState` takes `normal` with x, y, width, height, plus fullscreen,
@@ -115,47 +116,32 @@ maximized, and minimized — index.bs:3060), page load strategy (the readiness s
 three classic values and add one), element screenshots (the screenshot clip), and frames
 (addressable directly as contexts).
 
-**What follows from this.** Both expressible gaps are capability behavior, which the capabilities
-record settles. The other two are conditional on work no record here takes on, and are tracked as
-issues. No separate compatibility record is needed; the expectation belongs in the charter as one
-line.
+**What follows from this.** Three of the four are capability behavior, which the capabilities
+record settles. Stale element semantics is the exception and is tracked as its own issue. No
+separate compatibility record is needed.
 
 ---
 
-## What these plans do not cover
+## Notes on scope
 
-The event inventory below is complete. Several other things discussed while drafting these records
-are not settled anywhere, and are listed so they are chosen rather than missed.
+**Commands are already covered.** [17786](../decisions/17786-bidi-low-level-behavioral-contract.md)
+makes every command in the specification a typed call at the low-level layer, so nothing is missing
+because a record does not mention it. A record is needed only where a command should have a
+supported high-level API, and that is a decision to take when someone wants one — screencast,
+`setBypassCSP`, `setExtraHeaders`, and the client hints override have no such demand yet.
 
-**Commands, as opposed to events.** The records cover the commands they need and no others.
-`browsingContext.startScreencast` and `stopScreencast` (which write a file rather than emitting
-events), `setBypassCSP`, `locateNodes` beyond the implicit wait note, `network.setExtraHeaders`,
-the network data collectors, and `userAgentClientHints.setClientHintsOverride` have no record and
-appear in no deferred list. The emulation, storage, and permissions modules are deferred by the
-charter as capability mapping; the others are simply unclaimed.
+**Grid follows automatically.** Grid proxies the session, so anything that works locally works
+through it. Only the features that need Grid explicitly — uploads to a remote browser and download
+retrieval — require testing against it, which makes the file handling record the one with Grid work
+attached.
 
-**Subscription mechanics.** `session.subscribe` accepts module names as well as event names, so
-subscribing to `browsingContext` subscribes to fourteen events at once; it returns a subscription
-id; and `session.unsubscribe` takes either ids or the older attribute form. Three records now
-register handlers that subscribe lazily, and none says which form they use. It matters for
-correctness rather than style: removing one handler must not unsubscribe the events another handler
-is still using.
+**Subscription mechanics are implementation.** Which subscription form a binding uses, and how it
+tracks ids, is how the behavior is achieved rather than the behavior itself. What the records state
+is the user-facing part: handlers are added, removed, and cleared independently.
 
-**Grid.** Only `se:downloadsEnabled` is discussed, in the file record. Nothing says whether these
-decisions bind Grid, or what a Grid session does differently for any of them.
-
-**The compatibility expectation.** "Enabling BiDi does not change the behavior of an existing API"
-is the premise the capabilities record rests on, and it currently exists only inside that record,
-as a decision about two capabilities. If it is meant to constrain later records, it belongs in the
-charter.
-
-**Two issues that have not been filed.** Implicit wait and stale element semantics have no BiDi
-equivalent and no record; they were agreed to be issues, and the issues do not exist yet.
-
-**The charter is out of step.** [selenium-5.md](selenium-5.md) does not index these records, and
-two of its deferred entries now contradict them: "Browser context API" is deferred while a windows
-record exists, and "Capability mapping" lists user prompts while the capabilities record settles
-them.
+**The compatibility expectation is implicit.** That enabling BiDi does not change an existing API's
+behavior underlies all of these records; the only place it currently has anything concrete to say
+is the capabilities record, which is where it is stated.
 
 ## Records already indexed
 
