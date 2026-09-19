@@ -187,6 +187,8 @@ nuget_pack(
         "//common/manager:selenium-manager-notice": "selenium-manager-THIRD-PARTY-NOTICES.txt",
         "//common/manager:selenium-manager-sbom": "selenium-manager.cdx.json",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        "//:LICENSE": "LICENSE",
+        "//:NOTICE": "NOTICE",
         ":assets-nuget-readme": "README.md",
         ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
         ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",
