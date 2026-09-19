@@ -29,7 +29,9 @@ module Selenium
         class Bluetooth < Domain
           EVENTS = {
             request_device_prompt_updated: 'bluetooth.requestDevicePromptUpdated',
-            gatt_connection_attempted: 'bluetooth.gattConnectionAttempted'
+            gatt_connection_attempted: 'bluetooth.gattConnectionAttempted',
+            characteristic_event_generated: 'bluetooth.characteristicEventGenerated',
+            descriptor_event_generated: 'bluetooth.descriptorEventGenerated'
           }.freeze
 
           SIMULATE_ADAPTER_PARAMETERS_STATE = {
@@ -325,7 +327,9 @@ module Selenium
 
           EVENT_TYPES = {
             'bluetooth.requestDevicePromptUpdated' => Bluetooth::RequestDevicePromptUpdatedParameters,
-            'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters
+            'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters,
+            'bluetooth.characteristicEventGenerated' => Bluetooth::CharacteristicEventGeneratedParameters,
+            'bluetooth.descriptorEventGenerated' => Bluetooth::DescriptorEventGeneratedParameters
           }.freeze
 
           def bluetooth_manufacturer_data(**) = BluetoothManufacturerData.new(**)

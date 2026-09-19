@@ -9,7 +9,7 @@ see scripts/update_cddl.py for how they are resolved and when the pins advance.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 # The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
-_COMMIT = "580ef268abf6917b6d3fc674cc6d80e754b06e2c"
+_COMMIT = "a0506ac035dfcb3c1e6c0be9127be0b28f15a534"
 _CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 _DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
 
