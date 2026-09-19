@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.json;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
@@ -60,7 +65,23 @@ public class SimplePropertyDescriptor {
     return String.format("%s.%s", clazz.getSimpleName(), name);
   }
 
+  /**
+   * The descriptors depend only on the class, so compute them once per class rather than scanning
+   * the class's methods on every call.
+   */
+  private static final ClassValue<SimplePropertyDescriptor[]> DESCRIPTOR_CACHE =
+      new ClassValue<SimplePropertyDescriptor[]>() {
+        @Override
+        protected SimplePropertyDescriptor[] computeValue(Class<?> type) {
+          return computePropertyDescriptors(type);
+        }
+      };
+
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
+    return DESCRIPTOR_CACHE.get(clazz).clone();
+  }
+
+  private static SimplePropertyDescriptor[] computePropertyDescriptors(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
 
     properties.put("class", new SimplePropertyDescriptor(clazz, "class", GET_CLASS_NAME, null));
@@ -96,17 +117,7 @@ public class SimplePropertyDescriptor {
       Function<Object, @Nullable Object> read = null;
 
       if (readMethod != null) {
-        final Method finalReadMethod = readMethod;
-
-        read =
-            obj -> {
-              try {
-                finalReadMethod.setAccessible(true);
-                return finalReadMethod.invoke(obj);
-              } catch (ReflectiveOperationException e) {
-                throw new JsonException(e);
-              }
-            };
+        read = compileGetter(readMethod);
       }
 
       if (propertyName != null && (readMethod != null || writeMethod != null)) {
@@ -126,6 +137,48 @@ public class SimplePropertyDescriptor {
 
     SimplePropertyDescriptor[] pdsArray = new SimplePropertyDescriptor[properties.size()];
     return properties.values().toArray(pdsArray);
+  }
+
+  /**
+   * Produce a function that invokes the supplied getter. Where possible the getter is compiled to a
+   * direct call via {@link LambdaMetafactory}, which is considerably faster than reflective
+   * invocation; anything that cannot be compiled (inaccessible types, static methods, and the like)
+   * falls back to {@link Method#invoke}, deferring accessibility problems to invocation time just
+   * as reflective calls always have.
+   */
+  private static Function<Object, @Nullable Object> compileGetter(Method method) {
+    try {
+      MethodHandles.Lookup lookup = MethodHandles.lookup();
+      MethodHandle handle = lookup.unreflect(method);
+      CallSite site =
+          LambdaMetafactory.metafactory(
+              lookup,
+              "apply",
+              MethodType.methodType(Function.class),
+              MethodType.methodType(Object.class, Object.class),
+              handle,
+              handle.type());
+      @SuppressWarnings("unchecked")
+      Function<Object, @Nullable Object> getter =
+          (Function<Object, @Nullable Object>) site.getTarget().invokeExact();
+      return obj -> {
+        try {
+          return getter.apply(obj);
+        } catch (Exception e) {
+          // Reflective invocation wrapped getter failures in a JsonException; stay consistent.
+          throw new JsonException(e);
+        }
+      };
+    } catch (Throwable t) {
+      return obj -> {
+        try {
+          method.setAccessible(true);
+          return method.invoke(obj);
+        } catch (ReflectiveOperationException e) {
+          throw new JsonException(e);
+        }
+      };
+    }
   }
 
   private static String uncapitalize(String s) {
