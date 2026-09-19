@@ -14716,6 +14716,88 @@
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallresult"
     },
+    "digitalCredentials.VirtualWalletAction": {
+      "kind": "enum",
+      "values": [
+        "decline",
+        "respond",
+        "wait",
+        "clear"
+      ],
+      "primitive": "string",
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-virtualwalletaction"
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "action",
+          "wire": "action",
+          "required": true,
+          "type": {
+            "ref": "digitalCredentials.VirtualWalletAction"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "protocol",
+          "wire": "protocol",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "response",
+          "wire": "response",
+          "required": false,
+          "type": {
+            "ref": "digitalCredentials.SetVirtualWalletBehaviorParametersResponse"
+          }
+        }
+      ],
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorparameters",
+      "outbound": false,
+      "inbound": false
+    },
+    "digitalCredentials.SetVirtualWalletBehavior": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "method",
+          "wire": "method",
+          "required": true,
+          "type": {
+            "const": "digitalCredentials.setVirtualWalletBehavior"
+          }
+        },
+        {
+          "name": "params",
+          "wire": "params",
+          "required": true,
+          "type": {
+            "ref": "digitalCredentials.SetVirtualWalletBehaviorParameters"
+          }
+        }
+      ],
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehavior",
+      "outbound": false,
+      "inbound": false
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorResult": {
+      "kind": "alias",
+      "type": {
+        "ref": "EmptyResult"
+      },
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorresult"
+    },
     "PermissionsCommand": {
       "kind": "alias",
       "type": {
@@ -17562,6 +17644,16 @@
       "label": "Attributes",
       "outbound": false,
       "inbound": true
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorParametersResponse": {
+      "kind": "record",
+      "fields": [],
+      "extensible": true,
+      "synthetic": true,
+      "owner": "digitalCredentials.SetVirtualWalletBehaviorParameters",
+      "label": "Response",
+      "outbound": false,
+      "inbound": false
     },
     "userAgentClientHints.SetClientHintsOverrideCommandParams": {
       "kind": "record",
