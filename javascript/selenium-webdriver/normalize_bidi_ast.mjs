@@ -500,7 +500,13 @@ export function spliceExtensionGroups(ast) {
     const records = out.filter((d) => d.Name === target && isRecordGroup(d))
     if (!records.length) throw new Error(`vendor extension group ${def.Name} has no spec record ${target} to extend`)
     for (const record of records)
-      record.Properties.push({ HasCut: false, Occurrence: { n: 1, m: 1 }, Name: '', Type: [groupRef(def.Name)], Comments: [] })
+      record.Properties.push({
+        HasCut: false,
+        Occurrence: { n: 1, m: 1 },
+        Name: '',
+        Type: [groupRef(def.Name)],
+        Comments: [],
+      })
   }
   return out
 }

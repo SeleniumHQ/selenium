@@ -648,6 +648,8 @@ function parseLeafDef(def) {
 
   const domain = methodStr.slice(0, dotIdx)
   const operationName = methodStr.slice(dotIdx + 1)
+  // A vendor leaf (tagged by tagVendorDefs) carries its namespace into the model.
+  const vendor = def['x-selenium-vendor']
 
   const paramsTypeEntries = Array.isArray(paramsProp.Type) ? paramsProp.Type : [paramsProp.Type]
   let paramsCddl = null
@@ -655,7 +657,7 @@ function parseLeafDef(def) {
     paramsCddl = paramsTypeEntries[0].Value
   }
 
-  return { domain, methodStr, operationName, paramsCddl }
+  return { domain, methodStr, operationName, paramsCddl, vendor }
 }
 
 /**
@@ -697,7 +699,7 @@ function extractCommands(ast) {
     const parsed = parseLeafDef(def)
     if (!parsed) continue
 
-    const { domain, methodStr, operationName: methodName, paramsCddl } = parsed
+    const { domain, methodStr, operationName: methodName, paramsCddl, vendor } = parsed
     // emptyParamTypes holds raw CDDL group names, so compare the raw name (not the normalized one).
     const hasParams = paramsCddl !== null && !emptyParamTypes.has(paramsCddl)
 
@@ -708,6 +710,7 @@ function extractCommands(ast) {
       methodName,
       paramsCddl,
       hasParams,
+      vendor,
     })
   }
 
@@ -727,13 +730,14 @@ function extractEvents(ast) {
     const parsed = parseLeafDef(def)
     if (!parsed) continue
 
-    const { domain, methodStr, operationName: eventName, paramsCddl } = parsed
+    const { domain, methodStr, operationName: eventName, paramsCddl, vendor } = parsed
 
     events.push({
       domain,
       methodStr,
       eventName,
       paramsCddl,
+      vendor,
     })
   }
 
@@ -756,6 +760,10 @@ function buildModel(ast) {
   const resultTypes = buildResultTypeNames(ast)
   const ensure = (domain) => (model[domain] ??= { commands: [], events: [] })
 
+  // A vendor entry carries its namespace so the schema projector can file it under
+  // `vendor.<namespace>`; spec entries carry none, so a vendor-free AST yields the same model.
+  const provenance = (entry) => (entry.vendor ? { vendor: entry.vendor } : {})
+
   for (const c of extractCommands(ast)) {
     const result = c.cddlName + 'Result'
     ensure(c.domain).commands.push({
@@ -763,6 +771,7 @@ function buildModel(ast) {
       name: c.methodName,
       params: c.hasParams ? c.paramsCddl : null,
       result: resultTypes.has(result) ? result : null,
+      ...provenance(c),
     })
   }
 
@@ -771,6 +780,7 @@ function buildModel(ast) {
       method: e.methodStr,
       name: e.eventName,
       params: e.paramsCddl || null,
+      ...provenance(e),
     })
   }
 

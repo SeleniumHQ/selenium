@@ -378,7 +378,10 @@ describe('spliceExtensionGroups', () => {
 
   it('fails when a tagged extension group names no spec record', () => {
     assert.throws(
-      () => spliceExtensionGroups([extension('browsingContext.GoneParametersExtension', 'browsingContext.GoneParameters', [])]),
+      () =>
+        spliceExtensionGroups([
+          extension('browsingContext.GoneParametersExtension', 'browsingContext.GoneParameters', []),
+        ]),
       /browsingContext.GoneParametersExtension has no spec record browsingContext.GoneParameters/,
     )
   })
@@ -396,7 +399,9 @@ describe('vendor provenance through normalization', () => {
     const out = normalizeAst(ast)
     assert.equal(byName(out, 'session.CapabilityRequestFirefoxOptionsLog')['x-selenium-vendor'], 'moz')
     assert.equal(byName(out, 'session.CapabilityRequestFirefoxOptionsLevel')['x-selenium-vendor'], 'moz')
-    const spec = normalizeAst([def('a.B', [field('c', { Type: 'group', Name: '', Properties: [field('d', ['text'])] })])])
+    const spec = normalizeAst([
+      def('a.B', [field('c', { Type: 'group', Name: '', Properties: [field('d', ['text'])] })]),
+    ])
     assert.equal(byName(spec, 'a.BC')['x-selenium-vendor'], undefined)
   })
 
@@ -413,7 +418,10 @@ describe('vendor provenance through normalization', () => {
       def('browsingContext.Info', [field('url', ['text'])]),
       { ...def('browsingContext.InfoExtension', [scope]), 'x-selenium-vendor-extends': 'browsingContext.Info' },
     ])
-    assert.equal(out.some((d) => d.Name.endsWith('MozScope')), false)
+    assert.equal(
+      out.some((d) => d.Name.endsWith('MozScope')),
+      false,
+    )
     const info = byName(out, 'browsingContext.Info')
     assert.deepEqual(info.Properties.find((p) => p.Name === 'moz:scope').Type, [lit('chrome'), lit('content')])
   })

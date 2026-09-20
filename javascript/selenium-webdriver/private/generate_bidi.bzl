@@ -113,10 +113,11 @@ def generate_bidi_library(
             production they define supersedes the identically named upstream one. Overlays
             are a schema-gen concern only and do not touch other bindings.
         vendor_cddl_files: Vendor overlay CDDL files keyed by namespace (`{"moz": [...]}`, the
-            wire prefix of the vendor's `moz:` fields). Their `<Type>Extension` groups are spliced
-            into the like-named spec type and tagged with provenance, so they resolve against the
-            real type but are routed out of the shared schema into a separate `vendor` section.
-            Bindings that read only the spec sections never see them.
+            wire prefix of the vendor's `moz:` fields and `moz:<module>` methods). A file may
+            extend spec types (`<Type>Extension` groups, spliced into the like-named spec type)
+            or define whole vendor modules. Everything is tagged with provenance, so it resolves
+            against the real spec types but is routed out of the shared schema into a separate
+            `vendor` section. Bindings that read only the spec sections never see it.
         dfns_files: webref definition-index files (one per merged spec). When given,
             the schema step joins them by type name to attach a `specHref` spec link
             to each type. Optional — omitting them yields a schema with no links.
@@ -176,6 +177,7 @@ def generate_bidi_library(
     # projector (which segregates them into `vendor`), never cddl2ts or the model. Only the small
     # vendor files are (re)parsed here; the base is read back from Step 1. No vendors → reuse base.
     schema_ast_target = ast_target
+    vendor_model_target = None
     if vendor_cddl_files:
         staged_vendors = []
         vendor_args = []
@@ -192,6 +194,19 @@ def generate_bidi_library(
             srcs = [":" + ast_target] + staged_vendors,
             outs = [schema_ast_out],
             args = ["--ast", "$(location :" + ast_target + ")", "--dump-ast", pkg + "/" + schema_ast_out] + vendor_args,
+            tool = generator,
+        )
+
+        # Step 1c: the vendor model — the model extraction run over the vendor AST, so a vendor
+        # module's commands/events (tagged with their namespace) reach the schema projector
+        # through the same code path as the spec's. Only the projector reads it (Step 3b).
+        vendor_model_target = name + "_model_vendor"
+        vendor_model_out = name + "_model_vendor.json"
+        js_run_binary(
+            name = vendor_model_target,
+            srcs = [":" + schema_ast_target],
+            outs = [vendor_model_out],
+            args = ["--ast", "$(location :" + schema_ast_target + ")", "--dump-model", pkg + "/" + vendor_model_out],
             tool = generator,
         )
 
@@ -248,8 +263,8 @@ def generate_bidi_library(
     schema_target = name + "_schema"
     schema_out = name + "_schema.json"
 
-    # The schema is projected from the vendor AST (Step 1b); the model comes from the base AST
-    # (vendor fields are command params, not commands, so they do not affect the model).
+    # The schema is projected from the vendor AST (Step 1b); the shared model comes from the base
+    # AST, and the vendor model (Step 1c) adds the vendor modules' commands and events.
     schema_srcs = [":" + schema_ast_target, ":" + json_target] + staged_dfns
     schema_args = [
         "--ast",
@@ -264,6 +279,9 @@ def generate_bidi_library(
     if anchors_out:
         schema_srcs.append(":" + anchors_out)
         schema_args += ["--anchors", "$(location :" + anchors_out + ")"]
+    if vendor_model_target:
+        schema_srcs.append(":" + vendor_model_target)
+        schema_args += ["--vendor-model", "$(location :" + vendor_model_target + ")"]
     js_run_binary(
         name = schema_target,
         srcs = schema_srcs,
