@@ -57,6 +57,7 @@ jobs:
       ruby-version: ${{ matrix.ruby-version }}
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --test_size_filters small
         //rb/...
@@ -82,6 +83,7 @@ jobs:
       run: >
         [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
         --local_test_jobs 1
@@ -102,10 +104,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi,-os-sensitive,-se-manager"]
+        tag_filters:
+          - chrome-beta-local,chrome-beta-bidi
+          - firefox-beta-local,firefox-beta-bidi
+          - edge-local,edge-bidi,chrome-grid,firefox-grid,edge-grid
         include:
           - os: macos
-            tag_filters: safari-local,safari-preview-bidi,-os-sensitive,-se-manager
+            tag_filters: safari-local,safari-preview-bidi,safari-grid
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
@@ -114,6 +119,7 @@ jobs:
       rerun-with-debug: true
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
         --local_test_jobs 1
@@ -121,5 +127,5 @@ jobs:
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_size_filters large
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
         //rb/...

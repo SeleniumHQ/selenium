@@ -495,6 +495,12 @@ def _skip_unless_remote(request, is_remote):
         pytest.skip("Remote tests require the --remote flag")
 
 
+def _skip_if_remote(is_remote):
+    """Skip fixtures that build a local driver when ``--remote`` is set."""
+    if is_remote:
+        pytest.skip("This fixture builds a local driver and is not applicable with --remote")
+
+
 def _apply_xfail_markers(request, driver_class, is_remote):
     """Honor the ``xfail_<driver>`` / ``xfail_remote`` markers for the driver under test.
 
@@ -696,6 +702,7 @@ def driver_executable(request):
 
 @pytest.fixture
 def clean_driver(request):
+    _skip_if_remote(request.config.getoption("remote"))
     if not request.config.option.drivers:
         raise Exception("This test requires a --driver to be specified.")
     driver_name = request.config.option.drivers[0].lower()

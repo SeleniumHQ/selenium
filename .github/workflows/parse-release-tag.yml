@@ -1,4 +1,4 @@
-name: Parse Release Tag
+name: Shared - Parse Release Tag
 
 on:
   workflow_call:

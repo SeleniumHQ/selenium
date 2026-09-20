@@ -1,4 +1,4 @@
-name: Release Ready Alert
+name: Webhook - Release Ready
 
 on:
   pull_request:

@@ -74,6 +74,7 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
   dry_run = args.delete('dry-run')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
 
   unless nightly || dry_run
     already_published = begin
@@ -101,7 +102,7 @@ task :release do |_task, arguments|
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
   target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
-  bazel_args = ['--config=release']
+  bazel_args = ["--config=#{config}"]
   bazel_args += ['--', '--dry-run=true'] if dry_run
 
   begin

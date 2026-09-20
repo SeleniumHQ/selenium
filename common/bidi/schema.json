@@ -335,6 +335,16 @@
     },
     {
       "domain": "emulation",
+      "method": "emulation.setTextLayoutModeOverride",
+      "name": "setTextLayoutModeOverride",
+      "params": {
+        "ref": "emulation.SetTextLayoutModeOverrideParameters"
+      },
+      "result": null,
+      "specHref": "https://w3c.github.io/webdriver-bidi/#command-emulation-setTextLayoutModeOverride"
+    },
+    {
+      "domain": "emulation",
       "method": "emulation.setTimezoneOverride",
       "name": "setTimezoneOverride",
       "params": {
@@ -1242,6 +1252,10 @@
           {
             "value": "emulation.setScrollbarTypeOverride",
             "ref": "emulation.SetScrollbarTypeOverride"
+          },
+          {
+            "value": "emulation.setTextLayoutModeOverride",
+            "ref": "emulation.SetTextLayoutModeOverride"
           },
           {
             "value": "emulation.setTimezoneOverride",
@@ -4760,6 +4774,14 @@
           }
         },
         {
+          "name": "destinationFolder",
+          "wire": "destinationFolder",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
           "name": "mimeType",
           "wire": "mimeType",
           "required": false,
@@ -5551,6 +5573,7 @@
         "emulation.SetScreenSettingsOverride",
         "emulation.SetScriptingEnabled",
         "emulation.SetScrollbarTypeOverride",
+        "emulation.SetTextLayoutModeOverride",
         "emulation.SetTimezoneOverride",
         "emulation.SetTouchOverride",
         "emulation.SetUserAgentOverride",
@@ -5597,6 +5620,10 @@
             "ref": "emulation.SetScrollbarTypeOverride"
           },
           {
+            "value": "emulation.setTextLayoutModeOverride",
+            "ref": "emulation.SetTextLayoutModeOverride"
+          },
+          {
             "value": "emulation.setTimezoneOverride",
             "ref": "emulation.SetTimezoneOverride"
           },
@@ -5628,6 +5655,7 @@
         "emulation.SetScreenOrientationOverrideResult",
         "emulation.SetScriptingEnabledResult",
         "emulation.SetScrollbarTypeOverrideResult",
+        "emulation.SetTextLayoutModeOverrideResult",
         "emulation.SetTimezoneOverrideResult",
         "emulation.SetTouchOverrideResult",
         "emulation.SetUserAgentOverrideResult",
@@ -6831,6 +6859,82 @@
         "ref": "EmptyResult"
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscrollbartypeoverrideresult"
+    },
+    "emulation.SetTextLayoutModeOverride": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "method",
+          "wire": "method",
+          "required": true,
+          "type": {
+            "const": "emulation.setTextLayoutModeOverride"
+          }
+        },
+        {
+          "name": "params",
+          "wire": "params",
+          "required": true,
+          "type": {
+            "ref": "emulation.SetTextLayoutModeOverrideParameters"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettextlayoutmodeoverride",
+      "outbound": false,
+      "inbound": false
+    },
+    "emulation.SetTextLayoutModeOverrideParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "textLayoutMode",
+          "wire": "textLayoutMode",
+          "required": true,
+          "type": {
+            "ref": "emulation.TextLayoutMode",
+            "nullable": true
+          }
+        },
+        {
+          "name": "contexts",
+          "wire": "contexts",
+          "required": false,
+          "type": {
+            "list": {
+              "ref": "browsingContext.BrowsingContext"
+            }
+          }
+        },
+        {
+          "name": "userContexts",
+          "wire": "userContexts",
+          "required": false,
+          "type": {
+            "list": {
+              "ref": "browser.UserContext"
+            }
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettextlayoutmodeoverrideparameters",
+      "outbound": true,
+      "inbound": false
+    },
+    "emulation.TextLayoutMode": {
+      "kind": "enum",
+      "values": [
+        "mobile"
+      ],
+      "primitive": "string",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationtextlayoutmode"
+    },
+    "emulation.SetTextLayoutModeOverrideResult": {
+      "kind": "alias",
+      "type": {
+        "ref": "EmptyResult"
+      },
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettextlayoutmodeoverrideresult"
     },
     "emulation.SetTimezoneOverride": {
       "kind": "record",
@@ -14612,6 +14716,88 @@
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallresult"
     },
+    "digitalCredentials.VirtualWalletAction": {
+      "kind": "enum",
+      "values": [
+        "decline",
+        "respond",
+        "wait",
+        "clear"
+      ],
+      "primitive": "string",
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-virtualwalletaction"
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "action",
+          "wire": "action",
+          "required": true,
+          "type": {
+            "ref": "digitalCredentials.VirtualWalletAction"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "protocol",
+          "wire": "protocol",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "response",
+          "wire": "response",
+          "required": false,
+          "type": {
+            "ref": "digitalCredentials.SetVirtualWalletBehaviorParametersResponse"
+          }
+        }
+      ],
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorparameters",
+      "outbound": false,
+      "inbound": false
+    },
+    "digitalCredentials.SetVirtualWalletBehavior": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "method",
+          "wire": "method",
+          "required": true,
+          "type": {
+            "const": "digitalCredentials.setVirtualWalletBehavior"
+          }
+        },
+        {
+          "name": "params",
+          "wire": "params",
+          "required": true,
+          "type": {
+            "ref": "digitalCredentials.SetVirtualWalletBehaviorParameters"
+          }
+        }
+      ],
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehavior",
+      "outbound": false,
+      "inbound": false
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorResult": {
+      "kind": "alias",
+      "type": {
+        "ref": "EmptyResult"
+      },
+      "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorresult"
+    },
     "PermissionsCommand": {
       "kind": "alias",
       "type": {
@@ -14947,7 +15133,7 @@
       "type": {
         "primitive": "string"
       },
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothbluetoothuuid"
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothbluetoothuuid"
     },
     "bluetooth.BluetoothManufacturerData": {
       "kind": "record",
@@ -14969,7 +15155,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothbluetoothmanufacturerdata",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothbluetoothmanufacturerdata",
       "outbound": true,
       "inbound": false
     },
@@ -15041,7 +15227,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcharacteristicproperties",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristicproperties",
       "outbound": true,
       "inbound": false
     },
@@ -15050,7 +15236,7 @@
       "type": {
         "primitive": "string"
       },
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdevice"
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdevice"
     },
     "bluetooth.RequestDeviceInfo": {
       "kind": "record",
@@ -15073,7 +15259,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdeviceinfo",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdeviceinfo",
       "outbound": false,
       "inbound": true
     },
@@ -15082,7 +15268,7 @@
       "type": {
         "primitive": "string"
       },
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdeviceprompt"
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdeviceprompt"
     },
     "bluetooth.ScanRecord": {
       "kind": "record",
@@ -15124,7 +15310,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothscanrecord",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothscanrecord",
       "outbound": true,
       "inbound": false
     },
@@ -15144,7 +15330,7 @@
         "bluetooth.SimulateDescriptor",
         "bluetooth.SimulateDescriptorResponse"
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcommand",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcommand",
       "selector": {
         "by": "method",
         "variants": [
@@ -15222,7 +15408,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdeviceprompt",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothhandlerequestdeviceprompt",
       "outbound": false,
       "inbound": false
     },
@@ -15232,7 +15418,7 @@
         "bluetooth.HandleRequestDevicePromptParameters_AcceptParameters",
         "bluetooth.HandleRequestDevicePromptParameters_CancelParameters"
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdevicepromptparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothhandlerequestdevicepromptparameters",
       "selector": {
         "by": "accept",
         "variants": [
@@ -15270,7 +15456,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadapter",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadapter",
       "outbound": false,
       "inbound": false
     },
@@ -15302,7 +15488,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadapterparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadapterparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15326,7 +15512,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdisablesimulation",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdisablesimulation",
       "outbound": false,
       "inbound": false
     },
@@ -15342,7 +15528,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdisablesimulationparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdisablesimulationparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15366,7 +15552,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatepreconnectedperipheral",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatepreconnectedperipheral",
       "outbound": false,
       "inbound": false
     },
@@ -15418,7 +15604,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatepreconnectedperipheralparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatepreconnectedperipheralparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15442,7 +15628,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadvertisement",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadvertisement",
       "outbound": false,
       "inbound": false
     },
@@ -15466,7 +15652,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadvertisementparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadvertisementparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15498,7 +15684,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadvertisementscanentryparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadvertisementscanentryparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15522,7 +15708,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattconnectionresponse",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattconnectionresponse",
       "outbound": false,
       "inbound": false
     },
@@ -15554,7 +15740,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattconnectionresponseparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattconnectionresponseparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15578,7 +15764,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattdisconnection",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattdisconnection",
       "outbound": false,
       "inbound": false
     },
@@ -15602,7 +15788,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattdisconnectionparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattdisconnectionparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15626,7 +15812,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateservice",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateservice",
       "outbound": false,
       "inbound": false
     },
@@ -15666,7 +15852,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateserviceparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateserviceparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15690,7 +15876,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristic",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristic",
       "outbound": false,
       "inbound": false
     },
@@ -15746,7 +15932,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristicparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristicparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15770,7 +15956,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristicresponse",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristicresponse",
       "outbound": false,
       "inbound": false
     },
@@ -15836,7 +16022,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristicresponseparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristicresponseparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15860,7 +16046,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptor",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptor",
       "outbound": false,
       "inbound": false
     },
@@ -15916,7 +16102,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptorparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptorparameters",
       "outbound": true,
       "inbound": false
     },
@@ -15940,7 +16126,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptorresponse",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptorresponse",
       "outbound": false,
       "inbound": false
     },
@@ -16014,7 +16200,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptorresponseparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptorresponseparameters",
       "outbound": true,
       "inbound": false
     },
@@ -16024,7 +16210,7 @@
         "bluetooth.RequestDevicePromptUpdated",
         "bluetooth.GattConnectionAttempted"
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothevent",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothevent",
       "selector": {
         "by": "method",
         "variants": [
@@ -16062,7 +16248,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdevicepromptupdated",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdevicepromptupdated",
       "outbound": false,
       "inbound": false
     },
@@ -16096,7 +16282,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdevicepromptupdatedparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdevicepromptupdatedparameters",
       "outbound": false,
       "inbound": true
     },
@@ -16120,7 +16306,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothgattconnectionattempted",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothgattconnectionattempted",
       "outbound": false,
       "inbound": false
     },
@@ -16144,7 +16330,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothgattconnectionattemptedparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothgattconnectionattemptedparameters",
       "outbound": false,
       "inbound": true
     },
@@ -16168,7 +16354,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcharacteristiceventgenerated",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristiceventgenerated",
       "outbound": false,
       "inbound": false
     },
@@ -16226,7 +16412,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcharacteristiceventgeneratedparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristiceventgeneratedparameters",
       "outbound": false,
       "inbound": false
     },
@@ -16250,7 +16436,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdescriptoreventgenerated",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdescriptoreventgenerated",
       "outbound": false,
       "inbound": false
     },
@@ -16316,7 +16502,7 @@
           }
         }
       ],
-      "specHref": "https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdescriptoreventgeneratedparameters",
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdescriptoreventgeneratedparameters",
       "outbound": false,
       "inbound": false
     },
@@ -17458,6 +17644,16 @@
       "label": "Attributes",
       "outbound": false,
       "inbound": true
+    },
+    "digitalCredentials.SetVirtualWalletBehaviorParametersResponse": {
+      "kind": "record",
+      "fields": [],
+      "extensible": true,
+      "synthetic": true,
+      "owner": "digitalCredentials.SetVirtualWalletBehaviorParameters",
+      "label": "Response",
+      "outbound": false,
+      "inbound": false
     },
     "userAgentClientHints.SetClientHintsOverrideCommandParams": {
       "kind": "record",
