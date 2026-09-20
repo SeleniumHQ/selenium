@@ -852,6 +852,15 @@
         "ref": "bluetooth.SimulateDescriptorResponseParameters"
       },
       "result": null
+    },
+    {
+      "domain": "digitalCredentials",
+      "method": "digitalCredentials.setVirtualWalletBehavior",
+      "name": "setVirtualWalletBehavior",
+      "params": {
+        "ref": "digitalCredentials.SetVirtualWalletBehaviorParameters"
+      },
+      "result": null
     }
   ],
   "events": [
@@ -1075,6 +1084,22 @@
       "name": "gattConnectionAttempted",
       "params": {
         "ref": "bluetooth.GattConnectionAttemptedParameters"
+      }
+    },
+    {
+      "domain": "bluetooth",
+      "method": "bluetooth.characteristicEventGenerated",
+      "name": "characteristicEventGenerated",
+      "params": {
+        "ref": "bluetooth.CharacteristicEventGeneratedParameters"
+      }
+    },
+    {
+      "domain": "bluetooth",
+      "method": "bluetooth.descriptorEventGenerated",
+      "name": "descriptorEventGenerated",
+      "params": {
+        "ref": "bluetooth.DescriptorEventGeneratedParameters"
       }
     },
     {
@@ -14764,7 +14789,7 @@
         }
       ],
       "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorparameters",
-      "outbound": false,
+      "outbound": true,
       "inbound": false
     },
     "digitalCredentials.SetVirtualWalletBehavior": {
@@ -16204,30 +16229,6 @@
       "outbound": true,
       "inbound": false
     },
-    "BluetoothEvent": {
-      "kind": "union",
-      "variants": [
-        "bluetooth.RequestDevicePromptUpdated",
-        "bluetooth.GattConnectionAttempted"
-      ],
-      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothevent",
-      "selector": {
-        "by": "method",
-        "variants": [
-          {
-            "value": "bluetooth.requestDevicePromptUpdated",
-            "ref": "bluetooth.RequestDevicePromptUpdated"
-          },
-          {
-            "value": "bluetooth.gattConnectionAttempted",
-            "ref": "bluetooth.GattConnectionAttempted"
-          }
-        ]
-      },
-      "objectOnly": true,
-      "outbound": false,
-      "inbound": false
-    },
     "bluetooth.RequestDevicePromptUpdated": {
       "kind": "record",
       "fields": [
@@ -16414,7 +16415,7 @@
       ],
       "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristiceventgeneratedparameters",
       "outbound": false,
-      "inbound": false
+      "inbound": true
     },
     "bluetooth.DescriptorEventGenerated": {
       "kind": "record",
@@ -16503,6 +16504,46 @@
         }
       ],
       "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdescriptoreventgeneratedparameters",
+      "outbound": false,
+      "inbound": true
+    },
+    "DigitalCredentialsCommand": {
+      "kind": "alias",
+      "type": {
+        "ref": "digitalCredentials.SetVirtualWalletBehavior"
+      }
+    },
+    "BluetoothEvent": {
+      "kind": "union",
+      "variants": [
+        "bluetooth.RequestDevicePromptUpdated",
+        "bluetooth.GattConnectionAttempted",
+        "bluetooth.CharacteristicEventGenerated",
+        "bluetooth.DescriptorEventGenerated"
+      ],
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothevent",
+      "selector": {
+        "by": "method",
+        "variants": [
+          {
+            "value": "bluetooth.requestDevicePromptUpdated",
+            "ref": "bluetooth.RequestDevicePromptUpdated"
+          },
+          {
+            "value": "bluetooth.gattConnectionAttempted",
+            "ref": "bluetooth.GattConnectionAttempted"
+          },
+          {
+            "value": "bluetooth.characteristicEventGenerated",
+            "ref": "bluetooth.CharacteristicEventGenerated"
+          },
+          {
+            "value": "bluetooth.descriptorEventGenerated",
+            "ref": "bluetooth.DescriptorEventGenerated"
+          }
+        ]
+      },
+      "objectOnly": true,
       "outbound": false,
       "inbound": false
     },
@@ -17652,7 +17693,7 @@
       "synthetic": true,
       "owner": "digitalCredentials.SetVirtualWalletBehaviorParameters",
       "label": "Response",
-      "outbound": false,
+      "outbound": true,
       "inbound": false
     },
     "userAgentClientHints.SetClientHintsOverrideCommandParams": {

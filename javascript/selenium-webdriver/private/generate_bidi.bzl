@@ -18,6 +18,7 @@ _DOMAIN_TS_FILES = [
     "browser.ts",
     "browsing_context.ts",
     "common.ts",
+    "digital_credentials.ts",
     "emulation.ts",
     "input.ts",
     "log.ts",
