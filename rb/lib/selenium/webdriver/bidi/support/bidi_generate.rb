@@ -933,12 +933,18 @@ module BiDiGenerate
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
       # Every extensible type gets the extensions store: an undeclared wire key is preserved
       # and echoed back on any type the spec marks extensible, whether or not it is re-sendable.
-      # Extensibility alone is the signal; send-reachability does not enter into it.
+      # Extensibility alone is the signal; send-reachability does not enter into it. A type a
+      # vendor extends is open too: its vendor variant composes the vendor fields through that
+      # store (see VendorCommand), which a closed record would reject.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
+                    discriminator: discriminator, extensible: type['extensible'] || vendor_extended?(name),
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
                     owner: type['owner'], label: type['label'], spec_href: type['specHref'],
                     **directionality(name))
+    end
+
+    def vendor_extended?(name)
+      @vendor.values.any? { |spec| (spec['extends'] || {}).key?(name) }
     end
 
     # A const field is a baked discriminator tag, unless it is also nullable: the spec's

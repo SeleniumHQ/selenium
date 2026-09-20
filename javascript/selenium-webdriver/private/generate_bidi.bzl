@@ -94,7 +94,7 @@ def generate_bidi_library(
         cddl_file,
         extra_cddl_files = [],
         override_cddl_files = [],
-        vendor_cddl_files = [],
+        vendor_cddl_files = {},
         dfns_files = [],
         spec_html = None,
         enhancements_manifest = None,
@@ -112,10 +112,11 @@ def generate_bidi_library(
         override_cddl_files: Selenium overlay CDDL files applied to the parsed AST: any
             production they define supersedes the identically named upstream one. Overlays
             are a schema-gen concern only and do not touch other bindings.
-        vendor_cddl_files: Selenium vendor overlay CDDL files (e.g. `moz:` webextension fields).
-            Their fields extend a spec extension point and are tagged with provenance, so they
-            resolve against the real extension point but are routed out of the shared schema into
-            a separate `vendor` section. Bindings that read only the spec sections never see them.
+        vendor_cddl_files: Vendor overlay CDDL files keyed by namespace (`{"moz": [...]}`, the
+            wire prefix of the vendor's `moz:` fields). Their `<Type>Extension` groups are spliced
+            into the like-named spec type and tagged with provenance, so they resolve against the
+            real type but are routed out of the shared schema into a separate `vendor` section.
+            Bindings that read only the spec sections never see them.
         dfns_files: webref definition-index files (one per merged spec). When given,
             the schema step joins them by type name to attach a `specHref` spec link
             to each type. Optional — omitting them yields a schema with no links.
@@ -178,11 +179,12 @@ def generate_bidi_library(
     if vendor_cddl_files:
         staged_vendors = []
         vendor_args = []
-        for i, vendor in enumerate(vendor_cddl_files):
-            staged = name + "_vendor_%d.cddl" % i
-            copy_file(name = name + "_vendor_copy_%d" % i, src = vendor, out = staged)
-            staged_vendors.append(":" + staged)
-            vendor_args += ["--vendor-cddl", "$(location :" + staged + ")"]
+        for namespace, files in vendor_cddl_files.items():
+            for i, vendor in enumerate(files):
+                staged = name + "_vendor_%s_%d.cddl" % (namespace, i)
+                copy_file(name = name + "_vendor_copy_%s_%d" % (namespace, i), src = vendor, out = staged)
+                staged_vendors.append(":" + staged)
+                vendor_args += ["--vendor-cddl", namespace + "=$(location :" + staged + ")"]
         schema_ast_target = name + "_ast_vendor"
         schema_ast_out = name + "_ast_vendor.json"
         js_run_binary(

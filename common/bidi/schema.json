@@ -14577,6 +14577,22 @@
       "outbound": false,
       "inbound": false
     },
+    "webExtension.InstallParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "extensionData",
+          "wire": "extensionData",
+          "required": true,
+          "type": {
+            "ref": "webExtension.ExtensionData"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters",
+      "outbound": true,
+      "inbound": false
+    },
     "webExtension.ExtensionData": {
       "kind": "union",
       "variants": [
@@ -16547,23 +16563,6 @@
       "outbound": false,
       "inbound": false
     },
-    "webExtension.InstallParameters": {
-      "kind": "record",
-      "fields": [
-        {
-          "name": "extensionData",
-          "wire": "extensionData",
-          "required": true,
-          "type": {
-            "ref": "webExtension.ExtensionData"
-          }
-        }
-      ],
-      "extensible": true,
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters",
-      "outbound": true,
-      "inbound": false
-    },
     "browser.ClientWindowInfoState": {
       "kind": "enum",
       "values": [
@@ -17771,6 +17770,61 @@
   "vendor": {
     "moz": {
       "extends": {
+        "session.CapabilityRequest": {
+          "via": "session.CapabilityRequestExtension",
+          "fields": [
+            {
+              "name": "moz:firefoxOptions",
+              "wire": "moz:firefoxOptions",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptions"
+              }
+            }
+          ]
+        },
+        "browsingContext.Info": {
+          "via": "browsingContext.InfoExtension",
+          "fields": [
+            {
+              "name": "moz:name",
+              "wire": "moz:name",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "moz:scope",
+              "wire": "moz:scope",
+              "required": false,
+              "type": {
+                "enum": [
+                  "chrome",
+                  "content"
+                ],
+                "primitive": "string"
+              }
+            }
+          ]
+        },
+        "browsingContext.GetTreeParameters": {
+          "via": "browsingContext.GetTreeParametersExtension",
+          "fields": [
+            {
+              "name": "moz:scope",
+              "wire": "moz:scope",
+              "required": false,
+              "type": {
+                "enum": [
+                  "chrome",
+                  "content"
+                ],
+                "primitive": "string"
+              }
+            }
+          ]
+        },
         "webExtension.InstallParameters": {
           "via": "webExtension.InstallParametersExtension",
           "fields": [
@@ -17791,6 +17845,171 @@
               }
             }
           ]
+        }
+      },
+      "types": {
+        "session.CapabilityRequestFirefoxOptions": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "androidPackage",
+              "wire": "androidPackage",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidActivity",
+              "wire": "androidActivity",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidDeviceSerial",
+              "wire": "androidDeviceSerial",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidIntentArguments",
+              "wire": "androidIntentArguments",
+              "required": false,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            },
+            {
+              "name": "args",
+              "wire": "args",
+              "required": false,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            },
+            {
+              "name": "binary",
+              "wire": "binary",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "env",
+              "wire": "env",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsEnv"
+              }
+            },
+            {
+              "name": "log",
+              "wire": "log",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsLog"
+              }
+            },
+            {
+              "name": "prefs",
+              "wire": "prefs",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsPrefs"
+              }
+            },
+            {
+              "name": "profile",
+              "wire": "profile",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "session.CapabilityRequestFirefoxOptionsLevel": {
+          "kind": "enum",
+          "values": [
+            "trace",
+            "debug",
+            "config",
+            "info",
+            "warn",
+            "error",
+            "fatal"
+          ],
+          "primitive": "string",
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Level"
+        },
+        "session.CapabilityRequestFirefoxOptionsEnv": {
+          "kind": "record",
+          "fields": [],
+          "map": {
+            "primitive": "string"
+          },
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Env",
+          "outbound": true,
+          "inbound": false
+        },
+        "session.CapabilityRequestFirefoxOptionsLog": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "level",
+              "wire": "level",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsLevel"
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Log",
+          "outbound": true,
+          "inbound": false
+        },
+        "session.CapabilityRequestFirefoxOptionsPrefs": {
+          "kind": "record",
+          "fields": [],
+          "map": {
+            "union": [
+              {
+                "primitive": "string"
+              },
+              {
+                "primitive": "boolean"
+              },
+              {
+                "ref": "js-int"
+              }
+            ],
+            "scalar": [
+              "string",
+              "boolean"
+            ]
+          },
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Prefs",
+          "outbound": true,
+          "inbound": false
         }
       }
     }

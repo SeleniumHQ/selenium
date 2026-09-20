@@ -63,6 +63,14 @@ BIDI_DFNS_FILES = [
     "@web_bluetooth_dfns//file:dfns.json",
 ]
 
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
+# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+BIDI_VENDOR_CDDL_FILES = {
+    "moz": [
+        "//common/bidi:Fields.cddl",
+    ],
+}
+
 def _webref_cddl_impl(_ctx):
     for name, filename, sha256 in _CDDL_FILES:
         http_file(

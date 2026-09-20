@@ -976,3 +976,68 @@ describe('checkSchema (referential integrity)', () => {
     assert.deepEqual(checkSchema(schema), ['x.foo: params null does not match required envelope params x.FooParams'])
   })
 })
+
+describe('vendor section (extension groups and vendor types routed out of the shared schema)', () => {
+  const tagged = (name, type, via) => ({
+    ...field(name, type, { n: 0, m: 1 }),
+    'x-selenium-vendor': 'moz',
+    'x-selenium-vendor-via': via,
+  })
+  const base = [
+    leaf('session.New', 'session.new', 'session.CapabilityRequest'),
+    group('session.CapabilityRequest', [field('browserName', ['text'], { n: 0, m: 1 })]),
+    group('browsingContext.Info', [field('url', ['text'])]),
+  ]
+  const extension = (target, props) => ({ ...group(`${target}Extension`, props), 'x-selenium-vendor-extends': target })
+  const vendorDefs = [
+    extension('session.CapabilityRequest', [
+      tagged('moz:firefoxOptions', [ref('session.CapabilityRequestFirefoxOptions')], 'session.CapabilityRequestExtension'),
+    ]),
+    extension('browsingContext.Info', [
+      tagged('moz:scope', [lit('chrome'), lit('content')], 'browsingContext.InfoExtension'),
+    ]),
+    {
+      ...group('session.CapabilityRequestFirefoxOptions', [
+        field('log', { Type: 'group', Name: '', Properties: [field('level', [lit('info'), lit('warn')])] }),
+      ]),
+      'x-selenium-vendor': 'moz',
+    },
+  ]
+  const model = {
+    session: { commands: [{ method: 'session.new', name: 'new', params: 'session.CapabilityRequest', result: null }], events: [] },
+  }
+  const schema = projectSchema([...base, ...vendorDefs], model)
+
+  it('keeps the shared sections exactly upstream: no vendor field, group, or type', () => {
+    assert.deepEqual(schema.types['session.CapabilityRequest'].fields.map((f) => f.name), ['browserName'])
+    assert.deepEqual(schema.types['browsingContext.Info'].fields.map((f) => f.name), ['url'])
+    assert.equal(Object.keys(schema.types).some((n) => n.endsWith('Extension') || n.includes('FirefoxOptions')), false)
+    const { vendor, ...shared } = schema
+    assert.deepEqual(shared, projectSchema(base, model))
+  })
+
+  it('routes extension fields into extends (wire names, enums inline) and vendor types beside them', () => {
+    const moz = schema.vendor.moz
+    assert.deepEqual(moz.extends['browsingContext.Info'], {
+      via: 'browsingContext.InfoExtension',
+      fields: [{ name: 'moz:scope', wire: 'moz:scope', required: false, type: { enum: ['chrome', 'content'], primitive: 'string' } }],
+    })
+    assert.deepEqual(moz.extends['session.CapabilityRequest'].fields[0].type, { ref: 'session.CapabilityRequestFirefoxOptions' })
+    assert.deepEqual(Object.keys(moz.types).sort(), [
+      'session.CapabilityRequestFirefoxOptions',
+      'session.CapabilityRequestFirefoxOptionsLevel',
+      'session.CapabilityRequestFirefoxOptionsLog',
+    ])
+    assert.equal(moz.types['session.CapabilityRequestFirefoxOptionsLog'].owner, 'session.CapabilityRequestFirefoxOptions')
+  })
+
+  it('validates across both sections: the extended type is a shared record and refs resolve', () => {
+    assert.deepEqual(checkSchema(schema), [])
+    const dangling = structuredClone(schema)
+    delete dangling.vendor.moz.types['session.CapabilityRequestFirefoxOptions']
+    assert.ok(checkSchema(dangling).includes('moz:session.CapabilityRequest.moz:firefoxOptions: unresolved type session.CapabilityRequestFirefoxOptions'))
+    const orphan = structuredClone(schema)
+    orphan.vendor.moz.extends['session.Gone'] = orphan.vendor.moz.extends['session.CapabilityRequest']
+    assert.ok(checkSchema(orphan).includes('moz: extends session.Gone, which is not a shared record'))
+  })
+})

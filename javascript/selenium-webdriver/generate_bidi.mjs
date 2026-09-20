@@ -28,7 +28,7 @@
 import { parse } from 'cddl'
 import { transform } from 'cddl2ts'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 
@@ -148,7 +148,7 @@ async function main() {
     // is parsed independently and their definitions concatenated. Top-level CDDL
     // productions are position-independent (refs resolve by name later), so this equals
     // parsing one merged file — without a separate merge step or tool. Spec-shaped Selenium
-    // overrides (e.g. #1140) are applied here; vendor overlays are NOT, so this base AST —
+    // overrides are applied here; vendor overlays are NOT, so this base AST —
     // which feeds the model and the browser-neutral TypeScript binding — stays vendor-free.
     const baseAst = args.cddl.flatMap(parseCddl)
     writeJson(args['dump-ast'], applyOverrides(baseAst, args['override-cddl'] ?? []), 'ast')
@@ -164,7 +164,8 @@ async function main() {
   } else {
     console.error(
       'Usage (one stage per invocation):\n' +
-        '  generate_bidi.mjs --cddl <file> [--cddl <file>...] --dump-ast <file>\n' +
+        '  generate_bidi.mjs --cddl <file> [--cddl <file>...] [--override-cddl <file>...] --dump-ast <file>\n' +
+        '  generate_bidi.mjs --ast <file> --vendor-cddl <namespace>=<file> [...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
         '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--enhancements <file>] [--spec-version <v>]',
     )
@@ -211,54 +212,62 @@ function applyOverrides(ast, overrideArgs) {
 }
 
 /**
- * Apply Selenium vendor overlay CDDL (see common/bidi/*-extensions.cddl) to the AST.
- * A vendor overlay extends a spec extension point (e.g. `webExtension.InstallParametersExtension
- * //= (...)`) with typed browser-specific fields. Unlike a plain override, every field a vendor
- * overlay contributes is tagged with its provenance — the vendor namespace (from the field's wire
- * key prefix, e.g. `moz:` → `moz`) and the extension point it flows through — so the projector can
- * resolve it against the real extension point (the merge genuinely happens) yet route it out of the
- * shared, browser-neutral schema into a separate `vendor` section. Vendor defs are appended after
- * overrides so the extension point they extend is already present for the `//=` fold.
+ * Apply Selenium vendor overlay CDDL (see common/bidi/*-extensions.cddl) to the AST. Each
+ * `--vendor-cddl` is `<namespace>=<file>`, the namespace being the wire prefix the vendor owns
+ * (`moz` for `moz:` fields). A vendor overlay extends a spec type through a `<Type>Extension`
+ * group of typed browser-specific fields, which the normalizer splices into the like-named
+ * upstream record. Unlike a plain override, every field a vendor overlay contributes is tagged
+ * with its provenance — the namespace and the extension group it flows through — so the
+ * projector can resolve it against the real spec type (the merge genuinely happens) yet route it
+ * out of the shared, browser-neutral schema into a separate `vendor` section.
  */
 function applyVendor(ast, vendorArgs) {
   if (!vendorArgs.length) return ast
-  const vendorDefs = vendorArgs.flatMap((arg) => tagVendorDefs(parseCddl(arg), vendorFileStem(arg)))
+  const specGroups = new Set(ast.filter((d) => d?.Type === 'group').map((d) => d.Name))
+  const vendorDefs = vendorArgs.flatMap((arg) => {
+    const [namespace, file] = splitVendorArg(arg)
+    return tagVendorDefs(parseCddl(file), namespace, specGroups)
+  })
   return [...ast, ...vendorDefs]
 }
 
-function vendorFileStem(cddlArg) {
-  return basename(resolveInputPath(cddlArg)).replace(/\.cddl$/, '')
+function splitVendorArg(arg) {
+  const i = arg.indexOf('=')
+  if (i <= 0) {
+    console.error(`Error: --vendor-cddl expects <namespace>=<file>, got: ${arg}`)
+    process.exit(1)
+  }
+  return [arg.slice(0, i), arg.slice(i + 1)]
 }
 
-// The vendor namespace is intrinsic to the field: a `moz:permanent` wire key belongs to `moz`.
-// Fields without a namespaced key fall back to the overlay file's stem.
-function vendorNamespaceOf(wireKey, fallback) {
-  const i = typeof wireKey === 'string' ? wireKey.indexOf(':') : -1
-  return i > 0 ? wireKey.slice(0, i) : fallback
-}
+const EXTENSION_SUFFIX = 'Extension'
 
-// Stamp `x-selenium-vendor` (namespace) and `x-selenium-vendor-via` (the extension-point def the
-// field extends) onto every named field a vendor overlay def declares. The tags ride through the
-// AST JSON round-trip and normalization (the `//=` fold and group flatten preserve them) so the
-// projector can partition them out of the shared schema by provenance.
-function tagVendorDefs(defs, fileStem) {
+// Classify each vendor def and stamp the provenance the projector partitions on. A def named
+// `<Type>Extension` where `<Type>` is a spec group is an extension group in the convention
+// Mozilla's `Extensions.md` documents (read "as if included in that type"): the def is tagged
+// with the type it extends (`x-selenium-vendor-extends`, which the normalizer splices on) and
+// each field with `x-selenium-vendor` (namespace) and `x-selenium-vendor-via` (the group) —
+// the fields are what flow into the shared type. A `<Type>Extension` with no such spec group
+// is a mistake, not a helper type, so it fails loudly. Any other def (a helper type an
+// extension field references) is tagged on the def itself and stays whole.
+function tagVendorDefs(defs, namespace, specGroups) {
   for (const def of defs) {
-    const via = def.Name
-    const walk = (props) => {
-      for (const p of props ?? []) {
-        if (Array.isArray(p)) {
-          walk(p)
-          continue
-        }
-        if (!p || typeof p !== 'object') continue
-        if (p.Name) {
-          p['x-selenium-vendor'] = vendorNamespaceOf(p.Name, fileStem)
-          p['x-selenium-vendor-via'] = via
-        }
-        if (Array.isArray(p.Properties)) walk(p.Properties)
-      }
+    if (!def?.Name) continue
+    if (!def.Name.endsWith(EXTENSION_SUFFIX)) {
+      def['x-selenium-vendor'] = namespace
+      continue
     }
-    walk(def.Properties)
+    const target = def.Name.slice(0, -EXTENSION_SUFFIX.length)
+    if (!specGroups.has(target)) {
+      console.error(`Error: vendor extension group ${def.Name} (${namespace}) has no spec type ${target} to extend`)
+      process.exit(1)
+    }
+    def['x-selenium-vendor-extends'] = target
+    for (const p of (def.Properties ?? []).flat()) {
+      if (!p || typeof p !== 'object' || !p.Name) continue
+      p['x-selenium-vendor'] = namespace
+      p['x-selenium-vendor-via'] = def.Name
+    }
   }
   return defs
 }

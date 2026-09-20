@@ -68,6 +68,14 @@
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
  * was lifted out of and `label` is the member name within it, so a binding can
  * keep the flat name or nest it (e.g. `Owner::Label`) without parsing the key.
+ *
+ * Everything a vendor grammar (Firefox's `moz:` CDDL) contributes lands in `vendor.<namespace>`:
+ *   extends — `{ <sharedType>: { via, fields } }`, the fields a `<Type>Extension` group adds to
+ *             that shared record (under their wire names), `via` naming the group.
+ *   types   — the vendor's own types (a helper record an extension field references, or a
+ *             synthetic lifted out of one), in the same shape as the shared `types`.
+ * Refs cross from the vendor section into the shared `types`, never the other way; a binding
+ * that reads only the shared sections never sees vendor content.
  */
 
 import { pathToFileURL } from 'node:url'
@@ -625,6 +633,9 @@ export function projectSchema(ast, model, links = {}) {
       node.owner = def['x-selenium-owner']
       node.label = def['x-selenium-label']
     }
+    // A vendor's own type (generate_bidi.mjs tags the def). Carried on the node only until
+    // extractVendor routes it into the `vendor` section.
+    if (def['x-selenium-vendor']) node.vendor = def['x-selenium-vendor']
     // Link to the type's definition in the live spec, when the index covers it —
     // the readable prose section where one exists, else the CDDL production.
     // Synthetic types have no spec definition and are (correctly) never in it.
@@ -709,20 +720,27 @@ export function projectSchema(ast, model, links = {}) {
 }
 
 /**
- * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
- * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
- * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
- * group flatten) is what proves the merge happened — this only re-routes the output. The pure
- * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
- * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * Move everything vendor-tagged out of the shared `types` into the `vendor` section (see the
+ * header block). A field's `via` names the extension group it flowed through; the field having
+ * resolved into a real shared record (the extension-group splice and group flatten) is what
+ * proves the merge happened — this only re-routes the output. The pure extension-group anchor
+ * type (e.g. `webExtension.InstallParametersExtension`), left with no spec fields once its
+ * vendor fields move out, is dropped. A vendor-tagged type moves whole into `types`.
  * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
  * @param {object} types The projected `types` map (mutated in place).
- * @returns {object} The vendor section, empty when there are no vendor fields.
+ * @returns {object} The vendor section, empty when there is no vendor content.
  */
 function extractVendor(types) {
   const vendor = {}
   const anchors = new Set()
+  const section = (ns) => (vendor[ns] ??= { extends: {}, types: {} })
   for (const [typeName, node] of Object.entries(types)) {
+    if (node.vendor) {
+      const { vendor: ns, ...clean } = node
+      section(ns).types[typeName] = clean
+      delete types[typeName]
+      continue
+    }
     if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
     const kept = []
     for (const field of node.fields) {
@@ -735,8 +753,7 @@ function extractVendor(types) {
       // itself is removed below) and route only the copy that resolved into a real target type.
       if (field.via === typeName) continue
       const { vendor: ns, via, ...clean } = field
-      const bucket = (vendor[ns] ??= { extends: {} })
-      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      const entry = (section(ns).extends[typeName] ??= { via, fields: [] })
       entry.fields.push(clean)
     }
     node.fields = kept
@@ -757,7 +774,9 @@ function extractVendor(types) {
  */
 export function checkSchema(schema) {
   const errors = []
-  const has = (name) => Object.hasOwn(schema.types, name)
+  const vendorSections = Object.values(schema.vendor ?? {})
+  const allTypes = Object.assign({}, schema.types, ...vendorSections.map((s) => s.types ?? {}))
+  const has = (name) => Object.hasOwn(allTypes, name)
   const hasUnknown = (node) =>
     !node
       ? false
@@ -803,7 +822,14 @@ export function checkSchema(schema) {
     if (expected && c.params?.ref !== expected)
       errors.push(`${c.method}: params ${c.params?.ref ?? 'null'} does not match required envelope params ${expected}`)
   }
-  for (const [name, node] of Object.entries(schema.types)) {
+  // A vendor extension adds fields to a shared record: the record must exist as a record, and
+  // its fields resolve like any other. Vendor types get the same per-type checks as shared ones.
+  for (const [ns, sec] of Object.entries(schema.vendor ?? {}))
+    for (const [target, entry] of Object.entries(sec.extends ?? {})) {
+      if (schema.types[target]?.kind !== 'record') errors.push(`${ns}: extends ${target}, which is not a shared record`)
+      for (const f of entry.fields) report(`${ns}:${target}.${f.name}`, f.type)
+    }
+  for (const [name, node] of Object.entries(allTypes)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
       const wireByName = new Map()
