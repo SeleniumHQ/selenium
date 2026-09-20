@@ -85,7 +85,8 @@ class ErrorHandlerTest {
         ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
-    assertThrowsCorrectExceptionType(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
+    assertThrowsCorrectExceptionType(
+        ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
   }
 
   private void assertThrowsCorrectExceptionType(
@@ -439,7 +440,6 @@ class ErrorHandlerTest {
     exceptions.put(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     exceptions.put(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class);
     exceptions.put(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class);
-    exceptions.put(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.TIMEOUT, TimeoutException.class);
     exceptions.put(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
     exceptions.put(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class);
@@ -450,7 +450,6 @@ class ErrorHandlerTest {
     exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
     exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
-    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class);
 
     for (Map.Entry<Integer, Class<?>> exception : exceptions.entrySet()) {
