@@ -1957,7 +1957,7 @@ public class BiDiGenerator {
           return "input -> {\n"
               + "      @SuppressWarnings(\"unchecked\")\n"
               + "      java.util.Map<String, Object> m ="
-              + " input.readNonNull(java.util.Map.class);\n"
+              + " (java.util.Map<String, Object>) input;\n"
               + "      return "
               + javaType
               + ".fromMap(m);\n"
