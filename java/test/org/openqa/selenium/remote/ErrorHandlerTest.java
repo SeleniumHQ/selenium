@@ -89,6 +89,42 @@ class ErrorHandlerTest {
         ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
   }
 
+  @Test
+  void testResolvesExceptionTypeFromStateWhenStatusIsAbsent() {
+    Response response = new Response();
+    response.setState("stale element reference");
+
+    assertThatExceptionOfType(StaleElementReferenceException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123));
+  }
+
+  @Test
+  void testStateTakesPrecedenceOverConflictingStatus() {
+    Response response = new Response();
+    response.setState("no such element");
+    response.setStatus(ErrorCodes.NO_SUCH_WINDOW);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123));
+  }
+
+  @Test
+  void testFallsBackToWebDriverExceptionWhenErrorCodesReturnsNoType() {
+    ErrorCodes codes =
+        new ErrorCodes() {
+          @Override
+          public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
+            return null;
+          }
+        };
+    ErrorHandler customHandler = new ErrorHandler(codes, true);
+    Response response = new Response();
+    response.setState("no such element");
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> customHandler.throwIfResponseFailed(response, 123));
+  }
+
   private void assertThrowsCorrectExceptionType(
       int status, Class<? extends RuntimeException> type) {
     assertThatExceptionOfType(RuntimeException.class)

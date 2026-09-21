@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNullElse;
+
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -98,7 +100,9 @@ public class ErrorHandler {
     }
 
     String responseState = response.getState();
-    Class<? extends WebDriverException> outerErrorType = errorCodes.getExceptionType(responseState);
+    // ErrorCodes subclasses (e.g. Appium's ErrorCodesMobile) may return null for unknown states
+    Class<? extends WebDriverException> outerErrorType =
+        requireNonNullElse(errorCodes.getExceptionType(responseState), WebDriverException.class);
 
     Object value = response.getValue();
     String message = null;
