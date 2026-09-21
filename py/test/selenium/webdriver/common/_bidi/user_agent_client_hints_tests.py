@@ -33,6 +33,14 @@ def _eval(driver, expression, context_id):
     return Script(driver).evaluate(expression, ContextTarget(context=context_id), False).result.value
 
 
+def get_user_agent_data(driver, context_id):
+    return {
+        "platform": _eval(driver, "navigator.userAgentData.platform", context_id),
+        "brand": _eval(driver, "navigator.userAgentData.brands[0].brand", context_id),
+        "mobile": _eval(driver, "navigator.userAgentData.mobile", context_id),
+    }
+
+
 def _navigate(driver, pages, context_id):
     BrowsingContext(driver).navigate(context=context_id, url=pages.url("formPage.html"), wait=ReadinessState.COMPLETE)
 
@@ -53,9 +61,11 @@ def test_set_client_hints_override_with_contexts(driver, pages):
         client_hints.set_client_hints_override(_fake_hints("SeleniumOS"), contexts=[context_id])
         _navigate(driver, pages, context_id)
 
-        assert _eval(driver, "navigator.userAgentData.platform", context_id) == "SeleniumOS"
-        assert _eval(driver, "navigator.userAgentData.brands[0].brand", context_id) == "SeleniumBrowser"
-        assert _eval(driver, "navigator.userAgentData.mobile", context_id) is True
+        assert get_user_agent_data(driver, context_id) == {
+            "platform": "SeleniumOS",
+            "brand": "SeleniumBrowser",
+            "mobile": True,
+        }
     finally:
         client_hints.set_client_hints_override(None, contexts=[context_id])
 
@@ -64,18 +74,18 @@ def test_set_client_hints_override_with_contexts(driver, pages):
 def test_clear_client_hints_override(driver, pages):
     context_id = driver.current_window_handle
     _navigate(driver, pages, context_id)
-    initial_platform = _eval(driver, "navigator.userAgentData.platform", context_id)
+    initial_user_agent_data = get_user_agent_data(driver, context_id)
 
     client_hints = UserAgentClientHints(driver)
     try:
         client_hints.set_client_hints_override(_fake_hints("SeleniumOS"), contexts=[context_id])
         _navigate(driver, pages, context_id)
-        assert _eval(driver, "navigator.userAgentData.platform", context_id) == "SeleniumOS"
+        assert get_user_agent_data(driver, context_id)["platform"] == "SeleniumOS"
     finally:
         client_hints.set_client_hints_override(None, contexts=[context_id])
 
     _navigate(driver, pages, context_id)
-    assert _eval(driver, "navigator.userAgentData.platform", context_id) == initial_platform
+    assert get_user_agent_data(driver, context_id) == initial_user_agent_data
 
 
 @pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
@@ -88,7 +98,7 @@ def test_set_client_hints_override_with_user_contexts(driver, pages):
         context_id = BrowsingContext(driver).create(type=CreateType.TAB, user_context=user_context).context
         try:
             _navigate(driver, pages, context_id)
-            assert _eval(driver, "navigator.userAgentData.platform", context_id) == "UserContextOS"
+            assert get_user_agent_data(driver, context_id)["platform"] == "UserContextOS"
         finally:
             BrowsingContext(driver).close(context=context_id)
     finally:
