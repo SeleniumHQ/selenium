@@ -83,6 +83,10 @@ Naming/AccessorMethodName:
   Exclude:
     - 'lib/selenium/webdriver/bidi/protocol/**/*'
 
+Naming/PredicatePrefix:
+  Exclude:
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
+
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'

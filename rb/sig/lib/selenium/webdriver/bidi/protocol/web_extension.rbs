@@ -25,6 +25,12 @@ module Selenium
         class WebExtension < ::Selenium::WebDriver::BiDi::Protocol::Domain
           type extension_data = ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionArchivePath | ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionBase64Encoded | ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionPath
 
+          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data, ?extensions: Hash[String, untyped]) -> instance
+          end
+
           class ExtensionData < ::Selenium::WebDriver::BiDi::Serialization::Union
             def self.archive_path: (?type: String, path: String) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionArchivePath
             def self.base64: (?type: String, value: String) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::ExtensionBase64Encoded
@@ -57,12 +63,6 @@ module Selenium
           class UninstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader extension: String
             def self.new: (extension: String) -> instance
-          end
-
-          class InstallParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
-            attr_reader extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data
-            attr_reader extensions: Hash[String, untyped]
-            def self.new: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data, ?extensions: Hash[String, untyped]) -> instance
           end
 
           def extension_data: () -> singleton(ExtensionData)

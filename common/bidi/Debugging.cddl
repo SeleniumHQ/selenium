@@ -1,0 +1,202 @@
+MozDebuggingCommand = (
+  mozDebugging.GetScriptSource //
+  mozDebugging.ListScripts //
+  mozDebugging.RemoveBreakpoint //
+  mozDebugging.Resume //
+  mozDebugging.SetBreakpoint //
+  mozDebugging.SetDebuggerEnabled //
+  mozDebugging.StepInto //
+  mozDebugging.StepOut //
+  mozDebugging.StepOver
+)
+
+MozDebuggingResult = (
+  mozDebugging.GetScriptSourceResult /
+  mozDebugging.ListScriptsResult /
+  mozDebugging.RemoveBreakpointResult /
+  mozDebugging.ResumeResult /
+  mozDebugging.SetBreakpointResult /
+  mozDebugging.SetDebuggerEnabledResult /
+  mozDebugging.StepIntoResult /
+  mozDebugging.StepOutResult /
+  mozDebugging.StepOverResult
+)
+
+MozDebuggingEvent = (
+  mozDebugging.Paused //
+  mozDebugging.Resumed
+)
+
+mozDebugging.GetScriptSource = (
+  method: "moz:debugging.getScriptSource",
+  params: mozDebugging.GetScriptSourceParameters
+)
+
+mozDebugging.GetScriptSourceParameters = {
+  context: browsingContext.BrowsingContext,
+  scriptUrl: text,
+}
+
+mozDebugging.GetScriptSourceResult = {
+  source: text,
+}
+
+mozDebugging.ListScripts = (
+  method: "moz:debugging.listScripts",
+  params: mozDebugging.ListScriptsParameters,
+)
+
+mozDebugging.ListScriptsParameters = {
+  context: browsingContext.BrowsingContext,
+}
+
+mozDebugging.ListScriptsResult = {
+  scripts: [*text],
+}
+
+mozDebugging.RemoveBreakpoint = (
+  method: "moz:debugging.removeBreakpoint",
+  params: mozDebugging.RemoveBreakpointParameters,
+)
+
+mozDebugging.RemoveBreakpointParameters = {
+  breakpoint: mozDebugging.BreakpointId,
+}
+
+mozDebugging.RemoveBreakpointResult = EmptyResult
+
+mozDebugging.BreakpointId = text
+
+mozDebugging.Resume = (
+  method: "moz:debugging.resume",
+  params: mozDebugging.ResumeParameters,
+)
+
+mozDebugging.ResumeParameters = {
+  context: browsingContext.BrowsingContext,
+}
+
+mozDebugging.ResumeResult = EmptyResult
+
+mozDebugging.SetBreakpoint = (
+  method: "moz:debugging.setBreakpoint",
+  params: mozDebugging.SetBreakpointParameters,
+)
+
+mozDebugging.SetBreakpointParameters = {
+  location: {
+    mozDebugging.BaseLocation,
+    ? column: js-uint,
+  },
+}
+
+mozDebugging.SetBreakpointResult = {
+  breakpoint: mozDebugging.BreakpointId,
+}
+
+mozDebugging.BaseLocation = (
+  line: js-uint,
+  url: text,
+)
+
+mozDebugging.SetDebuggerEnabled = (
+  method: "moz:debugging.setDebuggerEnabled",
+  params: mozDebugging.SetDebuggerEnabledParameters,
+)
+
+mozDebugging.SetDebuggerEnabledParameters = {
+  ? contexts: [*browsingContext.BrowsingContext],
+  enabled: bool / null,
+  ? userContexts: [*browser.UserContext],
+}
+
+mozDebugging.SetDebuggerEnabledResult = EmptyResult
+
+mozDebugging.StepInto = (
+  method: "moz:debugging.stepInto",
+  params: mozDebugging.StepIntoParameters,
+)
+
+mozDebugging.StepIntoParameters = {
+  context: browsingContext.BrowsingContext,
+}
+
+mozDebugging.StepIntoResult = EmptyResult
+
+mozDebugging.StepOut = (
+  method: "moz:debugging.stepOut",
+  params: mozDebugging.StepOutParameters,
+)
+
+mozDebugging.StepOutParameters = {
+  context: browsingContext.BrowsingContext,
+}
+
+mozDebugging.StepOutResult = EmptyResult
+
+mozDebugging.StepOver = (
+  method: "moz:debugging.stepOver",
+  params: mozDebugging.StepOverParameters,
+)
+
+mozDebugging.StepOverParameters = {
+  context: browsingContext.BrowsingContext,
+}
+
+mozDebugging.StepOverResult = EmptyResult
+
+mozDebugging.Paused = (
+  method: "moz:debugging.paused",
+  params: mozDebugging.PausedParameters,
+)
+
+mozDebugging.PausedParameters = {
+  context: browsingContext.BrowsingContext,
+  url: text,
+  line: js-uint,
+  column: js-uint,
+  callFrames: [*mozDebugging.PausedParametersCallFrame],
+}
+
+mozDebugging.PausedParametersCallFrame = {
+  callFrameId: text,
+  functionName: text,
+  location: {
+    mozDebugging.BaseLocation,
+    column: js-uint,
+  },
+  scopeChain: [*mozDebugging.PausedParametersScope],
+}
+
+mozDebugging.PausedParametersScope = {
+  type: text,
+  variables: {*text => mozDebugging.PausedParametersScopeValue}
+}
+
+mozDebugging.PausedParametersScopeValue = (
+  mozDebugging.PausedParametersScopeValueMissingArguments /
+  mozDebugging.PausedParametersScopeValueOptimizedOut /
+  mozDebugging.PausedParametersScopeValueUninitialized /
+  script.RemoteValue
+)
+
+mozDebugging.PausedParametersScopeValueMissingArguments = {
+  type: "missingArguments"
+}
+
+mozDebugging.PausedParametersScopeValueOptimizedOut = {
+  type: "optimizedOut"
+}
+
+mozDebugging.PausedParametersScopeValueUninitialized = {
+  type: "uninitialized"
+}
+
+mozDebugging.Resumed = (
+  method: "moz:debugging.resumed",
+  params: mozDebugging.ResumedParameters,
+)
+
+mozDebugging.ResumedParameters = {
+  context: browsingContext.BrowsingContext,
+}
