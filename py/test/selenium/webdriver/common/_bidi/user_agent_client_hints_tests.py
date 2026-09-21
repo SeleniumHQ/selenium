@@ -28,8 +28,6 @@ from selenium.webdriver.common._bidi.user_agent_client_hints import (
     UserAgentClientHints,
 )
 
-pytestmark = pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
-
 
 def _eval(driver, expression, context_id):
     return Script(driver).evaluate(expression, ContextTarget(context=context_id), False).result.value
@@ -47,6 +45,7 @@ def _fake_hints(platform):
     )
 
 
+@pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
 def test_set_client_hints_override_with_contexts(driver, pages):
     context_id = driver.current_window_handle
     client_hints = UserAgentClientHints(driver)
@@ -61,6 +60,7 @@ def test_set_client_hints_override_with_contexts(driver, pages):
         client_hints.set_client_hints_override(None, contexts=[context_id])
 
 
+@pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
 def test_clear_client_hints_override(driver, pages):
     context_id = driver.current_window_handle
     _navigate(driver, pages, context_id)
@@ -78,6 +78,7 @@ def test_clear_client_hints_override(driver, pages):
     assert _eval(driver, "navigator.userAgentData.platform", context_id) == initial_platform
 
 
+@pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
 def test_set_client_hints_override_with_user_contexts(driver, pages):
     user_context = Browser(driver).create_user_context().user_context
     try:
