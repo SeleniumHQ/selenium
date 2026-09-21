@@ -144,7 +144,7 @@ class WebElement(BaseWebElement):
         """
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str | bool | WebElement | dict:
+    def get_property(self, name: str) -> str | bool | WebElement | dict:
         """Gets the given property of the element.
 
         Args:
@@ -162,7 +162,7 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesn't understand getElementProperty lets fake it
             return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
-    def get_dom_attribute(self, name) -> str:
+    def get_dom_attribute(self, name: str) -> str:
         """Get the HTML attribute value (not reflected properties) of the element.
 
         Returns only attributes declared in the element's HTML markup, unlike
