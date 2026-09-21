@@ -91,7 +91,12 @@ public interface HttpClient extends Closeable, HttpHandler {
 
     HttpClient createClient(ClientConfig config);
 
-    /** Closes idle clients. */
+    /**
+     * Closes idle clients.
+     *
+     * @deprecated the client knows the Factory and could call a cleanup method after close
+     */
+    @Deprecated(forRemoval = true, since = "4.50.0")
     default void cleanupIdleClients() {
       // do nothing by default.
     }

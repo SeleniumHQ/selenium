@@ -3,6 +3,11 @@ name: CI - Python
 on:
   workflow_call:
     inputs:
+      smoke:
+        description: Smoke tests always run; callers pass false to add the full matrix
+        required: false
+        type: boolean
+        default: true
       compile-manager:
         description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
@@ -10,6 +15,11 @@ on:
         default: false
   workflow_dispatch:
     inputs:
+      smoke:
+        description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
       compile-manager:
         description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
@@ -19,10 +29,14 @@ on:
 permissions:
   contents: read
 
+# Two tiers, mutually exclusive by content. `smoke` runs on every event, including
+# schedule, so the schedule-only flaky parser sees it. The full jobs run on schedule
+# or dispatch and exclude the smoke tags, so they are the nightly complement of
+# smoke rather than the whole tree.
 jobs:
   build:
     name: Build
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
@@ -55,7 +69,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -68,31 +82,45 @@ jobs:
       python-version: ${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
 
-  remote-tests:
-    name: Remote Tests
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Integration Tests Remote
-      needs-display: true
-      rerun-with-debug: true
-      download-artifact-name: targets
-      run: >
-        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
-        { echo "tests(//py:test-remote) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
-        bazel query --query_file=query.txt --output=label > remote-targets.txt;
-        ./scripts/github-actions/bazel-test-if-targets.sh
-        --keep_going
-        --flaky_test_attempts 3
-        --local_test_jobs 1
-        --target_pattern_file=remote-targets.txt
-
-  browser-tests:
-    name: Browser Tests
+  smoke:
+    name: ${{ matrix.os }}-smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-bidi, edge]
+        os: [windows, macos]
+        tag_filters: ["os-sensitive,se-manager,skip-rbe"]
+        include:
+          # RBE already runs the os-sensitive targets on Linux; ubuntu is here for what needs network.
+          - os: ubuntu
+            tag_filters: se-manager,skip-rbe
+    with:
+      name: ${{ matrix.os }}
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --build_tests_only
+        --skip_incompatible_explicit_targets
+        --pin_browsers=false
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
+        --test_tag_filters=${{ matrix.tag_filters }}
+        --target_pattern_file=bazel-targets-py.txt
+
+  browser-tests:
+    name: Browser Tests
+    if: github.event_name == 'schedule' || !inputs.smoke
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, chrome-bidi, edge, chrome-grid, firefox-grid]
         os: [windows]
         include:
           - browser: safari
@@ -102,39 +130,12 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
-      download-artifact-name: targets
       run: >
-        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
-        { echo "tests(//py:test-${{ matrix.browser }}) intersect set("; cat bazel-targets-py.txt; echo ")"; } > query.txt;
-        bazel query --query_file=query.txt --output=label > browser-targets.txt;
-        ./scripts/github-actions/bazel-test-if-targets.sh
+        bazel test
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
-        --skip_incompatible_explicit_targets
-        --target_pattern_file=browser-targets.txt
-
-  selenium-manager-tests:
-    name: Selenium Manager Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu, windows, macos]
-    with:
-      name: Integration Tests Selenium Manager (${{ matrix.os }})
-      needs-display: true
-      os: ${{ matrix.os }}
-      rerun-with-debug: true
-      download-artifact-name: targets
-      run: >
-        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
-        ./scripts/github-actions/bazel-test-if-targets.sh
-        --local_test_jobs 1
-        --flaky_test_attempts 3
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --build_tests_only
-        --skip_incompatible_explicit_targets
-        --test_tag_filters=se-manager
-        --target_pattern_file=bazel-targets-py.txt
+        --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe
+        //py:test-${{ matrix.browser }}

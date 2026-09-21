@@ -619,27 +619,6 @@ describe('checkCompleteness (input vs output, generator-independent)', () => {
     const errors = checkCompleteness(astWithExtra, schema)
     assert.deepEqual(errors, ['dropped from schema: network.droppedCmd'])
   })
-
-  it('does not fail for a known-incomplete (allowlisted) drop', () => {
-    const astWithKnown = [
-      ...AST,
-      leaf('bluetooth.X', 'bluetooth.characteristicEventGenerated', 'network.SetCacheBehaviorParameters'),
-    ]
-    assert.deepEqual(checkCompleteness(astWithKnown, projectSchema(AST, MODEL)), [])
-  })
-
-  it('flags an allowlisted method as stale once it is emitted', () => {
-    const schema = projectSchema(AST, MODEL)
-    schema.events.push({
-      domain: 'bluetooth',
-      method: 'bluetooth.characteristicEventGenerated',
-      name: 'characteristicEventGenerated',
-      params: null,
-    })
-    assert.deepEqual(checkCompleteness(AST, schema), [
-      'stale KNOWN_INCOMPLETE entry (now emitted, remove it): bluetooth.characteristicEventGenerated',
-    ])
-  })
 })
 
 describe('specHref (spec-definition links from the webref dfns index)', () => {

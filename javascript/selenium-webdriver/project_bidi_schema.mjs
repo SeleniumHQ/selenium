@@ -78,14 +78,6 @@ import { normalizeAst } from './normalize_bidi_ast.mjs'
 // normalizer turns into a `union`. A scan of all spec comments confirms none, so
 // no separate constraint representation is carried.
 
-// Events that parse into the AST but are not wired into the model because the
-// upstream bluetooth spec does not fully define them. This is an external spec
-// issue, not a Selenium/buildModel bug, and is intentionally not fixed here.
-// Allowlisted so it does not fail the build; checkCompleteness() flags an entry
-// as stale once it becomes emitted (e.g. after the spec is fixed upstream), so
-// this list cannot silently rot.
-const KNOWN_INCOMPLETE = new Set(['bluetooth.characteristicEventGenerated', 'bluetooth.descriptorEventGenerated'])
-
 const PRIMITIVES = {
   text: 'string',
   tstr: 'string',
@@ -990,13 +982,7 @@ export function checkCompleteness(rawAst, schema) {
     const methodProp = (def.Properties ?? []).flat().find((p) => p?.Name === 'method')
     const literal = methodProp && (Array.isArray(methodProp.Type) ? methodProp.Type[0] : methodProp.Type)
     if (literal?.Type !== 'literal') continue
-    if (!emitted.has(literal.Value) && !KNOWN_INCOMPLETE.has(literal.Value))
-      errors.push(`dropped from schema: ${literal.Value}`)
-  }
-  // Self-cleaning: if a known-incomplete method is now emitted, the entry is
-  // stale and must be removed — so the allowlist cannot silently rot.
-  for (const known of KNOWN_INCOMPLETE) {
-    if (emitted.has(known)) errors.push(`stale KNOWN_INCOMPLETE entry (now emitted, remove it): ${known}`)
+    if (!emitted.has(literal.Value)) errors.push(`dropped from schema: ${literal.Value}`)
   }
   // Every structured type must carry both directionality flags — a missing one means
   // the pass skipped a node. `(false, false)` is a valid combination (a type in no

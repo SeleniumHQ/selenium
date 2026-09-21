@@ -299,10 +299,11 @@ module Selenium
 
           class StartScreencastParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
+            attr_reader destination_folder: untyped
             attr_reader mime_type: untyped
             attr_reader video: untyped
             attr_reader audio: untyped
-            def self.new: (context: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> instance
+            def self.new: (context: String, ?destination_folder: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> instance
           end
 
           class MediaTrackConstraints < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -430,7 +431,7 @@ module Selenium
           def reload: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
           def set_bypass_csp: (bypass: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_viewport: (?context: String, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]) -> untyped
-          def start_screencast: (context: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StartScreencastResult
+          def start_screencast: (context: String, ?destination_folder: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StartScreencastResult
           def stop_screencast: (screencast: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StopScreencastResult
           def traverse_history: (context: String, delta: Integer) -> untyped
         end

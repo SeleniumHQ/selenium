@@ -1,4 +1,4 @@
-name: Merge Release PR
+name: Release - Merge PR
 
 on:
   workflow_run:
