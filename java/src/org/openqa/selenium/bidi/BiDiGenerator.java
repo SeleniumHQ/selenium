@@ -680,8 +680,8 @@ public class BiDiGenerator {
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
       sb.append("import java.util.Set;\n");
-      sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.jetbrains.annotations.ApiStatus;\n");
+      sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       // BiDiException is needed by nested enum fromJson() methods and union fromMap() methods.
       // ConverterFunctions.JSON is needed by fromJson() (see appendFromJson) — same condition as
@@ -857,7 +857,7 @@ public class BiDiGenerator {
           sb.append(String.join(", ", ctorParams));
           sb.append(") {\n");
           for (FieldInfo f : fields) {
-            appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder);
+            appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder, isReceivable);
           }
           if (needsExtrasCapture) {
             // Copy rather than alias: when this constructor is called from a Builder's build(),
@@ -886,6 +886,7 @@ public class BiDiGenerator {
               .append(" ")
               .append(f.name)
               .append(") {\n");
+          appendJsRangeValidation(sb, f, f.name, true, m + "  ");
           sb.append(m)
               .append("  this.")
               .append(f.name)
@@ -1023,7 +1024,15 @@ public class BiDiGenerator {
           fields.stream().anyMatch(f -> !f.name.equals(f.wire)) || needsExtrasCapture;
       if (needsFromJson) {
         appendFromJson(
-            sb, cls, fields, domain, m, needsBuilder, nullableOptional, needsExtrasCapture);
+            sb,
+            cls,
+            fields,
+            domain,
+            m,
+            needsBuilder,
+            nullableOptional,
+            needsExtrasCapture,
+            isReceivable && !extensible);
       }
     }
 
@@ -1046,7 +1055,8 @@ public class BiDiGenerator {
         String m,
         boolean needsBuilder,
         List<FieldInfo> nullableOptional,
-        boolean needsExtrasCapture) {
+        boolean needsExtrasCapture,
+        boolean warnOnUnknownFields) {
       sb.append("\n")
           .append(m)
           .append("private static ")
@@ -1092,6 +1102,19 @@ public class BiDiGenerator {
         sb.append(m).append("    }\n");
         sb.append(m).append("  }\n");
         ctorArgs.add("extensions");
+      } else if (warnOnUnknownFields) {
+        // This type would otherwise deserialize through ConstructorCoercer, which honors
+        // @WarnOnUnknownFields — but a reserved-word field (see generateRecord) forces this
+        // custom fromJson instead, bypassing ConstructorCoercer entirely. Without this call an
+        // undeclared response member would be silently dropped here with no warning at all,
+        // unlike every other receivable, non-extensible generated type.
+        sb.append(m)
+            .append("  org.openqa.selenium.json.UnknownFieldsWarning.warnOnUnknownFields(")
+            .append(cls)
+            .append(".class, Set.of(")
+            .append(
+                fields.stream().map(f -> "\"" + f.wire + "\"").collect(Collectors.joining(", ")))
+            .append("), map);\n");
       }
       sb.append(m)
           .append("  return new ")
@@ -1270,7 +1293,9 @@ public class BiDiGenerator {
 
     private void appendConstructorAssignment(
         StringBuilder sb, FieldInfo f, String domain, String bodyIndent) {
-      appendConstructorAssignment(sb, f, domain, bodyIndent, false);
+      // Only ever called for the sender-only (never receivable) constructor — see its call site
+      // — so no immutable-collection copy is needed here regardless.
+      appendConstructorAssignment(sb, f, domain, bodyIndent, false, false);
     }
 
     // supportsSetOverride is true only for the all-fields constructor of a type that has a
@@ -1282,21 +1307,98 @@ public class BiDiGenerator {
     // that fact explicitly; it is Optional-typed so ConstructorCoercer's reflection-based matching
     // — which only requires non-Optional parameters to correspond to a real wire key — leaves it
     // untouched (defaulting to empty) when the constructor is invoked from deserialization.
+    // Neither a List nor a Map field type is itself immutable — a caller (or a Builder reused
+    // after build()) that kept its own reference to the collection it passed in could mutate a
+    // supposedly-immutable received/built instance out from under it, and the field's own getter
+    // would hand that same live, mutable reference to every future caller too. Copying into an
+    // unmodifiable wrapper at construction closes both holes at once: the constructor no longer
+    // aliases the caller's collection, and nothing reachable from the getter can mutate it either.
+    // Returns null (not "varName") when no copy is needed, to distinguish "wrap this" from "no
+    // wrapping applies" at the call site below.
+    private String immutableCopyExpr(String varName, Map<String, Object> typeRef) {
+      if (typeRef == null) return null;
+      if (typeRef.containsKey("list")) {
+        return "java.util.Collections.unmodifiableList(new java.util.ArrayList<>(" + varName + "))";
+      }
+      if (typeRef.containsKey("map")) {
+        return "java.util.Collections.unmodifiableMap(new java.util.LinkedHashMap<>("
+            + varName
+            + "))";
+      }
+      return null;
+    }
+
+    // js-int/js-uint (see resolveJavaType's alias comment) additionally restrict a plain
+    // "integer" (already resolved to Long/long) to JavaScript's safe-integer range: the browser's
+    // own numeric type is a double, so a value the wire can represent as a signed 64-bit integer
+    // may still be one BiDi itself declares invalid — js-uint further requires non-negative.
+    // Checked here, in the single constructor both directions (an outbound caller-built value and
+    // an inbound deserialized one) share, so a value outside the range is rejected identically
+    // either way, the same as appendConstValidation does for a spec'd const value.
+    private static final long JS_SAFE_INTEGER_MAX = 9007199254740991L; // 2^53 - 1
+
+    private void appendJsRangeValidation(
+        StringBuilder sb, FieldInfo f, String varName, boolean nullGuard, String bodyIndent) {
+      String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
+      if (!"js-int".equals(ref) && !"js-uint".equals(ref)) return;
+      long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
+      sb.append(bodyIndent).append("if (");
+      if (nullGuard) {
+        sb.append(varName).append(" != null && (");
+      }
+      sb.append(varName)
+          .append(" < ")
+          .append(min)
+          .append("L || ")
+          .append(varName)
+          .append(" > ")
+          .append(JS_SAFE_INTEGER_MAX)
+          .append("L");
+      if (nullGuard) {
+        sb.append(")");
+      }
+      sb.append(") {\n");
+      sb.append(bodyIndent)
+          .append("  throw new BiDiException(\"")
+          .append(f.wire)
+          .append(" must be between ")
+          .append(min)
+          .append(" and ")
+          .append(JS_SAFE_INTEGER_MAX)
+          .append(", got: \" + ")
+          .append(varName)
+          .append(");\n");
+      sb.append(bodyIndent).append("}\n");
+    }
+
     private void appendConstructorAssignment(
         StringBuilder sb,
         FieldInfo f,
         String domain,
         String bodyIndent,
-        boolean supportsSetOverride) {
+        boolean supportsSetOverride,
+        boolean isReceivable) {
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
+        appendJsRangeValidation(sb, f, f.name, nullable, bodyIndent);
+        String copyExpr = isReceivable ? immutableCopyExpr(f.name, f.typeRef) : null;
         if (isPrimitive(f.typeRef) || nullable) {
           sb.append(bodyIndent)
               .append("this.")
               .append(f.name)
               .append(" = ")
               .append(f.name)
+              .append(";\n");
+        } else if (copyExpr != null) {
+          sb.append(bodyIndent)
+              .append("this.")
+              .append(f.name)
+              .append(" = ")
+              .append(
+                  immutableCopyExpr(
+                      "Objects.requireNonNull(" + f.name + ", \"" + f.wire + " is required\")",
+                      f.typeRef))
               .append(";\n");
         } else {
           sb.append(bodyIndent)
@@ -1309,14 +1411,69 @@ public class BiDiGenerator {
               .append(" is required\");\n");
         }
       } else {
-        sb.append(bodyIndent)
-            .append("this.")
-            .append(f.name)
-            .append(" = ")
-            .append(f.name)
-            .append(" != null ? ")
-            .append(f.name)
-            .append(" : Optional.empty();\n");
+        String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
+        if ("js-int".equals(ref) || "js-uint".equals(ref)) {
+          long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
+          sb.append(bodyIndent)
+              .append("if (")
+              .append(f.name)
+              .append(" != null && ")
+              .append(f.name)
+              .append(".isPresent() && (")
+              .append(f.name)
+              .append(".get() < ")
+              .append(min)
+              .append("L || ")
+              .append(f.name)
+              .append(".get() > ")
+              .append(JS_SAFE_INTEGER_MAX)
+              .append("L)) {\n");
+          sb.append(bodyIndent)
+              .append("  throw new BiDiException(\"")
+              .append(f.wire)
+              .append(" must be between ")
+              .append(min)
+              .append(" and ")
+              .append(JS_SAFE_INTEGER_MAX)
+              .append(", got: \" + ")
+              .append(f.name)
+              .append(".get());\n");
+          sb.append(bodyIndent).append("}\n");
+        }
+        String copyExpr = isReceivable ? immutableCopyExpr("v", f.typeRef) : null;
+        if (copyExpr != null) {
+          // A plain (a != null ? a : Optional.empty()).map(...) infers fine on its own, but once
+          // this whole expression is itself a constructor argument or ternary branch elsewhere,
+          // the compiler can lose the assignment's target type to infer Optional.empty()'s type
+          // parameter from — so the ternary is evaluated as its own statement into a local first,
+          // where the field declaration itself pins the target type unambiguously.
+          sb.append(bodyIndent)
+              .append(fieldJavaType(f, domain))
+              .append(" ")
+              .append(f.name)
+              .append("Value = ")
+              .append(f.name)
+              .append(" != null ? ")
+              .append(f.name)
+              .append(" : Optional.empty();\n");
+          sb.append(bodyIndent)
+              .append("this.")
+              .append(f.name)
+              .append(" = ")
+              .append(f.name)
+              .append("Value.map(v -> ")
+              .append(copyExpr)
+              .append(");\n");
+        } else {
+          sb.append(bodyIndent)
+              .append("this.")
+              .append(f.name)
+              .append(" = ")
+              .append(f.name)
+              .append(" != null ? ")
+              .append(f.name)
+              .append(" : Optional.empty();\n");
+        }
         if (isNullable(f.typeRef)) {
           sb.append(bodyIndent).append("this.").append(f.name).append("Set = ");
           if (supportsSetOverride) {
@@ -1454,8 +1611,8 @@ public class BiDiGenerator {
       sb.append("import java.util.Map;\n");
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
-      sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.jetbrains.annotations.ApiStatus;\n");
+      sb.append("import org.jspecify.annotations.Nullable;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
@@ -1852,41 +2009,38 @@ public class BiDiGenerator {
         return varName;
       }
       if (typeRef.containsKey("list")) {
+        // Recurse on the element's own type ref — not just its one-level "kind" — so a
+        // record/union/enum/scalarUnion nested arbitrarily deep (List<List<Record>>,
+        // Map<String, List<Union>>, ...) is transformed at every level, not just the first. A
+        // record/union element left unconverted here falls back to Selenium's generic
+        // reflective bean serializer when the whole structure is later written as JSON, which
+        // (among other correctness problems) serializes an extensible type's extras under a
+        // literal "extensions" property instead of flattening them via its own toMap().
         @SuppressWarnings("unchecked")
         Map<String, Object> elem = (Map<String, Object>) typeRef.get("list");
-        String elemKind = resolvedKindFromTypeRef(elem);
-        if ("enum".equals(elemKind)) {
-          return varName
-              + ".stream().map(Object::toString)"
-              + ".collect(java.util.stream.Collectors.toList())";
-        }
-        if ("record".equals(elemKind) || "union".equals(elemKind)) {
-          return varName
-              + ".stream().map(e -> e.toMap())"
-              + ".collect(java.util.stream.Collectors.toList())";
-        }
-        return varName;
+        String elemExpr = serializeExpr("e", elem, domain);
+        if (elemExpr.equals("e")) return varName; // element needs no transformation
+        return varName
+            + ".stream().map(e -> "
+            + elemExpr
+            + ").collect(java.util.stream.Collectors.toList())";
       }
       if (typeRef.containsKey("map")) {
         // resolveJavaType already resolves a "map" typeRef to java.util.Map<String, V> (see
         // above) — without this branch, a Map<String, SomeRecord/SomeUnion/SomeEnum> field would
-        // be put on the wire as raw Java objects instead of their wire-compatible shape.
+        // be put on the wire as raw Java objects instead of their wire-compatible shape. Map
+        // keys are always wire strings (a JSON object key), so only the value is transformed —
+        // recursively, same reasoning as the list branch above.
         @SuppressWarnings("unchecked")
         Map<String, Object> val = (Map<String, Object>) typeRef.get("map");
-        String valKind = resolvedKindFromTypeRef(val);
-        if ("enum".equals(valKind)) {
-          return varName
-              + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
-              + "java.util.Map.Entry::getKey, e -> e.getValue().toString(), (a, b) -> b, "
-              + "java.util.LinkedHashMap::new))";
-        }
-        if ("record".equals(valKind) || "union".equals(valKind)) {
-          return varName
-              + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
-              + "java.util.Map.Entry::getKey, e -> e.getValue().toMap(), (a, b) -> b, "
-              + "java.util.LinkedHashMap::new))";
-        }
-        return varName;
+        String valExpr = serializeExpr("e.getValue()", val, domain);
+        if (valExpr.equals("e.getValue()")) return varName; // value needs no transformation
+        return varName
+            + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
+            + "java.util.Map.Entry::getKey, e -> "
+            + valExpr
+            + ", (a, b) -> b, "
+            + "java.util.LinkedHashMap::new))";
       }
       return varName;
     }

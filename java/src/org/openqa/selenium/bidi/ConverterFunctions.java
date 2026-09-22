@@ -100,7 +100,17 @@ public class ConverterFunctions {
    * string by re-parsing it as a number, and silently truncates a fractional value. Every BiDi
    * "integer" field (e.g. a spec'd js-int/js-uint) is required to hold a value strictly to its
    * declared type inbound — see the low-level behavioral contract ADR — so this rejects both
-   * instead. Private: only ever instantiated once, for {@link #JSON} above.
+   * instead.
+   *
+   * <p>Uses {@link JsonInput#nextExactNumber()}, not {@link JsonInput#nextNumber()}: the latter
+   * converts any decimal/exponent-form lexeme to a {@code double} before this coercer ever sees it,
+   * and {@code double} cannot exactly represent every {@code long} (its mantissa is only 53 bits) —
+   * a huge decimal-form integer like {@code 9007199254740993.0} would silently round, and an
+   * out-of-range exponent-form value like {@code 1e20} would silently saturate to {@code
+   * Long.MAX_VALUE} via {@code doubleValue()}/{@code longValue()} instead of being rejected. {@link
+   * java.math.BigDecimal#longValueExact()} on the untouched lexeme has neither problem: it throws
+   * for any fractional remainder and for any value outside {@code long}'s range, with no
+   * intermediate {@code double}. Private: only ever instantiated once, for {@link #JSON} above.
    */
   private static class StrictLongCoercer extends TypeCoercer<Long> {
 
@@ -116,11 +126,13 @@ public class ConverterFunctions {
           throw new JsonException(
               "Expected a JSON number for an integer value, got: " + jsonInput.peek());
         }
-        Number number = jsonInput.nextNumber();
-        if (number.doubleValue() % 1 != 0) {
-          throw new JsonException("Expected an integer, got a fractional value: " + number);
+        java.math.BigDecimal exact = jsonInput.nextExactNumber();
+        try {
+          return exact.longValueExact();
+        } catch (ArithmeticException e) {
+          throw new JsonException(
+              "Expected an integer within the Long range, got: " + exact.toPlainString(), e);
         }
-        return number.longValue();
       };
     }
   }

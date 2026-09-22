@@ -225,6 +225,51 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public Number nextNumber() {
+    NumberLexeme lexeme = readNumberLexeme();
+
+    try {
+      // Fast path for integers: Long-valued when no fraction/exponent was present.
+      if (!lexeme.isDecimal) {
+        return Long.valueOf(lexeme.text);
+      }
+      double value = new BigDecimal(lexeme.text).doubleValue();
+      if (Double.isInfinite(value) || Double.isNaN(value)) {
+        throw new JsonException(
+            "Number is out of range for a double: " + lexeme.text + ". " + input);
+      }
+      return value;
+    } catch (NumberFormatException e) {
+      throw new JsonException("Unable to parse to a number: " + lexeme.text + ". " + input, e);
+    }
+  }
+
+  /**
+   * Reads the next JSON number token as an exact {@link BigDecimal}, preserving the fractional and
+   * range information that {@link #nextNumber()}'s {@code double}-valued decimal/exponent path
+   * loses (a JSON integer beyond {@code double}'s 53-bit mantissa, or a decimal/exponent lexeme
+   * that happens to be a whole number, both go through that {@code double} conversion — see its own
+   * fast-path comment). Consumes the number from the stream exactly like {@link #nextNumber()}; the
+   * two are not meant to be called on the same token.
+   *
+   * @return the number's exact value as a {@link BigDecimal}
+   * @throws JsonException if the next element isn't a number
+   * @throws UncheckedIOException if an I/O exception is encountered
+   */
+  public BigDecimal nextExactNumber() {
+    return new BigDecimal(readNumberLexeme().text);
+  }
+
+  private static final class NumberLexeme {
+    final String text;
+    final boolean isDecimal;
+
+    NumberLexeme(String text, boolean isDecimal) {
+      this.text = text;
+      this.isDecimal = isDecimal;
+    }
+  }
+
+  private NumberLexeme readNumberLexeme() {
     expect(JsonType.NUMBER);
     StringBuilder builder = new StringBuilder();
     boolean isDecimal = false;
@@ -285,19 +330,7 @@ public class JsonInput implements Closeable {
       }
     }
 
-    try {
-      // Fast path for integers: Long-valued when no fraction/exponent was present.
-      if (!isDecimal) {
-        return Long.valueOf(builder.toString());
-      }
-      double value = new BigDecimal(builder.toString()).doubleValue();
-      if (Double.isInfinite(value) || Double.isNaN(value)) {
-        throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
-      }
-      return value;
-    } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder + ". " + input, e);
-    }
+    return new NumberLexeme(builder.toString(), isDecimal);
   }
 
   private static boolean isDigit(int c) {

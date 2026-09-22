@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.protocol.network;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
@@ -63,16 +64,36 @@ class ContinueWithAuthParametersTest {
   }
 
   @Test
-  void anyUnrecognizedActionFallsBackToNoCredentialsPerTheSchemasDefaultVariant() {
-    // network.ContinueWithAuthParameters's selector explicitly names NoCredentials as its
-    // "default" variant for any value other than "provideCredentials" — this is intentional,
-    // not a swallowed error, so an unmodeled action string should still dispatch cleanly rather
-    // than throwing.
+  void dispatchesToNoCredentialsWhenActionIsDefault() {
+    // "default" is itself a recognized NoCredentials.Action value (see
+    // nestedActionEnumRoundTripsThroughItsWireValue below) — not an example of an unmodeled
+    // action. network.ContinueWithAuthParameters's selector names NoCredentials as the variant
+    // for any action other than "provideCredentials", so "default" dispatches here the same way
+    // "cancel" does in dispatchesToNoCredentialsWhenActionIsCancel above.
     Map<String, Object> map = mapOf("{\"request\": \"req-3\", \"action\": \"default\"}");
 
     ContinueWithAuthParameters result = ContinueWithAuthParameters.fromMap(map);
 
     assertThat(result).isInstanceOf(ContinueWithAuthParameters.NoCredentials.class);
+    ContinueWithAuthParameters.NoCredentials noCreds =
+        (ContinueWithAuthParameters.NoCredentials) result;
+    assertThat(noCreds.getAction())
+        .isEqualTo(ContinueWithAuthParameters.NoCredentials.Action.DEFAULT);
+  }
+
+  @Test
+  void aGenuinelyUnknownActionIsRejectedNotSilentlyAccepted() {
+    // Unlike "default" above, "totally-bogus" is not one of NoCredentials.Action's two modeled
+    // values (cancel, default). The top-level union selector alone would still route this to the
+    // NoCredentials variant (any action other than "provideCredentials" does), but that variant's
+    // own "action" field is typed as the nested Action enum, not a raw String, and decoding it
+    // goes through ConverterFunctions.JSON — the same strict, case-sensitive decoder as every
+    // other generated enum (see StaticInitializerCoercer/Action.fromJson) — so an unmodeled value
+    // is rejected here, not silently accepted as if the union had a true catch-all fallback.
+    Map<String, Object> map = mapOf("{\"request\": \"req-4\", \"action\": \"totally-bogus\"}");
+
+    assertThatThrownBy(() -> ContinueWithAuthParameters.fromMap(map))
+        .isInstanceOf(org.openqa.selenium.json.JsonException.class);
   }
 
   @Test

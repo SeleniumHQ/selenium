@@ -42,9 +42,10 @@ public class Command<X> {
   }
 
   // Decodes through ConverterFunctions.JSON, not a fresh Json(): a command result and an event
-  // payload are both inbound BiDi wire data and must be held to the same strictness (a numeric
-  // network.ResponseData.status or a quoted script.RealmInfo.timeOrigin should be rejected either
-  // way), not decoded more leniently just because it arrived as a command result.
+  // payload are both inbound BiDi wire data and must be held to the same strictness — a quoted
+  // network.ResponseData.status ("200" instead of 200) or a quoted network.FetchTimingInfo.
+  // timeOrigin ("1.5" instead of 1.5) must be rejected either way, not decoded more leniently just
+  // because it arrived as a command result.
   public Command(String method, Map<String, @Nullable Object> params, Type typeOfX) {
     this(
         method,
