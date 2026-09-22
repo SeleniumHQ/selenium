@@ -92,7 +92,11 @@
     if (target === '') {
       throw botError(INVALID_SELECTOR, 'Unable to locate an element with the tagName ""')
     }
-    return Array.from(root.getElementsByTagName(target))
+    const withTags = root as Root & { getElementsByTagName?: (tag: string) => ArrayLike<Element> }
+    if (typeof withTags.getElementsByTagName === 'function') {
+      return Array.from(withTags.getElementsByTagName(target))
+    }
+    return Array.from(root.querySelectorAll(target))
   }
 
   const DEFAULT_NS_RESOLVER = (function () {
@@ -188,7 +192,7 @@
       return resolveAnchor((selector as () => unknown)())
     }
     if (selector && typeof selector === 'object') {
-      const found = findElements(selector as LocatorTarget)
+      const found = findElements(selector as LocatorTarget, root)
       if (!found.length) {
         throw botError(NO_SUCH_ELEMENT, 'No element has been found by ' + JSON.stringify(selector))
       }

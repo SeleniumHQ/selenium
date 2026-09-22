@@ -39,6 +39,11 @@ under the License.
     <span id="span1" class="myclass">A span</span>
   </div>
 </div>
+<span id="dup" style="position: absolute; top: 200px; left: 0; width: 40px; height: 20px;">outside</span>
+<div id="dup-scope" style="position: absolute; top: 0; left: 0; width: 100px; height: 80px;">
+  <span id="dup" style="position: absolute; top: 0; left: 0; width: 40px; height: 20px;">inside</span>
+  <p id="dup-below" style="position: absolute; top: 40px; left: 0; width: 40px; height: 20px; margin: 0;">below</p>
+</div>
 
 <script>
 (function() {
@@ -186,6 +191,27 @@ under the License.
   QUnit.test('finds no elements when none match css selector', function(assert) {
     var elements = findElements({'css selector': 'table'}, fixture);
     assert.equal(elements.length, 0);
+  });
+
+  QUnit.test('resolves a locator anchor inside the supplied root', function(assert) {
+    var scope = document.getElementById('dup-scope');
+    var elements = findElements({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'dup'}]}]
+      }
+    }, scope);
+    assert.deepEqual(ids(elements), ['dup-below']);
+  });
+
+  QUnit.test('finds by tag name inside a shadow root', function(assert) {
+    var host = document.createElement('div');
+    fixture.appendChild(host);
+    var shadow = host.attachShadow({mode: 'open'});
+    shadow.innerHTML = '<p id="shadow-p">p</p><span id="shadow-s">s</span>';
+    var elements = findElements({'tag name': 'p'}, shadow);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'shadow-p');
   });
 })();
 </script>

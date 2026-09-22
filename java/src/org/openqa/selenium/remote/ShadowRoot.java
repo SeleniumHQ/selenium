@@ -46,7 +46,7 @@ class ShadowRoot implements SearchContext, WrapsDriver {
   public List<WebElement> findElements(By by) {
     return parent.findElements(
         this,
-        (using, value) -> FIND_ELEMENTS_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
+        (using, value) -> FIND_ELEMENTS_FROM_SHADOW_ROOT(id, using, value),
         by);
   }
 
@@ -54,7 +54,7 @@ class ShadowRoot implements SearchContext, WrapsDriver {
   public WebElement findElement(By by) {
     return parent.findElement(
         this,
-        (using, value) -> FIND_ELEMENT_FROM_SHADOW_ROOT(id, using, String.valueOf(value)),
+        (using, value) -> FIND_ELEMENT_FROM_SHADOW_ROOT(id, using, value),
         by);
   }
 

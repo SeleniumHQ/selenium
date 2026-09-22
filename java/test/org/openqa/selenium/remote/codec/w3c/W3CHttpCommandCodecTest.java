@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandPayload;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
@@ -67,19 +68,42 @@ class W3CHttpCommandCodecTest {
   }
 
   @Test
-  void childFindKeepsRelativeLocatorValueAsJsonObject() {
+  void childFindElementKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_CHILD_ELEMENT("scope", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void childFindElementsKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_CHILD_ELEMENTS("scope", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void shadowFindElementKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT("shadow", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void shadowFindElementsKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT(
+            "shadow", "relative", relativeLocatorValue()));
+  }
+
+  private Map<String, Object> relativeLocatorValue() {
     RemoteWebElement anchor = new RemoteWebElement();
     anchor.setId("anchor");
-    Map<String, Object> value =
-        Map.of(
-            "root",
-            Map.of("tag name", "p"),
-            "filters",
-            List.of(Map.of("kind", "below", "args", List.of(anchor))));
+    return Map.of(
+        "root",
+        Map.of("tag name", "p"),
+        "filters",
+        List.of(Map.of("kind", "below", "args", List.of(anchor))));
+  }
 
-    HttpRequest request =
-        codec.encode(
-            new Command(sessionId, DriverCommand.FIND_CHILD_ELEMENTS("scope", "relative", value)));
+  private void assertFindKeepsRelativeValue(CommandPayload payload) {
+    HttpRequest request = codec.encode(new Command(sessionId, payload));
     String body = request.contentAsString();
 
     assertThat(body).doesNotContain("filters=[");
