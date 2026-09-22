@@ -32,11 +32,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.print.PrintOptions;
 
@@ -51,28 +51,28 @@ public class BrowsingContext {
   private static final String RELOAD = "browsingContext.reload";
   private static final String HANDLE_USER_PROMPT = "browsingContext.handleUserPrompt";
 
-  private static final Function<JsonInput, String> browsingContextIdMapper =
-      json -> {
-        return json.readMap().getOrDefault(CONTEXT, "").toString();
-      };
+  private static final Function<@Nullable Object, String> browsingContextIdMapper =
+      result -> asMap(result).getOrDefault(CONTEXT, "").toString();
 
-  private static final Function<JsonInput, NavigationResult> navigationInfoMapper =
-      json -> (NavigationResult) json.readNonNull(NavigationResult.class);
+  private static final Function<@Nullable Object, NavigationResult> navigationInfoMapper =
+      result -> Require.nonNull("Navigation result", JSON.convert(result, NavigationResult.class));
 
-  private static final Function<JsonInput, List<BrowsingContextInfo>>
+  private static final Function<@Nullable Object, List<BrowsingContextInfo>>
       browsingContextInfoListMapper =
-          json -> {
+          result -> {
             Type type = new TypeToken<Map<String, List<BrowsingContextInfo>>>() {}.getType();
-            Map<String, List<BrowsingContextInfo>> result = json.readNonNull(type);
-            return result.getOrDefault("contexts", emptyList());
+            Map<String, List<BrowsingContextInfo>> converted =
+                Require.nonNull("Command result", JSON.convert(result, type));
+            return converted.getOrDefault("contexts", emptyList());
           };
 
-  private static final Function<JsonInput, List<RemoteValue>> nodesMapper =
-      json -> {
-        Type type = new TypeToken<Map<String, List<RemoteValue>>>() {}.getType();
-        Map<String, List<RemoteValue>> result = json.readNonNull(type);
-        return result.get("nodes");
-      };
+  private static final Function<@Nullable Object, List<RemoteValue>> nodesMapper =
+      ConverterFunctions.map("nodes", new TypeToken<List<RemoteValue>>() {}.getType());
+
+  @SuppressWarnings("unchecked")
+  private static Map<String, Object> asMap(@Nullable Object result) {
+    return (Map<String, Object>) Require.nonNull("Command result", result);
+  }
 
   public BrowsingContext(WebDriver driver, String id) {
     Require.nonNull("WebDriver", driver);
@@ -234,9 +234,7 @@ public class BrowsingContext {
         new Command<>(
             "browsingContext.captureScreenshot",
             Map.of(CONTEXT, id),
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public String captureScreenshot(CaptureScreenshotParameters parameters) {
@@ -248,9 +246,7 @@ public class BrowsingContext {
         new Command<>(
             "browsingContext.captureScreenshot",
             params,
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public String captureBoxScreenshot(double x, double y, double width, double height) {
@@ -267,9 +263,7 @@ public class BrowsingContext {
                     "y", y,
                     "width", width,
                     "height", height)),
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public String captureElementScreenshot(String elementId) {
@@ -281,9 +275,7 @@ public class BrowsingContext {
                 id,
                 "clip",
                 Map.of("type", "element", "element", Map.of("sharedId", elementId))),
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public String captureElementScreenshot(String elementId, String handle) {
@@ -296,9 +288,7 @@ public class BrowsingContext {
                 "clip",
                 Map.of(
                     "type", "element", "element", Map.of("sharedId", elementId, "handle", handle))),
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public void setViewport(int width, int height) {
@@ -381,9 +371,7 @@ public class BrowsingContext {
         new Command<>(
             "browsingContext.print",
             printOptionsParams,
-            jsonInput -> {
-              return (String) jsonInput.readMap().get("data");
-            }));
+            ConverterFunctions.map("data", String.class)));
   }
 
   public void traverseHistory(long delta) {

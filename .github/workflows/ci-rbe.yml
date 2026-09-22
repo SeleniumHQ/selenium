@@ -35,4 +35,14 @@ jobs:
       name: All RBE tests
       rerun-with-debug: true
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}
+      run: SKIP_RELEASE_ARTIFACTS=${{ startsWith(github.head_ref, 'release-preparation-') }} ./scripts/github-actions/ci-build.sh ${{ github.event_name == 'schedule' || github.event.inputs.disable_test_cache }}
+
+  # Warm stamped build cache prior to release
+  prepare-release:
+    name: Prepare Release
+    if: github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || startsWith(github.head_ref, 'release-preparation-'))
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Prepare Release
+      ruby-version: jruby-10.1.0.0
+      run: ./scripts/github-actions/prepare-release.sh

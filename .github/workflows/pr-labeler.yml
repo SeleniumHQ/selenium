@@ -1,5 +1,5 @@
 # Configuration for Label Generation - ./.github/pr-labeler-config.yml
-name: Label pull requests based on file paths
+name: Webhook - PR Labeler
 
 on:
   pull_request_target:

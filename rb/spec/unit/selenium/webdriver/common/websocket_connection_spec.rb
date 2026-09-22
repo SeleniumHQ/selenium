@@ -80,6 +80,38 @@ module Selenium
         end
       end
 
+      describe '#process_frame' do
+        let(:frame) { {'id' => 1, 'result' => {}} }
+
+        before do
+          connection.instance_variable_set(:@messages_mtx, Mutex.new)
+          allow(JSON).to receive(:parse).and_return(frame)
+        end
+
+        it 'does not render the frame to a string when debug logging is off' do
+          allow(frame).to receive(:to_s)
+
+          connection.send(:process_frame, '{"id":1,"result":{}}')
+
+          expect(frame).not_to have_received(:to_s)
+        end
+
+        it 'still records the frame for the waiting command' do
+          connection.send(:process_frame, '{"id":1,"result":{}}')
+
+          expect(connection.send(:messages)).to eq(1 => frame)
+        end
+
+        it 'renders the frame when the logger is at debug level' do
+          allow(frame).to receive(:to_s).and_return('rendered')
+          allow(WebDriver.logger).to receive(:debug).and_yield
+
+          connection.send(:process_frame, '{"id":1,"result":{}}')
+
+          expect(frame).to have_received(:to_s)
+        end
+      end
+
       describe '#frame_dropped?' do
         let(:incoming_frame) { WebSocket::Frame::Incoming::Client.new(version: 13) }
         let(:socket) { StringIO.new }

@@ -177,10 +177,14 @@ _BROWSER_TAG_FILTERS = {
     "se-manager": ["chrome", "edge", "firefox", "safari"],
 }
 
+# Tags listed here apply only to the remote targets, prefixed with the browser.
+_REMOTE_TAGS = ["grid"]
+
 def _split_filtered_tags(tags, browser):
-    universal_tags = [t for t in tags if t not in _BROWSER_TAG_FILTERS]
+    universal_tags = [t for t in tags if t not in _BROWSER_TAG_FILTERS and t not in _REMOTE_TAGS]
     local_tags = [t for t in tags if browser in _BROWSER_TAG_FILTERS.get(t, [])]
-    return universal_tags, local_tags
+    remote_tags = ["{}-{}".format(browser, t) for t in tags if t in _REMOTE_TAGS]
+    return universal_tags, local_tags, remote_tags
 
 def rb_integration_test(
         name,
@@ -191,12 +195,13 @@ def rb_integration_test(
         tags = [],
         bidi = False,
         classic = True,
-        grid = True):
+        grid = True,
+        grid_bidi = False):
     for browser in browsers:
         generate_classic = BROWSERS[browser].get("classic", True)
         generate_bidi = BROWSERS[browser].get("bidi", False)
 
-        universal_tags, local_tags = _split_filtered_tags(tags, browser)
+        universal_tags, local_tags, remote_tags = _split_filtered_tags(tags, browser)
 
         # Family groups beta/preview variants with their stable counterpart so
         # e.g. `--test_tag_filters=chrome` matches chrome and chrome-beta targets.
@@ -237,7 +242,7 @@ def rb_integration_test(
                         "WD_SPEC_DRIVER": "remote",
                     },
                     main = "@bundle//bin:rspec",
-                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["{}-remote".format(browser)] + family_tags,
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + remote_tags + ["{}-remote".format(browser)] + family_tags,
                     deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
                     visibility = ["//rb:__subpackages__"],
                     target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -261,3 +266,32 @@ def rb_integration_test(
                 visibility = ["//rb:__subpackages__"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             )
+
+            # Bidi over a Grid, for specs that must exercise remote-end behavior.
+            if grid_bidi:
+                rb_test(
+                    name = "{}-{}-remote-bidi".format(name, browser),
+                    size = "large",
+                    srcs = srcs,
+                    args = ["rb/spec/"],
+                    data = BROWSERS[browser]["data"] + data + [
+                        "//common/src/web",
+                        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                        "//rb/spec:java-location",
+                        "@bazel_tools//tools/jdk:current_java_runtime",
+                    ],
+                    env = BROWSERS[browser]["env"] | {
+                        "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                        "WD_SPEC_DRIVER": "remote",
+                        "WEBDRIVER_BIDI": "true",
+                    },
+                    main = "@bundle//bin:rspec",
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + remote_tags + ["bidi", "{}-grid".format(browser), "{}-remote".format(browser)] + family_tags,
+                    deps = {d: True for d in (
+                        ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                        BROWSERS[browser]["deps"] +
+                        deps
+                    )}.keys(),
+                    visibility = ["//rb:__subpackages__"],
+                    target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+                )

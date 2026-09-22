@@ -25,5 +25,7 @@ bazel test --config=rbe-ci --build_tests_only \
   "${TEST_FILTER}" \
   //... -- $(cat .skipped-tests | tr '\n' ' ')
 
-# Build the packages we want to ship to users
-bazel build --config=rbe-ci --build_tag_filters=release-artifact //...
+# Build the packages we want to ship to users; release-preparation PRs do it in the parallel prepare-release job
+if [ "${SKIP_RELEASE_ARTIFACTS:-false}" != "true" ]; then
+  bazel build --config=rbe-ci --build_tag_filters=release-artifact //...
+fi

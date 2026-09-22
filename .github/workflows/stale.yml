@@ -1,5 +1,5 @@
 # Configuration for Stale - https://github.com/actions/stale
-name: 'Close stale issues'
+name: Scheduled - Close Stale Issues
 on:
   workflow_dispatch:
   schedule:

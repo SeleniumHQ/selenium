@@ -397,7 +397,7 @@ public class RemoteWebDriverBuilder {
                 new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
                     .andThen(new DumpHttpExchangeFilter())
-                    .andThen(new CloseHttpClientFilter(clientFactory, client)));
+                    .andThen(new CloseHttpClientFilter(client)));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
@@ -540,11 +540,9 @@ public class RemoteWebDriverBuilder {
 
   private static class CloseHttpClientFilter implements Filter {
 
-    private final HttpClient.Factory factory;
     private final HttpClient client;
 
-    CloseHttpClientFilter(HttpClient.Factory factory, HttpClient client) {
-      this.factory = Require.nonNull("Http client factory", factory);
+    CloseHttpClientFilter(HttpClient client) {
       this.client = Require.nonNull("Http client", client);
     }
 
@@ -564,7 +562,6 @@ public class RemoteWebDriverBuilder {
                         } catch (Exception e) {
                           LOG.log(WARNING, "Exception swallowed while closing http client", e);
                         }
-                        factory.cleanupIdleClients();
                       }
                     });
           }

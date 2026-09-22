@@ -7,6 +7,7 @@ load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
+load("//common:webref_cddl.bzl", "BIDI_DFNS_FILES", "BIDI_EXTENSION_CDDL_FILES", "BIDI_VENDOR_CDDL_FILES", "WEBDRIVER_BIDI_CDDL")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
@@ -83,43 +84,32 @@ mocha_test(
     ],
 )
 
-# Generate WebDriver BiDi TypeScript modules from CDDL specification.
-# extra_cddl_files are parsed alongside the primary BiDi spec so that adjacent specs
-# (Permissions, Prefetch, UA Client Hints, Web Bluetooth) are included.
+# Generate WebDriver BiDi TypeScript modules from CDDL specification. The merged specs
+# (core plus every external BiDi module) come from the generated //common:webref_cddl.bzl.
 generate_bidi_library(
     name = "create-bidi-src",
-    cddl_file = "@webdriver_bidi_all_cddl//file:spec.cddl",
-    # One webref definition index per merged spec above; the schema step joins them by
-    # type name to attach a `specHref` link to each type's definition in the live spec.
-    dfns_files = [
-        "@webdriver_bidi_dfns//file:dfns.json",
-        "@permissions_dfns//file:dfns.json",
-        "@prefetch_dfns//file:dfns.json",
-        "@ua_client_hints_dfns//file:dfns.json",
-        "@web_bluetooth_dfns//file:dfns.json",
-    ],
+    cddl_file = WEBDRIVER_BIDI_CDDL,
+    # The schema step joins each spec's dfns index by type name to attach a `specHref`
+    # link to each type's definition in the live spec.
+    dfns_files = BIDI_DFNS_FILES,
     enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
-    extra_cddl_files = [
-        "@permissions_all_cddl//file:spec.cddl",
-        "@prefetch_all_cddl//file:spec.cddl",
-        "@ua_client_hints_all_cddl//file:spec.cddl",
-        "@web_bluetooth_all_cddl//file:spec.cddl",
-    ],
-    # The local #1140 extension point (supersedes the upstream closed InstallParameters): spec-
-    # shaped and browser-neutral, it only opens the map. Stays in the shared schema.
+    extra_cddl_files = BIDI_EXTENSION_CDDL_FILES,
+    # Spec-shaped, browser-neutral productions that supersede an upstream one by name. Stay
+    # in the shared schema: they complete command/event aggregates the specs define members
+    # for but never list.
     override_cddl_files = [
-        "//common/bidi:webdriver-bidi-1140.cddl",
+        "//common/bidi:digital-credentials-command.cddl",
+        "//common/bidi:web-bluetooth-events.cddl",
     ],
     # The pinned rendered core spec. The schema step extracts its prose section anchors
     # (#type-/#command-/#event-/#module-) to upgrade type links and add command/event/
     # domain links; adjacent specs keep the webref CDDL fallback.
     spec_html = "@webdriver_bidi_spec_html//file:index.html",
     spec_version = "1.0",
-    # Firefox's vendor fields plugged into that extension point. Provenance-tagged and routed into
-    # the schema's separate `vendor` section, so the shared schema stays exactly what upstream emits.
-    vendor_cddl_files = [
-        "//common/bidi:webextension-install-extensions.cddl",
-    ],
+    # Vendor grammars keyed by namespace: `<Type>Extension` groups spliced into the like-named spec
+    # type, provenance-tagged and routed into the schema's separate `vendor` section, so the shared
+    # schema stays exactly what upstream emits.
+    vendor_cddl_files = BIDI_VENDOR_CDDL_FILES,
 )
 
 VERSION = "4.50.0-nightly202609091537"

@@ -18,4 +18,12 @@
 
 interface _Bridge
   def execute: (untyped command, ?Hash[untyped, untyped] opts, ?untyped? command_hash) -> untyped
+
+  def bidi?: () -> bool
+
+  def web_extension: () -> Selenium::WebDriver::BiDi::Protocol::WebExtension
+
+  def web_extension_data: (String path) -> untyped
+
+  def encode_extension: (String path) -> String
 end
