@@ -169,6 +169,7 @@ public class NewSessionPayload implements Closeable {
 
   public void writeTo(Appendable appendable) throws IOException {
     try (JsonOutput json = new Json().newOutput(appendable)) {
+      json.setPrettyPrint(false);
       json.beginObject();
 
       // Now for the w3c capabilities
