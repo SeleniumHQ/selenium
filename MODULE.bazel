@@ -507,6 +507,8 @@ use_repo(
 webref_cddl_extension = use_extension("//common:webref_cddl.bzl", "webref_cddl_extension")
 use_repo(
     webref_cddl_extension,
+    "bluetooth_scanning_all_cddl",
+    "bluetooth_scanning_dfns",
     "digital_credentials_all_cddl",
     "digital_credentials_dfns",
     "permissions_all_cddl",
@@ -515,8 +517,6 @@ use_repo(
     "prefetch_dfns",
     "ua_client_hints_all_cddl",
     "ua_client_hints_dfns",
-    "web_bluetooth_all_cddl",
-    "web_bluetooth_dfns",
     "webdriver_bidi_all_cddl",
     "webdriver_bidi_dfns",
     "webdriver_bidi_spec_html",
