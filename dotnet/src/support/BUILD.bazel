@@ -14,6 +14,7 @@ load(
     "ASSEMBLY_VERSION",
     "SE_VERSION",
 )
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 
 generated_assembly_info(
     name = "assembly-info",
@@ -24,6 +25,18 @@ generated_assembly_info(
     product = ASSEMBLY_PRODUCT,
     title = "Selenium WebDriver Support",
     version = ASSEMBLY_VERSION,
+)
+
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
 )
 
 csharp_sourcelink_library(
@@ -54,8 +67,8 @@ csharp_sourcelink_library(
 nuget_pack(
     name = "support-pack",
     files = {
-        "//:LICENSE": "LICENSE",
-        "//:NOTICE": "NOTICE",
+        ":global-license": "LICENSE",
+        ":global-notice": "NOTICE",
         "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support",
