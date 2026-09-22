@@ -1,0 +1,56 @@
+MozProfilerCommand = (
+  mozProfiler.IsActive //
+  mozProfiler.Start //
+  mozProfiler.Stop
+)
+
+MozProfilerResult = (
+  mozProfiler.IsActiveResult /
+  mozProfiler.StartResult /
+  mozProfiler.StopResult
+)
+
+mozProfiler.IsActive = (
+  method: "moz:profiler.isActive",
+  params: EmptyParams,
+)
+
+mozProfiler.IsActiveResult = {
+  active: bool,
+}
+
+mozProfiler.Start = (
+  method: "moz:profiler.start",
+  params: mozProfiler.StartParameters
+)
+
+mozProfiler.StartParameters = {
+  (mozProfiler.StartParametersPreset // mozProfiler.StartParametersOptions),
+  ? activeContext: browsingContext.BrowsingContext,
+}
+
+mozProfiler.StartParametersPreset = (
+  preset: text,
+)
+
+mozProfiler.StartParametersOptions = (
+  entries: js-uint,
+  interval: js-uint,
+  features: [*text],
+  threads: [*text],
+)
+
+mozProfiler.StartResult = EmptyResult
+
+mozProfiler.Stop = (
+  method: "moz:profiler.stop",
+  params: mozProfiler.StopParameters
+)
+
+mozProfiler.StopParameters = {
+  ? discard: bool .default false
+}
+
+mozProfiler.StopResult = {
+  path: text / null,
+}

@@ -91,7 +91,8 @@ module Selenium
             original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},
             user_context: {wire_key: 'userContext', primitive: 'string'},
-            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'}
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'},
+            extensible: true
           )
 
           # @api private
@@ -299,7 +300,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters
           GetTreeParameters = Serialization::Record.define(
             max_depth: {wire_key: 'maxDepth', required: false, primitive: 'integer'},
-            root: {wire_key: 'root', required: false, primitive: 'string'}
+            root: {wire_key: 'root', required: false, primitive: 'string'},
+            extensible: true
           )
 
           # @api private
@@ -605,6 +607,7 @@ module Selenium
           def media_track_constraints(**) = MediaTrackConstraints.new(**)
           def accessibility_locator_value(**) = AccessibilityLocator::Value.new(**)
           def context_locator_value(**) = ContextLocator::Value.new(**)
+          def moz = Moz.new(connection)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -815,6 +818,22 @@ module Selenium
           def traverse_history(context:, delta:)
             params = TraverseHistoryParameters.new(context: context, delta: delta)
             execute(cmd: 'browsingContext.traverseHistory', params: params)
+          end
+
+          # @api private
+          # moz: vendor variant of BrowsingContext, overriding commands with browser-specific params.
+          # Construct Moz.new(source) for a matching session; other sessions use BrowsingContext.
+          class Moz < BrowsingContext
+            # @api private
+            # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+            # @see https://w3c.github.io/webdriver-bidi/#command-browsingContext-getTree
+            def get_tree(max_depth: Serialization::UNSET, root: Serialization::UNSET, scope: Serialization::UNSET)
+              extensions = {
+                'moz:scope' => scope
+              }.reject { |_, value| Serialization::UNSET.equal?(value) }
+              params = GetTreeParameters.new(max_depth: max_depth, root: root, extensions: extensions)
+              execute(cmd: 'browsingContext.getTree', params: params, result: BrowsingContext::GetTreeResult)
+            end
           end
         end # BrowsingContext
       end # Protocol
