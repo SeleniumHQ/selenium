@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load(
     "//dotnet:defs.bzl",
     "csharp_sourcelink_library",
@@ -14,7 +15,6 @@ load(
     "ASSEMBLY_VERSION",
     "SE_VERSION",
 )
-load("@bazel_skylib//rules:select_file.bzl", "select_file")
 
 generated_assembly_info(
     name = "assembly-info",

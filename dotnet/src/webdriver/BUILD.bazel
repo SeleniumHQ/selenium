@@ -1,5 +1,5 @@
-load("//common:defs.bzl", "copy_file")
 load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load("//common:defs.bzl", "copy_file")
 load("//dotnet:defs.bzl", "csharp_sourcelink_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
     "//dotnet:version.bzl",
