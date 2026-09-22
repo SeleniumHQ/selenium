@@ -54,6 +54,12 @@ BIDI_SPEC_RAW = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/i
 
 API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
 
+# Not pinned yet: Firefox's grammar lives in mozilla-central (remote/doc/webdriver-bidi) and is
+# copied verbatim under common/bidi until D327393 lands there. Keyed by vendor namespace.
+VENDOR_CDDL_FILES = {
+    "moz": ["//common/bidi:Debugging.cddl", "//common/bidi:Fields.cddl", "//common/bidi:Profiler.cddl"],
+}
+
 BZL_FILE = root_dir / "common" / "webref_cddl.bzl"
 MODULE_FILE = root_dir / "MODULE.bazel"
 
@@ -102,6 +108,12 @@ BIDI_EXTENSION_CDDL_FILES = [
 BIDI_DFNS_FILES = [
 {dfns_labels}
 ]
+
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
+# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+BIDI_VENDOR_CDDL_FILES = {{
+{vendor_cddl_entries}
+}}
 
 def _webref_cddl_impl(_ctx):
     for name, filename, sha256 in _CDDL_FILES:
@@ -229,7 +241,17 @@ def render(webref_commit, pinned, bidi_commit, bidi_sha256):
         core_cddl_label=core_cddl_label,
         extension_cddl_labels="\n".join(extension_cddl_labels),
         dfns_labels="\n".join(dfns_labels),
+        vendor_cddl_entries=render_vendor_entries(),
     )
+
+
+def render_vendor_entries():
+    lines = []
+    for namespace, labels in VENDOR_CDDL_FILES.items():
+        lines.append(f'    "{namespace}": [')
+        lines.extend(f'        "{label}",' for label in labels)
+        lines.append("    ],")
+    return "\n".join(lines)
 
 
 def update_module(pinned):

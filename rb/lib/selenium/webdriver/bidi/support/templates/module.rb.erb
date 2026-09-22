@@ -60,7 +60,7 @@ module Selenium
 <%- end -%>
 <%- unless type.presence_variants.empty? -%>
             presence(
-              <%= type.presence_variants.map { |v| "'#{v.ref}' => [#{v.requires.map { |w| "'#{w}'" }.join(', ')}]" }.join(",\n              ") %>
+              <%= type.presence_variants.map { |v| "'#{v.ref}' => #{BiDiGenerate.word_array(v.requires)}" }.join(",\n              ") %>
             )
 <%- end -%>
 <%- if type.fallback_variant -%>
