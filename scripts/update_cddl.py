@@ -1,30 +1,33 @@
-"""Update the pinned CDDL spec files downloaded from w3c/webref.
+"""Regenerate ``common/webref_cddl.bzl``, the pins behind BiDi schema generation.
 
 The WebDriver BiDi (and related) CDDL grammars are not published as an npm
 package; they are extracted from the edited specs and committed to the
 ``ed/cddl`` directory of https://github.com/w3c/webref . We pin a single
-webref commit plus a sha256 for the ``-all`` (union) CDDL file of each
-protocol in that directory (see ``common/webref_cddl.bzl``) so the Bazel
-build fetches them reproducibly. The per-end ``-local``/``-remote`` splits are
-skipped: generation merges the union, so only the ``-all`` files are consumed.
+webref commit plus a sha256 for the ``-all`` (union) CDDL file and the ``dfns``
+definition index of each merged spec so the Bazel build fetches them
+reproducibly. The per-end ``-local``/``-remote`` splits are skipped: generation
+merges the union, so only the ``-all`` files are consumed.
 
-This script repoints that pin at the tip of webref's "main" branch (the
-continuous reffy extraction; the "curated" branch is a separate published
-lineage with no shared history, so main keeps pin-to-pin diffs auditable),
-refreshes every hash, and picks up files that upstream has added or removed.
-It also refreshes two companion pins at the same time so they stay in lockstep:
-the per-spec ``dfns`` indexes (same webref commit), and the rendered core spec
-HTML pinned from ``w3c/webdriver-bidi``'s ``gh-pages`` branch (its prose section
-anchors are the source of the readable ``#type-``/``#command-`` spec links, and
-that branch is a separate repo, so it is resolved separately). It regenerates:
+Which specs are merged is not a list kept here. It is WebDriver BiDi itself plus
+every spec linked from the "External specifications" section of the rendered
+core spec (the specs that define WebDriver BiDi modules). Each link is resolved to
+its webref shortname through webref's ``ed/index.json``, which also names the
+spec's CDDL extracts. Getting a new module merged therefore means getting it
+listed upstream, not editing this script.
 
-  - ``_COMMIT``, ``_CDDL_FILES``, ``_DFNS_FILES``, and the ``_BIDI_SPEC_HTML_*``
-    pins in ``common/webref_cddl.bzl``
-  - the matching ``use_repo(...)`` list for the extension in ``MODULE.bazel``
+The pins point at the tip of webref's "main" branch (the continuous reffy
+extraction; the "curated" branch is a separate published lineage with no shared
+history, so main keeps pin-to-pin diffs auditable) and at the tip of
+w3c/webdriver-bidi's "gh-pages" branch (its rendered ``index.html`` carries the
+prose section anchors that become the readable ``#type-``/``#command-`` spec
+links, and that branch is a separate repo, so it is resolved separately).
 
-Nothing is written unless the consumed webref content changed, so both commit pins record
-where the CDDL content last changed rather than the latest tip. The rendered spec is repinned
-in lockstep with the CDDL, since it only annotates types the grammar defines.
+The pins always advance to the two tips. The update-cddl workflow only opens a PR
+when the regenerated ``common/bidi/schema.json`` changes, so a repin that changes
+nothing the schema consumes is dropped there rather than filtered here.
+
+Regenerates ``common/webref_cddl.bzl`` in full and the extension's ``use_repo(...)``
+block in ``MODULE.bazel``.
 """
 
 import hashlib
@@ -38,157 +41,233 @@ import urllib3
 http = urllib3.PoolManager()
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
-REPO = "w3c/webref"
-BRANCH = "main"
-CDDL_PATH = "ed/cddl"
-DFNS_PATH = "ed/dfns"
-API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
+WEBREF_REPO = "w3c/webref"
+WEBREF_BRANCH = "main"
+WEBREF_RAW = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/{path}"
+CORE_SHORTNAME = "webdriver-bidi"
 
-# The webref dfns index for each spec merged into the BiDi schema (a deliberate subset
-# of everything webref publishes — only these feed generation). Each is (repo_name,
-# dfns_filename); the sha256 is refreshed from the pinned webref commit. Keep in sync
-# with the javascript/ and py/ BUILD merge lists.
-MERGED_DFNS = [
-    ("webdriver_bidi_dfns", "webdriver-bidi.json"),
-    ("permissions_dfns", "permissions.json"),
-    ("prefetch_dfns", "prefetch.json"),
-    ("ua_client_hints_dfns", "ua-client-hints.json"),
-    ("web_bluetooth_dfns", "web-bluetooth.json"),
-]
-
-# The rendered core spec is pinned separately: it lives in w3c/webdriver-bidi's
-# "gh-pages" branch (which commits the built HTML), not in webref. Its prose section
-# anchors are the only source of the readable `#type-`/`#command-` links.
 BIDI_SPEC_REPO = "w3c/webdriver-bidi"
 BIDI_SPEC_BRANCH = "gh-pages"
 BIDI_SPEC_FILE = "index.html"
 BIDI_SPEC_REPO_NAME = "webdriver_bidi_spec_html"
+BIDI_SPEC_RAW = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/index.html"
+
+API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
+
+# Not pinned yet: Firefox's grammar lives in mozilla-central (remote/doc/webdriver-bidi) and is
+# copied verbatim under common/bidi until D327393 lands there. Keyed by vendor namespace.
+VENDOR_CDDL_FILES = {
+    "moz": ["//common/bidi:Debugging.cddl", "//common/bidi:Fields.cddl", "//common/bidi:Profiler.cddl"],
+}
 
 BZL_FILE = root_dir / "common" / "webref_cddl.bzl"
 MODULE_FILE = root_dir / "MODULE.bazel"
 
+BZL_TEMPLATE = '''# DO NOT EDIT! This file is generated by scripts/update_cddl.py.
+# Regenerate with: `bazel run //scripts:update_cddl`
+"""Pinned webref CDDL grammars, dfns indexes, and the rendered WebDriver BiDi spec that feed BiDi schema generation.
 
-def list_cddl_files(commit):
-    r = http.request(
-        "GET",
-        f"https://api.github.com/repos/{REPO}/contents/{CDDL_PATH}?ref={commit}",
-        headers=API_HEADERS,
+The merged specs are WebDriver BiDi and the specs its "External specifications" section lists;
+see scripts/update_cddl.py for how they are resolved and when the pins advance.
+"""
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+
+# The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
+_COMMIT = "{webref_commit}"
+_CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{{commit}}/ed/cddl".format(commit = _COMMIT)
+_DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{{commit}}/ed/dfns".format(commit = _COMMIT)
+
+# The rendered WebDriver BiDi spec, pinned at a w3c/webdriver-bidi "gh-pages" commit. Only this
+# file carries the readable prose section ids (`#type-`/`#command-`/`#event-`/`#module-`).
+_BIDI_SPEC_HTML_COMMIT = "{bidi_commit}"
+_BIDI_SPEC_HTML_SHA256 = "{bidi_sha256}"
+_BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{{commit}}/index.html".format(
+    commit = _BIDI_SPEC_HTML_COMMIT,
+)
+
+# (repo_name, filename, sha256). Each grammar is downloaded as "spec.cddl" and each dfns
+# index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
+# @<repo_name>//file:dfns.json.
+_CDDL_FILES = [
+{cddl_entries}
+]
+
+_DFNS_FILES = [
+{dfns_entries}
+]
+
+# The merged specs as labels, for the BUILD files that feed schema generation: the core
+# grammar, then the extension grammars, then one dfns index per merged spec.
+WEBDRIVER_BIDI_CDDL = "{core_cddl_label}"
+
+BIDI_EXTENSION_CDDL_FILES = [
+{extension_cddl_labels}
+]
+
+BIDI_DFNS_FILES = [
+{dfns_labels}
+]
+
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
+# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+BIDI_VENDOR_CDDL_FILES = {{
+{vendor_cddl_entries}
+}}
+
+def _webref_cddl_impl(_ctx):
+    for name, filename, sha256 in _CDDL_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "spec.cddl",
+            sha256 = sha256,
+            url = _CDDL_BASE_URL + "/" + filename,
+        )
+    for name, filename, sha256 in _DFNS_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "dfns.json",
+            sha256 = sha256,
+            url = _DFNS_BASE_URL + "/" + filename,
+        )
+    http_file(
+        name = "{bidi_repo_name}",
+        downloaded_file_path = "index.html",
+        sha256 = _BIDI_SPEC_HTML_SHA256,
+        url = _BIDI_SPEC_HTML_URL,
     )
-    if r.status != 200:
-        raise RuntimeError(f"Failed to list {CDDL_PATH} at {commit}: HTTP {r.status}")
-    entries = json.loads(r.data)
-    # Only the "-all" union of each protocol is consumed; the local/remote splits
-    # feed nothing (BiDi generation merges the union), so they are not pinned.
-    return sorted(e["name"] for e in entries if e["type"] == "file" and e["name"].endswith("-all.cddl"))
+    return _ctx.extension_metadata(
+        root_module_direct_deps = "all",
+        root_module_direct_dev_deps = [],
+        reproducible = True,
+    )
+
+webref_cddl_extension = module_extension(
+    implementation = _webref_cddl_impl,
+)
+'''
 
 
-def repo_name(filename):
-    """Derive the Bazel repo name from a CDDL filename.
-
-    ``at-driver-all.cddl`` -> ``at_driver_all_cddl``
-    """
-    return filename[: -len(".cddl")].replace("-", "_") + "_cddl"
-
-
-def sha256_of_url(url):
-    r = http.request("GET", url)
+def get(url, headers=None):
+    r = http.request("GET", url, headers=headers)
     if r.status != 200:
         raise RuntimeError(f"Failed to download {url}: HTTP {r.status}")
-    return hashlib.sha256(r.data).hexdigest()
-
-
-def sha256_of(commit, filename):
-    return sha256_of_url(f"https://raw.githubusercontent.com/{REPO}/{commit}/{CDDL_PATH}/{filename}")
-
-
-def build_entries(commit, filenames):
-    return [(repo_name(name), name, sha256_of(commit, name)) for name in filenames]
-
-
-def build_dfns_entries(commit):
-    """(repo, dfns_filename, sha256) for each merged spec, hashed at the webref commit."""
-    return [
-        (name, filename, sha256_of_url(f"https://raw.githubusercontent.com/{REPO}/{commit}/{DFNS_PATH}/{filename}"))
-        for name, filename in MERGED_DFNS
-    ]
-
-
-def resolve_bidi_spec(branch):
-    """Resolve the w3c/webdriver-bidi gh-pages tip and hash its rendered index.html."""
-    commit = resolve_commit_for(BIDI_SPEC_REPO, branch)
-    url = f"https://raw.githubusercontent.com/{BIDI_SPEC_REPO}/{commit}/{BIDI_SPEC_FILE}"
-    return commit, sha256_of_url(url)
+    return r.data
 
 
 def resolve_commit_for(repo, branch):
-    r = http.request("GET", f"https://api.github.com/repos/{repo}/commits/{branch}", headers=API_HEADERS)
-    if r.status != 200:
-        raise RuntimeError(f"Failed to resolve {repo}@{branch}: HTTP {r.status}")
-    return json.loads(r.data)["sha"]
+    data = get(f"https://api.github.com/repos/{repo}/commits/{branch}", API_HEADERS)
+    return json.loads(data)["sha"]
 
 
-def existing_repo_names(content):
-    return set(re.findall(r'\(\s*"([a-z0-9_]+)"\s*,\s*"[^"]+\.cddl"', content))
+def sha256_of(data):
+    return hashlib.sha256(data).hexdigest()
 
 
-def render_files(var, entries):
-    lines = [f"{var} = ["]
-    for name, filename, sha256 in entries:
-        lines.append(f'    ("{name}", "{filename}", "{sha256}"),')
-    lines.append("]")
+def external_spec_urls(spec_html):
+    """The specs the rendered core spec's "External specifications" section links to, without fragments."""
+    section = re.search(r'id="external-specifications".*?<ol>(.*?)</ol>', spec_html, re.DOTALL)
+    if not section:
+        raise RuntimeError("Could not find the External specifications list in the rendered WebDriver BiDi spec")
+    urls = [href.split("#")[0] for href in re.findall(r'href="(https?://[^"]+)"', section.group(1))]
+    if not urls:
+        raise RuntimeError("The External specifications list in the rendered WebDriver BiDi spec has no links")
+    return urls
+
+
+def spec_urls(entry):
+    urls = {entry.get("url")}
+    for key in ("nightly", "release"):
+        if entry.get(key):
+            urls.add(entry[key].get("url"))
+    return {url.rstrip("/") for url in urls if url}
+
+
+def resolve_specs(webref_commit, urls):
+    """(shortname, cddl_filename) for the core spec and each linked spec, resolved through webref's index."""
+    index = json.loads(get(WEBREF_RAW.format(commit=webref_commit, path="index.json")))["results"]
+    by_shortname = {entry["shortname"]: entry for entry in index}
+    entries = [by_shortname[CORE_SHORTNAME]]
+    for url in urls:
+        matches = [entry for entry in index if url.rstrip("/") in spec_urls(entry)]
+        if len(matches) != 1:
+            raise RuntimeError(f"Expected one webref spec for {url}, found {len(matches)}")
+        entries.append(matches[0])
+
+    specs = []
+    for entry in entries:
+        extracts = [extract["file"] for extract in entry.get("cddl", []) if extract["name"] == "all"]
+        if len(extracts) != 1:
+            raise RuntimeError(f"{entry['shortname']} has no single 'all' CDDL extract in webref: {entry.get('cddl')}")
+        specs.append((entry["shortname"], Path(extracts[0]).name))
+    return specs
+
+
+def repo_names(shortname):
+    stem = shortname.replace("-", "_")
+    return f"{stem}_all_cddl", f"{stem}_dfns"
+
+
+def pin_specs(webref_commit, specs):
+    """(shortname, cddl_filename, cddl_sha256, dfns_sha256) per spec, hashed at the webref commit."""
+    pinned = []
+    for shortname, cddl_filename in specs:
+        cddl_sha256 = sha256_of(get(WEBREF_RAW.format(commit=webref_commit, path=f"cddl/{cddl_filename}")))
+        dfns_sha256 = sha256_of(get(WEBREF_RAW.format(commit=webref_commit, path=f"dfns/{shortname}.json")))
+        pinned.append((shortname, cddl_filename, cddl_sha256, dfns_sha256))
+    return pinned
+
+
+def render(webref_commit, pinned, bidi_commit, bidi_sha256):
+    cddl_entries, dfns_entries, extension_cddl_labels, dfns_labels = [], [], [], []
+    core_cddl_label = None
+    for shortname, cddl_filename, cddl_sha256, dfns_sha256 in pinned:
+        cddl_repo, dfns_repo = repo_names(shortname)
+        cddl_entries.append(f'    ("{cddl_repo}", "{cddl_filename}", "{cddl_sha256}"),')
+        dfns_entries.append(f'    ("{dfns_repo}", "{shortname}.json", "{dfns_sha256}"),')
+        cddl_label = f"@{cddl_repo}//file:spec.cddl"
+        if shortname == CORE_SHORTNAME:
+            core_cddl_label = cddl_label
+        else:
+            extension_cddl_labels.append(f'    "{cddl_label}",')
+        dfns_labels.append(f'    "@{dfns_repo}//file:dfns.json",')
+    return BZL_TEMPLATE.format(
+        webref_commit=webref_commit,
+        bidi_commit=bidi_commit,
+        bidi_sha256=bidi_sha256,
+        bidi_repo_name=BIDI_SPEC_REPO_NAME,
+        cddl_entries="\n".join(cddl_entries),
+        dfns_entries="\n".join(dfns_entries),
+        core_cddl_label=core_cddl_label,
+        extension_cddl_labels="\n".join(extension_cddl_labels),
+        dfns_labels="\n".join(dfns_labels),
+        vendor_cddl_entries=render_vendor_entries(),
+    )
+
+
+def render_vendor_entries():
+    lines = []
+    for namespace, labels in VENDOR_CDDL_FILES.items():
+        lines.append(f'    "{namespace}": [')
+        lines.extend(f'        "{label}",' for label in labels)
+        lines.append("    ],")
     return "\n".join(lines)
 
 
-def sub_once(content, pattern, replacement, where):
-    content, n = re.subn(pattern, replacement, content, flags=re.DOTALL)
-    if n != 1:
-        raise RuntimeError(f"Expected exactly one {where} in {BZL_FILE.name}, found {n}")
-    return content
+def update_module(pinned):
+    """Rewrite the extension's use_repo block in MODULE.bazel to name every pinned repo.
 
-
-def current_bidi_pin(content):
-    commit = re.search(r'_BIDI_SPEC_HTML_COMMIT = "([0-9a-f]+)"', content).group(1)
-    sha256 = re.search(r'_BIDI_SPEC_HTML_SHA256 = "([0-9a-f]+)"', content).group(1)
-    return commit, sha256
-
-
-def drop_commit(content):
-    """Content with the webref commit blanked, so a pin bump alone does not read as a change."""
-    return re.sub(r'(?<![A-Z_])_COMMIT = "[0-9a-f]+"', "", content)
-
-
-def update_pin(content, commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256):
-    # Anchor so this does not also match the tail of `_BIDI_SPEC_HTML_COMMIT = "…"`.
-    content = sub_once(content, r'(?<![A-Z_])_COMMIT = "[0-9a-f]+"', f'_COMMIT = "{commit}"', "_COMMIT assignment")
-    content = sub_once(
-        content, r"_CDDL_FILES = \[.*?\n\]", lambda _: render_files("_CDDL_FILES", cddl_entries), "_CDDL_FILES block"
-    )
-    content = sub_once(
-        content, r"_DFNS_FILES = \[.*?\n\]", lambda _: render_files("_DFNS_FILES", dfns_entries), "_DFNS_FILES block"
-    )
-    content = sub_once(
-        content,
-        r'_BIDI_SPEC_HTML_COMMIT = "[0-9a-f]+"',
-        f'_BIDI_SPEC_HTML_COMMIT = "{bidi_commit}"',
-        "_BIDI_SPEC_HTML_COMMIT assignment",
-    )
-    content = sub_once(
-        content,
-        r'_BIDI_SPEC_HTML_SHA256 = "[0-9a-f]+"',
-        f'_BIDI_SPEC_HTML_SHA256 = "{bidi_sha256}"',
-        "_BIDI_SPEC_HTML_SHA256 assignment",
-    )
-
-    return content
-
-
-def update_module(repo_names):
+    Deliberately not `bazel mod tidy`: that also rewrites every other extension's block and
+    reformats the file, which does not belong in a CDDL repin.
+    """
+    names = {BIDI_SPEC_REPO_NAME}
+    for shortname, *_ in pinned:
+        names.update(repo_names(shortname))
+    repo_list = "\n".join(f'    "{name}",' for name in sorted(names))
     content = MODULE_FILE.read_text()
-    repo_list = "\n".join(f'    "{name}",' for name in sorted(repo_names))
-    new_block = f"use_repo(\n    webref_cddl_extension,\n{repo_list}\n)"
     content, count = re.subn(
         r"use_repo\(\n    webref_cddl_extension,\n.*?\n\)",
-        new_block,
+        f"use_repo(\n    webref_cddl_extension,\n{repo_list}\n)",
         content,
         flags=re.DOTALL,
     )
@@ -198,38 +277,16 @@ def update_module(repo_names):
 
 
 def main():
-    commit = resolve_commit_for(REPO, BRANCH)
-    print(f"Pinning {REPO}@{commit}")
+    webref_commit = resolve_commit_for(WEBREF_REPO, WEBREF_BRANCH)
+    bidi_commit = resolve_commit_for(BIDI_SPEC_REPO, BIDI_SPEC_BRANCH)
+    print(f"Pinning {WEBREF_REPO}@{webref_commit} and {BIDI_SPEC_REPO}@{bidi_commit} ({BIDI_SPEC_FILE})")
+    spec_html = get(BIDI_SPEC_RAW.format(commit=bidi_commit))
+    specs = resolve_specs(webref_commit, external_spec_urls(spec_html.decode()))
+    print(f"Merged specs: {', '.join(shortname for shortname, _ in specs)}")
+    pinned = pin_specs(webref_commit, specs)
 
-    old = BZL_FILE.read_text()
-    before = existing_repo_names(old)
-
-    filenames = list_cddl_files(commit)
-    print(f"Found {len(filenames)} CDDL files in {CDDL_PATH}")
-    cddl_entries = build_entries(commit, filenames)
-
-    dfns_entries = build_dfns_entries(commit)
-    print(f"Refreshed {len(dfns_entries)} dfns indexes in {DFNS_PATH}")
-
-    # Probe with the pin already in the file so a gh-pages rebuild cannot open the gate.
-    webref_only = update_pin(old, commit, cddl_entries, dfns_entries, *current_bidi_pin(old))
-    if drop_commit(webref_only) == drop_commit(old):
-        print("No pinned spec content changed; leaving the pins at their current commits.")
-        return
-
-    bidi_commit, bidi_sha256 = resolve_bidi_spec(BIDI_SPEC_BRANCH)
-    print(f"Pinning {BIDI_SPEC_REPO}@{bidi_commit} ({BIDI_SPEC_FILE})")
-
-    BZL_FILE.write_text(update_pin(old, commit, cddl_entries, dfns_entries, bidi_commit, bidi_sha256))
-
-    cddl_names = {name for name, _, _ in cddl_entries}
-    repo_names = cddl_names | {name for name, _, _ in dfns_entries} | {BIDI_SPEC_REPO_NAME}
-    update_module(repo_names)
-
-    for name in sorted(cddl_names - before):
-        print(f"  added: {name}")
-    for name in sorted(before - cddl_names):
-        print(f"  removed: {name}")
+    BZL_FILE.write_text(render(webref_commit, pinned, bidi_commit, sha256_of(spec_html)))
+    update_module(pinned)
     print(f"Updated {BZL_FILE.relative_to(root_dir)} and {MODULE_FILE.relative_to(root_dir)}")
 
 

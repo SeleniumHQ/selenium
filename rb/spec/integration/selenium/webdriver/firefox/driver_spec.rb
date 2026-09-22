@@ -189,7 +189,7 @@ module Selenium
             let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
 
             it 'runs in a private window when allowed' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+              reset_driver!(args: ['-private-window']) do |driver|
                 driver.install_web_extension(ext, allow_private_browsing: true)
                 driver.navigate.to url_for('blank.html')
 
@@ -199,7 +199,7 @@ module Selenium
             end
 
             it 'does not run in a private window when disabled' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+              reset_driver!(args: ['-private-window']) do |driver|
                 driver.install_web_extension(ext, allow_private_browsing: false)
                 driver.navigate.to url_for('blank.html')
                 expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty

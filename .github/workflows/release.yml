@@ -1,4 +1,4 @@
-name: Release Selenium
+name: Release - Finish
 
 on:
   pull_request:
@@ -152,9 +152,10 @@ jobs:
       gpg-sign: ${{ matrix.language == 'java' }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
+      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
-          ./go ${{ matrix.language }}:release
+          ./go ${{ matrix.language }}:release rbe
         else
           echo skipping
         fi
@@ -169,7 +170,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
-      run: ./go py:build --config=release
+      run: ./go py:build --config=rbe_release
       artifact-name: pypi-distributions
       artifact-path: |
         bazel-bin/py/selenium-*.whl
@@ -312,7 +313,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Nightly Grid
-      run: ./go java:version nightly && ./go java:package
+      run: ./go java:version nightly && ./go java:package --config=rbe_release
       artifact-name: nightly-grid
       artifact-path: build/dist/*.*
 

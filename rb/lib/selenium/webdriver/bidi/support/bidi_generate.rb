@@ -48,8 +48,10 @@ module BiDiGenerate
   RUBY_RESERVED = %w[begin end rescue ensure raise return yield if unless while until for do
                      case when then class module def].freeze
 
+  # A vendor namespace separator (`moz:debugging`) reads as a word boundary.
   def self.camel_to_snake(str)
     str
+      .tr(':', '_')
       .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
       .gsub(/([a-z\d])([A-Z])/, '\1_\2')
       .downcase
@@ -70,6 +72,11 @@ module BiDiGenerate
   def self.type_ruby_path(type_name)
     domain = type_name.split('.', 2).first
     "#{snake_to_class_name(camel_to_snake(domain))}::#{type_class_name(type_name)}"
+  end
+
+  # Source literal for a list of wire keys, in the form RuboCop expects at each size.
+  def self.word_array(words)
+    words.size > 1 ? "%w[#{words.join(' ')}]" : "[#{words.map { |w| "'#{w}'" }.join(', ')}]"
   end
 
   # Source literal for a discriminator/const value (string, boolean, or number).
@@ -280,6 +287,11 @@ module BiDiGenerate
     end
   end
 
+  # A namespaced group of browser-specific command extensions (e.g. Firefox's `moz:`
+  # fields), emitted as a subclass of the domain that overrides the extended commands.
+  # A subclass (rather than a runtime-mixed module) keeps the vendor signatures statically
+  # visible to type checkers, and is constructed directly (`<Name>.new(source)`) for a
+  # matching session — no factory or runtime mix-in.
   # A namespaced group of browser-specific command extensions (e.g. Firefox's `moz:`
   # fields), emitted as a subclass of the domain that overrides the extended commands.
   # A subclass (rather than a runtime-mixed module) keeps the vendor signatures statically
@@ -543,12 +555,16 @@ module BiDiGenerate
                       :vendor_modules, :spec_href, keyword_init: true)
 
   class Schema
+    # Vendor content (schema `vendor.<namespace>`) is folded in beside the spec's: a vendor
+    # module's commands and events become a domain of their own, and its types resolve like
+    # spec types and are emitted in that module (see owned_types).
     def initialize(schema)
-      @types = schema['types']
-      @commands = schema['commands']
-      @events = schema['events']
-      @domains = schema['domains'] || {}
       @vendor = schema['vendor'] || {}
+      @vendor_types = @vendor.values.map { |section| section['types'] || {} }.reduce({}, :merge)
+      @types = schema['types'].merge(@vendor_types)
+      @commands = schema['commands'] + @vendor.values.flat_map { |section| section['commands'] || [] }
+      @events = schema['events'] + @vendor.values.flat_map { |section| section['events'] || [] }
+      @domains = schema['domains'] || {}
       promote_command_params_records!
     end
 
@@ -627,16 +643,13 @@ module BiDiGenerate
     # any domain (or schema) with no vendor extensions, so non-vendor output is unaffected.
     def vendor_modules_for(domain)
       parent = BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(domain))
-      groups = Hash.new { |h, k| h[k] = [] }
-      @vendor.each do |namespace, spec|
-        (spec['extends'] || {}).each do |type_name, entry|
+      @vendor.filter_map do |namespace, spec|
+        commands = (spec['extends'] || {}).filter_map do |type_name, entry|
           cmd = @commands.find { |c| c.dig('params', 'ref') == type_name }
-          next unless cmd && cmd['domain'] == domain
-
-          groups[namespace] << build_vendor_command(cmd, type_name, entry, namespace)
+          build_vendor_command(cmd, type_name, entry, namespace) if cmd && cmd['domain'] == domain
         end
-      end
-      groups.map do |namespace, commands|
+        next if commands.empty?
+
         VendorModule.new(name: BiDiGenerate.snake_to_class_name(namespace), namespace: namespace, parent: parent,
                          commands: commands)
       end
@@ -699,14 +712,31 @@ module BiDiGenerate
 
     # Enum types declared under "<domain>." become nested constant modules.
     def enums_for(domain)
-      @types.filter_map do |name, type|
+      owned_types(domain).filter_map do |name, type|
         next unless type['kind'] == 'enum'
-        next unless name.start_with?("#{domain}.")
 
         pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v] }
-        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
+        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.split('.', 2).last), pairs: pairs,
                  primitive: type['primitive'], spec_href: type['specHref'])
       end
+    end
+
+    # The types a domain's module declares. A spec domain's are the "<domain>." types the spec
+    # defines; a vendor's helper types under that prefix are not emitted until a generated
+    # command needs them. A vendor module (`moz:debugging`) owns the vendor types its commands
+    # and events name (Mozilla prefixes them `mozDebugging.`), read off their params and result refs.
+    def owned_types(domain)
+      vendor = domain.include?(':')
+      prefixes = type_prefixes(domain).map { |prefix| "#{prefix}." }
+      @types.select { |name, _| prefixes.any? { |p| name.start_with?(p) } && @vendor_types.key?(name) == vendor }
+    end
+
+    def type_prefixes(domain)
+      return [domain] unless domain.include?(':')
+
+      messages = commands_for(domain) + events_for(domain)
+      refs = messages.flat_map { |m| [m.dig('params', 'ref'), m.dig('result', 'ref')] }
+      refs.compact.select { |ref| ref.include?('.') }.map { |ref| ref.split('.', 2).first }.uniq
     end
 
     # The protocol-root ErrorCode enum's wire values (e.g. "no such frame"), in schema order.
@@ -721,10 +751,7 @@ module BiDiGenerate
     # Command/event message envelopes (the `{method, params}` wire wrapper) are
     # skipped — Transport forms that envelope, so nothing references them.
     def types_for(domain)
-      prefix = "#{domain}."
-      @types.filter_map do |name, type|
-        next unless name.start_with?(prefix)
-
+      owned_types(domain).filter_map do |name, type|
         case type['kind']
         when 'record' then record_class(name, type) unless type['fields'].empty? || suppressed_record?(type)
         when 'union' then union_class(name)
@@ -933,12 +960,18 @@ module BiDiGenerate
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
       # Every extensible type gets the extensions store: an undeclared wire key is preserved
       # and echoed back on any type the spec marks extensible, whether or not it is re-sendable.
-      # Extensibility alone is the signal; send-reachability does not enter into it.
+      # Extensibility alone is the signal; send-reachability does not enter into it. A type a
+      # vendor extends is open too: its vendor variant composes the vendor fields through that
+      # store (see VendorCommand), which a closed record would reject.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
+                    discriminator: discriminator, extensible: type['extensible'] || vendor_extended?(name),
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
                     owner: type['owner'], label: type['label'], spec_href: type['specHref'],
                     **directionality(name))
+    end
+
+    def vendor_extended?(name)
+      @vendor.values.any? { |spec| (spec['extends'] || {}).key?(name) }
     end
 
     # A const field is a baked discriminator tag, unless it is also nullable: the spec's

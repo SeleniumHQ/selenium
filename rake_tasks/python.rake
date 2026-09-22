@@ -30,6 +30,7 @@ end
 desc 'Release Python wheel and sdist to pypi'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+  config = arguments.to_a.include?('rbe') ? 'rbe_release' : 'release'
 
   unless nightly
     already_published = begin
@@ -57,7 +58,7 @@ task :release do |_task, arguments|
 
   command = nightly ? '//py:selenium-release-nightly' : '//py:selenium-release'
   puts "Running Python release command: #{command}"
-  Bazel.execute('run', ['--config=release'], command)
+  Bazel.execute('run', ["--config=#{config}"], command)
 end
 
 desc 'Verify Python package is published on PyPI'
@@ -157,7 +158,7 @@ end
 desc 'Update Python changelog'
 task :changelogs do
   header = "Selenium #{python_version}"
-  SeleniumRake.update_changelog(python_version, 'py', 'py/selenium/webdriver', 'py/CHANGES', header)
+  SeleniumRake.update_changelog(python_version, 'python', 'py/selenium/webdriver', 'py/CHANGES', header)
 end
 
 desc 'Update Python version'

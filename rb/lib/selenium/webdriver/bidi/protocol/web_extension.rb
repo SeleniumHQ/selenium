@@ -30,6 +30,14 @@ module Selenium
         class WebExtension < Domain
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
+          InstallParameters = Serialization::Record.define(
+            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
+            extensible: true
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionextensiondata
           class ExtensionData < Serialization::Union
             discriminator 'type', {archive_path: 'archivePath', base64: 'base64', path: 'path'}
@@ -78,14 +86,6 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallparameters
           UninstallParameters = Serialization::Record.define(extension: {wire_key: 'extension', primitive: 'string'})
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
-          InstallParameters = Serialization::Record.define(
-            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
-            extensible: true
-          )
 
           def extension_data = ExtensionData
           def extension_path(**) = ExtensionPath.new(**)

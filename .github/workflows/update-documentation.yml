@@ -1,4 +1,4 @@
-name: Update Documentation
+name: Release - Docs
 
 on:
   workflow_dispatch:

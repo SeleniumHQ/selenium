@@ -185,6 +185,7 @@ def test_sending_keys_to_active_element_with_modifier_with_keyboard(driver, page
 def test_sending_keys_to_element_with_keyboard(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
+    driver.execute_script('arguments[0].scrollIntoView({block: "center", inline: "nearest"});', e)
 
     key_board = KeyInput("test keyboard")
 

@@ -1,4 +1,4 @@
-name: Release Preparation
+name: Release - Start
 
 on:
   workflow_dispatch:
@@ -88,7 +88,7 @@ jobs:
       message: |
         Trunk branch has been restricted for release preparation (${{ inputs.tag }}).
         To abandon the release, close the release preparation PR without merging and trunk will unlock automatically.
-        If trunk is still locked, run the "Manage Trunk Restrictions" workflow, which unlocks by default:
+        If trunk is still locked, run the "Release - Lock and Unlock Trunk" workflow, which unlocks by default:
         https://github.com/${{ github.repository }}/actions/workflows/restrict-trunk.yml
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -117,82 +117,36 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  calculate-changelog-depth:
-    name: Calculate Changelog Depth
-    needs: [parse-tag, commit-versions]
-    runs-on: ubuntu-latest
-    outputs:
-      depth: ${{ steps.calc.outputs.depth }}
-    steps:
-      - name: Calculate fetch depth from tag
-        id: calc
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.parse-tag.outputs.version }}
-          TAG: ${{ needs.parse-tag.outputs.tag }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ "$VERSION" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
-            MAJOR=${BASH_REMATCH[1]}
-            MINOR=${BASH_REMATCH[2]}
-            PATCH=${BASH_REMATCH[3]}
-
-            if [ "$PATCH" -gt 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.$((PATCH-1))"
-            elif [ "$PATCH" -eq 1 ]; then
-              PREV="selenium-${MAJOR}.${MINOR}.0"
-            elif [ "$MINOR" -gt 0 ]; then
-              PREV="selenium-${MAJOR}.$((MINOR-1)).0"
-            else
-              # First release of major version (X.0.0), use full history
-              echo "depth=0" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            COUNT=$(gh api "repos/${{ github.repository }}/compare/${PREV}...staging/release-${TAG}" --jq '.total_commits' 2>/dev/null) || {
-              echo "::warning::Failed to get commit count, using full history"
-              echo "depth=0" >> "$GITHUB_OUTPUT"
-              exit 0
-            }
-            echo "depth=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
-          else
-            echo "depth=0" >> "$GITHUB_OUTPUT"
-          fi
-
   update-changelogs:
     name: Generate Changelogs
-    needs: [parse-tag, calculate-changelog-depth]
+    needs: [parse-tag, commit-versions]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:changelogs
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
-      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   update-rust-changelogs:
     name: Update Rust Changelogs
-    needs: [parse-tag, commit-versions, calculate-changelog-depth]
+    needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Rust Changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
-      run: ./go rust:changelogs
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go rust:changelogs
       artifact-name: patch-rust-changelogs
-      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   update-authors:
     name: Update Authors
-    needs: [parse-tag, calculate-changelog-depth]
+    needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Authors
-      run: ./go authors
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go authors
       artifact-name: patch-authors
-      fetch-depth: ${{ needs.calculate-changelog-depth.outputs.depth }}
 
   update-manager:
     name: Update Selenium Manager Binaries
@@ -297,7 +251,7 @@ jobs:
 
   unlock-trunk-on-failure:
     name: Unlock Trunk on Failure
-    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
+    needs: [parse-tag, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: always() && needs.restrict-trunk.result == 'success' && needs.create-pr.result != 'success'
     uses: ./.github/workflows/restrict-trunk.yml
     with:
@@ -309,7 +263,7 @@ jobs:
   on-prerelease-failure:
     name: On Pre-release Failure
     runs-on: ubuntu-latest
-    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, calculate-changelog-depth, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
+    needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: failure() || cancelled()
     steps:
       - name: Slack Notification
