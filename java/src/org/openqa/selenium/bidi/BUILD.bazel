@@ -21,6 +21,7 @@ java_library(
         "//java/src/org/openqa/selenium/concurrent",
         "//java/src/org/openqa/selenium/remote:api",
         "//java/src/org/openqa/selenium/remote/http",
+        "@maven//:org_jetbrains_annotations",
     ],
 )
 
@@ -43,6 +44,7 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
+        "@maven//:org_jetbrains_annotations",
         "@maven//:org_jspecify_jspecify",
     ],
 )
@@ -85,6 +87,7 @@ java_library(
         ":bidi",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
+        "@maven//:org_jetbrains_annotations",
         "@maven//:org_jspecify_jspecify",
     ],
 )

@@ -251,6 +251,7 @@ maven.install(
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.4",
         "org.jboss.marshalling:jboss-marshalling:2.3.0",
+        "org.jetbrains:annotations:26.1.0",
         "org.jspecify:jspecify:1.0.1",
         "org.junit.jupiter:junit-jupiter-api",
         "org.junit.jupiter:junit-jupiter-engine",

@@ -18,9 +18,11 @@
 package org.openqa.selenium.bidi;
 
 import java.util.Optional;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 
 @Beta
+@ApiStatus.Internal
 public interface HasBiDi {
   /**
    * @deprecated BiDi is an internal implementation detail. Direct access to the BiDi object from

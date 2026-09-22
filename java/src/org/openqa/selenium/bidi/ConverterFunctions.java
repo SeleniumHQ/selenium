@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
@@ -34,17 +35,26 @@ import org.openqa.selenium.json.StaticInitializerCoercer;
 import org.openqa.selenium.json.TypeCoercer;
 
 @Beta
+@ApiStatus.Internal
 public class ConverterFunctions {
 
   /**
    * The shared {@link Json} every generated BiDi type is decoded through, including via {@link
-   * #fromMap}. Adds {@code StrictLongCoercer} (rejects a string or fractional value for an integer
-   * field) and {@link StaticInitializerCoercer} ahead of {@code EnumCoercer} (so a generated enum's
-   * exact-match {@code fromJson} runs, not the case-insensitive default) — both scoped to this
-   * instance only.
+   * #fromMap} and — through {@link Command}'s {@code Type}-based constructor — every plain command
+   * result too, so a command and an event never disagree on how strictly to accept the same wire
+   * shape. Adds {@code StrictLongCoercer}/{@code StrictStringCoercer}/{@code StrictNumberCoercer}
+   * (each rejects a value of the wrong JSON type for a String/integer/number field, instead of
+   * silently converting it — e.g. a numeric {@code url} or a quoted {@code timeOrigin}) and {@link
+   * StaticInitializerCoercer} ahead of {@code EnumCoercer} (so a generated enum's exact-match
+   * {@code fromJson} runs, not the case-insensitive default) — all scoped to this instance only.
    */
   public static final Json JSON =
-      new Json(List.of(new StrictLongCoercer(), new StaticInitializerCoercer()));
+      new Json(
+          List.of(
+              new StrictLongCoercer(),
+              new StrictStringCoercer(),
+              new StrictNumberCoercer(),
+              new StaticInitializerCoercer()));
 
   private ConverterFunctions() {
     throw new IllegalStateException("Utility class");
@@ -111,6 +121,58 @@ public class ConverterFunctions {
           throw new JsonException("Expected an integer, got a fractional value: " + number);
         }
         return number.longValue();
+      };
+    }
+  }
+
+  /**
+   * A stricter replacement for the shared {@code StringCoercer}: that one accepts a JSON boolean or
+   * number and silently stringifies it. A spec'd BiDi "text" field (e.g. {@code url}) is required
+   * to hold a value strictly to its declared type inbound — see the low-level behavioral contract
+   * ADR — so this rejects anything but a JSON string instead. Private: only ever instantiated once,
+   * for {@link #JSON} above.
+   */
+  private static class StrictStringCoercer extends TypeCoercer<String> {
+
+    @Override
+    public boolean test(Class<?> aClass) {
+      return String.class.equals(aClass);
+    }
+
+    @Override
+    public BiFunction<JsonInput, PropertySetting, String> apply(Type ignored) {
+      return (jsonInput, setting) -> {
+        if (jsonInput.peek() != JsonType.STRING) {
+          throw new JsonException(
+              "Expected a JSON string for a text value, got: " + jsonInput.peek());
+        }
+        return jsonInput.nextString();
+      };
+    }
+  }
+
+  /**
+   * A stricter replacement for the shared {@code NumberCoercer<Number>}: that one accepts a JSON
+   * string by re-parsing it as a number. A spec'd BiDi "number" field (e.g. {@code timeOrigin}) is
+   * required to hold a value strictly to its declared type inbound — see the low-level behavioral
+   * contract ADR — so this rejects a string instead of silently parsing it. Private: only ever
+   * instantiated once, for {@link #JSON} above.
+   */
+  private static class StrictNumberCoercer extends TypeCoercer<Number> {
+
+    @Override
+    public boolean test(Class<?> aClass) {
+      return Number.class.equals(aClass);
+    }
+
+    @Override
+    public BiFunction<JsonInput, PropertySetting, Number> apply(Type ignored) {
+      return (jsonInput, setting) -> {
+        if (jsonInput.peek() != JsonType.NUMBER) {
+          throw new JsonException(
+              "Expected a JSON number for a number value, got: " + jsonInput.peek());
+        }
+        return jsonInput.nextNumber();
       };
     }
   }

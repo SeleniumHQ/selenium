@@ -77,11 +77,13 @@ class ContinueWithAuthParametersTest {
 
   @Test
   void nestedActionEnumRoundTripsThroughItsWireValue() {
-    assertThat(ContinueWithAuthParameters.NoCredentials.Action.fromString("cancel"))
+    // fromJson, not fromString: this is the method the real deserialization path
+    // (StaticInitializerCoercer, via ConverterFunctions.JSON) actually calls.
+    assertThat(ContinueWithAuthParameters.NoCredentials.Action.fromJson("cancel"))
         .isEqualTo(ContinueWithAuthParameters.NoCredentials.Action.CANCEL);
     assertThat(ContinueWithAuthParameters.NoCredentials.Action.CANCEL.toString())
         .isEqualTo("cancel");
-    assertThat(ContinueWithAuthParameters.NoCredentials.Action.fromString("default"))
+    assertThat(ContinueWithAuthParameters.NoCredentials.Action.fromJson("default"))
         .isEqualTo(ContinueWithAuthParameters.NoCredentials.Action.DEFAULT);
   }
 

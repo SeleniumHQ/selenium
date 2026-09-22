@@ -64,6 +64,7 @@
     "org.hsqldb:hsqldb": 1426553323,
     "org.htmlunit:htmlunit-core-js": -1376292898,
     "org.jboss.marshalling:jboss-marshalling": -970194822,
+    "org.jetbrains:annotations": 989775437,
     "org.jsoup:jsoup": -1040080959,
     "org.jspecify:jspecify": 2105307712,
     "org.junit.jupiter:junit-jupiter-api": 194920406,
@@ -377,8 +378,8 @@
     "org.htmlunit:htmlunit-core-js:jar:sources": 1035397071,
     "org.jboss.marshalling:jboss-marshalling": 1584464300,
     "org.jboss.marshalling:jboss-marshalling:jar:sources": -444808379,
-    "org.jetbrains:annotations": -845966580,
-    "org.jetbrains:annotations:jar:sources": 582621361,
+    "org.jetbrains:annotations": -1687668980,
+    "org.jetbrains:annotations:jar:sources": 381604573,
     "org.jodd:jodd-util": 270788956,
     "org.jodd:jodd-util:jar:sources": 1012711698,
     "org.jsoup:jsoup": -1583305582,
@@ -421,7 +422,7 @@
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
     "org.redisson:redisson": 692121117,
     "org.redisson:redisson:jar:sources": -620546522,
-    "org.rnorth.duct-tape:duct-tape": -1059401544,
+    "org.rnorth.duct-tape:duct-tape": 133152594,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
     "org.seleniumhq.selenium:selenium-api": 849837103,
     "org.seleniumhq.selenium:selenium-api:jar:sources": -2123713838,
@@ -443,7 +444,7 @@
     "org.slf4j:slf4j-jdk14:jar:sources": -88979629,
     "org.snakeyaml:snakeyaml-engine": -1273354013,
     "org.snakeyaml:snakeyaml-engine:jar:sources": -1787221586,
-    "org.testcontainers:testcontainers": 1841368846,
+    "org.testcontainers:testcontainers": -539729557,
     "org.testcontainers:testcontainers:jar:sources": 375219890,
     "org.tomlj:tomlj": 368479402,
     "org.tomlj:tomlj:jar:sources": -1376370879,
@@ -1477,10 +1478,10 @@
     },
     "org.jetbrains:annotations": {
       "shasums": {
-        "jar": "195fb0da046d55bb042e91543484cf1da68b02bb7afbfe031f229e45ac84b3f2",
-        "sources": "b2c0d02e0a32c56d359e99634e7d769f9b1a8cd6e25061995abad1c1baf86f56"
+        "jar": "ebc7aec252ed0c7d2d04c039d7f00e69f7b86b1f493c741d67b3ef31b986b054",
+        "sources": "736d7e0e4bd95570ec8856cacffa3c34eb78ad8e45ca78c5df610d7347963b53"
       },
-      "version": "17.0.0"
+      "version": "26.1.0"
     },
     "org.jodd:jodd-util": {
       "shasums": {

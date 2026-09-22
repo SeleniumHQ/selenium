@@ -23,15 +23,14 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 
 @Beta
+@ApiStatus.Internal
 public class Command<X> {
-
-  private static final Json JSON = new Json();
 
   private final String method;
   private final Map<String, @Nullable Object> params;
@@ -42,6 +41,10 @@ public class Command<X> {
     this(method, params, Object.class);
   }
 
+  // Decodes through ConverterFunctions.JSON, not a fresh Json(): a command result and an event
+  // payload are both inbound BiDi wire data and must be held to the same strictness (a numeric
+  // network.ResponseData.status or a quoted script.RealmInfo.timeOrigin should be rejected either
+  // way), not decoded more leniently just because it arrived as a command result.
   public Command(String method, Map<String, @Nullable Object> params, Type typeOfX) {
     this(
         method,
@@ -49,7 +52,8 @@ public class Command<X> {
         result ->
             Require.nonNull(
                 "Command result",
-                JSON.convert(result, Require.nonNull("Type to convert to", typeOfX))));
+                ConverterFunctions.JSON.convert(
+                    result, Require.nonNull("Type to convert to", typeOfX))));
   }
 
   public Command(

@@ -531,6 +531,7 @@ public class BiDiGenerator {
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
       sb.append("package ").append(pkg).append(";\n\n");
+      sb.append("import org.jetbrains.annotations.ApiStatus;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.WebDriver;\n");
       sb.append("import org.openqa.selenium.bidi.Command;\n");
@@ -540,6 +541,7 @@ public class BiDiGenerator {
       sb.append("\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      sb.append("@ApiStatus.Internal\n");
       sb.append("@SuppressWarnings(\"unchecked\")\n");
       sb.append("public class ").append(cls).append(" extends Module {\n\n");
 
@@ -679,10 +681,11 @@ public class BiDiGenerator {
       sb.append("import java.util.Optional;\n");
       sb.append("import java.util.Set;\n");
       sb.append("import org.jspecify.annotations.Nullable;\n");
+      sb.append("import org.jetbrains.annotations.ApiStatus;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
-      // BiDiException is needed by nested enum fromString()/fromJson() methods and union
-      // fromMap() methods. ConverterFunctions.JSON is needed by fromJson() (see
-      // appendFromJson) — same condition as the Json/TypeToken imports above.
+      // BiDiException is needed by nested enum fromJson() methods and union fromMap() methods.
+      // ConverterFunctions.JSON is needed by fromJson() (see appendFromJson) — same condition as
+      // the Json/TypeToken imports above.
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
       sb.append("import org.openqa.selenium.json.Json;\n");
@@ -690,6 +693,7 @@ public class BiDiGenerator {
       sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      sb.append("@ApiStatus.Internal\n");
       if (warnsOnUnknownFields) {
         sb.append("@WarnOnUnknownFields\n");
       }
@@ -1374,10 +1378,12 @@ public class BiDiGenerator {
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
       sb.append("package ").append(pkg).append(";\n\n");
+      sb.append("import org.jetbrains.annotations.ApiStatus;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      sb.append("@ApiStatus.Internal\n");
       sb.append("public enum ").append(cls).append(" {\n\n");
       appendEnumBody(sb, cls, values, "  ");
       sb.append("}\n");
@@ -1405,20 +1411,10 @@ public class BiDiGenerator {
       sb.append(m).append(cls).append("(String value) {\n");
       sb.append(m).append("  this.value = value;\n");
       sb.append(m).append("}\n\n");
-      sb.append(m).append("public static ").append(cls).append(" fromString(String s) {\n");
-      sb.append(m).append("  for (").append(cls).append(" e : values()) {\n");
-      sb.append(m).append("    if (e.value.equalsIgnoreCase(s)) return e;\n");
-      sb.append(m).append("  }\n");
-      sb.append(m)
-          .append("  throw new BiDiException(\"Unknown ")
-          .append(cls)
-          .append(" value: \" + s);\n");
-      sb.append(m).append("}\n\n");
       // The actual inbound-deserialization entry point — StaticInitializerCoercer (registered
       // via ConverterFunctions.JSON, ahead of the shared EnumCoercer) picks up exactly this
-      // method by name. Unlike fromString above (case-insensitive, existing public API other
-      // code already calls directly), this matches exactly: the spec's own values are a closed,
-      // case-sensitive vocabulary, and a received value outside it must be rejected, not
+      // method by name. Matches exactly, not case-insensitively: the spec's own values are a
+      // closed, case-sensitive vocabulary, and a received value outside it must be rejected, not
       // coerced into a guess.
       sb.append(m).append("public static ").append(cls).append(" fromJson(String s) {\n");
       sb.append(m).append("  for (").append(cls).append(" e : values()) {\n");
@@ -1459,6 +1455,7 @@ public class BiDiGenerator {
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
       sb.append("import org.jspecify.annotations.Nullable;\n");
+      sb.append("import org.jetbrains.annotations.ApiStatus;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
@@ -1467,6 +1464,7 @@ public class BiDiGenerator {
       sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      sb.append("@ApiStatus.Internal\n");
       // Unions are interfaces, not abstract classes: a union can itself be a variant of more
       // than one other union (e.g. PrimitiveProtocolValue is a member of both RemoteValue and
       // LocalValue), which only interface-to-interface "extends" can express — a class can only
@@ -1613,11 +1611,13 @@ public class BiDiGenerator {
       sb.append(LICENSE);
       sb.append("package ").append(pkg).append(";\n\n");
       sb.append("import java.util.Map;\n");
+      sb.append("import org.jetbrains.annotations.ApiStatus;\n");
       sb.append("import org.openqa.selenium.Beta;\n");
       sb.append("import org.openqa.selenium.bidi.BiDiException;\n");
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
+      sb.append("@ApiStatus.Internal\n");
       sb.append("public interface ").append(cls).append(" {\n\n");
       sb.append("  Object toWireValue();\n\n");
 
@@ -1644,8 +1644,8 @@ public class BiDiGenerator {
           .append(", got: \" + raw);\n");
       sb.append("  }\n\n");
 
-      // The bare-literal arms as a real Java enum — same shape (fromString/fromJson/toString)
-      // every other generated enum already has, so it picks up StaticInitializerCoercer and
+      // The bare-literal arms as a real Java enum — same shape (fromJson/toString) every other
+      // generated enum already has, so it picks up StaticInitializerCoercer and
       // ConverterFunctions.JSON's strict handling identically, with no special-casing needed here.
       sb.append("  enum Literal implements ").append(cls).append(" {\n\n");
       appendEnumBody(sb, "Literal", scalarValues, "    ");
