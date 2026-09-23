@@ -180,19 +180,8 @@ function parseCddl(cddlArg) {
     process.exit(1)
   }
   console.log(`Parsing CDDL: ${cddlPath}`)
-  const ast = stripReffyCddlHeaderPrefix(parse(cddlPath))
+  const ast = parse(cddlPath)
   console.log(`  ${ast.length} top-level definitions`)
-  return ast
-}
-
-// Reffy glues ReSpec's "CDDL" block header onto the first production of every block, so
-// webref's digital-credentials extract defines `CDDLdigitalCredentials.X` while references
-// say `digitalCredentials.X`. Delete once webref re-extracts with the fix from
-// https://github.com/w3c/reffy/pull/2167
-function stripReffyCddlHeaderPrefix(ast) {
-  for (const def of ast) {
-    if (/^CDDL[a-z]/.test(def?.Name ?? '')) def.Name = def.Name.slice('CDDL'.length)
-  }
   return ast
 }
 

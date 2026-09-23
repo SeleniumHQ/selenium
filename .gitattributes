@@ -6,6 +6,9 @@
 *.html   text diff=html eol=lf
 *.css    text eol=lf
 *.js     text eol=lf
+# The CDDL parser keeps the carriage return in a production name, so a CRLF
+# checkout of the overlays in common/bidi makes every type they define unresolvable.
+*.cddl   text eol=lf
 *.sql    text
 *.xml    text
 
