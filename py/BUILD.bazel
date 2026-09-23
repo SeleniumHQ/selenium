@@ -770,7 +770,7 @@ generate_bidi(
         "@permissions_all_cddl//file:spec.cddl",
         "@prefetch_all_cddl//file:spec.cddl",
         "@ua_client_hints_all_cddl//file:spec.cddl",
-        "@web_bluetooth_all_cddl//file:spec.cddl",
+        "@bluetooth_scanning_all_cddl//file:spec.cddl",
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",
