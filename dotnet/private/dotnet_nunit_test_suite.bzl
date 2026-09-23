@@ -7,6 +7,14 @@ load(
     "firefox_data",
 )
 
+_HEADLESS_ARGS = select({
+    "@selenium//common:use_headless_browser": [
+        "--test-parameter",
+        "Headless=true",
+    ],
+    "//conditions:default": [],
+})
+
 _BROWSERS = {
     "chrome": {
         "args": [
@@ -26,7 +34,7 @@ _BROWSERS = {
                 "BrowserLocation=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             ],
             "//conditions:default": [],
-        }),
+        }) + _HEADLESS_ARGS,
         "data": chrome_data,
         "tags": [],
     },
@@ -48,7 +56,7 @@ _BROWSERS = {
                 "BrowserLocation=$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge",
             ],
             "//conditions:default": [],
-        }),
+        }) + _HEADLESS_ARGS,
         "data": edge_data,
         "tags": [],
     },
@@ -70,7 +78,7 @@ _BROWSERS = {
                 "BrowserLocation=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
             ],
             "//conditions:default": [],
-        }),
+        }) + _HEADLESS_ARGS,
         "data": firefox_data,
         "tags": [],
     },
@@ -105,14 +113,6 @@ _BROWSERS = {
 }
 
 _DEFAULT_BROWSERS = [b for b in _BROWSERS if b != "ie"]
-
-_HEADLESS_ARGS = select({
-    "@selenium//common:use_headless_browser": [
-        "--test-parameter",
-        "Headless=true",
-    ],
-    "//conditions:default": [],
-})
 
 _TEST_SUFFIXES = ("Test.cs", "Tests.cs")
 
@@ -215,7 +215,7 @@ def dotnet_nunit_test_suite(
                 continue
             browser_test_name = "%s-%s" % (test_name, browser) if browser else test_name
             browser_cfg = _BROWSERS[browser] if browser else None
-            browser_args = browser_cfg["args"] + _HEADLESS_ARGS if browser_cfg else []
+            browser_args = browser_cfg["args"] if browser_cfg else []
             browser_data = browser_cfg["data"] if browser_cfg else []
             browser_tags = [browser] + COMMON_TAGS + browser_cfg["tags"] if browser_cfg else []
 

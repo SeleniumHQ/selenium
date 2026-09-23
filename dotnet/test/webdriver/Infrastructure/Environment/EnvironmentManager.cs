@@ -57,6 +57,8 @@ public class EnvironmentManager
 
         string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
 
+        string headless = System.Environment.GetEnvironmentVariable("HEADLESS") ?? TestContext.Parameters.Get("Headless", string.Empty);
+
         // Bazel's $(location ...) expands to a runfiles-relative path (e.g.
         // "../+pin_browsers_extension+mac_chrome/Chrome.app/Contents/MacOS/Chrome")
         // which is relative to <runfiles>/_main. The driver process runs from a
@@ -65,6 +67,8 @@ public class EnvironmentManager
         browserLocation = ResolveRunfilesPath(browserLocation);
 
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
+
+        Headless = string.Equals(headless, "true", StringComparison.OrdinalIgnoreCase);
 
         this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
         this.driverFactory.DriverStarting += OnDriverStarting;
@@ -146,6 +150,8 @@ public class EnvironmentManager
     public static EnvironmentManager Instance => instance ??= new EnvironmentManager();
 
     public Browser Browser { get; }
+
+    public bool Headless { get; }
 
     public string CurrentDirectory
     {
