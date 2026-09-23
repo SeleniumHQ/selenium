@@ -17849,6 +17849,15 @@
       },
       "commands": [
         {
+          "domain": "webExtension",
+          "method": "webExtension.moz:listExtensions",
+          "name": "moz:listExtensions",
+          "params": null,
+          "result": {
+            "ref": "webExtension.MozListExtensionsResult"
+          }
+        },
+        {
           "domain": "moz:debugging",
           "method": "moz:debugging.getScriptSource",
           "name": "getScriptSource",
@@ -17984,6 +17993,182 @@
         }
       ],
       "types": {
+        "MozCommand": {
+          "kind": "alias",
+          "type": {
+            "ref": "webExtension.MozListExtensions"
+          }
+        },
+        "webExtension.MozListExtensions": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "webExtension.moz:listExtensions"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "EmptyParams"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "webExtension.MozListExtensionsResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "extensions",
+              "wire": "extensions",
+              "required": true,
+              "type": {
+                "list": {
+                  "ref": "webExtension.MozExtensionInfo"
+                }
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "webExtension.MozExtensionInfo": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "id",
+              "wire": "id",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "name",
+              "wire": "name",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "version",
+              "wire": "version",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "manifestVersion",
+              "wire": "manifestVersion",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "isActive",
+              "wire": "isActive",
+              "required": true,
+              "type": {
+                "primitive": "boolean"
+              }
+            },
+            {
+              "name": "isSystem",
+              "wire": "isSystem",
+              "required": true,
+              "type": {
+                "primitive": "boolean"
+              }
+            },
+            {
+              "name": "hidden",
+              "wire": "hidden",
+              "required": true,
+              "type": {
+                "primitive": "boolean"
+              }
+            },
+            {
+              "name": "temporarilyInstalled",
+              "wire": "temporarilyInstalled",
+              "required": true,
+              "type": {
+                "primitive": "boolean"
+              }
+            },
+            {
+              "name": "sourceURL",
+              "wire": "sourceURL",
+              "required": false,
+              "type": {
+                "primitive": "string",
+                "nullable": true
+              }
+            },
+            {
+              "name": "policy",
+              "wire": "policy",
+              "required": false,
+              "type": {
+                "ref": "webExtension.MozExtensionPolicyInfo",
+                "nullable": true
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "webExtension.MozExtensionPolicyInfo": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "uuid",
+              "wire": "uuid",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "baseURL",
+              "wire": "baseURL",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "extensionURL",
+              "wire": "extensionURL",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "backgroundScripts",
+              "wire": "backgroundScripts",
+              "required": true,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
         "MozDebuggingCommand": {
           "kind": "union",
           "variants": [
