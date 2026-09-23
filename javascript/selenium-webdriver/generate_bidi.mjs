@@ -36,26 +36,6 @@ import { projectSchema } from './project_bidi_schema.mjs'
 // Domain configuration
 // ============================================================
 
-// Maps TypeScript export name prefixes to domain keys.
-// Ordered longest-first so the most specific prefix always wins.
-const NAME_PREFIX_TO_DOMAIN = [
-  ['UserAgentClientHints', 'userAgentClientHints'],
-  ['DigitalCredentials', 'digitalCredentials'],
-  ['BrowsingContext', 'browsingContext'],
-  ['WebExtension', 'webExtension'],
-  ['Permissions', 'permissions'],
-  ['Bluetooth', 'bluetooth'],
-  ['Emulation', 'emulation'],
-  ['Speculation', 'speculation'],
-  ['Storage', 'storage'],
-  ['Session', 'session'],
-  ['Network', 'network'],
-  ['Script', 'script'],
-  ['Input', 'input'],
-  ['Browser', 'browser'],
-  ['Log', 'log'],
-]
-
 // Output filename for each domain key.
 const DOMAIN_FILES = {
   browser: 'browser.ts',
@@ -285,11 +265,11 @@ function generateTypeScript(ast, model, args) {
     throw new Error(`model domains without a DOMAIN_FILES/DOMAIN_CLASSES entry: ${unmapped.join(', ')}`)
   }
 
-  console.log('Pass 1: generating types via cddl2ts…')
-  const rawTypes = transform(ast)
-  const cleanTypes = postProcessTypes(rawTypes)
-  const typesByDomain = splitTypesByDomain(cleanTypes)
-  const typeNameToDomain = buildTypeNameToDomainMap(typesByDomain)
+  console.log('Projecting the binding-neutral schema…')
+  const schema = projectSchema(ast, model)
+  console.log(
+    `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types`,
+  )
 
   const typesByDomain = groupTypesByDomain(schema.types)
   const allCommands = schemaToCommands(schema)
@@ -328,7 +308,8 @@ function generateTypeScript(ast, model, args) {
 function domainForTypeName(name) {
   const dotIdx = name.indexOf('.')
   if (dotIdx === -1) return 'common'
-  return METHOD_DOMAIN_MAP[name.slice(0, dotIdx)] ?? 'common'
+  const domain = name.slice(0, dotIdx)
+  return Object.hasOwn(DOMAIN_FILES, domain) ? domain : 'common'
 }
 
 /** Groups the schema's flat `types` map into `{ domain: { typeName: node } }`. */
