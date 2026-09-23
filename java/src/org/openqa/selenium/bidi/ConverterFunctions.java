@@ -141,8 +141,17 @@ public class ConverterFunctions {
    * A stricter replacement for the shared {@code StringCoercer}: that one accepts a JSON boolean or
    * number and silently stringifies it. A spec'd BiDi "text" field (e.g. {@code url}) is required
    * to hold a value strictly to its declared type inbound — see the low-level behavioral contract
-   * ADR — so this rejects anything but a JSON string instead. Private: only ever instantiated once,
-   * for {@link #JSON} above.
+   * ADR — so this rejects anything but a JSON string instead.
+   *
+   * <p>A JSON object's own property key ({@link JsonType#NAME}) is accepted alongside {@link
+   * JsonType#STRING}, unlike {@link JsonType#BOOLEAN}/{@link JsonType#NUMBER}: {@code
+   * ObjectCoercer} routes a raw ({@code Map.class}, not {@code Map<String, ?>}) map's keys through
+   * exactly this coercer (see its {@code case NAME} branch), and a JSON key is structurally always
+   * textual — nothing to be strict about there, unlike a boolean/number masquerading as a string
+   * field's value. Rejecting {@code NAME} here (as an earlier version of this class did) broke that
+   * unrelated, legitimate mechanism — see {@code BiDi.subscribe}'s {@code Map.class}-typed {@link
+   * Command}, whose {@code session.subscribe} result is exactly such a raw map. Private: only ever
+   * instantiated once, for {@link #JSON} above.
    */
   private static class StrictStringCoercer extends TypeCoercer<String> {
 
@@ -154,9 +163,12 @@ public class ConverterFunctions {
     @Override
     public BiFunction<JsonInput, PropertySetting, String> apply(Type ignored) {
       return (jsonInput, setting) -> {
-        if (jsonInput.peek() != JsonType.STRING) {
-          throw new JsonException(
-              "Expected a JSON string for a text value, got: " + jsonInput.peek());
+        JsonType type = jsonInput.peek();
+        if (type == JsonType.NAME) {
+          return jsonInput.nextName();
+        }
+        if (type != JsonType.STRING) {
+          throw new JsonException("Expected a JSON string for a text value, got: " + type);
         }
         return jsonInput.nextString();
       };

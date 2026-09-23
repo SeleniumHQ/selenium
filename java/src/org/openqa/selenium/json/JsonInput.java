@@ -252,11 +252,19 @@ public class JsonInput implements Closeable {
    * two are not meant to be called on the same token.
    *
    * @return the number's exact value as a {@link BigDecimal}
-   * @throws JsonException if the next element isn't a number
+   * @throws JsonException if the next element isn't a number, or is a syntactically valid JSON
+   *     number {@link BigDecimal} still can't represent (RFC 8259 places no bound on an exponent's
+   *     magnitude; {@code BigDecimal}'s scale is a 32-bit {@code int}, so an exponent with enough
+   *     digits overflows it)
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public BigDecimal nextExactNumber() {
-    return new BigDecimal(readNumberLexeme().text);
+    String lexeme = readNumberLexeme().text;
+    try {
+      return new BigDecimal(lexeme);
+    } catch (NumberFormatException e) {
+      throw new JsonException("Unable to parse to a number: " + lexeme + ". " + input, e);
+    }
   }
 
   private static final class NumberLexeme {

@@ -949,12 +949,21 @@ public class BiDiGenerator {
           sb.append(m).append("  Map<String, Object> map = new LinkedHashMap<>();\n");
           for (FieldInfo f : required) {
             String serExpr = serializeExpr(f.name, f.typeRef, domain);
-            sb.append(m)
-                .append("  map.put(\"")
-                .append(f.wire)
-                .append("\", ")
-                .append(serExpr)
-                .append(");\n");
+            // A required field can still legally hold null if the schema marks it nullable (e.g.
+            // browser.SetDownloadBehaviorParameters.downloadBehavior) — the constructor already
+            // allows this (see appendConstructorAssignment's isPrimitive(f.typeRef) || nullable
+            // branch). serializeExpr's transform (.toMap()/.toString()/.toWireValue()) is a
+            // method call on the field's own value and would NPE on that legal null; a plain
+            // field reference (no transform — a primitive/already-wire-shaped value) never needs
+            // the guard, since a null there serializes to a harmless JSON null either way.
+            boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
+            sb.append(m).append("  map.put(\"").append(f.wire).append("\", ");
+            if (nullable && !serExpr.equals(f.name)) {
+              sb.append(f.name).append(" == null ? null : ").append(serExpr);
+            } else {
+              sb.append(serExpr);
+            }
+            sb.append(");\n");
           }
           for (FieldInfo f : optional) {
             if (isNullable(f.typeRef)) {
