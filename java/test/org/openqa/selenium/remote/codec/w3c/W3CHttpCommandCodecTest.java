@@ -88,8 +88,7 @@ class W3CHttpCommandCodecTest {
   @Test
   void shadowFindElementsKeepsRelativeLocatorValueAsJsonObject() {
     assertFindKeepsRelativeValue(
-        DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT(
-            "shadow", "relative", relativeLocatorValue()));
+        DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT("shadow", "relative", relativeLocatorValue()));
   }
 
   private Map<String, Object> relativeLocatorValue() {

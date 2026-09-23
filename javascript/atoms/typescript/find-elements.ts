@@ -96,7 +96,14 @@
     if (typeof withTags.getElementsByTagName === 'function') {
       return Array.from(withTags.getElementsByTagName(target))
     }
-    return Array.from(root.querySelectorAll(target))
+    const elements = Array.from(root.querySelectorAll('*'))
+    if (target === '*') {
+      return elements
+    }
+    const html = 'http://www.w3.org/1999/xhtml'
+    const folded = target.toLowerCase()
+    return elements.filter(el =>
+      el.namespaceURI === html ? el.localName === folded : el.localName === target)
   }
 
   const DEFAULT_NS_RESOLVER = (function () {
