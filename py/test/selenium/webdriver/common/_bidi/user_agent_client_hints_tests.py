@@ -103,3 +103,26 @@ def test_set_client_hints_override_with_user_contexts(driver, pages):
             BrowsingContext(driver).close(context=context_id)
     finally:
         Browser(driver).remove_user_context(user_context=user_context)
+
+
+# A global override outlives this test's contexts, so the driver is torn down afterwards
+# rather than relying on the cleanup below surviving a mid-test failure.
+@pytest.mark.needs_fresh_driver
+@pytest.mark.xfail_firefox(reason="Firefox does not implement userAgentClientHints")
+def test_set_client_hints_override_globally(driver, pages):
+    context_id = driver.current_window_handle
+    client_hints = UserAgentClientHints(driver)
+    try:
+        client_hints.set_client_hints_override(_fake_hints("GlobalOS"))
+
+        _navigate(driver, pages, context_id)
+        assert get_user_agent_data(driver, context_id)["platform"] == "GlobalOS"
+
+        later_context = BrowsingContext(driver).create(type=CreateType.TAB).context
+        try:
+            _navigate(driver, pages, later_context)
+            assert get_user_agent_data(driver, later_context)["platform"] == "GlobalOS"
+        finally:
+            BrowsingContext(driver).close(context=later_context)
+    finally:
+        client_hints.set_client_hints_override(None)
