@@ -88,39 +88,36 @@ internal sealed class Broker : IAsyncDisposable
 
         try
         {
-            using (BiDiContext.Use(_bidi))
-            using (var writer = new Utf8JsonWriter(sendBuffer))
+            using var writer = new Utf8JsonWriter(sendBuffer);
+            writer.WriteStartObject();
+            writer.WriteNumber("id"u8, id);
+            writer.WriteString("method"u8, method);
+            writer.WritePropertyName("params"u8);
+
+            if (options is { AdditionalData: { IsEmpty: false } additionalData })
             {
-                writer.WriteStartObject();
-                writer.WriteNumber("id"u8, id);
-                writer.WriteString("method"u8, method);
-                writer.WritePropertyName("params"u8);
-
-                if (options is { AdditionalData: { IsEmpty: false } additionalData })
+                // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                if (ReferenceEquals(@params, Parameters.Empty))
                 {
-                    // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
-                    if (ReferenceEquals(@params, Parameters.Empty))
-                    {
-                        @params = (TParameters)(object)new Parameters();
-                    }
-                    @params.RawAdditionalData ??= [];
-                    foreach (var prop in additionalData)
-                    {
-                        @params.RawAdditionalData[prop.Name] = prop.Value;
-                    }
+                    @params = (TParameters)(object)new Parameters();
                 }
-
-                JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
-                if (options is not null)
+                @params.RawAdditionalData ??= [];
+                foreach (var prop in additionalData)
                 {
-                    foreach (var prop in options.AdditionalMessageData)
-                    {
-                        writer.WritePropertyName(prop.Name);
-                        prop.Value.WriteTo(writer);
-                    }
+                    @params.RawAdditionalData[prop.Name] = prop.Value;
                 }
-                writer.WriteEndObject();
             }
+
+            JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
+            if (options is not null)
+            {
+                foreach (var prop in options.AdditionalMessageData)
+                {
+                    writer.WritePropertyName(prop.Name);
+                    prop.Value.WriteTo(writer);
+                }
+            }
+            writer.WriteEndObject();
         }
         catch
         {
@@ -199,7 +196,6 @@ internal sealed class Broker : IAsyncDisposable
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
-        using var scope = BiDiContext.Use(_bidi);
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
         const int TypeError = 3;
@@ -392,6 +388,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private async Task ProcessMessagesAsync()
     {
+        using var scope = BiDiContext.Use(_bidi);
         var reader = _receivedMessages.Reader;
 
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
