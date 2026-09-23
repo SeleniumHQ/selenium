@@ -4,27 +4,6 @@ on:
   schedule:
     - cron: '0 15 * * 1'
   workflow_dispatch:
-    inputs:
-      window-days:
-        description: Days of history the flake rate is measured over
-        required: false
-        type: string
-        default: '21'
-      recent-days:
-        description: A target must have flaked this recently to be reported
-        required: false
-        type: string
-        default: '7'
-      min-runs:
-        description: Runs a target needs before its rate is trusted
-        required: false
-        type: string
-        default: '15'
-      min-rate:
-        description: Percent of runs a target must flake in before it is counted
-        required: false
-        type: string
-        default: '5'
 
 permissions:
   actions: read
@@ -43,13 +22,9 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WINDOW_DAYS: ${{ inputs.window-days || '21' }}
-          RECENT_DAYS: ${{ inputs.recent-days || '7' }}
-          MIN_RUNS: ${{ inputs.min-runs || '15' }}
-          MIN_RATE: ${{ inputs.min-rate || '5' }}
         run: ./scripts/github-actions/flaky-report.sh
       - name: Slack Notification
-        if: github.event_name == 'schedule' && steps.report.outputs.flaky == 'true'
+        if: github.event_name == 'schedule' && steps.report.outputs.notify == 'true'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_ICON_EMOJI: ':warning:'
