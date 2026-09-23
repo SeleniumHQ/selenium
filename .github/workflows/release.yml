@@ -377,5 +377,6 @@ jobs:
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
-          MSG_MINIMAL: actions url
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

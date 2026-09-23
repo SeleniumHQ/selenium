@@ -57,6 +57,6 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Flakiness Report
-          SLACK_MESSAGE: ${{ steps.report.outputs.message }}
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "${{ steps.report.outputs.message }}: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view report>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
