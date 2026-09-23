@@ -1,9 +1,16 @@
 load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary", "import_library")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 csharp_binary(
     name = "generate_resources_tool",
     srcs = ["GenerateResourcesTool.cs"],
     target_frameworks = ["net10.0"],
+)
+
+py_binary(
+    name = "cpm_nuspec_gen",
+    srcs = ["cpm_nuspec_gen.py"],
+    visibility = ["//dotnet:__subpackages__"],
 )
 
 exports_files(

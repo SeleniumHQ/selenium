@@ -4,6 +4,7 @@ load("//dotnet/private:docfx.bzl", "docfx")
 
 exports_files([
     "AssemblyInfo.cs.template",
+    "Directory.Packages.props",
     "Selenium.snk",
 ])
 
