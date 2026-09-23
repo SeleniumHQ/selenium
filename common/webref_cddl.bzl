@@ -9,7 +9,7 @@ see scripts/update_cddl.py for how they are resolved and when the pins advance.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 # The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
-_COMMIT = "a0506ac035dfcb3c1e6c0be9127be0b28f15a534"
+_COMMIT = "02d4baf9e469b27e9d3e561440c23319cbb68b11"
 _CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 _DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
 
@@ -25,12 +25,12 @@ _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{com
 # index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
 # @<repo_name>//file:dfns.json.
 _CDDL_FILES = [
-    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "9e7a842b44327737b0cd40f298c194cdc066490cd0cab88bfd3132a1671a17fb"),
-    ("digital_credentials_all_cddl", "digital-credentials-all.cddl", "83e955a6d53f43e0456f82a800712f683980aa53f4ba83aca58a551d256d6f04"),
+    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "3eead6840423c63dcebaede1b19528c6bd41ae137c361a44d8767585df1cfac2"),
+    ("digital_credentials_all_cddl", "digital-credentials-all.cddl", "04acd2815f32a7e6d12c03464af8d6f909b03579e2a31e82d18c0068d8084ca9"),
     ("permissions_all_cddl", "permissions-all.cddl", "50e9b0017415e27a18a190bf37df048d4513f8432e42fe97901c9f2d55204b50"),
     ("prefetch_all_cddl", "prefetch-all.cddl", "51409b998176a81f681252f8ee16bea5a54a3be9d1cfee9f13ca34efd1feb5ea"),
     ("ua_client_hints_all_cddl", "ua-client-hints-all.cddl", "6bb41f05d09c755305226b7350970e54f6404698510ea2e1e7a931eaa2647aeb"),
-    ("web_bluetooth_all_cddl", "web-bluetooth-all.cddl", "3480a9c2c7cc312a50535024d8667283e79a77d5a40c5c0bc19ea023697b24d4"),
+    ("bluetooth_scanning_all_cddl", "bluetooth-scanning-all.cddl", "3480a9c2c7cc312a50535024d8667283e79a77d5a40c5c0bc19ea023697b24d4"),
 ]
 
 _DFNS_FILES = [
@@ -39,7 +39,7 @@ _DFNS_FILES = [
     ("permissions_dfns", "permissions.json", "bc5d2907c61e2548c6fc4a42a32c86396b56a68033c62299c4d563db510c105f"),
     ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
     ("ua_client_hints_dfns", "ua-client-hints.json", "56a31bf6fd2ba03158500498d14742f8edd7a2d560580b4aa7f4a703977e40cf"),
-    ("web_bluetooth_dfns", "web-bluetooth.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
+    ("bluetooth_scanning_dfns", "bluetooth-scanning.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
 ]
 
 # The merged specs as labels, for the BUILD files that feed schema generation: the core
@@ -51,7 +51,7 @@ BIDI_EXTENSION_CDDL_FILES = [
     "@permissions_all_cddl//file:spec.cddl",
     "@prefetch_all_cddl//file:spec.cddl",
     "@ua_client_hints_all_cddl//file:spec.cddl",
-    "@web_bluetooth_all_cddl//file:spec.cddl",
+    "@bluetooth_scanning_all_cddl//file:spec.cddl",
 ]
 
 BIDI_DFNS_FILES = [
@@ -60,7 +60,7 @@ BIDI_DFNS_FILES = [
     "@permissions_dfns//file:dfns.json",
     "@prefetch_dfns//file:dfns.json",
     "@ua_client_hints_dfns//file:dfns.json",
-    "@web_bluetooth_dfns//file:dfns.json",
+    "@bluetooth_scanning_dfns//file:dfns.json",
 ]
 
 # Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each

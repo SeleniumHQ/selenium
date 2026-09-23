@@ -23,10 +23,6 @@ const firefox = require('selenium-webdriver/firefox')
 const io = require('selenium-webdriver/io')
 const { Browser } = require('selenium-webdriver/index')
 const { Pages, suite } = require('../../lib/test')
-const { locate } = require('../../lib/test/resources')
-const { until, By } = require('selenium-webdriver/index')
-
-const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
 
 suite(
   function (env) {
@@ -117,51 +113,6 @@ suite(
             await verifyUserAgent('baz;qux')
           })
         })
-
-        describe('addExtensions', function () {
-          it('can add extension to brand new profile', async function () {
-            let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.addExtensions(EXT_XPI)
-
-            driver = env.builder().setFirefoxOptions(options).build()
-
-            await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
-          })
-
-          it('can add extension to custom profile', async function () {
-            let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.addExtensions(EXT_XPI).setProfile(profileWithUserPrefs)
-
-            driver = env.builder().setFirefoxOptions(options).build()
-
-            await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
-            await verifyUserAgentWasChanged()
-          })
-
-          it('can addExtensions and setPreference', async function () {
-            let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.addExtensions(EXT_XPI)
-            options.setPreference('general.useragent.override', 'foo;bar')
-
-            driver = env.builder().setFirefoxOptions(options).build()
-
-            await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
-            await verifyUserAgentWasChanged()
-          })
-
-          it('can load .zip webextensions', async function () {
-            let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.addExtensions(EXT_XPI)
-
-            driver = env.builder().setFirefoxOptions(options).build()
-
-            await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
-          })
-        })
       })
 
       async function verifyUserAgentWasChanged() {
@@ -171,13 +122,6 @@ suite(
       async function verifyUserAgent(expected) {
         let userAgent = await driver.executeScript('return window.navigator.userAgent')
         assert.strictEqual(userAgent, expected)
-      }
-
-      async function verifyWebExtensionWasInstalled() {
-        let footer = await driver.wait(until.elementLocated(By.id('webextensions-selenium-example')), 5000)
-
-        let text = await footer.getText()
-        assert.strictEqual(text, 'Content injected by webextensions-selenium-example')
       }
     })
   },

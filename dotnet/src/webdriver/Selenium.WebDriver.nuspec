@@ -71,5 +71,7 @@
 
     <file src="icon.png" />
     <file src="README.md" />
+    <file src="LICENSE" target="LICENSE" />
+    <file src="NOTICE" target="NOTICE" />
   </files>
 </package>
