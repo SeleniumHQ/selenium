@@ -1,4 +1,4 @@
-name: Flaky Report
+name: Scheduled - Report Flaky Tests
 
 on:
   schedule:

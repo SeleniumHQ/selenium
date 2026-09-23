@@ -49,7 +49,8 @@ module Selenium
             attr_reader url: String
             attr_reader user_context: String
             attr_reader parent: untyped
-            def self.new: (children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?, client_window: String, context: String, original_opener: String?, url: String, user_context: String, ?parent: String?) -> instance
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?, client_window: String, context: String, original_opener: String?, url: String, user_context: String, ?parent: String?, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class Locator < ::Selenium::WebDriver::BiDi::Serialization::Union
@@ -196,7 +197,8 @@ module Selenium
           class GetTreeParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader max_depth: untyped
             attr_reader root: untyped
-            def self.new: (?max_depth: Integer, ?root: String) -> instance
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (?max_depth: Integer, ?root: String, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class GetTreeResult < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -299,10 +301,11 @@ module Selenium
 
           class StartScreencastParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader context: String
+            attr_reader destination_folder: untyped
             attr_reader mime_type: untyped
             attr_reader video: untyped
             attr_reader audio: untyped
-            def self.new: (context: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> instance
+            def self.new: (context: String, ?destination_folder: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> instance
           end
 
           class MediaTrackConstraints < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -418,6 +421,7 @@ module Selenium
           def media_track_constraints: (?width: Integer, ?height: Integer, ?frame_rate: Integer) -> MediaTrackConstraints
           def accessibility_locator_value: (?name: String, ?role: String) -> AccessibilityLocator::Value
           def context_locator_value: (context: String) -> ContextLocator::Value
+          def moz: () -> Moz
           def activate: (context: String) -> untyped
           def capture_screenshot: (context: String, ?origin: Symbol, ?format: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageFormat, ?clip: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::clip_rectangle, ?image_size: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ImageSize) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::CaptureScreenshotResult
           def close: (context: String, ?prompt_unload: bool) -> untyped
@@ -430,9 +434,13 @@ module Selenium
           def reload: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
           def set_bypass_csp: (bypass: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_viewport: (?context: String, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]) -> untyped
-          def start_screencast: (context: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StartScreencastResult
+          def start_screencast: (context: String, ?destination_folder: String, ?mime_type: String, ?video: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MediaTrackConstraints, ?audio: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StartScreencastResult
           def stop_screencast: (screencast: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::StopScreencastResult
           def traverse_history: (context: String, delta: Integer) -> untyped
+
+          class Moz < ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext
+            def get_tree: (?max_depth: Integer, ?root: String, ?scope: String) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeResult
+          end
         end
       end
     end

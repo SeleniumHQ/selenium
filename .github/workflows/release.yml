@@ -1,4 +1,4 @@
-name: Release Selenium
+name: Release - Finish
 
 on:
   pull_request:
@@ -32,7 +32,7 @@ jobs:
       github.event.pull_request.merged == false
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: false
+      unlock: true
       message: "Trunk has been unlocked: ${{ github.event.pull_request.head.ref }} was closed without merging."
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -71,19 +71,14 @@ jobs:
     with:
       tag: ${{ needs.extract-tag.outputs.tag }}
 
-  get-approval:
-    name: Get Approval
-    needs: parse-tag
-    uses: ./.github/workflows/get-approval.yml
-    with:
-      title: Release approval required
-      message: "Approval is required to publish ${{ needs.parse-tag.outputs.tag }}."
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  check-authorization:
+    name: Check Authorization
+    needs: extract-tag
+    uses: ./.github/workflows/check-authorization.yml
 
   create-tag:
     name: Create Tag
-    needs: [parse-tag, get-approval]
+    needs: [parse-tag, check-authorization]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -104,7 +99,7 @@ jobs:
 
   github-release-draft:
     name: GitHub Release Draft
-    needs: [parse-tag, get-approval]
+    needs: [parse-tag, check-authorization]
     if: needs.parse-tag.outputs.language == 'all'
     runs-on: ubuntu-latest
     permissions:
@@ -143,7 +138,7 @@ jobs:
 
   publish:
     name: Build and Publish ${{ matrix.language }}
-    needs: [parse-tag, get-approval]
+    needs: [parse-tag, check-authorization]
     permissions:
       contents: read
       id-token: write
@@ -157,9 +152,10 @@ jobs:
       gpg-sign: ${{ matrix.language == 'java' }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
+      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
-          ./go ${{ matrix.language }}:release
+          ./go ${{ matrix.language }}:release rbe
         else
           echo skipping
         fi
@@ -169,12 +165,12 @@ jobs:
 
   build-python:
     name: Build Python
-    needs: [parse-tag, get-approval]
+    needs: [parse-tag, check-authorization]
     if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
-      run: ./go py:build --config=release
+      run: ./go py:build --config=rbe_release
       artifact-name: pypi-distributions
       artifact-path: |
         bazel-bin/py/selenium-*.whl
@@ -278,23 +274,26 @@ jobs:
     with:
       name: Verify packages
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
+    secrets: inherit
 
   reset-version:
     name: Generate Nightly Versions
-    needs: [parse-tag, publish, publish-python]
-    if: >-
-      always() && !cancelled() &&
-      needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+    needs: [parse-tag, check-authorization]
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 
+  # A rerun builds from trunk HEAD, so the nightly versions must not land there until every publish has succeeded.
   update-version:
     name: Push Nightly Versions
-    needs: [parse-tag, reset-version]
+    needs: [parse-tag, reset-version, publish, publish-python]
+    if: >-
+      always() && !cancelled() &&
+      needs.reset-version.result == 'success' &&
+      needs.publish.result == 'success' &&
+      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     permissions:
       contents: write
       actions: read
@@ -305,25 +304,32 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  nightly:
-    name: Publish Nightly Packages
-    needs: [parse-tag, update-version, github-release-publish]
-    if: >-
-      always() && !cancelled() &&
-      needs.update-version.result == 'success' &&
-      (needs.github-release-publish.result == 'success' || needs.github-release-publish.result == 'skipped')
+  # github-release-publish deletes the nightly tag, and mirror needs a nightly grid jar back under it.
+  # The build can run any time; only publish-nightly-grid has to sit between those two jobs.
+  nightly-grid:
+    name: Build Nightly Grid
+    needs: [parse-tag, check-authorization]
+    if: needs.parse-tag.outputs.language == 'all'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Nightly Grid
+      run: ./go java:version nightly && ./go java:package --config=rbe_release
+      artifact-name: nightly-grid
+      artifact-path: build/dist/*.*
+
+  publish-nightly-grid:
+    name: Publish Nightly Grid
+    needs: [parse-tag, nightly-grid, github-release-publish]
+    if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
-      packages: write
-    uses: ./.github/workflows/nightly.yml
+    uses: ./.github/workflows/release-grid.yml
     with:
-      language: ${{ needs.parse-tag.outputs.language }}
-      ignore_release_check: true
-    secrets: inherit
+      artifact-name: nightly-grid
 
   mirror:
     name: Update Release Mirror
-    needs: [parse-tag, nightly]
+    needs: [parse-tag, update-version, publish-nightly-grid]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
@@ -339,7 +345,7 @@ jobs:
       (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
-      restrict: false
+      unlock: true
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -347,8 +353,8 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [extract-tag, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly, mirror, verify, unrestrict-trunk]
-    if: always() && !cancelled() && needs.extract-tag.result != 'skipped'
+    needs: [extract-tag, check-authorization, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, publish-nightly-grid, mirror, verify, unrestrict-trunk]
+    if: always() && !cancelled() && needs.extract-tag.result != 'skipped' && needs.check-authorization.result != 'failure'
     steps:
       - uses: actions/checkout@v6
       - name: Slack Notification
@@ -367,7 +373,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Packages: ${{ needs.nightly.result }}
+            • Nightly Grid: ${{ needs.publish-nightly-grid.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}

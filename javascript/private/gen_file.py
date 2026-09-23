@@ -188,7 +188,7 @@ public enum {class_name} {{
     )
 
 
-def main(argv=[]):
+def main(argv):
     lang = argv[1]
     file_name = argv[2]
     preamble = argv[3]

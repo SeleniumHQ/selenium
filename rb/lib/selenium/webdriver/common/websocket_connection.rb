@@ -105,7 +105,7 @@ module Selenium
 
         id = next_id
         data = payload.merge(id: id)
-        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
+        WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
         data = JSON.generate(data)
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
 
@@ -200,7 +200,7 @@ module Selenium
         msg = JSON.parse(message)
         @messages_mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
 
-        WebDriver.logger.debug "WebSocket <- #{msg}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
+        WebDriver.logger.debug('WebSocket <-', id: :ws) { msg.to_s[...MAX_LOG_MESSAGE_SIZE] }
         msg
       end
 

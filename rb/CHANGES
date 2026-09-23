@@ -1,3 +1,11 @@
+4.49.0 (2026-09-09)
+=========================
+* Support CDP versions: v151, v152, v153
+* derive BiDi field names and enum value types in the schema (#17966)
+* [build] Automated CDDL Spec Update (#17990)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+
 4.48.0 (2026-08-27)
 =========================
 * Support CDP versions: v150, v151, v152

@@ -28,15 +28,26 @@ def get_sha_json():
     return json.loads(r.data)
 
 
-def print_linux(base_url, sha):
+def print_linux_x86_64(base_url, sha):
     return """    http_file(
-        name = "download_sm_linux",
+        name = "download_sm_linux_x86_64",
         executable = True,
         sha256 = "{}",
         url = "{}",
     )
 
-""".format(sha, base_url + "/selenium-manager-linux")
+""".format(sha, base_url + "/selenium-manager-linux-x86_64")
+
+
+def print_linux_arm64(base_url, sha):
+    return """    http_file(
+        name = "download_sm_linux_arm64",
+        executable = True,
+        sha256 = "{}",
+        url = "{}",
+    )
+
+""".format(sha, base_url + "/selenium-manager-linux-arm64")
 
 
 def print_macos(base_url, sha):
@@ -90,7 +101,8 @@ def selenium_manager():
 """
     base_url = get_url()
     sha_dict = get_sha_json()
-    content = content + print_linux(base_url, sha_dict["linux"])
+    content = content + print_linux_x86_64(base_url, sha_dict["linux-x86_64"])
+    content = content + print_linux_arm64(base_url, sha_dict["linux-arm64"])
     content = content + print_macos(base_url, sha_dict["macos"])
     content = content + print_windows(base_url, sha_dict["windows"])
     content = content + print_sbom(base_url, sha_dict["sbom"])

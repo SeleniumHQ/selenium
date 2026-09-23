@@ -22,6 +22,18 @@ use std::path::Path;
 
 mod common;
 
+const LICENSE: &str = include_str!("../LICENSE");
+const NOTICE: &str = include_str!("../NOTICE");
+
+#[test]
+fn license_output_includes_license_and_notice() {
+    let mut cmd = get_selenium_manager();
+    cmd.arg("--license").assert().success().code(0);
+
+    let stdout = get_stdout(&mut cmd);
+    assert_eq!(stdout, format!("{}\n{}", LICENSE, NOTICE));
+}
+
 #[test]
 fn json_output_test() {
     let mut cmd = get_selenium_manager();

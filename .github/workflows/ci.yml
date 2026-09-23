@@ -25,43 +25,56 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
+  targets-mode:
+    name: Targets Mode
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+    steps:
+      - name: Decide whether to compute affected targets
+        id: mode
+        run: |
+          if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
+            mode=none
+          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" = "true" ]; then
+            mode=all
+          else
+            mode=check
+          fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+
   check:
     name: Check Targets
-    if: >
-      github.event.repository.fork == false &&
-        (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
+    needs: targets-mode
+    if: needs.targets-mode.outputs.mode == 'check'
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Targets
       cache-name: bazel-test-file-index
       run: |
-        if [ "${{ github.event_name }}" == "schedule" ] || \
-        [ "${{ github.event_name }}" == "workflow_call" ] || \
-        [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-          echo "Running all targets for ${{ github.event_name }} event"
-          echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
+        if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+          BASE_SHA="HEAD^1"
+        elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
+          BASE_SHA="${{ github.event.before }}"
         else
-          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
-            BASE_SHA="HEAD^1"
-          elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
-            BASE_SHA="${{ github.event.before }}"
-          else
-            ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
-            git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
-            BASE_SHA="HEAD~$ahead"
-          fi
-          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-            ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
-          else
-            ./go bazel:affected_targets bazel-test-file-index
-          fi
+          ahead=$(gh api "repos/${{ github.repository }}/compare/trunk...${{ github.ref_name }}" --jq .ahead_by)
+          git fetch --no-tags --depth=$((ahead + 1)) origin "${{ github.ref_name }}"
+          BASE_SHA="HEAD~$ahead"
+        fi
+        if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+          ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
+        else
+          ./go bazel:affected_targets bazel-test-file-index
         fi
       artifact-name: check-targets
-      artifact-path: bazel-targets.txt
+      artifact-path: |
+        bazel-targets.txt
+        compile-manager.txt
 
   read-targets:
     name: Read Targets
-    needs: check
+    needs: [targets-mode, check]
+    if: "!cancelled() && (needs.targets-mode.outputs.mode == 'all' || needs.check.result == 'success')"
     runs-on: ubuntu-latest
     outputs:
       java: ${{ steps.read.outputs.java }}
@@ -71,11 +84,16 @@ jobs:
       dotnet: ${{ steps.read.outputs.dotnet }}
       rust: ${{ steps.read.outputs.rust }}
       js: ${{ steps.read.outputs.js }}
+      compile-manager: ${{ steps.read.outputs.compile-manager }}
     steps:
       - name: Download targets
+        if: needs.targets-mode.outputs.mode == 'check'
         uses: actions/download-artifact@v8
         with:
           name: check-targets
+      - name: Use every target
+        if: needs.targets-mode.outputs.mode == 'all'
+        run: echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
       - name: Read targets
         id: read
         env:
@@ -83,6 +101,9 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
+          if [ "$(cat compile-manager.txt 2>/dev/null)" = "true" ]; then
+            echo "compile-manager=true" >> "$GITHUB_OUTPUT"
+          fi
           check_binding() {
             local pattern=$1 tag=$2
             if [[ "$targets" == *"${pattern}/"* ]] || [[ "$targets" == *"${pattern}:"* ]] || [[ "$COMMIT_MESSAGES" == *"[$tag]"* ]] || [[ "$PR_TITLE" == *"[$tag]"* ]]; then
@@ -115,45 +136,47 @@ jobs:
     name: .NET
     needs: read-targets
     uses: ./.github/workflows/ci-dotnet.yml
-    if: needs.read-targets.outputs.dotnet != ''
+    if: "!cancelled() && needs.read-targets.outputs.dotnet != ''"
 
   java:
     name: Java
     needs: read-targets
     uses: ./.github/workflows/ci-java.yml
-    if: needs.read-targets.outputs.java != ''
+    if: "!cancelled() && needs.read-targets.outputs.java != ''"
 
   grid:
     name: Grid
     needs: read-targets
     uses: ./.github/workflows/ci-grid.yml
-    if: needs.read-targets.outputs.grid != ''
+    if: "!cancelled() && needs.read-targets.outputs.grid != ''"
 
   python:
     name: Python
     needs: read-targets
     uses: ./.github/workflows/ci-python.yml
-    if: needs.read-targets.outputs.py != ''
+    if: "!cancelled() && needs.read-targets.outputs.py != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   ruby:
     name: Ruby
     needs: read-targets
     uses: ./.github/workflows/ci-ruby.yml
-    if: needs.read-targets.outputs.rb != ''
+    if: "!cancelled() && needs.read-targets.outputs.rb != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   rust:
     name: Rust
     needs: read-targets
     uses: ./.github/workflows/ci-rust.yml
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-    if: needs.read-targets.outputs.rust != ''
+    if: "!cancelled() && needs.read-targets.outputs.rust != ''"
 
   javascript:
     name: JavaScript
     needs: read-targets
     uses: ./.github/workflows/ci-javascript.yml
-    if: needs.read-targets.outputs.js != ''
+    if: "!cancelled() && needs.read-targets.outputs.js != ''"
 
   merge-flaky-results:
     name: Merge Flaky Results
@@ -185,7 +208,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

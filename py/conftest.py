@@ -496,6 +496,12 @@ def _skip_unless_remote(request, is_remote):
         pytest.skip("Remote tests require the --remote flag")
 
 
+def _skip_if_remote(is_remote):
+    """Skip fixtures that build a local driver when ``--remote`` is set."""
+    if is_remote:
+        pytest.skip("This fixture builds a local driver and is not applicable with --remote")
+
+
 def _apply_xfail_markers(request, driver_class, is_remote):
     """Honor the ``xfail_<driver>`` / ``xfail_remote`` markers for the driver under test.
 
@@ -699,11 +705,14 @@ def driver_executable(request):
 
 @pytest.fixture
 def clean_driver(request):
-    _supported_drivers = SupportedDrivers()
-    try:
-        driver_class = getattr(_supported_drivers, request.config.option.drivers[0].lower())
-    except (AttributeError, TypeError):
+    _skip_if_remote(request.config.getoption("remote"))
+    if not request.config.option.drivers:
         raise Exception("This test requires a --driver to be specified.")
+    driver_name = request.config.option.drivers[0].lower()
+    try:
+        driver_class = getattr(SupportedDrivers(), driver_name)
+    except AttributeError:
+        raise Exception(f"This test requires a supported --driver, got: {driver_name}") from None
     driver_reference = getattr(webdriver, driver_class)
 
     _apply_xfail_markers(request, driver_class, request.config.getoption("remote"))
@@ -732,7 +741,7 @@ def firefox_options(request):
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
-        raise Exception("This test requires a --driver to be specified")
+        raise Exception("This test requires a --driver to be specified") from None
 
     # skip if not Firefox
     if driver_class != "firefox":
@@ -750,7 +759,7 @@ def chromium_options(request):
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
-        raise Exception("This test requires a --driver to be specified")
+        raise Exception("This test requires a --driver to be specified") from None
 
     # skip if not Chrome or Edge
     if driver_class not in ("chrome", "edge"):

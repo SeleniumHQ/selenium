@@ -1,4 +1,4 @@
-name: Issue Form Labeler
+name: Webhook - Issue Labeler
 on:
   issues:
     types: [ opened ]

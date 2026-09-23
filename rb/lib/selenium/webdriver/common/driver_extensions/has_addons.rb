@@ -30,6 +30,7 @@ module Selenium
         #
 
         def install_addon(path, temporary = nil)
+          WebDriver.logger.deprecate('#install_addon', '#install_web_extension', id: :install_addon)
           @bridge.install_addon(path, temporary)
         end
 
@@ -40,6 +41,7 @@ module Selenium
         #
 
         def uninstall_addon(id)
+          WebDriver.logger.deprecate('#uninstall_addon', '#uninstall_web_extension', id: :uninstall_addon)
           @bridge.uninstall_addon(id)
         end
       end # HasAddons

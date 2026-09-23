@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.49.0-nightly202608272014",
+  "version": "4.50.0-nightly202609091537",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -24,16 +24,16 @@
   },
   "dependencies": {
     "@bazel/runfiles": "^6.5.0",
-    "jszip": "^3.10.1",
+    "jszip": "^3.10.2",
     "tmp": "^0.2.7",
     "ws": "^8.21.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "cddl": "^0.21.1",
-    "cddl2ts": "^0.10.1",
+    "cddl": "^0.21.2",
+    "cddl2ts": "^0.10.2",
     "clean-jsdoc-theme": "^4.3.3",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-mocha": "^11.3.0",
     "eslint-plugin-n": "^18.3.0",
@@ -45,8 +45,8 @@
     "jsdoc": "^4.0.5",
     "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
-    "multer": "^2.3.0",
-    "prettier": "^3.9.6",
+    "multer": "^2.4.0",
+    "prettier": "^3.9.8",
     "serve-index": "^1.9.2",
     "sinon": "^22.1.0",
     "supports-color": "^10.2.2"

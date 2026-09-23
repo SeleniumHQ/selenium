@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V152;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V153;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -472,28 +472,27 @@ public class DevToolsNetworkTests : DevToolsTestFixture
     public async Task InterceptRequestAndContinue()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
-        await domains.Network.Enable(new CurrentCdpVersion.Network.EnableCommandSettings());
 
         ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Network.RequestInterceptedEventArgs> requestInterceptedHandler = (async (sender, e) =>
+        EventHandler<CurrentCdpVersion.Fetch.RequestPausedEventArgs> requestPausedHandler = (async (sender, e) =>
         {
-            await domains.Network.ContinueInterceptedRequest(new CurrentCdpVersion.Network.ContinueInterceptedRequestCommandSettings()
+            await domains.Fetch.ContinueRequest(new CurrentCdpVersion.Fetch.ContinueRequestCommandSettings()
             {
-                InterceptionId = e.InterceptionId
+                RequestId = e.RequestId
             });
             requestSync.Set();
         });
-        domains.Network.RequestIntercepted += requestInterceptedHandler;
+        domains.Fetch.RequestPaused += requestPausedHandler;
 
-        var pattern = new CurrentCdpVersion.Network.RequestPattern()
+        var pattern = new CurrentCdpVersion.Fetch.RequestPattern()
         {
             UrlPattern = "*.css",
-            InterceptionStage = CurrentCdpVersion.Network.InterceptionStage.HeadersReceived
+            RequestStage = CurrentCdpVersion.Fetch.RequestStage.Response
         };
 
-        await domains.Network.SetRequestInterception(new CurrentCdpVersion.Network.SetRequestInterceptionCommandSettings()
+        await domains.Fetch.Enable(new CurrentCdpVersion.Fetch.EnableCommandSettings()
         {
-            Patterns = new CurrentCdpVersion.Network.RequestPattern[] { pattern }
+            Patterns = new CurrentCdpVersion.Fetch.RequestPattern[] { pattern }
         });
 
         Driver.Url = Urls.WhereIs("js/skins/lightgray/content.min.css");

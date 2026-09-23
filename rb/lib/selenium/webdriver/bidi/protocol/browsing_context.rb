@@ -91,7 +91,8 @@ module Selenium
             original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},
             user_context: {wire_key: 'userContext', primitive: 'string'},
-            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'}
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'},
+            extensible: true
           )
 
           # @api private
@@ -299,7 +300,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters
           GetTreeParameters = Serialization::Record.define(
             max_depth: {wire_key: 'maxDepth', required: false, primitive: 'integer'},
-            root: {wire_key: 'root', required: false, primitive: 'string'}
+            root: {wire_key: 'root', required: false, primitive: 'string'},
+            extensible: true
           )
 
           # @api private
@@ -439,6 +441,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextstartscreencastparameters
           StartScreencastParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
+            destination_folder: {wire_key: 'destinationFolder', required: false, primitive: 'string'},
             mime_type: {wire_key: 'mimeType', required: false, primitive: 'string'},
             video: {wire_key: 'video', required: false, ref: 'BrowsingContext::MediaTrackConstraints'},
             audio: {wire_key: 'audio', required: false, primitive: 'boolean'}
@@ -604,6 +607,7 @@ module Selenium
           def media_track_constraints(**) = MediaTrackConstraints.new(**)
           def accessibility_locator_value(**) = AccessibilityLocator::Value.new(**)
           def context_locator_value(**) = ContextLocator::Value.new(**)
+          def moz = Moz.new(connection)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -777,11 +781,18 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#command-browsingContext-startScreencast
           def start_screencast(
             context:,
+            destination_folder: Serialization::UNSET,
             mime_type: Serialization::UNSET,
             video: Serialization::UNSET,
             audio: Serialization::UNSET
           )
-            params = StartScreencastParameters.new(context: context, mime_type: mime_type, video: video, audio: audio)
+            params = StartScreencastParameters.new(
+              context: context,
+              destination_folder: destination_folder,
+              mime_type: mime_type,
+              video: video,
+              audio: audio
+            )
             execute(
               cmd: 'browsingContext.startScreencast',
               params: params,
@@ -807,6 +818,22 @@ module Selenium
           def traverse_history(context:, delta:)
             params = TraverseHistoryParameters.new(context: context, delta: delta)
             execute(cmd: 'browsingContext.traverseHistory', params: params)
+          end
+
+          # @api private
+          # moz: vendor variant of BrowsingContext, overriding commands with browser-specific params.
+          # Construct Moz.new(source) for a matching session; other sessions use BrowsingContext.
+          class Moz < BrowsingContext
+            # @api private
+            # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+            # @see https://w3c.github.io/webdriver-bidi/#command-browsingContext-getTree
+            def get_tree(max_depth: Serialization::UNSET, root: Serialization::UNSET, scope: Serialization::UNSET)
+              extensions = {
+                'moz:scope' => scope
+              }.reject { |_, value| Serialization::UNSET.equal?(value) }
+              params = GetTreeParameters.new(max_depth: max_depth, root: root, extensions: extensions)
+              execute(cmd: 'browsingContext.getTree', params: params, result: BrowsingContext::GetTreeResult)
+            end
           end
         end # BrowsingContext
       end # Protocol

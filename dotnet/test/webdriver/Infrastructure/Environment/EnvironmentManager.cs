@@ -100,7 +100,8 @@ public class EnvironmentManager
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/linux/selenium-manager");
+                var linuxArch = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "arm64" : "x86_64";
+                managerFilePath = runfiles.Rlocation($"_main/dotnet/src/webdriver/manager/linux-{linuxArch}/selenium-manager");
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
