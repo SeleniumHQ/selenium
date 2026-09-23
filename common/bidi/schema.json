@@ -852,6 +852,15 @@
         "ref": "bluetooth.SimulateDescriptorResponseParameters"
       },
       "result": null
+    },
+    {
+      "domain": "digitalCredentials",
+      "method": "digitalCredentials.setVirtualWalletBehavior",
+      "name": "setVirtualWalletBehavior",
+      "params": {
+        "ref": "digitalCredentials.SetVirtualWalletBehaviorParameters"
+      },
+      "result": null
     }
   ],
   "events": [
@@ -1075,6 +1084,22 @@
       "name": "gattConnectionAttempted",
       "params": {
         "ref": "bluetooth.GattConnectionAttemptedParameters"
+      }
+    },
+    {
+      "domain": "bluetooth",
+      "method": "bluetooth.characteristicEventGenerated",
+      "name": "characteristicEventGenerated",
+      "params": {
+        "ref": "bluetooth.CharacteristicEventGeneratedParameters"
+      }
+    },
+    {
+      "domain": "bluetooth",
+      "method": "bluetooth.descriptorEventGenerated",
+      "name": "descriptorEventGenerated",
+      "params": {
+        "ref": "bluetooth.DescriptorEventGeneratedParameters"
       }
     },
     {
@@ -14552,6 +14577,22 @@
       "outbound": false,
       "inbound": false
     },
+    "webExtension.InstallParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "extensionData",
+          "wire": "extensionData",
+          "required": true,
+          "type": {
+            "ref": "webExtension.ExtensionData"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters",
+      "outbound": true,
+      "inbound": false
+    },
     "webExtension.ExtensionData": {
       "kind": "union",
       "variants": [
@@ -14764,7 +14805,7 @@
         }
       ],
       "specHref": "https://w3c-fedid.github.io/digital-credentials/#cddl-type-digitalcredentials-setvirtualwalletbehaviorparameters",
-      "outbound": false,
+      "outbound": true,
       "inbound": false
     },
     "digitalCredentials.SetVirtualWalletBehavior": {
@@ -16204,30 +16245,6 @@
       "outbound": true,
       "inbound": false
     },
-    "BluetoothEvent": {
-      "kind": "union",
-      "variants": [
-        "bluetooth.RequestDevicePromptUpdated",
-        "bluetooth.GattConnectionAttempted"
-      ],
-      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothevent",
-      "selector": {
-        "by": "method",
-        "variants": [
-          {
-            "value": "bluetooth.requestDevicePromptUpdated",
-            "ref": "bluetooth.RequestDevicePromptUpdated"
-          },
-          {
-            "value": "bluetooth.gattConnectionAttempted",
-            "ref": "bluetooth.GattConnectionAttempted"
-          }
-        ]
-      },
-      "objectOnly": true,
-      "outbound": false,
-      "inbound": false
-    },
     "bluetooth.RequestDevicePromptUpdated": {
       "kind": "record",
       "fields": [
@@ -16414,7 +16431,7 @@
       ],
       "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristiceventgeneratedparameters",
       "outbound": false,
-      "inbound": false
+      "inbound": true
     },
     "bluetooth.DescriptorEventGenerated": {
       "kind": "record",
@@ -16504,23 +16521,46 @@
       ],
       "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdescriptoreventgeneratedparameters",
       "outbound": false,
-      "inbound": false
+      "inbound": true
     },
-    "webExtension.InstallParameters": {
-      "kind": "record",
-      "fields": [
-        {
-          "name": "extensionData",
-          "wire": "extensionData",
-          "required": true,
-          "type": {
-            "ref": "webExtension.ExtensionData"
-          }
-        }
+    "DigitalCredentialsCommand": {
+      "kind": "alias",
+      "type": {
+        "ref": "digitalCredentials.SetVirtualWalletBehavior"
+      }
+    },
+    "BluetoothEvent": {
+      "kind": "union",
+      "variants": [
+        "bluetooth.RequestDevicePromptUpdated",
+        "bluetooth.GattConnectionAttempted",
+        "bluetooth.CharacteristicEventGenerated",
+        "bluetooth.DescriptorEventGenerated"
       ],
-      "extensible": true,
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters",
-      "outbound": true,
+      "specHref": "https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothevent",
+      "selector": {
+        "by": "method",
+        "variants": [
+          {
+            "value": "bluetooth.requestDevicePromptUpdated",
+            "ref": "bluetooth.RequestDevicePromptUpdated"
+          },
+          {
+            "value": "bluetooth.gattConnectionAttempted",
+            "ref": "bluetooth.GattConnectionAttempted"
+          },
+          {
+            "value": "bluetooth.characteristicEventGenerated",
+            "ref": "bluetooth.CharacteristicEventGenerated"
+          },
+          {
+            "value": "bluetooth.descriptorEventGenerated",
+            "ref": "bluetooth.DescriptorEventGenerated"
+          }
+        ]
+      },
+      "objectOnly": true,
+      "outbound": false,
       "inbound": false
     },
     "browser.ClientWindowInfoState": {
@@ -17652,7 +17692,7 @@
       "synthetic": true,
       "owner": "digitalCredentials.SetVirtualWalletBehaviorParameters",
       "label": "Response",
-      "outbound": false,
+      "outbound": true,
       "inbound": false
     },
     "userAgentClientHints.SetClientHintsOverrideCommandParams": {
@@ -17730,6 +17770,61 @@
   "vendor": {
     "moz": {
       "extends": {
+        "session.CapabilityRequest": {
+          "via": "session.CapabilityRequestExtension",
+          "fields": [
+            {
+              "name": "moz:firefoxOptions",
+              "wire": "moz:firefoxOptions",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptions"
+              }
+            }
+          ]
+        },
+        "browsingContext.Info": {
+          "via": "browsingContext.InfoExtension",
+          "fields": [
+            {
+              "name": "moz:name",
+              "wire": "moz:name",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "moz:scope",
+              "wire": "moz:scope",
+              "required": false,
+              "type": {
+                "enum": [
+                  "chrome",
+                  "content"
+                ],
+                "primitive": "string"
+              }
+            }
+          ]
+        },
+        "browsingContext.GetTreeParameters": {
+          "via": "browsingContext.GetTreeParametersExtension",
+          "fields": [
+            {
+              "name": "moz:scope",
+              "wire": "moz:scope",
+              "required": false,
+              "type": {
+                "enum": [
+                  "chrome",
+                  "content"
+                ],
+                "primitive": "string"
+              }
+            }
+          ]
+        },
         "webExtension.InstallParameters": {
           "via": "webExtension.InstallParametersExtension",
           "fields": [
@@ -17750,6 +17845,1595 @@
               }
             }
           ]
+        }
+      },
+      "commands": [
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.getScriptSource",
+          "name": "getScriptSource",
+          "params": {
+            "ref": "mozDebugging.GetScriptSourceParameters"
+          },
+          "result": {
+            "ref": "mozDebugging.GetScriptSourceResult"
+          }
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.listScripts",
+          "name": "listScripts",
+          "params": {
+            "ref": "mozDebugging.ListScriptsParameters"
+          },
+          "result": {
+            "ref": "mozDebugging.ListScriptsResult"
+          }
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.removeBreakpoint",
+          "name": "removeBreakpoint",
+          "params": {
+            "ref": "mozDebugging.RemoveBreakpointParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.resume",
+          "name": "resume",
+          "params": {
+            "ref": "mozDebugging.ResumeParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.setBreakpoint",
+          "name": "setBreakpoint",
+          "params": {
+            "ref": "mozDebugging.SetBreakpointParameters"
+          },
+          "result": {
+            "ref": "mozDebugging.SetBreakpointResult"
+          }
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.setDebuggerEnabled",
+          "name": "setDebuggerEnabled",
+          "params": {
+            "ref": "mozDebugging.SetDebuggerEnabledParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.stepInto",
+          "name": "stepInto",
+          "params": {
+            "ref": "mozDebugging.StepIntoParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.stepOut",
+          "name": "stepOut",
+          "params": {
+            "ref": "mozDebugging.StepOutParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.stepOver",
+          "name": "stepOver",
+          "params": {
+            "ref": "mozDebugging.StepOverParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:profiler",
+          "method": "moz:profiler.isActive",
+          "name": "isActive",
+          "params": null,
+          "result": {
+            "ref": "mozProfiler.IsActiveResult"
+          }
+        },
+        {
+          "domain": "moz:profiler",
+          "method": "moz:profiler.start",
+          "name": "start",
+          "params": {
+            "ref": "mozProfiler.StartParameters"
+          },
+          "result": null
+        },
+        {
+          "domain": "moz:profiler",
+          "method": "moz:profiler.stop",
+          "name": "stop",
+          "params": {
+            "ref": "mozProfiler.StopParameters"
+          },
+          "result": {
+            "ref": "mozProfiler.StopResult"
+          }
+        }
+      ],
+      "events": [
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.paused",
+          "name": "paused",
+          "params": {
+            "ref": "mozDebugging.PausedParameters"
+          }
+        },
+        {
+          "domain": "moz:debugging",
+          "method": "moz:debugging.resumed",
+          "name": "resumed",
+          "params": {
+            "ref": "mozDebugging.ResumedParameters"
+          }
+        }
+      ],
+      "types": {
+        "MozDebuggingCommand": {
+          "kind": "union",
+          "variants": [
+            "mozDebugging.GetScriptSource",
+            "mozDebugging.ListScripts",
+            "mozDebugging.RemoveBreakpoint",
+            "mozDebugging.Resume",
+            "mozDebugging.SetBreakpoint",
+            "mozDebugging.SetDebuggerEnabled",
+            "mozDebugging.StepInto",
+            "mozDebugging.StepOut",
+            "mozDebugging.StepOver"
+          ],
+          "selector": {
+            "by": "method",
+            "variants": [
+              {
+                "value": "moz:debugging.getScriptSource",
+                "ref": "mozDebugging.GetScriptSource"
+              },
+              {
+                "value": "moz:debugging.listScripts",
+                "ref": "mozDebugging.ListScripts"
+              },
+              {
+                "value": "moz:debugging.removeBreakpoint",
+                "ref": "mozDebugging.RemoveBreakpoint"
+              },
+              {
+                "value": "moz:debugging.resume",
+                "ref": "mozDebugging.Resume"
+              },
+              {
+                "value": "moz:debugging.setBreakpoint",
+                "ref": "mozDebugging.SetBreakpoint"
+              },
+              {
+                "value": "moz:debugging.setDebuggerEnabled",
+                "ref": "mozDebugging.SetDebuggerEnabled"
+              },
+              {
+                "value": "moz:debugging.stepInto",
+                "ref": "mozDebugging.StepInto"
+              },
+              {
+                "value": "moz:debugging.stepOut",
+                "ref": "mozDebugging.StepOut"
+              },
+              {
+                "value": "moz:debugging.stepOver",
+                "ref": "mozDebugging.StepOver"
+              }
+            ]
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": false
+        },
+        "MozDebuggingResult": {
+          "kind": "union",
+          "variants": [
+            "mozDebugging.GetScriptSourceResult",
+            "mozDebugging.ListScriptsResult",
+            "mozDebugging.RemoveBreakpointResult",
+            "mozDebugging.ResumeResult",
+            "mozDebugging.SetBreakpointResult",
+            "mozDebugging.SetDebuggerEnabledResult",
+            "mozDebugging.StepIntoResult",
+            "mozDebugging.StepOutResult",
+            "mozDebugging.StepOverResult"
+          ],
+          "selector": {
+            "correlated": true
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": false
+        },
+        "MozDebuggingEvent": {
+          "kind": "union",
+          "variants": [
+            "mozDebugging.Paused",
+            "mozDebugging.Resumed"
+          ],
+          "selector": {
+            "by": "method",
+            "variants": [
+              {
+                "value": "moz:debugging.paused",
+                "ref": "mozDebugging.Paused"
+              },
+              {
+                "value": "moz:debugging.resumed",
+                "ref": "mozDebugging.Resumed"
+              }
+            ]
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.GetScriptSource": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.getScriptSource"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.GetScriptSourceParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.GetScriptSourceParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            },
+            {
+              "name": "scriptUrl",
+              "wire": "scriptUrl",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.GetScriptSourceResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "source",
+              "wire": "source",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.ListScripts": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.listScripts"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.ListScriptsParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.ListScriptsParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.ListScriptsResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "scripts",
+              "wire": "scripts",
+              "required": true,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.RemoveBreakpoint": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.removeBreakpoint"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.RemoveBreakpointParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.RemoveBreakpointParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "breakpoint",
+              "wire": "breakpoint",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.BreakpointId"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.RemoveBreakpointResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.BreakpointId": {
+          "kind": "alias",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        "mozDebugging.Resume": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.resume"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.ResumeParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.ResumeParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.ResumeResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.SetBreakpoint": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.setBreakpoint"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.SetBreakpointParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.SetBreakpointParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "location",
+              "wire": "location",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.SetBreakpointParametersLocation"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.SetBreakpointResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "breakpoint",
+              "wire": "breakpoint",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.BreakpointId"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.BaseLocation": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "line",
+              "wire": "line",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "url",
+              "wire": "url",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.SetDebuggerEnabled": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.setDebuggerEnabled"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.SetDebuggerEnabledParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.SetDebuggerEnabledParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "contexts",
+              "wire": "contexts",
+              "required": false,
+              "type": {
+                "list": {
+                  "ref": "browsingContext.BrowsingContext"
+                }
+              }
+            },
+            {
+              "name": "enabled",
+              "wire": "enabled",
+              "required": true,
+              "type": {
+                "primitive": "boolean",
+                "nullable": true
+              }
+            },
+            {
+              "name": "userContexts",
+              "wire": "userContexts",
+              "required": false,
+              "type": {
+                "list": {
+                  "ref": "browser.UserContext"
+                }
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.SetDebuggerEnabledResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.StepInto": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.stepInto"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.StepIntoParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.StepIntoParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.StepIntoResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.StepOut": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.stepOut"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.StepOutParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.StepOutParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.StepOutResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.StepOver": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.stepOver"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.StepOverParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.StepOverParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.StepOverResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozDebugging.Paused": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.paused"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.PausedParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.PausedParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            },
+            {
+              "name": "url",
+              "wire": "url",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "line",
+              "wire": "line",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "column",
+              "wire": "column",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "callFrames",
+              "wire": "callFrames",
+              "required": true,
+              "type": {
+                "list": {
+                  "ref": "mozDebugging.PausedParametersCallFrame"
+                }
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersCallFrame": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "callFrameId",
+              "wire": "callFrameId",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "functionName",
+              "wire": "functionName",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "location",
+              "wire": "location",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.PausedParametersCallFrameLocation"
+              }
+            },
+            {
+              "name": "scopeChain",
+              "wire": "scopeChain",
+              "required": true,
+              "type": {
+                "list": {
+                  "ref": "mozDebugging.PausedParametersScope"
+                }
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScope": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "type",
+              "wire": "type",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "variables",
+              "wire": "variables",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.PausedParametersScopeVariables"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScopeValue": {
+          "kind": "union",
+          "variants": [
+            "mozDebugging.PausedParametersScopeValueMissingArguments",
+            "mozDebugging.PausedParametersScopeValueOptimizedOut",
+            "mozDebugging.PausedParametersScopeValueUninitialized",
+            "script.RemoteValue"
+          ],
+          "selector": {
+            "by": "type",
+            "variants": [
+              {
+                "value": "missingArguments",
+                "ref": "mozDebugging.PausedParametersScopeValueMissingArguments"
+              },
+              {
+                "value": "optimizedOut",
+                "ref": "mozDebugging.PausedParametersScopeValueOptimizedOut"
+              },
+              {
+                "value": "uninitialized",
+                "ref": "mozDebugging.PausedParametersScopeValueUninitialized"
+              },
+              {
+                "value": "undefined",
+                "ref": "script.UndefinedValue"
+              },
+              {
+                "value": "null",
+                "ref": "script.NullValue"
+              },
+              {
+                "value": "string",
+                "ref": "script.StringValue"
+              },
+              {
+                "value": "number",
+                "ref": "script.NumberValue"
+              },
+              {
+                "value": "boolean",
+                "ref": "script.BooleanValue"
+              },
+              {
+                "value": "bigint",
+                "ref": "script.BigIntValue"
+              },
+              {
+                "value": "symbol",
+                "ref": "script.SymbolRemoteValue"
+              },
+              {
+                "value": "array",
+                "ref": "script.ArrayRemoteValue"
+              },
+              {
+                "value": "object",
+                "ref": "script.ObjectRemoteValue"
+              },
+              {
+                "value": "function",
+                "ref": "script.FunctionRemoteValue"
+              },
+              {
+                "value": "regexp",
+                "ref": "script.RegExpRemoteValue"
+              },
+              {
+                "value": "date",
+                "ref": "script.DateRemoteValue"
+              },
+              {
+                "value": "map",
+                "ref": "script.MapRemoteValue"
+              },
+              {
+                "value": "set",
+                "ref": "script.SetRemoteValue"
+              },
+              {
+                "value": "weakmap",
+                "ref": "script.WeakMapRemoteValue"
+              },
+              {
+                "value": "weakset",
+                "ref": "script.WeakSetRemoteValue"
+              },
+              {
+                "value": "generator",
+                "ref": "script.GeneratorRemoteValue"
+              },
+              {
+                "value": "error",
+                "ref": "script.ErrorRemoteValue"
+              },
+              {
+                "value": "proxy",
+                "ref": "script.ProxyRemoteValue"
+              },
+              {
+                "value": "promise",
+                "ref": "script.PromiseRemoteValue"
+              },
+              {
+                "value": "typedarray",
+                "ref": "script.TypedArrayRemoteValue"
+              },
+              {
+                "value": "arraybuffer",
+                "ref": "script.ArrayBufferRemoteValue"
+              },
+              {
+                "value": "nodelist",
+                "ref": "script.NodeListRemoteValue"
+              },
+              {
+                "value": "htmlcollection",
+                "ref": "script.HTMLCollectionRemoteValue"
+              },
+              {
+                "value": "node",
+                "ref": "script.NodeRemoteValue"
+              },
+              {
+                "value": "window",
+                "ref": "script.WindowProxyRemoteValue"
+              }
+            ]
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScopeValueMissingArguments": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "type",
+              "wire": "type",
+              "required": true,
+              "type": {
+                "const": "missingArguments"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScopeValueOptimizedOut": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "type",
+              "wire": "type",
+              "required": true,
+              "type": {
+                "const": "optimizedOut"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScopeValueUninitialized": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "type",
+              "wire": "type",
+              "required": true,
+              "type": {
+                "const": "uninitialized"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.Resumed": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:debugging.resumed"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozDebugging.ResumedParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozDebugging.ResumedParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "context",
+              "wire": "context",
+              "required": true,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "session.CapabilityRequestFirefoxOptions": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "androidPackage",
+              "wire": "androidPackage",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidActivity",
+              "wire": "androidActivity",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidDeviceSerial",
+              "wire": "androidDeviceSerial",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "androidIntentArguments",
+              "wire": "androidIntentArguments",
+              "required": false,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            },
+            {
+              "name": "args",
+              "wire": "args",
+              "required": false,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            },
+            {
+              "name": "binary",
+              "wire": "binary",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "env",
+              "wire": "env",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsEnv"
+              }
+            },
+            {
+              "name": "log",
+              "wire": "log",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsLog"
+              }
+            },
+            {
+              "name": "prefs",
+              "wire": "prefs",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsPrefs"
+              }
+            },
+            {
+              "name": "profile",
+              "wire": "profile",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "MozProfilerCommand": {
+          "kind": "union",
+          "variants": [
+            "mozProfiler.IsActive",
+            "mozProfiler.Start",
+            "mozProfiler.Stop"
+          ],
+          "selector": {
+            "by": "method",
+            "variants": [
+              {
+                "value": "moz:profiler.isActive",
+                "ref": "mozProfiler.IsActive"
+              },
+              {
+                "value": "moz:profiler.start",
+                "ref": "mozProfiler.Start"
+              },
+              {
+                "value": "moz:profiler.stop",
+                "ref": "mozProfiler.Stop"
+              }
+            ]
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": false
+        },
+        "MozProfilerResult": {
+          "kind": "union",
+          "variants": [
+            "mozProfiler.IsActiveResult",
+            "mozProfiler.StartResult",
+            "mozProfiler.StopResult"
+          ],
+          "selector": {
+            "correlated": true
+          },
+          "objectOnly": true,
+          "outbound": false,
+          "inbound": false
+        },
+        "mozProfiler.IsActive": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:profiler.isActive"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "EmptyParams"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozProfiler.IsActiveResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "active",
+              "wire": "active",
+              "required": true,
+              "type": {
+                "primitive": "boolean"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "mozProfiler.Start": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:profiler.start"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozProfiler.StartParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozProfiler.StartParameters": {
+          "kind": "union",
+          "variants": [
+            "mozProfiler.StartParameters_Preset",
+            "mozProfiler.StartParameters_Options"
+          ],
+          "selector": {
+            "ordered": [
+              {
+                "ref": "mozProfiler.StartParameters_Preset",
+                "requires": [
+                  "preset"
+                ]
+              },
+              {
+                "ref": "mozProfiler.StartParameters_Options",
+                "requires": [
+                  "entries",
+                  "interval",
+                  "features",
+                  "threads"
+                ]
+              }
+            ]
+          },
+          "objectOnly": true,
+          "outbound": true,
+          "inbound": false
+        },
+        "mozProfiler.StartResult": {
+          "kind": "alias",
+          "type": {
+            "ref": "EmptyResult"
+          }
+        },
+        "mozProfiler.Stop": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "method",
+              "wire": "method",
+              "required": true,
+              "type": {
+                "const": "moz:profiler.stop"
+              }
+            },
+            {
+              "name": "params",
+              "wire": "params",
+              "required": true,
+              "type": {
+                "ref": "mozProfiler.StopParameters"
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": false
+        },
+        "mozProfiler.StopParameters": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "discard",
+              "wire": "discard",
+              "required": false,
+              "type": {
+                "primitive": "boolean"
+              }
+            }
+          ],
+          "outbound": true,
+          "inbound": false
+        },
+        "mozProfiler.StopResult": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "path",
+              "wire": "path",
+              "required": true,
+              "type": {
+                "primitive": "string",
+                "nullable": true
+              }
+            }
+          ],
+          "outbound": false,
+          "inbound": true
+        },
+        "session.CapabilityRequestFirefoxOptionsLevel": {
+          "kind": "enum",
+          "values": [
+            "trace",
+            "debug",
+            "config",
+            "info",
+            "warn",
+            "error",
+            "fatal"
+          ],
+          "primitive": "string",
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Level"
+        },
+        "mozProfiler.StartParameters_Preset": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "activeContext",
+              "wire": "activeContext",
+              "required": false,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            },
+            {
+              "name": "preset",
+              "wire": "preset",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "mozProfiler.StartParameters",
+          "label": "Preset",
+          "outbound": true,
+          "inbound": false
+        },
+        "mozProfiler.StartParameters_Options": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "activeContext",
+              "wire": "activeContext",
+              "required": false,
+              "type": {
+                "ref": "browsingContext.BrowsingContext"
+              }
+            },
+            {
+              "name": "entries",
+              "wire": "entries",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "interval",
+              "wire": "interval",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "features",
+              "wire": "features",
+              "required": true,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            },
+            {
+              "name": "threads",
+              "wire": "threads",
+              "required": true,
+              "type": {
+                "list": {
+                  "primitive": "string"
+                }
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "mozProfiler.StartParameters",
+          "label": "Options",
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.SetBreakpointParametersLocation": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "line",
+              "wire": "line",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "url",
+              "wire": "url",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "column",
+              "wire": "column",
+              "required": false,
+              "type": {
+                "ref": "js-uint"
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "mozDebugging.SetBreakpointParameters",
+          "label": "Location",
+          "outbound": true,
+          "inbound": false
+        },
+        "mozDebugging.PausedParametersCallFrameLocation": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "line",
+              "wire": "line",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "url",
+              "wire": "url",
+              "required": true,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "column",
+              "wire": "column",
+              "required": true,
+              "type": {
+                "ref": "js-uint"
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "mozDebugging.PausedParametersCallFrame",
+          "label": "Location",
+          "outbound": false,
+          "inbound": true
+        },
+        "mozDebugging.PausedParametersScopeVariables": {
+          "kind": "record",
+          "fields": [],
+          "map": {
+            "ref": "mozDebugging.PausedParametersScopeValue"
+          },
+          "synthetic": true,
+          "owner": "mozDebugging.PausedParametersScope",
+          "label": "Variables",
+          "outbound": false,
+          "inbound": true
+        },
+        "session.CapabilityRequestFirefoxOptionsEnv": {
+          "kind": "record",
+          "fields": [],
+          "map": {
+            "primitive": "string"
+          },
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Env",
+          "outbound": true,
+          "inbound": false
+        },
+        "session.CapabilityRequestFirefoxOptionsLog": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "level",
+              "wire": "level",
+              "required": false,
+              "type": {
+                "ref": "session.CapabilityRequestFirefoxOptionsLevel"
+              }
+            }
+          ],
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Log",
+          "outbound": true,
+          "inbound": false
+        },
+        "session.CapabilityRequestFirefoxOptionsPrefs": {
+          "kind": "record",
+          "fields": [],
+          "map": {
+            "union": [
+              {
+                "primitive": "string"
+              },
+              {
+                "primitive": "boolean"
+              },
+              {
+                "ref": "js-int"
+              }
+            ],
+            "scalar": [
+              "string",
+              "boolean"
+            ]
+          },
+          "synthetic": true,
+          "owner": "session.CapabilityRequestFirefoxOptions",
+          "label": "Prefs",
+          "outbound": true,
+          "inbound": false
         }
       }
     }

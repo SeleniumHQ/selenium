@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("//common:defs.bzl", "copy_file")
 load("//dotnet:defs.bzl", "csharp_sourcelink_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
@@ -149,6 +150,18 @@ copy_file(
     out = "transitiveSelenium.WebDriver.props",
 )
 
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
 copy_file(
     name = "manager-linux-x86_64",
     src = "//common/manager:selenium-manager-linux-x86_64",
@@ -187,6 +200,8 @@ nuget_pack(
         "//common/manager:selenium-manager-notice": "selenium-manager-THIRD-PARTY-NOTICES.txt",
         "//common/manager:selenium-manager-sbom": "selenium-manager.cdx.json",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
+        ":global-license": "LICENSE",
+        ":global-notice": "NOTICE",
         ":assets-nuget-readme": "README.md",
         ":assets-nuget-build-props": "build/Selenium.WebDriver.props",
         ":assets-nuget-buildtransitive-props": "buildTransitive/Selenium.WebDriver.props",
