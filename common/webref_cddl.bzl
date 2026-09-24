@@ -67,6 +67,7 @@ BIDI_DFNS_FILES = [
 # can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
 BIDI_VENDOR_CDDL_FILES = {
     "moz": [
+        "//common/bidi:Commands.cddl",
         "//common/bidi:Debugging.cddl",
         "//common/bidi:Fields.cddl",
         "//common/bidi:Profiler.cddl",

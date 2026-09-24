@@ -26,11 +26,16 @@ import warnings
 import zipfile
 from io import BytesIO
 
-WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
-
 
 class FirefoxProfile:
-    DEFAULT_PREFERENCES = None
+    DEFAULT_PREFERENCES = {
+        "browser.newtabpage.enabled": False,
+        "browser.startup.homepage": "about:blank",
+        "browser.usedOnWindows10.introURL": "about:blank",
+        "network.captive-portal-service.enabled": False,
+        "security.csp.enable": False,
+        "startup.homepage_welcome_url": "about:blank",
+    }
 
     def __init__(self, profile_directory=None):
         """Initialises a new instance of a Firefox Profile.
@@ -52,15 +57,7 @@ class FirefoxProfile:
             os.chmod(self._profile_dir, 0o755)
         else:
             self._profile_dir = tempfile.mkdtemp()
-            if not FirefoxProfile.DEFAULT_PREFERENCES:
-                with open(
-                    os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES), encoding="utf-8"
-                ) as default_prefs:
-                    FirefoxProfile.DEFAULT_PREFERENCES = json.load(default_prefs)
-
-            self._desired_preferences = copy.deepcopy(FirefoxProfile.DEFAULT_PREFERENCES["mutable"])
-            for key, value in FirefoxProfile.DEFAULT_PREFERENCES["frozen"].items():
-                self._desired_preferences[key] = value
+            self._desired_preferences = copy.deepcopy(FirefoxProfile.DEFAULT_PREFERENCES)
 
     # Public Methods
     def set_preference(self, key, value):

@@ -237,8 +237,11 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         EventHandler<CurrentCdpVersion.Network.ResponseReceivedEventArgs> responseReceivedHandler = (sender, e) =>
         {
             Assert.That(e, Is.Not.Null);
-            requestIds[0] = e.RequestId;
-            responseSync.Set();
+            if (e.Type == CurrentCdpVersion.Network.ResourceType.Document)
+            {
+                requestIds[0] = e.RequestId;
+                responseSync.Set();
+            }
         };
         domains.Network.ResponseReceived += responseReceivedHandler;
 

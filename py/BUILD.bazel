@@ -170,12 +170,6 @@ copy_file(
 )
 
 copy_file(
-    name = "firefox-driver-prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "selenium/webdriver/firefox/webdriver_prefs.json",
-)
-
-copy_file(
     name = "webextensions-selenium-example-xpi",
     testonly = True,
     src = "//common/extensions:webextensions-selenium-example.xpi",
@@ -481,7 +475,6 @@ py_library(
     srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
     data = [
         "selenium/webdriver/firefox/__init__.pyi",
-        ":firefox-driver-prefs",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -770,7 +763,7 @@ generate_bidi(
         "@permissions_all_cddl//file:spec.cddl",
         "@prefetch_all_cddl//file:spec.cddl",
         "@ua_client_hints_all_cddl//file:spec.cddl",
-        "@web_bluetooth_all_cddl//file:spec.cddl",
+        "@bluetooth_scanning_all_cddl//file:spec.cddl",
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",

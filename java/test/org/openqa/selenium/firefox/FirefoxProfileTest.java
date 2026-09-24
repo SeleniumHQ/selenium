@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -224,6 +223,6 @@ class FirefoxProfileTest {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
     FileReader reader = new FileReader(userPrefs);
-    return new Preferences(new StringReader("{\"mutable\": {}, \"frozen\": {}}"), reader);
+    return new Preferences(reader);
   }
 }
