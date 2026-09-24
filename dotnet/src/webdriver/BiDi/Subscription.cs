@@ -17,15 +17,17 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Internal.Telemetry;
 
 namespace OpenQA.Selenium.BiDi;
 
 internal interface ISubscriptionSink
 {
-    void Deliver(EventArgs args);
+    void Deliver(string method, EventArgs args);
     void Complete(Exception? error = null);
     ValueTask DisposeAsync();
 }
@@ -41,7 +43,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
     private ExceptionDispatchInfo? _sourceError;
     private int _disposed;
 
-    private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
+    private readonly Channel<(string Method, TEventArgs Args)> _channel = Channel.CreateUnbounded<(string Method, TEventArgs Args)>(
         new UnboundedChannelOptions { SingleReader = true, SingleWriter = true });
 
     private readonly Task _dispatchTask;
@@ -56,7 +58,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         _dispatchTask = Task.Run(DispatchEventsAsync);
     }
 
-    void ISubscriptionSink.Deliver(EventArgs args)
+    void ISubscriptionSink.Deliver(string method, EventArgs args)
     {
         if (args is not TEventArgs typed)
         {
@@ -65,7 +67,7 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
 
         if (_filter is { } f && !f(typed)) return;
 
-        _channel.Writer.TryWrite(typed);
+        _channel.Writer.TryWrite((method, typed));
     }
 
     void ISubscriptionSink.Complete(Exception? error)
@@ -113,14 +115,21 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         {
             while (await _channel.Reader.WaitToReadAsync().ConfigureAwait(false))
             {
-                while (_channel.Reader.TryRead(out var args))
+                while (_channel.Reader.TryRead(out var item))
                 {
+                    using var activity = SeleniumActivitySource.Instance.StartActivity(item.Method, ActivityKind.Consumer);
+
                     try
                     {
-                        await _handler(args).ConfigureAwait(false);
+                        await _handler(item.Args).ConfigureAwait(false);
+
+                        activity?.SetStatus(ActivityStatusCode.Ok);
                     }
                     catch (Exception ex)
                     {
+                        // Avoid recording the exception message: handler exceptions may carry remote/user-supplied content.
+                        activity?.SetStatus(ActivityStatusCode.Error, ex.GetType().Name);
+
                         _logger.Error($"BiDi event handler threw an exception; the subscription is stopped and will no longer dispatch events: {ex}");
                         _handlerError = ExceptionDispatchInfo.Capture(ex);
                         _channel.Writer.TryComplete(ex);

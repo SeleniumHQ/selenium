@@ -42,7 +42,7 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
         _filter = filter;
     }
 
-    void ISubscriptionSink.Deliver(EventArgs args)
+    void ISubscriptionSink.Deliver(string method, EventArgs args)
     {
         if (args is not TEventArgs typed)
         {
