@@ -55,7 +55,13 @@ internal sealed class Subscription<TEventArgs> : ISubscription, ISubscriptionSin
         _unsubscribe = unsubscribe;
         _handler = handler;
         _filter = filter;
-        _dispatchTask = Task.Run(DispatchEventsAsync);
+
+        // Detach from the caller's ambient context so events dispatched over this subscription's lifetime
+        // aren't parented to whatever activity/AsyncLocal state happened to be current at subscribe time.
+        using (ExecutionContext.SuppressFlow())
+        {
+            _dispatchTask = Task.Run(DispatchEventsAsync);
+        }
     }
 
     void ISubscriptionSink.Deliver(string method, EventArgs args)
