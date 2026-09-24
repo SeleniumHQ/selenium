@@ -365,6 +365,6 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Needs Investigation
-          SLACK_MESSAGE: "Unable to update the Selenium Manager pin on trunk"
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "Unable to update the Selenium Manager pin on trunk: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

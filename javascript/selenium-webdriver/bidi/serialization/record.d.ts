@@ -20,7 +20,11 @@ export interface TypeNode {
   primitive?: string
   const?: unknown
   ref?: string
-  enum?: string[]
+  // Almost always string (e.g. network.SameSite), but the schema can also derive a
+  // numeric or boolean enum where the spec itself uses one — emulation.MediaFeaturesGrid
+  // (CSS's `grid` media feature) is spec'd as the integer 0 or 1, not a string, and
+  // literalPrimitive() recognizes a boolean-literal choice the same way.
+  enum?: (string | number | boolean)[]
   list?: TypeNode
   map?: TypeNode
   union?: TypeNode[]

@@ -94,6 +94,6 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: ${{ inputs.unlock && 'Trunk unlocked' || 'Trunk locked' }}
-          SLACK_MESSAGE: ${{ inputs.message != '' && inputs.message || (inputs.unlock && 'Trunk has been unlocked.' || 'Trunk has been locked.') }}
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "${{ inputs.message != '' && inputs.message || (inputs.unlock && 'Trunk has been unlocked.' || 'Trunk has been locked.') }} <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

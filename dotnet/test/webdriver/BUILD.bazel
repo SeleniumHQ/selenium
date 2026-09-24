@@ -14,7 +14,6 @@ filegroup(
         "//dotnet/src/webdriver:manager-windows",
         "//javascript/atoms",
         "//third_party/closure/goog",
-        "//third_party/js/selenium:webdriver_json",
     ],
     visibility = [
         "//dotnet/test:__subpackages__",

@@ -283,5 +283,6 @@ jobs:
             • Authors: ${{ needs.update-authors.result }}
             • Selenium Manager Update: ${{ needs.update-manager.result }}
             • Create PR: ${{ needs.create-pr.result }}
-          MSG_MINIMAL: actions url
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

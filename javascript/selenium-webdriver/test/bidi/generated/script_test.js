@@ -272,7 +272,7 @@ suite(
       it('fires realmCreated when a new context is opened', async function () {
         let realmCreated = null
 
-        await script.onRealmCreated((params) => {
+        await script.addCallback(Script.REALM_CREATED, (params) => {
           if (params.type === 'window') {
             realmCreated = params
           }
@@ -294,7 +294,7 @@ suite(
           .then(() => driver.getWindowHandle())
 
         let realmDestroyed = null
-        await script.onRealmDestroyed((params) => {
+        await script.addCallback(Script.REALM_DESTROYED, (params) => {
           realmDestroyed = params
         })
 

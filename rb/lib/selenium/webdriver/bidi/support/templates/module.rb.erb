@@ -126,20 +126,7 @@ module Selenium
 <%- unless index.zero? -%>
 
 <%- end -%>
-          # @api private
-          # @see <%= BiDiGenerate::BIDI_DOC_URL %>
-<%- if cmd.spec_href -%>
-          # @see <%= cmd.spec_href %>
-<%- end -%>
-          <%= cmd.def_header(10) %>
-<%- cmd.enum_checks(12).each do |check| -%>
-            <%= check %>
-<%- end -%>
-<%- if cmd.params_assignment(12) -%>
-            <%= cmd.params_assignment(12) %>
-<%- end -%>
-            <%= cmd.execute_call(12) %>
-          end
+<%= cmd.render_lines(10).join("\n") %>
 <%- end -%>
 <%- mod.vendor_modules.each do |vendor_module| -%>
 

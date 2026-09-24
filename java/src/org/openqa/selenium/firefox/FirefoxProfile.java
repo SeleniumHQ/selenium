@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import org.jspecify.annotations.Nullable;
@@ -58,8 +57,7 @@ public class FirefoxProfile {
 
     File prefsInModel = new File(model, "user.js");
     if (prefsInModel.exists()) {
-      StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
-      Preferences existingPrefs = new Preferences(reader, prefsInModel);
+      Preferences existingPrefs = new Preferences(prefsInModel);
       existingPrefs.addTo(this.additionalPrefs);
       acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF, true);
       untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF, true);

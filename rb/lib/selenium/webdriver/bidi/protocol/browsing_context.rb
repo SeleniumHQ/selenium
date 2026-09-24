@@ -821,7 +821,7 @@ module Selenium
           end
 
           # @api private
-          # moz: vendor variant of BrowsingContext, overriding commands with browser-specific params.
+          # moz: vendor variant of BrowsingContext, with browser-specific commands and params.
           # Construct Moz.new(source) for a matching session; other sessions use BrowsingContext.
           class Moz < BrowsingContext
             # @api private

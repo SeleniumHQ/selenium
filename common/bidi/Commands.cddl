@@ -1,0 +1,30 @@
+MozCommand = webExtension.MozListExtensions
+
+webExtension.MozListExtensions = (
+  method: "webExtension.moz:listExtensions",
+  params: EmptyParams,
+)
+
+webExtension.MozListExtensionsResult = {
+   extensions: [*webExtension.MozExtensionInfo],
+}
+
+webExtension.MozExtensionInfo = {
+   id: text,
+   name: text,
+   version: text,
+   manifestVersion: js-uint,
+   isActive: bool,
+   isSystem: bool,
+   hidden: bool,
+   temporarilyInstalled: bool,
+   ? sourceURL: text / null,
+   ? policy: webExtension.MozExtensionPolicyInfo / null,
+}
+
+webExtension.MozExtensionPolicyInfo = {
+   uuid: text,
+   baseURL: text,
+   extensionURL: text,
+   backgroundScripts: [*text],
+}

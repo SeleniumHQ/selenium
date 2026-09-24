@@ -65,6 +65,33 @@ module Selenium
             def self.new: (extension: String) -> instance
           end
 
+          class MozListExtensionsResult < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader extensions: Array[::Selenium::WebDriver::BiDi::Protocol::WebExtension::MozExtensionInfo]
+            def self.new: (extensions: Array[::Selenium::WebDriver::BiDi::Protocol::WebExtension::MozExtensionInfo]) -> instance
+          end
+
+          class MozExtensionInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader id: String
+            attr_reader name: String
+            attr_reader version: String
+            attr_reader manifest_version: Integer
+            attr_reader is_active: bool
+            attr_reader is_system: bool
+            attr_reader hidden: bool
+            attr_reader temporarily_installed: bool
+            attr_reader source_url: untyped
+            attr_reader policy: untyped
+            def self.new: (id: String, name: String, version: String, manifest_version: Integer, is_active: bool, is_system: bool, hidden: bool, temporarily_installed: bool, ?source_url: String?, ?policy: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::MozExtensionPolicyInfo?) -> instance
+          end
+
+          class MozExtensionPolicyInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader uuid: String
+            attr_reader base_url: String
+            attr_reader extension_url: String
+            attr_reader background_scripts: Array[String]
+            def self.new: (uuid: String, base_url: String, extension_url: String, background_scripts: Array[String]) -> instance
+          end
+
           def extension_data: () -> singleton(ExtensionData)
           def extension_path: (?type: String, path: String) -> ExtensionPath
           def extension_archive_path: (?type: String, path: String) -> ExtensionArchivePath
@@ -75,6 +102,7 @@ module Selenium
 
           class Moz < ::Selenium::WebDriver::BiDi::Protocol::WebExtension
             def install: (extension_data: ::Selenium::WebDriver::BiDi::Protocol::WebExtension::extension_data, ?allow_private_browsing: bool, ?permanent: bool) -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult
+            def list_extensions: () -> ::Selenium::WebDriver::BiDi::Protocol::WebExtension::MozListExtensionsResult
           end
         end
       end

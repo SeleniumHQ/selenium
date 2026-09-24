@@ -181,7 +181,7 @@ suite(
       it('fires contextCreated when a new tab is opened', async function () {
         let createdContext = null
 
-        await browsingContext.onContextCreated((params) => {
+        await browsingContext.addCallback(BrowsingContext.CONTEXT_CREATED, (params) => {
           createdContext = params
         })
 
@@ -198,7 +198,7 @@ suite(
         const created = await browsingContext.create({ type: 'tab' })
 
         let destroyedContext = null
-        await browsingContext.onContextDestroyed((params) => {
+        await browsingContext.addCallback(BrowsingContext.CONTEXT_DESTROYED, (params) => {
           if (params.context === created.context) {
             destroyedContext = params
           }
@@ -216,7 +216,7 @@ suite(
         const contextId = await driver.getWindowHandle()
         let navEvent = null
 
-        await browsingContext.onNavigationCommitted((params) => {
+        await browsingContext.addCallback(BrowsingContext.NAVIGATION_COMMITTED, (params) => {
           if (params.context === contextId) {
             navEvent = params
           }
@@ -235,7 +235,7 @@ suite(
         await browsingContext.navigate({ context: contextId, url: Pages.emptyPage, wait: 'complete' })
 
         let fragmentEvent = null
-        await browsingContext.onFragmentNavigated((params) => {
+        await browsingContext.addCallback(BrowsingContext.FRAGMENT_NAVIGATED, (params) => {
           if (params.context === contextId) {
             fragmentEvent = params
           }
@@ -254,7 +254,7 @@ suite(
         const contextId = await driver.getWindowHandle()
         let promptOpened = null
 
-        await browsingContext.onUserPromptOpened((params) => {
+        await browsingContext.addCallback(BrowsingContext.USER_PROMPT_OPENED, (params) => {
           if (params.context === contextId) {
             promptOpened = params
           }
@@ -274,7 +274,7 @@ suite(
         const contextId = await driver.getWindowHandle()
         let promptClosed = null
 
-        await browsingContext.onUserPromptClosed((params) => {
+        await browsingContext.addCallback(BrowsingContext.USER_PROMPT_CLOSED, (params) => {
           if (params.context === contextId) {
             promptClosed = params
           }

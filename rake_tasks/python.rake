@@ -83,7 +83,6 @@ task :local_dev, [:all] do |_task, arguments|
       common/mutation-listener.js common/bidi-mutation-listener.js
       common/linux-x86_64/selenium-manager common/linux-arm64/selenium-manager
       common/macos/selenium-manager common/windows/selenium-manager.exe
-      firefox/webdriver_prefs.json
     ]
   end
 
