@@ -571,8 +571,9 @@ function collectUnionMembers(rootName, defMap, visited = new Set()) {
 
   const members = new Set()
 
-  // Flatten Properties — each element is either a choice-array or a property object.
-  const rawProps = def.Properties ?? []
+  // Flatten Properties — each element is either a choice-array or a property object. A one-member
+  // aggregate (`MozCommand = webExtension.MozListExtensions`) parses as a variable holding a PropertyType.
+  const rawProps = def.Properties ?? (def.Type === 'variable' ? [{ Type: def.PropertyType }] : [])
   const allChoices = []
   for (const prop of rawProps) {
     if (Array.isArray(prop)) {
