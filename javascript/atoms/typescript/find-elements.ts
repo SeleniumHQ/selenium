@@ -15,9 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function findElements(target: Record<string, unknown>, root?: Document | Element): Element[] {
+(function findElements(target: Record<string, unknown>, root?: Document | Element | ShadowRoot): Element[] {
   type LocatorTarget = Record<string, unknown>
-  type Root = Document | Element
+  type Root = Document | Element | ShadowRoot
   type Rect = { left: number; top: number; width: number; height: number }
   type RelativeFilter = { kind: string; args: unknown[] }
 
@@ -92,9 +92,8 @@
     if (target === '') {
       throw botError(INVALID_SELECTOR, 'Unable to locate an element with the tagName ""')
     }
-    const withTags = root as Root & { getElementsByTagName?: (tag: string) => ArrayLike<Element> }
-    if (typeof withTags.getElementsByTagName === 'function') {
-      return Array.from(withTags.getElementsByTagName(target))
+    if ('getElementsByTagName' in root) {
+      return Array.from(root.getElementsByTagName(target))
     }
     const elements = Array.from(root.querySelectorAll('*'))
     if (target === '*') {
@@ -114,7 +113,7 @@
   const ORDERED_NODE_SNAPSHOT_TYPE = 7
 
   function xpathMany(target: string, root: Root): Element[] {
-    const doc = (root as Document).documentElement ? (root as Document) : (root as Element).ownerDocument!
+    const doc = (root as Document).documentElement ? (root as Document) : root.ownerDocument!
     if (!doc.documentElement) {
       return []
     }

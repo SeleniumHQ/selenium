@@ -252,21 +252,7 @@ under the License.
     assert.deepEqual(ids(findElements({'tag name': 'p > span'}, shadow)), []);
     assert.deepEqual(ids(findElements({'tag name': 'p,span'}, shadow)), []);
     assert.equal(findElements({'tag name': 'p:unsupported'}, shadow).length, 0);
-  });
-
-  QUnit.test('tag name fallback matches the tag, not a css selector', function(assert) {
-    var host = document.createElement('div');
-    fixture.appendChild(host);
-    var shadow = host.attachShadow({mode: 'open'});
-    shadow.innerHTML = '<div class="foo"><p><span id="inner">s</span></p></div><span id="outer-span">t</span>';
-    var root = {
-      querySelectorAll: function(selector) { return shadow.querySelectorAll(selector); }
-    };
-    assert.deepEqual(ids(findElements({'tag name': 'div.foo'}, root)), []);
-    assert.deepEqual(ids(findElements({'tag name': 'p > span'}, root)), []);
-    assert.deepEqual(ids(findElements({'tag name': 'p,span'}, root)), []);
-    assert.equal(findElements({'tag name': 'p:unsupported'}, root).length, 0);
-    assert.deepEqual(ids(findElements({'tag name': 'SPAN'}, root)), ['inner', 'outer-span']);
+    assert.deepEqual(ids(findElements({'tag name': 'SPAN'}, shadow)), ['shadow-span']);
   });
 })();
 </script>
