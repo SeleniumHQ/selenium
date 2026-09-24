@@ -1,0 +1,45 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class Browser
+        class Window
+          attr_reader handle: String
+          attr_reader active: bool
+          attr_reader state: Symbol
+
+          attr_accessor height: Integer
+          attr_accessor width: Integer
+          attr_accessor x: Integer
+          attr_accessor y: Integer
+
+          @bidi: BiDi
+          @handle: String
+          @active: bool
+          @state: Symbol
+          @height: Integer
+          @width: Integer
+          @x: Integer
+          @y: Integer
+
+          def initialize: (BiDi bidi, handle: String, active: bool, height: Integer, width: Integer, x: Integer, y: Integer, state: String) -> void
+
+          def active?: () -> bool
+
+          def set_state: (state: String | Symbol, ?width: Integer?, ?height: Integer?, ?x: Integer?, ?y: Integer?) -> Hash[untyped, untyped]
+
+          def maximize: () -> Hash[untyped, untyped]
+
+          def minimize: () -> Hash[untyped, untyped]
+
+          def fullscreen: () -> Hash[untyped, untyped]
+
+          def resize: (width: Integer, height: Integer, ?x: Integer?, ?y: Integer?) -> Hash[untyped, untyped]
+
+          private
+
+          def update_attributes: (state: String | Symbol, width: Integer?, height: Integer?, x: Integer?, y: Integer?) -> void
+        end
+      end
+    end
+  end
+end
