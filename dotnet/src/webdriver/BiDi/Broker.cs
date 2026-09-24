@@ -19,10 +19,12 @@
 
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Internal.Telemetry;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -74,8 +76,32 @@ internal sealed class Broker : IAsyncDisposable
             throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
         }
 
+        using var activity = SeleniumActivitySource.Instance.StartActivity(method, ActivityKind.Client);
+
+        activity?.SetTag("rpc.method", method);
+
         var id = Interlocked.Increment(ref _currentCommandId);
 
+        try
+        {
+            var result = await ExecuteCommandAsync(id, method, @params, paramsTypeInfo, resultTypeInfo, options, cancellationToken).ConfigureAwait(false);
+
+            activity?.SetStatus(ActivityStatusCode.Ok);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // Avoid recording the exception message: BiDi protocol errors can carry remote/user-supplied content.
+            activity?.SetStatus(ActivityStatusCode.Error, ex.GetType().Name);
+            throw;
+        }
+    }
+
+    private async Task<TResult> ExecuteCommandAsync<TParameters, TResult>(long id, string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
+        where TResult : EmptyResult
+    {
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
