@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.UnknownFieldsWarning;
 
 @Tag("UnitTests")
 class UserPromptHandlerTest {
@@ -68,7 +67,9 @@ class UserPromptHandlerTest {
   }
 
   private static List<LogRecord> captureLogRecords(Runnable action) {
-    Logger logger = Logger.getLogger(UnknownFieldsWarning.class.getName());
+    // UnknownFieldsWarning logs under ConstructorCoercer's own (package-private, so named by
+    // string here) category, not its own — see UnknownFieldsWarning's class javadoc.
+    Logger logger = Logger.getLogger("org.openqa.selenium.json.ConstructorCoercer");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
         new Handler() {

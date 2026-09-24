@@ -31,10 +31,17 @@ import java.util.logging.Logger;
  * ConstructorCoercer entirely (e.g. one with a reserved-word field — see BiDiGenerator's
  * appendFromJson) calls it directly, so both paths report the same way instead of one of them
  * silently dropping unrecognized keys.
+ *
+ * <p>Logs under {@link ConstructorCoercer}'s own category, not this class's: the warning predates
+ * this extraction (it originally lived inline in ConstructorCoercer), and a generated type's custom
+ * deserializer stands in for ConstructorCoercer here rather than being a distinct source — see the
+ * call site in BiDiGenerator's appendFromJson. Keeping one category means anyone who already
+ * configured logging for {@code ConstructorCoercer} keeps controlling these warnings after this
+ * split, instead of that configuration silently going stale.
  */
 public final class UnknownFieldsWarning {
 
-  private static final Logger LOG = Logger.getLogger(UnknownFieldsWarning.class.getName());
+  private static final Logger LOG = Logger.getLogger(ConstructorCoercer.class.getName());
 
   // A payload with many undeclared keys must not turn into one log record per key — that is
   // log-amplification the caller controls the size of. One summary record, capped at the first
