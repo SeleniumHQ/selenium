@@ -733,8 +733,13 @@ class LocalSessionMapTest {
     executor.shutdown();
   }
 
+  /**
+   * Guards {@link #rethrowTaskFailures(List)}: an assertion that fails inside an executor task must
+   * reach the test thread instead of staying trapped in its {@link Future}. Without this the
+   * concurrent tests above could turn silently green while their assertions fail.
+   */
   @Test
-  void assertionFailuresInsideWorkerTasksMustFailTheTest() throws InterruptedException {
+  void rethrowTaskFailuresPropagatesAssertionErrorToTestThread() throws InterruptedException {
     CountDownLatch completeLatch = new CountDownLatch(1);
     ExecutorService executor = Executors.newFixedThreadPool(1);
     List<Future<?>> tasks = new ArrayList<>();
@@ -755,7 +760,7 @@ class LocalSessionMapTest {
 
     assertThatThrownBy(() -> rethrowTaskFailures(tasks))
         .isInstanceOf(AssertionError.class)
-        .hasMessageNotContaining("deliberately failing assertion inside a worker task");
+        .hasMessageContaining("deliberately failing assertion inside a worker task");
 
     executor.shutdown();
   }
