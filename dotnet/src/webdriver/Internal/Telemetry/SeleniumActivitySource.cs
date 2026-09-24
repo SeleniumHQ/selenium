@@ -18,11 +18,16 @@
 // </copyright>
 
 using System.Diagnostics;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Internal.Telemetry;
 
-// Single assembly-wide ActivitySource; consumers enable it via this name (e.g. OTel AddSource).
+/// <summary>
+/// Provides the single, assembly-wide <see cref="ActivitySource"/> used to emit diagnostic activities.
+/// </summary>
+/// <remarks>
+/// Consumers enable this by subscribing to activities from <see cref="Name"/> (e.g. via an
+/// <see cref="ActivityListener"/> or an OpenTelemetry <c>AddSource("Selenium.WebDriver")</c> call).
+/// </remarks>
 internal static class SeleniumActivitySource
 {
     internal const string Name = "Selenium.WebDriver";
