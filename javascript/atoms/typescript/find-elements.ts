@@ -199,7 +199,12 @@
       return resolveAnchor((selector as () => unknown)())
     }
     if (selector && typeof selector === 'object') {
-      const found = findElements(selector as LocatorTarget, root)
+      // Prefer an anchor inside the root, since a document search cannot see into a shadow root,
+      // but an anchor is only a reference point and may live anywhere on the page.
+      let found = root ? findElements(selector as LocatorTarget, root) : []
+      if (!found.length) {
+        found = findElements(selector as LocatorTarget)
+      }
       if (!found.length) {
         throw botError(NO_SUCH_ELEMENT, 'No element has been found by ' + JSON.stringify(selector))
       }

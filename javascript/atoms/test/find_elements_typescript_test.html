@@ -44,6 +44,7 @@ under the License.
   <span id="dup" style="position: absolute; top: 0; left: 0; width: 40px; height: 20px;">inside</span>
   <p id="dup-below" style="position: absolute; top: 40px; left: 0; width: 40px; height: 20px; margin: 0;">below</p>
 </div>
+<span id="outside-anchor" style="position: absolute; top: 0; left: 200px; width: 40px; height: 20px;">outside anchor</span>
 
 <script>
 (function() {
@@ -202,6 +203,41 @@ under the License.
       }
     }, scope);
     assert.deepEqual(ids(elements), ['dup-below']);
+  });
+
+  QUnit.test('falls back to the document for an anchor outside the supplied root', function(assert) {
+    var scope = document.getElementById('dup-scope');
+    var elements = findElements({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'outside-anchor'}]}]
+      }
+    }, scope);
+    assert.deepEqual(ids(elements), ['dup-below']);
+  });
+
+  QUnit.test('resolves a locator anchor inside a shadow root', function(assert) {
+    var host = document.createElement('div');
+    fixture.appendChild(host);
+    var shadow = host.attachShadow({mode: 'open'});
+    shadow.innerHTML =
+        '<span id="shadow-anchor" style="display: block; height: 20px;">a</span>' +
+        '<p id="shadow-below" style="margin: 0; height: 20px;">b</p>';
+    var locator = {
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'shadow-anchor'}]}]
+      }
+    };
+    assert.deepEqual(ids(findElements(locator, shadow)), ['shadow-below']);
+    assert.throws(function() {
+      findElements({
+        relative: {
+          root: {'tag name': 'span'},
+          filters: [{kind: 'below', args: [{id: 'shadow-anchor'}]}]
+        }
+      });
+    }, /No element has been found/);
   });
 
   QUnit.test('finds by tag name inside a shadow root', function(assert) {
