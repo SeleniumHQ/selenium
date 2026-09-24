@@ -6,7 +6,7 @@ SM_VERSION = "4.45.0"
 
 copy_file(
     name = "manager-binary",
-    src = "//common/manager:selenium-manager-linux",
+    src = "//common/manager:selenium-manager-linux-x86_64",
     out = "selenium_manager_linux_x86_64/bin/selenium-manager",
 )
 
