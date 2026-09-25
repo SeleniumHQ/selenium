@@ -1,0 +1,9 @@
+; The spec makes hasPlannedNavigation required on browsingContext.contextCreated, but no
+; released browser sends it yet. Bindings that reject a missing required field drop every
+; contextCreated event outright, so relax it to optional until the browsers catch up.
+; Delete once Chrome and Firefox emit hasPlannedNavigation.
+; https://w3c.github.io/webdriver-bidi/#event-browsingContext-contextCreated
+browsingContext.ContextCreatedParameters = {
+  browsingContext.BaseInfo,
+  ? hasPlannedNavigation: bool,
+}

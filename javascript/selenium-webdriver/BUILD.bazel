@@ -96,8 +96,9 @@ generate_bidi_library(
     extra_cddl_files = BIDI_EXTENSION_CDDL_FILES,
     # Spec-shaped, browser-neutral productions that supersede an upstream one by name. Stay
     # in the shared schema: they complete command/event aggregates the specs define members
-    # for but never list.
+    # for but never list, or relax a field the spec requires ahead of every implementation.
     override_cddl_files = [
+        "//common/bidi:browsing-context-created-params.cddl",
         "//common/bidi:digital-credentials-command.cddl",
         "//common/bidi:web-bluetooth-events.cddl",
     ],
