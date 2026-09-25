@@ -10,9 +10,6 @@
     <content url="file://$MODULE_DIR$/src/dev">
       <sourceFolder url="file://$MODULE_DIR$/src/dev" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../third_party/js/sizzle">
-      <sourceFolder url="file://$MODULE_DIR$/../third_party/js/sizzle" type="java-test-resource" />
-    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="java" />

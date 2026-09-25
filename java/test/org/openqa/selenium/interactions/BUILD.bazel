@@ -30,9 +30,6 @@ java_selenium_test_suite(
         ["*Test.java"],
         exclude = SMALL_TESTS,
     ),
-    data = [
-        "//third_party/chrome_ext:backspace.crx",
-    ],
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,
