@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.bidi;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 
 @Beta
+@ApiStatus.Internal
 public class BiDiException extends WebDriverException {
 
   public BiDiException(Throwable cause) {
