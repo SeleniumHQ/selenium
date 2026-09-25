@@ -114,6 +114,7 @@ async function main() {
       'vendor-cddl': { type: 'string', multiple: true },
       ast: { type: 'string' },
       model: { type: 'string' },
+      'vendor-model': { type: 'string' },
       'dump-ast': { type: 'string' },
       'dump-model': { type: 'string' },
       'output-dir': { type: 'string' },
@@ -139,14 +140,15 @@ async function main() {
   } else if (args['dump-model'] && args.ast) {
     writeJson(args['dump-model'], buildModel(readJson(args.ast, 'AST')), 'model', true)
   } else if (args['output-dir'] && args.ast && args.model) {
-    generateTypeScript(readJson(args.ast, 'AST'), readJson(args.model, 'model'), args)
+    const vendorModel = args['vendor-model'] ? readJson(args['vendor-model'], 'vendor model') : null
+    generateTypeScript(readJson(args.ast, 'AST'), readJson(args.model, 'model'), vendorModel, args)
   } else {
     console.error(
       'Usage (one stage per invocation):\n' +
         '  generate_bidi.mjs --cddl <file> [--cddl <file>...] [--override-cddl <file>...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --vendor-cddl <namespace>=<file> [...] --dump-ast <file>\n' +
         '  generate_bidi.mjs --ast <file> --dump-model <file>\n' +
-        '  generate_bidi.mjs --ast <file> --model <file> --output-dir <dir> [--spec-version <v>]',
+        '  generate_bidi.mjs --ast <file> --model <file> [--vendor-model <file>] --output-dir <dir> [--spec-version <v>]',
     )
     process.exit(1)
   }
@@ -256,7 +258,7 @@ function writeJson(fileArg, data, label, pretty = false) {
 }
 
 /** Emit one TS module per domain: types and commands/events, both from bidi_schema.json. */
-function generateTypeScript(ast, model, args) {
+function generateTypeScript(ast, model, vendorModel, args) {
   const outputDir = resolve(args['output-dir'])
   const specVersion = args['spec-version']
 
@@ -266,7 +268,7 @@ function generateTypeScript(ast, model, args) {
   }
 
   console.log('Projecting the binding-neutral schema…')
-  const schema = projectSchema(ast, model)
+  const schema = projectSchema(ast, model, {}, vendorModel)
   console.log(
     `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types`,
   )
@@ -282,6 +284,7 @@ function generateTypeScript(ast, model, args) {
     const commands = allCommands.filter((c) => c.domain === domainKey)
     const events = allEvents.filter((e) => e.domain === domainKey)
     const className = DOMAIN_CLASSES[domainKey]
+    const vendorModules = className ? buildVendorModules(schema, domainKey, className, commands) : []
 
     const content = generateDomainFile({
       domain: domainKey,
@@ -289,6 +292,7 @@ function generateTypeScript(ast, model, args) {
       types,
       commands,
       events,
+      vendorModules,
       specVersion,
     })
 
@@ -612,14 +616,105 @@ function buildResultTypeNames(ast) {
 
 /** Map the schema's commands to the generator's command-entry shape. */
 function schemaToCommands(schema) {
-  return schema.commands.map((c) => ({
+  return schema.commands.map(schemaToCommand)
+}
+
+function schemaToCommand(c) {
+  return {
     domain: c.domain,
     methodStr: c.method,
     methodName: c.name,
     paramsTypeName: c.params ? normalizeDottedName(c.params.ref) : null,
     hasParams: c.params !== null,
     resultTypeName: c.result ? normalizeDottedName(c.result.ref) : null,
-  }))
+  }
+}
+
+// ============================================================
+// Vendor variants (schema `vendor.<namespace>`)
+// ============================================================
+
+/**
+ * The vendor variants of one spec domain, one per namespace (`moz` → `MozWebExtension`), each a
+ * subclass of the shared domain class, so a non-matching browser never sees a vendor field or
+ * command. Mirrors Ruby's generator (bidi_generate.rb#vendor_modules_for):
+ *
+ * - a command whose params type a vendor extends (`webExtension.InstallParameters` +
+ *   `moz:permanent`) is overridden to take a params record of the shared fields plus the typed
+ *   vendor fields, which serialize under their exact wire keys;
+ * - a command the vendor defines in the domain (`webExtension.moz:listExtensions`) is added, named
+ *   without its namespace (the class already scopes it), with the vendor types it reaches.
+ *
+ * Whole vendor domains (`moz:debugging`) are not emitted. Empty for a domain with no vendor
+ * content, so non-vendor output is unaffected.
+ * @returns {Array<{namespace: string, className: string, parentClassName: string,
+ *   types: Object<string, object>, commands: Array<object>}>}
+ */
+function buildVendorModules(schema, domain, parentClassName, specCommands) {
+  const vendorTypes = Object.assign({}, ...Object.values(schema.vendor ?? {}).map((s) => s.types ?? {}))
+
+  return Object.entries(schema.vendor ?? {}).flatMap(([namespace, section]) => {
+    const stray = (section.events ?? []).find((e) => e.domain === domain)
+    if (stray) {
+      throw new Error(`vendor event ${stray.method} in spec domain ${domain} is unsupported`)
+    }
+
+    const types = {}
+    const commands = []
+
+    for (const [typeName, entry] of Object.entries(section.extends ?? {})) {
+      const cmd = schema.commands.find((c) => c.params?.ref === typeName)
+      if (!cmd || cmd.domain !== domain) continue
+      const base = schema.types[typeName]
+      const taken = new Set(base.fields.map((f) => f.name))
+      const vendorFields = entry.fields.map((f) => ({ ...f, name: vendorFieldName(f.name, namespace, taken) }))
+      const vendorTypeName = vendorExtendedTypeName(namespace, typeName)
+      types[vendorTypeName] = { ...base, fields: [...base.fields, ...vendorFields] }
+      commands.push({ ...schemaToCommand(cmd), paramsTypeName: normalizeDottedName(vendorTypeName) })
+    }
+
+    const specNames = new Set(specCommands.map((c) => c.methodName))
+    for (const cmd of (section.commands ?? []).filter((c) => c.domain === domain)) {
+      const methodName = cmd.name.replace(`${namespace}:`, '')
+      if (specNames.has(methodName)) {
+        throw new Error(`vendor command ${cmd.method} would override spec command ${domain}.${methodName}`)
+      }
+      commands.push({ ...schemaToCommand(cmd), methodName, specUrl: null })
+      for (const ref of [cmd.params?.ref, cmd.result?.ref].filter(Boolean)) {
+        collectVendorTypes(ref, vendorTypes, types)
+      }
+    }
+
+    if (commands.length === 0) return []
+    return [{ namespace, className: `${pascalCase(namespace)}${parentClassName}`, parentClassName, types, commands }]
+  })
+}
+
+/** Adds `name` and every vendor type it transitively references to `into`; spec types are left to their own domain. */
+function collectVendorTypes(name, vendorTypes, into) {
+  const node = vendorTypes[name]
+  if (!node || Object.hasOwn(into, name)) return
+  into[name] = node
+  for (const ref of typeRefNames(node)) collectVendorTypes(ref, vendorTypes, into)
+}
+
+// 'webExtension.InstallParameters' → 'webExtension.MozInstallParameters', following the vendor's
+// own naming for the types it adds to a spec domain (webExtension.MozListExtensions).
+function vendorExtendedTypeName(namespace, typeName) {
+  const dotIdx = typeName.indexOf('.')
+  return `${typeName.slice(0, dotIdx + 1)}${pascalCase(namespace)}${typeName.slice(dotIdx + 1)}`
+}
+
+// A vendor field's JS name drops its namespace (`moz:permanent` → permanent): the vendor class
+// already scopes it. Its wire key is untouched. Keeps the namespace (`mozPermanent`) only if
+// dropping it would collide with a shared field on the same record.
+function vendorFieldName(name, namespace, taken) {
+  const stripped = name.replace(`${namespace}:`, '')
+  return taken.has(stripped) ? `${namespace}${pascalCase(stripped)}` : stripped
+}
+
+function pascalCase(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
 /** Map the schema's events to the generator's event-entry shape. */
@@ -835,7 +930,7 @@ function resolveAliasRuntime(node, types) {
   return null
 }
 
-function generateDomainFile({ domain, className, types, commands, events, specVersion }) {
+function generateDomainFile({ domain, className, types, commands, events, vendorModules = [], specVersion }) {
   const parts = [LICENSE_HEADER, '', GENERATED_NOTE]
 
   parts.push(`// Built from the WebDriver BiDi CDDL spec (v${specVersion}).`)
@@ -844,9 +939,12 @@ function generateDomainFile({ domain, className, types, commands, events, specVe
 
   const hasImplementation = className != null && (commands.length > 0 || events.length > 0)
 
-  const typeEntries = Object.entries(types)
+  // Vendor types follow the spec's, and are tagged with the vendor class that owns their enum constants.
+  const vendorTypeOwner = new Map(vendorModules.flatMap((m) => Object.keys(m.types).map((name) => [name, m])))
+  const allTypes = Object.assign({}, types, ...vendorModules.map((m) => m.types))
+  const typeEntries = Object.entries(allTypes)
 
-  const crossDomainImports = computeCrossDomainImports(Object.fromEntries(typeEntries), domain)
+  const crossDomainImports = computeCrossDomainImports(allTypes, domain)
   if (crossDomainImports.length > 0) {
     for (const line of crossDomainImports) parts.push(line)
     parts.push('')
@@ -898,11 +996,14 @@ function generateDomainFile({ domain, className, types, commands, events, specVe
         // Resolved by naming convention (a record's runtime const is its own tsName; a
         // union's is `${tsName}Union`), not by depending on the target having already
         // been processed — types is a complete map regardless of iteration order.
-        const resolved = resolveAliasRuntime(node, types)
+        const resolved = resolveAliasRuntime(node, allTypes)
         if (resolved) runtimeByTsName.set(tsName, { ...resolved, fields: undefined })
       }
       if (declared.kind === 'enum') {
-        enumConstants.push({ propertyName: localSchemaName(name, tsName), values: node.values })
+        const constant = { propertyName: localSchemaName(name, tsName), values: node.values }
+        const owner = vendorTypeOwner.get(name)
+        if (owner) (owner.enumConstants ??= []).push(constant)
+        else enumConstants.push(constant)
       }
       parts.push(declared.ts)
       parts.push('')
@@ -930,6 +1031,23 @@ function generateDomainFile({ domain, className, types, commands, events, specVe
         enumConstants,
       }),
     )
+    for (const vendor of vendorModules) {
+      parts.push('')
+      parts.push(
+        generateClass({
+          className: vendor.className,
+          parentClassName: vendor.parentClassName,
+          summary: [
+            `${vendor.namespace}: vendor variant of ${vendor.parentClassName}, with browser-specific commands and params.`,
+            `Construct with ${vendor.className}.create(driver) for a matching session; other sessions use ${vendor.parentClassName}.`,
+          ],
+          commands: vendor.commands,
+          events: [],
+          runtimeByTsName,
+          enumConstants: vendor.enumConstants ?? [],
+        }),
+      )
+    }
   }
 
   return parts.join('\n') + '\n'
@@ -991,11 +1109,21 @@ function specSectionUrl(methodStr, kind) {
   return `https://w3c.github.io/webdriver-bidi/#${kind}-${domain}-${local}`
 }
 
-function generateClass({ className, commands, events, runtimeByTsName, enumConstants }) {
+function generateClass({
+  className,
+  parentClassName = 'Domain',
+  summary = [],
+  commands,
+  events,
+  runtimeByTsName,
+  enumConstants,
+}) {
   const lines = []
 
-  lines.push(INTERNAL_API_DOC)
-  lines.push(`export class ${className} extends Domain {`)
+  const doc = INTERNAL_API_DOC.split('\n')
+  if (summary.length) doc.splice(1, 0, ...summary.map((line) => ` * ${line}`), ' *')
+  lines.push(doc.join('\n'))
+  lines.push(`export class ${className} extends ${parentClassName} {`)
 
   for (const evt of events) {
     lines.push('')
@@ -1055,7 +1183,9 @@ function generateCommandJsDoc(cmd, paramsRuntime, resultTypeName) {
     }
   }
   lines.push(`   * @returns {Promise<${resultTypeName ?? 'void'}>}`)
-  lines.push(`   * @see ${specSectionUrl(methodStr, 'command')}`)
+  // A vendor-defined command has no section in the spec (specUrl: null).
+  const specUrl = cmd.specUrl === undefined ? specSectionUrl(methodStr, 'command') : cmd.specUrl
+  if (specUrl) lines.push(`   * @see ${specUrl}`)
   lines.push('   */')
   return lines.join('\n')
 }

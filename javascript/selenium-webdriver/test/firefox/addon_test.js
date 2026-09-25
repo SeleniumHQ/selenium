@@ -18,6 +18,8 @@
 'use strict'
 
 const assert = require('node:assert')
+const fs = require('node:fs')
+const firefox = require('selenium-webdriver/firefox')
 const { Browser } = require('selenium-webdriver/index')
 const { ignore, Pages, suite } = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
@@ -28,6 +30,7 @@ const EXT_UNSIGNED_ZIP = locate('common/extensions/webextensions-selenium-exampl
 const EXT_SIGNED_ZIP = locate('common/extensions/webextensions-selenium-example.zip')
 const EXT_UNSIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
 const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
+const EXT_ID = 'webextensions-selenium-example-v3@example.com'
 
 suite(
   function (env) {
@@ -121,6 +124,83 @@ suite(
           await driver.uninstallAddon(id)
           await driver.navigate().refresh()
           await verifyWebExtensionNotInstalled()
+        })
+      })
+
+      // The test environment enables BiDi, so these exercise the moz webExtension.install command;
+      // the classic fallback is covered by test/lib/web_extension_test.js.
+      describe('installWebExtension', function () {
+        it('installs and uninstalls an xpi file', async function () {
+          driver = await env.builder().build()
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          const extension = await driver.installWebExtension(EXT_XPI)
+          assert.strictEqual(extension.id, EXT_ID)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallWebExtension(extension)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs base64-encoded bytes', async function () {
+          driver = await env.builder().build()
+          await driver.get(Pages.blankPage)
+
+          const extension = await driver.installWebExtension(fs.readFileSync(EXT_XPI).toString('base64'))
+          assert.strictEqual(extension.id, EXT_ID)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+          await driver.uninstallWebExtension(extension)
+        })
+
+        // Temporarily installed unsigned extensions no longer inject content scripts
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
+        ignore(env.browsers(Browser.FIREFOX)).it(
+          'installs an unsigned directory when not permanent',
+          async function () {
+            driver = await env.builder().build()
+            await driver.get(Pages.blankPage)
+
+            const extension = await driver.installWebExtension(EXT_UNSIGNED_DIR, { permanent: false })
+            assert.strictEqual(extension.id, EXT_ID)
+
+            await driver.navigate().refresh()
+            await verifyWebExtensionWasInstalled()
+            await driver.uninstallWebExtension(extension)
+          },
+        )
+
+        it('rejects a permanent install of a directory', async function () {
+          driver = await env.builder().build()
+          await assert.rejects(
+            driver.installWebExtension(EXT_SIGNED_DIR, { permanent: true }),
+            /Permanent installation of unpacked extensions is not supported/,
+          )
+        })
+
+        describe('in a private window', function () {
+          beforeEach(async function () {
+            const options = env.builder().getFirefoxOptions() || new firefox.Options()
+            options.addArguments('-private-window')
+            driver = await env.builder().setFirefoxOptions(options).build()
+          })
+
+          it('runs when private browsing is allowed', async function () {
+            await driver.installWebExtension(EXT_XPI, { allowPrivateBrowsing: true })
+            await driver.get(Pages.blankPage)
+            await verifyWebExtensionWasInstalled()
+          })
+
+          it('does not run by default', async function () {
+            await driver.installWebExtension(EXT_XPI)
+            await driver.get(Pages.blankPage)
+            await verifyWebExtensionNotInstalled()
+          })
         })
       })
 

@@ -311,12 +311,14 @@ def generate_bidi_library(
         visibility = _ARTIFACT_VISIBILITY,
     )
 
-    # Step 4: generate one .ts module per BiDi domain from the AST + model.
+    # Step 4: generate one .ts module per BiDi domain from the AST + model. Projected from the
+    # same inputs as the schema step (vendor AST + vendor model), so vendor extensions reach the
+    # generator through the schema's `vendor` section, never through the shared domain classes.
     ts_outs = [ts_src_path + "/" + f for f in _DOMAIN_TS_FILES]
-    gen_srcs = [":" + ast_target, ":" + json_target]
+    gen_srcs = [":" + schema_ast_target, ":" + json_target]
     gen_args = [
         "--ast",
-        "$(location :" + ast_target + ")",
+        "$(location :" + schema_ast_target + ")",
         "--model",
         "$(location :" + json_target + ")",
         "--output-dir",
@@ -324,6 +326,9 @@ def generate_bidi_library(
         "--spec-version",
         spec_version,
     ]
+    if vendor_model_target:
+        gen_srcs.append(":" + vendor_model_target)
+        gen_args += ["--vendor-model", "$(location :" + vendor_model_target + ")"]
 
     ts_target = name + "_ts"
     js_run_binary(
