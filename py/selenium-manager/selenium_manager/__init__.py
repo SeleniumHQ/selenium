@@ -15,9 +15,22 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""Platform dispatch for the standalone Selenium Manager distribution.
+
+The platform packages carry nothing but the binary and a path to it; this is the
+only package that spawns a process, so `selenium-manager` means the same thing
+whether it is reached through the console script, `python -m selenium_manager`,
+`uvx selenium-manager`, or `binary_path()` from another library.
+"""
+
 import importlib
+import os
 import platform
+import stat
+import subprocess
 import sys
+
+__all__ = ["binary_path", "main"]
 
 _PLATFORM_MODULES = {
     "darwin": "selenium_manager_macos",
@@ -46,13 +59,34 @@ def _module_name(sys_platform: str, machine: str) -> str:
     return module_name
 
 
-def main() -> None:
-    module_name = _module_name(sys.platform, platform.machine())
+def binary_path() -> str:
+    """Return the absolute path of the Selenium Manager binary for this platform.
 
+    `SE_MANAGER_PATH` wins when set, matching how every binding already lets
+    users point at a manager they built or vendored themselves.
+    """
+    override = os.environ.get("SE_MANAGER_PATH")
+    if override:
+        return override
+
+    module_name = _module_name(sys.platform, platform.machine())
     try:
         platform_module = importlib.import_module(module_name)
     except ImportError as exc:
         pkg_name = module_name.replace("_", "-")
         raise SystemExit(f"Platform package {pkg_name} is not installed.\nRun: pip install {pkg_name}") from exc
 
-    platform_module.main()
+    return platform_module.binary_path()
+
+
+def main() -> None:
+    binary = binary_path()
+
+    # Wheels do not carry the executable bit through every installer, so restore
+    # it on first run. An SE_MANAGER_PATH binary is left alone once it is usable.
+    if os.name != "nt":
+        mode = os.stat(binary).st_mode
+        if not mode & stat.S_IXUSR:
+            os.chmod(binary, mode | 0o755)
+
+    sys.exit(subprocess.run([binary, *sys.argv[1:]]).returncode)

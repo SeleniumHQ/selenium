@@ -4,9 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium-manager"
-version = "4.45.0"
+version = "4.50.0.202609091537"
 license = "Apache-2.0"
-license-files = ["LICENSE", "NOTICE"]
 description = "Selenium Manager — browser and driver manager for the Selenium ecosystem"
 readme = "README.rst"
 requires-python = ">=3.9"
@@ -26,12 +25,14 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
-    "selenium-manager-linux-aarch64==4.45.0; sys_platform=='linux' and platform_machine=='aarch64'",
-    "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
-    "selenium-manager-windows==4.45.0; sys_platform=='win32'",
+    "selenium-manager-linux-x86-64==4.50.0.202609091537; sys_platform=='linux' and platform_machine=='x86_64'",
+    "selenium-manager-linux-aarch64==4.50.0.202609091537; sys_platform=='linux' and platform_machine=='aarch64'",
+    "selenium-manager-macos==4.50.0.202609091537; sys_platform=='darwin'",
+    "selenium-manager-windows==4.50.0.202609091537; sys_platform=='win32'",
 ]
 
+# The only console script across the five distributions; the platform packages
+# ship a binary and a path to it, never a command that could contend for this name.
 [project.scripts]
 selenium-manager = "selenium_manager:main"
 
