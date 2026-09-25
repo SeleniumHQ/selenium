@@ -502,20 +502,6 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreatedparameters
-          ContextCreatedParameters = Serialization::Record.define(
-            children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
-            client_window: {wire_key: 'clientWindow', primitive: 'string'},
-            context: {wire_key: 'context', primitive: 'string'},
-            original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
-            url: {wire_key: 'url', primitive: 'string'},
-            user_context: {wire_key: 'userContext', primitive: 'string'},
-            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'},
-            has_planned_navigation: {wire_key: 'hasPlannedNavigation', primitive: 'boolean'}
-          )
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontexthistoryupdatedparameters
           HistoryUpdatedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
@@ -598,6 +584,20 @@ module Selenium
             type: {wire_key: 'type', enum: 'BrowsingContext::USER_PROMPT_TYPE'},
             user_context: {wire_key: 'userContext', required: false, primitive: 'string'},
             default_value: {wire_key: 'defaultValue', required: false, primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreatedparameters
+          ContextCreatedParameters = Serialization::Record.define(
+            children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
+            client_window: {wire_key: 'clientWindow', primitive: 'string'},
+            context: {wire_key: 'context', primitive: 'string'},
+            original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
+            url: {wire_key: 'url', primitive: 'string'},
+            user_context: {wire_key: 'userContext', primitive: 'string'},
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'},
+            has_planned_navigation: {wire_key: 'hasPlannedNavigation', required: false, primitive: 'boolean'}
           )
 
           EVENT_TYPES = {
