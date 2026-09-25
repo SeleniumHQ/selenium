@@ -1242,17 +1242,43 @@ class CddlParser:
         result = re.sub(r"-?\d+(?:\.\d+)?\.{2,3}-?\d+(?:\.\d+)?", "float", result)
         return result.strip()
 
-    def _extract_type_fields(self, type_definition: str) -> dict[str, str]:
-        """Extract fields from a type definition block."""
+    def _extract_type_fields(self, type_definition: str, _seen: set[str] | None = None) -> dict[str, str]:
+        """Extract fields from a type definition block.
+
+        Bare group references (e.g. ``browsingContext.Info = { browsingContext.BaseInfo }``)
+        are expanded into the referenced group's fields. They are appended after the type's
+        own fields so existing dataclass field order (and positional construction) is kept.
+        Alternatives of a type or group choice (``/`` or ``//``) are not group references and
+        are left unexpanded.
+        """
         fields = {}
+        included_fields: dict[str, str] = {}
+        if _seen is None:
+            _seen = set()
+
+        # A bare name outside a map/group body is a type alias, not a group reference
+        is_map_or_group = type_definition.strip().startswith(("{", "("))
 
         # Remove outer braces
         clean_def = type_definition.strip().removeprefix("{").removesuffix("}")
 
         # Parse each line for field: type patterns
+        previous_line = ""
         for line in clean_def.split("\n"):
             line = line.strip()
             if not line or "Extensible" in line or line.startswith("//"):
+                continue
+            is_choice_alternative = previous_line.endswith("/")
+            previous_line = line
+
+            group_ref = re.fullmatch(r"(\w+\.\w+)\s*,?", line)
+            if group_ref and is_map_or_group and not is_choice_alternative:
+                ref_name = group_ref.group(1)
+                if ref_name in self.definitions and ref_name not in _seen:
+                    _seen.add(ref_name)
+                    for name, ref_type in self._extract_type_fields(self.definitions[ref_name], _seen).items():
+                        included_fields.setdefault(name, ref_type)
+                    logger.debug(f"Expanded group reference {ref_name}")
                 continue
 
             # Match pattern: [?] fieldName: type
@@ -1270,6 +1296,9 @@ class CddlParser:
                 if "{" not in normalized_type and "(" not in normalized_type:
                     fields[field_name] = normalized_type
                     logger.debug(f"Extracted field {field_name}: {normalized_type}")
+
+        for name, ref_type in included_fields.items():
+            fields.setdefault(name, ref_type)
 
         return fields
 
