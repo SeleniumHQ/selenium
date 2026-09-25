@@ -826,6 +826,18 @@ py_library(
     deps = [":exceptions"],
 )
 
+# The generator as an importable library so its helpers and emitters can be unit tested.
+# The binaries above list the source directly because they are the entry point; this target
+# exists only for the tests, which is why it is testonly and private.
+py_library(
+    name = "bidi_protocol_generator",
+    testonly = True,
+    srcs = ["generate_bidi_protocol.py"],
+    imports = ["."],
+    visibility = ["//visibility:private"],
+    deps = [":remote"],
+)
+
 py_test_suite(
     name = "unit",
     size = "small",
@@ -836,6 +848,7 @@ py_test_suite(
         "--instafail",
     ],
     deps = [
+        ":bidi_protocol_generator",
         ":init-tree",
         ":selenium",
     ] + TEST_DEPS,
