@@ -41,6 +41,17 @@ module Selenium
           type clip_rectangle = ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::BoxClipRectangle | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::ElementClipRectangle
           type download_end_params = ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CanceledParams | ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::DownloadEndParams::CompleteParams
 
+          class BaseInfo < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?
+            attr_reader client_window: String
+            attr_reader context: String
+            attr_reader original_opener: String?
+            attr_reader url: String
+            attr_reader user_context: String
+            attr_reader parent: untyped
+            def self.new: (children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?, client_window: String, context: String, original_opener: String?, url: String, user_context: String, ?parent: String?) -> instance
+          end
+
           class Info < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?
             attr_reader client_window: String
@@ -336,6 +347,18 @@ module Selenium
             attr_reader context: String
             attr_reader delta: Integer
             def self.new: (context: String, delta: Integer) -> instance
+          end
+
+          class ContextCreatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?
+            attr_reader client_window: String
+            attr_reader context: String
+            attr_reader original_opener: String?
+            attr_reader url: String
+            attr_reader user_context: String
+            attr_reader parent: untyped
+            attr_reader has_planned_navigation: bool
+            def self.new: (children: Array[::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Info]?, client_window: String, context: String, original_opener: String?, url: String, user_context: String, ?parent: String?, has_planned_navigation: bool) -> instance
           end
 
           class HistoryUpdatedParameters < ::Selenium::WebDriver::BiDi::Serialization::Record

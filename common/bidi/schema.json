@@ -869,7 +869,7 @@
       "method": "browsingContext.contextCreated",
       "name": "contextCreated",
       "params": {
-        "ref": "browsingContext.Info"
+        "ref": "browsingContext.ContextCreatedParameters"
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#event-browsingContext-contextCreated"
     },
@@ -3233,6 +3233,73 @@
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextinfolist"
     },
+    "browsingContext.BaseInfo": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "children",
+          "wire": "children",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.InfoList",
+            "nullable": true
+          }
+        },
+        {
+          "name": "clientWindow",
+          "wire": "clientWindow",
+          "required": true,
+          "type": {
+            "ref": "browser.ClientWindow"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext"
+          }
+        },
+        {
+          "name": "originalOpener",
+          "wire": "originalOpener",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "url",
+          "wire": "url",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "userContext",
+          "wire": "userContext",
+          "required": true,
+          "type": {
+            "ref": "browser.UserContext"
+          }
+        },
+        {
+          "name": "parent",
+          "wire": "parent",
+          "required": false,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbaseinfo",
+      "outbound": false,
+      "inbound": false
+    },
     "browsingContext.Info": {
       "kind": "record",
       "fields": [
@@ -5033,13 +5100,88 @@
           "wire": "params",
           "required": true,
           "type": {
-            "ref": "browsingContext.Info"
+            "ref": "browsingContext.ContextCreatedParameters"
           }
         }
       ],
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreated",
       "outbound": false,
       "inbound": false
+    },
+    "browsingContext.ContextCreatedParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "children",
+          "wire": "children",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.InfoList",
+            "nullable": true
+          }
+        },
+        {
+          "name": "clientWindow",
+          "wire": "clientWindow",
+          "required": true,
+          "type": {
+            "ref": "browser.ClientWindow"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext"
+          }
+        },
+        {
+          "name": "originalOpener",
+          "wire": "originalOpener",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "url",
+          "wire": "url",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "userContext",
+          "wire": "userContext",
+          "required": true,
+          "type": {
+            "ref": "browser.UserContext"
+          }
+        },
+        {
+          "name": "parent",
+          "wire": "parent",
+          "required": false,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "hasPlannedNavigation",
+          "wire": "hasPlannedNavigation",
+          "required": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreatedparameters",
+      "outbound": false,
+      "inbound": true
     },
     "browsingContext.ContextDestroyed": {
       "kind": "record",
