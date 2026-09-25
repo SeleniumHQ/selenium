@@ -16,19 +16,38 @@
 # under the License.
 
 import importlib
+import platform
 import sys
 
 _PLATFORM_MODULES = {
-    "linux": "selenium_manager_linux_x86_64",
     "darwin": "selenium_manager_macos",
     "win32": "selenium_manager_windows",
 }
 
+# Linux is the only platform where we ship a package per architecture: the macOS
+# binary is universal and the Windows one is i686, which runs on x64 and arm64 too.
+_LINUX_MODULES = {
+    "x86_64": "selenium_manager_linux_x86_64",
+    "aarch64": "selenium_manager_linux_aarch64",
+}
+
+
+def _module_name(sys_platform: str, machine: str) -> str:
+    if sys_platform == "linux":
+        module_name = _LINUX_MODULES.get(machine)
+        if module_name is None:
+            supported = ", ".join(_LINUX_MODULES)
+            raise SystemExit(f"Unsupported Linux architecture: {machine}. Supported: {supported}")
+        return module_name
+
+    module_name = _PLATFORM_MODULES.get(sys_platform)
+    if module_name is None:
+        raise SystemExit(f"Unsupported platform: {sys_platform}. Supported: linux, darwin, win32")
+    return module_name
+
 
 def main() -> None:
-    module_name = _PLATFORM_MODULES.get(sys.platform)
-    if module_name is None:
-        raise SystemExit(f"Unsupported platform: {sys.platform}. Supported: linux, darwin, win32")
+    module_name = _module_name(sys.platform, platform.machine())
 
     try:
         platform_module = importlib.import_module(module_name)

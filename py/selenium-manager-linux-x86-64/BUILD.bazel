@@ -4,6 +4,14 @@ load("//common:defs.bzl", "copy_file")
 
 SM_VERSION = "4.45.0"
 
+# PyPI rejects the bare `linux_x86_64` tag. The binary is statically linked
+# against musl and so runs unmodified on glibc hosts too, which means the same
+# file is valid under both tag families; ship it once per family.
+WHEEL_PLATFORM_TAGS = {
+    "manylinux": "manylinux_2_17_x86_64",
+    "musllinux": "musllinux_1_2_x86_64",
+}
+
 copy_file(
     name = "manager-binary",
     src = "//common/manager:selenium-manager-linux-x86_64",
@@ -17,30 +25,47 @@ py_library(
     imports = ["."],
 )
 
-py_wheel(
-    name = "selenium-manager-linux-x86-64-wheel",
-    abi = "none",
-    classifiers = [
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Testing",
-    ],
-    description_content_type = "text/plain",
-    distribution = "selenium_manager_linux_x86_64",
-    entry_points = {
-        "console_scripts": {
-            "selenium-manager": "selenium_manager_linux_x86_64:main",
+[
+    py_wheel(
+        name = "selenium-manager-linux-x86-64-wheel-" + suffix,
+        abi = "none",
+        classifiers = [
+            "Operating System :: POSIX :: Linux",
+            "Programming Language :: Python",
+            "Topic :: Software Development :: Testing",
+        ],
+        description_content_type = "text/plain",
+        distribution = "selenium_manager_linux_x86_64",
+        entry_points = {
+            "console_scripts": {
+                "selenium-manager": "selenium_manager_linux_x86_64:main",
+            },
         },
-    },
-    homepage = "https://www.selenium.dev",
-    license = "Apache-2.0",
-    platform = "linux_x86_64",
-    python_requires = ">=3.9",
-    python_tag = "py3",
-    strip_path_prefixes = ["py/selenium-manager-linux-x86-64/"],
-    summary = "Selenium Manager binary for Linux x86-64",
-    tags = ["release-artifact"],
-    version = SM_VERSION,
+        homepage = "https://www.selenium.dev",
+        license = "Apache-2.0",
+        platform = tag,
+        python_requires = ">=3.9",
+        python_tag = "py3",
+        strip_path_prefixes = ["py/selenium-manager-linux-x86-64/"],
+        summary = "Selenium Manager binary for Linux x86-64",
+        tags = ["release-artifact"],
+        version = SM_VERSION,
+        visibility = ["//visibility:public"],
+        deps = [
+            ":lib",
+            # py_wheel packages each dep's DefaultInfo files; py_library keeps data
+            # in runfiles, so the binary has to be named here to reach the wheel.
+            ":manager-binary",
+        ],
+    )
+    for suffix, tag in WHEEL_PLATFORM_TAGS.items()
+]
+
+filegroup(
+    name = "wheels",
+    srcs = [
+        "selenium-manager-linux-x86-64-wheel-" + suffix
+        for suffix in WHEEL_PLATFORM_TAGS
+    ],
     visibility = ["//visibility:public"],
-    deps = [":lib"],
 )

@@ -20,10 +20,14 @@
 const { execFileSync } = require('node:child_process')
 const path = require('node:path')
 const fs = require('node:fs')
-const { platform } = require('node:process')
+const { platform, arch } = require('node:process')
 
+// Linux is the only platform with a package per architecture: the macOS binary is
+// universal and the Windows one is ia32, which runs on x64 and arm64 as well. Keys
+// are matched as `${platform}-${arch}` first, then `${platform}`.
 const PLATFORM_PACKAGES = {
-  linux: '@selenium/manager-linux-x64',
+  'linux-x64': '@selenium/manager-linux-x64',
+  'linux-arm64': '@selenium/manager-linux-arm64',
   darwin: '@selenium/manager-darwin',
   win32: '@selenium/manager-win32',
   cygwin: '@selenium/manager-win32',
@@ -34,11 +38,11 @@ function getBinaryPath() {
     return process.env.SE_MANAGER_PATH
   }
 
-  const pkgName = PLATFORM_PACKAGES[platform]
+  const pkgName = PLATFORM_PACKAGES[`${platform}-${arch}`] ?? PLATFORM_PACKAGES[platform]
   if (!pkgName) {
     throw new Error(
-      `Unsupported platform: ${platform}. ` +
-        `Supported: linux, darwin, win32`
+      `Unsupported platform: ${platform} ${arch}. ` +
+        `Supported: linux (x64, arm64), darwin, win32`
     )
   }
 
