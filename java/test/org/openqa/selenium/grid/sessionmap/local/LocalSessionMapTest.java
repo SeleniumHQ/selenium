@@ -23,13 +23,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +58,8 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 class LocalSessionMapTest {
+
+  private static final long PREREQUISITE_TIMEOUT_SECONDS = 30;
 
   private LocalSessionMap sessionMap;
   private EventBus eventBus;
@@ -202,26 +209,30 @@ class LocalSessionMapTest {
 
     CountDownLatch latch = new CountDownLatch(2);
     ExecutorService executor = Executors.newFixedThreadPool(2);
+    List<Future<?>> tasks = new ArrayList<>();
 
-    executor.submit(
-        () -> {
-          try {
-            eventBus.fire(new NodeRemovedEvent(nodeStatus1));
-          } finally {
-            latch.countDown();
-          }
-        });
+    tasks.add(
+        executor.submit(
+            () -> {
+              try {
+                eventBus.fire(new NodeRemovedEvent(nodeStatus1));
+              } finally {
+                latch.countDown();
+              }
+            }));
 
-    executor.submit(
-        () -> {
-          try {
-            eventBus.fire(new NodeRestartedEvent(nodeStatus2));
-          } finally {
-            latch.countDown();
-          }
-        });
+    tasks.add(
+        executor.submit(
+            () -> {
+              try {
+                eventBus.fire(new NodeRestartedEvent(nodeStatus2));
+              } finally {
+                latch.countDown();
+              }
+            }));
 
     assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
+    rethrowTaskFailures(tasks);
 
     for (int i = 0; i < 10; i++) {
       SessionId node1SessionId = new SessionId("node1-session-" + i);
@@ -252,45 +263,49 @@ class LocalSessionMapTest {
     AtomicInteger noSuchSessionExceptions = new AtomicInteger(0);
 
     ExecutorService executor = Executors.newFixedThreadPool(sessionCount + 1);
+    List<Future<?>> tasks = new ArrayList<>();
 
     for (int i = 0; i < sessionCount; i++) {
       final int sessionIndex = i;
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("session-" + sessionIndex);
-              try {
-                Session session = sessionMap.get(sessionId);
-                if (session != null) {
-                  successfulGets.incrementAndGet();
+      tasks.add(
+          executor.submit(
+              () -> {
+                try {
+                  startLatch.await();
+                  SessionId sessionId = new SessionId("session-" + sessionIndex);
+                  try {
+                    Session session = sessionMap.get(sessionId);
+                    if (session != null) {
+                      successfulGets.incrementAndGet();
+                    }
+                  } catch (NoSuchSessionException e) {
+                    noSuchSessionExceptions.incrementAndGet();
+                  }
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                } finally {
+                  completeLatch.countDown();
                 }
-              } catch (NoSuchSessionException e) {
-                noSuchSessionExceptions.incrementAndGet();
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+              }));
     }
 
-    executor.submit(
-        () -> {
-          try {
-            startLatch.await();
-            eventBus.fire(new NodeRemovedEvent(nodeStatus));
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-          } finally {
-            completeLatch.countDown();
-          }
-        });
+    tasks.add(
+        executor.submit(
+            () -> {
+              try {
+                startLatch.await();
+                eventBus.fire(new NodeRemovedEvent(nodeStatus));
+              } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+              } finally {
+                completeLatch.countDown();
+              }
+            }));
 
     startLatch.countDown();
 
     assertThat(completeLatch.await(10, TimeUnit.SECONDS)).isTrue();
+    rethrowTaskFailures(tasks);
 
     assertThat(successfulGets.get() + noSuchSessionExceptions.get()).isEqualTo(sessionCount);
 
@@ -312,6 +327,7 @@ class LocalSessionMapTest {
     CountDownLatch startLatch = new CountDownLatch(1);
     CountDownLatch completeLatch = new CountDownLatch(totalOperations);
     ExecutorService executor = Executors.newFixedThreadPool(20);
+    List<Future<?>> tasks = new ArrayList<>();
 
     for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
       final URI nodeUri = URI.create("http://localhost:" + (5555 + nodeIndex));
@@ -321,56 +337,64 @@ class LocalSessionMapTest {
         final int finalSessionIndex = sessionIndex;
         final SessionId sessionId = new SessionId("node" + nodeIndex + "-session-" + sessionIndex);
         final Session session = createSession(sessionId, nodeUri);
+        final CountDownLatch sessionAdded = new CountDownLatch(1);
+        final CountDownLatch sessionRead = new CountDownLatch(1);
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                sessionMap.add(session);
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        tasks.add(
+            executor.submit(
+                () -> {
+                  try {
+                    startLatch.await();
+                    sessionMap.add(session);
+                  } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                  } finally {
+                    sessionAdded.countDown();
+                    completeLatch.countDown();
+                  }
+                }));
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                Thread.sleep(10); // Small delay to allow add operations
-                try {
-                  sessionMap.get(sessionId);
-                } catch (NoSuchSessionException e) {
-                  // Expected in concurrent scenarios
-                }
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        tasks.add(
+            executor.submit(
+                () -> {
+                  try {
+                    startLatch.await();
+                    awaitPrerequisite(sessionAdded);
+                    try {
+                      sessionMap.get(sessionId);
+                    } catch (NoSuchSessionException e) {
+                      // Expected in concurrent scenarios
+                    }
+                  } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                  } finally {
+                    sessionRead.countDown();
+                    completeLatch.countDown();
+                  }
+                }));
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                Thread.sleep(20); // Small delay to allow add/get operations
-                if (finalSessionIndex == 0) { // Only fire node event once per node
-                  eventBus.fire(new NodeRemovedEvent(nodeStatus));
-                }
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        tasks.add(
+            executor.submit(
+                () -> {
+                  try {
+                    startLatch.await();
+                    if (finalSessionIndex == 0) { // Only fire node event once per node
+                      awaitPrerequisite(sessionRead);
+                      eventBus.fire(new NodeRemovedEvent(nodeStatus));
+                    }
+                  } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                  } finally {
+                    completeLatch.countDown();
+                  }
+                }));
       }
     }
 
     startLatch.countDown();
 
     assertThat(completeLatch.await(30, TimeUnit.SECONDS)).isTrue();
+    rethrowTaskFailures(tasks);
 
     executor.shutdown();
   }
@@ -385,73 +409,83 @@ class LocalSessionMapTest {
     CountDownLatch completeLatch =
         new CountDownLatch(sessionsPerNode * 4); // 2 nodes * 2 operations each
     ExecutorService executor = Executors.newFixedThreadPool(10);
+    List<Future<?>> tasks = new ArrayList<>();
+
+    CountDownLatch allNode2Added = new CountDownLatch(sessionsPerNode);
 
     for (int i = 0; i < sessionsPerNode; i++) {
       final int sessionIndex = i;
+      final CountDownLatch node1Added = new CountDownLatch(1);
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
-              Session session = createSession(sessionId, nodeUri1);
-              sessionMap.add(session);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      tasks.add(
+          executor.submit(
+              () -> {
+                try {
+                  startLatch.await();
+                  SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
+                  Session session = createSession(sessionId, nodeUri1);
+                  sessionMap.add(session);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                } finally {
+                  node1Added.countDown();
+                  completeLatch.countDown();
+                }
+              }));
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
-              Session session = createSession(sessionId, nodeUri2);
-              sessionMap.add(session);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      tasks.add(
+          executor.submit(
+              () -> {
+                try {
+                  startLatch.await();
+                  SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
+                  Session session = createSession(sessionId, nodeUri2);
+                  sessionMap.add(session);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                } finally {
+                  allNode2Added.countDown();
+                  completeLatch.countDown();
+                }
+              }));
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(50); // Allow add operations to complete
-              SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
-              sessionMap.remove(sessionId);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      tasks.add(
+          executor.submit(
+              () -> {
+                try {
+                  startLatch.await();
+                  awaitPrerequisite(node1Added);
+                  SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
+                  sessionMap.remove(sessionId);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                } finally {
+                  completeLatch.countDown();
+                }
+              }));
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(100); // Allow add operations to complete
-              SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
-              if (sessionIndex == sessionsPerNode - 1) { // Only fire event once
-                NodeStatus nodeStatus = createNodeStatus(nodeUri2);
-                eventBus.fire(new NodeRemovedEvent(nodeStatus));
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      tasks.add(
+          executor.submit(
+              () -> {
+                try {
+                  startLatch.await();
+                  if (sessionIndex == sessionsPerNode - 1) { // Only fire event once
+                    awaitPrerequisite(allNode2Added);
+                    NodeStatus nodeStatus = createNodeStatus(nodeUri2);
+                    eventBus.fire(new NodeRemovedEvent(nodeStatus));
+                  }
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                } finally {
+                  completeLatch.countDown();
+                }
+              }));
     }
 
     startLatch.countDown();
 
     assertThat(completeLatch.await(15, TimeUnit.SECONDS)).isTrue();
+    rethrowTaskFailures(tasks);
 
     for (int i = 0; i < sessionsPerNode; i++) {
       SessionId node1SessionId = new SessionId("node1-session-" + i);
@@ -605,6 +639,9 @@ class LocalSessionMapTest {
 
     for (int i = 0; i < sessionsPerUri; i++) {
       final int sessionIndex = i;
+      final CountDownLatch added = new CountDownLatch(1);
+      final CountDownLatch updated = new CountDownLatch(1);
+      final CountDownLatch mutated = new CountDownLatch(1);
 
       executor.submit(
           () -> {
@@ -616,6 +653,7 @@ class LocalSessionMapTest {
             } catch (InterruptedException e) {
               Thread.currentThread().interrupt();
             } finally {
+              added.countDown();
               completeLatch.countDown();
             }
           });
@@ -624,13 +662,14 @@ class LocalSessionMapTest {
           () -> {
             try {
               startLatch.await();
-              Thread.sleep(10); // Small delay to allow add operation
+              awaitPrerequisite(added);
               SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
               Session updatedSession = createSession(sessionId, nodeUri2);
               sessionMap.add(updatedSession);
             } catch (InterruptedException e) {
               Thread.currentThread().interrupt();
             } finally {
+              updated.countDown();
               completeLatch.countDown();
             }
           });
@@ -640,16 +679,18 @@ class LocalSessionMapTest {
             () -> {
               try {
                 startLatch.await();
-                Thread.sleep(20); // Allow add/update operations
+                awaitPrerequisite(updated);
                 SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
                 sessionMap.remove(sessionId);
               } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
               } finally {
+                mutated.countDown();
                 completeLatch.countDown();
               }
             });
       } else {
+        mutated.countDown();
         completeLatch.countDown(); // Account for skipped operation
       }
 
@@ -657,7 +698,8 @@ class LocalSessionMapTest {
           () -> {
             try {
               startLatch.await();
-              Thread.sleep(30); // Allow other operations to complete
+              awaitPrerequisite(updated);
+              awaitPrerequisite(mutated);
               SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
               try {
                 sessionMap.get(sessionId);
@@ -689,6 +731,73 @@ class LocalSessionMapTest {
     }
 
     executor.shutdown();
+  }
+
+  /**
+   * Guards {@link #rethrowTaskFailures(List)}: an assertion that fails inside an executor task must
+   * reach the test thread instead of staying trapped in its {@link Future}. Without this the
+   * concurrent tests above could turn silently green while their assertions fail.
+   */
+  @Test
+  void rethrowTaskFailuresPropagatesAssertionErrorToTestThread() throws InterruptedException {
+    CountDownLatch completeLatch = new CountDownLatch(1);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    List<Future<?>> tasks = new ArrayList<>();
+
+    tasks.add(
+        executor.submit(
+            () -> {
+              try {
+                assertThat(false)
+                    .as("deliberately failing assertion inside a worker task")
+                    .isTrue();
+              } finally {
+                completeLatch.countDown();
+              }
+            }));
+
+    assertThat(completeLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+    assertThatThrownBy(() -> rethrowTaskFailures(tasks))
+        .isInstanceOf(AssertionError.class)
+        .hasMessageContaining("deliberately failing assertion inside a worker task");
+
+    executor.shutdown();
+  }
+
+  /**
+   * Blocks until an operation the caller depends on has finished. Replaces sleeping for an
+   * arbitrary period, which both slows the test down and only probabilistically orders the
+   * operations it is meant to sequence.
+   */
+  private static void awaitPrerequisite(CountDownLatch latch) throws InterruptedException {
+    assertThat(latch.await(PREREQUISITE_TIMEOUT_SECONDS, TimeUnit.SECONDS))
+        .as("Timed out waiting for a prerequisite operation to complete")
+        .isTrue();
+  }
+
+  /**
+   * Propagates failures raised inside executor tasks to the test thread. Without this an {@link
+   * AssertionError} thrown inside a submitted task is captured by its {@link Future} and never
+   * surfaces, so the test passes even though one of its assertions failed.
+   */
+  private static void rethrowTaskFailures(List<Future<?>> tasks) throws InterruptedException {
+    for (Future<?> task : tasks) {
+      try {
+        task.get(PREREQUISITE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+      } catch (ExecutionException e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof Error) {
+          throw (Error) cause;
+        }
+        if (cause instanceof RuntimeException) {
+          throw (RuntimeException) cause;
+        }
+        throw new AssertionError("A concurrent task failed", cause);
+      } catch (TimeoutException e) {
+        throw new AssertionError("A concurrent task did not complete in time", e);
+      }
+    }
   }
 
   private Session createSession(SessionId sessionId, URI nodeUri) {
