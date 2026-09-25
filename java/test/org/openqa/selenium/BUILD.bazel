@@ -20,6 +20,8 @@ SMALL_TESTS = [
     "print/PrintOptionsTest.java",
     "print/PageMarginTest.java",
     "print/PageSizeTest.java",
+    "webextension/WebExtensionTest.java",
+    "webextension/FirefoxWebExtensionOptionsTest.java",
 ]
 
 java_test_suite(
