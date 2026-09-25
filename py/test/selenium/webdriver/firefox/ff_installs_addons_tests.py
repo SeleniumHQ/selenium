@@ -21,6 +21,7 @@ import zipfile
 import pytest
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.web_extension import WebExtension
 from selenium.webdriver.support.wait import WebDriverWait
 
 from conftest import get_extensions_location
@@ -126,5 +127,46 @@ def test_install_uninstall_unsigned_addon_dir(driver, pages):
     assert injected.text == "Content injected by webextensions-selenium-example"
 
     driver.uninstall_addon(id)
+    driver.refresh()
+    assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
+
+
+# ADR 17817 decision 2: without BiDi, install_web_extension falls back to these same
+# classic endpoints. The BiDi path is covered by common/bidi/driver_web_extension_tests.py.
+
+
+@pytest.mark.no_driver_after_test
+def test_install_web_extension_falls_back_to_classic_for_an_archive(driver, pages):
+    extension = driver.install_web_extension(os.path.join(EXTENSIONS, "webextensions-selenium-example.xpi"))
+
+    assert isinstance(extension, WebExtension)
+    assert extension.id == "webextensions-selenium-example-v3@example.com"
+
+    pages.load("blank.html")
+    injected = WebDriverWait(driver, timeout=2).until(
+        lambda dr: dr.find_element(By.ID, "webextensions-selenium-example")
+    )
+    assert injected.text == "Content injected by webextensions-selenium-example"
+
+    driver.uninstall_web_extension(extension)
+    driver.refresh()
+    assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
+
+
+@pytest.mark.no_driver_after_test
+def test_install_web_extension_falls_back_to_classic_for_a_directory(driver, pages):
+    target = os.path.join(EXTENSIONS, "webextensions-selenium-example-signed")
+
+    extension = driver.install_web_extension(target, permanent=False)
+
+    assert extension.id == "webextensions-selenium-example-v3@example.com"
+
+    pages.load("blank.html")
+    injected = WebDriverWait(driver, timeout=2).until(
+        lambda dr: dr.find_element(By.ID, "webextensions-selenium-example")
+    )
+    assert injected.text == "Content injected by webextensions-selenium-example"
+
+    driver.uninstall_web_extension(extension)
     driver.refresh()
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0

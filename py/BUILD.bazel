@@ -332,6 +332,10 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":bidi",
+        # webdriver.py installs web extensions through the generated protocol layer, so it
+        # rides along with :bidi rather than only reaching the targets that test BiDi.
+        # :remote cannot carry it: the generator depends on :remote, so that would cycle.
+        ":bidi_protocol",
         ":exceptions",
         ":latest",
         ":remote",
@@ -864,7 +868,11 @@ BIDI_IMPLEMENTATIONS = []
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
-REMOTE_BIDI_TESTS = []
+REMOTE_BIDI_TESTS = [
+    # install_web_extension uploads an unpacked extension to the remote end and
+    # installs from the path it hands back, which only happens over Grid.
+    "test/selenium/webdriver/common/bidi/driver_web_extension_tests.py",
+]
 
 GRID_TESTS = glob(["test/selenium/webdriver/remote/**/*.py"])
 
