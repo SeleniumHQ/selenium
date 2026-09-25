@@ -67,10 +67,9 @@ def extract_traceback_frames(tb):
     """Extract frames from a traceback object."""
     frames = []
     while tb:
-        if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno"):
+        if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno") and Path(tb.tb_frame.f_code.co_filename).exists():
             # Skip frames without source files
-            if Path(tb.tb_frame.f_code.co_filename).exists():
-                frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
+            frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
         tb = getattr(tb, "tb_next", None)
     return frames
 
@@ -552,9 +551,8 @@ def driver(request, server):
     _skip_unless_remote(request, selenium_driver.is_remote)
 
     # skip tests for drivers that don't support BiDi when --bidi is enabled
-    if selenium_driver.bidi:
-        if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
-            pytest.skip(f"{driver_class} does not support BiDi")
+    if selenium_driver.bidi and driver_class.lower() not in selenium_driver.supported_bidi_drivers:
+        pytest.skip(f"{driver_class} does not support BiDi")
 
     _apply_xfail_markers(request, driver_class, selenium_driver.is_remote)
 
@@ -583,15 +581,14 @@ def driver(request, server):
 
     yield selenium_driver.driver
 
-    if request.node.get_closest_marker("no_driver_after_test"):
-        if selenium_driver is not None:
-            try:
-                selenium_driver.stop_driver()
-            except WebDriverException:
-                pass
-            except Exception:
-                raise
-            selenium_driver = None
+    if request.node.get_closest_marker("no_driver_after_test") and selenium_driver is not None:
+        try:
+            selenium_driver.stop_driver()
+        except WebDriverException:
+            pass
+        except Exception:
+            raise
+        selenium_driver = None
 
 
 @pytest.fixture(scope="session", autouse=True)

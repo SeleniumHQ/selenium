@@ -159,6 +159,7 @@ select = [
     "PLE",
     "PT",
     "RUF",
+    "SIM102",
     "TID252",
     "UP",
     "W",
