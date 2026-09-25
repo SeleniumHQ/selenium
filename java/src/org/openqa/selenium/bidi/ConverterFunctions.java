@@ -130,8 +130,13 @@ public class ConverterFunctions {
         try {
           return exact.longValueExact();
         } catch (ArithmeticException e) {
+          // Not toPlainString(): an out-of-range value can carry a huge exponent (e.g. 1e999999999
+          // — a 12-byte, otherwise-valid JSON number lexeme), and toPlainString() expands that to
+          // its full decimal digit count, an allocation large enough to OOM the JVM on input this
+          // small. toString() falls back to scientific notation once the exponent is large, so its
+          // size tracks the value's precision (digit count), not its magnitude.
           throw new JsonException(
-              "Expected an integer within the Long range, got: " + exact.toPlainString(), e);
+              "Expected an integer within the Long range, got: " + exact.toString(), e);
         }
       };
     }
