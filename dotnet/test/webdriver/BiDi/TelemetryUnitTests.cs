@@ -44,7 +44,7 @@ class TelemetryUnitTests
         {
             ShouldListenTo = source => source.Name == SourceName,
             SampleUsingParentId = (ref ActivityCreationOptions<string> _) => ActivitySamplingResult.AllData,
-            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            Sample = (ref _) => ActivitySamplingResult.AllData,
             ActivityStopped = _captured.Enqueue,
         };
         ActivitySource.AddActivityListener(_listener);
@@ -98,8 +98,8 @@ class TelemetryUnitTests
         using var ambientListener = new ActivityListener
         {
             ShouldListenTo = source => source.Name == "selenium.tests.ambient",
-            SampleUsingParentId = (ref ActivityCreationOptions<string> _) => ActivitySamplingResult.AllData,
-            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            SampleUsingParentId = (ref _) => ActivitySamplingResult.AllData,
+            Sample = (ref _) => ActivitySamplingResult.AllData,
         };
         ActivitySource.AddActivityListener(ambientListener);
 

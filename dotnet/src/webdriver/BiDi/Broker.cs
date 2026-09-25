@@ -78,8 +78,6 @@ internal sealed class Broker : IAsyncDisposable
 
         using var activity = SeleniumActivitySource.Instance.StartActivity(method, ActivityKind.Client);
 
-        activity?.SetTag("rpc.method", method);
-
         var id = Interlocked.Increment(ref _currentCommandId);
 
         try
