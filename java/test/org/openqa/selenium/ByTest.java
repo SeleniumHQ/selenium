@@ -184,4 +184,40 @@ class ByTest {
         .containsEntry("using", "css selector")
         .containsEntry("value", "*[name='a\\\\b']");
   }
+
+  @Test
+  void getJavascriptExecutorAcceptsAContextWrappingAJavascriptCapableDriver() {
+    WebDriver driver = new StubDriver();
+
+    assertThat(By.cssSelector("cheese").getJavascriptExecutor(new DriverWrappingContext(driver)))
+        .isSameAs(driver);
+  }
+
+  /**
+   * Mirrors a context such as {@code RemoteWebElement}, which is not a {@link JavascriptExecutor}
+   * itself but wraps a driver that may be one.
+   */
+  private static class DriverWrappingContext implements SearchContext, WrapsDriver {
+
+    private final WebDriver driver;
+
+    DriverWrappingContext(WebDriver driver) {
+      this.driver = driver;
+    }
+
+    @Override
+    public WebDriver getWrappedDriver() {
+      return driver;
+    }
+
+    @Override
+    public List<WebElement> findElements(By by) {
+      throw new UnsupportedOperationException("findElements");
+    }
+
+    @Override
+    public WebElement findElement(By by) {
+      throw new UnsupportedOperationException("findElement");
+    }
+  }
 }
