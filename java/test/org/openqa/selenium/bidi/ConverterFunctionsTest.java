@@ -27,17 +27,20 @@ import org.openqa.selenium.json.JsonException;
 @Tag("UnitTests")
 class ConverterFunctionsTest {
 
-  // A JSON number with a huge exponent (RFC 8259 places no bound on one) is a tiny wire payload —
-  // this lexeme is 12 bytes — but is always out of Long's range, so StrictLongCoercer always
-  // rejects it. The rejection message must stay cheap to build regardless: an implementation that
-  // expands the value to its full decimal digit string (BigDecimal#toPlainString()) would need
-  // roughly a billion characters for this one value, turning a malformed/adversarial number into
-  // an OutOfMemoryError instead of an ordinary JsonException.
+  // A JSON number with a huge exponent (RFC 8259 places no bound on one) is a tiny wire payload
+  // but is always out of Long's range, so StrictLongCoercer always rejects it. The rejection
+  // message must stay cheap to build regardless: an implementation that expands the value to its
+  // full decimal digit string (BigDecimal#toPlainString()) would blow that budget for large enough
+  // exponents, turning a malformed/adversarial number into an OutOfMemoryError instead of an
+  // ordinary JsonException. 1e10000 is already far larger than any exponent this rejection path
+  // should ever need to render (a 10,000-character string, not a billion-character one) — large
+  // enough to fail the length assertion below if the guard regresses, but small enough that a
+  // regressed test still finishes instead of exhausting the test JVM's heap.
   @Test
   void rejectingAnExtremeOutOfRangeLongDoesNotExpandItsFullDecimalForm() {
     // toType(String, Type) wraps any JsonException in its own "Unable to parse" JsonException —
     // the rejection this test cares about is that wrapper's cause.
-    assertThatThrownBy(() -> ConverterFunctions.JSON.toType("1e999999999", Long.class))
+    assertThatThrownBy(() -> ConverterFunctions.JSON.toType("1e10000", Long.class))
         .isInstanceOf(JsonException.class)
         .cause()
         .isInstanceOf(JsonException.class)
@@ -47,7 +50,7 @@ class ConverterFunctionsTest {
 
   @Test
   void rejectingAnExtremeOutOfRangeNegativeLongDoesNotExpandItsFullDecimalForm() {
-    assertThatThrownBy(() -> ConverterFunctions.JSON.toType("-1e999999999", Long.class))
+    assertThatThrownBy(() -> ConverterFunctions.JSON.toType("-1e10000", Long.class))
         .isInstanceOf(JsonException.class)
         .cause()
         .isInstanceOf(JsonException.class)
