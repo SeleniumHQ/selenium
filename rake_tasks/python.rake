@@ -8,6 +8,37 @@ def python_version
   end
 end
 
+def manager_python_version
+  File.foreach('py/selenium-manager/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.start_with?('SM_VERSION')
+  end
+end
+
+unless defined?(MANAGER_PYTHON_FILES)
+  # The BUILD files read SM_VERSION from version.bzl, so only the manifests the
+  # packaging backends parse need rewriting alongside it.
+  MANAGER_PYTHON_FILES = %w[
+    py/selenium-manager/version.bzl
+    py/selenium-manager/pyproject.toml
+    py/selenium-manager-linux-x86-64/pyproject.toml
+    py/selenium-manager-linux-aarch64/pyproject.toml
+    py/selenium-manager-macos/pyproject.toml
+    py/selenium-manager-windows/pyproject.toml
+  ].freeze
+end
+
+unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+  # Each package fans out to one wheel per platform tag it supports, so build the
+  # `wheels` filegroup rather than naming individual wheels here.
+  MANAGER_PYTHON_WHEEL_TARGETS = %w[
+    //py/selenium-manager-linux-x86-64:wheels
+    //py/selenium-manager-linux-aarch64:wheels
+    //py/selenium-manager-macos:wheels
+    //py/selenium-manager-windows:wheels
+    //py/selenium-manager:wheels
+  ].freeze
+end
+
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -182,6 +213,43 @@ task :version, [:version] do |_task, arguments|
   conf = 'py/docs/source/conf.py'
   text = File.read(conf).gsub(old_short_version, new_short_version)
   File.open(conf, 'w') { |f| f.puts text }
+
+  Rake::Task['py:version_manager'].invoke(new_version)
+end
+
+desc 'Update selenium-manager Python package versions'
+task :version_manager, [:new_version] do |_task, arguments|
+  new_version = arguments[:new_version]
+  raise 'new_version argument required' if new_version.nil? || new_version.empty?
+
+  old_version = manager_python_version
+  puts "Updating selenium-manager Python packages from #{old_version} to #{new_version}"
+
+  MANAGER_PYTHON_FILES.each do |file|
+    text = File.read(file).gsub(old_version, new_version)
+    File.open(file, 'w') { |f| f.puts text }
+  end
+end
+
+desc 'Build and release selenium-manager Python packages to PyPI'
+task :release_manager do |_task, arguments|
+  nightly = arguments.to_a.include?('nightly')
+  Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
+
+  if nightly
+    puts 'Updating selenium-manager version to nightly...'
+    old_version = manager_python_version
+    nightly_suffix = ".#{Time.now.strftime('%Y%m%d%H%M')}"
+    base = old_version.split('.')[0..2].join('.')
+    new_version = "#{base}#{nightly_suffix}"
+    Rake::Task['py:version_manager'].invoke(new_version)
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
+  end
+
+  MANAGER_PYTHON_WHEEL_TARGETS.each do |target|
+    puts "Building: #{target}"
+    Bazel.execute('build', ['--config=release'], target)
+  end
 end
 
 desc 'Format Python code with ruff'

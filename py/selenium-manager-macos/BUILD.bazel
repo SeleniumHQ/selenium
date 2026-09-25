@@ -1,0 +1,85 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:packaging.bzl", "py_wheel")
+load("//common:defs.bzl", "copy_file")
+load("//py/selenium-manager:version.bzl", "SM_VERSION")
+
+copy_file(
+    name = "manager-binary",
+    src = "//common/manager:selenium-manager-macos",
+    out = "selenium_manager_macos/bin/selenium-manager",
+)
+
+py_library(
+    name = "lib",
+    srcs = ["selenium_manager_macos/__init__.py"],
+    data = [":manager-binary"],
+    imports = ["."],
+)
+
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "license-wheel",
+    src = ":global-license",
+    out = "selenium_manager_macos-%s.dist-info/LICENSE" % SM_VERSION,
+)
+
+copy_file(
+    name = "notice-wheel",
+    src = ":global-notice",
+    out = "selenium_manager_macos-%s.dist-info/NOTICE" % SM_VERSION,
+)
+
+py_wheel(
+    name = "selenium-manager-macos-wheel",
+    abi = "none",
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Operating System :: MacOS :: MacOS X",
+        "Topic :: Software Development :: Testing",
+        "Programming Language :: Python",
+    ],
+    description_content_type = "text/x-rst",
+    description_file = "README.rst",
+    distribution = "selenium_manager_macos",
+    homepage = "https://www.selenium.dev",
+    license = "Apache-2.0",
+    platform = "macosx_10_13_universal2",
+    project_urls = {
+        "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-macos",
+        "Issues": "https://github.com/SeleniumHQ/selenium/issues",
+    },
+    python_requires = ">=3.9",
+    python_tag = "py3",
+    strip_path_prefixes = ["py/selenium-manager-macos/"],
+    summary = "Selenium Manager binary for macOS (universal binary, x86-64 + aarch64)",
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":lib",
+        ":license-wheel",
+        # py_wheel packages each dep's DefaultInfo files; py_library keeps data
+        # in runfiles, so the binary has to be named here to reach the wheel.
+        ":manager-binary",
+        ":notice-wheel",
+    ],
+)
+
+filegroup(
+    name = "wheels",
+    srcs = [":selenium-manager-macos-wheel"],
+    visibility = ["//visibility:public"],
+)
