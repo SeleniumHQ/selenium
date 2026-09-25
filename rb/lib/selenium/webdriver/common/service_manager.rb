@@ -27,7 +27,7 @@ module Selenium
     #
     class ServiceManager
       START_TIMEOUT = 20
-      SOCKET_LOCK_TIMEOUT = 45
+      PORT_LOCK_TIMEOUT = 45
       STOP_TIMEOUT = 20
 
       #
@@ -52,7 +52,7 @@ module Selenium
 
         Platform.exit_hook { stop } # make sure we don't leave the server running
 
-        socket_lock.locked do
+        port_lock.locked do
           find_free_port
           start_process
           connect_until_stable
@@ -169,8 +169,8 @@ module Selenium
         "unable to connect to #{@executable_path} #{@host}:#{@port}"
       end
 
-      def socket_lock
-        @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
+      def port_lock
+        @port_lock ||= PortLock.new(@port, PORT_LOCK_TIMEOUT)
       end
     end # Service
   end # WebDriver
