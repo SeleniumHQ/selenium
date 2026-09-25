@@ -4,24 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium-manager-linux-x86-64"
-version = "4.45.0"
+version = "4.50.0.202609091537"
 license = "Apache-2.0"
-license-files = ["LICENSE", "NOTICE"]
 description = "Selenium Manager binary for Linux x86-64"
+readme = "README.rst"
 requires-python = ">=3.9"
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
     "Operating System :: POSIX :: Linux",
-    "Programming Language :: Python",
     "Topic :: Software Development :: Testing",
+    "Programming Language :: Python",
 ]
 
 [project.urls]
 homepage = "https://www.selenium.dev"
 source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-linux-x86-64"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
-
-[project.scripts]
-selenium-manager = "selenium_manager_linux_x86_64:main"
 
 [tool.setuptools.package-data]
 selenium_manager_linux_x86_64 = ["bin/selenium-manager"]

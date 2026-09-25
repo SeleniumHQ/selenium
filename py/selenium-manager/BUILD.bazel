@@ -1,7 +1,10 @@
-load("@rules_python//python:defs.bzl", "py_library", "py_test")
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load("@py_dev_requirements//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_python//python:packaging.bzl", "py_wheel")
-
-SM_VERSION = "4.45.0"
+load("//common:defs.bzl", "copy_file")
+load("//py:defs.bzl", "py_test_suite")
+load(":version.bzl", "PLATFORM_REQUIREMENTS", "SM_VERSION")
 
 py_library(
     name = "lib",
@@ -12,12 +15,38 @@ py_library(
     imports = ["."],
 )
 
-py_test(
-    name = "platform-dispatch-test",
+py_test_suite(
+    name = "unit",
     size = "small",
-    srcs = ["test/test_platform_dispatch.py"],
-    main = "test/test_platform_dispatch.py",
-    deps = [":lib"],
+    srcs = ["test/platform_dispatch_tests.py"],
+    deps = [
+        ":lib",
+        requirement("pytest"),
+    ],
+)
+
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "license-wheel",
+    src = ":global-license",
+    out = "selenium_manager-%s.dist-info/LICENSE" % SM_VERSION,
+)
+
+copy_file(
+    name = "notice-wheel",
+    src = ":global-notice",
+    out = "selenium_manager-%s.dist-info/NOTICE" % SM_VERSION,
 )
 
 py_wheel(
@@ -39,7 +68,11 @@ py_wheel(
         "Programming Language :: Python :: 3.13",
     ],
     description_content_type = "text/x-rst",
+    description_file = "README.rst",
     distribution = "selenium_manager",
+    # The only console script in the distribution: the platform packages carry a
+    # binary and a path to it, never a command of their own, so this name is not
+    # contested no matter which of them gets installed.
     entry_points = {
         "console_scripts": {
             "selenium-manager": "selenium_manager:main",
@@ -48,20 +81,24 @@ py_wheel(
     homepage = "https://www.selenium.dev",
     license = "Apache-2.0",
     platform = "any",
+    project_urls = {
+        "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager",
+        "Documentation": "https://www.selenium.dev/documentation/selenium_manager",
+        "Issues": "https://github.com/SeleniumHQ/selenium/issues",
+    },
     python_requires = ">=3.9",
     python_tag = "py3",
-    requires = [
-        "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
-        "selenium-manager-linux-aarch64==4.45.0; sys_platform=='linux' and platform_machine=='aarch64'",
-        "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
-        "selenium-manager-windows==4.45.0; sys_platform=='win32'",
-    ],
+    requires = PLATFORM_REQUIREMENTS,
     strip_path_prefixes = ["py/selenium-manager/"],
     summary = "Selenium Manager — browser and driver manager for the Selenium ecosystem",
     tags = ["release-artifact"],
     version = SM_VERSION,
     visibility = ["//visibility:public"],
-    deps = [":lib"],
+    deps = [
+        ":lib",
+        ":license-wheel",
+        ":notice-wheel",
+    ],
 )
 
 filegroup(

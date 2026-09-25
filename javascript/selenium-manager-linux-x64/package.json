@@ -1,6 +1,6 @@
 {
   "name": "@selenium/manager-linux-x64",
-  "version": "4.45.0",
+  "version": "4.50.0-nightly202609091537",
   "description": "Selenium Manager binary for Linux x64",
   "license": "Apache-2.0",
   "os": ["linux"],

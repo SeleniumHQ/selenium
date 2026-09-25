@@ -1,8 +1,8 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("@rules_python//python:defs.bzl", "py_library")
 load("@rules_python//python:packaging.bzl", "py_wheel")
 load("//common:defs.bzl", "copy_file")
-
-SM_VERSION = "4.45.0"
+load("//py/selenium-manager:version.bzl", "SM_VERSION")
 
 # PyPI rejects the bare `linux_x86_64` tag. The binary is statically linked
 # against musl and so runs unmodified on glibc hosts too, which means the same
@@ -25,25 +25,51 @@ py_library(
     imports = ["."],
 )
 
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "license-wheel",
+    src = ":global-license",
+    out = "selenium_manager_linux_x86_64-%s.dist-info/LICENSE" % SM_VERSION,
+)
+
+copy_file(
+    name = "notice-wheel",
+    src = ":global-notice",
+    out = "selenium_manager_linux_x86_64-%s.dist-info/NOTICE" % SM_VERSION,
+)
+
 [
     py_wheel(
         name = "selenium-manager-linux-x86-64-wheel-" + suffix,
         abi = "none",
         classifiers = [
+            "Development Status :: 5 - Production/Stable",
+            "Intended Audience :: Developers",
             "Operating System :: POSIX :: Linux",
-            "Programming Language :: Python",
             "Topic :: Software Development :: Testing",
+            "Programming Language :: Python",
         ],
-        description_content_type = "text/plain",
+        description_content_type = "text/x-rst",
+        description_file = "README.rst",
         distribution = "selenium_manager_linux_x86_64",
-        entry_points = {
-            "console_scripts": {
-                "selenium-manager": "selenium_manager_linux_x86_64:main",
-            },
-        },
         homepage = "https://www.selenium.dev",
         license = "Apache-2.0",
         platform = tag,
+        project_urls = {
+            "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-linux-x86-64",
+            "Issues": "https://github.com/SeleniumHQ/selenium/issues",
+        },
         python_requires = ">=3.9",
         python_tag = "py3",
         strip_path_prefixes = ["py/selenium-manager-linux-x86-64/"],
@@ -53,9 +79,11 @@ py_library(
         visibility = ["//visibility:public"],
         deps = [
             ":lib",
+            ":license-wheel",
             # py_wheel packages each dep's DefaultInfo files; py_library keeps data
             # in runfiles, so the binary has to be named here to reach the wheel.
             ":manager-binary",
+            ":notice-wheel",
         ],
     )
     for suffix, tag in WHEEL_PLATFORM_TAGS.items()

@@ -1,6 +1,6 @@
 {
   "name": "@selenium/manager",
-  "version": "4.45.0",
+  "version": "4.50.0-nightly202609091537",
   "description": "Selenium Manager — browser and driver manager for the Selenium ecosystem",
   "license": "Apache-2.0",
   "keywords": [
@@ -21,14 +21,19 @@
   "engines": {
     "node": ">= 18.0.0"
   },
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "selenium-manager": "./bin/selenium-manager.js"
   },
   "optionalDependencies": {
-    "@selenium/manager-darwin": "4.45.0",
-    "@selenium/manager-linux-arm64": "4.45.0",
-    "@selenium/manager-linux-x64": "4.45.0",
-    "@selenium/manager-win32": "4.45.0"
+    "@selenium/manager-darwin": "4.50.0-nightly202609091537",
+    "@selenium/manager-linux-arm64": "4.50.0-nightly202609091537",
+    "@selenium/manager-linux-x64": "4.50.0-nightly202609091537",
+    "@selenium/manager-win32": "4.50.0-nightly202609091537"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

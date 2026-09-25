@@ -7,23 +7,21 @@ def node_version
 end
 
 def manager_npm_version
-  File.foreach('javascript/selenium-manager/package.json') do |line|
-    return line.split(':').last.strip.tr('",', '') if line.include?('version')
+  File.foreach('javascript/selenium-manager/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.start_with?('SM_VERSION')
   end
 end
 
 unless defined?(MANAGER_NPM_FILES)
+  # The BUILD files read SM_VERSION from version.bzl, so only the manifests npm
+  # itself parses need rewriting alongside it.
   MANAGER_NPM_FILES = %w[
+    javascript/selenium-manager/version.bzl
     javascript/selenium-manager/package.json
-    javascript/selenium-manager/BUILD.bazel
     javascript/selenium-manager-darwin/package.json
-    javascript/selenium-manager-darwin/BUILD.bazel
     javascript/selenium-manager-linux-x64/package.json
-    javascript/selenium-manager-linux-x64/BUILD.bazel
     javascript/selenium-manager-linux-arm64/package.json
-    javascript/selenium-manager-linux-arm64/BUILD.bazel
     javascript/selenium-manager-win32/package.json
-    javascript/selenium-manager-win32/BUILD.bazel
   ].freeze
 end
 
