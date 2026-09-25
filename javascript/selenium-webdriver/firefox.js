@@ -117,6 +117,7 @@ const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
+const webExtension = require('./lib/web_extension')
 const { getBinaryPaths } = require('./common/driverFinder')
 const { findFreePort } = require('./net/portprober')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
@@ -365,6 +366,7 @@ const ExtensionCommand = {
 function createExecutor(serverUrl) {
   let client = serverUrl.then((url) => new http.HttpClient(url))
   let executor = new http.Executor(client)
+  executor[Symbols.localDriverService] = true
   configureExecutor(executor)
   return executor
 }
@@ -554,8 +556,13 @@ class Driver extends webdriver.WebDriver {
    * @return {!Promise<string>} A promise that will resolve to an ID for the
    *     newly installed addon.
    * @see #uninstallAddon
+   * @deprecated Use {@link #installWebExtension} instead.
    */
   async installAddon(path, temporary = false) {
+    webdriver.WebDriver.logger.deprecate(
+      'firefox-installAddon',
+      'firefox.Driver#installAddon() is deprecated. Use driver.installWebExtension() instead.',
+    )
     let stats = fs.statSync(path)
     let buf
     if (stats.isDirectory()) {
@@ -579,10 +586,71 @@ class Driver extends webdriver.WebDriver {
    * @return {!Promise} A promise that will resolve when the operation has
    *     completed.
    * @see #installAddon
+   * @deprecated Use {@link #uninstallWebExtension} instead.
    */
   async uninstallAddon(id) {
+    webdriver.WebDriver.logger.deprecate(
+      'firefox-uninstallAddon',
+      'firefox.Driver#uninstallAddon() is deprecated. Use driver.uninstallWebExtension() instead.',
+    )
     id = await Promise.resolve(id)
     return this.execute(new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter('id', id))
+  }
+
+  /**
+   * Installs a browser extension. Works with remote (Grid) sessions. Uses BiDi when the session
+   * has it enabled, and otherwise falls back to geckodriver's classic addon endpoint.
+   *
+   * Pass `permanent: false` to install an unsigned extension; without the option, each transport
+   * applies its own default. A directory cannot be installed permanently over BiDi.
+   *
+   * @param {string} extension an unpacked extension directory, a packed extension file
+   *     (.xpi/.zip), or base64-encoded bytes of one.
+   * @param {{permanent: (boolean|undefined), allowPrivateBrowsing: (boolean|undefined)}=} options
+   *     `permanent` keeps the extension installed across browser restarts instead of removing it
+   *     at shutdown; `allowPrivateBrowsing` lets it run in private windows.
+   * @return {!Promise<!webExtension.WebExtension>} the installed extension.
+   * @throws {error.InvalidArgumentError} on an option other than these two, or a non-boolean value.
+   * @override
+   */
+  async installWebExtension(extension, options = undefined) {
+    options = webExtension.checkInstallOptions(options, ['permanent', 'allowPrivateBrowsing'], 'Firefox')
+    const { permanent, allowPrivateBrowsing } = options
+
+    if (!(await webExtension.isBidiEnabled(this))) {
+      const cmd = new command.Command(ExtensionCommand.INSTALL_ADDON).setParameter(
+        'addon',
+        await webExtension.encodeExtension(extension),
+      )
+      if (permanent !== undefined) cmd.setParameter('temporary', !permanent)
+      if (allowPrivateBrowsing !== undefined) cmd.setParameter('allowPrivateBrowsing', allowPrivateBrowsing)
+      return new webExtension.WebExtension(await this.execute(cmd))
+    }
+
+    const { MozWebExtension } = require('./bidi/generated/webextension')
+    const module = await MozWebExtension.create(this)
+    const result = await module.install({
+      extensionData: await webExtension.extensionData(this, extension),
+      ...options,
+    })
+    return new webExtension.WebExtension(result.extension)
+  }
+
+  /**
+   * Uninstalls a browser extension installed with {@link #installWebExtension}. Uses BiDi when
+   * the session has it enabled, and otherwise geckodriver's classic addon endpoint.
+   *
+   * @param {!webExtension.WebExtension} extension the extension returned by
+   *     {@link #installWebExtension}.
+   * @return {!Promise<void>}
+   * @override
+   */
+  async uninstallWebExtension(extension) {
+    const id = webExtension.extensionId(extension)
+    if (await webExtension.isBidiEnabled(this)) {
+      return super.uninstallWebExtension(extension)
+    }
+    await this.execute(new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter('id', id))
   }
 
   /**

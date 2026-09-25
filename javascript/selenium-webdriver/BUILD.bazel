@@ -213,6 +213,7 @@ SMALL_TESTS = [
     "test/lib/test_browsers_test.js",
     "test/lib/until_test.js",
     "test/lib/virtualauthenticatoroptions_test.js",
+    "test/lib/web_extension_test.js",
     "test/lib/webdriver_test.js",
     "test/net/index_test.js",
     "test/net/portprober_test.js",
