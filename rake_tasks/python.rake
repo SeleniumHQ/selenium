@@ -20,6 +20,8 @@ unless defined?(MANAGER_PYTHON_FILES)
     py/selenium-manager/BUILD.bazel
     py/selenium-manager-linux-x86-64/pyproject.toml
     py/selenium-manager-linux-x86-64/BUILD.bazel
+    py/selenium-manager-linux-aarch64/pyproject.toml
+    py/selenium-manager-linux-aarch64/BUILD.bazel
     py/selenium-manager-macos/pyproject.toml
     py/selenium-manager-macos/BUILD.bazel
     py/selenium-manager-windows/pyproject.toml
@@ -28,11 +30,14 @@ unless defined?(MANAGER_PYTHON_FILES)
 end
 
 unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+  # Each package fans out to one wheel per platform tag it supports, so build the
+  # `wheels` filegroup rather than naming individual wheels here.
   MANAGER_PYTHON_WHEEL_TARGETS = %w[
-    //py/selenium-manager-linux-x86-64:selenium-manager-linux-x86-64-wheel
-    //py/selenium-manager-macos:selenium-manager-macos-wheel
-    //py/selenium-manager-windows:selenium-manager-windows-wheel
-    //py/selenium-manager:selenium-manager-wheel
+    //py/selenium-manager-linux-x86-64:wheels
+    //py/selenium-manager-linux-aarch64:wheels
+    //py/selenium-manager-macos:wheels
+    //py/selenium-manager-windows:wheels
+    //py/selenium-manager:wheels
   ].freeze
 end
 

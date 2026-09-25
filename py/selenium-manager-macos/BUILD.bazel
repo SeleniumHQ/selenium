@@ -42,5 +42,16 @@ py_wheel(
     tags = ["release-artifact"],
     version = SM_VERSION,
     visibility = ["//visibility:public"],
-    deps = [":lib"],
+    deps = [
+        ":lib",
+        # py_wheel packages each dep's DefaultInfo files; py_library keeps data
+        # in runfiles, so the binary has to be named here to reach the wheel.
+        ":manager-binary",
+    ],
+)
+
+filegroup(
+    name = "wheels",
+    srcs = [":selenium-manager-macos-wheel"],
+    visibility = ["//visibility:public"],
 )
