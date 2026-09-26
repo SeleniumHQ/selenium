@@ -25,47 +25,46 @@ top of the CDDL-generated low-level commands (``network.addIntercept``,
 ``network.continueRequest``, ``network.continueResponse``,
 ``network.failRequest``, ``network.provideResponse``).
 
-Handlers registered through :meth:`RequestHandlerRegistry.add_handler` receive a
-:class:`Request` and may observe it, mutate it, fail it, or stub a response.
-After every matching handler has run, the registry reconciles the recorded
-outcome and issues exactly one BiDi command per request:
+The behavior here implements decision record 17685, "The network async/event
+API" (``docs/decisions/17685-network-handler-behavior.md``).  The rules that
+shape this module:
 
-1. If any handler called :meth:`Request.fail`, the request is failed.
-2. Else if any handler called :meth:`Request.provide_response`, the stubbed
-   response is provided.
-3. Else if any handler mutated the request, it is continued with the mutations.
-4. Otherwise the request is continued unmodified.
-
-Handlers registered through :meth:`ResponseHandlerRegistry.add_handler` receive
-a :class:`Response` at the ``responseStarted`` phase and may observe or mutate
-it.  Reconciliation works the same way: a mutated body requires
-``network.provideResponse`` (the wire protocol cannot continue a response with
-a new body), other mutations are applied via ``network.continueResponse``, and
-untouched responses are continued unmodified.
-
-Handlers registered through :meth:`AuthHandlerRegistry.add_handler` receive an
-:class:`AuthenticationRequest` at the ``authRequired`` phase and may call
-:meth:`AuthenticationRequest.provide_credentials` or
-:meth:`AuthenticationRequest.cancel`.  Reconciliation issues exactly one
-``network.continueWithAuth`` command per challenge: ``cancel`` takes precedence
-over provided credentials, and if no handler responded the challenge is
-continued with action ``default`` so the browser's own behavior (usually the
-authentication prompt) applies.
+* **Later-registered handlers are consulted first** (decision 6).  Registering a
+  handler locally therefore overrides one installed by a shared suite.
+* **The first handler to settle a disposition resolves the event and stops the
+  chain** (decision 4).  A request settles with :meth:`Request.fail`,
+  :meth:`Request.respond` or :meth:`Request.submit`; a response with
+  :meth:`Response.fail` or :meth:`Response.submit`; a challenge with
+  :meth:`AuthenticationRequest.authenticate` or
+  :meth:`AuthenticationRequest.cancel`.  Settling twice inside one handler
+  raises :class:`AlreadySettledError`.
+* **A handler that only stages mutations does not settle** (decision 5); the
+  event, carrying those mutations, passes to the next handler, and if nothing
+  ever settles it proceeds with them.
+* **An uncaught exception fails the event** (decision 7): staged mutations are
+  discarded, ``network.failRequest`` is sent so the failure is visible on the
+  wire, no further handler runs, and the exception is re-raised from the next
+  call into ``driver.network`` rather than being swallowed.
+* **URL patterns are evaluated by the remote end** (decision 2).  Selenium
+  validates them locally and forwards them; it performs no matching and expands
+  no globs of its own.  Which handlers are in an event's chain is therefore
+  decided by which of their intercepts blocked it.
+* **Request bodies are collected only when a handler opts in at registration**
+  (decision 10), and Selenium owns the collector's lifecycle and size cap.
+* **Handlers are scoped to one window handle by default** (decision 11), or to a
+  window handle or user context named at registration — never both.
 
 Extra headers registered through :meth:`RequestHandlerRegistry.set_extra_header`
-are merged into every subsequent request.  BiDi has no dedicated command for
-this, so the registry pauses each request at ``beforeRequestSent`` with a
-match-everything intercept and merges the headers while reconciling — the same
-single continue cycle that applies user handler mutations.
-
-This mirrors the reconciliation rules in the cross-binding BiDi API design and
-means purely observational handlers never stall the page.
+are merged into every subsequent request.  The registry pauses each request at
+``beforeRequestSent`` with a match-everything intercept and merges the headers
+while resolving it — the same single continue cycle that applies handler
+mutations.
 """
 
 from __future__ import annotations
 
 import logging
-import re
+import warnings
 from collections.abc import Callable
 from typing import Any
 
@@ -76,11 +75,61 @@ logger = logging.getLogger(__name__)
 # Event names accepted by the legacy phase-based add_request_handler API.
 LEGACY_REQUEST_HANDLER_EVENTS = ("auth_required", "before_request", "before_request_sent")
 
+# Decision 10 puts the collector's size cap on Selenium rather than the user.
+DEFAULT_MAX_BODY_SIZE = 5 * 1024 * 1024
+
+# The components network.UrlPatternPattern accepts; each is an optional string.
+URL_PATTERN_COMPONENTS = ("protocol", "hostname", "port", "pathname", "search")
+
+
+class AlreadySettledError(RuntimeError):
+    """Raised when a handler settles the same event more than once.
+
+    Decision 4 makes the first disposition final, so a second call is a bug in
+    the handler rather than an override of the first.
+    """
+
+
+class HandlerHandle(str):
+    """The handle returned when a handler is registered.
+
+    Decision 1 requires ``add`` to return a handle object rather than a bare id,
+    so the handle cannot be confused with an unrelated identifier.  It subclasses
+    ``str`` so that handles remain usable everywhere the plain string handler IDs
+    returned by earlier releases were accepted.
+    """
+
+    def __new__(cls, handler_id: str, family: str) -> HandlerHandle:
+        handle = super().__new__(cls, handler_id)
+        handle.family = family
+        return handle
+
+    def __repr__(self) -> str:
+        return f"<HandlerHandle {self.family} {str.__repr__(self)}>"
+
+
+class _Original:
+    """A read-only snapshot of an event as it arrived.
+
+    Decision 9 lets a handler evaluate a condition against the unmodified event
+    even while earlier handlers have staged changes onto the live wrapper.
+    """
+
+    def __init__(self, **values: Any) -> None:
+        self.__dict__.update(values)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        raise AttributeError("The original event value is read-only")
+
+    def __repr__(self) -> str:
+        fields = ", ".join(f"{name}={value!r}" for name, value in self.__dict__.items())
+        return f"<Original {fields}>"
+
 
 def looks_like_url_glob(value: Any) -> bool:
-    """Heuristically distinguish a URL glob from a legacy event name.
+    """Heuristically distinguish a URL pattern from a legacy event name.
 
-    URL globs contain wildcard or URL punctuation (``* ? / : .``); bare
+    URL patterns contain wildcard or URL punctuation (``* ? / : .``); bare
     word-like strings are assumed to be (possibly misspelled) event names so
     the legacy API can reject them with a helpful error.
     """
@@ -170,98 +219,112 @@ def list_to_set_cookie_headers(cookies: list | None) -> list[dict]:
     return result
 
 
-def glob_to_regex(pattern: str) -> re.Pattern:
-    """Compile a URL glob (``*``, ``**``, ``?``) into a regular expression.
-
-    ``*`` matches within a path segment, ``**`` matches across segments, and
-    ``?`` matches a single character.  Matching is anchored at both ends.
-    """
-    parts: list[str] = []
-    i = 0
-    while i < len(pattern):
-        char = pattern[i]
-        if char == "*":
-            if pattern[i : i + 2] == "**":
-                parts.append(".*")
-                i += 2
-            else:
-                parts.append("[^/]*")
-                i += 1
-        elif char == "?":
-            parts.append("[^/]")
-            i += 1
-        else:
-            parts.append(re.escape(char))
-            i += 1
-    return re.compile("".join(parts) + r"\Z")
+def _url_pattern_from_string(pattern: str) -> dict:
+    """Wrap a pattern string as a BiDi ``network.UrlPatternString``."""
+    if not pattern:
+        raise ValueError("A URL pattern string must not be empty")
+    if any(char in pattern for char in "*?"):
+        logger.warning(
+            "URL pattern %r looks like a glob. Selenium forwards URL patterns to the remote end "
+            "unchanged and does not expand them; put finer matching inside the handler instead.",
+            pattern,
+        )
+    return {"type": "string", "pattern": pattern}
 
 
-def _literal_component(component: str) -> str | None:
-    """Return the component when it is literal, ``None`` when it has wildcards.
-
-    ``UrlPatternPattern`` properties match literally and browsers reject
-    wildcard characters in them ("Forbidden characters"), while omitted
-    properties match anything — so wildcard-bearing components are omitted
-    from the browser-side filter and Python-side glob matching narrows the
-    results.
-    """
-    if not component or "*" in component or "?" in component:
-        return None
-    return component
-
-
-def glob_to_url_pattern(pattern: str) -> dict | None:
-    """Translate a URL glob into a BiDi ``network.UrlPatternPattern`` dict.
-
-    Only the literal components of the glob are translated; components
-    containing wildcards are omitted (omitted UrlPatternPattern properties
-    match anything), so the browser-side filter may be broader than the glob
-    and callers must still apply Python-side matching.  Returns ``{}`` when
-    no browser-side filter can be derived (match everything) and ``None``
-    when the glob is not a URL-shaped pattern.
-    """
-    if pattern in ("*", "**"):
-        return {}
-    if "://" not in pattern:
-        return None
-    scheme, _, rest = pattern.partition("://")
-    host, slash, path = rest.partition("/")
-    port = None
-    if ":" in host:
-        host, _, port = host.partition(":")
+def _url_pattern_from_mapping(pattern: dict) -> dict:
+    """Validate a component mapping as a BiDi ``network.UrlPatternPattern``."""
+    kind = pattern.get("type")
+    if kind == "string":
+        value = pattern.get("pattern")
+        if not isinstance(value, str) or not value:
+            raise ValueError("A 'string' URL pattern requires a non-empty 'pattern' value")
+        return {"type": "string", "pattern": value}
+    if kind not in (None, "pattern"):
+        raise ValueError(f"Unsupported URL pattern type '{kind}'; use 'string' or 'pattern'")
+    components = {name: value for name, value in pattern.items() if name != "type"}
+    unknown = sorted(set(components) - set(URL_PATTERN_COMPONENTS))
+    if unknown:
+        raise ValueError(
+            f"Unsupported URL pattern component(s): {', '.join(unknown)}. "
+            f"Supported components: {', '.join(URL_PATTERN_COMPONENTS)}"
+        )
     result: dict[str, Any] = {"type": "pattern"}
-    if _literal_component(scheme):
-        result["protocol"] = scheme
-    if _literal_component(host):
-        result["hostname"] = host
-    if port and _literal_component(port):
-        result["port"] = port
-    if slash and _literal_component("/" + path):
-        result["pathname"] = "/" + path
-    if len(result) == 1:
-        return {}
+    for name in URL_PATTERN_COMPONENTS:
+        value = components.get(name)
+        if value is None:
+            continue
+        if not isinstance(value, str):
+            raise ValueError(f"URL pattern component '{name}' must be a string, got {type(value).__name__}")
+        result[name] = value
     return result
 
 
-def globs_to_url_patterns(patterns: list | None) -> list[dict] | None:
-    """Translate URL globs into BiDi UrlPatterns for ``network.addIntercept``.
+def normalize_url_patterns(patterns: Any) -> list[dict] | None:
+    """Translate user URL patterns into BiDi ``network.UrlPattern`` values.
 
-    Returns ``None`` when no browser-side filtering should be applied (match
-    everything, or at least one glob is untranslatable).  Raw dict patterns are
-    passed through unchanged so callers can supply wire-level UrlPatterns.
+    Decision 2 keeps URL matching on the remote end: a pattern is validated here
+    and forwarded as given, and Selenium neither expands globs nor matches URLs
+    itself.  Anything that is not a valid pattern raises before a command is
+    sent.
+
+    Accepts a single pattern or an iterable of them, where each is a pattern
+    string, a mapping of ``network.UrlPatternPattern`` components, an object
+    exposing ``to_bidi_dict()``, or a parsed URL exposing ``geturl()``.
+
+    Returns:
+        A list of wire-level UrlPattern dicts, or ``None`` when no patterns were
+        given (match everything).
     """
-    if not patterns:
+    if patterns is None:
         return None
-    translated = []
+    if isinstance(patterns, (str, dict)) or hasattr(patterns, "to_bidi_dict") or hasattr(patterns, "geturl"):
+        patterns = [patterns]
+    normalized: list[dict] = []
     for pattern in patterns:
-        if isinstance(pattern, dict):
-            translated.append(pattern)
-            continue
-        url_pattern = glob_to_url_pattern(pattern)
-        if url_pattern is None or url_pattern == {}:
-            return None
-        translated.append(url_pattern)
-    return translated or None
+        if hasattr(pattern, "to_bidi_dict"):
+            pattern = pattern.to_bidi_dict()
+        elif hasattr(pattern, "geturl"):
+            # A parsed URL is forwarded as a pattern string rather than being
+            # taken apart into components (decision 2).
+            pattern = pattern.geturl()
+        if isinstance(pattern, str):
+            normalized.append(_url_pattern_from_string(pattern))
+        elif isinstance(pattern, dict):
+            normalized.append(_url_pattern_from_mapping(pattern))
+        else:
+            raise TypeError(
+                f"A URL pattern must be a string or a mapping of pattern components, got {type(pattern).__name__}"
+            )
+    return normalized or None
+
+
+def default_window_handle(network: Any) -> str | None:
+    """The window handle a handler is scoped to when none was given (decision 11)."""
+    driver = getattr(network, "_driver", None)
+    if driver is None:
+        logger.debug("No driver is available, so the handler is not scoped to a window handle")
+        return None
+    try:
+        return driver.current_window_handle
+    except Exception:
+        logger.debug("Could not resolve the current window handle", exc_info=True)
+        return None
+
+
+def record_handler_error(network: Any, error: BaseException, label: str) -> None:
+    """Stash a handler's uncaught exception so it can surface to the user.
+
+    Handlers run on the BiDi event-dispatch thread, which has no user frame to
+    propagate into, so decision 7's "surfaces to the user" is honored by
+    re-raising the exception from the next call into ``driver.network``.
+    """
+    logger.error("%s raised; the event was failed", label.capitalize(), exc_info=error)
+    errors = getattr(network, "_handler_errors", None)
+    if errors is None:
+        errors = []
+        network._handler_errors = errors
+    errors.append(error)
 
 
 class Request:
@@ -272,10 +335,13 @@ class Request:
         method: The HTTP method (e.g. ``"GET"``).
         headers: The request headers as a name → value dict.
         cookies: The request cookies as a list of dicts.
-        body: The request body. BiDi does not expose the outgoing body at the
-            ``beforeRequestSent`` phase, so this is ``None`` unless mutated.
+        body: The request body, available when the handler opted in with
+            ``collect_body=True`` at registration (decision 10) or once a
+            handler has staged one.
         resource_type: The resource destination (e.g. ``"script"``, ``"image"``)
             when reported by the browser.
+        original: The event as it arrived, before any handler staged a change
+            (decision 9).
     """
 
     def __init__(self, conn, params, deferred: bool = False):
@@ -287,15 +353,76 @@ class Request:
         self.method = req.get("method")
         self.headers = headers_to_dict(req.get("headers"))
         self.cookies = cookies_to_list(req.get("cookies"))
-        self.body = None
         self.resource_type = req.get("destination") or req.get("initiatorType")
-        # Deferred requests record actions for later reconciliation by the
-        # registry; non-deferred (legacy) requests execute actions immediately.
+        self._body_size = req.get("bodySize")
+        self.original = _Original(
+            url=self.url,
+            method=self.method,
+            headers=dict(self.headers),
+            cookies=list(self.cookies),
+            resource_type=self.resource_type,
+        )
+        # Deferred requests are resolved by the registry once the handler chain
+        # stops; non-deferred (legacy) requests execute actions immediately.
         self._deferred = deferred
         self._handled = False
-        self._failed = False
+        self._settled: str | None = None
         self._stub: dict | None = None
         self._mutations: dict[str, Any] = {}
+        self._body: Any = None
+        self._body_fetched = False
+        self._body_collector: str | None = None
+
+    @property
+    def settled(self) -> bool:
+        """Whether a handler has settled this request's disposition (decision 4)."""
+        return self._settled is not None
+
+    @property
+    def body(self) -> Any:
+        """The request body, or ``None`` when it was not collected.
+
+        A body is fetched from the collector Selenium installed for a handler
+        registered with ``collect_body=True``; it is not available otherwise
+        (decision 10).
+        """
+        if self._body_fetched or self._body is not None:
+            return self._body
+        if self._body_collector is None or self._request_id is None:
+            return None
+        # A request the browser reports as bodyless has nothing to collect, and
+        # asking for it anyway stalls the page: while the request is blocked in
+        # the handler, network.getData never answers for a body that will never
+        # arrive, so the request is not continued until the command times out.
+        if not self._body_size:
+            logger.debug("Request %s has no body to collect (bodySize=%r)", self.url, self._body_size)
+            return None
+        self._body_fetched = True
+        params = {
+            "dataType": "request",
+            "collector": self._body_collector,
+            "disown": False,
+            "request": self._request_id,
+        }
+        try:
+            result = self._conn.execute(command_builder("network.getData", params))
+        except Exception:
+            logger.debug("Could not collect the request body for %s", self.url, exc_info=True)
+            return None
+        self._body = _decode_bytes_value((result or {}).get("bytes"))
+        return self._body
+
+    @body.setter
+    def body(self, value: Any) -> None:
+        self._body = value
+        self._body_fetched = True
+
+    def _settle(self, disposition: str) -> None:
+        if self._settled is not None:
+            raise AlreadySettledError(
+                f"This request was already settled with '{self._settled}'; a handler settles an event once"
+            )
+        self._settled = disposition
 
     def set_url(self, url: str) -> None:
         """Change the request URL before it is continued."""
@@ -312,6 +439,17 @@ class Request:
         self.headers = dict(headers)
         self._mutations["headers"] = self.headers
 
+    def add_header(self, name: str, value: Any) -> None:
+        """Stage one additional request header, leaving the others in place."""
+        headers = dict(self.headers)
+        headers[name] = value
+        self.set_headers(headers)
+
+    def remove_header(self, name: str) -> None:
+        """Stage the removal of one request header by (case-insensitive) name."""
+        lowered = name.lower()
+        self.set_headers({key: value for key, value in self.headers.items() if key.lower() != lowered})
+
     def set_cookies(self, cookies: list) -> None:
         """Replace the request cookies before the request is continued."""
         self.cookies = list(cookies)
@@ -319,22 +457,23 @@ class Request:
 
     def set_body(self, body: str) -> None:
         """Set the request body before the request is continued."""
-        self.body = body
+        self._body = body
+        self._body_fetched = True
         self._mutations["body"] = body
 
     def fail(self) -> None:
-        """Fail the request.
+        """Settle the request as an error; nothing reaches the server.
 
-        Takes precedence over stubbed responses and mutations when multiple
-        handlers act on the same request.
+        Settling resolves the event and stops the handler chain (decision 4).
         """
-        if self._deferred:
-            self._failed = True
-        else:
+        self._settle("fail")
+        if not self._deferred:
             self._execute_fail()
 
-    def provide_response(self, status=None, headers=None, body=None, reason_phrase=None) -> None:
-        """Respond to the request with a stubbed response.
+    def respond(self, status=None, headers=None, body=None, reason_phrase=None) -> None:
+        """Settle the request with a stubbed response; nothing reaches the server.
+
+        Settling resolves the event and stops the handler chain (decision 4).
 
         Args:
             status: HTTP status code for the stubbed response.
@@ -342,18 +481,66 @@ class Request:
             body: Response body string.
             reason_phrase: Optional HTTP reason phrase.
         """
-        stub = {
+        self._settle("respond")
+        self._stub = {
             "status": status,
             "headers": headers,
             "body": body,
             "reason_phrase": reason_phrase,
         }
-        if self._deferred:
-            if self._stub is None:
-                self._stub = stub
-        else:
-            self._stub = stub
+        if not self._deferred:
             self._execute_provide_response()
+
+    def submit(
+        self,
+        *,
+        url: str | None = None,
+        method: str | None = None,
+        headers: dict[str, Any] | None = None,
+        cookies: list | None = None,
+        body: str | None = None,
+    ) -> None:
+        """Send the request now, with any staged mutations, and stop the chain.
+
+        ``submit`` is never required — a request nothing settles continues anyway
+        (decision 5) — and because it short-circuits the chain it overrides what
+        a handler registered earlier would have done.
+
+        Each keyword argument stages the corresponding mutation before the
+        request is sent, overriding one recorded via ``set_url``/``set_method``/
+        ``set_headers``/``set_cookies``/``set_body``.  Data URLs (``data:``) are
+        skipped silently because browsers do not create an interceptable request
+        entry for them.
+
+        Args:
+            url: Replacement request URL.
+            method: Replacement HTTP method.
+            headers: Replacement request headers as a name → value dict.
+            cookies: Replacement request cookies as a list of dicts.
+            body: Replacement request body string.
+        """
+        self._settle("submit")
+        if url is not None:
+            self.set_url(url)
+        if method is not None:
+            self.set_method(method)
+        if headers is not None:
+            self.set_headers(headers)
+        if cookies is not None:
+            self.set_cookies(cookies)
+        if body is not None:
+            self.set_body(body)
+        if not self._deferred:
+            self._execute_continue()
+
+    def provide_response(self, status=None, headers=None, body=None, reason_phrase=None) -> None:
+        """Deprecated alias for :meth:`respond`."""
+        warnings.warn(
+            "provide_response is deprecated, use respond instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.respond(status=status, headers=headers, body=body, reason_phrase=reason_phrase)
 
     def continue_request(
         self,
@@ -364,33 +551,17 @@ class Request:
         cookies: list | None = None,
         body: str | None = None,
     ) -> None:
-        """Continue the intercepted request, applying any recorded mutations.
+        """Deprecated alias for :meth:`submit`."""
+        warnings.warn(
+            "continue_request is deprecated, use submit instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.submit(url=url, method=method, headers=headers, cookies=cookies, body=body)
 
-        Each keyword argument overrides the corresponding mutation recorded via
-        ``set_url``/``set_method``/``set_headers``/``set_cookies``/``set_body``.
-        Arguments use the same Python types as those setters and are translated
-        to the BiDi wire format automatically.  Data URLs (``data:``) are
-        skipped silently because browsers do not create an interceptable request
-        entry for them, so calling ``network.continueRequest`` would raise
-        "no such request".
-
-        Args:
-            url: Replacement request URL.
-            method: Replacement HTTP method.
-            headers: Replacement request headers as a name → value dict.
-            cookies: Replacement request cookies as a list of dicts.
-            body: Replacement request body string.
-        """
-        self._handled = True
-        if self.url.startswith("data:"):
-            return
-        overrides = {"url": url, "method": method, "headers": headers, "cookies": cookies, "body": body}
-        params = self._continue_params({k: v for k, v in overrides.items() if v is not None})
-        self._conn.execute(command_builder("network.continueRequest", params))
-
-    def _continue_params(self, overrides: dict | None = None) -> dict:
+    def _continue_params(self) -> dict:
         params: dict[str, Any] = {"request": self._request_id}
-        mutations = {**self._mutations, **(overrides or {})}
+        mutations = self._mutations
         if "url" in mutations:
             params["url"] = mutations["url"]
         if "method" in mutations:
@@ -402,6 +573,12 @@ class Request:
         if "body" in mutations:
             params["body"] = _encode_bytes_value(mutations["body"])
         return params
+
+    def _execute_continue(self) -> None:
+        self._handled = True
+        if self.url.startswith("data:"):
+            return
+        self._conn.execute(command_builder("network.continueRequest", self._continue_params()))
 
     def _execute_fail(self) -> None:
         self._handled = True
@@ -426,15 +603,23 @@ class Request:
         self._conn.execute(command_builder("network.provideResponse", params))
 
     def _resolve(self) -> None:
-        """Reconcile recorded handler actions into a single BiDi command."""
+        """Issue exactly one BiDi command for the settled (or unsettled) event."""
         if self._handled:
             return
-        if self._failed:
+        if self._settled == "fail":
             self._execute_fail()
-        elif self._stub is not None:
+        elif self._settled == "respond":
             self._execute_provide_response()
         else:
-            self.continue_request()
+            self._execute_continue()
+
+    def _fail_after_handler_error(self) -> None:
+        """Discard staged mutations and fail the request (decision 7)."""
+        self._mutations.clear()
+        self._stub = None
+        self._settled = "fail"
+        if not self._handled:
+            self._execute_fail()
 
 
 class Response:
@@ -449,9 +634,11 @@ class Response:
         cookies: Cookies to set on the response. BiDi does not expose parsed
             response cookies at the ``responseStarted`` phase, so this is empty
             unless mutated via :meth:`set_cookies`.
-        body: The response body. BiDi does not expose the body at the
-            ``responseStarted`` phase, so this is ``None`` unless mutated via
-            :meth:`set_body`.
+        body: The response body. Intercepting a response holds it before its
+            body is collected, so this is ``None`` unless mutated via
+            :meth:`set_body` (decision 10).
+        original: The event as it arrived, before any handler staged a change
+            (decision 9).
     """
 
     def __init__(self, conn, params, deferred: bool = False):
@@ -467,11 +654,31 @@ class Response:
         self.mime_type = resp.get("mimeType")
         self.cookies: list = []
         self.body = None
-        # Deferred responses record actions for later reconciliation by the
-        # registry; non-deferred responses execute actions immediately.
+        self.original = _Original(
+            url=self.url,
+            status=self.status,
+            reason_phrase=self.reason_phrase,
+            headers=dict(self.headers),
+            mime_type=self.mime_type,
+        )
+        # Deferred responses are resolved by the registry once the handler chain
+        # stops; non-deferred responses execute actions immediately.
         self._deferred = deferred
         self._handled = False
+        self._settled: str | None = None
         self._mutations: dict[str, Any] = {}
+
+    @property
+    def settled(self) -> bool:
+        """Whether a handler has settled this response's disposition (decision 4)."""
+        return self._settled is not None
+
+    def _settle(self, disposition: str) -> None:
+        if self._settled is not None:
+            raise AlreadySettledError(
+                f"This response was already settled with '{self._settled}'; a handler settles an event once"
+            )
+        self._settled = disposition
 
     def set_status(self, status: int, reason_phrase: str | None = None) -> None:
         """Change the response status code (and optionally the reason phrase)."""
@@ -486,6 +693,17 @@ class Response:
         self.headers = dict(headers)
         self._mutations["headers"] = self.headers
 
+    def add_header(self, name: str, value: Any) -> None:
+        """Stage one additional response header, leaving the others in place."""
+        headers = dict(self.headers)
+        headers[name] = value
+        self.set_headers(headers)
+
+    def remove_header(self, name: str) -> None:
+        """Stage the removal of one response header by (case-insensitive) name."""
+        lowered = name.lower()
+        self.set_headers({key: value for key, value in self.headers.items() if key.lower() != lowered})
+
     def set_cookies(self, cookies: list) -> None:
         """Replace the cookies set by the response before it is continued."""
         self.cookies = list(cookies)
@@ -495,11 +713,56 @@ class Response:
         """Replace the response body.
 
         The wire protocol cannot continue a response with a new body, so a
-        body mutation is reconciled via ``network.provideResponse``, carrying
+        body mutation is sent via ``network.provideResponse``, carrying
         over the (possibly mutated) status and headers.
         """
         self.body = body
         self._mutations["body"] = body
+
+    def fail(self) -> None:
+        """Settle the response as a failed request.
+
+        Settling resolves the event and stops the handler chain (decision 4).
+        """
+        self._settle("fail")
+        if not self._deferred:
+            self._execute_fail()
+
+    def submit(
+        self,
+        *,
+        status: int | None = None,
+        reason_phrase: str | None = None,
+        headers: dict[str, Any] | None = None,
+        cookies: list | None = None,
+        body: str | None = None,
+    ) -> None:
+        """Deliver the response now, with any staged mutations, and stop the chain.
+
+        The response has already round-tripped, so ``submit`` maps to
+        ``network.provideResponse`` when a replacement body was given and to
+        ``network.continueResponse`` otherwise (decision 4).  Data URLs
+        (``data:``) are skipped silently because browsers do not create an
+        interceptable entry for them.
+
+        Args:
+            status: Replacement HTTP status code.
+            reason_phrase: Replacement HTTP reason phrase.
+            headers: Replacement response headers as a name → value dict.
+            cookies: Replacement set-cookie entries as a list of dicts.
+            body: Replacement response body string.
+        """
+        self._settle("submit")
+        if status is not None or reason_phrase is not None:
+            self.set_status(self.status if status is None else status, reason_phrase)
+        if headers is not None:
+            self.set_headers(headers)
+        if cookies is not None:
+            self.set_cookies(cookies)
+        if body is not None:
+            self.set_body(body)
+        if not self._deferred:
+            self._execute_submit()
 
     def continue_response(
         self,
@@ -509,30 +772,17 @@ class Response:
         headers: dict[str, Any] | None = None,
         cookies: list | None = None,
     ) -> None:
-        """Continue the intercepted response, applying any recorded mutations.
+        """Deprecated alias for :meth:`submit`."""
+        warnings.warn(
+            "continue_response is deprecated, use submit instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.submit(status=status, reason_phrase=reason_phrase, headers=headers, cookies=cookies)
 
-        Each keyword argument overrides the corresponding mutation recorded via
-        ``set_status``/``set_headers``/``set_cookies``.  Arguments use the same
-        Python types as those setters and are translated to the BiDi wire format
-        automatically.  Data URLs (``data:``) are skipped silently because
-        browsers do not create an interceptable entry for them.
-
-        Args:
-            status: Replacement HTTP status code.
-            reason_phrase: Replacement HTTP reason phrase.
-            headers: Replacement response headers as a name → value dict.
-            cookies: Replacement set-cookie entries as a list of dicts.
-        """
-        self._handled = True
-        if self.url.startswith("data:"):
-            return
-        overrides = {"status": status, "reason_phrase": reason_phrase, "headers": headers, "cookies": cookies}
-        params = self._continue_params({k: v for k, v in overrides.items() if v is not None})
-        self._conn.execute(command_builder("network.continueResponse", params))
-
-    def _continue_params(self, overrides: dict | None = None) -> dict:
+    def _continue_params(self) -> dict:
         params: dict[str, Any] = {"request": self._request_id}
-        mutations = {**self._mutations, **(overrides or {})}
+        mutations = self._mutations
         if "status" in mutations:
             params["statusCode"] = mutations["status"]
         if "reason_phrase" in mutations:
@@ -542,6 +792,18 @@ class Response:
         if "cookies" in mutations:
             params["cookies"] = list_to_set_cookie_headers(mutations["cookies"])
         return params
+
+    def _execute_continue(self) -> None:
+        self._handled = True
+        if self.url.startswith("data:"):
+            return
+        self._conn.execute(command_builder("network.continueResponse", self._continue_params()))
+
+    def _execute_fail(self) -> None:
+        self._handled = True
+        if self.url.startswith("data:"):
+            return
+        self._conn.execute(command_builder("network.failRequest", {"request": self._request_id}))
 
     def _execute_provide_response(self) -> None:
         self._handled = True
@@ -562,22 +824,36 @@ class Response:
             params["body"] = _encode_bytes_value(self.body)
         self._conn.execute(command_builder("network.provideResponse", params))
 
+    def _execute_submit(self) -> None:
+        if "body" not in self._mutations:
+            self._execute_continue()
+            return
+        try:
+            self._execute_provide_response()
+        except Exception:
+            # Some browsers cannot replace a body at the responseStarted
+            # phase; continue with the remaining mutations rather than
+            # leaving the response blocked and stalling the page.
+            logger.exception("provideResponse failed; continuing response without the body mutation")
+            self._handled = False
+            self._execute_continue()
+
     def _resolve(self) -> None:
-        """Reconcile recorded handler actions into a single BiDi command."""
+        """Issue exactly one BiDi command for the settled (or unsettled) event."""
         if self._handled:
             return
-        if "body" in self._mutations:
-            try:
-                self._execute_provide_response()
-            except Exception:
-                # Some browsers cannot replace a body at the responseStarted
-                # phase; continue with the remaining mutations rather than
-                # leaving the response blocked and stalling the page.
-                logger.exception("provideResponse failed; continuing response without the body mutation")
-                self._handled = False
-                self.continue_response()
+        if self._settled == "fail":
+            self._execute_fail()
         else:
-            self.continue_response()
+            self._execute_submit()
+
+    def _fail_after_handler_error(self) -> None:
+        """Discard staged mutations and fail the response (decision 7)."""
+        self._mutations.clear()
+        self.body = None
+        self._settled = "fail"
+        if not self._handled:
+            self._execute_fail()
 
 
 class AuthenticationRequest:
@@ -589,6 +865,7 @@ class AuthenticationRequest:
         scheme: The authentication scheme (e.g. ``"basic"``) of the first
             challenge, when reported.
         challenges: Every challenge as a list of ``{"scheme", "realm"}`` dicts.
+        original: The event as it arrived (decision 9).
     """
 
     def __init__(self, conn, params, deferred: bool = False):
@@ -602,37 +879,58 @@ class AuthenticationRequest:
         first = self.challenges[0] if self.challenges else {}
         self.realm = first.get("realm")
         self.scheme = first.get("scheme")
-        # Deferred challenges record actions for later reconciliation by the
-        # registry; non-deferred challenges execute actions immediately.
+        self.original = _Original(
+            url=self.url,
+            realm=self.realm,
+            scheme=self.scheme,
+            challenges=list(self.challenges),
+        )
+        # Deferred challenges are resolved by the registry once the handler
+        # chain stops; non-deferred challenges execute actions immediately.
         self._deferred = deferred
         self._handled = False
-        self._cancelled = False
+        self._settled: str | None = None
         self._credentials: dict | None = None
 
-    def provide_credentials(self, username: str, password: str) -> None:
-        """Respond to the challenge with the given credentials.
+    @property
+    def settled(self) -> bool:
+        """Whether a handler has settled this challenge (decision 4)."""
+        return self._settled is not None
 
-        When multiple handlers act on the same challenge the first provided
-        credentials win, and a ``cancel()`` from any handler takes precedence.
+    def _settle(self, disposition: str) -> None:
+        if self._settled is not None:
+            raise AlreadySettledError(
+                f"This challenge was already settled with '{self._settled}'; a handler settles an event once"
+            )
+        self._settled = disposition
+
+    def authenticate(self, username: str, password: str) -> None:
+        """Settle the challenge with the given credentials.
+
+        Settling resolves the challenge and stops the handler chain (decision 4).
         """
-        credentials = {"type": "password", "username": username, "password": password}
-        if self._deferred:
-            if self._credentials is None:
-                self._credentials = credentials
-        else:
-            self._credentials = credentials
+        self._settle("authenticate")
+        self._credentials = {"type": "password", "username": username, "password": password}
+        if not self._deferred:
             self._execute_continue("provideCredentials")
 
     def cancel(self) -> None:
         """Cancel the challenge, failing the request with an auth error.
 
-        Takes precedence over provided credentials when multiple handlers act
-        on the same challenge.
+        Settling resolves the challenge and stops the handler chain (decision 4).
         """
-        if self._deferred:
-            self._cancelled = True
-        else:
+        self._settle("cancel")
+        if not self._deferred:
             self._execute_continue("cancel")
+
+    def provide_credentials(self, username: str, password: str) -> None:
+        """Deprecated alias for :meth:`authenticate`."""
+        warnings.warn(
+            "provide_credentials is deprecated, use authenticate instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.authenticate(username, password)
 
     def _execute_continue(self, action: str) -> None:
         self._handled = True
@@ -642,38 +940,69 @@ class AuthenticationRequest:
         self._conn.execute(command_builder("network.continueWithAuth", params))
 
     def _resolve(self) -> None:
-        """Reconcile recorded handler actions into a single BiDi command."""
+        """Issue exactly one BiDi command for the settled (or unsettled) challenge."""
         if self._handled:
             return
-        if self._cancelled:
+        if self._settled == "cancel":
             self._execute_continue("cancel")
-        elif self._credentials is not None:
+        elif self._settled == "authenticate":
             self._execute_continue("provideCredentials")
         else:
+            # Nothing settled the challenge, so the browser's own behavior
+            # (usually the authentication prompt) applies (decision 5).
             self._execute_continue("default")
+
+    def _fail_after_handler_error(self) -> None:
+        """Cancel the challenge after a handler raised (decision 7)."""
+        self._credentials = None
+        self._settled = "cancel"
+        if not self._handled:
+            self._execute_continue("cancel")
 
 
 class _HandlerEntry:
-    """A registered handler with its patterns and intercept."""
+    """A registered handler with its intercept, scope and body collector."""
 
-    def __init__(self, handler_id: str, patterns: list | None, callback: Callable, intercept_id: str | None):
-        self.handler_id = handler_id
+    def __init__(
+        self,
+        handle: HandlerHandle,
+        callback: Callable,
+        intercept_id: str | None,
+        *,
+        window_handle: str | None = None,
+        user_context: str | None = None,
+        collector_id: str | None = None,
+    ):
+        self.handle = handle
         self.callback = callback
         self.intercept_id = intercept_id
-        self._regexes = [glob_to_regex(p) for p in patterns or [] if isinstance(p, str)]
+        self.window_handle = window_handle
+        self.user_context = user_context
+        self.collector_id = collector_id
 
-    def matches(self, url: str) -> bool:
-        if not self._regexes:
-            return True
-        return any(regex.match(url) for regex in self._regexes)
+    def consulted_for(self, params: dict, blocking_intercepts: set) -> bool:
+        """Whether this handler belongs to one event's chain.
+
+        URL matching belongs to the remote end (decision 2), so a handler is in
+        the chain when its own intercept is one of those that blocked the event
+        — an event blocked on another handler's behalf does not reach it
+        (decision 4).  Window-handle scope is likewise enforced by the remote
+        through the intercept's ``contexts``; user-context scope is checked here
+        because ``network.addIntercept`` cannot express it (decision 11).
+        """
+        if self.intercept_id is not None and self.intercept_id not in blocking_intercepts:
+            return False
+        if self.user_context is not None and params.get("userContext") != self.user_context:
+            return False
+        return True
 
 
 class _BaseHandlerRegistry:
-    """Tracks high-level handlers for one intercept phase and reconciles outcomes.
+    """Tracks high-level handlers for one intercept phase and resolves their events.
 
-    One event subscription dispatches each event to all matching handlers,
-    then reconciles the request or response exactly once.  Each handler gets
-    its own browser-side intercept so removal restores prior behavior.
+    One event subscription dispatches each event along the chain of handlers
+    that match it, last-registered first, and stops at the first handler to
+    settle a disposition.  The event is then resolved exactly once.
     """
 
     # Subclasses configure the intercept phase, the subscription event key,
@@ -682,6 +1011,8 @@ class _BaseHandlerRegistry:
     _event_name: str
     _id_prefix: str
     _label: str
+    # Only request handlers can collect a body (decision 10).
+    _supports_body_collection = False
 
     def __init__(self, network):
         self._network = network
@@ -692,33 +1023,74 @@ class _BaseHandlerRegistry:
     def _wrap(self, params):
         raise NotImplementedError
 
-    def add_handler(self, url_patterns, callback: Callable) -> str:
-        """Register a handler; returns a handler ID for later removal."""
-        if isinstance(url_patterns, str):
-            url_patterns = [url_patterns]
-        patterns = list(url_patterns) if url_patterns else None
-        bidi_patterns = globs_to_url_patterns(patterns)
-        intercept_result = self._network._add_intercept(phases=[self._phase], url_patterns=bidi_patterns)
+    def add_handler(
+        self,
+        url_patterns,
+        callback: Callable,
+        *,
+        collect_body: bool = False,
+        window_handle: str | None = None,
+        user_context: str | None = None,
+    ) -> HandlerHandle:
+        """Register a handler; returns the handle that removes it (decision 1)."""
+        if window_handle is not None and user_context is not None:
+            raise ValueError("A handler is scoped by a window handle or a user context, never both")
+        if collect_body and not self._supports_body_collection:
+            raise ValueError(f"A {self._label} cannot collect a body; only request bodies are collected")
+        patterns = normalize_url_patterns(url_patterns)
+        if window_handle is None and user_context is None:
+            window_handle = default_window_handle(self._network)
+        contexts = [window_handle] if window_handle is not None else None
+        if user_context is not None:
+            logger.debug(
+                "network.addIntercept cannot scope to a user context, so every request is intercepted "
+                "and those outside user context %s are continued untouched",
+                user_context,
+            )
+        intercept_result = self._network._add_intercept(phases=[self._phase], url_patterns=patterns, contexts=contexts)
         intercept_id = intercept_result.get("intercept") if intercept_result else None
+        collector_id = None
+        if collect_body:
+            collector_id = self._network._add_data_collector(
+                contexts=contexts,
+                user_contexts=[user_context] if user_context is not None else None,
+            )
         if self._subscription_callback_id is None:
             self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
         self._counter += 1
-        handler_id = f"{self._id_prefix}-{self._counter}"
-        self._handlers[handler_id] = _HandlerEntry(handler_id, patterns, callback, intercept_id)
-        logger.debug("Added %s %s (patterns=%s)", self._label, handler_id, patterns)
-        return handler_id
+        handle = HandlerHandle(f"{self._id_prefix}-{self._counter}", self._label)
+        self._handlers[str(handle)] = _HandlerEntry(
+            handle,
+            callback,
+            intercept_id,
+            window_handle=window_handle,
+            user_context=user_context,
+            collector_id=collector_id,
+        )
+        logger.debug(
+            "Added %s %s (patterns=%s, window_handle=%s, user_context=%s, collect_body=%s)",
+            self._label,
+            handle,
+            patterns,
+            window_handle,
+            user_context,
+            collect_body,
+        )
+        return handle
 
-    def remove_handler(self, handler_id: str) -> None:
-        """Remove a handler and its intercept by handler ID."""
-        entry = self._handlers.pop(handler_id, None)
+    def remove_handler(self, handle) -> None:
+        """Remove a handler, its intercept and its body collector by handle."""
+        entry = self._handlers.pop(str(handle), None)
         if entry is None:
-            raise ValueError(f"{self._label.capitalize()} '{handler_id}' not found")
+            raise ValueError(f"{self._label.capitalize()} '{handle}' not found")
         if entry.intercept_id:
             self._network._remove_intercept(entry.intercept_id)
+        if entry.collector_id:
+            self._network._remove_data_collector(entry.collector_id)
         if not self._keep_subscription() and self._subscription_callback_id is not None:
             self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
             self._subscription_callback_id = None
-        logger.debug("Removed %s %s", self._label, handler_id)
+        logger.debug("Removed %s %s", self._label, handle)
 
     def clear(self) -> None:
         """Remove all registered handlers and their intercepts."""
@@ -741,45 +1113,62 @@ class _BaseHandlerRegistry:
             self._subscription_callback_id = None
 
     def _before_resolve(self, wrapped) -> None:
-        """Hook run after the handlers and before reconciliation."""
+        """Hook run after the handler chain and before the event is resolved."""
+
+    def _prepare(self, wrapped, entry: _HandlerEntry) -> None:
+        """Hook run before each handler in the chain is called."""
 
     def _on_event(self, params) -> None:
         if not isinstance(params, dict):
             return
+        blocking_intercepts = set(params.get("intercepts") or []) if params.get("isBlocked") else set()
+        # Only resolve events paused by one of our intercepts; events blocked by
+        # other subsystems (e.g. legacy handlers) are theirs to continue.
+        ours = bool(self.intercept_ids() & blocking_intercepts)
         wrapped = self._wrap(params)
-        for entry in list(self._handlers.values()):
-            if not entry.matches(wrapped.url):
+        error: BaseException | None = None
+        # Decision 6: later-registered handlers are consulted first.
+        for entry in reversed(list(self._handlers.values())):
+            if not entry.consulted_for(params, blocking_intercepts):
                 continue
+            self._prepare(wrapped, entry)
             try:
                 entry.callback(wrapped)
-            except Exception:
-                logger.exception("%s %s raised; continuing processing", self._label.capitalize(), entry.handler_id)
-        if not params.get("isBlocked"):
+            except BaseException as exc:
+                error = exc
+                break
+            # Decision 4: the first handler to settle stops the chain.
+            if wrapped.settled:
+                break
+        if not ours:
             return
-        # Only reconcile requests paused by one of our intercepts; requests
-        # blocked by other subsystems (e.g. legacy handlers) are theirs to
-        # continue.
-        blocking_intercepts = set(params.get("intercepts") or [])
-        if self.intercept_ids() & blocking_intercepts:
-            self._before_resolve(wrapped)
-            wrapped._resolve()
+        if error is not None:
+            # Record before failing: failing unblocks the browser, which lets the
+            # user's navigation raise and call back into driver.network. Recording
+            # afterwards races that call, so the exception could go unseen until a
+            # later one (decision 7).
+            record_handler_error(self._network, error, self._label)
+            wrapped._fail_after_handler_error()
+            return
+        self._before_resolve(wrapped)
+        wrapped._resolve()
 
 
 class RequestHandlerRegistry(_BaseHandlerRegistry):
     """Dispatches ``network.beforeRequestSent`` events to request handlers.
 
-    Also owns the extra-headers store: BiDi has no dedicated set-extra-headers
-    command, so while any extra header is set every request is paused by a
-    dedicated match-everything intercept and continued with the merged
-    headers during reconciliation.  Sharing the registry's subscription and
-    reconciliation means a request paused by both the extra-headers intercept
-    and user handlers is still continued exactly once.
+    Also owns the extra-headers store: while any extra header is set every
+    request is paused by a dedicated match-everything intercept and continued
+    with the merged headers.  Sharing the registry's subscription and resolution
+    means a request paused by both the extra-headers intercept and user handlers
+    is still continued exactly once.
     """
 
     _phase = "beforeRequestSent"
     _event_name = "before_request"
     _id_prefix = "request-handler"
     _label = "request handler"
+    _supports_body_collection = True
 
     def __init__(self, network):
         super().__init__(network)
@@ -789,6 +1178,10 @@ class RequestHandlerRegistry(_BaseHandlerRegistry):
 
     def _wrap(self, params):
         return Request(self._network._conn, params, deferred=True)
+
+    def _prepare(self, request, entry: _HandlerEntry) -> None:
+        # A body is readable only inside a handler that opted in (decision 10).
+        request._body_collector = entry.collector_id
 
     def set_extra_header(self, name: str, value: str) -> None:
         """Record a header to merge into every subsequent request."""
@@ -831,15 +1224,15 @@ class RequestHandlerRegistry(_BaseHandlerRegistry):
         return bool(self._handlers or self.extra_headers)
 
     def _before_resolve(self, request) -> None:
-        """Merge extra headers into requests about to be continued.
+        """Merge extra headers into requests about to be sent.
 
-        Failed and stubbed requests never reach the wire and manually
-        continued requests have already been sent, so only the
-        plain-continue path is merged.
+        Failed and stubbed requests never reach the wire and manually submitted
+        requests have already been sent, so only requests still heading to the
+        server are merged.
         """
         if not self.extra_headers:
             return
-        if request._handled or request._failed or request._stub is not None:
+        if request._handled or request._settled in ("fail", "respond"):
             return
         merged = {name: value for name, value in request.headers.items() if name.lower() not in self.extra_headers}
         merged.update(self.extra_headers)

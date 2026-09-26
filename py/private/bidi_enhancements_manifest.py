@@ -1018,10 +1018,13 @@ setNetworkConditionsParameters = SetNetworkConditionsParameters''',
     },
     "network": {
         "exclude_types": ["disownDataParameters"],
+        "extra_imports": ["import warnings"],
         # Initialize intercepts tracking list and per-handler intercept map
         "extra_init_code": [
             "self.intercepts: list[Any] = []",
             "self._handler_intercepts: dict[str, Any] = {}",
+            "self._data_collectors: list[Any] = []",
+            "self._handler_errors: list[BaseException] = []",
             "self._request_handlers = RequestHandlerRegistry(self)",
             "self._response_handlers = ResponseHandlerRegistry(self)",
             "self._auth_handlers = AuthHandlerRegistry(self)",
@@ -1061,9 +1064,12 @@ disownDataParameters = DisownDataParameters''',
             # as real code.  The import also re-exports Request and Response to
             # keep them importable from selenium.webdriver.common.bidi.network.
             """from selenium.webdriver.common.bidi._network_handlers import (
+    DEFAULT_MAX_BODY_SIZE,
     LEGACY_REQUEST_HANDLER_EVENTS,
+    AlreadySettledError,
     AuthenticationRequest,
     AuthHandlerRegistry,
+    HandlerHandle,
     Request,
     RequestHandlerRegistry,
     Response,
@@ -1101,12 +1107,13 @@ disownDataParameters = DisownDataParameters''',
             },
         ],
         "extra_methods": [
-            '''    def _add_intercept(self, phases=None, url_patterns=None):
+            '''    def _add_intercept(self, phases=None, url_patterns=None, contexts=None):
         """Add a low-level network intercept.
 
         Args:
             phases: list of intercept phases (default: ["beforeRequestSent"])
-            url_patterns: optional URL patterns to filter
+            url_patterns: optional wire-level UrlPatterns evaluated by the remote end
+            contexts: optional browsing contexts the intercept is limited to
 
         Returns:
             dict with "intercept" key containing the intercept ID
@@ -1118,6 +1125,8 @@ disownDataParameters = DisownDataParameters''',
         params = {"phases": phases}
         if url_patterns:
             params["urlPatterns"] = url_patterns
+        if contexts:
+            params["contexts"] = list(contexts)
         result = self._conn.execute(_cb("network.addIntercept", params))
         if result:
             intercept_id = result.get("intercept")
@@ -1131,6 +1140,51 @@ disownDataParameters = DisownDataParameters''',
         self._conn.execute(_cb("network.removeIntercept", {"intercept": intercept_id}))
         if intercept_id in self.intercepts:
             self.intercepts.remove(intercept_id)''',
+            '''    def _add_data_collector(self, contexts=None, user_contexts=None, max_encoded_data_size=None):
+        """Install a request-body collector owned by Selenium.
+
+        Bodies are collected only for handlers that opted in at registration,
+        and Selenium owns the collector's lifecycle and size cap rather than
+        asking the user to manage them.
+
+        Returns:
+            The collector ID, or None when the remote end did not return one.
+        """
+        from selenium.webdriver.common.bidi.common import command_builder as _cb
+
+        params = {
+            "dataTypes": ["request"],
+            "maxEncodedDataSize": DEFAULT_MAX_BODY_SIZE if max_encoded_data_size is None else max_encoded_data_size,
+        }
+        if contexts:
+            params["contexts"] = list(contexts)
+        if user_contexts:
+            params["userContexts"] = list(user_contexts)
+        result = self._conn.execute(_cb("network.addDataCollector", params))
+        collector_id = result.get("collector") if result else None
+        if collector_id and collector_id not in self._data_collectors:
+            self._data_collectors.append(collector_id)
+        return collector_id''',
+            '''    def _remove_data_collector(self, collector_id):
+        """Remove a request-body collector installed by _add_data_collector."""
+        from selenium.webdriver.common.bidi.common import command_builder as _cb
+
+        self._conn.execute(_cb("network.removeDataCollector", {"collector": collector_id}))
+        if collector_id in self._data_collectors:
+            self._data_collectors.remove(collector_id)''',
+            '''    def _drain_handler_errors(self):
+        """Re-raise an exception a handler let escape on the event thread.
+
+        Handlers run on the BiDi event-dispatch thread, which has no user frame
+        for an exception to propagate into. Rather than swallow it, Selenium
+        fails the event on the wire and re-raises the exception from the next
+        call into ``driver.network``.
+        """
+        if not self._handler_errors:
+            return
+        error = self._handler_errors[0]
+        self._handler_errors.clear()
+        raise error''',
             '''    def _canonical_request_handler_event(self, event):
         """Map public request-handler aliases to supported event keys."""
         event_aliases = {
@@ -1145,7 +1199,16 @@ disownDataParameters = DisownDataParameters''',
                 f"Unsupported request handler event '{event}'. Available events: {available_events}"
             )
         return canonical_event''',
-            '''    def add_request_handler(self, event=None, callback=None, url_patterns=None):
+            '''    def add_request_handler(
+        self,
+        event=None,
+        callback=None,
+        url_patterns=None,
+        *,
+        collect_body=False,
+        window_handle=None,
+        user_context=None,
+    ):
         """Add a handler for network requests.
 
         Two calling styles are supported.
@@ -1153,31 +1216,66 @@ disownDataParameters = DisownDataParameters''',
         High-level (recommended)::
 
             driver.network.add_request_handler(handler)
-            driver.network.add_request_handler(["**/api/**"], handler)
+            driver.network.add_request_handler([{"hostname": "api.example.com"}], handler)
 
         The handler receives a :class:`Request` and may observe it, mutate it
-        via ``set_url``/``set_method``/``set_headers``/``set_cookies``/``set_body``,
-        call ``fail()``, or call ``provide_response(...)``.  After all matching
-        handlers run, Selenium reconciles the outcome (fail > provide_response >
-        continue with mutations > continue) and continues the request
-        automatically — observers never stall the page.  URL patterns are glob
-        strings supporting ``*``, ``**`` and ``?`` (default: match everything).
-        Returns a string handler ID for ``remove_request_handler(handler_id)``.
+        via ``set_url``/``set_method``/``set_headers``/``add_header``/
+        ``remove_header``/``set_cookies``/``set_body``, or settle it with
+        ``fail()``, ``respond(...)`` or ``submit(...)``.
+
+        Handlers are consulted last-registered first, and the first one to
+        settle a disposition resolves the request and stops the chain. A handler
+        that only stages mutations passes the request to the next one, and a
+        request nothing settles is sent with whatever was staged — so observers
+        never stall the page. An exception a handler does not catch fails the
+        request and is re-raised from the next call into ``driver.network``.
+
+        Args:
+            event: The handler callable, or URL patterns when ``callback`` is
+                given. Also accepts a legacy phase name (see below).
+            callback: The handler callable when ``event`` holds URL patterns.
+            url_patterns: URL patterns limiting which requests reach the
+                handler, as pattern strings and/or mappings of ``protocol``,
+                ``hostname``, ``port``, ``pathname`` and ``search`` components.
+                Patterns are validated locally and evaluated by the browser;
+                Selenium does no matching and expands no globs of its own, so
+                finer matching belongs inside the handler. Defaults to matching
+                everything.
+            collect_body: Collect the request body so the handler can read
+                ``request.body``. Bodies are not available otherwise, and
+                Selenium owns the collector's lifecycle and size cap.
+            window_handle: The window handle the handler applies to. Defaults to
+                the one the session is on when the handler is registered.
+            user_context: The user context the handler applies to, covering
+                every window handle in it including ones opened later. Mutually
+                exclusive with ``window_handle``.
+
+        Returns:
+            A :class:`HandlerHandle` for ``remove_request_handler(handle)``.
 
         Legacy (phase-based)::
 
             driver.network.add_request_handler("before_request", handler, url_patterns=[...])
 
-        The callback must call ``request.continue_request()`` itself and
-        url_patterns are wire-level UrlPattern dicts.  Returns an int callback
-        ID for ``remove_request_handler(event, callback_id)``.
+        The callback must settle the request itself and url_patterns are
+        wire-level UrlPattern dicts.  Returns an int callback ID for
+        ``remove_request_handler(event, callback_id)``.  Deprecated; use the
+        high-level form.
         """
+        self._drain_handler_errors()
+        scope = {"collect_body": collect_body, "window_handle": window_handle, "user_context": user_context}
         if callable(event) and callback is None:
-            return self._request_handlers.add_handler(url_patterns, event)
+            return self._request_handlers.add_handler(url_patterns, event, **scope)
         if callable(callback) and event not in LEGACY_REQUEST_HANDLER_EVENTS:
             if not isinstance(event, str) or looks_like_url_glob(event):
                 patterns = event if event is not None else url_patterns
-                return self._request_handlers.add_handler(patterns, callback)
+                return self._request_handlers.add_handler(patterns, callback, **scope)
+        warnings.warn(
+            "The phase-based add_request_handler(event, callback) form is deprecated, "
+            "use add_request_handler(callback) or add_request_handler(url_patterns, callback) instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",
@@ -1203,13 +1301,17 @@ disownDataParameters = DisownDataParameters''',
             '''    def remove_request_handler(self, event, callback_id=None):
         """Remove a network request handler and its associated network intercept.
 
+        Removing a handler stops it being consulted for later requests but does
+        not disturb a request already in flight.
+
         Args:
-            event: The handler ID string returned by the high-level
+            event: The :class:`HandlerHandle` returned by the high-level
                 ``add_request_handler(callback)`` form, or the event name used
                 with the legacy phase-based form.
             callback_id: The int returned by the legacy form. Omit when
-                removing a high-level handler by its ID.
+                removing a high-level handler by its handle.
         """
+        self._drain_handler_errors()
         if callback_id is None:
             self._request_handlers.remove_handler(event)
             return
@@ -1227,6 +1329,7 @@ disownDataParameters = DisownDataParameters''',
         use ``clear_response_handlers`` / ``clear_authentication_handlers`` /
         ``clear_extra_headers`` to remove those.
         """
+        self._drain_handler_errors()
         self._request_handlers.clear()
         self.clear_event_handlers()
         # After clear() the request registry's intercept_ids() only contains
@@ -1245,81 +1348,172 @@ disownDataParameters = DisownDataParameters''',
         self._request_handlers.resubscribe()
         self._response_handlers.resubscribe()
         self._auth_handlers.resubscribe()''',
-            '''    def add_response_handler(self, url_patterns=None, callback=None):
+            '''    def add_response_handler(
+        self,
+        url_patterns=None,
+        callback=None,
+        *,
+        window_handle=None,
+        user_context=None,
+    ):
         """Add a handler for network responses.
 
         Usage::
 
             driver.network.add_response_handler(handler)
-            driver.network.add_response_handler(["**/api/**"], handler)
+            driver.network.add_response_handler([{"hostname": "api.example.com"}], handler)
 
         The handler receives a :class:`Response` at the ``responseStarted``
-        phase and may observe it or mutate it via
-        ``set_status``/``set_headers``/``set_cookies``/``set_body``.  After all
-        matching handlers run, Selenium reconciles the outcome — a mutated body
-        is delivered via ``network.provideResponse``, other mutations via
-        ``network.continueResponse`` — and continues the response
-        automatically, so observers never stall the page.  URL patterns are
-        glob strings supporting ``*``, ``**`` and ``?`` (default: match
-        everything).
+        phase and may observe it, mutate it via ``set_status``/``set_headers``/
+        ``add_header``/``remove_header``/``set_cookies``/``set_body``, or settle
+        it with ``fail()`` or ``submit(...)``.
 
-        Returns:
-            A string handler ID for ``remove_response_handler(handler_id)``.
-        """
-        if callable(url_patterns) and callback is None:
-            return self._response_handlers.add_handler(None, url_patterns)
-        if not callable(callback):
-            raise TypeError("add_response_handler requires a callable handler")
-        return self._response_handlers.add_handler(url_patterns, callback)''',
-            '''    def remove_response_handler(self, handler_id):
-        """Remove a response handler and its intercept by handler ID.
+        Handlers are consulted last-registered first, and the first one to
+        settle a disposition resolves the response and stops the chain. A
+        response nothing settles is delivered with whatever was staged — a
+        replacement body via ``network.provideResponse``, other mutations via
+        ``network.continueResponse`` — so observers never stall the page.
+
+        Intercepting a response holds it before its body is collected, so a
+        response body is not readable while intercepting.
 
         Args:
-            handler_id: The ID returned by ``add_response_handler``.
+            url_patterns: URL patterns limiting which responses reach the
+                handler, as pattern strings and/or mappings of ``protocol``,
+                ``hostname``, ``port``, ``pathname`` and ``search`` components.
+                Evaluated by the browser. Defaults to matching everything.
+            callback: The handler callable.
+            window_handle: The window handle the handler applies to. Defaults to
+                the one the session is on when the handler is registered.
+            user_context: The user context the handler applies to. Mutually
+                exclusive with ``window_handle``.
+
+        Returns:
+            A :class:`HandlerHandle` for ``remove_response_handler(handle)``.
         """
+        self._drain_handler_errors()
+        scope = {"window_handle": window_handle, "user_context": user_context}
+        if callable(url_patterns) and callback is None:
+            return self._response_handlers.add_handler(None, url_patterns, **scope)
+        if not callable(callback):
+            raise TypeError("add_response_handler requires a callable handler")
+        return self._response_handlers.add_handler(url_patterns, callback, **scope)''',
+            '''    def remove_response_handler(self, handler_id):
+        """Remove a response handler and its intercept by handle.
+
+        Removing a handler stops it being consulted for later responses but does
+        not disturb a response already in flight.
+
+        Args:
+            handler_id: The :class:`HandlerHandle` returned by
+                ``add_response_handler``.
+        """
+        self._drain_handler_errors()
         self._response_handlers.remove_handler(handler_id)''',
             '''    def clear_response_handlers(self):
         """Clear all response handlers and their intercepts."""
+        self._drain_handler_errors()
         self._response_handlers.clear()''',
-            '''    def add_authentication_handler(self, url_patterns=None, callback=None):
+            '''    def add_authentication_handler(
+        self, url_patterns=None, callback=None, *, window_handle=None, user_context=None
+    ):
         """Add a handler for authentication challenges.
 
         Usage::
 
             driver.network.add_authentication_handler(handler)
             driver.network.add_authentication_handler(
-                ["https://secure-api.example.com/**"], handler
+                [{"hostname": "secure.example.com"}], handler
             )
 
         The handler receives an :class:`AuthenticationRequest` at the
-        ``authRequired`` phase and may respond with
-        ``provide_credentials(username, password)`` or ``cancel()``.  After all
-        matching handlers run, Selenium reconciles the outcome (cancel >
-        provide_credentials > browser default) and continues the challenge
-        automatically, so observers never stall the page.  URL patterns are
-        glob strings supporting ``*``, ``**`` and ``?`` (default: match
-        everything).
+        ``authRequired`` phase and settles it with
+        ``authenticate(username, password)`` or ``cancel()``.
 
-        Do not combine with the credentials-only ``add_auth_handler``: both
-        would answer the same challenge and the second response fails.
+        Handlers are consulted last-registered first, and the first one to
+        settle resolves the challenge and stops the chain. A challenge nothing
+        settles falls through to the browser's own behavior, so observers never
+        stall the page.
 
-        Returns:
-            A string handler ID for ``remove_authentication_handler(handler_id)``.
-        """
-        if callable(url_patterns) and callback is None:
-            return self._auth_handlers.add_handler(None, url_patterns)
-        if not callable(callback):
-            raise TypeError("add_authentication_handler requires a callable handler")
-        return self._auth_handlers.add_handler(url_patterns, callback)''',
-            '''    def remove_authentication_handler(self, handler_id):
-        """Remove an authentication handler and its intercept by handler ID.
+        For the common case of supplying a fixed username and password, prefer
+        :meth:`add_authentication`.
 
         Args:
-            handler_id: The ID returned by ``add_authentication_handler``.
+            url_patterns: URL patterns limiting which challenges reach the
+                handler, as pattern strings and/or mappings of ``protocol``,
+                ``hostname``, ``port``, ``pathname`` and ``search`` components.
+                Evaluated by the browser. Defaults to matching everything.
+            callback: The handler callable.
+            window_handle: The window handle the handler applies to. Defaults to
+                the one the session is on when the handler is registered.
+            user_context: The user context the handler applies to. Mutually
+                exclusive with ``window_handle``.
+
+        Returns:
+            A :class:`HandlerHandle` for
+            ``remove_authentication_handler(handle)``.
         """
+        self._drain_handler_errors()
+        scope = {"window_handle": window_handle, "user_context": user_context}
+        if callable(url_patterns) and callback is None:
+            return self._auth_handlers.add_handler(None, url_patterns, **scope)
+        if not callable(callback):
+            raise TypeError("add_authentication_handler requires a callable handler")
+        return self._auth_handlers.add_handler(url_patterns, callback, **scope)''',
+            '''    def add_authentication(
+        self, username, password, url_patterns=None, *, window_handle=None, user_context=None
+    ):
+        """Answer authentication challenges with a fixed username and password.
+
+        A convenience wrapper over :meth:`add_authentication_handler` for the
+        common case, taking credentials instead of a callable::
+
+            driver.network.add_authentication(
+                "user", "pass", [{"hostname": "secure.example.com"}]
+            )
+
+        It returns the same kind of handle as the rest of the family and is
+        removed with ``remove_authentication_handler`` and cleared with
+        ``clear_authentication_handlers``. Use
+        :meth:`add_authentication_handler` when credentials must be computed per
+        challenge or a challenge needs cancelling.
+
+        Args:
+            username: The username for the challenge.
+            password: The password for the challenge.
+            url_patterns: URL patterns limiting which challenges are answered.
+                Defaults to matching everything.
+            window_handle: The window handle the handler applies to. Defaults to
+                the one the session is on when the handler is registered.
+            user_context: The user context the handler applies to. Mutually
+                exclusive with ``window_handle``.
+
+        Returns:
+            A :class:`HandlerHandle` for
+            ``remove_authentication_handler(handle)``.
+        """
+
+        def _authenticate(challenge):
+            challenge.authenticate(username, password)
+
+        return self.add_authentication_handler(
+            url_patterns, _authenticate, window_handle=window_handle, user_context=user_context
+        )''',
+            '''    def remove_authentication_handler(self, handler_id):
+        """Remove an authentication handler and its intercept by handle.
+
+        Removing a handler stops it being consulted for later challenges but
+        does not disturb a challenge already in flight.
+
+        Args:
+            handler_id: The :class:`HandlerHandle` returned by
+                ``add_authentication_handler`` or ``add_authentication``.
+        """
+        self._drain_handler_errors()
         self._auth_handlers.remove_handler(handler_id)''',
             '''    def clear_authentication_handlers(self):
         """Clear all authentication handlers and their intercepts."""
+        self._drain_handler_errors()
         self._auth_handlers.clear()''',
             '''    def add_extra_header(self, name, value):
         """Add a header that is merged into every subsequent request.
@@ -1354,10 +1548,9 @@ disownDataParameters = DisownDataParameters''',
             '''    def add_auth_handler(self, username, password):
         """Add an auth handler that automatically provides credentials.
 
-        For callback-based handling with URL scoping and the ability to cancel
-        a challenge, prefer ``add_authentication_handler``.  Do not combine the
-        two: both would answer the same challenge and the second response
-        fails.
+        Deprecated: use ``add_authentication(username, password)``, which takes
+        part in the same handler chain as the rest of the authentication family
+        and is removed and cleared the same way.
 
         Args:
             username: The username for basic authentication.
@@ -1366,6 +1559,11 @@ disownDataParameters = DisownDataParameters''',
         Returns:
             callback_id int for later removal via remove_auth_handler.
         """
+        warnings.warn(
+            "add_auth_handler is deprecated, use add_authentication instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         from selenium.webdriver.common.bidi.common import command_builder as _cb
 
         # Set up network intercept for authRequired phase
