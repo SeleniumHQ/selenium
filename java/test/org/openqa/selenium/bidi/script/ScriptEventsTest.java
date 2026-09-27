@@ -17,6 +17,7 @@
 package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -77,6 +78,20 @@ public class ScriptEventsTest extends JupiterTestBase {
       assertThat(realmInfo.getRealmId()).isNotNull();
       assertThat(realmInfo.getRealmType()).isEqualTo(RealmType.WINDOW);
     }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void doesNotReceiveRealmCreatedAfterClose() {
+    CompletableFuture<RealmInfo> future = new CompletableFuture<>();
+    Script script = new Script(driver);
+    script.onRealmCreated(future::complete);
+    script.close();
+
+    BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+    context.navigate(new Pages(appServer).blankPage);
+
+    assertThatThrownBy(() -> future.get(5, TimeUnit.SECONDS)).isInstanceOf(TimeoutException.class);
   }
 
   @Test
