@@ -57,7 +57,12 @@ API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-
 # Not pinned yet: Firefox's grammar lives in mozilla-central (remote/doc/webdriver-bidi) and is
 # copied verbatim under common/bidi until D327393 lands there. Keyed by vendor namespace.
 VENDOR_CDDL_FILES = {
-    "moz": ["//common/bidi:Debugging.cddl", "//common/bidi:Fields.cddl", "//common/bidi:Profiler.cddl"],
+    "moz": [
+        "//common/bidi:Commands.cddl",
+        "//common/bidi:Debugging.cddl",
+        "//common/bidi:Fields.cddl",
+        "//common/bidi:Profiler.cddl",
+    ],
 }
 
 BZL_FILE = root_dir / "common" / "webref_cddl.bzl"

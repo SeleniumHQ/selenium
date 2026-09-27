@@ -87,6 +87,36 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensionuninstallparameters
           UninstallParameters = Serialization::Record.define(extension: {wire_key: 'extension', primitive: 'string'})
 
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          MozListExtensionsResult = Serialization::Record.define(
+            extensions: {wire_key: 'extensions', ref: 'WebExtension::MozExtensionInfo', list: true}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          MozExtensionInfo = Serialization::Record.define(
+            id: {wire_key: 'id', primitive: 'string'},
+            name: {wire_key: 'name', primitive: 'string'},
+            version: {wire_key: 'version', primitive: 'string'},
+            manifest_version: {wire_key: 'manifestVersion', primitive: 'integer'},
+            is_active: {wire_key: 'isActive', primitive: 'boolean'},
+            is_system: {wire_key: 'isSystem', primitive: 'boolean'},
+            hidden: {wire_key: 'hidden', primitive: 'boolean'},
+            temporarily_installed: {wire_key: 'temporarilyInstalled', primitive: 'boolean'},
+            source_url: {wire_key: 'sourceURL', required: false, nullable: true, primitive: 'string'},
+            policy: {wire_key: 'policy', required: false, nullable: true, ref: 'WebExtension::MozExtensionPolicyInfo'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          MozExtensionPolicyInfo = Serialization::Record.define(
+            uuid: {wire_key: 'uuid', primitive: 'string'},
+            base_url: {wire_key: 'baseURL', primitive: 'string'},
+            extension_url: {wire_key: 'extensionURL', primitive: 'string'},
+            background_scripts: {wire_key: 'backgroundScripts', list: true}
+          )
+
           def extension_data = ExtensionData
           def extension_path(**) = ExtensionPath.new(**)
           def extension_archive_path(**) = ExtensionArchivePath.new(**)
@@ -110,7 +140,7 @@ module Selenium
           end
 
           # @api private
-          # moz: vendor variant of WebExtension, overriding commands with browser-specific params.
+          # moz: vendor variant of WebExtension, with browser-specific commands and params.
           # Construct Moz.new(source) for a matching session; other sessions use WebExtension.
           class Moz < WebExtension
             # @api private
@@ -123,6 +153,12 @@ module Selenium
               }.reject { |_, value| Serialization::UNSET.equal?(value) }
               params = InstallParameters.new(extension_data: extension_data, extensions: extensions)
               execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
+            end
+
+            # @api private
+            # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+            def list_extensions
+              execute(cmd: 'webExtension.moz:listExtensions', result: WebExtension::MozListExtensionsResult)
             end
           end
         end # WebExtension

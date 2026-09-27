@@ -1,3 +1,4 @@
+// <copyright file="SeleniumActivitySource.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,16 +15,22 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.firefox;
+using System.Diagnostics;
 
-import java.io.File;
-import java.io.IOException;
+namespace OpenQA.Selenium.Internal.Telemetry;
 
-/**
- * @deprecated Use {@link HasExtensions#installExtension} instead.
- */
-@Deprecated(forRemoval = true)
-public interface Extension {
-  void writeTo(File parentDirectory) throws IOException;
+/// <summary>
+/// Provides the single, assembly-wide <see cref="ActivitySource"/> used to emit diagnostic activities.
+/// </summary>
+/// <remarks>
+/// Consumers enable this by subscribing to activities from <see cref="Name"/> (e.g. via an
+/// <see cref="ActivityListener"/> or an OpenTelemetry <c>AddSource("Selenium.WebDriver")</c> call).
+/// </remarks>
+internal static class SeleniumActivitySource
+{
+    internal const string Name = "Selenium.WebDriver";
+
+    internal static readonly ActivitySource Instance = new(Name, ResourceUtilities.ProductVersion);
 }

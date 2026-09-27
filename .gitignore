@@ -81,7 +81,6 @@ py/selenium/webdriver/common/linux/
 py/selenium/webdriver/common/macos/
 py/selenium/webdriver/common/mutation-listener.js
 py/selenium/webdriver/common/windows/
-py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js

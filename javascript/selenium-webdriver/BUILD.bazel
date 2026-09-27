@@ -33,10 +33,11 @@ js_binary(
     name = "generate_bidi_script",
     data = [
         "generate_bidi.mjs",
+        "normalize_bidi_ast.mjs",
+        "project_bidi_schema.mjs",
         ":generated_note_local",
         ":license_header_local",
         ":node_modules/cddl",
-        ":node_modules/cddl2ts",
     ],
     entry_point = "generate_bidi.mjs",
 )
@@ -92,12 +93,12 @@ generate_bidi_library(
     # The schema step joins each spec's dfns index by type name to attach a `specHref`
     # link to each type's definition in the live spec.
     dfns_files = BIDI_DFNS_FILES,
-    enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
     extra_cddl_files = BIDI_EXTENSION_CDDL_FILES,
     # Spec-shaped, browser-neutral productions that supersede an upstream one by name. Stay
     # in the shared schema: they complete command/event aggregates the specs define members
-    # for but never list.
+    # for but never list, or relax a field the spec requires ahead of every implementation.
     override_cddl_files = [
+        "//common/bidi:browsing-context-created-params.cddl",
         "//common/bidi:digital-credentials-command.cddl",
         "//common/bidi:web-bluetooth-events.cddl",
     ],
@@ -117,7 +118,7 @@ VERSION = "4.50.0-nightly202609091537"
 BROWSER_VERSIONS = [
     "v152",
     "v153",
-    "v151",
+    "v154",
 ]
 
 js_library(

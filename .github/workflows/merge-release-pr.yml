@@ -67,6 +67,6 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Release PR not merged
-          SLACK_MESSAGE: "${{ github.event.workflow_run.conclusion == 'failure' && format('{0} failed on', github.event.workflow_run.name) || (steps.checks.outputs.notify == 'true' && 'Required checks did not pass on' || 'Merging failed for') }} ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.pr.outputs.number }}. Re-run the failed workflow once fixed, or close the PR to unlock trunk."
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "${{ github.event.workflow_run.conclusion == 'failure' && format('{0} failed on', github.event.workflow_run.name) || (steps.checks.outputs.notify == 'true' && 'Required checks did not pass on' || 'Merging failed for') }} ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.pr.outputs.number }}. Re-run the failed workflow once fixed, or close the PR to unlock trunk. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
