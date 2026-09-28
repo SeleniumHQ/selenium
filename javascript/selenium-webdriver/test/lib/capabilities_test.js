@@ -138,9 +138,9 @@ describe('Capabilities', function () {
 })
 
 test.suite(function (env) {
-  // Chrome 153+ raises a JavaScript focus error instead of "element not interactable"
+  // Chromium 153+ raises a JavaScript focus error instead of "element not interactable"
   test
-    .ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX, Browser.CHROME))
+    .ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX, Browser.CHROME, Browser.EDGE))
     .it(
       'should fail to upload files to a non interactable input when StrictFileInteractability is on',
       async function () {
