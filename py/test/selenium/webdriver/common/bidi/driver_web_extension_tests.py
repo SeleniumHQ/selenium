@@ -34,6 +34,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.web_extension import WebExtension
 from selenium.webdriver.support.wait import WebDriverWait
 
+import conftest
 from conftest import _resolve_bazel_path, get_extensions_location
 
 EXTENSIONS = get_extensions_location()
@@ -59,6 +60,37 @@ def verify_uninstalled(driver, extension):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_edge
 class TestFirefoxDriverWebExtension:
+    @pytest.fixture
+    def private_browsing_driver(self, firefox_options, request, server):
+        """A Firefox of its own that starts every window private.
+
+        moz:allowPrivateBrowsing is only observable in a private window, and the pref has to
+        be set before launch, so these tests cannot share the session-scoped driver.
+        """
+        # A Grid node runs one Firefox at a time, so a second session would queue behind the
+        # shared one until the test times out. Release it; the next test starts a new one.
+        if conftest.selenium_driver is not None:
+            conftest.selenium_driver.stop_driver()
+            conftest.selenium_driver = None
+
+        firefox_options.set_preference("browser.privatebrowsing.autostart", True)
+
+        if server is not None:
+            private_driver = webdriver.Remote(
+                command_executor=server.status_url.removesuffix("/status"), options=firefox_options
+            )
+        else:
+            executable = _resolve_bazel_path(request.config.option.executable)
+            service = (
+                webdriver.FirefoxService(executable_path=executable)
+                if executable
+                else webdriver.FirefoxService()
+            )
+            private_driver = webdriver.Firefox(options=firefox_options, service=service)
+
+        yield private_driver
+        private_driver.quit()
+
     def test_install_from_directory(self, driver, pages):
         extension = driver.install_web_extension(os.path.join(EXTENSIONS, EXTENSION_PATH))
 
@@ -115,18 +147,23 @@ class TestFirefoxDriverWebExtension:
         verify_extension_injection(driver, pages)
         verify_uninstalled(driver, extension)
 
-    def test_install_allowing_private_browsing(self, driver, pages):
-        # Only asserts the option reaches the browser without being rejected. Firefox's BiDi
-        # webExtension.install does not read moz:allowPrivateBrowsing yet -- it passes
-        # allowPrivateBrowsing=false to Addon.installWithPath unconditionally -- so there is
-        # nothing observable to assert on. The classic endpoint does honour it.
-        extension = driver.install_web_extension(
+    def test_runs_in_a_private_window_when_allowed(self, private_browsing_driver, webserver):
+        extension = private_browsing_driver.install_web_extension(
             os.path.join(EXTENSIONS, EXTENSION_PATH), allow_private_browsing=True
         )
 
         assert extension.id == EXTENSION_ID
-        verify_extension_injection(driver, pages)
-        verify_uninstalled(driver, extension)
+        private_browsing_driver.get(webserver.where_is("blank.html", localhost=False))
+        injected = WebDriverWait(private_browsing_driver, timeout=2).until(
+            lambda dr: dr.find_element(By.ID, "webextensions-selenium-example")
+        )
+        assert injected.text == "Content injected by webextensions-selenium-example"
+
+    def test_does_not_run_in_a_private_window_by_default(self, private_browsing_driver, webserver):
+        private_browsing_driver.install_web_extension(os.path.join(EXTENSIONS, EXTENSION_PATH))
+
+        private_browsing_driver.get(webserver.where_is("blank.html", localhost=False))
+        assert len(private_browsing_driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
     def test_uninstall_rejects_a_raw_id(self, driver):
         extension = driver.install_web_extension(os.path.join(EXTENSIONS, EXTENSION_PATH))

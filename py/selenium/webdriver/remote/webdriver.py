@@ -1449,9 +1449,8 @@ class WebDriver(BaseWebDriver):
                 choice to the browser. Firefox installs only a packed, signed
                 extension permanently; a directory is rejected.
             allow_private_browsing: Firefox only. Let the extension run in
-                private browsing windows. Honoured over WebDriver Classic;
-                Firefox's BiDi implementation does not read it yet, so a BiDi
-                session accepts it without effect.
+                private browsing windows. On Android it additionally requires
+                `permanent=True`.
 
         Returns:
             A `WebExtension` wrapping the id the browser assigned. Pass it to
