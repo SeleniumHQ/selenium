@@ -190,8 +190,7 @@ test.suite(function (env) {
         await driver.get(Pages.uploadInvisibleTestPage)
 
         const input1 = await driver.findElement(By.id('upload'))
-        // Awaited so the file is in the input before submitting: through a Grid, sendKeys first
-        // uploads the file to the remote end, and the click would otherwise submit an empty form.
+        // Through a Grid, sendKeys uploads the file first; unawaited, the click submits an empty form.
         await input1.sendKeys(fp)
         await driver.findElement(By.id('go')).click()
 

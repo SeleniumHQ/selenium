@@ -46,6 +46,7 @@ bazel test //javascript/selenium-webdriver/...  # All tests
 # Per-file browser targets are named test-<file>-<browser>; discover exact names with:
 # bazel query //javascript/selenium-webdriver:all | grep element-finding
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-chrome
+bazel test //javascript/selenium-webdriver:test-element-finding-test.js-edge
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-firefox
 
 # Against a Grid (chrome and firefox only). Each target starts its own Selenium
@@ -53,14 +54,24 @@ bazel test //javascript/selenium-webdriver:test-element-finding-test.js-firefox
 bazel test //javascript/selenium-webdriver:test-upload-test.js-chrome-remote
 bazel test //javascript/selenium-webdriver/... --test_tag_filters=chrome-remote
 
+# What GitHub Actions runs on every pull request, on macOS and Windows
+bazel test //javascript/selenium-webdriver/... --test_tag_filters=os-sensitive,se-manager
+
 # Additional Arguments
 bazel test //javascript/selenium-webdriver/... --flaky_test_attempts=3
 bazel test //javascript/selenium-webdriver/... --test_output=all
 ```
 
-Every large test file also gets `test-<file>-<browser>-remote` targets, except those listed in
-`NO_GRID_TESTS` in `BUILD.bazel`: files that never start a browser, or that test a local driver
-service itself.
+Each large test file gets a target per browser it runs against: chrome, edge and firefox, or
+the ones its `suite()` is limited to (`{ browsers: [...] }`), as recorded in
+`test/test_browsers.bzl`. It also gets chrome and firefox `-remote` targets, except the files in
+`NO_GRID_TESTS` in `BUILD.bazel`, which test a local driver service itself.
+
+CI runs every target on Linux (RBE), with pinned browsers. On GitHub Actions, every pull request
+also runs what RBE cannot vouch for: the tests tagged `os-sensitive` (`OS_SENSITIVE_TESTS`) on
+macOS and Windows, and those tagged `se-manager` (`SE_MANAGER_TESTS`, which find the browser and
+driver through Selenium Manager) on macOS, Windows and Linux. Everything else runs on Windows
+nightly.
 
 ## Skipping Tests
 
@@ -143,5 +154,8 @@ Test files end in `_test.js`.
 ## Build Files
 
 - Adding tests shouldn't require Bazel changes for existing directories.
-- Small tests (no browser) go in `test/lib/`.
+- Small tests (no browser) go in `test/lib/` and are listed in `SMALL_TESTS`.
 - Large tests (browser required) go in `test/`.
+- A large test file whose `suite()` is limited to some browsers needs a matching entry in
+  `test/test_browsers.bzl`; `test/lib/test_browsers_test.js` fails and names the entry to add if
+  they disagree.

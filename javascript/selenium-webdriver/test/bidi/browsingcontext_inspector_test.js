@@ -39,10 +39,8 @@ suite(
     })
 
     describe('Browsing Context Inspector', function () {
-      // TODO: Flaky on Firefox, locally and through a Grid: the handler keeps whichever
-      // contextCreated event arrived last, and the assertion runs without waiting for the event
-      // for the new window, so a late or extra event reports another context's id. Wait for the
-      // event matching the window handle, then remove this ignore.
+      // TODO: Flaky on Firefox: the assertion doesn't wait for the new window's contextCreated
+      // event, so a late or extra event reports another context. Wait for the matching id.
       ignore(env.browsers(Browser.FIREFOX)).it(
         'can listen to window browsing context created event',
         async function () {

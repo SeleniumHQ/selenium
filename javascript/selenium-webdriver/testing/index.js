@@ -293,10 +293,8 @@ class Environment {
   /**
    * Returns a predicate function that will suppress tests in this environment
    * when it runs them through a Selenium server (such as a Grid) rather than a
-   * browser driver started locally. Give the reason, ideally a tracked issue,
-   * in a comment next to it:
+   * browser driver started locally.
    *
-   *     // Grid cannot grant system access per session.
    *     ignore(env.remote()).it('reads a browser preference', ...)
    *
    * @return {function(): boolean} a new predicate function.
@@ -331,6 +329,19 @@ class Environment {
       builder.setChromeOptions(options)
     }
     // Edge
+    if ('SE_EDGEDRIVER' in process.env) {
+      const found = locate(process.env.SE_EDGEDRIVER)
+      const service = new edge.ServiceBuilder(found)
+      builder.setEdgeService(service)
+    }
+    if ('SE_EDGE' in process.env) {
+      const binary = locate(process.env.SE_EDGE)
+      const options = new edge.Options()
+      options.setBinaryPath(binary)
+      options.setAcceptInsecureCerts(true)
+      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
+      builder.setEdgeOptions(options)
+    }
     // Firefox
     if ('SE_GECKODRIVER' in process.env) {
       const found = locate(process.env.SE_GECKODRIVER)
@@ -567,9 +578,7 @@ function getTestHook(name) {
 }
 
 /**
- * Bazel's hermetic java, when the test target provides it via `SE_BAZEL_JAVA_LOCATION` (a file
- * holding the `$(JAVA)` path), so the Selenium server doesn't depend on this machine's `java`.
- * Mirrors py/conftest.py and Ruby's spec_support/test_environment.rb.
+ * Bazel's hermetic java, from `SE_BAZEL_JAVA_LOCATION` (a file holding the `$(JAVA)` path).
  * @return {(string|undefined)} the java executable, or undefined to use the server's default.
  */
 function bazelJava() {
@@ -591,11 +600,10 @@ const PINNED_BROWSERS = {
 }
 
 /**
- * Selenium server arguments that pin the Grid node to the Bazel-provided driver and browser, so
- * it skips Selenium Manager (which would find no installed browser on a CI machine). Empty when
- * nothing is pinned, keeping the server's default driver detection.
+ * Pins the Grid node to the Bazel-provided driver and browser; on CI, Selenium Manager would find
+ * no installed browser.
  * @param {string} browserName
- * @return {!Array<string>}
+ * @return {!Array<string>} empty when nothing is pinned.
  */
 function pinnedGridArgs(browserName) {
   const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
