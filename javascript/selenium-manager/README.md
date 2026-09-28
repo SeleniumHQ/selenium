@@ -32,10 +32,12 @@ dependency per platform, and npm installs only the one that matches the machine:
 | Linux x64                  | `@selenium/manager-linux-x64`    |
 | Linux arm64                | `@selenium/manager-linux-arm64`  |
 | macOS (Intel and Apple Si) | `@selenium/manager-darwin`       |
-| Windows (x86, x64, arm64)  | `@selenium/manager-win32`        |
+| Windows (x86, x64, arm64)  | `@selenium/manager-win32-ia32`   |
 
-macOS and Windows are one package each: the macOS binary is universal, and the
-Windows binary is ia32, which Windows runs on x64 and arm64 as well.
+The architecture in a package name is the binary's, not the machine's, which is
+why one package answers every Windows platform: that binary is ia32, and Windows
+runs it on x64 and arm64 as well. macOS needs no suffix because its binary is
+universal.
 
 ## Using it from Node
 

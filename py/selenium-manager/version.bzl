@@ -10,11 +10,15 @@ SM_VERSION = "4.50.0.202609091537"
 # derived from SM_VERSION here rather than restated in the BUILD file where they
 # would silently drift on a bump.
 #
-# Linux is the only platform split by architecture: the macOS binary is
-# universal and the Windows one is i686, which runs on x64 and arm64 too.
+# The architecture suffix names the binary a package carries, so it is absent
+# only where there is no single architecture to name: the macOS binary is
+# universal. The Windows i686 build runs on x64 and arm64 too, which is why one
+# `-x86` package answers every Windows marker; a native build for either would
+# arrive as its own package and narrow these markers rather than change what
+# `-x86` contains.
 PLATFORM_REQUIREMENTS = [
     "selenium-manager-linux-x86-64==%s; sys_platform=='linux' and platform_machine=='x86_64'" % SM_VERSION,
     "selenium-manager-linux-aarch64==%s; sys_platform=='linux' and platform_machine=='aarch64'" % SM_VERSION,
     "selenium-manager-macos==%s; sys_platform=='darwin'" % SM_VERSION,
-    "selenium-manager-windows==%s; sys_platform=='win32'" % SM_VERSION,
+    "selenium-manager-windows-x86==%s; sys_platform=='win32'" % SM_VERSION,
 ]

@@ -21,7 +21,7 @@ unless defined?(MANAGER_NPM_FILES)
     javascript/selenium-manager-darwin/package.json
     javascript/selenium-manager-linux-x64/package.json
     javascript/selenium-manager-linux-arm64/package.json
-    javascript/selenium-manager-win32/package.json
+    javascript/selenium-manager-win32-ia32/package.json
   ].freeze
 end
 
@@ -159,7 +159,7 @@ task :release_manager do |_task, arguments|
     '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
     '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
     '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
-    '//javascript/selenium-manager-win32:selenium-manager-win32.publish',
+    '//javascript/selenium-manager-win32-ia32:selenium-manager-win32-ia32.publish',
     '//javascript/selenium-manager:selenium-manager.publish'
   ]
 

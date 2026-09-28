@@ -19,13 +19,13 @@ genrule(
 )
 
 npm_package(
-    name = "selenium-manager-win32",
+    name = "selenium-manager-win32-ia32",
     srcs = [
         "package.json",
         ":license",
         ":manager-binary",
     ],
-    package = "@selenium/manager-win32",
+    package = "@selenium/manager-win32-ia32",
     publishable = True,
     tags = ["release-artifact"],
     version = SM_VERSION,
