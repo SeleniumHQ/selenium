@@ -194,7 +194,6 @@ class NetworkEventsTest extends JupiterTestBase {
     } catch (WebDriverException ignored) {
     }
 
-    assertThatThrownBy(() -> future.get(5, TimeUnit.SECONDS))
-        .isInstanceOf(TimeoutException.class);
+    assertThatThrownBy(() -> future.get(5, TimeUnit.SECONDS)).isInstanceOf(TimeoutException.class);
   }
 }
