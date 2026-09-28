@@ -431,5 +431,7 @@ public class Script implements Closeable {
   @Override
   public void close() {
     this.bidi.clearListener(messageEvent);
+    this.bidi.clearListener(realmCreated);
+    this.bidi.clearListener(realmDestroyed);
   }
 }
