@@ -147,27 +147,26 @@ test.suite(function (env) {
         const options = env.builder().getChromeOptions() || new chrome.Options()
         options.setStrictFileInteractability(true)
         const driver = env.builder().setChromeOptions(options).build()
-
-        const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
-        const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
-
-        let fp = await io.tmpFile().then(function (fp) {
-          fs.writeFileSync(fp, FILE_HTML)
-          return fp
-        })
-
-        driver.setFileDetector(new remote.FileDetector())
-        await driver.get(Pages.uploadInvisibleTestPage)
-        const input = await driver.findElement(By.id('upload'))
         try {
-          await input.sendKeys(fp)
-          assert(false, 'element was interactable')
-        } catch (e) {
-          assert(e.message.includes('element not interactable'))
-        }
+          const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
+          const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
 
-        if (driver) {
-          return driver.quit()
+          let fp = await io.tmpFile().then(function (fp) {
+            fs.writeFileSync(fp, FILE_HTML)
+            return fp
+          })
+
+          driver.setFileDetector(new remote.FileDetector())
+          await driver.get(Pages.uploadInvisibleTestPage)
+          const input = await driver.findElement(By.id('upload'))
+          try {
+            await input.sendKeys(fp)
+            assert(false, 'element was interactable')
+          } catch (e) {
+            assert(e.message.includes('element not interactable'))
+          }
+        } finally {
+          await driver.quit()
         }
       },
     )
@@ -186,24 +185,25 @@ test.suite(function (env) {
       const options = env.builder().getChromeOptions() || new chrome.Options()
       options.setStrictFileInteractability(false)
       const driver = env.builder().setChromeOptions(options).build()
+      try {
+        driver.setFileDetector(new remote.FileDetector())
+        await driver.get(Pages.uploadInvisibleTestPage)
 
-      driver.setFileDetector(new remote.FileDetector())
-      await driver.get(Pages.uploadInvisibleTestPage)
+        const input1 = await driver.findElement(By.id('upload'))
+        // Awaited so the file is in the input before submitting: through a Grid, sendKeys first
+        // uploads the file to the remote end, and the click would otherwise submit an empty form.
+        await input1.sendKeys(fp)
+        await driver.findElement(By.id('go')).click()
 
-      const input1 = await driver.findElement(By.id('upload'))
-      input1.sendKeys(fp)
-      await driver.findElement(By.id('go')).click()
+        // Uploading files across a network may take a while, even if they're really small
+        let label = await driver.findElement(By.id('upload_label'))
+        await driver.wait(until.elementIsNotVisible(label), 10 * 1000, 'File took longer than 10 seconds to upload!')
 
-      // Uploading files across a network may take a while, even if they're really small
-      let label = await driver.findElement(By.id('upload_label'))
-      await driver.wait(until.elementIsNotVisible(label), 10 * 1000, 'File took longer than 10 seconds to upload!')
-
-      const frame = await driver.findElement(By.id('upload_target'))
-      await driver.switchTo().frame(frame)
-      assert.strictEqual(await driver.findElement(By.css('body')).getText(), path.basename(fp))
-
-      if (driver) {
-        return driver.quit()
+        const frame = await driver.findElement(By.id('upload_target'))
+        await driver.switchTo().frame(frame)
+        assert.strictEqual(await driver.findElement(By.css('body')).getText(), path.basename(fp))
+      } finally {
+        await driver.quit()
       }
     })
 })

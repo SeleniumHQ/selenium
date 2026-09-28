@@ -218,6 +218,7 @@ function init(force = false) {
   seleniumJar = process.env['SELENIUM_SERVER_JAR']
   seleniumUrl = process.env['SELENIUM_REMOTE_URL']
   if (seleniumJar) {
+    seleniumJar = locate(seleniumJar)
     info(`Using Selenium server jar: ${seleniumJar}`)
   }
 
@@ -287,6 +288,21 @@ class Environment {
    */
   browsers(...browsersToIgnore) {
     return () => browsersToIgnore.indexOf(this.browser.name) !== -1
+  }
+
+  /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it runs them through a Selenium server (such as a Grid) rather than a
+   * browser driver started locally. Give the reason, ideally a tracked issue,
+   * in a comment next to it:
+   *
+   *     // Grid cannot grant system access per session.
+   *     ignore(env.remote()).it('reads a browser preference', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  remote() {
+    return () => URL_MAP.get(this) !== null
   }
 
   /**
@@ -444,7 +460,10 @@ function suite(fn, options = undefined) {
 
       describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
-          seleniumServer = new remote.SeleniumServer(seleniumJar)
+          seleniumServer = new remote.SeleniumServer(seleniumJar, {
+            java: bazelJava(),
+            args: pinnedGridArgs(browser.name),
+          })
 
           const startTimeout = 65 * 1000
 
@@ -545,6 +564,54 @@ function getTestHook(name) {
     )
   }
   return fn
+}
+
+/**
+ * Bazel's hermetic java, when the test target provides it via `SE_BAZEL_JAVA_LOCATION` (a file
+ * holding the `$(JAVA)` path), so the Selenium server doesn't depend on this machine's `java`.
+ * Mirrors py/conftest.py and Ruby's spec_support/test_environment.rb.
+ * @return {(string|undefined)} the java executable, or undefined to use the server's default.
+ */
+function bazelJava() {
+  const javaLocation = process.env['SE_BAZEL_JAVA_LOCATION']
+  if (!javaLocation) {
+    return undefined
+  }
+  // $(JAVA) is an exec path (external/<repo>/...); without the prefix it is a runfiles path.
+  const execPath = fs.readFileSync(locate(javaLocation), { encoding: 'utf8' }).trim()
+  const java = locate(execPath.replace(/^external\//, ''))
+  // Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
+  return process.platform === 'win32' ? fs.realpathSync(java) : java
+}
+
+/** Browser name -> [driver env var, browser env var, vendor options key], for pinned browsers. */
+const PINNED_BROWSERS = {
+  [Browser.CHROME]: ['SE_CHROMEDRIVER', 'SE_CHROME', 'goog:chromeOptions'],
+  [Browser.FIREFOX]: ['SE_GECKODRIVER', 'SE_FIREFOX', 'moz:firefoxOptions'],
+}
+
+/**
+ * Selenium server arguments that pin the Grid node to the Bazel-provided driver and browser, so
+ * it skips Selenium Manager (which would find no installed browser on a CI machine). Empty when
+ * nothing is pinned, keeping the server's default driver detection.
+ * @param {string} browserName
+ * @return {!Array<string>}
+ */
+function pinnedGridArgs(browserName) {
+  const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
+  if (!process.env[driverVar] || !process.env[browserVar]) {
+    return []
+  }
+  const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
+  return [
+    '--detect-drivers',
+    'false',
+    '--driver-configuration',
+    `display-name=${browserName}`,
+    'max-sessions=1',
+    `webdriver-executable=${locate(process.env[driverVar])}`,
+    `stereotype=${stereotype}`,
+  ]
 }
 
 function locate(fileLike) {

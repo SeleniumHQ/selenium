@@ -48,10 +48,19 @@ bazel test //javascript/selenium-webdriver/...  # All tests
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-chrome
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-firefox
 
+# Against a Grid (chrome and firefox only). Each target starts its own Selenium
+# standalone server and routes every session through it.
+bazel test //javascript/selenium-webdriver:test-upload-test.js-chrome-remote
+bazel test //javascript/selenium-webdriver/... --test_tag_filters=chrome-remote
+
 # Additional Arguments
 bazel test //javascript/selenium-webdriver/... --flaky_test_attempts=3
 bazel test //javascript/selenium-webdriver/... --test_output=all
 ```
+
+Every large test file also gets `test-<file>-<browser>-remote` targets, except those listed in
+`NO_GRID_TESTS` in `BUILD.bazel`: files that never start a browser, or that test a local driver
+service itself.
 
 ## Skipping Tests
 
@@ -77,6 +86,14 @@ suite(function (env) {
 
 Browser values: `Browser.CHROME`, `Browser.FIREFOX`, `Browser.SAFARI`, `Browser.EDGE`, `Browser.IE`
 
+To skip a test that cannot run through a Grid, use `env.remote()` and give the reason, ideally
+a tracked issue:
+
+```javascript
+// System access can only be granted to a local geckodriver, not a Grid session.
+ignore(env.remote()).describe('context switching', function () {})
+```
+
 ## Helpers
 
 ### From `lib/test`
@@ -94,6 +111,7 @@ Browser values: `Browser.CHROME`, `Browser.FIREFOX`, `Browser.SAFARI`, `Browser.
 | ------------------------ | ----------------------------------------- |
 | `env.builder()`          | Get WebDriver builder for current browser |
 | `env.browsers(...names)` | Predicate for browser matching            |
+| `env.remote()`           | Predicate for running through a Grid      |
 
 ### Test Utilities (`test/lib/testutil.js`)
 

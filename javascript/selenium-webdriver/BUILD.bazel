@@ -261,6 +261,26 @@ mocha_test(
     ],
 )
 
+LARGE_TEST_DATA = [
+    ":large-test-srcs",
+    ":node_modules/express",
+    ":node_modules/mocha",
+    ":node_modules/mocha-junit-reporter",
+    ":node_modules/multer",
+    ":node_modules/serve-index",
+    ":node_modules/sinon",
+    ":test-data",
+    "//:node_modules/selenium-webdriver",
+    "//common/extensions:js-lib",
+    "//common/src/web:js-lib",
+]
+
+LARGE_TEST_TAGS = [
+    "browser-test",
+    "no-sandbox",
+    "requires-network",
+]
+
 [
     [
         mocha_test(
@@ -275,31 +295,78 @@ mocha_test(
                 test,
             ],
             chdir = package_name(),
-            data = [
-                ":large-test-srcs",
-                ":node_modules/express",
-                ":node_modules/mocha",
-                ":node_modules/mocha-junit-reporter",
-                ":node_modules/multer",
-                ":node_modules/serve-index",
-                ":node_modules/sinon",
-                ":test-data",
-                "//:node_modules/selenium-webdriver",
-                "//common/extensions:js-lib",
-                "//common/src/web:js-lib",
-            ] + BROWSERS[browser]["data"],
+            data = LARGE_TEST_DATA + BROWSERS[browser]["data"],
             env = {
                 "SELENIUM_BROWSER": browser,
             } | BROWSERS[browser]["env"],
-            tags = [
-                browser,
-                "browser-test",
-                "no-sandbox",
-                "requires-network",
-            ],
+            tags = [browser] + LARGE_TEST_TAGS,
         ),
     ]
     for test in LARGE_TESTS
+    for browser in BROWSERS.keys()
+]
+
+# Large test files that never run through a Grid, because they only make sense against a local
+# driver or never start a browser. A single test that cannot run on a Grid is skipped in the file
+# instead, with `ignore(env.remote())` and the reason.
+NO_GRID_TESTS = [
+    # Never start a browser.
+    "test/bidi/network_types_test.js",
+    "test/http/http_test.js",
+    "test/http/util_test.js",
+    # Test the local driver service itself.
+    "test/chrome/service_test.js",
+    "test/edge/service_test.js",
+    "test/remote_test.js",
+    "test/safari_test.js",
+]
+
+# Every other large test also runs through a Selenium Grid: the harness (testing/index.js) starts
+# the standalone server from SELENIUM_SERVER_JAR, pinned to the Bazel-provided browser and driver,
+# and routes every session through it.
+GRID_TESTS = [test for test in LARGE_TESTS if test not in NO_GRID_TESTS]
+
+genrule(
+    name = "java-location",
+    srcs = [],
+    outs = ["java-location.txt"],
+    cmd = "echo $(JAVA) > $@",
+    toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
+)
+
+[
+    mocha_test(
+        name = "%s-%s-remote" % (
+            test.replace("/", "-").replace("_", "-"),
+            browser,
+        ),
+        size = "large",
+        args = [
+            "--retries",
+            "1",
+            test,
+        ],
+        chdir = package_name(),
+        data = LARGE_TEST_DATA + BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SELENIUM_BROWSER": browser,
+            "SELENIUM_SERVER_JAR": "$(rootpath //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        } | BROWSERS[browser]["env"],
+        # The hermetic JDK lives in an external repository, which rules_js cannot copy into the
+        # output tree; the server runs it from runfiles as-is.
+        no_copy_to_bin = ["@bazel_tools//tools/jdk:current_java_runtime"],
+        tags = [
+            browser,
+            "remote",
+            "%s-remote" % browser,
+        ] + LARGE_TEST_TAGS,
+    )
+    for test in GRID_TESTS
     for browser in BROWSERS.keys()
 ]
 
