@@ -1,5 +1,7 @@
 load("//rb/spec:tests.bzl", "rb_integration_test")
 
+_BROWSERS = ["edge"]
+
 filegroup(
     name = "all_srcs",
     testonly = True,
@@ -11,18 +13,29 @@ filegroup(
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        browsers = ["edge"],
+        browsers = _BROWSERS,
         data = ["//common/extensions"],
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = ["service_spec.rb"],
+        exclude = [
+            "driver_spec.rb",
+            "service_spec.rb",
+        ],
     )
 ]
 
 rb_integration_test(
+    name = "driver",
+    srcs = ["driver_spec.rb"],
+    bidi = True,
+    browsers = _BROWSERS,
+    data = ["//common/extensions"],
+)
+
+rb_integration_test(
     name = "service",
     srcs = ["service_spec.rb"],
-    browsers = ["edge"],
+    browsers = _BROWSERS,
     grid = False,
 )

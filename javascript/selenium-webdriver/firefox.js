@@ -27,15 +27,13 @@
  * __Customizing the Firefox Profile__
  *
  * The profile used for each WebDriver session may be configured using the
- * {@linkplain Options} class. For example, you may install an extension, like
- * Firebug:
+ * {@linkplain Options} class. For example, you may set a preference:
  *
  *     const {Builder} = require('selenium-webdriver');
  *     const firefox = require('selenium-webdriver/firefox');
  *
  *     let options = new firefox.Options()
- *         .addExtensions('/path/to/firebug.xpi')
- *         .setPreference('extensions.firebug.showChromeErrors', true);
+ *         .setPreference('browser.download.folderList', 2);
  *
  *     let driver = new Builder()
  *         .forBrowser('firefox')
@@ -117,81 +115,16 @@ const http = require('./http')
 const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
-const zip = require('./io/zip')
 const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { getBinaryPaths } = require('./common/driverFinder')
 const { findFreePort } = require('./net/portprober')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
-/**
- * Thrown when there an add-on is malformed.
- * @final
- */
-class AddonFormatError extends Error {
-  /** @param {string} msg The error message. */
-  constructor(msg) {
-    super(msg)
-    /** @override */
-    this.name = this.constructor.name
-  }
-}
-
-/**
- * Installs an extension to the given directory.
- * @param {string} extension Path to the xpi extension file to install.
- * @param {string} dir Path to the directory to install the extension in.
- * @return {!Promise<string>} A promise for the add-on ID once
- *     installed.
- */
-async function installExtension(extension, dir) {
-  const ext = extension.slice(-4)
-  if (ext !== '.xpi' && ext !== '.zip') {
-    throw Error('File name does not end in ".zip" or ".xpi": ' + ext)
-  }
-
-  let archive = await zip.load(extension)
-  if (!archive.has('manifest.json')) {
-    throw new AddonFormatError(`Couldn't find manifest.json in ${extension}`)
-  }
-
-  let buf = await archive.getFile('manifest.json')
-  let parsedJSON = JSON.parse(buf.toString('utf8'))
-
-  let { browser_specific_settings } =
-    /** @type {{browser_specific_settings:{gecko:{id:string}}}} */
-    parsedJSON
-
-  if (browser_specific_settings && browser_specific_settings.gecko) {
-    /* browser_specific_settings is an alternative to applications
-     * It is meant to facilitate cross-browser plugins since Firefox48
-     * see https://bugzilla.mozilla.org/show_bug.cgi?id=1262005
-     */
-    parsedJSON.applications = browser_specific_settings
-  }
-
-  let { applications } =
-    /** @type {{applications:{gecko:{id:string}}}} */
-    parsedJSON
-  if (!(applications && applications.gecko && applications.gecko.id)) {
-    throw new AddonFormatError(`Could not find add-on ID for ${extension}`)
-  }
-
-  await io.copy(extension, `${path.join(dir, applications.gecko.id)}.xpi`)
-  return applications.gecko.id
-}
-
 class Profile {
   constructor() {
     /** @private {?string} */
     this.template_ = null
-
-    /** @private {!Array<string>} */
-    this.extensions_ = []
-  }
-
-  addExtensions(/** !Array<string> */ paths) {
-    this.extensions_ = this.extensions_.concat(...paths)
   }
 
   /**
@@ -199,39 +132,21 @@ class Profile {
    *     profile, or undefined if there's no data to include.
    */
   [Symbols.serialize]() {
-    if (this.template_ || this.extensions_.length) {
-      return buildProfile(this.template_, this.extensions_)
+    if (this.template_) {
+      return buildProfile(this.template_)
     }
     return undefined
   }
 }
 
 /**
- * @param {?string} template path to an existing profile to use as a template.
- * @param {!Array<string>} extensions paths to extensions to install in the new
- *     profile.
+ * @param {string} template path to an existing profile to use as a template.
  * @return {!Promise<string>} a promise for the base64 encoded profile.
  */
-async function buildProfile(template, extensions) {
-  let dir = template
-
-  if (extensions.length) {
-    dir = await io.tmpDir()
-    if (template) {
-      await io.copyDir(/** @type {string} */ (template), dir, /(parent\.lock|lock|\.parentlock)/)
-    }
-
-    const extensionsDir = path.join(dir, 'extensions')
-    await io.mkdir(extensionsDir)
-
-    for (let i = 0; i < extensions.length; i++) {
-      await installExtension(extensions[i], extensionsDir)
-    }
-  }
-
+async function buildProfile(template) {
   let zip = new Zip()
   return zip
-    .addDir(dir)
+    .addDir(template)
     .then(() => zip.toBuffer())
     .then((buf) => buf.toString('base64'))
 }
@@ -310,18 +225,6 @@ class Options extends Capabilities {
     checkArg(width)
     checkArg(height)
     return this.addArguments(`--width=${width}`, `--height=${height}`)
-  }
-
-  /**
-   * Add extensions that should be installed when starting Firefox.
-   *
-   * @param {...string} paths The paths to the extension XPI files to install.
-   * @return {!Options} A self reference.
-   * @deprecated Use {@link Driver#installAddon} instead.
-   */
-  addExtensions(...paths) {
-    this.profile_().addExtensions(paths)
-    return this
   }
 
   /**

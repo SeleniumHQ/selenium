@@ -4,8 +4,8 @@ build:rbe --bes_backend=grpcs://gypsum.cluster.engflow.com
 build:rbe --remote_executor=grpcs://gypsum.cluster.engflow.com
 build:rbe --remote_cache=grpcs://gypsum.cluster.engflow.com
 
-# The number of cores available
-build:rbe -j 50
+# The cluster's executor count; a lone run can use the whole pool
+build:rbe -j 100
 
 # Always pin the browser when running remotely
 build:rbe --//common:pin_browsers
@@ -47,7 +47,7 @@ test:rbe --test_env=SE_CACHE_PATH=
 # Make sure we sniff credentials properly
 build:rbe --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
 
-# The remote build machines are pretty small, and 50 threads may leave them
+# The remote build machines are pretty small, and 100 threads may leave them
 # thrashing, but our dev machines are a lot larger. Scale the workload so we
 # make reasonable usage of everything, everywhere, all at once.
 build:rbe --local_resources=cpu='HOST_CPUS*10'

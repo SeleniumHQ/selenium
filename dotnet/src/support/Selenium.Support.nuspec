@@ -36,5 +36,7 @@
     <file src="lib/netstandard2.0/Selenium.Support.xml" target="lib/netstandard2.0/Selenium.Support.xml" />
 
     <file src="icon.png" />
+    <file src="LICENSE" target="LICENSE" />
+    <file src="NOTICE" target="NOTICE" />
   </files>
 </package>

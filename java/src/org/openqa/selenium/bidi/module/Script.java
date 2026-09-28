@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi.module;
 import static java.util.Collections.emptyMap;
 
 import java.io.Closeable;
-import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +34,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.script.CallFunctionParameters;
@@ -52,7 +52,6 @@ import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.ResultOwnership;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 @Beta
@@ -63,47 +62,20 @@ public class Script implements Closeable {
 
   private final BiDi bidi;
 
-  private static final Function<JsonInput, EvaluateResult> evaluateResultMapper =
-      jsonInput -> createEvaluateResult(jsonInput.readMap());
+  private static final Function<@Nullable Object, EvaluateResult> evaluateResultMapper =
+      result -> createEvaluateResult(asMap(result));
 
-  private static final Function<JsonInput, List<RealmInfo>> realmInfoMapper =
-      jsonInput -> {
-        Object realms = jsonInput.readMapElement("realms");
-        try (StringReader reader = new StringReader(JSON.toJson(realms));
-            JsonInput input = JSON.newInput(reader)) {
-          return input.readNonNull(new TypeToken<List<RealmInfo>>() {}.getType());
-        }
-      };
+  private static final Function<@Nullable Object, List<RealmInfo>> realmInfoMapper =
+      ConverterFunctions.map("realms", new TypeToken<List<RealmInfo>>() {}.getType());
 
   private static final Event<Message> messageEvent =
-      new Event<>(
-          "script.message",
-          params -> {
-            try (StringReader reader = new StringReader(JSON.toJson(params));
-                JsonInput input = JSON.newInput(reader)) {
-              return input.readNonNull(Message.class);
-            }
-          });
+      new Event<>("script.message", params -> JSON.convert(params, Message.class));
 
   private static final Event<RealmInfo> realmCreated =
-      new Event<>(
-          "script.realmCreated",
-          params -> {
-            try (StringReader reader = new StringReader(JSON.toJson(params));
-                JsonInput input = JSON.newInput(reader)) {
-              return input.readNonNull(RealmInfo.class);
-            }
-          });
+      new Event<>("script.realmCreated", params -> JSON.convert(params, RealmInfo.class));
 
   private static final Event<RealmInfo> realmDestroyed =
-      new Event<>(
-          "script.realmDestroyed",
-          params -> {
-            try (StringReader reader = new StringReader(JSON.toJson(params));
-                JsonInput input = JSON.newInput(reader)) {
-              return input.readNonNull(RealmInfo.class);
-            }
-          });
+      new Event<>("script.realmDestroyed", params -> JSON.convert(params, RealmInfo.class));
 
   public Script(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -290,7 +262,7 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> jsonInput.readMapElement("script").toString()));
+            result -> asMap(result).get("script").toString()));
   }
 
   public String addPreloadScript(String functionDeclaration, List<ChannelValue> arguments) {
@@ -306,7 +278,7 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> jsonInput.readMapElement("script")));
+            result -> asMap(result).get("script").toString()));
   }
 
   public String addPreloadScript(String functionDeclaration, String sandbox) {
@@ -323,7 +295,7 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> jsonInput.readMapElement("script").toString()));
+            result -> asMap(result).get("script").toString()));
   }
 
   public String addPreloadScript(
@@ -341,7 +313,7 @@ public class Script implements Closeable {
         new Command<>(
             "script.addPreloadScript",
             parameters,
-            jsonInput -> jsonInput.readMapElement("script").toString()));
+            result -> asMap(result).get("script").toString()));
   }
 
   public void removePreloadScript(String id) {
@@ -428,26 +400,26 @@ public class Script implements Closeable {
     return params;
   }
 
+  @SuppressWarnings("unchecked")
+  private static Map<String, Object> asMap(@Nullable Object value) {
+    return (Map<String, Object>) Require.nonNull("Command result", value);
+  }
+
   private static EvaluateResult createEvaluateResult(Map<String, Object> response) {
     String type = (String) response.get("type");
     EvaluateResult evaluateResult;
     String realmId = (String) response.get("realm");
 
     if (type.equals(EvaluateResult.Type.SUCCESS.toString())) {
-      final RemoteValue remoteValue;
-      try (StringReader reader = new StringReader(JSON.toJson(response.get("result")));
-          JsonInput input = JSON.newInput(reader)) {
-        remoteValue = input.readNonNull(RemoteValue.class);
-      }
-
+      RemoteValue remoteValue =
+          Require.nonNull(
+              "Evaluate result", JSON.convert(response.get("result"), RemoteValue.class));
       evaluateResult = new EvaluateResultSuccess(EvaluateResult.Type.SUCCESS, realmId, remoteValue);
     } else {
-      final ExceptionDetails exceptionDetails;
-      try (StringReader reader = new StringReader(JSON.toJson(response.get("exceptionDetails")));
-          JsonInput input = JSON.newInput(reader)) {
-        exceptionDetails = input.readNonNull(ExceptionDetails.class);
-      }
-
+      ExceptionDetails exceptionDetails =
+          Require.nonNull(
+              "Exception details",
+              JSON.convert(response.get("exceptionDetails"), ExceptionDetails.class));
       evaluateResult =
           new EvaluateResultExceptionValue(
               EvaluateResult.Type.EXCEPTION, realmId, exceptionDetails);

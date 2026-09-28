@@ -249,7 +249,7 @@ class Service(ABC):
         except OSError as err:
             if err.errno == errno.EACCES:
                 if self._path is None:
-                    raise WebDriverException("Service path cannot be None.")
+                    raise WebDriverException("Service path cannot be None.") from err
                 raise WebDriverException(
                     f"'{os.path.basename(self._path)}' executable may have wrong permissions."
                 ) from err

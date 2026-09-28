@@ -69,11 +69,11 @@ compile_pip_requirements(
         "pyproject.toml",
         "requirements.txt",
     ],
-    extra_args = ["--no-strip-extras"],
-    requirements_txt = ":requirements_lock.txt",
-    tags = [
-        "skip-rbe",  # This test won't run on the RBE because of a lack of network connectivity
+    extra_args = [
+        "--no-annotate",  # keep lock check platform agnostic
+        "--no-strip-extras",
     ],
+    requirements_txt = ":requirements_lock.txt",
 )
 
 SE_VERSION = "4.50.0.202609091537"
@@ -81,7 +81,7 @@ SE_VERSION = "4.50.0.202609091537"
 BROWSER_VERSIONS = [
     "v152",
     "v153",
-    "v151",
+    "v154",
 ]
 
 TEST_DEPS = [
@@ -167,12 +167,6 @@ copy_file(
     name = "bidi-mutation-listener",
     src = "//javascript/bidi-support:bidi-mutation-listener.js",
     out = "selenium/webdriver/common/bidi-mutation-listener.js",
-)
-
-copy_file(
-    name = "firefox-driver-prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "selenium/webdriver/firefox/webdriver_prefs.json",
 )
 
 copy_file(
@@ -481,7 +475,6 @@ py_library(
     srcs = glob(["selenium/webdriver/firefox/**/*.py"]),
     data = [
         "selenium/webdriver/firefox/__init__.pyi",
-        ":firefox-driver-prefs",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -770,7 +763,7 @@ generate_bidi(
         "@permissions_all_cddl//file:spec.cddl",
         "@prefetch_all_cddl//file:spec.cddl",
         "@ua_client_hints_all_cddl//file:spec.cddl",
-        "@web_bluetooth_all_cddl//file:spec.cddl",
+        "@bluetooth_scanning_all_cddl//file:spec.cddl",
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",
@@ -873,6 +866,8 @@ BIDI_IMPLEMENTATIONS = []
 # generates no targets: an empty test_suite would mean every test in the package.
 REMOTE_BIDI_TESTS = []
 
+GRID_TESTS = glob(["test/selenium/webdriver/remote/**/*.py"])
+
 # Test files that only run against browsers supporting the given feature.
 # Each group is split into its own sub-suite so that changing the underlying
 # library only triggers that group's targets, not the full ~700-target suite.
@@ -919,6 +914,13 @@ ACTIONS_TESTS = [
 ]
 
 DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
+
+# Behavior that differs by host OS (window geometry, screenshots); tagged so CI
+# runs these on every OS rather than only on the Linux RBE pass.
+OS_SENSITIVE_TESTS = [
+    "test/selenium/webdriver/common/takes_screenshots_tests.py",
+    "test/selenium/webdriver/common/window_tests.py",
+]
 
 # Browser-specific test configuration
 BROWSER_TESTS = {
@@ -1015,6 +1017,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
@@ -1037,7 +1040,10 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = [
+            "no-sandbox",
+            "os-sensitive",
+        ] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-actions" % browser,
         deps = [
@@ -1189,12 +1195,46 @@ FEATURE_SUITE_DEFS = {
         srcs = glob(
             [
                 "test/selenium/webdriver/common/**/*.py",
-                "test/selenium/webdriver/remote/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ] + BROWSER_TESTS[browser]["browser_srcs"],
             exclude = BIDI_TESTS + ACTIONS_TESTS + FEATURE_TESTS + DRIVER_FINDER_TESTS +
                       BROWSER_TESTS[browser].get("extra_excludes", []),
         ),
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+            "remote",
+            "%s-remote" % browser,
+        ],
+        target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+        test_suffix = "%s-remote" % browser,
+        deps = [
+            ":init-tree",
+            ":webserver",
+        ] + BROWSER_TESTS[browser]["deps"] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
+
+[
+    py_test_suite(
+        name = "test-%s-remote-grid" % browser,
+        size = "large",
+        srcs = GRID_TESTS,
         args = [
             "--instafail",
             "--remote",
@@ -1299,11 +1339,12 @@ FEATURE_SUITE_DEFS = {
     for feature in FEATURE_SUITE_DEFS
 ]
 
-# Aggregate test-<browser>-remote = remote-common + remote-actions + remote-features
+# Aggregate test-<browser>-remote = remote-common + remote-grid + remote-actions + remote-features
 [test_suite(
     name = "test-%s-remote" % browser,
     tests = [
         ":test-%s-remote-common" % browser,
+        ":test-%s-remote-grid" % browser,
         ":test-%s-remote-actions" % browser,
     ] + [":test-%s-remote-%s" % (browser, f) for f in FEATURE_SUITE_DEFS] + ([":test-%s-remote-bidi" % browser] if REMOTE_BIDI_TESTS else []),
 ) for browser in [
@@ -1319,6 +1360,15 @@ test_suite(
         ":test-firefox-remote",
     ],
 )
+
+# Lets an OS job check Grid works without paying for the whole remote suite.
+[test_suite(
+    name = "test-%s-grid" % browser,
+    tests = [":test-%s-remote-grid" % browser] + ([":test-%s-remote-bidi" % browser] if REMOTE_BIDI_TESTS else []),
+) for browser in [
+    "chrome",
+    "firefox",
+]]
 
 py_binary(
     name = "generate-api-listing",

@@ -34,8 +34,8 @@ def setup_gem_credentials
   File.chmod(0o600, credentials)
 end
 
-def publish_gem(target)
-  Bazel.execute('run', ['--config=release'], target)
+def publish_gem(target, config)
+  Bazel.execute('run', ["--config=#{config}"], target)
 rescue RuntimeError => e
   raise unless e.message.match?(/Repushing of gem versions/i)
 
@@ -75,6 +75,7 @@ end
 desc 'Push Ruby gems to rubygems'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+  config = arguments.to_a.include?('rbe') ? 'rbe_release' : 'release'
 
   unless nightly
     already_published = begin
@@ -105,14 +106,14 @@ task :release do |_task, arguments|
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
     puts 'Releasing nightly WebDriver gem...'
-    publish_gem('//rb:selenium-webdriver-release-nightly')
+    publish_gem('//rb:selenium-webdriver-release-nightly', config)
   else
     setup_gem_credentials
     patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
     puts 'Releasing Ruby gems...'
-    publish_gem('//rb:selenium-webdriver-release')
-    publish_gem('//rb:selenium-devtools-release') unless patch_release
+    publish_gem('//rb:selenium-webdriver-release', config)
+    publish_gem('//rb:selenium-devtools-release', config) unless patch_release
   end
 end
 
@@ -163,7 +164,7 @@ end
 desc 'Update Ruby changelog'
 task :changelogs do
   header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
-  SeleniumRake.update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
+  SeleniumRake.update_changelog(ruby_version, 'ruby', 'rb/lib/', 'rb/CHANGES', header)
 end
 
 desc 'Update Ruby version'

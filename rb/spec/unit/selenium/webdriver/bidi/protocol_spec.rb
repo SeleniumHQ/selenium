@@ -132,6 +132,33 @@ module Selenium
                       params: hash_including('moz:allowPrivateBrowsing' => true))
             end
 
+            it 'adds a vendor command to a spec module on its vendor variant only' do
+              extension = {'id' => 'ext@example.com', 'name' => 'Ext', 'version' => '1.0', 'manifestVersion' => 3,
+                           'isActive' => true, 'isSystem' => false, 'hidden' => false,
+                           'temporarilyInstalled' => true}
+              allow(connection).to receive(:send_cmd).and_return('result' => {'extensions' => [extension]})
+
+              result = WebExtension.new(connection).moz.list_extensions
+
+              expect(connection).to have_received(:send_cmd).with(method: 'webExtension.moz:listExtensions', params: {})
+              expect(result).to be_a(WebExtension::MozListExtensionsResult)
+              expect(result.extensions.first).to be_a(WebExtension::MozExtensionInfo)
+              expect(result.extensions.first.manifest_version).to eq(3)
+              expect(WebExtension.new(connection)).not_to respond_to(:list_extensions)
+              expect(WebExtension.new(connection)).not_to respond_to(:moz_list_extensions)
+            end
+
+            it 'exposes a vendor module as a domain of its own, driving its commands' do
+              allow(connection).to receive(:send_cmd).and_return('result' => {'path' => '/tmp/profile.json'})
+
+              result = MozProfiler.new(connection).stop(discard: true)
+
+              expect(connection).to have_received(:send_cmd)
+                .with(method: 'moz:profiler.stop', params: {'discard' => true})
+              expect(result).to be_a(MozProfiler::StopResult)
+              expect(result.path).to eq('/tmp/profile.json')
+            end
+
             it 'does not expose an inbound-only type (script.RemoteValue is received, never sent)' do
               expect(Script.new(connection)).not_to respond_to(:remote_value)
             end

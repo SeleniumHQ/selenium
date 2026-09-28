@@ -31,6 +31,16 @@ module BiDiGenerate
     end
   end
 
+  describe '.safe_field_name' do
+    it 'renames extensions on an extensible record, where it holds the undeclared fields' do
+      expect(BiDiGenerate.safe_field_name('extensions', extensible: true)).to eq('extensions_')
+    end
+
+    it 'keeps extensions on a closed record' do
+      expect(BiDiGenerate.safe_field_name('extensions', extensible: false)).to eq('extensions')
+    end
+  end
+
   describe '.enum_key' do
     it 'maps a leading minus before a word to neg_' do
       expect(BiDiGenerate.enum_key('-Infinity')).to eq('neg_infinity')
