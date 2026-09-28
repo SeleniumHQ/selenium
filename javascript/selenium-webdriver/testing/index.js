@@ -471,9 +471,11 @@ function suite(fn, options = undefined) {
 
       describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
+          // The server is shared by every selected browser, so it gets a slot for each.
           seleniumServer = new remote.SeleniumServer(seleniumJar, {
             java: bazelJava(),
-            args: pinnedGridArgs(browser.name),
+            loopback: true,
+            args: ['--host', '127.0.0.1', ...pinnedGridArgs(targetBrowsers.map((b) => b.name))],
           })
 
           const startTimeout = 65 * 1000
@@ -600,26 +602,27 @@ const PINNED_BROWSERS = {
 }
 
 /**
- * Pins the Grid node to the Bazel-provided driver and browser; on CI, Selenium Manager would find
+ * Pins the Grid node to the Bazel-provided drivers and browsers; on CI, Selenium Manager would find
  * no installed browser.
- * @param {string} browserName
- * @return {!Array<string>} empty when nothing is pinned.
+ * @param {!Array<string>} browserNames
+ * @return {!Array<string>} empty when no browser is pinned.
  */
-function pinnedGridArgs(browserName) {
-  const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
-  if (!process.env[driverVar] || !process.env[browserVar]) {
-    return []
-  }
-  const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
-  return [
-    '--detect-drivers',
-    'false',
-    '--driver-configuration',
-    `display-name=${browserName}`,
-    'max-sessions=1',
-    `webdriver-executable=${locate(process.env[driverVar])}`,
-    `stereotype=${stereotype}`,
-  ]
+function pinnedGridArgs(browserNames) {
+  const configurations = browserNames.flatMap((browserName) => {
+    const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
+    if (!process.env[driverVar] || !process.env[browserVar]) {
+      return []
+    }
+    const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
+    return [
+      '--driver-configuration',
+      `display-name=${browserName}`,
+      'max-sessions=1',
+      `webdriver-executable=${locate(process.env[driverVar])}`,
+      `stereotype=${stereotype}`,
+    ]
+  })
+  return configurations.length > 0 ? ['--detect-drivers', 'false', ...configurations] : []
 }
 
 function locate(fileLike) {
