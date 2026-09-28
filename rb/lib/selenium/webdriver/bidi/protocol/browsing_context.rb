@@ -83,6 +83,19 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbaseinfo
+          BaseInfo = Serialization::Record.define(
+            children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
+            client_window: {wire_key: 'clientWindow', primitive: 'string'},
+            context: {wire_key: 'context', primitive: 'string'},
+            original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
+            url: {wire_key: 'url', primitive: 'string'},
+            user_context: {wire_key: 'userContext', primitive: 'string'},
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-browsingContext-Info
           Info = Serialization::Record.define(
             children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
@@ -573,8 +586,22 @@ module Selenium
             default_value: {wire_key: 'defaultValue', required: false, primitive: 'string'}
           )
 
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreatedparameters
+          ContextCreatedParameters = Serialization::Record.define(
+            children: {wire_key: 'children', nullable: true, ref: 'BrowsingContext::Info', list: true},
+            client_window: {wire_key: 'clientWindow', primitive: 'string'},
+            context: {wire_key: 'context', primitive: 'string'},
+            original_opener: {wire_key: 'originalOpener', nullable: true, primitive: 'string'},
+            url: {wire_key: 'url', primitive: 'string'},
+            user_context: {wire_key: 'userContext', primitive: 'string'},
+            parent: {wire_key: 'parent', required: false, nullable: true, primitive: 'string'},
+            has_planned_navigation: {wire_key: 'hasPlannedNavigation', required: false, primitive: 'boolean'}
+          )
+
           EVENT_TYPES = {
-            'browsingContext.contextCreated' => BrowsingContext::Info,
+            'browsingContext.contextCreated' => BrowsingContext::ContextCreatedParameters,
             'browsingContext.contextDestroyed' => BrowsingContext::Info,
             'browsingContext.domContentLoaded' => BrowsingContext::NavigationInfo,
             'browsingContext.downloadEnd' => BrowsingContext::DownloadEndParams,
