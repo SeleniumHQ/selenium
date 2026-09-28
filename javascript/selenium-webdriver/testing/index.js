@@ -471,7 +471,6 @@ function suite(fn, options = undefined) {
 
       describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
-          // The server is shared by every selected browser, so it gets a slot for each.
           seleniumServer = new remote.SeleniumServer(seleniumJar, {
             java: bazelJava(),
             loopback: true,
@@ -599,30 +598,36 @@ function bazelJava() {
 const PINNED_BROWSERS = {
   [Browser.CHROME]: ['SE_CHROMEDRIVER', 'SE_CHROME', 'goog:chromeOptions'],
   [Browser.FIREFOX]: ['SE_GECKODRIVER', 'SE_FIREFOX', 'moz:firefoxOptions'],
+  [Browser.EDGE]: ['SE_EDGEDRIVER', 'SE_EDGE', 'ms:edgeOptions'],
 }
 
 /**
- * Pins the Grid node to the Bazel-provided drivers and browsers; on CI, Selenium Manager would find
+ * Pins the Grid node to the Bazel-provided driver and browser; on CI, Selenium Manager would find
  * no installed browser.
- * @param {!Array<string>} browserNames
- * @return {!Array<string>} empty when no browser is pinned.
+ * @param {!Array<string>} browserNames the browsers sharing the server.
+ * @return {!Array<string>} empty to keep driver detection.
  */
 function pinnedGridArgs(browserNames) {
-  const configurations = browserNames.flatMap((browserName) => {
-    const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
-    if (!process.env[driverVar] || !process.env[browserVar]) {
-      return []
-    }
-    const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
-    return [
-      '--driver-configuration',
-      `display-name=${browserName}`,
-      'max-sessions=1',
-      `webdriver-executable=${locate(process.env[driverVar])}`,
-      `stereotype=${stereotype}`,
-    ]
-  })
-  return configurations.length > 0 ? ['--detect-drivers', 'false', ...configurations] : []
+  // The command line merges repeated --driver-configuration flags into one, so only a single
+  // browser can be pinned; with several, detection must stay on to give each one a slot.
+  if (browserNames.length !== 1) {
+    return []
+  }
+  const [browserName] = browserNames
+  const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
+  if (!process.env[driverVar] || !process.env[browserVar]) {
+    return []
+  }
+  const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
+  return [
+    '--detect-drivers',
+    'false',
+    '--driver-configuration',
+    `display-name=${browserName}`,
+    'max-sessions=1',
+    `webdriver-executable=${locate(process.env[driverVar])}`,
+    `stereotype=${stereotype}`,
+  ]
 }
 
 function locate(fileLike) {
