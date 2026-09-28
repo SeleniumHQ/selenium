@@ -174,8 +174,6 @@ extend-ignore = [
     "B007", # Loop control variable not used within loop body
     "B024", # Abstract base class without abstract methods
     "B028", # No explicit `stacklevel` keyword argument found
-    "B904", # `raise` without `from` inside `except` -- worth adopting, but it is 17
-    # findings concentrated in py/selenium; see issue #17989
     "D100", # Missing docstring in public module
     "D101", # Missing docstring in public class
     "D102", # Missing docstring in public method

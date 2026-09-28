@@ -1,4 +1,4 @@
-name: Pin Browsers
+name: Scheduled - Update Browsers
 on:
   schedule:
     - cron: 10 0 * * *

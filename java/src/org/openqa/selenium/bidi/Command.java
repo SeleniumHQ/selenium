@@ -26,14 +26,16 @@ import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.Json;
 
 @Beta
 public class Command<X> {
 
+  private static final Json JSON = new Json();
+
   private final String method;
   private final Map<String, @Nullable Object> params;
-  private final Function<JsonInput, X> mapper;
+  private final Function<@Nullable Object, X> mapper;
   private final boolean sendsResponse;
 
   public Command(String method, Map<String, @Nullable Object> params) {
@@ -42,18 +44,23 @@ public class Command<X> {
 
   public Command(String method, Map<String, @Nullable Object> params, Type typeOfX) {
     this(
-        method, params, input -> input.readNonNull(Require.nonNull("Type to convert to", typeOfX)));
+        method,
+        params,
+        result ->
+            Require.nonNull(
+                "Command result",
+                JSON.convert(result, Require.nonNull("Type to convert to", typeOfX))));
   }
 
   public Command(
-      String method, Map<String, @Nullable Object> params, Function<JsonInput, X> mapper) {
+      String method, Map<String, @Nullable Object> params, Function<@Nullable Object, X> mapper) {
     this(method, params, mapper, true);
   }
 
   public Command(
       String method,
       Map<String, @Nullable Object> params,
-      Function<JsonInput, X> mapper,
+      Function<@Nullable Object, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
     this.params = unmodifiableMap(new HashMap<>(Require.nonNull("Command parameters", params)));
@@ -73,7 +80,7 @@ public class Command<X> {
     return sendsResponse;
   }
 
-  Function<JsonInput, X> getMapper() {
+  Function<@Nullable Object, X> getMapper() {
     return mapper;
   }
 }

@@ -23,7 +23,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.Closeable;
-import java.io.StringReader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +49,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -69,7 +67,7 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
+  private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<String, Consumer<?>>> eventCallbacks = new HashMap<>();
@@ -297,17 +295,16 @@ public class Connection implements Closeable {
   }
 
   private void handle(CharSequence data) {
-    // It's kind of gross to decode the data twice, but this lets us get started on something
-    // that feels nice to users.
-    // TODO: decode once, and once only
-
+    // Parse the incoming message once, here, into a Map. A response then passes its "result"
+    // value to the command's mapper and an event passes its "params" Map to the event's mapper;
+    // neither re-parses the message text.
     String asString = String.valueOf(data);
     LOG.log(getDebugLogLevel(), "<- {0}", asString);
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
         && (raw.get("result") != null || raw.get("error") != null)) {
-      handleResponse(asString, raw);
+      handleResponse(raw);
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
       handleEventResponse(raw);
     } else {
@@ -315,32 +312,17 @@ public class Connection implements Closeable {
     }
   }
 
-  private void handleResponse(String rawDataString, Map<String, Object> rawDataMap) {
-    Consumer<Either<Throwable, JsonInput>> consumer =
+  private void handleResponse(Map<String, Object> rawDataMap) {
+    Consumer<Either<Throwable, @Nullable Object>> consumer =
         methodCallbacks.remove(((Number) rawDataMap.get("id")).longValue());
     if (consumer == null) {
       return;
     }
 
-    try (StringReader reader = new StringReader(rawDataString);
-        JsonInput input = JSON.newInput(reader)) {
-      input.beginObject();
-      while (input.hasNext()) {
-        switch (input.nextName()) {
-          case "result":
-            consumer.accept(Either.right(input));
-            break;
-
-          case "error":
-            consumer.accept(Either.left(new WebDriverException(rawDataString)));
-            input.skipValue();
-            break;
-
-          default:
-            input.skipValue();
-        }
-      }
-      input.endObject();
+    if (rawDataMap.get("error") != null) {
+      consumer.accept(Either.left(new WebDriverException(JSON.toJson(rawDataMap))));
+    } else {
+      consumer.accept(Either.right(rawDataMap.get("result")));
     }
   }
 

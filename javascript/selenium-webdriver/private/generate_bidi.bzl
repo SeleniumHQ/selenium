@@ -1,6 +1,7 @@
 """Bazel rules for generating WebDriver BiDi TypeScript modules from CDDL specification."""
 
 load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 
 # Language bindings consume the generated schema artifact; the ast/model are
@@ -18,6 +19,7 @@ _DOMAIN_TS_FILES = [
     "browser.ts",
     "browsing_context.ts",
     "common.ts",
+    "digital_credentials.ts",
     "emulation.ts",
     "input.ts",
     "log.ts",
@@ -31,8 +33,25 @@ _DOMAIN_TS_FILES = [
     "webextension.ts",
 ]
 
+# Hand-written runtime the generated domain files import by relative path (e.g.
+# '../domain.js', '../serialization/record.js') — package-relative to output_path's
+# parent, so staging them at the matching bin-tree path (see generate_bidi_library)
+# puts them exactly where those imports expect to find them.
+_RUNTIME_FILES = [
+    "domain.js",
+    "domain.d.ts",
+    "serialization/record.js",
+    "serialization/record.d.ts",
+    "serialization/enum.js",
+    "serialization/enum.d.ts",
+    "serialization/union.js",
+    "serialization/union.d.ts",
+    "serialization/registry.js",
+]
+
 def _compile_bidi_ts_impl(ctx):
     ts_files = ctx.files.srcs
+    runtime_files = ctx.files.runtime_srcs
     output_subdir = ctx.attr.output_subdir
     tsc = ctx.executable.tsc
 
@@ -56,7 +75,10 @@ def _compile_bidi_ts_impl(ctx):
         args.add(f.path)
 
     ctx.actions.run(
-        inputs = ts_files,
+        # runtime_files aren't compiled — they're already .js/.d.ts — but tsc's
+        # NodeNext resolver still needs them physically present at the relative
+        # path each generated file's '../domain.js' etc. import expects.
+        inputs = ts_files + runtime_files,
         outputs = all_outputs,
         executable = tsc,
         arguments = [args],
@@ -78,6 +100,7 @@ _compile_bidi_ts = rule(
     implementation = _compile_bidi_ts_impl,
     attrs = {
         "output_subdir": attr.string(mandatory = True),
+        "runtime_srcs": attr.label_list(allow_files = True),
         "srcs": attr.label_list(allow_files = True, mandatory = True),
         "tsc": attr.label(
             executable = True,
@@ -93,10 +116,9 @@ def generate_bidi_library(
         cddl_file,
         extra_cddl_files = [],
         override_cddl_files = [],
-        vendor_cddl_files = [],
+        vendor_cddl_files = {},
         dfns_files = [],
         spec_html = None,
-        enhancements_manifest = None,
         generator = None,
         schema_generator = None,
         anchors_extractor = None,
@@ -111,17 +133,18 @@ def generate_bidi_library(
         override_cddl_files: Selenium overlay CDDL files applied to the parsed AST: any
             production they define supersedes the identically named upstream one. Overlays
             are a schema-gen concern only and do not touch other bindings.
-        vendor_cddl_files: Selenium vendor overlay CDDL files (e.g. `moz:` webextension fields).
-            Their fields extend a spec extension point and are tagged with provenance, so they
-            resolve against the real extension point but are routed out of the shared schema into
-            a separate `vendor` section. Bindings that read only the spec sections never see them.
+        vendor_cddl_files: Vendor overlay CDDL files keyed by namespace (`{"moz": [...]}`, the
+            wire prefix of the vendor's `moz:` fields and `moz:<module>` methods). A file may
+            extend spec types (`<Type>Extension` groups, spliced into the like-named spec type)
+            or define whole vendor modules. Everything is tagged with provenance, so it resolves
+            against the real spec types but is routed out of the shared schema into a separate
+            `vendor` section. Bindings that read only the spec sections never see it.
         dfns_files: webref definition-index files (one per merged spec). When given,
             the schema step joins them by type name to attach a `specHref` spec link
             to each type. Optional — omitting them yields a schema with no links.
         spec_html: the pinned rendered core spec HTML. When given, its prose section
             anchors are extracted and joined, upgrading type links to `#type-*` sections
             and adding `#command-*` / `#event-*` / `#module-*` links. Optional.
-        enhancements_manifest: JSON manifest for per-domain customisations.
         generator: The generate_bidi.mjs js_binary label. Defaults to :generate_bidi_script.
         schema_generator: The project_bidi_schema.mjs js_binary label. Defaults to :project_bidi_schema_script.
         anchors_extractor: The extract_bidi_anchors.mjs js_binary label. Defaults to :extract_bidi_anchors_script.
@@ -174,14 +197,16 @@ def generate_bidi_library(
     # projector (which segregates them into `vendor`), never cddl2ts or the model. Only the small
     # vendor files are (re)parsed here; the base is read back from Step 1. No vendors → reuse base.
     schema_ast_target = ast_target
+    vendor_model_target = None
     if vendor_cddl_files:
         staged_vendors = []
         vendor_args = []
-        for i, vendor in enumerate(vendor_cddl_files):
-            staged = name + "_vendor_%d.cddl" % i
-            copy_file(name = name + "_vendor_copy_%d" % i, src = vendor, out = staged)
-            staged_vendors.append(":" + staged)
-            vendor_args += ["--vendor-cddl", "$(location :" + staged + ")"]
+        for namespace, files in vendor_cddl_files.items():
+            for i, vendor in enumerate(files):
+                staged = name + "_vendor_%s_%d.cddl" % (namespace, i)
+                copy_file(name = name + "_vendor_copy_%s_%d" % (namespace, i), src = vendor, out = staged)
+                staged_vendors.append(":" + staged)
+                vendor_args += ["--vendor-cddl", namespace + "=$(location :" + staged + ")"]
         schema_ast_target = name + "_ast_vendor"
         schema_ast_out = name + "_ast_vendor.json"
         js_run_binary(
@@ -189,6 +214,19 @@ def generate_bidi_library(
             srcs = [":" + ast_target] + staged_vendors,
             outs = [schema_ast_out],
             args = ["--ast", "$(location :" + ast_target + ")", "--dump-ast", pkg + "/" + schema_ast_out] + vendor_args,
+            tool = generator,
+        )
+
+        # Step 1c: the vendor model — the model extraction run over the vendor AST, so a vendor
+        # module's commands/events (tagged with their namespace) reach the schema projector
+        # through the same code path as the spec's. Only the projector reads it (Step 3b).
+        vendor_model_target = name + "_model_vendor"
+        vendor_model_out = name + "_model_vendor.json"
+        js_run_binary(
+            name = vendor_model_target,
+            srcs = [":" + schema_ast_target],
+            outs = [vendor_model_out],
+            args = ["--ast", "$(location :" + schema_ast_target + ")", "--dump-model", pkg + "/" + vendor_model_out],
             tool = generator,
         )
 
@@ -245,8 +283,8 @@ def generate_bidi_library(
     schema_target = name + "_schema"
     schema_out = name + "_schema.json"
 
-    # The schema is projected from the vendor AST (Step 1b); the model comes from the base AST
-    # (vendor fields are command params, not commands, so they do not affect the model).
+    # The schema is projected from the vendor AST (Step 1b); the shared model comes from the base
+    # AST, and the vendor model (Step 1c) adds the vendor modules' commands and events.
     schema_srcs = [":" + schema_ast_target, ":" + json_target] + staged_dfns
     schema_args = [
         "--ast",
@@ -261,6 +299,9 @@ def generate_bidi_library(
     if anchors_out:
         schema_srcs.append(":" + anchors_out)
         schema_args += ["--anchors", "$(location :" + anchors_out + ")"]
+    if vendor_model_target:
+        schema_srcs.append(":" + vendor_model_target)
+        schema_args += ["--vendor-model", "$(location :" + vendor_model_target + ")"]
     js_run_binary(
         name = schema_target,
         srcs = schema_srcs,
@@ -283,9 +324,6 @@ def generate_bidi_library(
         "--spec-version",
         spec_version,
     ]
-    if enhancements_manifest:
-        gen_srcs.append(enhancements_manifest)
-        gen_args += ["--enhancements", "$(location " + enhancements_manifest + ")"]
 
     ts_target = name + "_ts"
     js_run_binary(
@@ -297,8 +335,21 @@ def generate_bidi_library(
     )
 
     # Step 5: compile .ts → .js + .d.ts via tsc (custom rule for ctx.bin_dir.path).
+    # Every generated domain file imports the hand-written runtime by relative path
+    # (e.g. '../domain.js', assuming it sits one level up from output_path). tsc's
+    # NodeNext resolver needs those files physically present at that same relative
+    # path in the bin tree — they're source files today, not generated, so mirror
+    # them into the bin tree at their natural path (copy_file's src/out would collide
+    # with the source's own label at an identical package-relative path).
+    runtime_staged = name + "_runtime"
+    copy_to_bin(
+        name = runtime_staged,
+        srcs = ["bidi/" + f for f in _RUNTIME_FILES],
+    )
+
     _compile_bidi_ts(
         name = name,
         srcs = [":" + ts_target],
+        runtime_srcs = [":" + runtime_staged],
         output_subdir = output_path,
     )

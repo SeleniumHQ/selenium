@@ -10,7 +10,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v152:v152.publish
   //java/src/org/openqa/selenium/devtools/v153:v153.publish
-  //java/src/org/openqa/selenium/devtools/v151:v151.publish
+  //java/src/org/openqa/selenium/devtools/v154:v154.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -335,6 +335,7 @@ desc 'Deploy all jars to Maven'
 task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
 
   Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
 
@@ -353,13 +354,13 @@ task :release do |_task, arguments|
   end
 
   puts 'Packaging Java artifacts...'
-  Rake::Task['java:build'].invoke('--config=release')
-  Rake::Task['java:package'].invoke('--config=release')
+  Rake::Task['java:build'].invoke("--config=#{config}")
+  Rake::Task['java:package'].invoke("--config=#{config}")
 
   next if !nightly && Sonatype.already_deployed?(java_version)
 
   puts "Deploying Java artifacts to '#{ENV.fetch('MAVEN_REPO', nil)}'"
-  java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+  java_release_targets.each { |target| Bazel.execute('run', ["--config=#{config}"], target) }
 
   next if nightly
 

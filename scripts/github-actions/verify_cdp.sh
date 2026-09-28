@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Fail if the current Stable Chrome major has no checked-in DevTools, so a release can't ship a
 # CDP that predates the browser most users are on. Comparing majors means routine Chrome patch
-# bumps never hold up a release; only a promotion the daily Pin Browsers workflow has yet to land.
+# bumps never hold up a release; only a promotion the Scheduled - Update Browsers workflow has yet to land.
 set -euo pipefail
 
 versions_url="https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"

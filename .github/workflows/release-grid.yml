@@ -1,4 +1,4 @@
-name: Release Grid
+name: Shared - Release Grid
 
 on:
   workflow_call:

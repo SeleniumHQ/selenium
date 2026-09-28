@@ -195,8 +195,7 @@ class WebScriptTest extends JupiterTestBase {
     driver.get(pages.dynamicPage);
     triggerDomMutation();
 
-    assertThat(mutations).isNotEmpty();
-    assertThat(lastOf(mutations)).isEqualTo("style: 'display:none;' -> ''");
+    waitForRevealMutation(mutations);
   }
 
   @Test
@@ -208,7 +207,7 @@ class WebScriptTest extends JupiterTestBase {
 
     driver.get(pages.dynamicPage);
     triggerDomMutation();
-    assertThat(mutations).isNotEmpty();
+    waitForRevealMutation(mutations);
 
     script.removeDomMutationHandler(id);
 
@@ -223,6 +222,13 @@ class WebScriptTest extends JupiterTestBase {
     reveal.click();
     WebElement revealed = driver.findElement(By.id("revealed"));
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
+  }
+
+  // Firefox reports extra style mutations on the clicked button, so the reveal need not be last.
+  private void waitForRevealMutation(List<String> mutations) {
+    new WebDriverWait(driver, Duration.ofSeconds(10))
+        .withMessage(() -> "Received mutations: " + mutations)
+        .until(d -> mutations.contains("style: 'display:none;' -> ''"));
   }
 
   private static Consumer<DomMutation> mutationHandler(List<String> mutations) {
@@ -292,9 +298,5 @@ class WebScriptTest extends JupiterTestBase {
     } finally {
       script.removeConsoleMessageHandler(id);
     }
-  }
-
-  private static <T> T lastOf(List<T> list) {
-    return list.get(list.size() - 1);
   }
 }

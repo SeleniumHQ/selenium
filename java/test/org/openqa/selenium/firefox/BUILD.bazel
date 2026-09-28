@@ -1,5 +1,4 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
@@ -22,17 +21,12 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS + REMOTE_TESTS,
     ),
-    data = [
-        ":webextensions_selenium_example",
-        "//common/extensions",
-    ],
     tags = [
         "requires-network",
     ],
     deps = [
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
-        "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
@@ -112,10 +106,4 @@ java_selenium_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
-)
-
-copy_file(
-    name = "webextensions_selenium_example",
-    src = "//common/extensions:webextensions-selenium-example.xpi",
-    out = "webextensions-selenium-example.xpi",
 )

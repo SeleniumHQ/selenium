@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Globalization;
-using System.Text.Json;
 
 namespace OpenQA.Selenium.Firefox;
 
@@ -28,28 +27,6 @@ namespace OpenQA.Selenium.Firefox;
 internal class Preferences
 {
     private readonly Dictionary<string, string> preferences = new Dictionary<string, string>();
-    private readonly HashSet<string> immutablePreferences = new HashSet<string>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Preferences"/> class.
-    /// </summary>
-    /// <param name="defaultImmutablePreferences">A set of preferences that cannot be modified once set.</param>
-    /// <param name="defaultPreferences">A set of default preferences.</param>
-    public Preferences(JsonElement defaultImmutablePreferences, JsonElement defaultPreferences)
-    {
-        foreach (JsonProperty pref in defaultImmutablePreferences.EnumerateObject())
-        {
-            this.ThrowIfPreferenceIsImmutable(pref.Name, pref.Value);
-            this.preferences[pref.Name] = pref.Value.GetRawText();
-            this.immutablePreferences.Add(pref.Name);
-        }
-
-        foreach (JsonProperty pref in defaultPreferences.EnumerateObject())
-        {
-            this.ThrowIfPreferenceIsImmutable(pref.Name, pref.Value);
-            this.preferences[pref.Name] = pref.Value.GetRawText();
-        }
-    }
 
     /// <summary>
     /// Sets a preference.
@@ -59,11 +36,7 @@ internal class Preferences
     /// <remarks>If the preference already exists in the currently-set list of preferences,
     /// the value will be updated.</remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="key"/> or <paramref name="value"/> are <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// <para>If <paramref name="value"/> is wrapped with double-quotes.</para>
-    /// <para>-or-</para>
-    /// <para>If the specified preference is immutable.</para>
-    /// </exception>
+    /// <exception cref="ArgumentException">If <paramref name="value"/> is wrapped with double-quotes.</exception>
     internal void SetPreference(string key, string value)
     {
         ArgumentNullException.ThrowIfNull(key);
@@ -75,7 +48,6 @@ internal class Preferences
             throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Preference values must be plain strings: {0}: {1}", key, value));
         }
 
-        this.ThrowIfPreferenceIsImmutable(key, value);
         this.preferences[key] = string.Format(CultureInfo.InvariantCulture, "\"{0}\"", value);
     }
 
@@ -87,12 +59,10 @@ internal class Preferences
     /// <remarks>If the preference already exists in the currently-set list of preferences,
     /// the value will be updated.</remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="key"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">If the specified preference is immutable.</exception>
     internal void SetPreference(string key, int value)
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        this.ThrowIfPreferenceIsImmutable(key, value);
         this.preferences[key] = value.ToString(CultureInfo.InvariantCulture);
     }
 
@@ -104,12 +74,10 @@ internal class Preferences
     /// <remarks>If the preference already exists in the currently-set list of preferences,
     /// the value will be updated.</remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="key"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">If the specified preference is immutable.</exception>
     internal void SetPreference(string key, bool value)
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        this.ThrowIfPreferenceIsImmutable(key, value);
         this.preferences[key] = value ? "true" : "false";
     }
 
@@ -138,14 +106,9 @@ internal class Preferences
     /// the value will be updated.</remarks>
     internal void AppendPreferences(Dictionary<string, string> preferencesToAdd)
     {
-        // This allows the user to add additional preferences, or update ones that already
-        // exist.
         foreach (KeyValuePair<string, string> preferenceToAdd in preferencesToAdd)
         {
-            if (this.IsSettablePreference(preferenceToAdd.Key))
-            {
-                this.preferences[preferenceToAdd.Key] = preferenceToAdd.Value;
-            }
+            this.preferences[preferenceToAdd.Key] = preferenceToAdd.Value;
         }
     }
 
@@ -172,17 +135,4 @@ internal class Preferences
         return value.StartsWith("\"", StringComparison.OrdinalIgnoreCase) && value.EndsWith("\"", StringComparison.OrdinalIgnoreCase);
     }
 
-    private void ThrowIfPreferenceIsImmutable<TValue>(string preferenceName, TValue value)
-    {
-        if (this.immutablePreferences.Contains(preferenceName))
-        {
-            string message = string.Format(CultureInfo.InvariantCulture, "Preference {0} may not be overridden: frozen value={1}, requested value={2}", preferenceName, this.preferences[preferenceName], value?.ToString());
-            throw new ArgumentException(message);
-        }
-    }
-
-    private bool IsSettablePreference(string preferenceName)
-    {
-        return !this.immutablePreferences.Contains(preferenceName);
-    }
 }

@@ -90,7 +90,7 @@ def get_connection_context(fn_name):
     try:
         return _connection_context.get()
     except LookupError:
-        raise RuntimeError(f"{fn_name}() must be called in a connection context.")
+        raise RuntimeError(f"{fn_name}() must be called in a connection context.") from None
 
 
 def get_session_context(fn_name):
@@ -102,7 +102,7 @@ def get_session_context(fn_name):
     try:
         return _session_context.get()
     except LookupError:
-        raise RuntimeError(f"{fn_name}() must be called in a session context.")
+        raise RuntimeError(f"{fn_name}() must be called in a session context.") from None
 
 
 @contextmanager
@@ -460,27 +460,27 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 break
             try:
                 data = json.loads(message)
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as err:
                 raise BrowserError(
                     {
                         "code": -32700,
                         "message": "Client received invalid JSON",
                         "data": message,
                     }
-                )
+                ) from err
             logger.debug("Received message %r", data)
             if "sessionId" in data:
                 session_id = devtools.target.SessionID(data["sessionId"])
                 try:
                     session = self.sessions[session_id]
-                except KeyError:
+                except KeyError as err:
                     raise BrowserError(
                         {
                             "code": -32700,
                             "message": "Browser sent a message for an invalid session",
                             "data": f"{session_id!r}",
                         }
-                    )
+                    ) from err
                 session._handle_data(data)
             else:
                 self._handle_data(data)

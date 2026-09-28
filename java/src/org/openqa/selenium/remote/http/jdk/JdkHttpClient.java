@@ -78,13 +78,14 @@ public class JdkHttpClient implements HttpClient {
   private static final AtomicInteger POOL_COUNTER = new AtomicInteger(0);
   private final JdkHttpMessages messages;
   private final HttpHandler handler;
+  private final HttpClient.Factory factory;
   private java.net.http.HttpClient client;
   private final List<WebSocket> websockets;
   private final ExecutorService executorService;
   private final Duration readTimeout;
   private final Duration connectTimeout;
 
-  JdkHttpClient(ClientConfig config) {
+  JdkHttpClient(HttpClient.Factory factory, ClientConfig config) {
     Objects.requireNonNull(config, "Client config must be set");
 
     this.messages = new JdkHttpMessages(config);
@@ -146,6 +147,7 @@ public class JdkHttpClient implements HttpClient {
       builder.version(Version.valueOf(version));
     }
 
+    this.factory = factory;
     this.client = builder.build();
   }
 
@@ -599,6 +601,7 @@ public class JdkHttpClient implements HttpClient {
     }
     this.client = null;
     executorService.shutdown();
+    this.factory.cleanupIdleClients();
   }
 
   @AutoService(HttpClient.Factory.class)
@@ -608,7 +611,7 @@ public class JdkHttpClient implements HttpClient {
     @Override
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config must be set");
-      return new JdkHttpClient(config);
+      return new JdkHttpClient(this, config);
     }
   }
 
