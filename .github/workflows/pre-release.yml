@@ -158,7 +158,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Selenium Manager Binaries
-      run: ./go update_manager
+      run: ./go update_manager ${{ needs.selenium-manager.outputs.tag }}
       artifact-name: patch-manager
 
   create-pr:

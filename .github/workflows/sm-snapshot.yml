@@ -17,6 +17,10 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: false
+    outputs:
+      tag:
+        description: Tag of the selenium_manager_artifacts release this run published
+        value: ${{ jobs.publish.outputs.tag }}
   workflow_dispatch:
     inputs:
       branch:
@@ -277,6 +281,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
     if: github.event.repository.fork == false
+    outputs:
+      tag: ${{ steps.commit.outputs.tag }}
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v6
@@ -288,6 +294,7 @@ jobs:
         with:
           path: artifacts
       - name: "Prepare and Commit"
+        id: commit
         run: |
           linux_x86_64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-x86_64/selenium-manager-linux-x86_64 | awk '{print $1}')
           linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
@@ -302,6 +309,7 @@ jobs:
           git commit -m "Update hash values for latest binaries"
           short_hash=$(git rev-parse --short HEAD)
           echo "TAG_NAME=selenium-manager-$short_hash" >> "$GITHUB_ENV"
+          echo "tag=selenium-manager-$short_hash" >> "$GITHUB_OUTPUT"
           git tag "selenium-manager-$short_hash"
           git push && git push --tags
       - name: "Release"
@@ -333,7 +341,7 @@ jobs:
     with:
       name: "Update Bazel Pin"
       ref: trunk
-      run: ./go update_manager
+      run: ./go update_manager ${{ needs.publish.outputs.tag }}
       artifact-name: selenium-manager-pin
 
   commit-pin:
