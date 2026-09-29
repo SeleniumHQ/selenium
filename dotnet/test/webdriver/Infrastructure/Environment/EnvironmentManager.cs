@@ -68,7 +68,7 @@ public class EnvironmentManager
 
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
 
-        Headless = string.Equals(headless, "true", StringComparison.OrdinalIgnoreCase);
+        Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
 
         this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
         this.driverFactory.DriverStarting += OnDriverStarting;
