@@ -541,6 +541,14 @@ class Builder {
   }
 
   /**
+   * @return {edge.Options} the Edge specific options currently configured
+   *     for this builder.
+   */
+  getEdgeOptions() {
+    return this.edgeOptions_
+  }
+
+  /**
    * Sets the {@link edge.ServiceBuilder} to use to manage the
    * MicrosoftEdgeDriver child process when creating sessions locally.
    *
