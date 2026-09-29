@@ -12,6 +12,7 @@ load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
 load("//javascript/selenium-webdriver/private:generate_bidi.bzl", "generate_bidi_library")
+load(":test/test_browsers.bzl", "TEST_BROWSERS")
 
 npm_link_all_packages(name = "node_modules")
 
@@ -33,10 +34,11 @@ js_binary(
     name = "generate_bidi_script",
     data = [
         "generate_bidi.mjs",
+        "normalize_bidi_ast.mjs",
+        "project_bidi_schema.mjs",
         ":generated_note_local",
         ":license_header_local",
         ":node_modules/cddl",
-        ":node_modules/cddl2ts",
     ],
     entry_point = "generate_bidi.mjs",
 )
@@ -92,12 +94,12 @@ generate_bidi_library(
     # The schema step joins each spec's dfns index by type name to attach a `specHref`
     # link to each type's definition in the live spec.
     dfns_files = BIDI_DFNS_FILES,
-    enhancements_manifest = "//javascript/selenium-webdriver/private:bidi_enhancements_manifest",
     extra_cddl_files = BIDI_EXTENSION_CDDL_FILES,
     # Spec-shaped, browser-neutral productions that supersede an upstream one by name. Stay
     # in the shared schema: they complete command/event aggregates the specs define members
-    # for but never list.
+    # for but never list, or relax a field the spec requires ahead of every implementation.
     override_cddl_files = [
+        "//common/bidi:browsing-context-created-params.cddl",
         "//common/bidi:digital-credentials-command.cddl",
         "//common/bidi:web-bluetooth-events.cddl",
     ],
@@ -117,7 +119,7 @@ VERSION = "4.50.0-nightly202609091537"
 BROWSER_VERSIONS = [
     "v152",
     "v153",
-    "v151",
+    "v154",
 ]
 
 js_library(
@@ -191,9 +193,12 @@ pkg_tar(
 SMALL_TESTS = [
     "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
+    "test/bidi/network_types_test.js",
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
     "test/bidi/serialization/wire_contract_test.js",
+    "test/http/http_test.js",
+    "test/http/util_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
     "test/lib/bidi_connection_test.js",
@@ -204,11 +209,13 @@ SMALL_TESTS = [
     "test/lib/input_test.js",
     "test/lib/logging_test.js",
     "test/lib/promise_test.js",
+    "test/lib/test_browsers_test.js",
     "test/lib/until_test.js",
     "test/lib/virtualauthenticatoroptions_test.js",
     "test/lib/webdriver_test.js",
     "test/net/index_test.js",
     "test/net/portprober_test.js",
+    "test/remote_test.js",
 ]
 
 LARGE_TESTS = glob(
@@ -245,9 +252,10 @@ js_library(
 mocha_test(
     name = "small-tests",
     size = "small",
-    args = ["./**/*test.js"],
+    args = SMALL_TESTS,
     chdir = package_name(),
     data = [
+        ":large-test-srcs",
         ":node_modules/@bazel/runfiles",
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
@@ -260,6 +268,39 @@ mocha_test(
         "//common/src/web:js-lib",
     ],
 )
+
+LARGE_TEST_DATA = [
+    ":large-test-srcs",
+    ":node_modules/express",
+    ":node_modules/mocha",
+    ":node_modules/mocha-junit-reporter",
+    ":node_modules/multer",
+    ":node_modules/serve-index",
+    ":node_modules/sinon",
+    ":test-data",
+    "//:node_modules/selenium-webdriver",
+    "//common/extensions:js-lib",
+    "//common/src/web:js-lib",
+]
+
+LARGE_TEST_TAGS = [
+    "browser-test",
+    "no-sandbox",
+    "requires-network",
+]
+
+# Behavior depends on the operating system, which RBE (Linux only) cannot cover.
+OS_SENSITIVE_TESTS = [
+    "test/actions_test.js",
+    "test/firefox/full_page_screenshot_test.js",
+    "test/window_test.js",
+]
+
+# Find the driver through Selenium Manager, which RBE's pinned browsers bypass.
+SE_MANAGER_TESTS = [
+    "test/chrome/service_test.js",
+    "test/edge/service_test.js",
+]
 
 [
     [
@@ -275,32 +316,78 @@ mocha_test(
                 test,
             ],
             chdir = package_name(),
-            data = [
-                ":large-test-srcs",
-                ":node_modules/express",
-                ":node_modules/mocha",
-                ":node_modules/mocha-junit-reporter",
-                ":node_modules/multer",
-                ":node_modules/serve-index",
-                ":node_modules/sinon",
-                ":test-data",
-                "//:node_modules/selenium-webdriver",
-                "//common/extensions:js-lib",
-                "//common/src/web:js-lib",
-            ] + BROWSERS[browser]["data"],
+            data = LARGE_TEST_DATA + BROWSERS[browser]["data"],
             env = {
                 "SELENIUM_BROWSER": browser,
             } | BROWSERS[browser]["env"],
-            tags = [
-                browser,
-                "browser-test",
-                "no-sandbox",
-                "requires-network",
-            ],
+            tags = [browser] + LARGE_TEST_TAGS +
+                   (["os-sensitive"] if test in OS_SENSITIVE_TESTS else []) +
+                   (["se-manager"] if test in SE_MANAGER_TESTS else []),
         ),
     ]
     for test in LARGE_TESTS
     for browser in BROWSERS.keys()
+    if browser in TEST_BROWSERS.get(
+        test,
+        BROWSERS.keys(),
+    )
+]
+
+GRID_BROWSERS = [
+    "chrome",
+    "firefox",
+]
+
+# These test the local driver service itself.
+NO_GRID_TESTS = [
+    "test/chrome/service_test.js",
+    "test/edge/service_test.js",
+]
+
+GRID_TESTS = [test for test in LARGE_TESTS if test not in NO_GRID_TESTS]
+
+genrule(
+    name = "java-location",
+    srcs = [],
+    outs = ["java-location.txt"],
+    cmd = "echo $(JAVA) > $@",
+    toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
+)
+
+[
+    mocha_test(
+        name = "%s-%s-remote" % (
+            test.replace("/", "-").replace("_", "-"),
+            browser,
+        ),
+        size = "large",
+        args = [
+            "--retries",
+            "1",
+            test,
+        ],
+        chdir = package_name(),
+        data = LARGE_TEST_DATA + BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
+        ],
+        env = {
+            "SELENIUM_BROWSER": browser,
+            "SELENIUM_SERVER_JAR": "$(rootpath //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        } | BROWSERS[browser]["env"],
+        # rules_js cannot copy the hermetic JDK's external-repository files into the output tree.
+        no_copy_to_bin = ["@bazel_tools//tools/jdk:current_java_runtime"],
+        tags = [
+            browser,
+            "remote",
+            "%s-remote" % browser,
+        ] + LARGE_TEST_TAGS,
+    )
+    for test in GRID_TESTS
+    for browser in GRID_BROWSERS
+    if browser in TEST_BROWSERS.get(test, GRID_BROWSERS)
 ]
 
 # npm_package does not pick up filegroup sources.

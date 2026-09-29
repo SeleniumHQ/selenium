@@ -1,4 +1,3 @@
-// <copyright file="ContextCreatedEvent.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,16 +14,16 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+package org.openqa.selenium.devtools.v154;
 
-public sealed record ContextCreatedEventArgs(
-    ImmutableArray<Info>? Children,
-    Browser.ClientWindow ClientWindow,
-    BrowsingContext Context,
-    BrowsingContext? OriginalOpener,
-    string Url,
-    Browser.UserContext UserContext,
-    BrowsingContext? Parent,
-    bool HasPlannedNavigation) : EventArgs;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
+
+@AutoService(CdpInfo.class)
+public class v154CdpInfo extends CdpInfo {
+
+  public v154CdpInfo() {
+    super(154, v154Domains::new);
+  }
+}

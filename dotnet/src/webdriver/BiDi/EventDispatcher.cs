@@ -127,7 +127,7 @@ internal sealed class EventDispatcher : IAsyncDisposable
             {
                 try
                 {
-                    subscription.Deliver(eventArgs);
+                    subscription.Deliver(method, eventArgs);
                 }
                 catch (Exception ex)
                 {

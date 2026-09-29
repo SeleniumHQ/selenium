@@ -2,11 +2,24 @@ name: CI - JavaScript
 
 on:
   workflow_call:
+    inputs:
+      smoke:
+        description: Smoke tests always run; callers pass false to add the full matrix
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
+    inputs:
+      smoke:
+        description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
+# RBE runs every test on Linux with pinned browsers; these jobs cover macOS, Windows and Selenium Manager.
 jobs:
   build:
     name: Build
@@ -14,6 +27,14 @@ jobs:
     with:
       name: Build
       run: bazel build //javascript/selenium-webdriver
+
+  # Prettier is checked by ci-lint.yml.
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      run: bazel test //javascript/selenium-webdriver:eslint-test
 
   unit-tests:
     name: Unit Tests
@@ -28,3 +49,54 @@ jobs:
       os: ${{ matrix.os }}
       node-version: ${{ matrix.node-version }}
       run: bazel test --local_test_jobs 1 //javascript/selenium-webdriver:small-tests
+
+  smoke:
+    name: ${{ matrix.os }}-smoke
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos, windows]
+        tag_filters: ['os-sensitive,se-manager']
+        include:
+          # RBE already runs the os-sensitive targets on Linux, but always with pinned browsers.
+          - os: ubuntu
+            tag_filters: se-manager
+    with:
+      name: ${{ matrix.os }}
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      run: >
+        bazel test
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --build_tests_only
+        --pin_browsers=false
+        --test_tag_filters=${{ matrix.tag_filters }}
+        //javascript/selenium-webdriver/...
+
+  os-tests-full:
+    name: ${{ matrix.os }}-full
+    if: github.event_name == 'schedule' || !inputs.smoke
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows]
+        tag_filters: ['chrome,-remote', 'firefox,-remote', 'edge', 'chrome-remote', 'firefox-remote']
+    with:
+      name: (${{ matrix.tag_filters }})
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      run: >
+        bazel test
+        --keep_going
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --build_tests_only
+        --pin_browsers=false
+        --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
+        //javascript/selenium-webdriver/...
