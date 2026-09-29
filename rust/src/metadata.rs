@@ -99,7 +99,12 @@ pub fn get_metadata(log: &Logger, cache_path: &Option<PathBuf>) -> Metadata {
         log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
         if metadata_path.exists() {
-            let metadata_file = File::open(&metadata_path).unwrap();
+            let metadata_file = File::open(&metadata_path).unwrap_or_else(|err| {
+                panic!(
+                    "Metadata file {} cannot be opened: {err}",
+                    metadata_path.display()
+                )
+            });
             let metadata: Metadata = match serde_json::from_reader(&metadata_file) {
                 Ok::<Metadata, serde_json::Error>(mut meta) => {
                     let now = now_unix_timestamp();
