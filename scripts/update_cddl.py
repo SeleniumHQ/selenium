@@ -360,7 +360,8 @@ def main():
     pinned = pin_specs(webref_commit, specs)
     vendors = pin_vendors()
     for namespace, source, branch, commit, files in vendors:
-        print(f"Vendor {namespace}: {source['repo']}@{commit} on {branch} ({', '.join(filename for filename, _ in files)})")
+        filenames = ", ".join(filename for filename, _ in files)
+        print(f"Vendor {namespace}: {source['repo']}@{commit} on {branch} ({filenames})")
 
     BZL_FILE.write_text(render(webref_commit, pinned, bidi_commit, sha256_of(spec_html), vendors))
     update_module(pinned, vendors)
