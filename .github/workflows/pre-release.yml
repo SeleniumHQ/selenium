@@ -44,6 +44,9 @@ jobs:
   selenium-manager:
     name: Release Selenium Manager
     needs: [parse-tag, push-rust-version]
+    permissions:
+      contents: write
+      actions: read
     uses: ./.github/workflows/sm-snapshot.yml
     with:
       branch: rust-release-${{ needs.parse-tag.outputs.version }}
