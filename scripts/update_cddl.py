@@ -22,9 +22,15 @@ w3c/webdriver-bidi's "gh-pages" branch (its rendered ``index.html`` carries the
 prose section anchors that become the readable ``#type-``/``#command-`` spec
 links, and that branch is a separate repo, so it is resolved separately).
 
-The pins always advance to the two tips. The update-cddl workflow only opens a PR
-when the regenerated ``common/bidi/schema.json`` changes, so a repin that changes
-nothing the schema consumes is dropped there rather than filtered here.
+Vendor grammars (the `moz:` extensions) are not in webref; each vendor publishes them
+in its own tree. Every ``.cddl`` file in the vendor's directory is merged, so a new
+vendor module is picked up without editing this script. That pin is the last commit
+to change the directory rather than the branch tip, because the tip of a browser's
+tree moves constantly without touching the grammar.
+
+The webref and spec pins always advance to the two tips. The update-cddl workflow only
+opens a PR when the regenerated ``common/bidi/schema.json`` changes, so a repin that
+changes nothing the schema consumes is dropped there rather than filtered here.
 
 Regenerates ``common/webref_cddl.bzl`` in full and the extension's ``use_repo(...)``
 block in ``MODULE.bazel``.
@@ -54,16 +60,11 @@ BIDI_SPEC_RAW = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/i
 
 API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
 
-# Not pinned yet: Firefox's grammar lives in mozilla-central (remote/doc/webdriver-bidi) and is
-# copied verbatim under common/bidi until D327393 lands there. Keyed by vendor namespace.
-VENDOR_CDDL_FILES = {
-    "moz": [
-        "//common/bidi:Commands.cddl",
-        "//common/bidi:Debugging.cddl",
-        "//common/bidi:Fields.cddl",
-        "//common/bidi:Profiler.cddl",
-    ],
+# Where each vendor publishes its grammar, keyed by vendor namespace.
+VENDOR_CDDL_SOURCES = {
+    "moz": {"repo": "mozilla-firefox/firefox", "branch": "main", "path": "remote/webdriver-bidi/cddl"},
 }
+VENDOR_RAW = "https://raw.githubusercontent.com/{repo}/{commit}/{path}"
 
 BZL_FILE = root_dir / "common" / "webref_cddl.bzl"
 MODULE_FILE = root_dir / "MODULE.bazel"
@@ -91,6 +92,8 @@ _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{{co
     commit = _BIDI_SPEC_HTML_COMMIT,
 )
 
+{vendor_pins}
+
 # (repo_name, filename, sha256). Each grammar is downloaded as "spec.cddl" and each dfns
 # index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
 # @<repo_name>//file:dfns.json.
@@ -100,6 +103,11 @@ _CDDL_FILES = [
 
 _DFNS_FILES = [
 {dfns_entries}
+]
+
+# (repo_name, url, sha256). Downloaded as "spec.cddl" like the webref grammars.
+_VENDOR_CDDL_FILES = [
+{vendor_cddl_files}
 ]
 
 # The merged specs as labels, for the BUILD files that feed schema generation: the core
@@ -114,8 +122,7 @@ BIDI_DFNS_FILES = [
 {dfns_labels}
 ]
 
-# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
-# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields).
 BIDI_VENDOR_CDDL_FILES = {{
 {vendor_cddl_entries}
 }}
@@ -134,6 +141,13 @@ def _webref_cddl_impl(_ctx):
             downloaded_file_path = "dfns.json",
             sha256 = sha256,
             url = _DFNS_BASE_URL + "/" + filename,
+        )
+    for name, url, sha256 in _VENDOR_CDDL_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "spec.cddl",
+            sha256 = sha256,
+            url = url,
         )
     http_file(
         name = "{bidi_repo_name}",
@@ -163,6 +177,15 @@ def get(url, headers=None):
 def resolve_commit_for(repo, branch):
     data = get(f"https://api.github.com/repos/{repo}/commits/{branch}", API_HEADERS)
     return json.loads(data)["sha"]
+
+
+def resolve_path_commit_for(repo, branch, path):
+    """The last commit on the branch to change anything under the path."""
+    data = get(f"https://api.github.com/repos/{repo}/commits?sha={branch}&path={path}&per_page=1", API_HEADERS)
+    commits = json.loads(data)
+    if not commits:
+        raise RuntimeError(f"No commit on {repo}@{branch} touches {path}")
+    return commits[0]["sha"]
 
 
 def sha256_of(data):
@@ -223,7 +246,51 @@ def pin_specs(webref_commit, specs):
     return pinned
 
 
-def render(webref_commit, pinned, bidi_commit, bidi_sha256):
+def vendor_repo_name(namespace, filename):
+    stem = re.sub(r"[^a-z0-9]+", "_", Path(filename).stem.lower())
+    return f"{namespace}_{stem}_cddl"
+
+
+def pin_vendors():
+    """(namespace, source, commit, [(filename, sha256)]) per vendor, for every .cddl file in its directory."""
+    pinned = []
+    for namespace, source in VENDOR_CDDL_SOURCES.items():
+        repo, path = source["repo"], source["path"]
+        commit = resolve_path_commit_for(repo, source["branch"], path)
+        listing = json.loads(get(f"https://api.github.com/repos/{repo}/contents/{path}?ref={commit}", API_HEADERS))
+        filenames = sorted(e["name"] for e in listing if e["type"] == "file" and e["name"].endswith(".cddl"))
+        if not filenames:
+            raise RuntimeError(f"No CDDL files in {repo}@{commit} under {path}")
+        base_url = VENDOR_RAW.format(repo=repo, commit=commit, path=path)
+        files = [(filename, sha256_of(get(f"{base_url}/{filename}"))) for filename in filenames]
+        pinned.append((namespace, source, commit, files))
+    return pinned
+
+
+def vendor_repo_names(vendors):
+    return {vendor_repo_name(namespace, filename) for namespace, _, _, files in vendors for filename, _ in files}
+
+
+def render_vendors(vendors):
+    pins, entries, labels = [], [], []
+    for namespace, source, commit, files in vendors:
+        prefix = f"_{namespace.upper()}"
+        url = VENDOR_RAW.format(repo=source["repo"], commit="{commit}", path=source["path"])
+        pins.append(
+            f'# The last {source["repo"]} "{source["branch"]}" commit to change {source["path"]}.\n'
+            f'{prefix}_COMMIT = "{commit}"\n'
+            f'{prefix}_CDDL_BASE_URL = "{url}".format(commit = {prefix}_COMMIT)'
+        )
+        labels.append(f'    "{namespace}": [')
+        for filename, sha256 in files:
+            repo_name = vendor_repo_name(namespace, filename)
+            entries.append(f'    ("{repo_name}", {prefix}_CDDL_BASE_URL + "/{filename}", "{sha256}"),')
+            labels.append(f'        "@{repo_name}//file:spec.cddl",')
+        labels.append("    ],")
+    return "\n\n".join(pins), "\n".join(entries), "\n".join(labels)
+
+
+def render(webref_commit, pinned, bidi_commit, bidi_sha256, vendors):
     cddl_entries, dfns_entries, extension_cddl_labels, dfns_labels = [], [], [], []
     core_cddl_label = None
     for shortname, cddl_filename, cddl_sha256, dfns_sha256 in pinned:
@@ -236,6 +303,7 @@ def render(webref_commit, pinned, bidi_commit, bidi_sha256):
         else:
             extension_cddl_labels.append(f'    "{cddl_label}",')
         dfns_labels.append(f'    "@{dfns_repo}//file:dfns.json",')
+    vendor_pins, vendor_cddl_files, vendor_cddl_entries = render_vendors(vendors)
     return BZL_TEMPLATE.format(
         webref_commit=webref_commit,
         bidi_commit=bidi_commit,
@@ -246,26 +314,19 @@ def render(webref_commit, pinned, bidi_commit, bidi_sha256):
         core_cddl_label=core_cddl_label,
         extension_cddl_labels="\n".join(extension_cddl_labels),
         dfns_labels="\n".join(dfns_labels),
-        vendor_cddl_entries=render_vendor_entries(),
+        vendor_pins=vendor_pins,
+        vendor_cddl_files=vendor_cddl_files,
+        vendor_cddl_entries=vendor_cddl_entries,
     )
 
 
-def render_vendor_entries():
-    lines = []
-    for namespace, labels in VENDOR_CDDL_FILES.items():
-        lines.append(f'    "{namespace}": [')
-        lines.extend(f'        "{label}",' for label in labels)
-        lines.append("    ],")
-    return "\n".join(lines)
-
-
-def update_module(pinned):
+def update_module(pinned, vendors):
     """Rewrite the extension's use_repo block in MODULE.bazel to name every pinned repo.
 
     Deliberately not `bazel mod tidy`: that also rewrites every other extension's block and
     reformats the file, which does not belong in a CDDL repin.
     """
-    names = {BIDI_SPEC_REPO_NAME}
+    names = {BIDI_SPEC_REPO_NAME} | vendor_repo_names(vendors)
     for shortname, *_ in pinned:
         names.update(repo_names(shortname))
     repo_list = "\n".join(f'    "{name}",' for name in sorted(names))
@@ -289,9 +350,12 @@ def main():
     specs = resolve_specs(webref_commit, external_spec_urls(spec_html.decode()))
     print(f"Merged specs: {', '.join(shortname for shortname, _ in specs)}")
     pinned = pin_specs(webref_commit, specs)
+    vendors = pin_vendors()
+    for namespace, source, commit, files in vendors:
+        print(f"Vendor {namespace}: {source['repo']}@{commit} ({', '.join(filename for filename, _ in files)})")
 
-    BZL_FILE.write_text(render(webref_commit, pinned, bidi_commit, sha256_of(spec_html)))
-    update_module(pinned)
+    BZL_FILE.write_text(render(webref_commit, pinned, bidi_commit, sha256_of(spec_html), vendors))
+    update_module(pinned, vendors)
     print(f"Updated {BZL_FILE.relative_to(root_dir)} and {MODULE_FILE.relative_to(root_dir)}")
 
 

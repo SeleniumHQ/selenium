@@ -21,6 +21,10 @@ _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{com
     commit = _BIDI_SPEC_HTML_COMMIT,
 )
 
+# The last mozilla-firefox/firefox "main" commit to change remote/webdriver-bidi/cddl.
+_MOZ_COMMIT = "511b0de4764c52d9acb0d813c7ef712cabd6b975"
+_MOZ_CDDL_BASE_URL = "https://raw.githubusercontent.com/mozilla-firefox/firefox/{commit}/remote/webdriver-bidi/cddl".format(commit = _MOZ_COMMIT)
+
 # (repo_name, filename, sha256). Each grammar is downloaded as "spec.cddl" and each dfns
 # index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
 # @<repo_name>//file:dfns.json.
@@ -40,6 +44,14 @@ _DFNS_FILES = [
     ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
     ("ua_client_hints_dfns", "ua-client-hints.json", "56a31bf6fd2ba03158500498d14742f8edd7a2d560580b4aa7f4a703977e40cf"),
     ("bluetooth_scanning_dfns", "bluetooth-scanning.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
+]
+
+# (repo_name, url, sha256). Downloaded as "spec.cddl" like the webref grammars.
+_VENDOR_CDDL_FILES = [
+    ("moz_commands_cddl", _MOZ_CDDL_BASE_URL + "/Commands.cddl", "40815dbde13842af6ebfcd1da424f799f90b2bda820209d4a1697d8f7929ec18"),
+    ("moz_debugging_cddl", _MOZ_CDDL_BASE_URL + "/Debugging.cddl", "b45d989156abbfa24704f2dce2f454c6ef1e4183166e6e602b152ae0a62ed874"),
+    ("moz_fields_cddl", _MOZ_CDDL_BASE_URL + "/Fields.cddl", "4ed7a770d29e47f6da2f702cb0f739b389e21e163bd7d92a1f608e9892aedd68"),
+    ("moz_profiler_cddl", _MOZ_CDDL_BASE_URL + "/Profiler.cddl", "3890f9161a991e4808bcfdec2fcbbd4eea1bcb9e8a09fea38977e4d7922026ae"),
 ]
 
 # The merged specs as labels, for the BUILD files that feed schema generation: the core
@@ -63,14 +75,13 @@ BIDI_DFNS_FILES = [
     "@bluetooth_scanning_dfns//file:dfns.json",
 ]
 
-# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
-# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields).
 BIDI_VENDOR_CDDL_FILES = {
     "moz": [
-        "//common/bidi:Commands.cddl",
-        "//common/bidi:Debugging.cddl",
-        "//common/bidi:Fields.cddl",
-        "//common/bidi:Profiler.cddl",
+        "@moz_commands_cddl//file:spec.cddl",
+        "@moz_debugging_cddl//file:spec.cddl",
+        "@moz_fields_cddl//file:spec.cddl",
+        "@moz_profiler_cddl//file:spec.cddl",
     ],
 }
 
@@ -88,6 +99,13 @@ def _webref_cddl_impl(_ctx):
             downloaded_file_path = "dfns.json",
             sha256 = sha256,
             url = _DFNS_BASE_URL + "/" + filename,
+        )
+    for name, url, sha256 in _VENDOR_CDDL_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "spec.cddl",
+            sha256 = sha256,
+            url = url,
         )
     http_file(
         name = "webdriver_bidi_spec_html",
