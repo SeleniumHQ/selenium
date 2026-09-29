@@ -85,9 +85,6 @@ jobs:
     name: Commit Documentation
     needs: [parse, generate-docs]
     if: ${{ !inputs.skip }}
-    concurrency:
-      group: gh-pages-write
-      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout gh-pages
@@ -105,7 +102,10 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add docs/api/
-          git diff --staged --quiet || {
-            git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
-            git push origin gh-pages
-          }
+          git diff --staged --quiet && exit 0
+          git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
+          for _ in 1 2 3 4 5; do
+            git pull --rebase origin gh-pages && git push origin gh-pages && exit 0
+            sleep 5
+          done
+          exit 1
