@@ -24,9 +24,11 @@ links, and that branch is a separate repo, so it is resolved separately).
 
 Vendor grammars (the `moz:` extensions) are not in webref; each vendor publishes them
 in its own tree. Every ``.cddl`` file in the vendor's directory is merged, so a new
-vendor module is picked up without editing this script. That pin is the last commit
-to change the directory rather than the branch tip, because the tip of a browser's
-tree moves constantly without touching the grammar.
+vendor module is picked up without editing this script. The grammar is taken from the
+most stable branch that has the directory, so it describes the shipping browser once
+it reaches the release channel. That pin is the last commit to change the directory
+rather than the branch tip, because the tip of a browser's tree moves constantly
+without touching the grammar.
 
 The webref and spec pins always advance to the two tips. The update-cddl workflow only
 opens a PR when the regenerated ``common/bidi/schema.json`` changes, so a repin that
@@ -60,9 +62,14 @@ BIDI_SPEC_RAW = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/i
 
 API_HEADERS = {"Accept": "application/vnd.github+json", "User-Agent": "selenium-update-cddl"}
 
-# Where each vendor publishes its grammar, keyed by vendor namespace.
+# Where each vendor publishes its grammar, keyed by vendor namespace. Branches are in order of
+# preference: a directory that has not reached the release channel yet is taken from the next one.
 VENDOR_CDDL_SOURCES = {
-    "moz": {"repo": "mozilla-firefox/firefox", "branch": "main", "path": "remote/webdriver-bidi/cddl"},
+    "moz": {
+        "repo": "mozilla-firefox/firefox",
+        "branches": ["release", "beta", "main"],
+        "path": "remote/webdriver-bidi/cddl",
+    },
 }
 VENDOR_RAW = "https://raw.githubusercontent.com/{repo}/{commit}/{path}"
 
@@ -179,13 +186,14 @@ def resolve_commit_for(repo, branch):
     return json.loads(data)["sha"]
 
 
-def resolve_path_commit_for(repo, branch, path):
-    """The last commit on the branch to change anything under the path."""
-    data = get(f"https://api.github.com/repos/{repo}/commits?sha={branch}&path={path}&per_page=1", API_HEADERS)
-    commits = json.loads(data)
-    if not commits:
-        raise RuntimeError(f"No commit on {repo}@{branch} touches {path}")
-    return commits[0]["sha"]
+def resolve_path_commit_for(repo, branches, path):
+    """(branch, commit) for the first branch with the path: the last commit there to change anything under it."""
+    for branch in branches:
+        data = get(f"https://api.github.com/repos/{repo}/commits?sha={branch}&path={path}&per_page=1", API_HEADERS)
+        commits = json.loads(data)
+        if commits:
+            return branch, commits[0]["sha"]
+    raise RuntimeError(f"No commit on {repo} ({', '.join(branches)}) touches {path}")
 
 
 def sha256_of(data):
@@ -252,32 +260,32 @@ def vendor_repo_name(namespace, filename):
 
 
 def pin_vendors():
-    """(namespace, source, commit, [(filename, sha256)]) per vendor, for every .cddl file in its directory."""
+    """(namespace, source, branch, commit, [(filename, sha256)]) per vendor, for every .cddl file in its directory."""
     pinned = []
     for namespace, source in VENDOR_CDDL_SOURCES.items():
         repo, path = source["repo"], source["path"]
-        commit = resolve_path_commit_for(repo, source["branch"], path)
+        branch, commit = resolve_path_commit_for(repo, source["branches"], path)
         listing = json.loads(get(f"https://api.github.com/repos/{repo}/contents/{path}?ref={commit}", API_HEADERS))
         filenames = sorted(e["name"] for e in listing if e["type"] == "file" and e["name"].endswith(".cddl"))
         if not filenames:
             raise RuntimeError(f"No CDDL files in {repo}@{commit} under {path}")
         base_url = VENDOR_RAW.format(repo=repo, commit=commit, path=path)
         files = [(filename, sha256_of(get(f"{base_url}/{filename}"))) for filename in filenames]
-        pinned.append((namespace, source, commit, files))
+        pinned.append((namespace, source, branch, commit, files))
     return pinned
 
 
 def vendor_repo_names(vendors):
-    return {vendor_repo_name(namespace, filename) for namespace, _, _, files in vendors for filename, _ in files}
+    return {vendor_repo_name(namespace, filename) for namespace, *_, files in vendors for filename, _ in files}
 
 
 def render_vendors(vendors):
     pins, entries, labels = [], [], []
-    for namespace, source, commit, files in vendors:
+    for namespace, source, branch, commit, files in vendors:
         prefix = f"_{namespace.upper()}"
         url = VENDOR_RAW.format(repo=source["repo"], commit="{commit}", path=source["path"])
         pins.append(
-            f'# The last {source["repo"]} "{source["branch"]}" commit to change {source["path"]}.\n'
+            f'# The last {source["repo"]} "{branch}" commit to change {source["path"]}.\n'
             f'{prefix}_COMMIT = "{commit}"\n'
             f'{prefix}_CDDL_BASE_URL = "{url}".format(commit = {prefix}_COMMIT)'
         )
@@ -351,8 +359,8 @@ def main():
     print(f"Merged specs: {', '.join(shortname for shortname, _ in specs)}")
     pinned = pin_specs(webref_commit, specs)
     vendors = pin_vendors()
-    for namespace, source, commit, files in vendors:
-        print(f"Vendor {namespace}: {source['repo']}@{commit} ({', '.join(filename for filename, _ in files)})")
+    for namespace, source, branch, commit, files in vendors:
+        print(f"Vendor {namespace}: {source['repo']}@{commit} on {branch} ({', '.join(filename for filename, _ in files)})")
 
     BZL_FILE.write_text(render(webref_commit, pinned, bidi_commit, sha256_of(spec_html), vendors))
     update_module(pinned, vendors)
