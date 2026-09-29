@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.script;
 import static java.util.Collections.unmodifiableMap;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,8 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 
 @Beta
 public class RemoteValue {
@@ -154,6 +155,77 @@ public class RemoteValue {
     return new RemoteValue(valueType, handle, internalId, value, sharedId);
   }
 
+  /**
+   * Builds a {@code RemoteValue} from an already-parsed JSON object. Nested values are decoded
+   * directly from the parsed tree rather than being serialized back to JSON text and re-read, so
+   * each node is visited once and decoding is not bounded by {@code JsonOutput}'s maximum depth.
+   *
+   * <p>Deliberately not named {@code fromJson}: {@code StaticInitializerCoercer} only binds a class
+   * that declares exactly one static {@code fromJson} method.
+   */
+  static RemoteValue fromMap(Object raw) {
+    Map<String, Object> map = asMap(raw, "remote value");
+
+    Object typeName = map.get("type");
+    if (!(typeName instanceof String)) {
+      throw new JsonException(
+          "Expected a string \"type\" for remote value but got: " + describe(typeName));
+    }
+    Type type = Type.findByName((String) typeName);
+
+    Object rawValue = map.get("value");
+    Optional<Object> value =
+        rawValue == null ? Optional.empty() : Optional.ofNullable(deserializeValue(rawValue, type));
+
+    return new RemoteValue(
+        type,
+        optionalString(map, "handle"),
+        optionalString(map, "internalId"),
+        value,
+        optionalString(map, "sharedId"));
+  }
+
+  @SuppressWarnings("unchecked")
+  static Map<String, Object> asMap(Object raw, String what) {
+    if (!(raw instanceof Map)) {
+      throw new JsonException("Expected a JSON object for " + what + " but got: " + describe(raw));
+    }
+    return (Map<String, Object>) raw;
+  }
+
+  @SuppressWarnings("unchecked")
+  static List<Object> asList(Object raw, String what) {
+    if (!(raw instanceof List)) {
+      throw new JsonException("Expected a JSON array for " + what + " but got: " + describe(raw));
+    }
+    return (List<Object>) raw;
+  }
+
+  static Optional<String> optionalString(Map<String, Object> map, String key) {
+    Object value = map.get(key);
+    if (value == null) {
+      return Optional.empty();
+    }
+    if (!(value instanceof String)) {
+      throw new JsonException("Expected a string for \"" + key + "\" but got: " + describe(value));
+    }
+    return Optional.of((String) value);
+  }
+
+  // Payloads can be large, so errors name the JSON type rather than echoing the value.
+  static String describe(@Nullable Object value) {
+    if (value == null) {
+      return "null";
+    }
+    if (value instanceof Map) {
+      return "object";
+    }
+    if (value instanceof List) {
+      return "array";
+    }
+    return value.getClass().getSimpleName();
+  }
+
   public String getType() {
     return type.toString();
   }
@@ -190,38 +262,52 @@ public class RemoteValue {
   private static Object deserializeValue(Object value, Type type) {
     Object finalValue;
 
+    // Container values are decoded straight from the parsed tree. Round-tripping each child through
+    // JSON text re-serializes its whole subtree once per level above it, and fails outright once a
+    // subtree is deeper than JsonOutput's maximum depth. See #18076.
     switch (type) {
       case ARRAY:
       case NODE_LIST:
       case SET:
-        try (StringReader reader = new StringReader(JSON.toJson(value));
-            JsonInput input = JSON.newInput(reader)) {
-          finalValue = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+        List<Object> items = asList(value, type + " value");
+        List<RemoteValue> list = new ArrayList<>(items.size());
+        for (Object item : items) {
+          list.add(fromMap(item));
         }
+        finalValue = list;
         break;
 
       case MAP:
       case OBJECT:
-        List<List<Object>> result = (List<List<Object>>) value;
+        List<Object> entries = asList(value, type + " value");
         Map<Object, RemoteValue> map = new HashMap<>();
 
-        for (List<Object> list : result) {
-          Object key = list.get(0);
+        for (Object rawEntry : entries) {
+          List<Object> entry = asList(rawEntry, type + " entry");
+          if (entry.size() != 2) {
+            throw new JsonException(
+                "Expected a [key, value] pair in "
+                    + type
+                    + " value but got "
+                    + entry.size()
+                    + " items");
+          }
+          Object key = entry.get(0);
           if (!(key instanceof String)) {
-            try (StringReader reader = new StringReader(JSON.toJson(key));
-                JsonInput keyInput = JSON.newInput(reader)) {
-              key = keyInput.read(RemoteValue.class);
-            }
+            key = fromMap(key);
           }
-          try (StringReader reader = new StringReader(JSON.toJson(list.get(1)));
-              JsonInput valueInput = JSON.newInput(reader)) {
-            RemoteValue value1 = valueInput.read(RemoteValue.class);
-            map.put(key, value1);
-          }
+          map.put(key, fromMap(entry.get(1)));
         }
         finalValue = map;
         break;
 
+      case NODE:
+        // Not a leaf: children and shadowRoot are remote values themselves.
+        finalValue = NodeProperties.fromMap(value);
+        break;
+
+      // RegExpValue and WindowProxyProperties are genuine leaves (strings only), so a single
+      // round trip through JSON text is bounded and cheap.
       case REGULAR_EXPRESSION:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
@@ -233,13 +319,6 @@ public class RemoteValue {
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
           finalValue = input.read(WindowProxyProperties.class);
-        }
-        break;
-
-      case NODE:
-        try (StringReader reader = new StringReader(JSON.toJson(value));
-            JsonInput input = JSON.newInput(reader)) {
-          finalValue = input.read(NodeProperties.class);
         }
         break;
 

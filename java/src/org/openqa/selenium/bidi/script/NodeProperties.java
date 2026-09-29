@@ -16,11 +16,14 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonException;
 
 @Beta
 public class NodeProperties {
@@ -78,6 +81,83 @@ public class NodeProperties {
     this.namespaceURI = namespaceURI;
     this.nodeValue = nodeValue;
     this.shadowRoot = shadowRoot;
+  }
+
+  /**
+   * Builds {@code NodeProperties} from an already-parsed JSON object. {@code children} and {@code
+   * shadowRoot} are remote values, so they are decoded through {@link RemoteValue#fromMap} rather
+   * than round-tripped through JSON text. See #18076.
+   */
+  static NodeProperties fromMap(Object raw) {
+    Map<String, Object> map = RemoteValue.asMap(raw, "node properties");
+
+    Optional<Map<String, String>> attributes = Optional.empty();
+    Object rawAttributes = map.get("attributes");
+    if (rawAttributes != null) {
+      Map<String, String> copy = new LinkedHashMap<>();
+      RemoteValue.asMap(rawAttributes, "node attributes")
+          .forEach(
+              (name, value) -> {
+                if (!(value instanceof String)) {
+                  throw new JsonException(
+                      "Expected a string for node attribute \""
+                          + name
+                          + "\" but got: "
+                          + RemoteValue.describe(value));
+                }
+                copy.put(name, (String) value);
+              });
+      attributes = Optional.of(copy);
+    }
+
+    Optional<List<RemoteValue>> children = Optional.empty();
+    Object rawChildren = map.get("children");
+    if (rawChildren != null) {
+      List<Object> items = RemoteValue.asList(rawChildren, "node children");
+      List<RemoteValue> list = new ArrayList<>(items.size());
+      for (Object item : items) {
+        list.add(RemoteValue.fromMap(item));
+      }
+      children = Optional.of(list);
+    }
+
+    Optional<Mode> mode = Optional.empty();
+    Object rawMode = map.get("mode");
+    if (rawMode != null) {
+      if (!(rawMode instanceof String)) {
+        throw new JsonException(
+            "Expected a string for node \"mode\" but got: " + RemoteValue.describe(rawMode));
+      }
+      try {
+        mode = Optional.of(Mode.findByName((String) rawMode));
+      } catch (IllegalArgumentException e) {
+        throw new JsonException(e.getMessage(), e);
+      }
+    }
+
+    Object rawShadowRoot = map.get("shadowRoot");
+    Optional<RemoteValue> shadowRoot =
+        rawShadowRoot == null ? Optional.empty() : Optional.of(RemoteValue.fromMap(rawShadowRoot));
+
+    return new NodeProperties(
+        requiredLong(map, "nodeType"),
+        requiredLong(map, "childNodeCount"),
+        attributes,
+        children,
+        RemoteValue.optionalString(map, "localName"),
+        mode,
+        RemoteValue.optionalString(map, "namespaceURI"),
+        RemoteValue.optionalString(map, "nodeValue"),
+        shadowRoot);
+  }
+
+  private static long requiredLong(Map<String, Object> map, String key) {
+    Object value = map.get(key);
+    if (!(value instanceof Number)) {
+      throw new JsonException(
+          "Expected a number for node \"" + key + "\" but got: " + RemoteValue.describe(value));
+    }
+    return ((Number) value).longValue();
   }
 
   public long getNodeType() {
