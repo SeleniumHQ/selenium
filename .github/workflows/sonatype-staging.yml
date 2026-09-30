@@ -3,6 +3,10 @@ name: Release - Sonatype Staging
 permissions: {}
 
 on:
+  # A workflow is only dispatchable once it exists on trunk or has run once; this branch never merges as is
+  push:
+    branches:
+      - release-fix-4.50.0
   workflow_dispatch:
     inputs:
       action:
