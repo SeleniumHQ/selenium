@@ -473,6 +473,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#install_web_extension-instance_method" title="#install_web_extension (instance method)">#<strong>install_web_extension</strong>  &#x21d2; WebExtension </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip), or base64-encoded bytes; works with remote (Grid) sessions.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#manage-instance_method" title="#manage (instance method)">#<strong>manage</strong>  &#x21d2; Manager </a>
     
 
@@ -686,6 +708,28 @@
 
   
     <span class="summary_desc"><div class='inline'><p>Get the title of the current page.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#uninstall_web_extension-instance_method" title="#uninstall_web_extension (instance method)">#<strong>uninstall_web_extension</strong>(extension)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Uninstalls a browser extension installed with <span class='object_link'><a href="#install_web_extension-instance_method" title="Selenium::WebDriver::Driver#install_web_extension (method)">#install_web_extension</a></span>.</p></div></span>
   
 </li>
 
@@ -980,14 +1024,14 @@ String or Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-306
-307
-308
-309
-310</pre>
+330
+331
+332
+333
+334</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 306</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 330</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_sel'>sel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_sel'>sel</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_sel'>sel</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
@@ -1200,12 +1244,12 @@ String or Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-312
-313
-314</pre>
+336
+337
+338</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 312</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 336</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span>
@@ -1230,12 +1274,12 @@ String or Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-316
-317
-318</pre>
+340
+341
+342</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 316</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 340</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capabilities'>capabilities</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span>
@@ -1584,6 +1628,87 @@ executed function as the last argument.</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="install_web_extension-instance_method">
+  
+    #<strong>install_web_extension</strong>  &#x21d2; <tt><span class='object_link'><a href="WebExtension.html" title="Selenium::WebDriver::WebExtension (class)">WebExtension</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+  <div class="note notetag">
+    <strong>Note:</strong>
+    <div class='inline'><p>Chromium requires a BiDi session and installs only unpacked directories
+(SeleniumHQ/selenium#16541); Firefox falls back to the classic endpoint without BiDi.</p></div>
+  </div>
+
+<p>Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
+or base64-encoded bytes; works with remote (Grid) sessions.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>path</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>directory, packed extension, or base64-encoded bytes</p></div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="WebExtension.html" title="Selenium::WebDriver::WebExtension (class)">WebExtension</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the installed extension</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+290
+291
+292</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 290</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_install_web_extension'>install_web_extension</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_install_web_extension'>install_web_extension</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="manage-instance_method">
   
     #<strong>manage</strong>  &#x21d2; <tt><span class='object_link'><a href="Manager.html" title="Selenium::WebDriver::Manager (class)">Manager</a></span></tt> 
@@ -1892,12 +2017,12 @@ executed function as the last argument.</p>
       <pre class="lines">
 
 
-325
-326
-327</pre>
+349
+350
+351</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 325</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 349</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='lbracket'>[</span><span class='symbol'>:driver</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span>
@@ -2131,6 +2256,63 @@ and may include additional meta information.</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="uninstall_web_extension-instance_method">
+  
+    #<strong>uninstall_web_extension</strong>(extension)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Uninstalls a browser extension installed with <span class='object_link'><a href="#install_web_extension-instance_method" title="Selenium::WebDriver::Driver#install_web_extension (method)">#install_web_extension</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>extension</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="WebExtension.html" title="Selenium::WebDriver::WebExtension (class)">WebExtension</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the extension returned by <span class='object_link'><a href="#install_web_extension-instance_method" title="Selenium::WebDriver::Driver#install_web_extension (method)">#install_web_extension</a></span></p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+300
+301
+302</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 300</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_uninstall_web_extension'>uninstall_web_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_extension'>extension</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_uninstall_web_extension'>uninstall_web_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_extension'>extension</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="window_handle-instance_method">
   
     #<strong>window_handle</strong>  &#x21d2; <tt>String</tt> 
@@ -2246,7 +2428,7 @@ and may include additional meta information.</p>
 </div>
 
       <div id="footer">
-  Generated on Wed Sep  9 15:38:41 2026 by
+  Generated on Wed Sep 30 22:19:40 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-3.3.11).
 </div>
