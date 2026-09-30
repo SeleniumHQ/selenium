@@ -126,7 +126,7 @@ def test_create_user_context_with_accept_insecure_certs(driver):
     driver.browser.remove_user_context(user_context)
 
 
-def test_create_user_context_with_direct_proxy(driver):
+def test_create_user_context_with_direct_proxy(driver, pages):
     """Test creating a user context with direct proxy configuration."""
     proxy = Proxy()
     proxy.proxy_type = ProxyType.DIRECT
@@ -138,9 +138,8 @@ def test_create_user_context_with_direct_proxy(driver):
     driver.switch_to.window(bc)
 
     # Visiting a site should load directly without proxy
-    driver.get("http://example.com/")
-    body_text = driver.find_element(By.TAG_NAME, "body").text.lower()
-    assert "example domain" in body_text
+    pages.load("simpleTest.html")
+    assert driver.title == "Hello WebDriver"
 
     # Clean up
     driver.browser.remove_user_context(user_context)
