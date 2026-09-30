@@ -97,16 +97,10 @@ public class NodeProperties {
       Map<String, String> copy = new LinkedHashMap<>();
       RemoteValue.asMap(rawAttributes, "node attributes")
           .forEach(
-              (name, value) -> {
-                if (!(value instanceof String)) {
-                  throw new JsonException(
-                      "Expected a string for node attribute \""
-                          + name
-                          + "\" but got: "
-                          + RemoteValue.describe(value));
-                }
-                copy.put(name, (String) value);
-              });
+              (name, value) ->
+                  copy.put(
+                      name,
+                      RemoteValue.coerceScalar(value, String.class, "node attribute " + name)));
       attributes = Optional.of(copy);
     }
 
@@ -121,23 +115,11 @@ public class NodeProperties {
       children = Optional.of(list);
     }
 
-    Optional<Mode> mode = Optional.empty();
-    Object rawMode = map.get("mode");
-    if (rawMode != null) {
-      if (!(rawMode instanceof String)) {
-        throw new JsonException(
-            "Expected a string for node \"mode\" but got: " + RemoteValue.describe(rawMode));
-      }
-      try {
-        mode = Optional.of(Mode.findByName((String) rawMode));
-      } catch (IllegalArgumentException e) {
-        throw new JsonException(e.getMessage(), e);
-      }
-    }
+    Optional<Mode> mode =
+        Optional.ofNullable(RemoteValue.coerceScalar(map.get("mode"), Mode.class, "node mode"));
 
-    Object rawShadowRoot = map.get("shadowRoot");
     Optional<RemoteValue> shadowRoot =
-        rawShadowRoot == null ? Optional.empty() : Optional.of(RemoteValue.fromMap(rawShadowRoot));
+        Optional.ofNullable(RemoteValue.fromMap(map.get("shadowRoot")));
 
     return new NodeProperties(
         requiredLong(map, "nodeType"),
@@ -151,13 +133,13 @@ public class NodeProperties {
         shadowRoot);
   }
 
+  // Same coercion as the constructor-based path this replaces: "1", 1.0 and "1e0" all become 1L.
   private static long requiredLong(Map<String, Object> map, String key) {
-    Object value = map.get(key);
-    if (!(value instanceof Number)) {
-      throw new JsonException(
-          "Expected a number for node \"" + key + "\" but got: " + RemoteValue.describe(value));
+    Long value = RemoteValue.coerceScalar(map.get(key), Long.class, "node " + key);
+    if (value == null) {
+      throw new JsonException("Missing JSON value for node \"" + key + "\"");
     }
-    return ((Number) value).longValue();
+    return value;
   }
 
   public long getNodeType() {

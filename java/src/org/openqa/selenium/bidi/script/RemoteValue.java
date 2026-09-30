@@ -163,15 +163,18 @@ public class RemoteValue {
    * <p>Deliberately not named {@code fromJson}: {@code StaticInitializerCoercer} only binds a class
    * that declares exactly one static {@code fromJson} method.
    */
-  static RemoteValue fromMap(Object raw) {
+  static @Nullable RemoteValue fromMap(@Nullable Object raw) {
+    if (raw == null) {
+      // A JSON null where a remote value is expected decodes to null, as it did before.
+      return null;
+    }
     Map<String, Object> map = asMap(raw, "remote value");
 
-    Object typeName = map.get("type");
-    if (!(typeName instanceof String)) {
-      throw new JsonException(
-          "Expected a string \"type\" for remote value but got: " + describe(typeName));
+    String typeName = coerceScalar(map.get("type"), String.class, "type");
+    if (typeName == null) {
+      throw new JsonException("Remote value has no \"type\"");
     }
-    Type type = Type.findByName((String) typeName);
+    Type type = Type.findByName(typeName);
 
     Object rawValue = map.get("value");
     Optional<Object> value =
@@ -202,14 +205,27 @@ public class RemoteValue {
   }
 
   static Optional<String> optionalString(Map<String, Object> map, String key) {
-    Object value = map.get(key);
+    return Optional.ofNullable(coerceScalar(map.get(key), String.class, key));
+  }
+
+  /**
+   * Converts a scalar from the parsed tree using the same coercion the JSON layer applies when
+   * reading that type (so {@code "1"} still becomes {@code 1L} and {@code 1} still becomes {@code
+   * "1"}). A value that is already of the target type is returned as is. Objects and arrays are
+   * rejected rather than serialized, so this never round-trips a subtree.
+   */
+  static <T> @Nullable T coerceScalar(@Nullable Object value, Class<T> type, String what) {
     if (value == null) {
-      return Optional.empty();
+      return null;
     }
-    if (!(value instanceof String)) {
-      throw new JsonException("Expected a string for \"" + key + "\" but got: " + describe(value));
+    if (type.isInstance(value)) {
+      return type.cast(value);
     }
-    return Optional.of((String) value);
+    if (value instanceof Map || value instanceof List) {
+      throw new JsonException(
+          "Expected a " + type.getSimpleName() + " for " + what + " but got: " + describe(value));
+    }
+    return JSON.toType(JSON.toJson(value), type);
   }
 
   // Payloads can be large, so errors name the JSON type rather than echoing the value.
@@ -284,7 +300,7 @@ public class RemoteValue {
 
         for (Object rawEntry : entries) {
           List<Object> entry = asList(rawEntry, type + " entry");
-          if (entry.size() != 2) {
+          if (entry.size() < 2) {
             throw new JsonException(
                 "Expected a [key, value] pair in "
                     + type

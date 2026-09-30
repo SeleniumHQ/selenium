@@ -227,6 +227,81 @@ class RemoteValueTest {
         .isInstanceOf(JsonException.class);
   }
 
+  @Test
+  void coercesNumericStringNodeCountsLikeTheJsonLayer() {
+    // Matches NumberCoercer, which the constructor-based decoding used before.
+    NodeProperties fromStrings =
+        node("{\"type\":\"node\",\"value\":{\"nodeType\":\"1\",\"childNodeCount\":\"0\"}}");
+    assertThat(fromStrings.getNodeType()).isEqualTo(1L);
+    assertThat(fromStrings.getChildNodeCount()).isEqualTo(0L);
+
+    NodeProperties fromDecimalAndExponent =
+        node("{\"type\":\"node\",\"value\":{\"nodeType\":1.0,\"childNodeCount\":\"2e0\"}}");
+    assertThat(fromDecimalAndExponent.getNodeType()).isEqualTo(1L);
+    assertThat(fromDecimalAndExponent.getChildNodeCount()).isEqualTo(2L);
+
+    assertThatThrownBy(
+            () ->
+                decode("{\"type\":\"node\",\"value\":{\"nodeType\":\"abc\",\"childNodeCount\":0}}"))
+        .isInstanceOf(JsonException.class);
+  }
+
+  @Test
+  void coercesScalarStringFieldsLikeTheJsonLayer() {
+    // Matches StringCoercer: numbers and booleans are accepted as strings.
+    NodeProperties node =
+        node(
+            "{\"type\":\"node\",\"value\":{\"nodeType\":1,\"childNodeCount\":0,"
+                + "\"localName\":123,\"mode\":\"OPEN\",\"attributes\":{\"n\":5,\"b\":true}}}");
+    assertThat(node.getLocalName().get()).isEqualTo("123");
+    assertThat(node.getMode().get()).isEqualTo(NodeProperties.Mode.OPEN);
+    assertThat(node.getAttributes().get()).isEqualTo(Map.of("n", "5", "b", "true"));
+
+    RemoteValue value =
+        items(
+                decode(
+                    "{\"type\":\"array\",\"value\":[{\"type\":\"object\",\"handle\":42,"
+                        + "\"sharedId\":true,\"value\":[]}]}"))
+            .get(0);
+    assertThat(value.getHandle().get()).isEqualTo("42");
+    assertThat(value.getSharedId().get()).isEqualTo("true");
+  }
+
+  @Test
+  void keepsNullEntriesAndIgnoresExtraMapEntryItemsAsBefore() {
+    // The previous decoding passed a JSON null through wherever a remote value was expected and
+    // read only the first two items of a map entry; keep that behaviour.
+    assertThat(items(decode("{\"type\":\"array\",\"value\":[null]}")))
+        .containsExactly((RemoteValue) null);
+
+    Map<Object, RemoteValue> map =
+        entries(
+            decode(
+                "{\"type\":\"map\",\"value\":[[\"k\",null],[null,"
+                    + number(1)
+                    + "],[\"extra\","
+                    + number(2)
+                    + ",\"ignored\"]]}"));
+    assertThat(map).hasSize(3);
+    assertThat(map.get("k")).isNull();
+    assertThat(map.get(null).getValue().get()).isEqualTo(1L);
+    assertThat(map.get("extra").getValue().get()).isEqualTo(2L);
+
+    NodeProperties node =
+        node(
+            "{\"type\":\"node\",\"value\":{\"nodeType\":1,\"childNodeCount\":1,"
+                + "\"children\":[null],\"shadowRoot\":null}}");
+    assertThat(node.getChildren().get()).containsExactly((RemoteValue) null);
+    assertThat(node.getShadowRoot()).isEmpty();
+
+    assertThatThrownBy(() -> decode("{\"type\":\"map\",\"value\":[[\"k\"]]}"))
+        .isInstanceOf(JsonException.class);
+  }
+
+  private static NodeProperties node(String json) {
+    return (NodeProperties) decode(json).getValue().get();
+  }
+
   private static RemoteValue decode(String json) {
     try (JsonInput input = JSON.newInput(new StringReader(json))) {
       return input.read(RemoteValue.class);
