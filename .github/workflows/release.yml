@@ -302,6 +302,7 @@ jobs:
       actions: read
     uses: ./.github/workflows/commit-changes.yml
     with:
+      ref: trunk
       artifact-name: version-reset
       commit-message: "[build] Reset versions to nightly after ${{ needs.parse-tag.outputs.tag }} release"
     secrets:
