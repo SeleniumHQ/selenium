@@ -141,6 +141,7 @@ jobs:
     needs: [parse-tag, check-authorization]
     permissions:
       contents: read
+      packages: read
       id-token: write
     strategy:
       fail-fast: false
