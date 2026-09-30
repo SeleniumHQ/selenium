@@ -265,14 +265,16 @@ jobs:
 
   verify:
     name: Verify Published Packages
-    needs: [parse-tag, publish, publish-python]
+    needs: [parse-tag, create-tag, publish, publish-python]
     if: >-
       always() && !cancelled() &&
+      needs.create-tag.result == 'success' &&
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
+      ref: ${{ needs.parse-tag.outputs.tag }}
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
     secrets: inherit
 
