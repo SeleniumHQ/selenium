@@ -1,0 +1,41 @@
+name: Release - Sonatype Staging
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'List the staging repositories tied to the CI Sonatype token, or drop them'
+        type: choice
+        options: [list, drop]
+        default: list
+      state:
+        description: 'Which repositories to drop'
+        type: choice
+        options: [open, closed, all]
+        default: open
+
+jobs:
+  check-authorization:
+    name: Check Authorization
+    uses: ./.github/workflows/check-authorization.yml
+
+  staging:
+    name: ${{ inputs.action == 'drop' && 'Drop' || 'List' }} Staging Repositories
+    needs: check-authorization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: scripts/github-actions/sonatype-staging.sh
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Run
+        env:
+          SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+          SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+          ACTION: ${{ inputs.action }}
+          STATE: ${{ inputs.state }}
+        run: ./scripts/github-actions/sonatype-staging.sh "$ACTION" "$STATE"
