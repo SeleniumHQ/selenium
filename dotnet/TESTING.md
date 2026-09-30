@@ -136,13 +136,17 @@ From `EnvironmentManager.Instance`:
 
 ```
 dotnet/test/
-├── webdriver/                      # WebDriver tests
+├── testing.nunit/                  # Shared NUnit infrastructure (library used by all test projects)
 │   ├── DriverTestFixture.cs        # Base class
-│   ├── *Tests.cs                   # Test files
+│   ├── AssemblyFixtureBase.cs      # Base for each project's [SetUpFixture]
+│   ├── appconfig.json              # Driver configurations
 │   └── Infrastructure/             # Custom attributes and test environment
 │       ├── IgnoreBrowserAttribute.cs
 │       ├── NeedsFreshDriverAttribute.cs
 │       └── Environment/            # EnvironmentManager, DriverFactory
+├── testing.webserver/              # Web server hosting test pages
+├── webdriver/                      # WebDriver tests
+│   └── *Tests.cs                   # Test files
 ├── remote/                         # Remote/Grid tests
 └── support/                        # Support library tests
 ```

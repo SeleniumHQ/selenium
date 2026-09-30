@@ -5,6 +5,8 @@ dotnet/test/support/bin
 dotnet/test/support/obj
 dotnet/test/remote/bin
 dotnet/test/remote/obj
+dotnet/test/testing.nunit/bin
+dotnet/test/testing.nunit/obj
 dotnet/src/support/bin
 dotnet/src/support/obj
 dotnet/src/webdriver/bin

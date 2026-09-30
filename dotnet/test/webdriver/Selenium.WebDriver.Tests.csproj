@@ -22,17 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\webdriver\Selenium.WebDriver.csproj" />
+    <ProjectReference Include="..\testing.nunit\Selenium.Testing.NUnit.csproj" />
     <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\common\extensions\**">
-      <Link>common\extensions\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
