@@ -444,7 +444,7 @@
     "org.slf4j:slf4j-jdk14:jar:sources": 243667848,
     "org.snakeyaml:snakeyaml-engine": -24555716,
     "org.snakeyaml:snakeyaml-engine:jar:sources": -701235637,
-    "org.testcontainers:testcontainers": -1849869371,
+    "org.testcontainers:testcontainers": -932664350,
     "org.testcontainers:testcontainers:jar:sources": 375219890,
     "org.tomlj:tomlj": -2122788306,
     "org.tomlj:tomlj:jar:sources": 1938294966,

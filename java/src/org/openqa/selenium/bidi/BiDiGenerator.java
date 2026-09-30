@@ -948,7 +948,7 @@ public class BiDiGenerator {
         } else {
           sb.append(m).append("  Map<String, Object> map = new LinkedHashMap<>();\n");
           for (FieldInfo f : required) {
-            String serExpr = serializeExpr(f.name, f.typeRef, domain);
+            String serExpr = serializeExpr(f.name, f.typeRef, domain, f.wire);
             // A required field can still legally hold null if the schema marks it nullable (e.g.
             // browser.SetDownloadBehaviorParameters.downloadBehavior) — the constructor already
             // allows this (see appendConstructorAssignment's isPrimitive(f.typeRef) || nullable
@@ -972,7 +972,7 @@ public class BiDiGenerator {
               // omitted, so presence (xSet) and value-nullability are checked separately. Only
               // fields the schema declares nullable get this treatment — an optional field whose
               // type is never null-able has no legal null wire state.
-              String serExpr = serializeExpr(f.name + ".get()", f.typeRef, domain);
+              String serExpr = serializeExpr(f.name + ".get()", f.typeRef, domain, f.wire);
               sb.append(m).append("  if (").append(f.name).append("Set) {\n");
               sb.append(m)
                   .append("    map.put(\"")
@@ -984,7 +984,7 @@ public class BiDiGenerator {
                   .append(" : null);\n");
               sb.append(m).append("  }\n");
             } else {
-              String serExpr = serializeExpr("v", f.typeRef, domain);
+              String serExpr = serializeExpr("v", f.typeRef, domain, f.wire);
               sb.append(m)
                   .append("  ")
                   .append(f.name)
@@ -1291,10 +1291,14 @@ public class BiDiGenerator {
           sb.append(m).append("}\n");
 
         } else if ("enum".equals(kind)) {
-          // Not List<String> — see the matching comment on generateEnum()'s own cast.
+          // Not List<String> — see the matching comment on generateEnum()'s own cast. This is the
+          // path emulation.MediaFeaturesGrid (synthetic, integer-valued) actually goes through —
+          // see appendEnumBody's primitive-aware overload for why that matters here.
           List<?> values = (List<?>) Objects.requireNonNull(childNode.get("values"));
+          String childPrimitive =
+              childNode.containsKey("primitive") ? str(childNode, "primitive") : "string";
           sb.append("\n").append(m).append("public enum ").append(label).append(" {\n\n");
-          appendEnumBody(sb, label, values, m + "  ");
+          appendEnumBody(sb, label, values, m + "  ", childPrimitive);
           sb.append(m).append("}\n");
         }
       }
@@ -1346,6 +1350,52 @@ public class BiDiGenerator {
     // either way, the same as appendConstValidation does for a spec'd const value.
     private static final long JS_SAFE_INTEGER_MAX = 9007199254740991L; // 2^53 - 1
 
+    // An inline union of a bare primitive arm and one or more ref arms — e.g.
+    // script.NumberValue.value: a JSON number or a script.SpecialNumber — isn't a scalarUnion
+    // (no "scalarValues"; that shape gets its own generated interface, see
+    // generateScalarUnionAlias) and isn't a record/enum/list/map either, so resolveJavaType falls
+    // back to plain Object for it. A typed representation for every such site is tracked as a
+    // follow-up; until then, Object accepts anything that compiles — a Boolean where the schema
+    // only allows a number or a SpecialNumber — silently. This enforces the wire contract that
+    // full typing would otherwise give for free: the value must be an instance of at least one
+    // declared arm.
+    private void appendInlineUnionValidation(
+        StringBuilder sb,
+        FieldInfo f,
+        String varName,
+        String domain,
+        boolean nullGuard,
+        String bodyIndent) {
+      if (f.typeRef == null
+          || !f.typeRef.containsKey("union")
+          || f.typeRef.containsKey("scalarValues")) {
+        return;
+      }
+      @SuppressWarnings("unchecked")
+      List<Map<String, Object>> arms = (List<Map<String, Object>>) f.typeRef.get("union");
+      List<String> checks = new ArrayList<>();
+      for (Map<String, Object> arm : arms) {
+        if (arm.containsKey("primitive")) {
+          checks.add(varName + " instanceof " + primitiveToJava(str(arm, "primitive"), true));
+        } else if (arm.containsKey("ref")) {
+          checks.add(varName + " instanceof " + resolveRefToJavaClass(str(arm, "ref"), domain));
+        }
+      }
+      if (checks.isEmpty()) return;
+      sb.append(bodyIndent).append("if (");
+      if (nullGuard) {
+        sb.append(varName).append(" != null && ");
+      }
+      sb.append("!(").append(String.join(" || ", checks)).append(")) {\n");
+      sb.append(bodyIndent)
+          .append("  throw new BiDiException(\"")
+          .append(f.wire)
+          .append(" must be one of its declared union types, got: \" + ")
+          .append(varName)
+          .append(");\n");
+      sb.append(bodyIndent).append("}\n");
+    }
+
     private void appendJsRangeValidation(
         StringBuilder sb, FieldInfo f, String varName, boolean nullGuard, String bodyIndent) {
       String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
@@ -1391,6 +1441,11 @@ public class BiDiGenerator {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
         appendJsRangeValidation(sb, f, f.name, nullable, bodyIndent);
+        // Always null-guarded regardless of nullable/required: nullness itself is enforced right
+        // below (Objects.requireNonNull, or simply allowed through for a nullable field) — this
+        // only checks the value's shape when one is actually present, so a missing/null value
+        // still gets that check's own, more specific message instead of this one's.
+        appendInlineUnionValidation(sb, f, f.name, domain, true, bodyIndent);
         String copyExpr = isReceivable ? immutableCopyExpr(f.name, f.typeRef) : null;
         if (isPrimitive(f.typeRef) || nullable) {
           sb.append(bodyIndent)
@@ -1540,6 +1595,7 @@ public class BiDiGenerator {
       // defined as the number 0 or 1, which the JSON parser hands back as a Long. A
       // List<String> cast would throw a ClassCastException for that enum.
       List<?> values = (List<?>) Objects.requireNonNull(node.get("values"));
+      String primitive = node.containsKey("primitive") ? str(node, "primitive") : "string";
 
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
@@ -1551,30 +1607,42 @@ public class BiDiGenerator {
       sb.append("@Beta\n");
       sb.append("@ApiStatus.Internal\n");
       sb.append("public enum ").append(cls).append(" {\n\n");
-      appendEnumBody(sb, cls, values, "  ");
+      appendEnumBody(sb, cls, values, "  ", primitive);
       sb.append("}\n");
 
       writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
     }
 
-    // The generated enum's stored value is always a String, even for a numeric or
-    // boolean one — converted below via String.valueOf(). Selenium's shared JSON code
-    // already reads and writes every enum in the codebase as a string (not just BiDi's),
-    // so storing a Long or Boolean here wouldn't be honored on the wire anyway; it would
-    // just get converted back to a String before being sent or compared.
+    // Convenience overload for the (overwhelming majority) case of a string-valued enum — see
+    // the primitive-aware overload below for why this isn't the only shape.
     private void appendEnumBody(StringBuilder sb, String cls, List<?> values, String m) {
+      appendEnumBody(sb, cls, values, m, "string");
+    }
+
+    // Not every BiDi enum is string-valued on the wire — e.g. the CSS "grid" media feature is
+    // spec'd as the integer 0 or 1 (emulation.MediaFeaturesGrid). {@code primitive} (the schema
+    // node's own "primitive", defaulting to "string" when absent) decides the constant's actual
+    // wire type, both outbound (toWireValue()) and inbound (fromJson's parameter type — read by
+    // StaticInitializerCoercer via reflection, so declaring it Long rather than String is what
+    // makes a JSON *number* token get read here instead of a string one). toString() stays
+    // String-typed regardless, via String.valueOf(value) — java.lang.Enum already declares that
+    // signature, and nothing here needs a wire-typed toString().
+    private void appendEnumBody(
+        StringBuilder sb, String cls, List<?> values, String m, String primitive) {
+      boolean isLong = "integer".equals(primitive);
+      String wireType = isLong ? "Long" : "String";
       for (int i = 0; i < values.size(); i++) {
         String v = String.valueOf(values.get(i));
         sb.append(m)
             .append(toEnumConstant(v))
-            .append("(\"")
-            .append(v)
-            .append("\")")
+            .append("(")
+            .append(isLong ? v + "L" : "\"" + v + "\"")
+            .append(")")
             .append(i < values.size() - 1 ? "," : ";")
             .append("\n");
       }
-      sb.append("\n").append(m).append("private final String value;\n\n");
-      sb.append(m).append(cls).append("(String value) {\n");
+      sb.append("\n").append(m).append("private final ").append(wireType).append(" value;\n\n");
+      sb.append(m).append(cls).append("(").append(wireType).append(" value) {\n");
       sb.append(m).append("  this.value = value;\n");
       sb.append(m).append("}\n\n");
       // The actual inbound-deserialization entry point — StaticInitializerCoercer (registered
@@ -1582,7 +1650,12 @@ public class BiDiGenerator {
       // method by name. Matches exactly, not case-insensitively: the spec's own values are a
       // closed, case-sensitive vocabulary, and a received value outside it must be rejected, not
       // coerced into a guess.
-      sb.append(m).append("public static ").append(cls).append(" fromJson(String s) {\n");
+      sb.append(m)
+          .append("public static ")
+          .append(cls)
+          .append(" fromJson(")
+          .append(wireType)
+          .append(" s) {\n");
       sb.append(m).append("  for (").append(cls).append(" e : values()) {\n");
       sb.append(m).append("    if (e.value.equals(s)) return e;\n");
       sb.append(m).append("  }\n");
@@ -1591,9 +1664,14 @@ public class BiDiGenerator {
           .append(cls)
           .append(" value: \" + s);\n");
       sb.append(m).append("}\n\n");
+      // The value put on the wire when this constant is serialized — see serializeExpr's "enum"
+      // branch, which calls this rather than toString() for exactly that reason.
+      sb.append(m).append("public Object toWireValue() {\n");
+      sb.append(m).append("  return value;\n");
+      sb.append(m).append("}\n\n");
       sb.append(m).append("@Override\n");
       sb.append(m).append("public String toString() {\n");
-      sb.append(m).append("  return value;\n");
+      sb.append(m).append("  return String.valueOf(value);\n");
       sb.append(m).append("}\n");
     }
 
@@ -1810,16 +1888,13 @@ public class BiDiGenerator {
           .append(", got: \" + raw);\n");
       sb.append("  }\n\n");
 
-      // The bare-literal arms as a real Java enum — same shape (fromJson/toString) every other
-      // generated enum already has, so it picks up StaticInitializerCoercer and
+      // The bare-literal arms as a real Java enum — same shape (fromJson/toString/toWireValue)
+      // every other generated enum already has, so it picks up StaticInitializerCoercer and
       // ConverterFunctions.JSON's strict handling identically, with no special-casing needed here.
+      // appendEnumBody's own toWireValue() (returning its String value) already satisfies this
+      // interface's toWireValue() contract — no separate override needed.
       sb.append("  enum Literal implements ").append(cls).append(" {\n\n");
       appendEnumBody(sb, "Literal", scalarValues, "    ");
-      sb.append("\n");
-      sb.append("    @Override\n");
-      sb.append("    public Object toWireValue() {\n");
-      sb.append("      return toString();\n");
-      sb.append("    }\n");
       sb.append("  }\n");
 
       sb.append("}\n");
@@ -1994,12 +2069,25 @@ public class BiDiGenerator {
       return false;
     }
 
-    private String serializeExpr(String varName, Map<String, Object> typeRef, String domain) {
+    private String serializeExpr(
+        String varName, Map<String, Object> typeRef, String domain, String wire) {
+      return serializeExpr(varName, typeRef, domain, wire, 0);
+    }
+
+    // depth picks each list/map level's own stream lambda variable name ("e0", "e1", ...): a
+    // nested container (List<List<T>>, Map<String, List<T>>, ...) recurses into itself, and two
+    // lambdas nested inside one another can't reuse the same parameter name — javac rejects it as
+    // already defined, unlike an ordinary block-scoped local. depth=0 keeps the common,
+    // non-nested case's variable named plain "e".
+    private String serializeExpr(
+        String varName, Map<String, Object> typeRef, String domain, String wire, int depth) {
       if (typeRef == null) return varName;
       if (typeRef.containsKey("primitive") || typeRef.containsKey("const")) return varName;
       if (typeRef.containsKey("ref")) {
         String resolvedKind = resolvedKindOf(str(typeRef, "ref"));
-        if ("enum".equals(resolvedKind)) return varName + ".toString()";
+        // Not .toString(): an enum isn't always string-valued on the wire (see appendEnumBody's
+        // primitive-aware overload) — toWireValue() returns whichever type the spec declares.
+        if ("enum".equals(resolvedKind)) return varName + ".toWireValue()";
         if ("record".equals(resolvedKind) || "union".equals(resolvedKind)) {
           return varName + ".toMap()";
         }
@@ -2013,7 +2101,7 @@ public class BiDiGenerator {
         if (aliasNode != null && "alias".equals(str(aliasNode, "kind"))) {
           @SuppressWarnings("unchecked")
           Map<String, Object> inner = (Map<String, Object>) aliasNode.get("type");
-          return serializeExpr(varName, inner, domain);
+          return serializeExpr(varName, inner, domain, wire, depth);
         }
         return varName;
       }
@@ -2027,10 +2115,26 @@ public class BiDiGenerator {
         // literal "extensions" property instead of flattening them via its own toMap().
         @SuppressWarnings("unchecked")
         Map<String, Object> elem = (Map<String, Object>) typeRef.get("list");
-        String elemExpr = serializeExpr("e", elem, domain);
-        if (elemExpr.equals("e")) return varName; // element needs no transformation
+        String e = "e" + (depth == 0 ? "" : depth);
+        // Recursing with the null-checked expression as the base (rather than bare e, then
+        // deciding afterward whether to add a check) means every further transform — .toMap(),
+        // .toWireValue(), a nested list/map — is naturally built on top of the checked value, and
+        // the check still applies even when the element needs no further transform at all: that
+        // was this branch's old short-circuit, and it's exactly the case that let
+        // Arrays.asList((String) null) through untouched into "handles":[null]. No list element
+        // anywhere in the schema is declared nullable, so — same as a missing required field — a
+        // caller-supplied null here is a contract violation, not a legal wire null.
+        String checkedElem =
+            "java.util.Objects.requireNonNull("
+                + e
+                + ", \""
+                + wire
+                + " element must not be null\")";
+        String elemExpr = serializeExpr(checkedElem, elem, domain, wire, depth + 1);
         return varName
-            + ".stream().map(e -> "
+            + ".stream().map("
+            + e
+            + " -> "
             + elemExpr
             + ").collect(java.util.stream.Collectors.toList())";
       }
@@ -2039,14 +2143,23 @@ public class BiDiGenerator {
         // above) — without this branch, a Map<String, SomeRecord/SomeUnion/SomeEnum> field would
         // be put on the wire as raw Java objects instead of their wire-compatible shape. Map
         // keys are always wire strings (a JSON object key), so only the value is transformed —
-        // recursively, same reasoning as the list branch above.
+        // recursively, same reasoning as the list branch above (including the same null-value
+        // rejection, for the same reason).
         @SuppressWarnings("unchecked")
         Map<String, Object> val = (Map<String, Object>) typeRef.get("map");
-        String valExpr = serializeExpr("e.getValue()", val, domain);
-        if (valExpr.equals("e.getValue()")) return varName; // value needs no transformation
+        String e = "e" + (depth == 0 ? "" : depth);
+        String checkedVal =
+            "java.util.Objects.requireNonNull("
+                + e
+                + ".getValue(), \""
+                + wire
+                + " value must not be null\")";
+        String valExpr = serializeExpr(checkedVal, val, domain, wire, depth + 1);
         return varName
             + ".entrySet().stream().collect(java.util.stream.Collectors.toMap("
-            + "java.util.Map.Entry::getKey, e -> "
+            + "java.util.Map.Entry::getKey, "
+            + e
+            + " -> "
             + valExpr
             + ", (a, b) -> b, "
             + "java.util.LinkedHashMap::new))";
