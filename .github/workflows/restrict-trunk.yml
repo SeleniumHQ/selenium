@@ -40,7 +40,7 @@ jobs:
   manage-trunk:
     name: Manage Trunk Branch
     needs: [check-authorization]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: ${{ !cancelled() && needs.check-authorization.result != 'failure' }}
     env:
       GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -84,7 +84,7 @@ jobs:
     name: Send Notification
     needs: [manage-trunk]
     if: always() && needs.manage-trunk.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2

@@ -113,11 +113,11 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
             target: x86_64-unknown-linux-musl
             artifact: selenium-manager-linux-x86_64
           - arch: aarch64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             target: aarch64-unknown-linux-musl
             artifact: selenium-manager-linux-arm64
     steps:
@@ -156,11 +156,11 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
             target: x86_64-unknown-linux-musl
             artifact: selenium-manager-linux-x86_64-debug
           - arch: aarch64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             target: aarch64-unknown-linux-musl
             artifact: selenium-manager-linux-arm64-debug
     steps:
@@ -261,8 +261,7 @@ jobs:
 
   sbom:
     name: "SBOM and Notices"
-    needs: check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v6
@@ -292,7 +291,7 @@ jobs:
 
   publish:
     name: "Publish Snapshot"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
     if: github.event.repository.fork == false
     outputs:
@@ -374,7 +373,7 @@ jobs:
 
   on-pin-failure:
     name: "On Pin Update Failure"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [update-pin, commit-pin]
     # Same gate as update-pin: the release flow reports its own failures
     if: failure() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.branch == 'trunk'))

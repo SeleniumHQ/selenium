@@ -14,7 +14,7 @@ permissions:
 jobs:
   release:
     name: Release Grid
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Download grid packages
         uses: actions/download-artifact@v8

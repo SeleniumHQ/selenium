@@ -19,7 +19,7 @@ jobs:
   create-pr:
     name: Create Pull Request
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: update
     permissions:
       contents: write

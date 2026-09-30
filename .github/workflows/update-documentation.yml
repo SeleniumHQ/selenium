@@ -46,7 +46,7 @@ jobs:
   parse:
     name: Parse Tag
     if: ${{ !inputs.skip }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       version: ${{ steps.parse.outputs.version }}
       language: ${{ steps.parse.outputs.language }}
@@ -85,7 +85,10 @@ jobs:
     name: Commit Documentation
     needs: [parse, generate-docs]
     if: ${{ !inputs.skip }}
-    runs-on: ubuntu-latest
+    concurrency:
+      group: gh-pages-write
+      cancel-in-progress: false
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout gh-pages
         uses: actions/checkout@v6

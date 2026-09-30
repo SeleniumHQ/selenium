@@ -40,7 +40,7 @@ jobs:
 
   extract-tag:
     name: Extract Tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: >
       github.event.repository.fork == false &&
       ((startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
@@ -79,7 +79,7 @@ jobs:
   create-tag:
     name: Create Tag
     needs: [parse-tag, check-authorization]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
@@ -101,7 +101,7 @@ jobs:
     name: GitHub Release Draft
     needs: [parse-tag, check-authorization]
     if: needs.parse-tag.outputs.language == 'all'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
@@ -182,7 +182,7 @@ jobs:
     name: Publish Python to PyPI
     needs: [parse-tag, build-python]
     if: needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == 'python'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       id-token: write
       contents: read
@@ -206,7 +206,7 @@ jobs:
       (needs.parse-tag.outputs.language == 'all' ||
       needs.parse-tag.outputs.language == 'java' ||
       needs.parse-tag.outputs.language == 'dotnet')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
@@ -356,7 +356,7 @@ jobs:
 
   on-release-complete:
     name: On Release Complete
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [extract-tag, check-authorization, publish, publish-python, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, publish-nightly-grid, mirror, verify, unrestrict-trunk]
     if: always() && !cancelled() && needs.extract-tag.result != 'skipped' && needs.check-authorization.result != 'failure'
     steps:

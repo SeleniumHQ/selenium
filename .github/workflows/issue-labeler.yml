@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   label-issues:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       issues: write
     steps:

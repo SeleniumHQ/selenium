@@ -94,7 +94,7 @@ on:
 jobs:
   bazel:
     name: ${{ inputs.name }}
-    runs-on: ${{ contains(inputs.os, '-') && inputs.os || format('{0}-latest', inputs.os) }}
+    runs-on: ${{ contains(inputs.os, '-') && inputs.os || (inputs.os == 'ubuntu' && 'ubuntu-26.04' || format('{0}-latest', inputs.os)) }}
     outputs:
       output: ${{ steps.run-bazel.outputs.output }}
     env:

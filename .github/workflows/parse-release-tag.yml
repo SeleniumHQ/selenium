@@ -23,7 +23,7 @@ permissions: {}
 jobs:
   parse:
     name: Parse Tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       tag: ${{ steps.parse.outputs.tag }}
       version: ${{ steps.parse.outputs.version }}
