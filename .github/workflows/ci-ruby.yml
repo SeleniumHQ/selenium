@@ -72,7 +72,7 @@ jobs:
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
           # Chrome has no linux-arm64 build before 153; Edge has none at all.
-          - os: ubuntu-24.04-arm
+          - os: ubuntu-26.04-arm
             tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-chrome,-edge"
     with:
       name: ${{ matrix.os }}

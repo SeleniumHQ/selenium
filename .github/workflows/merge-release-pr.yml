@@ -18,7 +18,7 @@ jobs:
     if: >-
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.conclusion != 'cancelled'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       GH_REPO: ${{ github.repository }}

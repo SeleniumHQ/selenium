@@ -30,7 +30,7 @@ permissions:
 jobs:
   prepare:
     name: Prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: github.event.repository.fork == false
     outputs:
       language: ${{ steps.parse.outputs.language }}
@@ -101,7 +101,7 @@ jobs:
 
   on-failure:
     name: Notify on Failure
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [prepare, prepare-release, nightly-release, release-grid]
     if: failure()
     steps:

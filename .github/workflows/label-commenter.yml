@@ -14,7 +14,7 @@ permissions:
 jobs:
   comment:
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout base repo to get config file
         uses: actions/checkout@v6
