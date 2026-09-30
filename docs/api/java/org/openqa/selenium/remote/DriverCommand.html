@@ -178,10 +178,14 @@ loadScripts(document, 'script');</script>
 <li><a href="#DELETE_COOKIE(java.lang.String)" tabindex="0">DELETE_COOKIE(String)</a></li>
 <li><a href="#FIND_ELEMENT(java.lang.String,java.lang.Object)" tabindex="0">FIND_ELEMENT(String, Object)</a></li>
 <li><a href="#FIND_ELEMENTS(java.lang.String,java.lang.Object)" tabindex="0">FIND_ELEMENTS(String, Object)</a></li>
+<li><a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)" tabindex="0">FIND_CHILD_ELEMENT(String, String, Object)</a></li>
 <li><a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)" tabindex="0">FIND_CHILD_ELEMENT(String, String, String)</a></li>
+<li><a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)" tabindex="0">FIND_CHILD_ELEMENTS(String, String, Object)</a></li>
 <li><a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)" tabindex="0">FIND_CHILD_ELEMENTS(String, String, String)</a></li>
 <li><a href="#GET_ELEMENT_SHADOW_ROOT(java.lang.String)" tabindex="0">GET_ELEMENT_SHADOW_ROOT(String)</a></li>
+<li><a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" tabindex="0">FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)</a></li>
 <li><a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" tabindex="0">FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, String)</a></li>
+<li><a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" tabindex="0">FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)</a></li>
 <li><a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" tabindex="0">FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, String)</a></li>
 <li><a href="#CLEAR_ELEMENT(java.lang.String)" tabindex="0">CLEAR_ELEMENT(String)</a></li>
 <li><a href="#CLICK_ELEMENT(java.lang.String)" tabindex="0">CLICK_ELEMENT(String)</a></li>
@@ -629,7 +633,8 @@ wire protocol.</div>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="caption"><span>Static Methods</span></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
@@ -661,33 +666,69 @@ wire protocol.</div>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;args)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_CHILD_ELEMENT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENTS</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code><a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_CHILD_ELEMENT(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_CHILD_ELEMENTS</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code><a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENTS</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_CHILD_ELEMENTS(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENT(java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code><a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENTS(java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENTS</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENTS(java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENTS</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6"><code><a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#FIRE_SESSION_EVENT(java.lang.String,java.util.Map)" class="member-name-link">FIRE_SESSION_EVENT</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;eventType,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&nbsp;payload)</code></div>
@@ -802,6 +843,7 @@ wire protocol.</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#UPLOAD_FILE(java.lang.String)" class="member-name-link">UPLOAD_FILE</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;file)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+</div>
 </div>
 </div>
 </section>
@@ -2670,12 +2712,37 @@ wire protocol.</div>
 </section>
 </li>
 <li>
-<section class="detail" id="FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)">
+<section class="detail" id="FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)">
 <h3>FIND_CHILD_ELEMENT</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_CHILD_ELEMENT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)">
+<h3>FIND_CHILD_ELEMENT</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50",
+            <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_CHILD_ELEMENT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_CHILD_ELEMENT(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)">
+<h3>FIND_CHILD_ELEMENTS</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_CHILD_ELEMENTS</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 </div>
 </section>
 </li>
@@ -2683,9 +2750,14 @@ wire protocol.</div>
 <section class="detail" id="FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)">
 <h3>FIND_CHILD_ELEMENTS</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_CHILD_ELEMENTS</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50",
+            <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_CHILD_ELEMENTS</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_CHILD_ELEMENTS(String, String, Object)</code></a> instead.</div>
+</div>
 </div>
 </section>
 </li>
@@ -2698,12 +2770,37 @@ wire protocol.</div>
 </section>
 </li>
 <li>
-<section class="detail" id="FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)">
+<section class="detail" id="FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)">
 <h3>FIND_ELEMENT_FROM_SHADOW_ROOT</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_ELEMENT_FROM_SHADOW_ROOT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)">
+<h3>FIND_ELEMENT_FROM_SHADOW_ROOT</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50",
+            <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_ELEMENT_FROM_SHADOW_ROOT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)">
+<h3>FIND_ELEMENTS_FROM_SHADOW_ROOT</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
 </div>
 </section>
 </li>
@@ -2711,9 +2808,14 @@ wire protocol.</div>
 <section class="detail" id="FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)">
 <h3>FIND_ELEMENTS_FROM_SHADOW_ROOT</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50",
+            <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></span>&nbsp;<span class="element-name">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;shadowId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;strategy,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
 </div>
 </section>
 </li>

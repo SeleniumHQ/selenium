@@ -79,6 +79,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#toType(java.lang.String,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" tabindex="0">toType(String, Type, PropertySetting)</a></li>
 <li><a href="#toType(java.io.Reader,java.lang.reflect.Type)" tabindex="0">toType(Reader, Type)</a></li>
 <li><a href="#toType(java.io.Reader,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" tabindex="0">toType(Reader, Type, PropertySetting)</a></li>
+<li><a href="#convert(java.lang.Object,java.lang.reflect.Type)" tabindex="0">convert(Object, Type)</a></li>
 <li><a href="#newInput(java.io.Reader)" tabindex="0">newInput(Reader)</a></li>
 <li><a href="#newOutput(java.lang.Appendable)" tabindex="0">newOutput(Appendable)</a></li>
 </ol>
@@ -225,62 +226,68 @@ runtime-visible parameter names in every type you need to deserialize.</div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInput(java.io.Reader)" class="member-name-link">newInput</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;from)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;@Nullable T</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#convert(java.lang.Object,java.lang.reflect.Type)" class="member-name-link">convert</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;source,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Deserialize an already-parsed JSON value into an object of the specified type.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInput(java.io.Reader)" class="member-name-link">newInput</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;from)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Create a new <code>JsonInput</code> object to traverse the JSON string supplied the specified <code>
 Reader</code>.<br>
 <b>NOTE</b>: The <code>JsonInput</code> object returned by this method uses the <a href="PropertySetting.html#BY_NAME"><code>BY_NAME</code></a> strategy to assign values to properties objects it
 deserializes.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newOutput(java.lang.Appendable)" class="member-name-link">newOutput</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&nbsp;to)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newOutput(java.lang.Appendable)" class="member-name-link">newOutput</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&nbsp;to)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Create a new <code>JsonOutput</code> object to produce a serialized JSON string in the specified
 <code>Appendable</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toJson(java.lang.Object)" class="member-name-link">toJson</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toConvert)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toJson(java.lang.Object)" class="member-name-link">toJson</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toConvert)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Serialize the specified object to JSON string representation.<br>
 <b>NOTE</b>: This method limits traversal of nested objects to the default <code>maximum depth</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toJson(java.lang.Object,int)" class="member-name-link">toJson</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toConvert,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toJson(java.lang.Object,int)" class="member-name-link">toJson</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;toConvert,
  int&nbsp;maxDepth)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Serialize the specified object to JSON string representation.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.io.Reader,java.lang.reflect.Type)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;source,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.io.Reader,java.lang.reflect.Type)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deserialize the JSON string supplied by the specified <code>Reader</code> into an object of the
 specified type.<br>
 <b>NOTE</b>: This method uses the <a href="PropertySetting.html#BY_NAME"><code>BY_NAME</code></a> strategy to assign
 values to properties in the deserialized object.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.io.Reader,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;source,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.io.Reader,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT,
  <a href="PropertySetting.html" title="enum class in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deserialize the JSON string supplied by the specified <code>Reader</code> into an object of the
 specified type.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.lang.String,java.lang.reflect.Type)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.lang.String,java.lang.reflect.Type)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deserialize the specified JSON string into an object of the specified type.<br>
 <b>NOTE</b>: This method uses the <a href="PropertySetting.html#BY_NAME"><code>BY_NAME</code></a> strategy to assign
 values to properties in the deserialized object.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.lang.String,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toType(java.lang.String,java.lang.reflect.Type,org.openqa.selenium.json.PropertySetting)" class="member-name-link">toType</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT,
  <a href="PropertySetting.html" title="enum class in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deserialize the specified JSON string into an object of the specified type.</div>
 </div>
 </div>
@@ -493,6 +500,36 @@ specified type.</div>
 <dd>object of the specified type deserialized from [source]</dd>
 <dt>Throws:</dt>
 <dd><code><a href="JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></code> - if an I/O exception is encountered</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="convert(java.lang.Object,java.lang.reflect.Type)">
+<h3>convert</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">@Nullable T</span>&nbsp;<span class="element-name">convert</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;source,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfT)</span></div>
+<div class="block">Deserialize an already-parsed JSON value into an object of the specified type. The source is
+the <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link"><code>Map</code></a>/<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link"><code>List</code></a>/<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a>/<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Number.html" title="class or interface in java.lang" class="external-link"><code>Number</code></a>/<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link"><code>Boolean</code></a>/<code>null</code> structure that <a href="#toType(java.lang.String,java.lang.reflect.Type)"><code>toType(String, Type)</code></a> returns for <a href="#MAP_TYPE"><code>MAP_TYPE</code></a> or <a href="#OBJECT_TYPE"><code>OBJECT_TYPE</code></a> - not a JSON string.
+
+<p>This is the object-input counterpart of <a href="#toType(java.lang.String,java.lang.reflect.Type)"><code>toType(String, Type)</code></a>. Use it when a value
+has already been parsed out of a larger document - typically one field of a <code>Map&lt;String,
+Object&gt;</code> - so that the surrounding document does not have to be parsed a second time to reach
+it. The value itself is still round-tripped once, via <a href="#toJson(java.lang.Object)"><code>toJson(Object)</code></a> then <a href="#toType(java.lang.String,java.lang.reflect.Type)"><code>toType(String, Type)</code></a>, and therefore inherits <code>JsonOutput.MAX_DEPTH</code> - a source nested
+deeper than that limit is rejected. A <code>null</code> source yields <code>null</code>.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><span id="convert(java.lang.Object,java.lang.reflect.Type)-type-param-T"><code>T</code> - result type (as specified by [typeOfT])</span></dd>
+<dt>Parameters:</dt>
+<dd><code>source</code> - an already-parsed JSON value (<code>Map</code>, <code>List</code>, <code>String</code>, <code>
+    Number</code>, <code>Boolean</code>, or <code>null</code>)</dd>
+<dd><code>typeOfT</code> - data type for deserialization (class or <a href="TypeToken.html" title="class in org.openqa.selenium.json"><code>TypeToken</code></a>)</dd>
+<dt>Returns:</dt>
+<dd>object of the specified type, or <code>null</code> if <code>source</code> is <code>null</code></dd>
+<dt>Throws:</dt>
+<dd><code><a href="JsonException.html" title="class in org.openqa.selenium.json">JsonException</a></code> - if the source cannot be coerced to the specified type, or is nested
+    deeper than <code>JsonOutput.MAX_DEPTH</code></dd>
 </dl>
 </div>
 </section>

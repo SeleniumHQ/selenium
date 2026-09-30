@@ -92,10 +92,13 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a><wbr>&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>, @Nullable X&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>, X&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;keyName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfX)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Build a <a href="Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a> result mapper for the common case where the useful value is a single
+field of the response's <code>result</code> object.</div>
+</div>
 </div>
 </div>
 </div>
@@ -117,8 +120,19 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="map(java.lang.String,java.lang.reflect.Type)">
 <h3>map</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>, @Nullable X&gt;</span>&nbsp;<span class="element-name">map</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;keyName,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>, X&gt;</span>&nbsp;<span class="element-name">map</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;keyName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfX)</span></div>
+<div class="block">Build a <a href="Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a> result mapper for the common case where the useful value is a single
+field of the response's <code>result</code> object.
+
+<p>The returned function is applied to a command's <code>result</code> value, which <a href="Connection.html" title="class in org.openqa.selenium.bidi"><code>Connection</code></a> has already parsed into a <code>Map&lt;String, Object&gt;</code>. It
+reads <code>keyName</code> from that map and deserializes it to <code>typeOfX</code> via <a href="../json/Json.html#convert(java.lang.Object,java.lang.reflect.Type)"><code>Json.convert(Object, Type)</code></a>, without re-parsing any JSON text. Both the <code>result</code> and the
+field are required: a missing <code>result</code> or a <code>null</code>/absent field is an error.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>keyName</code> - the field to read from the command's <code>result</code> object</dd>
+<dd><code>typeOfX</code> - the type to deserialize that field to (class or <a href="../json/TypeToken.html" title="class in org.openqa.selenium.json"><code>TypeToken</code></a>)</dd>
+</dl>
 </div>
 </section>
 </li>

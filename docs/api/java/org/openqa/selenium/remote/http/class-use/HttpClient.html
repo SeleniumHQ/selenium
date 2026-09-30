@@ -236,7 +236,31 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>final <a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">HttpCommandExecutor.</span><code><a href="../../HttpCommandExecutor.html#client" class="member-name-link">client</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">this field will become <code>protected</code> in 4.52; read it from a subclass instead.</div>
+</div>
+</div>
+</div>
+<div class="caption"><span>Constructors in <a href="../../package-summary.html">org.openqa.selenium.remote</a> with parameters of type <a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient,java.net.URL)" class="member-name-link">HttpCommandExecutor</a><wbr>(<a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;httpClient,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;addressOfRemoteServer)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Creates an <a href="../../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that supports only standard commands.</div>
+</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient,java.util.Map,java.net.URL)" class="member-name-link">HttpCommandExecutor</a><wbr>(<a href="../HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;httpClient,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>, <a href="../../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;additionalCommands,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;addressOfRemoteServer)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates an <a href="../../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that supports non-standard <code>additionalCommands</code> in
+addition to the standard.</div>
+</div>
 </div>
 </section>
 </li>

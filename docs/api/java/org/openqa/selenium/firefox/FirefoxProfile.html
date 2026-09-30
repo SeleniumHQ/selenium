@@ -69,24 +69,15 @@ loadScripts(document, 'script');</script>
 <li><a href="#getStringPreference(java.lang.String,java.lang.String)" tabindex="0">getStringPreference(String, String)</a></li>
 <li><a href="#getIntegerPreference(java.lang.String,int)" tabindex="0">getIntegerPreference(String, int)</a></li>
 <li><a href="#getBooleanPreference(java.lang.String,boolean)" tabindex="0">getBooleanPreference(String, boolean)</a></li>
-<li><a href="#containsWebDriverExtension()" tabindex="0">containsWebDriverExtension()</a></li>
-<li><a href="#addExtension(java.lang.Class,java.lang.String)" tabindex="0">addExtension(Class, String)</a></li>
-<li><a href="#addExtension(java.io.File)" tabindex="0">addExtension(File)</a></li>
-<li><a href="#addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)" tabindex="0">addExtension(String, Extension)</a></li>
 <li><a href="#setPreference(java.lang.String,java.lang.Object)" tabindex="0">setPreference(String, Object)</a></li>
 <li><a href="#getAdditionalPreferences()" tabindex="0">getAdditionalPreferences()</a></li>
 <li><a href="#updateUserPrefs(java.io.File)" tabindex="0">updateUserPrefs(File)</a></li>
 <li><a href="#deleteLockFiles(java.io.File)" tabindex="0">deleteLockFiles(File)</a></li>
 <li><a href="#deleteExtensionsCacheIfItExists(java.io.File)" tabindex="0">deleteExtensionsCacheIfItExists(File)</a></li>
-<li><a href="#shouldLoadNoFocusLib()" tabindex="0">shouldLoadNoFocusLib()</a></li>
-<li><a href="#setAlwaysLoadNoFocusLib(boolean)" tabindex="0">setAlwaysLoadNoFocusLib(boolean)</a></li>
-<li><a href="#setAcceptUntrustedCertificates(boolean)" tabindex="0">setAcceptUntrustedCertificates(boolean)</a></li>
-<li><a href="#setAssumeUntrustedCertificateIssuer(boolean)" tabindex="0">setAssumeUntrustedCertificateIssuer(boolean)</a></li>
 <li><a href="#clean(java.io.File)" tabindex="0">clean(File)</a></li>
 <li><a href="#cleanTemporaryModel()" tabindex="0">cleanTemporaryModel()</a></li>
 <li><a href="#layoutOnDisk()" tabindex="0">layoutOnDisk()</a></li>
 <li><a href="#copyModel(java.io.File,java.io.File)" tabindex="0">copyModel(File, File)</a></li>
-<li><a href="#installExtensions(java.io.File)" tabindex="0">installExtensions(File)</a></li>
 </ol>
 </li>
 </ol>
@@ -130,43 +121,17 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#addExtension(java.io.File)" class="member-name-link">addExtension</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;extensionToInstall)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#addExtension(java.lang.Class,java.lang.String)" class="member-name-link">addExtension</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;loadResourcesUsing,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loadFrom)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)" class="member-name-link">addExtension</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="Extension.html" title="interface in org.openqa.selenium.firefox">Extension</a>&nbsp;extension)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clean(java.io.File)" class="member-name-link">clean</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cleanTemporaryModel()" class="member-name-link">cleanTemporaryModel</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clean(java.io.File)" class="member-name-link">clean</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#containsWebDriverExtension()" class="member-name-link">containsWebDriverExtension</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cleanTemporaryModel()" class="member-name-link">cleanTemporaryModel</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#copyModel(java.io.File,java.io.File)" class="member-name-link">copyModel</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
@@ -196,49 +161,18 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStringPreference(java.lang.String,java.lang.String)" class="member-name-link">getStringPreference</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;defaultValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#installExtensions(java.io.File)" class="member-name-link">installExtensions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;parentDir)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#layoutOnDisk()" class="member-name-link">layoutOnDisk</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#layoutOnDisk()" class="member-name-link">layoutOnDisk</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Call this to cause the current profile to be written to disk.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setAcceptUntrustedCertificates(boolean)" class="member-name-link">setAcceptUntrustedCertificates</a><wbr>(boolean&nbsp;acceptUntrustedSsl)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setAlwaysLoadNoFocusLib(boolean)" class="member-name-link">setAlwaysLoadNoFocusLib</a><wbr>(boolean&nbsp;loadNoFocusLib)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setAssumeUntrustedCertificateIssuer(boolean)" class="member-name-link">setAssumeUntrustedCertificateIssuer</a><wbr>(boolean&nbsp;untrustedIssuer)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPreference(java.lang.String,java.lang.Object)" class="member-name-link">setPreference</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#shouldLoadNoFocusLib()" class="member-name-link">shouldLoadNoFocusLib</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateUserPrefs(java.io.File)" class="member-name-link">updateUserPrefs</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;userPrefs)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateUserPrefs(java.io.File)" class="member-name-link">updateUserPrefs</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;userPrefs)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -328,57 +262,6 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="containsWebDriverExtension()">
-<h3>containsWebDriverExtension</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">containsWebDriverExtension</span>()</div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="addExtension(java.lang.Class,java.lang.String)">
-<h3>addExtension</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addExtension</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;loadResourcesUsing,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loadFrom)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="addExtension(java.io.File)">
-<h3>addExtension</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addExtension</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;extensionToInstall)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-<div class="block">Attempt to add an extension to install into this instance.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>extensionToInstall</code> - File pointing to the extension</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)">
-<h3>addExtension</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addExtension</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="Extension.html" title="interface in org.openqa.selenium.firefox">Extension</a>&nbsp;extension)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</div>
-</section>
-</li>
-<li>
 <section class="detail" id="setPreference(java.lang.String,java.lang.Object)">
 <h3>setPreference</h3>
 <div class="horizontal-scroll">
@@ -416,85 +299,6 @@ loadScripts(document, 'script');</script>
 <h3>deleteExtensionsCacheIfItExists</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">deleteExtensionsCacheIfItExists</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span></div>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="shouldLoadNoFocusLib()">
-<h3>shouldLoadNoFocusLib</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shouldLoadNoFocusLib</span>()</div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
-<div class="block">Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
-even if native events are disabled.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>Whether the no focus library should always be loaded for Firefox on Linux.</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setAlwaysLoadNoFocusLib(boolean)">
-<h3>setAlwaysLoadNoFocusLib</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAlwaysLoadNoFocusLib</span><wbr><span class="parameters">(boolean&nbsp;loadNoFocusLib)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
-<div class="block">Sets whether the no focus library should always be loaded on Linux.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>loadNoFocusLib</code> - Whether to always load the no focus library.</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setAcceptUntrustedCertificates(boolean)">
-<h3>setAcceptUntrustedCertificates</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAcceptUntrustedCertificates</span><wbr><span class="parameters">(boolean&nbsp;acceptUntrustedSsl)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
-<div class="block">Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
-authority or are generally untrusted. This is set to true by default.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>acceptUntrustedSsl</code> - Whether untrusted SSL certificates should be accepted.</dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setAssumeUntrustedCertificateIssuer(boolean)">
-<h3>setAssumeUntrustedCertificateIssuer</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></span>&nbsp;<span class="element-name">setAssumeUntrustedCertificateIssuer</span><wbr><span class="parameters">(boolean&nbsp;untrustedIssuer)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
-<div class="block">By default, when accepting untrusted SSL certificates, assume that these certificates will come
-from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
-to find out if the certificate has expired or does not match the host it was served for, but
-hard to find out if the issuer of the certificate is untrusted.
-
-<p>By default, it is assumed that the certificates were not be issued from a trusted CA.
-
-<p>If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
-issued by valid issuer, but has expired or is being served served for a different host (e.g.
-production certificate served in a testing environment) set this to false.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>untrustedIssuer</code> - whether to assume untrusted issuer or not.</dd>
-</dl>
 </div>
 </section>
 </li>
@@ -539,19 +343,6 @@ be called once per instance of the <a href="FirefoxDriver.html" title="class in 
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">copyModel</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;sourceDir,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;profileDir)</span>
                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
-<dl class="notes">
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
-</dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="installExtensions(java.io.File)">
-<h3>installExtensions</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">installExtensions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;parentDir)</span>
-                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>

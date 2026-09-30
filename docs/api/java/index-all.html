@@ -275,24 +275,6 @@ pass.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/tracing/Span.html#addEvent(java.lang.String,org.openqa.selenium.remote.tracing.AttributeMap)" class="member-name-link">addEvent(String, AttributeMap)</a> - Method in interface org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/Span.html" title="interface in org.openqa.selenium.remote.tracing">Span</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.io.File)" class="member-name-link">addExtension(File)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.Class,java.lang.String)" class="member-name-link">addExtension(Class, String)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.String,org.openqa.selenium.firefox.Extension)" class="member-name-link">addExtension(String, Extension)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumOptions.html#addExtensions(java.io.File...)" class="member-name-link">addExtensions(File...)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumOptions.html#addExtensions(java.util.List)" class="member-name-link">addExtensions(List)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></dt>
@@ -2179,16 +2161,6 @@ Log levels</a> defined by ChromeDriver</div>
 <dd>
 <div class="block">Find elements based on the value of the "class" attribute.</div>
 </dd>
-<dt><a href="org/openqa/selenium/firefox/ClasspathExtension.html" class="type-name-link" title="class in org.openqa.selenium.firefox">ClasspathExtension</a> - Class in <a href="org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/ClasspathExtension.html#%3Cinit%3E(java.lang.Class,java.lang.String)" class="member-name-link">ClasspathExtension(Class, String)</a> - Constructor for class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/ClasspathExtension.html" title="class in org.openqa.selenium.firefox">ClasspathExtension</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/web/ClassPathResource.html" class="type-name-link" title="class in org.openqa.selenium.grid.web">ClassPathResource</a> - Class in <a href="org/openqa/selenium/grid/web/package-summary.html">org.openqa.selenium.grid.web</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/web/ClassPathResource.html#%3Cinit%3E(java.net.URL,java.lang.String)" class="member-name-link">ClassPathResource(URL, String)</a> - Constructor for class org.openqa.selenium.grid.web.<a href="org/openqa/selenium/grid/web/ClassPathResource.html" title="class in org.openqa.selenium.grid.web">ClassPathResource</a></dt>
@@ -2201,7 +2173,9 @@ Log levels</a> defined by ChromeDriver</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/HttpClient.Factory.html#cleanupIdleClients()" class="member-name-link">cleanupIdleClients()</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></dt>
 <dd>
-<div class="block">Closes idle clients.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">the client knows the Factory and could call a cleanup method after close</div>
+</div>
 </dd>
 <dt><a href="org/openqa/selenium/devtools/idealized/log/Log.html#clear()" class="member-name-link">clear()</a> - Method in interface org.openqa.selenium.devtools.idealized.log.<a href="org/openqa/selenium/devtools/idealized/log/Log.html" title="interface in org.openqa.selenium.devtools.idealized.log">Log</a></dt>
 <dd>&nbsp;</dd>
@@ -2310,7 +2284,11 @@ Log levels</a> defined by ChromeDriver</div>
 <dt><a href="org/openqa/selenium/docker/Docker.html#client" class="member-name-link">client</a> - Variable in class org.openqa.selenium.docker.<a href="org/openqa/selenium/docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#client" class="member-name-link">client</a> - Variable in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">this field will become <code>protected</code> in 4.52; read it from a subclass instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html#client()" class="member-name-link">client()</a> - Method in class org.openqa.selenium.remote.http.jdk.<a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient</a></dt>
 <dd>
 <div class="block">Will expose the underlying native HttpClient used.</div>
@@ -2712,8 +2690,6 @@ Marionette port.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/docker/ContainerLogs.html#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,org.openqa.selenium.remote.http.Contents.Supplier)" class="member-name-link">ContainerLogs(ContainerId, Contents.Supplier)</a> - Constructor for class org.openqa.selenium.docker.<a href="org/openqa/selenium/docker/ContainerLogs.html" title="class in org.openqa.selenium.docker">ContainerLogs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#containsWebDriverExtension()" class="member-name-link">containsWebDriverExtension()</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/firefox/FirefoxCommandContext.html#CONTENT" class="member-name-link">CONTENT</a> - Enum constant in enum class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxCommandContext.html" title="enum class in org.openqa.selenium.firefox">FirefoxCommandContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/HttpRequest.html#contentAsString()" class="member-name-link">contentAsString()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></dt>
@@ -2791,6 +2767,10 @@ ready to read.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/Keys.html#CONTROL" class="member-name-link">CONTROL</a> - Enum constant in enum class org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum class in org.openqa.selenium">Keys</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/json/Json.html#convert(java.lang.Object,java.lang.reflect.Type)" class="member-name-link">convert(Object, Type)</a> - Method in class org.openqa.selenium.json.<a href="org/openqa/selenium/json/Json.html" title="class in org.openqa.selenium.json">Json</a></dt>
+<dd>
+<div class="block">Deserialize an already-parsed JSON value into an object of the specified type.</div>
+</dd>
 <dt><a href="org/openqa/selenium/bidi/ConverterFunctions.html" class="type-name-link" title="class in org.openqa.selenium.bidi">ConverterFunctions</a> - Class in <a href="org/openqa/selenium/bidi/package-summary.html">org.openqa.selenium.bidi</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html" class="type-name-link" title="class in org.openqa.selenium.devtools">ConverterFunctions</a> - Class in <a href="org/openqa/selenium/devtools/package-summary.html">org.openqa.selenium.devtools</a></dt>
@@ -4799,12 +4779,6 @@ neither null nor false.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/webextension/UninstallExtensionParameters.html#extension" class="member-name-link">extension</a> - Variable in class org.openqa.selenium.bidi.webextension.<a href="org/openqa/selenium/bidi/webextension/UninstallExtensionParameters.html" title="class in org.openqa.selenium.bidi.webextension">UninstallExtensionParameters</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/Extension.html" class="type-name-link" title="interface in org.openqa.selenium.firefox">Extension</a> - Interface in <a href="org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
 <dt><a href="org/openqa/selenium/bidi/webextension/ExtensionArchivePath.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">ExtensionArchivePath</a> - Class in <a href="org/openqa/selenium/bidi/webextension/package-summary.html">org.openqa.selenium.bidi.webextension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/webextension/ExtensionArchivePath.html#%3Cinit%3E(java.lang.String)" class="member-name-link">ExtensionArchivePath(String)</a> - Constructor for class org.openqa.selenium.bidi.webextension.<a href="org/openqa/selenium/bidi/webextension/ExtensionArchivePath.html" title="class in org.openqa.selenium.bidi.webextension">ExtensionArchivePath</a></dt>
@@ -4927,16 +4901,6 @@ most likely operating system.</div>
 <dd>
 <div class="block">Used for identifying whether a sequence of chars represents the path to a file.</div>
 </dd>
-<dt><a href="org/openqa/selenium/firefox/FileExtension.html" class="type-name-link" title="class in org.openqa.selenium.firefox">FileExtension</a> - Class in <a href="org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/firefox/HasExtensions.html#installExtension(java.nio.file.Path)"><code>HasExtensions.installExtension(Path)</code></a> instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/FileExtension.html#%3Cinit%3E(java.io.File)" class="member-name-link">FileExtension(File)</a> - Constructor for class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FileExtension.html" title="class in org.openqa.selenium.firefox">FileExtension</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/openqa/selenium/io/FileHandler.html" class="type-name-link" title="class in org.openqa.selenium.io">FileHandler</a> - Class in <a href="org/openqa/selenium/io/package-summary.html">org.openqa.selenium.io</a></dt>
 <dd>
 <div class="block">Utility methods for common filesystem activities</div>
@@ -4959,28 +4923,52 @@ most likely operating system.</div>
 </dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT" class="member-name-link">FIND_CHILD_ELEMENT</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_CHILD_ELEMENT(String, String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT(java.lang.String,java.lang.String,java.lang.Object)"><code>DriverCommand.FIND_CHILD_ELEMENT(String, String, Object)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS" class="member-name-link">FIND_CHILD_ELEMENTS</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENTS(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_CHILD_ELEMENTS(String, String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_CHILD_ELEMENTS(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS(java.lang.String,java.lang.String,java.lang.Object)"><code>DriverCommand.FIND_CHILD_ELEMENTS(String, String, Object)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT" class="member-name-link">FIND_ELEMENT</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT(java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENT(String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT_FROM_SHADOW_ROOT" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENT_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS" class="member-name-link">FIND_ELEMENTS</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS(java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENTS(String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS_FROM_SHADOW_ROOT" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT</a> - Static variable in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, String)</a> - Static method in interface org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/DriverCommand.html#FIND_ELEMENTS_FROM_SHADOW_ROOT(java.lang.String,java.lang.String,java.lang.Object)"><code>DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)</code></a> instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/support/FindAll.html" class="type-name-link" title="annotation interface in org.openqa.selenium.support">FindAll</a> - Annotation Interface in <a href="org/openqa/selenium/support/package-summary.html">org.openqa.selenium.support</a></dt>
 <dd>
 <div class="block">Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
@@ -5825,7 +5813,9 @@ element.</div>
 <dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#getAdditionalPreferences()" class="member-name-link">getAdditionalPreferences()</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#getAddressOfRemoteServer()" class="member-name-link">getAddressOfRemoteServer()</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
 <dt><a href="org/openqa/selenium/UnhandledAlertException.html#getAlert()" class="member-name-link">getAlert()</a> - Method in exception class org.openqa.selenium.<a href="org/openqa/selenium/UnhandledAlertException.html" title="class in org.openqa.selenium">UnhandledAlertException</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/UnhandledAlertException.html#getAlertText()" class="member-name-link">getAlertText()</a> - Method in exception class org.openqa.selenium.<a href="org/openqa/selenium/UnhandledAlertException.html" title="class in org.openqa.selenium">UnhandledAlertException</a></dt>
@@ -6321,7 +6311,9 @@ this <a href="org/openqa/selenium/WebDriver.html" title="interface in org.openqa
 <dt><a href="org/openqa/selenium/support/decorators/DefaultDecorated.html#getDecorator()" class="member-name-link">getDecorator()</a> - Method in class org.openqa.selenium.support.decorators.<a href="org/openqa/selenium/support/decorators/DefaultDecorated.html" title="class in org.openqa.selenium.support.decorators">DefaultDecorated</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#getDefaultClientFactory()" class="member-name-link">getDefaultClientFactory()</a> - Static method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
 <dt><a href="org/openqa/selenium/grid/commands/EventBusCommand.html#getDefaultConfig()" class="member-name-link">getDefaultConfig()</a> - Method in class org.openqa.selenium.grid.commands.<a href="org/openqa/selenium/grid/commands/EventBusCommand.html" title="class in org.openqa.selenium.grid.commands">EventBusCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/commands/Hub.html#getDefaultConfig()" class="member-name-link">getDefaultConfig()</a> - Method in class org.openqa.selenium.grid.commands.<a href="org/openqa/selenium/grid/commands/Hub.html" title="class in org.openqa.selenium.grid.commands">Hub</a></dt>
@@ -8869,26 +8861,49 @@ lifecycle to be controlled.</div>
 <dt><a href="org/openqa/selenium/remote/http/HttpClient.Factory.html" class="type-name-link" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a> - Interface in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#httpClientFactory" class="member-name-link">httpClientFactory</a> - Variable in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">this field will be removed in 4.52; keep a reference to the factory in the subclass
+    instead.</div>
+</div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/http/HttpClientName.html" class="type-name-link" title="annotation interface in org.openqa.selenium.remote.http">HttpClientName</a> - Annotation Interface in <a href="org/openqa/selenium/remote/http/package-summary.html">org.openqa.selenium.remote.http</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html" class="type-name-link" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a> - Class in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.net.URL)" class="member-name-link">HttpCommandExecutor(URL)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
 <dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,java.net.URL)" class="member-name-link">HttpCommandExecutor(Map, URL)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,java.net.URL,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">HttpCommandExecutor(Map, URL, ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,java.net.URL,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">HttpCommandExecutor(Map, URL, HttpClient.Factory)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,org.openqa.selenium.remote.http.ClientConfig,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">HttpCommandExecutor(Map, ClientConfig, HttpClient.Factory)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">HttpCommandExecutor(ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient,java.net.URL)" class="member-name-link">HttpCommandExecutor(HttpClient, URL)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
+<dd>
+<div class="block">Creates an <a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that supports only standard commands.</div>
+</dd>
+<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient,java.util.Map,java.net.URL)" class="member-name-link">HttpCommandExecutor(HttpClient, Map, URL)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
 <dd>
 <div class="block">Creates an <a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that supports non-standard <code>additionalCommands</code> in
 addition to the standard.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,java.net.URL,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">HttpCommandExecutor(Map, URL, ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,java.net.URL,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">HttpCommandExecutor(Map, URL, HttpClient.Factory)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(java.util.Map,org.openqa.selenium.remote.http.ClientConfig,org.openqa.selenium.remote.http.HttpClient.Factory)" class="member-name-link">HttpCommandExecutor(Map, ClientConfig, HttpClient.Factory)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/HttpCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">HttpCommandExecutor(ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/config/StandardGridRoles.html#HTTPD_ROLE" class="member-name-link">HTTPD_ROLE</a> - Static variable in class org.openqa.selenium.grid.config.<a href="org/openqa/selenium/grid/config/StandardGridRoles.html" title="class in org.openqa.selenium.grid.config">StandardGridRoles</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/grid/TemplateGridServerCommand.Handlers.html#httpHandler" class="member-name-link">httpHandler</a> - Variable in class org.openqa.selenium.grid.<a href="org/openqa/selenium/grid/TemplateGridServerCommand.Handlers.html" title="class in org.openqa.selenium.grid">TemplateGridServerCommand.Handlers</a></dt>
@@ -9183,8 +9198,6 @@ the result of an expired or invalid TLS certificate.</div>
 <dt><a href="org/openqa/selenium/bidi/webextension/InstallExtensionParameters.html" class="type-name-link" title="class in org.openqa.selenium.bidi.webextension">InstallExtensionParameters</a> - Class in <a href="org/openqa/selenium/bidi/webextension/package-summary.html">org.openqa.selenium.bidi.webextension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/webextension/InstallExtensionParameters.html#%3Cinit%3E(org.openqa.selenium.bidi.webextension.ExtensionData)" class="member-name-link">InstallExtensionParameters(ExtensionData)</a> - Constructor for class org.openqa.selenium.bidi.webextension.<a href="org/openqa/selenium/bidi/webextension/InstallExtensionParameters.html" title="class in org.openqa.selenium.bidi.webextension">InstallExtensionParameters</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#installExtensions(java.io.File)" class="member-name-link">installExtensions(File)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/internal/Require.ArgumentChecker.html#instanceOf(java.lang.Class)" class="member-name-link">instanceOf(Class)</a> - Method in class org.openqa.selenium.internal.<a href="org/openqa/selenium/internal/Require.ArgumentChecker.html" title="class in org.openqa.selenium.internal">Require.ArgumentChecker</a></dt>
 <dd>&nbsp;</dd>
@@ -10337,7 +10350,10 @@ number of elements removed.</div>
 <dt><a href="org/openqa/selenium/bidi/script/Target.html#map" class="member-name-link">map</a> - Variable in class org.openqa.selenium.bidi.script.<a href="org/openqa/selenium/bidi/script/Target.html" title="class in org.openqa.selenium.bidi.script">Target</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/bidi/ConverterFunctions.html#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map(String, Type)</a> - Static method in class org.openqa.selenium.bidi.<a href="org/openqa/selenium/bidi/ConverterFunctions.html" title="class in org.openqa.selenium.bidi">ConverterFunctions</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Build a <a href="org/openqa/selenium/bidi/Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a> result mapper for the common case where the useful value is a single
+field of the response's <code>result</code> object.</div>
+</dd>
 <dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map(String, Type)</a> - Static method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/ConverterFunctions.html" title="class in org.openqa.selenium.devtools">ConverterFunctions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/ConverterFunctions.html#map(java.lang.String,java.util.function.Function)" class="member-name-link">map(String, Function)</a> - Static method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/ConverterFunctions.html" title="class in org.openqa.selenium.devtools">ConverterFunctions</a></dt>
@@ -12551,6 +12567,8 @@ for authorization.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#%3Cinit%3E(org.openqa.selenium.remote.CommandExecutor,org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">RemoteWebDriver(CommandExecutor, Capabilities, ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/openqa/selenium/remote/RemoteWebDriver.html#%3Cinit%3E(org.openqa.selenium.remote.CommandExecutor,org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">RemoteWebDriver(CommandExecutor, Capabilities, HttpClient.Factory, ClientConfig)</a> - Constructor for class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteTargetLocator.html" class="type-name-link" title="class in org.openqa.selenium.remote">RemoteWebDriver.RemoteTargetLocator</a> - Class in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.html" class="type-name-link" title="class in org.openqa.selenium.remote">RemoteWebDriver.RemoteWebDriverOptions</a> - Class in <a href="org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
@@ -13284,16 +13302,6 @@ viewport.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/devtools/Connection.html#sendAndWait(org.openqa.selenium.devtools.idealized.target.model.SessionID,org.openqa.selenium.devtools.Command,java.time.Duration)" class="member-name-link">sendAndWait(SessionID, Command, Duration)</a> - Method in class org.openqa.selenium.devtools.<a href="org/openqa/selenium/devtools/Connection.html" title="class in org.openqa.selenium.devtools">Connection</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpClient.html#sendAsyncNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendAsyncNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">use JdkHttpClient#httpClient() instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html#sendAsyncNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendAsyncNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in class org.openqa.selenium.remote.http.jdk.<a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/tracing/TracedHttpClient.html#sendAsyncNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendAsyncNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in class org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/TracedHttpClient.html" title="class in org.openqa.selenium.remote.tracing">TracedHttpClient</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/WebSocket.html#sendBinary(byte%5B%5D)" class="member-name-link">sendBinary(byte[])</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/WebSocket.html" title="interface in org.openqa.selenium.remote.http">WebSocket</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)" class="member-name-link">sendKeys(CharSequence...)</a> - Method in class org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></dt>
@@ -13313,16 +13321,6 @@ viewport.</div>
 <div class="block">Equivalent to calling: <i>Actions.click(element).sendKeys(keysToSend).</i> This method is
 different from <a href="org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(CharSequence...)</code></a> - see <a href="org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><code>Actions.sendKeys(CharSequence...)</code></a> for details how.</div>
 </dd>
-<dt><a href="org/openqa/selenium/remote/http/HttpClient.html#sendNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">use JdkHttpClient#httpClient() instead.</div>
-</div>
-</dd>
-<dt><a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html#sendNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in class org.openqa.selenium.remote.http.jdk.<a href="org/openqa/selenium/remote/http/jdk/JdkHttpClient.html" title="class in org.openqa.selenium.remote.http.jdk">JdkHttpClient</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/remote/tracing/TracedHttpClient.html#sendNative(java.net.http.HttpRequest,java.net.http.HttpResponse.BodyHandler)" class="member-name-link">sendNative(HttpRequest, HttpResponse.BodyHandler)</a> - Method in class org.openqa.selenium.remote.tracing.<a href="org/openqa/selenium/remote/tracing/TracedHttpClient.html" title="class in org.openqa.selenium.remote.tracing">TracedHttpClient</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/service/DriverService.html#sendOutputTo(java.io.OutputStream)" class="member-name-link">sendOutputTo(OutputStream)</a> - Method in class org.openqa.selenium.remote.service.<a href="org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/WebSocket.html#sendText(java.lang.CharSequence)" class="member-name-link">sendText(CharSequence)</a> - Method in interface org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/WebSocket.html" title="interface in org.openqa.selenium.remote.http">WebSocket</a></dt>
@@ -13608,12 +13606,6 @@ running.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/DesiredCapabilities.html#setAcceptInsecureCerts(boolean)" class="member-name-link">setAcceptInsecureCerts(boolean)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAcceptUntrustedCertificates(boolean)" class="member-name-link">setAcceptUntrustedCertificates(boolean)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
-</dd>
 <dt><a href="org/openqa/selenium/interactions/Actions.html#setActiveKeyboard(java.lang.String)" class="member-name-link">setActiveKeyboard(String)</a> - Method in class org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/Actions.html#setActivePointer(org.openqa.selenium.interactions.PointerInput.Kind,java.lang.String)" class="member-name-link">setActivePointer(PointerInput.Kind, String)</a> - Method in class org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></dt>
@@ -13622,12 +13614,6 @@ running.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/interactions/PointerInput.PointerEventProperties.html#setAltitudeAngle(float)" class="member-name-link">setAltitudeAngle(float)</a> - Method in class org.openqa.selenium.interactions.<a href="org/openqa/selenium/interactions/PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAlwaysLoadNoFocusLib(boolean)" class="member-name-link">setAlwaysLoadNoFocusLib(boolean)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
-</dd>
 <dt><a href="org/openqa/selenium/chromium/ChromiumOptions.html#setAndroidActivity(java.lang.String)" class="member-name-link">setAndroidActivity(String)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/firefox/FirefoxOptions.html#setAndroidActivity(java.lang.String)" class="member-name-link">setAndroidActivity(String)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></dt>
@@ -13647,12 +13633,6 @@ running.</div>
 <dt><a href="org/openqa/selenium/chromium/ChromiumOptions.html#setAndroidProcess(java.lang.String)" class="member-name-link">setAndroidProcess(String)</a> - Method in class org.openqa.selenium.chromium.<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></dt>
 <dd>
 <div class="block">Process name of the Activity hosting the WebView (as given by ps).</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setAssumeUntrustedCertificateIssuer(boolean)" class="member-name-link">setAssumeUntrustedCertificateIssuer(boolean)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Use <a href="org/openqa/selenium/remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)"><code>AbstractDriverOptions.setAcceptInsecureCerts(boolean)</code></a> instead.</div>
-</div>
 </dd>
 <dt><a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html#setAttribute(java.lang.String,boolean)" class="member-name-link">setAttribute(String, boolean)</a> - Method in class org.openqa.selenium.remote.tracing.empty.<a href="org/openqa/selenium/remote/tracing/empty/NullSpan.html" title="class in org.openqa.selenium.remote.tracing.empty">NullSpan</a></dt>
 <dd>&nbsp;</dd>
@@ -14194,12 +14174,6 @@ release version of Safari.</div>
 <dt><a href="org/openqa/selenium/support/pagefactory/DefaultElementLocator.html#shouldCache()" class="member-name-link">shouldCache()</a> - Method in class org.openqa.selenium.support.pagefactory.<a href="org/openqa/selenium/support/pagefactory/DefaultElementLocator.html" title="class in org.openqa.selenium.support.pagefactory">DefaultElementLocator</a></dt>
 <dd>
 <div class="block">Returns whether the element should be cached.</div>
-</dd>
-<dt><a href="org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()" class="member-name-link">shouldLoadNoFocusLib()</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">Native events are no longer supported.</div>
-</div>
 </dd>
 <dt><a href="org/openqa/selenium/grid/log/LoggingOptions.html#shouldLogHttpLogs()" class="member-name-link">shouldLogHttpLogs()</a> - Method in class org.openqa.selenium.grid.log.<a href="org/openqa/selenium/grid/log/LoggingOptions.html" title="class in org.openqa.selenium.grid.log">LoggingOptions</a></dt>
 <dd>&nbsp;</dd>
@@ -16872,18 +16846,6 @@ fully-qualified class name of the Java object being serialized.</div>
 <div class="block">Called by the node-side <code>ForwardingListener</code> to write a text frame directly to the client
 channel, bypassing <code>MessageOutboundConverter</code>.</div>
 </dd>
-<dt><a href="org/openqa/selenium/firefox/ClasspathExtension.html#writeTo(java.io.File)" class="member-name-link">writeTo(File)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/ClasspathExtension.html" title="class in org.openqa.selenium.firefox">ClasspathExtension</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/Extension.html#writeTo(java.io.File)" class="member-name-link">writeTo(File)</a> - Method in interface org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/Extension.html" title="interface in org.openqa.selenium.firefox">Extension</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/openqa/selenium/firefox/FileExtension.html#writeTo(java.io.File)" class="member-name-link">writeTo(File)</a> - Method in class org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/FileExtension.html" title="class in org.openqa.selenium.firefox">FileExtension</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/NewSessionPayload.html#writeTo(java.lang.Appendable)" class="member-name-link">writeTo(Appendable)</a> - Method in class org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/NewSessionPayload.html" title="class in org.openqa.selenium.remote">NewSessionPayload</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/openqa/selenium/remote/http/ClientConfig.html#wsTimeout()" class="member-name-link">wsTimeout()</a> - Method in class org.openqa.selenium.remote.http.<a href="org/openqa/selenium/remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></dt>
