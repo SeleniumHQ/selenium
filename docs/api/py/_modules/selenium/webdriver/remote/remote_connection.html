@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.49.0 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.50.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
+    <script src="../../../../_static/documentation_options.js?v=d9e78d80"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/remote_connection';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.49" />
+  <meta name="docsearch:version" content="4.50" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.49.0 documentation</p>
+    <p class="title logo__title">Selenium 4.50.0 documentation</p>
   
 </a></div>
     
@@ -353,6 +353,7 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -476,6 +477,23 @@
 <span class="p">}</span>
 
 
+<span class="k">class</span><span class="w"> </span><span class="nc">_classorinstancemethod</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Bind the wrapped function to the instance when accessed on one, else to the class.</span>
+
+<span class="sd">    Lets get_remote_connection_headers keep its classmethod call surface</span>
+<span class="sd">    (RemoteConnection.get_remote_connection_headers(...) and subclass ``super()`` overrides</span>
+<span class="sd">    such as Appium's) while, on an instance, resolving that connection's own</span>
+<span class="sd">    user_agent/extra_headers instead of the process-wide class defaults.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="RemoteConnection">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoteConnection</span><span class="p">:</span>
@@ -594,11 +612,14 @@
         <span class="bp">cls</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">ca_certs</span> <span class="o">=</span> <span class="n">path</span></div>
 
 
-<div class="viewcode-block" id="RemoteConnection.get_remote_connection_headers">
-<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers">[docs]</a>
-    <span class="nd">@classmethod</span>
+    <span class="nd">@_classorinstancemethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_remote_connection_headers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parsed_url</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Get headers for remote request.</span>
+
+<span class="sd">        ``cls`` is the connection instance when called on one (so ``user_agent`` and</span>
+<span class="sd">        ``extra_headers`` come from that connection's client_config) and the class when</span>
+<span class="sd">        called on the class, preserving ``RemoteConnection.get_remote_connection_headers``</span>
+<span class="sd">        and subclass ``super()`` overrides.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            parsed_url: The parsed url</span>
@@ -623,8 +644,7 @@
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extra_headers</span><span class="p">:</span>
             <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">extra_headers</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">headers</span></div>
-
+        <span class="k">return</span> <span class="n">headers</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_identify_http_proxy_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proxy_url</span><span class="p">)</span>
@@ -689,8 +709,13 @@
         <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">timeout</span>
         <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">_ca_certs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">ca_certs</span>
         <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">_client_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span>
-        <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">extra_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">extra_headers</span> <span class="ow">or</span> <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">extra_headers</span>
-        <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">user_agent</span> <span class="ow">or</span> <span class="n">RemoteConnection</span><span class="o">.</span><span class="n">user_agent</span>
+        <span class="c1"># Resolve this connection's headers once into instance state instead of mutating the</span>
+        <span class="c1"># shared class attributes (which leaked one connection's headers, auth included, onto</span>
+        <span class="c1"># every other one). A client_config value replaces the class-level default, matching</span>
+        <span class="c1"># trunk's "or" semantics; get_remote_connection_headers reads these per-instance via</span>
+        <span class="c1"># the _classorinstancemethod descriptor.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">user_agent</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">user_agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">extra_headers</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">extra_headers</span> <span class="ow">or</span> <span class="p">{})</span> <span class="ow">or</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">remote_server_addr</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>

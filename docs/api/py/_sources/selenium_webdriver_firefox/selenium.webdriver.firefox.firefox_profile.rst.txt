@@ -10,9 +10,3 @@ selenium.webdriver.firefox.firefox\_profile
    
       FirefoxProfile
    
-   .. rubric:: Exceptions
-
-   .. autosummary::
-   
-      AddonFormatError
-   

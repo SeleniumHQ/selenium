@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.49.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.50.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=82bca589"></script>
+    <script src="../_static/documentation_options.js?v=d9e78d80"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_firefox/selenium.webdriver.firefox.firefox_profile';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.49" />
+  <meta name="docsearch:version" content="4.50" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.49.0 documentation</p>
+    <p class="title logo__title">Selenium 4.50.0 documentation</p>
   
 </a></div>
     
@@ -346,34 +346,6 @@
 </tbody>
 </table>
 </div>
-<p class="rubric">Exceptions</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError" title="selenium.webdriver.firefox.firefox_profile.AddonFormatError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddonFormatError</span></code></a>(**kwargs)</p></td>
-<td><p>Exception for not well-formed add-on manifest files.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py exception">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.AddonFormatError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AddonFormatError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#AddonFormatError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception for not well-formed add-on manifest files.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.AddonFormatError.args">
-<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError.args" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.AddonFormatError.with_traceback">
-<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError.with_traceback" title="Link to this definition">#</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FirefoxProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile" title="Link to this definition">#</a></dt>
@@ -390,7 +362,7 @@ directory when object is created.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES">
-<span class="sig-name descname"><span class="pre">DEFAULT_PREFERENCES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_PREFERENCES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'browser.newtabpage.enabled':</span> <span class="pre">False,</span> <span class="pre">'browser.startup.homepage':</span> <span class="pre">'about:blank',</span> <span class="pre">'browser.usedOnWindows10.introURL':</span> <span class="pre">'about:blank',</span> <span class="pre">'network.captive-portal-service.enabled':</span> <span class="pre">False,</span> <span class="pre">'security.csp.enable':</span> <span class="pre">False,</span> <span class="pre">'startup.homepage_welcome_url':</span> <span class="pre">'about:blank'}</span></em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -398,11 +370,6 @@ directory when object is created.</p>
 <span class="sig-name descname"><span class="pre">set_preference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.set_preference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_preference" title="Link to this definition">#</a></dt>
 <dd><p>Sets the preference that we want in the profile.</p>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension">
-<span class="sig-name descname"><span class="pre">add_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.add_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.update_preferences">
@@ -415,22 +382,6 @@ directory when object is created.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.path" title="Link to this definition">#</a></dt>
 <dd><p>Gets the profile directory that is currently being used.</p>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.port">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">port</span></span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.port" title="Link to this definition">#</a></dt>
-<dd><p>Gets the port that WebDriver is working on.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accept_untrusted_certs</span></span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.assume_untrusted_cert_issuer">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assume_untrusted_cert_issuer</span></span><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.assume_untrusted_cert_issuer" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.encoded">
@@ -471,20 +422,11 @@ directory when object is created.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError"><code class="docutils literal notranslate"><span class="pre">AddonFormatError</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError.args"><code class="docutils literal notranslate"><span class="pre">AddonFormatError.args</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.AddonFormatError.with_traceback"><code class="docutils literal notranslate"><span class="pre">AddonFormatError.with_traceback()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.DEFAULT_PREFERENCES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_preference"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.set_preference()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.add_extension()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.update_preferences"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.update_preferences()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.path"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.port"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.port</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.accept_untrusted_certs</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.assume_untrusted_cert_issuer"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.assume_untrusted_cert_issuer</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.encoded"><code class="docutils literal notranslate"><span class="pre">FirefoxProfile.encoded</span></code></a></li>
 </ul>
 </li>

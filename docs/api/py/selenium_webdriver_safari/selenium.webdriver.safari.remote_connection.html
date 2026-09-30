@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.safari.remote_connection &#8212; Selenium 4.49.0 documentation</title>
+    <title>selenium.webdriver.safari.remote_connection &#8212; Selenium 4.50.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=82bca589"></script>
+    <script src="../_static/documentation_options.js?v=d9e78d80"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_safari/selenium.webdriver.safari.remote_connection';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.49" />
+  <meta name="docsearch:version" content="4.50" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.49.0 documentation</p>
+    <p class="title logo__title">Selenium 4.50.0 documentation</p>
   
 </a></div>
     
@@ -373,7 +373,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.safari.remote_connection.SafariRemoteConnection.certifi">
-<span class="sig-name descname"><span class="pre">certifi</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'certifi'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/sandbox/processwrapper-sandbox/155/execroot/_main/bazel-out/local_linux_gnu-opt-exec/bin/py/sphinx-build.runfiles/rules_python++pip+py_dev_requirements_310_certifi/site-packages/certifi/__init__.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.certifi" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">certifi</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'certifi'</span> <span class="pre">from</span> <span class="pre">'/home/runner/.bazel/sandbox/processwrapper-sandbox/149/execroot/_main/bazel-out/local_linux_gnu-opt-exec/bin/py/sphinx-build.runfiles/rules_python++pip+py_dev_requirements_310_certifi/site-packages/certifi/__init__.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.certifi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -440,8 +440,12 @@ REQUESTS_CA_BUNDLE env variable if set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_remote_connection_headers">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_remote_connection_headers" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.get_remote_connection_headers" title="Link to this definition">#</a></dt>
 <dd><p>Get headers for remote request.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cls</span></code> is the connection instance when called on one (so <code class="docutils literal notranslate"><span class="pre">user_agent</span></code> and
+<code class="docutils literal notranslate"><span class="pre">extra_headers</span></code> come from that connection’s client_config) and the class when
+called on the class, preserving <code class="docutils literal notranslate"><span class="pre">RemoteConnection.get_remote_connection_headers</span></code>
+and subclass <code class="docutils literal notranslate"><span class="pre">super()</span></code> overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -510,7 +514,7 @@ Remote Connection</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.safari.remote_connection.SafariRemoteConnection.user_agent">
-<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.49.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.user_agent" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.50.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.safari.remote_connection.SafariRemoteConnection.user_agent" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

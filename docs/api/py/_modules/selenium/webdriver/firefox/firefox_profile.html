@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.49.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.50.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=82bca589"></script>
+    <script src="../../../../_static/documentation_options.js?v=d9e78d80"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/firefox/firefox_profile';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.49" />
+  <meta name="docsearch:version" content="4.50" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.49.0 documentation</p>
+    <p class="title logo__title">Selenium 4.50.0 documentation</p>
   
 </a></div>
     
@@ -359,32 +359,23 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">xml.dom</span><span class="w"> </span><span class="kn">import</span> <span class="n">minidom</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriverException</span>
-
-<span class="n">WEBDRIVER_PREFERENCES</span> <span class="o">=</span> <span class="s2">"webdriver_prefs.json"</span>
-
-
-<div class="viewcode-block" id="AddonFormatError">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.AddonFormatError">[docs]</a>
-<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Addons must be added after starting the session"</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AddonFormatError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Exception for not well-formed add-on manifest files."""</span></div>
-
 
 
 <div class="viewcode-block" id="FirefoxProfile">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FirefoxProfile</span><span class="p">:</span>
-    <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"browser.newtabpage.enabled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">"browser.startup.homepage"</span><span class="p">:</span> <span class="s2">"about:blank"</span><span class="p">,</span>
+        <span class="s2">"browser.usedOnWindows10.introURL"</span><span class="p">:</span> <span class="s2">"about:blank"</span><span class="p">,</span>
+        <span class="s2">"network.captive-portal-service.enabled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">"security.csp.enable"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">"startup.homepage_welcome_url"</span><span class="p">:</span> <span class="s2">"about:blank"</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Initialises a new instance of a Firefox Profile.</span>
@@ -406,15 +397,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_profile_dir</span><span class="p">,</span> <span class="mo">0o755</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_profile_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">WEBDRIVER_PREFERENCES</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
-                <span class="p">)</span> <span class="k">as</span> <span class="n">default_prefs</span><span class="p">:</span>
-                    <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">default_prefs</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">[</span><span class="s2">"mutable"</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">[</span><span class="s2">"frozen"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">)</span>
 
     <span class="c1"># Public Methods</span>
 <div class="viewcode-block" id="FirefoxProfile.set_preference">
@@ -422,13 +405,6 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Sets the preference that we want in the profile."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
-
-
-<div class="viewcode-block" id="FirefoxProfile.add_extension">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension">[docs]</a>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Addons must be added after starting the session"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_install_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FirefoxProfile.update_preferences">
@@ -451,52 +427,6 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Gets the profile directory that is currently being used."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_dir</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"The port is stored in the Service class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Gets the port that WebDriver is working on."""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span>
-
-    <span class="nd">@port</span><span class="o">.</span><span class="n">setter</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"The port is stored in the Service class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets the port that WebDriver will be running on."""</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Port needs to be an integer"</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">port</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">port</span> <span class="o">&gt;</span> <span class="mi">65535</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Port number must be in the range 1..65535"</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Port needs to be an integer"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s2">"webdriver_firefox_port"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Allowing untrusted certs is toggled in the Options class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span><span class="p">[</span><span class="s2">"webdriver_accept_untrusted_certs"</span><span class="p">]</span>
-
-    <span class="nd">@accept_untrusted_certs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Allowing untrusted certs is toggled in the Options class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Please pass in a Boolean to this call"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s2">"webdriver_accept_untrusted_certs"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Allowing untrusted certs is toggled in the Options class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span><span class="p">[</span><span class="s2">"webdriver_assume_untrusted_issuer"</span><span class="p">]</span>
-
-    <span class="nd">@assume_untrusted_cert_issuer</span><span class="o">.</span><span class="n">setter</span>
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Allowing untrusted certs is toggled in the Options class"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Please pass in a Boolean to this call"</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s2">"webdriver_assume_untrusted_issuer"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">encoded</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -523,162 +453,7 @@
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"(skipping) failed to json.loads existing preference: </span><span class="si">{</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Addons must be added after starting the session"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_install_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addon</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Install addon from a filepath, URL, or directory of addons in the profile.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            addon: url, absolute path to .xpi, or directory of addons</span>
-<span class="sd">            unpack: whether to unpack unless specified otherwise in the install.rdf</span>
-<span class="sd">        """</span>
-        <span class="n">tmpdir</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">xpifile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">addon</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".xpi"</span><span class="p">):</span>
-            <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">"."</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">addon</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">compressed_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">addon</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)):</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">name</span><span class="p">))):</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)))</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="n">xpifile</span> <span class="o">=</span> <span class="n">addon</span>
-            <span class="n">addon</span> <span class="o">=</span> <span class="n">tmpdir</span>
-
-        <span class="c1"># determine the addon id</span>
-        <span class="n">addon_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addon_details</span><span class="p">(</span><span class="n">addon</span><span class="p">)</span>
-        <span class="n">addon_id</span> <span class="o">=</span> <span class="n">addon_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">addon_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The addon id could not be found: </span><span class="si">{</span><span class="n">addon</span><span class="si">}</span><span class="s2">"</span>
-
-        <span class="c1"># copy the addon to the profile</span>
-        <span class="n">extensions_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_profile_dir</span><span class="p">,</span> <span class="s2">"extensions"</span><span class="p">)</span>
-        <span class="n">addon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">extensions_dir</span><span class="p">,</span> <span class="n">addon_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">unpack</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">addon_details</span><span class="p">[</span><span class="s2">"unpack"</span><span class="p">]</span> <span class="ow">and</span> <span class="n">xpifile</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">extensions_dir</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">extensions_dir</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">extensions_dir</span><span class="p">,</span> <span class="mo">0o755</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">xpifile</span><span class="p">,</span> <span class="n">addon_path</span> <span class="o">+</span> <span class="s2">".xpi"</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">addon</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">,</span> <span class="n">symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="c1"># remove the temporary directory, if any</span>
-        <span class="k">if</span> <span class="n">tmpdir</span><span class="p">:</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
-
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Addons must be added after starting the session"</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_addon_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns a dictionary of details about the addon.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            addon_path: path to the add-on directory or XPI</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A dictionary containing:</span>
-
-<span class="sd">            {</span>
-<span class="sd">                "id": "rainbow@colors.org",  # id of the addon</span>
-<span class="sd">                "version": "1.4",  # version of the addon</span>
-<span class="sd">                "name": "Rainbow",  # name of the addon</span>
-<span class="sd">                "unpack": False,</span>
-<span class="sd">            }  # whether to unpack the addon</span>
-<span class="sd">        """</span>
-        <span class="n">details</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"unpack"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"version"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">documentElement</span><span class="o">.</span><span class="n">attributes</span>
-            <span class="n">namespace</span> <span class="o">=</span> <span class="s2">""</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">attributes</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">attributes</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">url</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                        <span class="c1"># If the namespace is not the default one remove 'xlmns:'</span>
-                        <span class="n">namespace</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">":"</span>
-                        <span class="k">break</span>
-            <span class="k">return</span> <span class="n">namespace</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">get_text</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">"""Retrieve the text value of a given node."""</span>
-            <span class="n">rc</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeType</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">TEXT_NODE</span><span class="p">:</span>
-                    <span class="n">rc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">parse_manifest_json</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">"""Extract details from the contents of a WebExtensions manifest.json file."""</span>
-            <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">id</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"applications"</span><span class="p">][</span><span class="s2">"gecko"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="nb">id</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"@"</span> <span class="o">+</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"version"</span><span class="p">]</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">"id"</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
-                <span class="s2">"version"</span><span class="p">:</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"version"</span><span class="p">],</span>
-                <span class="s2">"name"</span><span class="p">:</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"version"</span><span class="p">],</span>
-                <span class="s2">"unpack"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="p">}</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Add-on path does not exist: </span><span class="si">{</span><span class="n">addon_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s2">"manifest.json"</span> <span class="ow">in</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-                        <span class="k">return</span> <span class="n">parse_manifest_json</span><span class="p">(</span><span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">"manifest.json"</span><span class="p">))</span>
-
-                    <span class="n">manifest</span> <span class="o">=</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">"install.rdf"</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
-                <span class="n">manifest_json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s2">"manifest.json"</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">manifest_json_filename</span><span class="p">):</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">manifest_json_filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">parse_manifest_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s2">"install.rdf"</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">manifest</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Add-on path is neither an XPI nor a directory: </span><span class="si">{</span><span class="n">addon_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">doc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">manifest</span><span class="p">)</span>
-
-            <span class="c1"># Get the namespaces abbreviations</span>
-            <span class="n">em</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s2">"http://www.mozilla.org/2004/em-rdf#"</span><span class="p">)</span>
-            <span class="n">rdf</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s2">"http://www.w3.org/1999/02/22-rdf-syntax-ns#"</span><span class="p">)</span>
-
-            <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="n">rdf</span> <span class="o">+</span> <span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">description</span><span class="p">:</span>
-                <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">description</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
-                <span class="c1"># Remove the namespace prefix from the tag for comparison</span>
-                <span class="n">entry</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeName</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">details</span><span class="p">:</span>
-                    <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)})</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">description</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
-                    <span class="n">attribute</span> <span class="o">=</span> <span class="n">description</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">em</span> <span class="o">+</span> <span class="s2">"id"</span><span class="p">:</span>
-                        <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">attribute</span><span class="o">.</span><span class="n">value</span><span class="p">})</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
-
-        <span class="c1"># turn unpack into a true/false value</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">details</span><span class="p">[</span><span class="s2">"unpack"</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">details</span><span class="p">[</span><span class="s2">"unpack"</span><span class="p">]</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s2">"unpack"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"true"</span>
-
-        <span class="c1"># If no ID is set, the add-on is invalid</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="s2">"Add-on id could not be found."</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">details</span></div>
+                    <span class="p">)</span></div>
 
 </pre></div>
 
