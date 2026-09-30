@@ -58,18 +58,22 @@ class HttpCommandExecutorTest {
 
     HttpCommandExecutor executor = new HttpCommandExecutor(Map.of(), config, factory);
 
-    assertThat(executor.httpClientFactory).isSameAs(factory);
+    try {
+      assertThat(executor.httpClientFactory).isSameAs(factory);
+    } finally {
+      executor.client.close();
+    }
   }
 
   @Test
   @SuppressWarnings("removal")
   void hasNoFactoryWhenCreatedFromAClient() throws MalformedURLException {
     URL url = new URL("http://localhost:4444");
-    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(url)) {
+      HttpCommandExecutor executor = new HttpCommandExecutor(client, url);
 
-    HttpCommandExecutor executor = new HttpCommandExecutor(client, url);
-
-    assertThat(executor.client).isSameAs(client);
-    assertThat(executor.httpClientFactory).isNull();
+      assertThat(executor.client).isSameAs(client);
+      assertThat(executor.httpClientFactory).isNull();
+    }
   }
 }

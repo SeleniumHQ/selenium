@@ -45,7 +45,7 @@ public class HttpCommandExecutor implements CommandExecutor {
   protected final Map<String, CommandInfo> additionalCommands;
 
   /**
-   * @deprecated this field will become {@code protected}; read it from a subclass instead.
+   * @deprecated this field will become {@code protected} in 4.52; read it from a subclass instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")
   public final HttpClient client;
@@ -54,7 +54,8 @@ public class HttpCommandExecutor implements CommandExecutor {
    * The factory that created {@link #client}, or {@code null} when the executor was created from an
    * {@link HttpClient}.
    *
-   * @deprecated keep a reference to the factory in the subclass instead.
+   * @deprecated this field will be removed in 4.52; keep a reference to the factory in the subclass
+   *     instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")
   protected final HttpClient.@Nullable Factory httpClientFactory;
