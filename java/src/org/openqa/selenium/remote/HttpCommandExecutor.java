@@ -43,7 +43,22 @@ public class HttpCommandExecutor implements CommandExecutor {
 
   private final URL remoteServer;
   protected final Map<String, CommandInfo> additionalCommands;
-  protected final HttpClient client;
+
+  /**
+   * @deprecated this field will become {@code protected}; read it from a subclass instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  public final HttpClient client;
+
+  /**
+   * The factory that created {@link #client}, or {@code null} when the executor was created from an
+   * {@link HttpClient}.
+   *
+   * @deprecated keep a reference to the factory in the subclass instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  protected final HttpClient.@Nullable Factory httpClientFactory;
+
   protected @Nullable CommandCodec<HttpRequest> commandCodec;
   protected @Nullable ResponseCodec<HttpResponse> responseCodec;
 
@@ -87,7 +102,16 @@ public class HttpCommandExecutor implements CommandExecutor {
       HttpClient httpClient,
       Map<String, CommandInfo> additionalCommands,
       URL addressOfRemoteServer) {
+    this(httpClient, null, additionalCommands, addressOfRemoteServer);
+  }
+
+  private HttpCommandExecutor(
+      HttpClient httpClient,
+      HttpClient.@Nullable Factory httpClientFactory,
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
     this.client = httpClient;
+    this.httpClientFactory = httpClientFactory;
     this.additionalCommands =
         new HashMap<>(Require.nonNull("Additional commands", additionalCommands));
     this.remoteServer = addressOfRemoteServer;
@@ -134,7 +158,11 @@ public class HttpCommandExecutor implements CommandExecutor {
       Map<String, CommandInfo> additionalCommands,
       ClientConfig config,
       HttpClient.Factory httpClientFactory) {
-    this(httpClientFactory.createClient(config), additionalCommands, config.baseUrl());
+    this(
+        Require.nonNull("HTTP client factory", httpClientFactory).createClient(config),
+        httpClientFactory,
+        additionalCommands,
+        config.baseUrl());
   }
 
   /**
