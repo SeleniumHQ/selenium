@@ -26,4 +26,11 @@
     <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\..\common\extensions\**">
+      <Link>common\extensions\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

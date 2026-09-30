@@ -21,7 +21,9 @@ dotnet_nunit_test_suite(
         "chrome",
     ],
     data = [
-        "//dotnet/test/testing.nunit:test-data",
+        "//common/extensions",
+        "//javascript/atoms",
+        "//third_party/closure/goog",
     ],
     project_sdk = "web",
     target_frameworks = ["net10.0"],

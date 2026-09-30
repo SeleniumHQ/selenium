@@ -13,9 +13,6 @@ dotnet_nunit_test_suite(
     browsers = [
         "firefox",
     ],
-    data = [
-        "//dotnet/test/testing.nunit:test-data",
-    ],
     project_sdk = "web",
     target_frameworks = ["net10.0"],
     deps = [
