@@ -20,7 +20,6 @@
 global using global::NUnit.Framework;
 global using global::OpenQA.Selenium.Testing.WebServer;
 global using global::OpenQA.Selenium.Testing.NUnit;
-global using Infrastructure = global::OpenQA.Selenium.Testing.NUnit;
 global using global::System;
 global using global::System.Collections.Generic;
 global using global::System.Linq;

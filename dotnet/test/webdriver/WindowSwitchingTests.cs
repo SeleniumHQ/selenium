@@ -370,7 +370,7 @@ public class WindowSwitchingTests : DriverTestFixture
         string handle1, handle2;
         handle1 = Driver.CurrentWindowHandle;
 
-        System.Threading.Thread.Sleep(1000);
+        Thread.Sleep(1000);
         Driver.SwitchTo().Window("result");
         handle2 = Driver.CurrentWindowHandle;
 
@@ -430,7 +430,7 @@ public class WindowSwitchingTests : DriverTestFixture
     {
         try
         {
-            System.Threading.Thread.Sleep(1000);
+            Thread.Sleep(1000);
         }
         catch (Exception)
         {

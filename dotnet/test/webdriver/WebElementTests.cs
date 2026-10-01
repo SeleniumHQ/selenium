@@ -80,7 +80,7 @@ public class WebElementTests : DriverTestFixture
 
         IWebElement twoblocks = Driver.FindElement(By.Id("twoblocks"));
         Assert.That(twoblocks.Text, Is.EqualTo("Some text" +
-            System.Environment.NewLine +
+            Environment.NewLine +
             "Some more text"));
 
     }

@@ -884,7 +884,7 @@ public class CookieImplementationTests : DriverTestFixture
         bool correct = this.hostname != null && IsValidHostNameForCookieTests(this.hostname);
         if (!correct)
         {
-            System.Console.WriteLine("Skipping test: unable to find domain name to use");
+            Console.WriteLine("Skipping test: unable to find domain name to use");
         }
 
         return correct;

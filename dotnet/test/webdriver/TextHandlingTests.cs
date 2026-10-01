@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Tests;
 [TestFixture]
 public class TextHandlingTests : DriverTestFixture
 {
-    private readonly string NewLine = System.Environment.NewLine;
+    private readonly string NewLine = Environment.NewLine;
 
     [Test]
     public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
