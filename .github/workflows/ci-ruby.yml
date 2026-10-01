@@ -8,10 +8,20 @@ on:
         required: false
         type: boolean
         default: true
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       smoke:
         description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
         type: boolean
         default: false
@@ -47,6 +57,7 @@ jobs:
       ruby-version: ${{ matrix.ruby-version }}
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --test_size_filters small
         //rb/...
@@ -57,10 +68,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu, windows, macos]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
-          - os: ubuntu
-          - os: windows
-          - os: macos
+          # Chrome has no linux-arm64 build before 153; Edge has none at all.
+          - os: ubuntu-24.04-arm
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-chrome,-edge"
     with:
       name: ${{ matrix.os }}
       needs-display: true
@@ -70,15 +83,17 @@ jobs:
       run: >
         [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
         --local_test_jobs 1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
-        --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
+        --test_tag_filters=${{ matrix.tag_filters }}
         --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
@@ -89,10 +104,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, "edge-local,edge-bidi,-os-sensitive,-se-manager"]
+        tag_filters:
+          - chrome-beta-local,chrome-beta-bidi
+          - firefox-beta-local,firefox-beta-bidi
+          - edge-local,edge-bidi,chrome-grid,firefox-grid,edge-grid
         include:
           - os: macos
-            tag_filters: safari-local,safari-preview-bidi,-os-sensitive,-se-manager
+            tag_filters: safari-local,safari-preview-bidi,safari-grid
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
@@ -101,6 +119,7 @@ jobs:
       rerun-with-debug: true
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
         --local_test_jobs 1
@@ -108,5 +127,5 @@ jobs:
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_size_filters large
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
         //rb/...

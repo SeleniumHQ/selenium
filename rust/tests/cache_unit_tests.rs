@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use selenium_manager::SeleniumManager;
 use selenium_manager::files::{collect_files_from_cache, find_latest_from_cache};
 use selenium_manager::get_manager_by_browser;
 use selenium_manager::metadata::{

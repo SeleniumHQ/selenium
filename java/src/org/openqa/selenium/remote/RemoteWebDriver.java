@@ -19,7 +19,6 @@ package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElseGet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
@@ -38,7 +37,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -102,7 +100,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.jdk.ConnectionException;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
-import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
@@ -127,6 +124,7 @@ public class RemoteWebDriver
   }
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
+  static final HttpClient.Factory DEFAULT_CLIENT_FACTORY = HttpClient.Factory.createDefault();
 
   /** Boolean system property that defines whether the tracing is enabled or not. */
   private static final String WEBDRIVER_REMOTE_ENABLE_TRACING = "webdriver.remote.enableTracing";
@@ -134,6 +132,7 @@ public class RemoteWebDriver
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
+  private final HttpClient.Factory clientFactory;
   private final ClientConfig clientConfig;
   private CommandExecutor executor;
   protected Capabilities capabilities;
@@ -155,19 +154,17 @@ public class RemoteWebDriver
   @SuppressWarnings("DataFlowIssue")
   protected RemoteWebDriver() {
     this.capabilities = new ImmutableCapabilities();
+    this.clientFactory = DEFAULT_CLIENT_FACTORY;
     this.clientConfig = ClientConfig.defaultConfig();
     this.executor = null;
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(
-        getDefaultServerURL(),
-        Require.nonNull("Capabilities", capabilities),
-        Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")));
+    this(getDefaultServerURL(), capabilities);
   }
 
   public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
-    this(getDefaultServerURL(), Require.nonNull("Capabilities", capabilities), enableTracing);
+    this(getDefaultServerURL(), capabilities, enableTracing);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
@@ -176,12 +173,30 @@ public class RemoteWebDriver
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, ClientConfig clientConfig) {
     this(
-        createExecutor(
-            Require.nonNull("Server URL", remoteAddress),
-            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
-            clientConfig),
-        Require.nonNull("Capabilities", capabilities),
-        clientConfig.baseUrl(remoteAddress));
+        remoteAddress,
+        capabilities,
+        clientConfig,
+        Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")));
+  }
+
+  // private to ensure the clientFactory is already wrapped into a TracedHttpClient.Factory in case
+  // the enableTracing is true
+  private RemoteWebDriver(
+      Capabilities capabilities,
+      HttpClient.Factory clientFactory,
+      ClientConfig clientConfig,
+      boolean enableTracing) {
+    this(
+        enableTracing
+            ? new TracedCommandExecutor(
+                new HttpCommandExecutor(
+                    clientFactory.createClient(clientConfig), clientConfig.baseUrl()),
+                OpenTelemetryTracer.getInstance())
+            : new HttpCommandExecutor(
+                clientFactory.createClient(clientConfig), clientConfig.baseUrl()),
+        capabilities,
+        clientFactory,
+        clientConfig);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
@@ -194,20 +209,36 @@ public class RemoteWebDriver
       ClientConfig clientConfig,
       boolean enableTracing) {
     this(
-        createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
-        Require.nonNull("Capabilities", capabilities),
-        clientConfig.baseUrl(remoteAddress));
+        capabilities,
+        enableTracing
+            ? new TracedHttpClient.Factory(
+                OpenTelemetryTracer.getInstance(), DEFAULT_CLIENT_FACTORY)
+            : DEFAULT_CLIENT_FACTORY,
+        clientConfig.baseUrl(remoteAddress),
+        enableTracing);
   }
 
+  // ignore WEBDRIVER_REMOTE_ENABLE_TRACING here, to allow extended external control
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
-    this(executor, capabilities, ClientConfig.defaultConfig());
+    this(executor, capabilities, DEFAULT_CLIENT_FACTORY, ClientConfig.defaultConfig());
   }
 
+  // ignore WEBDRIVER_REMOTE_ENABLE_TRACING here, to allow extended external control
   public RemoteWebDriver(
       CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
+    this(executor, capabilities, DEFAULT_CLIENT_FACTORY, clientConfig);
+  }
+
+  // ignore WEBDRIVER_REMOTE_ENABLE_TRACING here, to allow extended external control
+  public RemoteWebDriver(
+      CommandExecutor executor,
+      Capabilities capabilities,
+      HttpClient.Factory clientFactory,
+      ClientConfig clientConfig) {
+    this.clientFactory = Require.nonNull("Client factory", clientFactory);
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
-    this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
+    this.capabilities = Require.nonNull("Capabilities", capabilities);
 
     try {
       startSession(capabilities);
@@ -227,22 +258,6 @@ public class RemoteWebDriver
       return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
-    }
-  }
-
-  private static CommandExecutor createExecutor(
-      URL remoteAddress, boolean enableTracing, ClientConfig clientConfig) {
-    ClientConfig config = clientConfig.baseUrl(remoteAddress);
-    if (enableTracing) {
-      Tracer tracer = OpenTelemetryTracer.getInstance();
-      CommandExecutor executor =
-          new HttpCommandExecutor(
-              Collections.emptyMap(),
-              config,
-              new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
-      return new TracedCommandExecutor(executor, tracer);
-    } else {
-      return new HttpCommandExecutor(config);
     }
   }
 
@@ -464,9 +479,8 @@ public class RemoteWebDriver
       LOG.warning("BiDi was requested but the remote end did not return a valid webSocketUrl.");
       return Optional.empty();
     }
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = this.clientConfig.baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
+    HttpClient wsClient = this.clientFactory.createClient(wsConfig);
     try {
       Connection biDiConnection = new Connection(wsClient, wsUri.toString());
       return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
@@ -1343,17 +1357,10 @@ public class RemoteWebDriver
 
     @Override
     public WebDriver newWindow(WindowType typeHint) {
-      String original = getWindowHandle();
-      try {
-        Response response = execute(DriverCommand.SWITCH_TO_NEW_WINDOW(typeHint));
-        String newWindowHandle =
-            ((Map<String, Object>) response.getValue()).get("handle").toString();
-        switchTo().window(newWindowHandle);
-        return RemoteWebDriver.this;
-      } catch (WebDriverException ex) {
-        switchTo().window(original);
-        throw ex;
-      }
+      Response response = execute(DriverCommand.SWITCH_TO_NEW_WINDOW(typeHint));
+      String newWindowHandle = ((Map<String, Object>) response.getValue()).get("handle").toString();
+      switchTo().window(newWindowHandle);
+      return RemoteWebDriver.this;
     }
 
     @Override

@@ -29,7 +29,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common._bidi.errors import exception_for
 
 
 class Transport:
@@ -52,7 +52,15 @@ class Transport:
     def execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         reply = self._connection.send_cmd(cmd, params.as_json() if params is not None else {})
         if "error" in reply:
-            message = reply.get("message")
-            raise WebDriverException(f"{reply['error']}: {message}" if message else reply["error"])
+            raise self._error(reply)
         value = reply["result"]
         return result.from_json(value) if result is not None else value
+
+    @staticmethod
+    def _error(reply: dict) -> Exception:
+        code = reply["error"]
+        # The class carries the code, so the message need not repeat it — except where the
+        # remote sent no message, which would otherwise leave nothing to read.
+        message = reply.get("message") or code
+        stacktrace = reply.get("stacktrace")
+        return exception_for(code)(message, stacktrace=stacktrace.split("\n") if stacktrace else None)

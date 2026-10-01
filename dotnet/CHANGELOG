@@ -1,3 +1,32 @@
+v4.50.0
+======
+* Support CDP versions: v152, v153, v154
+* [bidi] Add image size to capture screenshots (#18016)
+* [bidi] Support DestinationFolder optional arg in StartScreencast (#18042)
+* [bidi] Add Emulation.SetTextLayoutModeOverride command (#18043)
+* [build] Include package license/notice files (#18048)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* [bidi] Eliminate BiDi context on hot path (#18069)
+* declare Firefox default preferences in each binding (#18070)
+* Support relative locators from elements and shadow roots (#17907)
+* [build] Automated Browser Version Update (major) with CDP (#18067)
+* [bidi] Support activity source monitoring (#18074)
+* [bidi] Add hasPlannedNavigation param in ContextCreatedEventArgs (#18079)
+* [bidi] Preserve BiDi additional data in context commands (#18097)
+* [bidi] Align CapabilityResponse type name with spec (#18099)
+
+v4.49.0
+======
+* Support CDP versions: v151, v152, v153
+* [bidi] Fix various missing fields in DTO (#17961)
+* [bidi] Fix mismatch of proxy json property names (#17960)
+* [bidi] Fix realm type enum serialization (#17959)
+* [bidi] Fix NamespaceUri json property name (#17958)
+* [bidi] Avoid massive command descriptors allocation (#17965)
+* [bidi] Add browsing context screencast support (#17941)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+
 v4.48.0
 ======
 * Support CDP versions: v150, v151, v152

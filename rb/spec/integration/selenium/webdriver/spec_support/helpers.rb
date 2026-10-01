@@ -136,9 +136,9 @@ module Selenium
           [width, height]
         end
 
-        def create_tempfile
+        def create_tempfile(content = 'This is a dummy test file')
           Tempfile.new.tap do |file|
-            file.write('This is a dummy test file')
+            file.write(content)
             file.close
           end
         end

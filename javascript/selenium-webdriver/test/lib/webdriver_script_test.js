@@ -90,9 +90,9 @@ suite(
       })
 
       it('can listen to dom mutations', async function () {
-        let message = null
+        const mutations = []
         await driver.script().addDomMutationHandler((m) => {
-          message = m
+          mutations.push(m)
         })
 
         await driver.get(fileServer.Pages.dynamicPage)
@@ -101,7 +101,18 @@ suite(
         await element.click()
         let revealed = driver.findElement({ id: 'revealed' })
         await driver.wait(until.elementIsVisible(revealed), 5000)
-        await waitForLogEntry(() => message, 'Timed out waiting for DOM mutation')
+
+        // Firefox's click also mutates the clicked button's style, so the last mutation may not be the reveal.
+        const revealedId = await revealed.getId()
+        const message = await driver.wait(
+          async () => {
+            for (const m of mutations) {
+              if ((await m.element.getId()) === revealedId) return m
+            }
+          },
+          5000,
+          'Timed out waiting for DOM mutation on revealed element',
+        )
 
         assert.strictEqual(message['attribute_name'], 'style')
         assert.strictEqual(message['current_value'], '')

@@ -15,9 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function findElements(target: Record<string, unknown>, root?: Document | Element): Element[] {
+(function findElements(target: Record<string, unknown>, root?: Document | Element | ShadowRoot): Element[] {
   type LocatorTarget = Record<string, unknown>
-  type Root = Document | Element
+  type Root = Document | Element | ShadowRoot
   type Rect = { left: number; top: number; width: number; height: number }
   type RelativeFilter = { kind: string; args: unknown[] }
 
@@ -92,7 +92,17 @@
     if (target === '') {
       throw botError(INVALID_SELECTOR, 'Unable to locate an element with the tagName ""')
     }
-    return Array.from(root.getElementsByTagName(target))
+    if ('getElementsByTagName' in root) {
+      return Array.from(root.getElementsByTagName(target))
+    }
+    const elements = Array.from(root.querySelectorAll('*'))
+    if (target === '*') {
+      return elements
+    }
+    const html = 'http://www.w3.org/1999/xhtml'
+    const folded = target.toLowerCase()
+    return elements.filter(el =>
+      el.namespaceURI === html ? el.localName === folded : el.localName === target)
   }
 
   const DEFAULT_NS_RESOLVER = (function () {
@@ -103,7 +113,7 @@
   const ORDERED_NODE_SNAPSHOT_TYPE = 7
 
   function xpathMany(target: string, root: Root): Element[] {
-    const doc = (root as Document).documentElement ? (root as Document) : (root as Element).ownerDocument!
+    const doc = (root as Document).documentElement ? (root as Document) : root.ownerDocument!
     if (!doc.documentElement) {
       return []
     }
@@ -188,7 +198,12 @@
       return resolveAnchor((selector as () => unknown)())
     }
     if (selector && typeof selector === 'object') {
-      const found = findElements(selector as LocatorTarget)
+      // Prefer an anchor inside the root, since a document search cannot see into a shadow root,
+      // but an anchor is only a reference point and may live anywhere on the page.
+      let found = root ? findElements(selector as LocatorTarget, root) : []
+      if (!found.length) {
+        found = findElements(selector as LocatorTarget)
+      }
       if (!found.length) {
         throw botError(NO_SUCH_ELEMENT, 'No element has been found by ' + JSON.stringify(selector))
       }

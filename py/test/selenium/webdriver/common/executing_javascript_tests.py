@@ -236,7 +236,9 @@ def test_should_be_able_to_pass_acollection_as_argument(driver, pages):
 
 def test_should_throw_an_exception_if_an_argument_is_not_valid(driver, pages):
     pages.load("javascriptPage.html")
-    with pytest.raises(Exception):
+    # The driver is not a serializable script argument, so json.dumps rejects it
+    # client-side before any command is sent.
+    with pytest.raises(TypeError):
         driver.execute_script("return arguments[0]", driver)
 
 

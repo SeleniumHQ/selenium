@@ -50,7 +50,9 @@ public sealed record ContextSetViewportOptions : CommandOptions
     {
         Context = context,
         Viewport = options?.Viewport,
-        DevicePixelRatio = options?.DevicePixelRatio
+        DevicePixelRatio = options?.DevicePixelRatio,
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

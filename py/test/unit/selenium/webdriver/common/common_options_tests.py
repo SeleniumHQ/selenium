@@ -56,7 +56,7 @@ def test_enable_mobile_with_activity(options):
 
 def test_enable_mobile_with_device_serial(options):
     options.enable_mobile(android_package="cheese", android_activity="crackers", device_serial="1234")
-    options.mobile_options["androidDeviceSerial"] == "1234"
+    assert options.mobile_options["androidDeviceSerial"] == "1234"
 
 
 def test_missing_capabilities_return_false_rather_than_none():

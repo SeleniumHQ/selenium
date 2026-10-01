@@ -218,6 +218,7 @@ function init(force = false) {
   seleniumJar = process.env['SELENIUM_SERVER_JAR']
   seleniumUrl = process.env['SELENIUM_REMOTE_URL']
   if (seleniumJar) {
+    seleniumJar = locate(seleniumJar)
     info(`Using Selenium server jar: ${seleniumJar}`)
   }
 
@@ -290,6 +291,19 @@ class Environment {
   }
 
   /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it runs them through a Selenium server (such as a Grid) rather than a
+   * browser driver started locally.
+   *
+   *     ignore(env.remote()).it('reads a browser preference', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  remote() {
+    return () => URL_MAP.get(this) !== null
+  }
+
+  /**
    * @return {!Builder} a new WebDriver builder configured to target this
    *     environment's {@linkplain #browser browser}.
    */
@@ -315,6 +329,19 @@ class Environment {
       builder.setChromeOptions(options)
     }
     // Edge
+    if ('SE_EDGEDRIVER' in process.env) {
+      const found = locate(process.env.SE_EDGEDRIVER)
+      const service = new edge.ServiceBuilder(found)
+      builder.setEdgeService(service)
+    }
+    if ('SE_EDGE' in process.env) {
+      const binary = locate(process.env.SE_EDGE)
+      const options = new edge.Options()
+      options.setBinaryPath(binary)
+      options.setAcceptInsecureCerts(true)
+      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
+      builder.setEdgeOptions(options)
+    }
     // Firefox
     if ('SE_GECKODRIVER' in process.env) {
       const found = locate(process.env.SE_GECKODRIVER)
@@ -444,7 +471,11 @@ function suite(fn, options = undefined) {
 
       describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
-          seleniumServer = new remote.SeleniumServer(seleniumJar)
+          seleniumServer = new remote.SeleniumServer(seleniumJar, {
+            java: bazelJava(),
+            loopback: true,
+            args: ['--host', '127.0.0.1', ...pinnedGridArgs(targetBrowsers.map((b) => b.name))],
+          })
 
           const startTimeout = 65 * 1000
 
@@ -545,6 +576,58 @@ function getTestHook(name) {
     )
   }
   return fn
+}
+
+/**
+ * Bazel's hermetic java, from `SE_BAZEL_JAVA_LOCATION` (a file holding the `$(JAVA)` path).
+ * @return {(string|undefined)} the java executable, or undefined to use the server's default.
+ */
+function bazelJava() {
+  const javaLocation = process.env['SE_BAZEL_JAVA_LOCATION']
+  if (!javaLocation) {
+    return undefined
+  }
+  // $(JAVA) is an exec path (external/<repo>/...); without the prefix it is a runfiles path.
+  const execPath = fs.readFileSync(locate(javaLocation), { encoding: 'utf8' }).trim()
+  const java = locate(execPath.replace(/^external\//, ''))
+  // Resolve the JDK symlink to its real path to dodge a Windows JVM bug mapping lib\modules.
+  return process.platform === 'win32' ? fs.realpathSync(java) : java
+}
+
+/** Browser name -> [driver env var, browser env var, vendor options key], for pinned browsers. */
+const PINNED_BROWSERS = {
+  [Browser.CHROME]: ['SE_CHROMEDRIVER', 'SE_CHROME', 'goog:chromeOptions'],
+  [Browser.FIREFOX]: ['SE_GECKODRIVER', 'SE_FIREFOX', 'moz:firefoxOptions'],
+  [Browser.EDGE]: ['SE_EDGEDRIVER', 'SE_EDGE', 'ms:edgeOptions'],
+}
+
+/**
+ * Pins the Grid node to the Bazel-provided driver and browser; on CI, Selenium Manager would find
+ * no installed browser.
+ * @param {!Array<string>} browserNames the browsers sharing the server.
+ * @return {!Array<string>} empty to keep driver detection.
+ */
+function pinnedGridArgs(browserNames) {
+  // The command line merges repeated --driver-configuration flags into one, so only a single
+  // browser can be pinned; with several, detection must stay on to give each one a slot.
+  if (browserNames.length !== 1) {
+    return []
+  }
+  const [browserName] = browserNames
+  const [driverVar, browserVar, vendorKey] = PINNED_BROWSERS[browserName] ?? []
+  if (!process.env[driverVar] || !process.env[browserVar]) {
+    return []
+  }
+  const stereotype = JSON.stringify({ browserName, [vendorKey]: { binary: locate(process.env[browserVar]) } })
+  return [
+    '--detect-drivers',
+    'false',
+    '--driver-configuration',
+    `display-name=${browserName}`,
+    'max-sessions=1',
+    `webdriver-executable=${locate(process.env[driverVar])}`,
+    `stereotype=${stereotype}`,
+  ]
 }
 
 function locate(fileLike) {

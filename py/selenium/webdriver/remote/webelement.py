@@ -52,8 +52,6 @@ class BaseWebElement(metaclass=ABCMeta):
     pass type checks.
     """
 
-    pass
-
 
 class WebElement(BaseWebElement):
     """Represents a DOM element.
@@ -146,7 +144,7 @@ class WebElement(BaseWebElement):
         """
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str | bool | WebElement | dict:
+    def get_property(self, name: str) -> str | bool | WebElement | dict:
         """Gets the given property of the element.
 
         Args:
@@ -164,7 +162,7 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesn't understand getElementProperty lets fake it
             return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
-    def get_dom_attribute(self, name) -> str:
+    def get_dom_attribute(self, name: str) -> str:
         """Get the HTML attribute value (not reflected properties) of the element.
 
         Returns only attributes declared in the element's HTML markup, unlike
@@ -181,7 +179,7 @@ class WebElement(BaseWebElement):
         """
         return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
 
-    def get_attribute(self, name) -> str | None:
+    def get_attribute(self, name: str) -> str | None:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -261,12 +259,10 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(
-                map(
-                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
-                    "".join(map(str, value)).split("\n"),
-                )
-            )
+            local_files = [
+                self.parent.file_detector.is_local_file(str(keys_to_send))
+                for keys_to_send in "".join(map(str, value)).split("\n")
+            ]
             if None not in local_files:
                 remote_files = []
                 for file in local_files:

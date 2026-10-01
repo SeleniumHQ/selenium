@@ -46,13 +46,15 @@ def close_windows(driver):
 def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_future_operations(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
+    handles = driver.window_handles
 
     driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
     assert driver.title == "XHTML Test Page"
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
-    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
+    WebDriverWait(driver, 3, ignored_exceptions=[NoSuchWindowException]).until(EC.title_is("We Arrive Here"))
 
     pages.load("iframes.html")
     handle = driver.current_window_handle

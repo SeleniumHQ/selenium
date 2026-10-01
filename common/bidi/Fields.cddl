@@ -1,0 +1,32 @@
+browsingContext.GetTreeParametersExtension = (
+  ? "moz:scope": "chrome" / "content",
+)
+
+browsingContext.InfoExtension = (
+  ? "moz:name": text,
+  ? "moz:scope": "chrome" / "content",
+)
+
+session.CapabilityRequestExtension = (
+  ? "moz:firefoxOptions": session.CapabilityRequestFirefoxOptions,
+)
+
+session.CapabilityRequestFirefoxOptions = {
+  ? "androidPackage": text,
+  ? "androidActivity": text,
+  ? "androidDeviceSerial": text,
+  ? "androidIntentArguments": [*text],
+  ? "args": [*text],
+  ? "binary": text,
+  ? "env": {*text => text},
+  ? "log": {
+    ? "level": ("trace" / "debug" / "config" / "info" / "warn" / "error" / "fatal") .default "info"
+  },
+  ? "prefs": {*text => text / bool / js-int},
+  ? "profile": text,
+}
+
+webExtension.InstallParametersExtension = (
+  ? "moz:allowPrivateBrowsing": bool .default false,
+  ? "moz:permanent": bool .default false,
+)

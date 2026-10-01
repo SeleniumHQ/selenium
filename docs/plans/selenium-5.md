@@ -25,7 +25,7 @@ How the WebDriver BiDi protocol is exposed to users across the bindings. The ADR
 boundary sits between supported Selenium API and internal implementation, and how each binding
 marks it.
 
-### Network async/event API — _ADR pending_
+### Network async/event API — [17685](../decisions/17685-network-handler-behavior.md)
 
 The cross-binding API for adding, removing, and clearing handlers for requests, responses, and
 authentication.

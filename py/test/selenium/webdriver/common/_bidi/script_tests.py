@@ -21,6 +21,7 @@ import pytest
 
 from selenium.webdriver.common._bidi.browser import Browser
 from selenium.webdriver.common._bidi.browsing_context import BrowsingContext, CreateType
+from selenium.webdriver.common._bidi.errors import NoSuchHandleException
 from selenium.webdriver.common._bidi.script import (
     ArrayLocalValue,
     BigIntValue,
@@ -421,7 +422,7 @@ def test_disown_handles(driver, pages):
 
     Script(driver).disown(handles=[handle], target=ContextTarget(context=driver.current_window_handle))
 
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchHandleException):
         Script(driver).call_function(
             "function(obj) { return obj.foo; }",
             False,

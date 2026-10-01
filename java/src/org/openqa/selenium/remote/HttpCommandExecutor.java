@@ -42,29 +42,80 @@ import org.openqa.selenium.remote.http.HttpResponse;
 public class HttpCommandExecutor implements CommandExecutor {
 
   private final URL remoteServer;
-  public final HttpClient client;
-  protected final HttpClient.Factory httpClientFactory;
   protected final Map<String, CommandInfo> additionalCommands;
+
+  /**
+   * @deprecated this field will become {@code protected} in 4.52; read it from a subclass instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  public final HttpClient client;
+
+  /**
+   * The factory that created {@link #client}, or {@code null} when the executor was created from an
+   * {@link HttpClient}.
+   *
+   * @deprecated this field will be removed in 4.52; keep a reference to the factory in the subclass
+   *     instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  protected final HttpClient.@Nullable Factory httpClientFactory;
+
   protected @Nullable CommandCodec<HttpRequest> commandCodec;
   protected @Nullable ResponseCodec<HttpResponse> responseCodec;
 
-  private static class DefaultClientFactoryHolder {
-    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
-  }
-
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public static HttpClient.Factory getDefaultClientFactory() {
-    return DefaultClientFactoryHolder.defaultClientFactory;
+    return RemoteWebDriver.DEFAULT_CLIENT_FACTORY;
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(ClientConfig config) {
     this(
         emptyMap(),
         Require.nonNull("HTTP client configuration", config),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
+  }
+
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports only standard commands.
+   *
+   * @param httpClient the HttpClient to execute commands with
+   * @param addressOfRemoteServer URL of remote end Selenium server
+   */
+  public HttpCommandExecutor(HttpClient httpClient, URL addressOfRemoteServer) {
+    this(httpClient, Map.of(), addressOfRemoteServer);
+  }
+
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports non-standard {@code additionalCommands} in
+   * addition to the standard.
+   *
+   * @param httpClient the HttpClient to execute commands with
+   * @param additionalCommands additional commands to allow the command executor to process
+   * @param addressOfRemoteServer URL of remote end Selenium server
+   */
+  public HttpCommandExecutor(
+      HttpClient httpClient,
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
+    this(httpClient, null, additionalCommands, addressOfRemoteServer);
+  }
+
+  private HttpCommandExecutor(
+      HttpClient httpClient,
+      HttpClient.@Nullable Factory httpClientFactory,
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
+    this.client = httpClient;
+    this.httpClientFactory = httpClientFactory;
+    this.additionalCommands =
+        new HashMap<>(Require.nonNull("Additional commands", additionalCommands));
+    this.remoteServer = addressOfRemoteServer;
   }
 
   /**
@@ -74,22 +125,25 @@ public class HttpCommandExecutor implements CommandExecutor {
    * @param additionalCommands additional commands to allow the command executor to process
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
     this(
         Require.nonNull("Additional commands", additionalCommands),
         Require.nonNull("Server URL", addressOfRemoteServer),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer, ClientConfig config) {
     this(
         additionalCommands,
         config.baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands,
       URL addressOfRemoteServer,
@@ -100,15 +154,16 @@ public class HttpCommandExecutor implements CommandExecutor {
         httpClientFactory);
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands,
       ClientConfig config,
       HttpClient.Factory httpClientFactory) {
-    remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
-    this.additionalCommands =
-        new HashMap<>(Require.nonNull("Additional commands", additionalCommands));
-    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
-    this.client = this.httpClientFactory.createClient(config);
+    this(
+        Require.nonNull("HTTP client factory", httpClientFactory).createClient(config),
+        httpClientFactory,
+        additionalCommands,
+        config.baseUrl());
   }
 
   /**
@@ -147,6 +202,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public URL getAddressOfRemoteServer() {
     return remoteServer;
   }
@@ -204,7 +260,6 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
       if (QUIT.equals(command.getName())) {
         client.close();
-        httpClientFactory.cleanupIdleClients();
       }
       return response;
     } catch (UnsupportedCommandException e) {

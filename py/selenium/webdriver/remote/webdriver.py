@@ -371,7 +371,6 @@ class WebDriver(BaseWebDriver):
 
         This method may be overridden to define custom startup behavior.
         """
-        pass
 
     def stop_client(self) -> None:
         """Called after executing a quit command.
@@ -379,7 +378,6 @@ class WebDriver(BaseWebDriver):
         This method may be overridden to define custom shutdown
         behavior.
         """
-        pass
 
     def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.
@@ -426,7 +424,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(value, self._shadowroot_cls):
             return {"shadow-6066-11e4-a52e-4f735466cecf": value.id}
         if isinstance(value, list):
-            return list(self._wrap_value(item) for item in value)
+            return [self._wrap_value(item) for item in value]
         return value
 
     def create_web_element(self, element_id: str) -> WebElement:
@@ -443,7 +441,7 @@ class WebDriver(BaseWebDriver):
                 value[key] = self._unwrap_value(val)
             return value
         if isinstance(value, list):
-            return list(self._unwrap_value(item) for item in value)
+            return [self._unwrap_value(item) for item in value]
         return value
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
@@ -607,10 +605,11 @@ class WebDriver(BaseWebDriver):
             ```
         """
         if isinstance(script, ScriptKey):
+            script_id = script.id
             try:
-                script = self.pinned_scripts[script.id]
+                script = self.pinned_scripts[script_id]
             except KeyError:
-                raise JavascriptException("Pinned script could not be found")
+                raise JavascriptException(f"Pinned script could not be found: {script_id}") from None
 
         converted_args = list(args)
         command = Command.W3C_EXECUTE_SCRIPT
@@ -1451,8 +1450,8 @@ class WebDriver(BaseWebDriver):
                 debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
             elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
                 debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
-        except AttributeError:
-            raise WebDriverException("Can't get debugger address.")
+        except AttributeError as err:
+            raise WebDriverException("Can't get debugger address.") from err
 
         res = http.request("GET", f"http://{debugger_address}/json/version")
         data = json.loads(res.data)

@@ -1,3 +1,24 @@
+4.50.0 (2026-09-30)
+=========================
+* Support CDP versions: v152, v153, v154
+* render WebSocket debug log lines lazily (#18033)
+* Implement driver methods for installing and uninstalling web extensions via BiDi (#17879)
+* [build] Automated CDDL Spec Update (#18046)
+* [build] replace the BiDi KNOWN_INCOMPLETE allowlist with spec-shaped CDDL overlays (#18057)
+* [build] generate the BiDi schema vendor section from Mozilla's Firefox CDDL (#18060)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* [build] add support for Mozilla's Commands fragment in the BiDi schema (#18071)
+* [build] Automated Browser Version Update (major) with CDP (#18067)
+* [build] Automated CDDL Spec Update (#18075)
+
+4.49.0 (2026-09-09)
+=========================
+* Support CDP versions: v151, v152, v153
+* derive BiDi field names and enum value types in the schema (#17966)
+* [build] Automated CDDL Spec Update (#17990)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+
 4.48.0 (2026-08-27)
 =========================
 * Support CDP versions: v150, v151, v152

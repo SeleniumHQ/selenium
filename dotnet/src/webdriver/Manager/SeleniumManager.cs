@@ -19,9 +19,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
-#if !NET8_0_OR_GREATER
 using System.Runtime.InteropServices;
-#endif
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -134,7 +132,15 @@ public static partial class SeleniumManager
                     probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "win", "native", seleniumManagerFileName));
                     break;
                 case SupportedPlatform.Linux:
-                    probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "linux", "native", seleniumManagerFileName));
+                    // linux-musl-* resolves through these, so no generic "linux" folder is needed.
+#if !NET462
+                    var linuxRid = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
+                        ? "linux-arm64"
+                        : "linux-x64";
+#else
+                    const string linuxRid = "linux-x64";
+#endif
+                    probingPaths.Add(Path.Combine(baseDirectory, "runtimes", linuxRid, "native", seleniumManagerFileName));
                     break;
                 case SupportedPlatform.MacOS:
                     probingPaths.Add(Path.Combine(baseDirectory, "runtimes", "osx", "native", seleniumManagerFileName));

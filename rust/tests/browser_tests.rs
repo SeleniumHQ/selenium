@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::is_linux_arm64;
 use crate::common::{assert_output, get_selenium_manager, get_stdout};
 
 use exitcode::DATAERR;
@@ -22,7 +23,6 @@ use rstest::rstest;
 use selenium_manager::SeleniumManager;
 use selenium_manager::chrome::ChromeManager;
 use selenium_manager::edge::EdgeManager;
-use std::env::consts::ARCH;
 use std::env::consts::OS;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
@@ -33,6 +33,7 @@ mod common;
 #[rstest]
 #[case("chrome", "chromedriver", "114", "114.0.5735.90")]
 #[case("chrome", "chromedriver", "115", "115.0.5790")]
+#[case("chrome", "chromedriver", "153", "153.0")]
 #[case("edge", "msedgedriver", "140", "140.0")]
 #[case("edge", "msedgedriver", "141", "141.0")]
 #[case("firefox", "geckodriver", "101", "0.31.0")]
@@ -45,7 +46,12 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
-    if OS.eq("linux") && ARCH.eq("aarch64") {
+    // Not published for Linux arm64: Chrome below 153, Edge at all, geckodriver below 0.32 (all cases here)
+    if is_linux_arm64()
+        && (browser.eq("edge")
+            || browser.eq("firefox")
+            || (browser.eq("chrome") && browser_version.parse::<i32>().unwrap_or_default() < 153))
+    {
         return;
     }
 
@@ -87,7 +93,7 @@ fn wrong_parameters_test(
     #[case] driver_version: String,
     #[case] error_code: i32,
 ) {
-    if OS.eq("linux") && ARCH.eq("aarch64") && !browser.eq("firefox") {
+    if is_linux_arm64() && browser.eq("edge") {
         return;
     }
 
@@ -131,17 +137,6 @@ fn invalid_geckodriver_version_test() {
 }
 
 #[test]
-fn chrome_is_unsupported_on_linux_arm64() {
-    let mut manager = ChromeManager::new().unwrap();
-    manager.config.os = "linux".to_string();
-    manager.config.arch = "aarch64".to_string();
-    let error = manager
-        .request_latest_browser_version_from_online("")
-        .unwrap_err();
-    assert!(error.to_string().contains("not supported yet"));
-}
-
-#[test]
 fn edge_is_unsupported_on_linux_arm64() {
     let mut manager = EdgeManager::new().unwrap();
     manager.config.os = "linux".to_string();
@@ -161,6 +156,33 @@ fn firefox_below_min_version_on_linux_arm64_test() {
             "firefox",
             "--browser-version",
             "121",
+            "--os",
+            "linux",
+            "--arch",
+            "arm64",
+            "--force-browser-download",
+            "--debug",
+        ])
+        .assert()
+        .try_success();
+
+    assert_output(
+        &mut cmd,
+        result,
+        vec!["not available for download"],
+        DATAERR,
+    );
+}
+
+#[test]
+fn chrome_below_min_version_on_linux_arm64_test() {
+    let mut cmd = get_selenium_manager();
+    let result = cmd
+        .args([
+            "--browser",
+            "chrome",
+            "--browser-version",
+            "152",
             "--os",
             "linux",
             "--arch",
@@ -225,8 +247,8 @@ fn invalid_browser_path_test() {
 }
 
 #[cfg(unix)]
-fn create_fake_browser(version: &str) -> std::path::PathBuf {
-    let tmp = std::env::temp_dir().join(format!("fake-chrome-{}", version.replace('.', "-")));
+fn create_fake_browser(dir: &Path, version: &str) -> std::path::PathBuf {
+    let tmp = dir.join("fake-chrome");
     let script = format!("#!/bin/sh\necho 'Google Chrome {}'\n", version);
     std::fs::write(&tmp, script).expect("Unable to write fake browser script");
     std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o755))
@@ -237,7 +259,8 @@ fn create_fake_browser(version: &str) -> std::path::PathBuf {
 #[test]
 #[cfg(unix)]
 fn browser_path_version_mismatch_test() {
-    let fake_browser = create_fake_browser("131.0.6778.264");
+    let tmp_dir = tempfile::tempdir().unwrap();
+    let fake_browser = create_fake_browser(tmp_dir.path(), "131.0.6778.264");
     let mut cmd = get_selenium_manager();
     let stdout = cmd
         .args([
@@ -268,7 +291,8 @@ fn browser_path_version_mismatch_test() {
 #[test]
 #[cfg(unix)]
 fn browser_path_major_version_mismatch_test() {
-    let fake_browser = create_fake_browser("131.0.6778.264");
+    let tmp_dir = tempfile::tempdir().unwrap();
+    let fake_browser = create_fake_browser(tmp_dir.path(), "131.0.6778.264");
     let mut cmd = get_selenium_manager();
     let stdout = cmd
         .args([

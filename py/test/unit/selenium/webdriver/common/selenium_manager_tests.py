@@ -61,8 +61,9 @@ def test_uses_windows(monkeypatch):
 def test_uses_windows_arm64(monkeypatch):
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr("platform.machine", lambda: "ARM64")
-    with pytest.raises(WebDriverException, match="Unsupported platform/architecture combination: win32/arm64"):
-        SeleniumManager()._get_binary()
+    binary = SeleniumManager()._get_binary()
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
 
 
 def test_uses_linux(monkeypatch):
@@ -70,14 +71,15 @@ def test_uses_linux(monkeypatch):
     monkeypatch.setattr("platform.machine", lambda: "x86_64")
     binary = SeleniumManager()._get_binary()
     project_root = Path(selenium.__file__).parent.parent
-    assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager")
+    assert binary == project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
 
 
-def test_uses_linux_arm64(monkeypatch):
+def test_uses_linux_aarch64(monkeypatch):
     monkeypatch.setattr(sys, "platform", "linux")
-    monkeypatch.setattr("platform.machine", lambda: "arm64")
-    with pytest.raises(WebDriverException, match="Unsupported platform/architecture combination: linux/arm64"):
-        SeleniumManager()._get_binary()
+    monkeypatch.setattr("platform.machine", lambda: "aarch64")
+    binary = SeleniumManager()._get_binary()
+    project_root = Path(selenium.__file__).parent.parent
+    assert binary == project_root.joinpath("selenium/webdriver/common/linux-arm64/selenium-manager")
 
 
 def test_uses_mac(monkeypatch):
@@ -97,7 +99,7 @@ def test_uses_freebsd(monkeypatch, caplog):
     try:
         binary = SeleniumManager()._get_binary()
         project_root = Path(selenium.__file__).parent.parent
-        assert binary == project_root.joinpath("selenium/webdriver/common/linux/selenium-manager")
+        assert binary == project_root.joinpath("selenium/webdriver/common/linux-x86_64/selenium-manager")
         assert "Selenium Manager binary may not be compatible with FreeBSD" in caplog.text
     finally:
         root.handlers = old_handlers

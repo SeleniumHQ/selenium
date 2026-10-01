@@ -62,6 +62,10 @@ task :affected_targets do |_task, args|
     File.write('bazel-targets.txt', targets.sort.join(' '))
     targets.sort.each { |t| puts t }
   end
+
+  manager_changed = changed_files.any? { |f| f.start_with?('rust/') }
+  puts 'Selenium Manager sources changed' if manager_changed
+  File.write('compile-manager.txt', manager_changed.to_s)
 end
 
 # ./go bazel:build_test_index                    --> 'build/bazel-test-file-index'

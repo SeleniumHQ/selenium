@@ -1,4 +1,4 @@
-name: mirror-selenium-releases
+name: Release - Mirror
 
 on:
   workflow_dispatch:

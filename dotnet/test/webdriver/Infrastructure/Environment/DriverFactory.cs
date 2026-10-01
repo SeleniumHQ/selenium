@@ -84,6 +84,10 @@ public class DriverFactory
 
             var chromeOptions = (ChromeOptions)options;
             chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+            if (EnvironmentManager.Instance.Headless)
+            {
+                chromeOptions.AddArgument("--headless");
+            }
 
             service = CreateService<ChromeDriverService>();
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -102,6 +106,10 @@ public class DriverFactory
 
             var edgeOptions = (EdgeOptions)options;
             edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+            if (EnvironmentManager.Instance.Headless)
+            {
+                edgeOptions.AddArgument("--headless");
+            }
 
             service = CreateService<EdgeDriverService>();
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
@@ -127,6 +135,10 @@ public class DriverFactory
         {
             browser = Browser.Firefox;
             options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
+            if (EnvironmentManager.Instance.Headless)
+            {
+                ((FirefoxOptions)options).AddArgument("-headless");
+            }
             service = CreateService<FirefoxDriverService>();
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
             {

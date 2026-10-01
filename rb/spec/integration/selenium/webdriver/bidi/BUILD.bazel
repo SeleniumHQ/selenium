@@ -13,7 +13,6 @@ filegroup(
         srcs = [file],
         bidi = True,
         classic = False,
-        tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],

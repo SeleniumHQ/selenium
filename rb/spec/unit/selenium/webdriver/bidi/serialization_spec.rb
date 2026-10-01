@@ -315,7 +315,7 @@ module Selenium
               expect(shared).to eq([:extension_data])
             end
 
-            # #1140 makes InstallParameters extensible, so a not-yet-typed vendor key still rides along.
+            # A vendor-extended record stays open in Ruby, so a not-yet-typed vendor key still rides along.
             it 'passes an unknown vendor key through the extensions bag' do
               params = WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1})
 

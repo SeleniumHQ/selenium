@@ -1,3 +1,13 @@
+0.4.50
+======
+* Show a proper error message if we can't open metdata_path (#18087)
+
+0.4.49
+======
+* fix Windows architecture detection under WOW64 (#17987)
+* Add license and notice links to Selenium Manager help (#17986)
+* Add support for Chrome arm64 on Linux (#17915)
+
 0.4.48
 ======
 * Honour the `DO_NOT_TRACK` env var (#17931)

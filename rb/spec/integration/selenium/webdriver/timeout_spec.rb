@@ -23,10 +23,10 @@ module Selenium
   module WebDriver
     describe Timeouts, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
+        driver.navigate.to url_for('dynamic.html')
         driver.manage.timeouts.implicit_wait = 6
         driver.manage.timeouts.page_load = 2
         driver.manage.timeouts.script = 1.5
-        driver.navigate.to url_for('dynamic.html')
       end
 
       after do
