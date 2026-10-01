@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -40,6 +41,8 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.jspecify.annotations.NullMarked;
@@ -55,6 +58,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -159,6 +163,40 @@ class RemoteWebDriverInitializationTest {
     verify(client).close();
   }
 
+  @Test
+  void endsRemoteSessionBeforeClosingHttpClientWhenSetupFailsAfterSessionStarted()
+      throws MalformedURLException {
+    List<String> events = new ArrayList<>();
+    HttpClient client = mock(HttpClient.class);
+    when(client.execute(any()))
+        .thenAnswer(
+            invocation -> {
+              HttpRequest request = invocation.getArgument(0);
+              events.add(request.getMethod().name());
+              return request.getMethod() == HttpMethod.POST
+                  ? newSessionResponse(Map.of("webSocketUrl", "ws://localhost:4444/session/bidi"))
+                  : new HttpResponse()
+                      .setStatus(200)
+                      .setContent(Contents.asJson(singletonMap("value", null)));
+            });
+    doAnswer(invocation -> events.add("close")).when(client).close();
+    HttpClient.Factory webSocketClientFactory = mock(HttpClient.Factory.class);
+    when(webSocketClientFactory.createClient(any(ClientConfig.class)))
+        .thenThrow(new IllegalStateException("Stub WebSocket client failure"));
+
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(
+            () ->
+                new RemoteWebDriver(
+                    new HttpCommandExecutor(client, new URL("http://localhost:4444/")),
+                    new ImmutableCapabilities(),
+                    webSocketClientFactory,
+                    ClientConfig.defaultConfig()))
+        .withMessage("Stub WebSocket client failure");
+
+    assertThat(events).startsWith("POST", "DELETE", "close");
+  }
+
   private static HttpClient unreachableRemoteEnd() {
     HttpClient client = mock(HttpClient.class);
     when(client.execute(any()))
@@ -167,6 +205,10 @@ class RemoteWebDriverInitializationTest {
   }
 
   private static HttpResponse newSessionResponse() {
+    return newSessionResponse(Map.of());
+  }
+
+  private static HttpResponse newSessionResponse(Map<String, Object> capabilities) {
     return new HttpResponse()
         .setStatus(200)
         .setContent(
@@ -174,8 +216,7 @@ class RemoteWebDriverInitializationTest {
                 singletonMap(
                     "value",
                     Map.of(
-                        "sessionId", UUID.randomUUID().toString(),
-                        "capabilities", new ImmutableCapabilities().asMap()))));
+                        "sessionId", UUID.randomUUID().toString(), "capabilities", capabilities))));
   }
 
   @Test

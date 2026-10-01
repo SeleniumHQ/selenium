@@ -320,9 +320,12 @@ public class RemoteWebDriver
       sessionId = new SessionId(response.getSessionId());
       this.biDi = createBiDi();
     } catch (Exception e) {
-      // quit() is a no-op without a session id, so this is the only chance to release the
-      // executor's HTTP client and threads before the caller retries with a new driver
-      closeExecutor();
+      // Without a session id quit() is a no-op, so this is the only chance to release the
+      // executor's HTTP client and threads; with one, the constructor's quit() must still be able
+      // to end the remote session before it closes the executor
+      if (sessionId == null) {
+        closeExecutor();
+      }
       throw e;
     }
   }
