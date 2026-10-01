@@ -124,7 +124,7 @@ internal class SessionTests : BiDiTestFixture
 
         cts.Cancel();
 
-        Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
         });
