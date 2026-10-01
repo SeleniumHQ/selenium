@@ -250,14 +250,28 @@ jobs:
 
   # Covers the prepare-release step shared by nightly.yml and ci-rbe.yml. Writes
   # files only; nothing is tagged or published.
+  #
+  # prepare-release.sh itself is `bazel build --config=rbe-ci --config=release`,
+  # and remote execution is not authorized from a pull request, so the script
+  # cannot run here. It is inlined below without the rbe-ci half, which is also
+  # what makes it an image test: with rbe-ci every action runs in an EngFlow
+  # container and the runner's OS barely participates.
   prepare-release:
     name: Prepare Release
     uses: ./.github/workflows/bazel.yml
     with:
       name: Prepare Release
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/prepare-release.sh
-      artifact-name: trial-prepare-release
+      run: >-
+        bazel build --config=release
+        $(bazel query 'kind(maven_publish, //java/...)' | tr '\n' ' ')
+        //java/src/org/openqa/selenium:client-zip
+        //java/src/org/openqa/selenium/grid:server-zip
+        //java/src/org/openqa/selenium/grid:executable-grid
+        //py:selenium-wheel //py:selenium-sdist
+        //rb:selenium-webdriver //rb:selenium-devtools
+        //dotnet:release
+        //javascript/selenium-webdriver:selenium-webdriver
 
   # Covers parse-release-tag.yml, the shell-only tag parser both release
   # workflows gate on.
@@ -323,7 +337,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
-      run: ./go py:build --config=rbe_release
+      run: ./go py:build --config=release
       artifact-name: trial-pypi-distributions
       artifact-path: |
         bazel-bin/py/selenium-*.whl
@@ -337,7 +351,7 @@ jobs:
     with:
       name: Package java dotnet
       ruby-version: jruby-10.1.0.0
-      run: ./go java:version nightly && ./go all:package --config=rbe_release
+      run: ./go java:version nightly && ./go all:package --config=release
       artifact-name: trial-release-packages
       artifact-path: build/dist/*.*
 
@@ -350,11 +364,11 @@ jobs:
       matrix:
         include:
           - language: ruby
-            run: ./go rb:build --config=rbe_release
+            run: ./go rb:build --config=release
             ruby-version: jruby-10.1.0.0
             node-version: ''
           - language: javascript
-            run: ./go node:build --config=rbe_release
+            run: ./go node:build --config=release
             ruby-version: ''
             node-version: '24.14.1'
     uses: ./.github/workflows/bazel.yml
@@ -383,7 +397,16 @@ jobs:
       name: Prepare Release 24.04
       os: ubuntu-24.04
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/prepare-release.sh
+      run: >-
+        bazel build --config=release
+        $(bazel query 'kind(maven_publish, //java/...)' | tr '\n' ' ')
+        //java/src/org/openqa/selenium:client-zip
+        //java/src/org/openqa/selenium/grid:server-zip
+        //java/src/org/openqa/selenium/grid:executable-grid
+        //py:selenium-wheel //py:selenium-sdist
+        //rb:selenium-webdriver //rb:selenium-devtools
+        //dotnet:release
+        //javascript/selenium-webdriver:selenium-webdriver
 
   # The 26.04 JRuby crash was a JVM SIGSEGV in CDS, which is the kind of fault
   # that can be intermittent. Repeat the job so a one-off is distinguishable from
