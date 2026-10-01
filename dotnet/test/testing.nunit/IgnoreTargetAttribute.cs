@@ -19,11 +19,11 @@
 
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 #nullable enable
 
-namespace OpenQA.Selenium.Tests.Infrastructure;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 public class IgnoreTargetAttribute(string target) : NUnitAttribute, IApplyToTest

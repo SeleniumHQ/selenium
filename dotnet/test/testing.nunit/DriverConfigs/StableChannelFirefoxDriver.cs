@@ -1,4 +1,4 @@
-// <copyright file="EdgeInternetExplorerModeDriver.cs" company="Selenium Committers">
+// <copyright file="StableChannelFirefoxDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,30 +17,30 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Firefox;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-// This is a simple wrapper class to create an InternetExplorerDriver that
-// uses the enables RequireWindowFocus as the default input simplation.
-public class EdgeInternetExplorerModeDriver : InternetExplorerDriver
+// This is a simple wrapper class to create a FirefoxDriver that
+// uses the Marionette implementation and has no parameters in the
+// constructor.
+public class StableChannelFirefoxDriver : FirefoxDriver
 {
-
-    public EdgeInternetExplorerModeDriver()
+    public StableChannelFirefoxDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public EdgeInternetExplorerModeDriver(InternetExplorerOptions options)
+    public StableChannelFirefoxDriver(FirefoxOptions options)
         : base(options)
     {
     }
 
-    public EdgeInternetExplorerModeDriver(InternetExplorerDriverService service, InternetExplorerOptions options)
+    public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
         : base(service, options)
     {
     }
 
-    public static InternetExplorerOptions DefaultOptions => new InternetExplorerOptions() { RequireWindowFocus = true, UsePerProcessProxy = true, AttachToEdgeChrome = true };
+    public static FirefoxOptions DefaultOptions => new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true };
 }

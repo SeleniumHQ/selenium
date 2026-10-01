@@ -1,4 +1,4 @@
-// <copyright file="StableChannelChromeDriver.cs" company="Selenium Committers">
+// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,27 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-public class StableChannelChromeDriver : ChromeDriver
+public class StableChannelEdgeDriver : EdgeDriver
 {
-    public StableChannelChromeDriver()
+
+    public StableChannelEdgeDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelChromeDriver(ChromeOptions options)
+    public StableChannelEdgeDriver(EdgeOptions options)
         : base(options)
     {
     }
 
-    public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
         : base(service, options)
     {
     }
-
-    public static ChromeOptions DefaultOptions => new ChromeOptions();
+    public static EdgeOptions DefaultOptions => new EdgeOptions();
 }

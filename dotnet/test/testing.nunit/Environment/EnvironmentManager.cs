@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Bazel;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class EnvironmentManager
 {

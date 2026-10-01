@@ -18,9 +18,9 @@
 // </copyright>
 
 using NUnit.Framework.Interfaces;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
-namespace OpenQA.Selenium.Tests.Infrastructure;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 public class NeedsFreshDriverAttribute : TestActionAttribute
 {

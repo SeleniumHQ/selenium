@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 public class TestUtilities
 {

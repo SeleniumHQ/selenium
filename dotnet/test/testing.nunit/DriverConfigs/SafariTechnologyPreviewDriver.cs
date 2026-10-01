@@ -1,4 +1,4 @@
-// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
+// <copyright file="SafariTechnologyPreviewDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,38 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Safari;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-public class StableChannelEdgeDriver : EdgeDriver
+// This is a simple wrapper class to create a SafariDriver that
+// uses the technology preview implementation and has no parameters in the
+// constructor.
+public class SafariTechnologyPreviewDriver : SafariDriver
 {
-
-    public StableChannelEdgeDriver()
+    public SafariTechnologyPreviewDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelEdgeDriver(EdgeOptions options)
+    public SafariTechnologyPreviewDriver(SafariOptions options)
         : base(options)
     {
     }
 
-    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
+    public SafariTechnologyPreviewDriver(SafariDriverService service, SafariOptions options)
         : base(service, options)
     {
     }
-    public static EdgeOptions DefaultOptions => new EdgeOptions();
+
+    public static SafariOptions DefaultOptions
+    {
+        get
+        {
+            SafariOptions options = new SafariOptions();
+            options.UseTechnologyPreview();
+            return options;
+        }
+    }
 }

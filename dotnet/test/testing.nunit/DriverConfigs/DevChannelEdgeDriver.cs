@@ -1,4 +1,4 @@
-// <copyright file="TestEnvironment.cs" company="Selenium Committers">
+// <copyright file="DevChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,27 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Edge;
 
-internal class TestEnvironment
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
+
+public class DevChannelEdgeDriver : EdgeDriver
 {
-    public bool CaptureWebServerOutput { get; set; }
+    public DevChannelEdgeDriver()
+        : base(DefaultOptions)
+    {
+    }
 
-    public string DriverServiceLocation { get; set; }
+    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    public DevChannelEdgeDriver(EdgeOptions options)
+        : base(options)
+    {
+    }
 
-    public bool HideWebServerCommandPrompt { get; set; }
+    public DevChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        : base(service, options)
+    {
+    }
 
-    public string ActiveDriverConfig { get; set; }
-
-    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
+    public static EdgeOptions DefaultOptions => new EdgeOptions() { BrowserVersion = "dev" };
 }

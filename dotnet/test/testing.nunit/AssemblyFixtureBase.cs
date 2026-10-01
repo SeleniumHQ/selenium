@@ -18,9 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.Internal.Logging;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
-namespace OpenQA.Selenium.Tests;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 // NUnit only discovers [SetUpFixture] in the test assembly, so each test project derives its own.
 public abstract class AssemblyFixtureBase

@@ -1,4 +1,4 @@
-// <copyright file="StableChannelFirefoxDriver.cs" company="Selenium Committers">
+// <copyright file="DefaultSafariDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,30 +17,23 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Safari;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-// This is a simple wrapper class to create a FirefoxDriver that
-// uses the Marionette implementation and has no parameters in the
+// This is a simple wrapper class to create a SafariDriver that
+// uses the technology preview implementation and has no parameters in the
 // constructor.
-public class StableChannelFirefoxDriver : FirefoxDriver
+public class DefaultSafariDriver : SafariDriver
 {
-    public StableChannelFirefoxDriver()
-        : base(DefaultOptions)
-    {
-    }
-
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelFirefoxDriver(FirefoxOptions options)
+    public DefaultSafariDriver(SafariOptions options)
         : base(options)
     {
     }
 
-    public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
+    public DefaultSafariDriver(SafariDriverService service, SafariOptions options)
         : base(service, options)
     {
     }
-
-    public static FirefoxOptions DefaultOptions => new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true };
 }

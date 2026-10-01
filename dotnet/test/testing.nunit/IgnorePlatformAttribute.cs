@@ -20,10 +20,10 @@
 using System.Runtime.InteropServices;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 using OSPlatform = System.Runtime.InteropServices.OSPlatform;
 
-namespace OpenQA.Selenium.Tests.Infrastructure;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 public class IgnorePlatformAttribute(string platform) : NUnitAttribute, IApplyToTest

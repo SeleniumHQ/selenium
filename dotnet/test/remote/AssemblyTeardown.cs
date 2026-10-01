@@ -18,7 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.Tests;
+using OpenQA.Selenium.Testing.NUnit;
 
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly

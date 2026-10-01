@@ -18,10 +18,10 @@
 // </copyright>
 
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 using static NUnit.Framework.Interfaces.ResultState;
 
-namespace OpenQA.Selenium.Tests;
+namespace OpenQA.Selenium.Testing.NUnit;
 
 public abstract class DriverTestFixture
 {

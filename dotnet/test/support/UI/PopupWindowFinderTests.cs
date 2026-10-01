@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Tests;
+using OpenQA.Selenium.Testing.NUnit;
 
 namespace OpenQA.Selenium.Support.Tests.UI;
 

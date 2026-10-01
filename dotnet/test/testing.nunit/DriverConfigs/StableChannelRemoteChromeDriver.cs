@@ -1,4 +1,4 @@
-// <copyright file="Browser.cs" company="Selenium Committers">
+// <copyright file="StableChannelRemoteChromeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,15 +17,17 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
-public enum Browser
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
+
+public class StableChannelRemoteChromeDriver : RemoteWebDriver
 {
-    All,
-    IE,
-    Edge,
-    Firefox,
-    Safari,
-    Chrome,
-    Remote,
+    public StableChannelRemoteChromeDriver()
+        : base(RemoteSeleniumServer.ServerUri, new ChromeOptions())
+    {
+        this.FileDetector = new LocalFileDetector();
+    }
 }

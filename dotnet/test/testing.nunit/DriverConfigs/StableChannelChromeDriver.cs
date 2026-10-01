@@ -1,4 +1,4 @@
-// <copyright file="DriverConfig.cs" company="Selenium Committers">
+// <copyright file="StableChannelChromeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,27 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using OpenQA.Selenium.Chrome;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-public class DriverConfig
+public class StableChannelChromeDriver : ChromeDriver
 {
-    public string DriverTypeName { get; set; }
+    public StableChannelChromeDriver()
+        : base(DefaultOptions)
+    {
+    }
 
-    [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
-    public Browser BrowserValue { get; set; }
+    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    public StableChannelChromeDriver(ChromeOptions options)
+        : base(options)
+    {
+    }
 
-    public string RemoteCapabilities { get; set; }
+    public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+        : base(service, options)
+    {
+    }
 
-    public bool AutoStartRemoteServer { get; set; }
-
-    public bool Logging { get; set; }
+    public static ChromeOptions DefaultOptions => new ChromeOptions();
 }

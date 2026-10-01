@@ -140,10 +140,10 @@ dotnet/test/
 │   ├── DriverTestFixture.cs        # Base class
 │   ├── AssemblyFixtureBase.cs      # Base for each project's [SetUpFixture]
 │   ├── appconfig.json              # Driver configurations
-│   └── Infrastructure/             # Custom attributes and test environment
-│       ├── IgnoreBrowserAttribute.cs
-│       ├── NeedsFreshDriverAttribute.cs
-│       └── Environment/            # EnvironmentManager, DriverFactory
+│   ├── IgnoreBrowserAttribute.cs
+│   ├── NeedsFreshDriverAttribute.cs
+│   ├── DriverConfigs/              # Browser-specific driver types
+│   └── Environment/                # EnvironmentManager, DriverFactory
 ├── testing.webserver/              # Web server hosting test pages
 ├── webdriver/                      # WebDriver tests
 │   └── *Tests.cs                   # Test files

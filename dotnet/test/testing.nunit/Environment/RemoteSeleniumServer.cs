@@ -25,7 +25,7 @@ using System.Net.Sockets;
 using Bazel;
 using OpenQA.Selenium.Internal;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 #nullable enable
 

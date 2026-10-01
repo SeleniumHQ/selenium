@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>Testing.NUnit</AssemblyName>
-    <RootNamespace>OpenQA.Selenium.Tests</RootNamespace>
+    <RootNamespace>OpenQA.Selenium.Testing.NUnit</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class DriverStartingEventArgs(DriverService service, DriverOptions options)
 {
