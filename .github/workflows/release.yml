@@ -1,4 +1,4 @@
-name: Release Selenium
+name: Release - Finish
 
 on:
   pull_request:
@@ -141,6 +141,7 @@ jobs:
     needs: [parse-tag, check-authorization]
     permissions:
       contents: read
+      packages: read
       id-token: write
     strategy:
       fail-fast: false
@@ -265,14 +266,16 @@ jobs:
 
   verify:
     name: Verify Published Packages
-    needs: [parse-tag, publish, publish-python]
+    needs: [parse-tag, create-tag, publish, publish-python]
     if: >-
       always() && !cancelled() &&
+      needs.create-tag.result == 'success' &&
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
+      ref: ${{ needs.parse-tag.outputs.tag }}
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
     secrets: inherit
 
@@ -299,6 +302,7 @@ jobs:
       actions: read
     uses: ./.github/workflows/commit-changes.yml
     with:
+      ref: trunk
       artifact-name: version-reset
       commit-message: "[build] Reset versions to nightly after ${{ needs.parse-tag.outputs.tag }} release"
     secrets:
@@ -377,5 +381,6 @@ jobs:
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
-          MSG_MINIMAL: actions url
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -85,7 +85,44 @@ class ErrorHandlerTest {
         ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
-    assertThrowsCorrectExceptionType(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
+    assertThrowsCorrectExceptionType(
+        ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
+  }
+
+  @Test
+  void testResolvesExceptionTypeFromStateWhenStatusIsAbsent() {
+    Response response = new Response();
+    response.setState("stale element reference");
+
+    assertThatExceptionOfType(StaleElementReferenceException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123));
+  }
+
+  @Test
+  void testStateTakesPrecedenceOverConflictingStatus() {
+    Response response = new Response();
+    response.setState("no such element");
+    response.setStatus(ErrorCodes.NO_SUCH_WINDOW);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123));
+  }
+
+  @Test
+  void testFallsBackToWebDriverExceptionWhenErrorCodesReturnsNoType() {
+    ErrorCodes codes =
+        new ErrorCodes() {
+          @Override
+          public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
+            return null;
+          }
+        };
+    ErrorHandler customHandler = new ErrorHandler(codes, true);
+    Response response = new Response();
+    response.setState("no such element");
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> customHandler.throwIfResponseFailed(response, 123));
   }
 
   private void assertThrowsCorrectExceptionType(
@@ -439,7 +476,6 @@ class ErrorHandlerTest {
     exceptions.put(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     exceptions.put(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class);
     exceptions.put(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class);
-    exceptions.put(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.TIMEOUT, TimeoutException.class);
     exceptions.put(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
     exceptions.put(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class);
@@ -450,7 +486,6 @@ class ErrorHandlerTest {
     exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
     exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
-    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class);
 
     for (Map.Entry<Integer, Class<?>> exception : exceptions.entrySet()) {

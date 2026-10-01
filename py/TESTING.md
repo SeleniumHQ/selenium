@@ -46,6 +46,7 @@ bazel test //py:test-chrome-bidi
 # Against a Grid server (chrome and firefox only). The suite starts its own
 # Selenium standalone server and talks to it with webdriver.Remote.
 bazel test //py:test-chrome-remote
+bazel test //py:test-chrome-grid     # only the Grid-specific tests
 bazel test //py:test-remote          # every remote suite
 
 # Test filters

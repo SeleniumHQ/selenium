@@ -102,6 +102,9 @@ task :release do |_task, arguments|
 
     ENV['GEM_HOST_API_KEY'] = "Bearer #{ENV.fetch('GITHUB_TOKEN', nil)}"
 
+    puts 'Updating Ruby version to nightly...'
+    Rake::Task['rb:version'].invoke('nightly')
+
     puts 'Bumping Ruby nightly version...'
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
@@ -164,7 +167,7 @@ end
 desc 'Update Ruby changelog'
 task :changelogs do
   header = "#{ruby_version} (#{Time.now.strftime('%Y-%m-%d')})\n========================="
-  SeleniumRake.update_changelog(ruby_version, 'rb', 'rb/lib/', 'rb/CHANGES', header)
+  SeleniumRake.update_changelog(ruby_version, 'ruby', 'rb/lib/', 'rb/CHANGES', header)
 end
 
 desc 'Update Ruby version'

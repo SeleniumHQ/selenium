@@ -286,7 +286,7 @@ def rb_integration_test(
                         "WEBDRIVER_BIDI": "true",
                     },
                     main = "@bundle//bin:rspec",
-                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + remote_tags + ["bidi", "{}-remote".format(browser)] + family_tags,
+                    tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + remote_tags + ["bidi", "{}-grid".format(browser), "{}-remote".format(browser)] + family_tags,
                     deps = {d: True for d in (
                         ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
                         BROWSERS[browser]["deps"] +
