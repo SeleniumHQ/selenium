@@ -39,7 +39,7 @@
 
 using OpenQA.Selenium.Chrome;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
 public class DevChannelChromeDriver : ChromeDriver
 {

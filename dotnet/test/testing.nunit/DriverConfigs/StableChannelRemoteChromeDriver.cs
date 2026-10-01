@@ -1,4 +1,4 @@
-// <copyright file="TestEnvironment.cs" company="Selenium Committers">
+// <copyright file="StableChannelRemoteChromeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,17 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
-internal class TestEnvironment
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
+
+public class StableChannelRemoteChromeDriver : RemoteWebDriver
 {
-    public bool CaptureWebServerOutput { get; set; }
-
-    public string DriverServiceLocation { get; set; }
-
-    public bool HideWebServerCommandPrompt { get; set; }
-
-    public string ActiveDriverConfig { get; set; }
-
-    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
+    public StableChannelRemoteChromeDriver()
+        : base(RemoteSeleniumServer.ServerUri, new ChromeOptions())
+    {
+        this.FileDetector = new LocalFileDetector();
+    }
 }

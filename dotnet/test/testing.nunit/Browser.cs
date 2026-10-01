@@ -1,4 +1,4 @@
-// <copyright file="GlobalUsings.cs" company="Selenium Committers">
+// <copyright file="Browser.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,7 +17,15 @@
 // under the License.
 // </copyright>
 
-global using global::NUnit.Framework;
-global using global::OpenQA.Selenium.Testing.NUnit;
-global using global::System;
-global using global::System.Collections.Generic;
+namespace OpenQA.Selenium.Testing.NUnit;
+
+public enum Browser
+{
+    All,
+    IE,
+    Edge,
+    Firefox,
+    Safari,
+    Chrome,
+    Remote,
+}

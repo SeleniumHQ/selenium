@@ -7,6 +7,7 @@
     <Project Path="test/remote/Selenium.WebDriver.Remote.Tests.csproj" />
     <Project Path="test/support/Selenium.Support.Tests.csproj" />
     <Project Path="test/webdriver/Selenium.WebDriver.Tests.csproj" />
+    <Project Path="test/testing.nunit/Selenium.Testing.NUnit.csproj" />
     <Project Path="test/testing.webserver/Selenium.Testing.WebServer.csproj" />
   </Folder>
 </Solution>

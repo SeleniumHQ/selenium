@@ -374,7 +374,7 @@ public class CombinedInputActionsTests : DriverTestFixture
         new Actions(Driver).MoveToElement(element).Build().Perform();
 
         // Intentionally wait to make sure hover persists.
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
 
         target.Click();
 

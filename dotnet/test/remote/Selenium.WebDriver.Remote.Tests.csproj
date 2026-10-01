@@ -17,11 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\webdriver\Selenium.WebDriver.Tests.csproj" />
+    <ProjectReference Include="..\..\src\webdriver\Selenium.WebDriver.csproj" />
+    <ProjectReference Include="..\testing.nunit\Selenium.Testing.NUnit.csproj" />
+    <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="WebDriver.Remote.Tests.nunit">
+    <None Include="..\testing.nunit\appconfig.json">
+      <Link>appconfig.json</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

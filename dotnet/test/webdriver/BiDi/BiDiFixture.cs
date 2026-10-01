@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 
 namespace OpenQA.Selenium.Tests.BiDi;

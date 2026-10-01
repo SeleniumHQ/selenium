@@ -1,4 +1,4 @@
-// <copyright file="DevChannelEdgeDriver.cs" company="Selenium Committers">
+// <copyright file="DriverConfig.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,20 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Edge;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
-public class DevChannelEdgeDriver : EdgeDriver
+public class DriverConfig
 {
-    public DevChannelEdgeDriver()
-        : base(DefaultOptions)
-    {
-    }
+    public string DriverTypeName { get; set; }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public DevChannelEdgeDriver(EdgeOptions options)
-        : base(options)
-    {
-    }
+    [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
+    public Browser BrowserValue { get; set; }
 
-    public DevChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
-        : base(service, options)
-    {
-    }
+    public string RemoteCapabilities { get; set; }
 
-    public static EdgeOptions DefaultOptions => new EdgeOptions() { BrowserVersion = "dev" };
+    public bool AutoStartRemoteServer { get; set; }
+
+    public bool Logging { get; set; }
 }

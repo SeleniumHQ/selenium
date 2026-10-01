@@ -84,9 +84,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetMediaFeaturesOverride()
     {
         Assert.That(async () =>
@@ -103,9 +103,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetMediaFeaturesOverrideToDefault()
     {
         Assert.That(async () =>
@@ -116,9 +116,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverride()
     {
         Assert.That(async () =>
@@ -129,9 +129,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverrideToDefault()
     {
         Assert.That(async () =>
@@ -142,7 +142,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetScriptingEnabled()
     {
         Assert.That(async () =>
@@ -153,7 +153,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetScriptingEnabledToDefault()
     {
         Assert.That(async () =>
@@ -164,9 +164,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverride()
     {
         Assert.That(async () =>
@@ -177,9 +177,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetScrollbarTypeOverrideToDefault()
     {
         Assert.That(async () =>
@@ -190,9 +190,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
 
     public void CanSetTextLayoutModeOverride()
     {
@@ -226,8 +226,8 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
     public void CanSetScreenSettingsOverride()
     {
         var screenArea = new ScreenArea(300, 200);
@@ -260,7 +260,7 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "invalid argument: Expected \"coordinates\" to be an object, got [object Undefined] undefined")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "invalid argument: Expected \"coordinates\" to be an object, got [object Undefined] undefined")]
     public void CanSetGeolocationPositionErrorOverride()
     {
         Assert.That(async () =>
@@ -271,9 +271,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverride()
     {
         Assert.That(async () =>
@@ -284,9 +284,9 @@ internal class EmulationTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Not supported yet?")]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public void CanSetTouchOverrideToDefault()
     {
         Assert.That(async () =>

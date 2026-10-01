@@ -1,4 +1,4 @@
-// <copyright file="StableChannelRemoteChromeDriver.cs" company="Selenium Committers">
+// <copyright file="GlobalUsings.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
-
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
-
-public class StableChannelRemoteChromeDriver : RemoteWebDriver
-{
-    public StableChannelRemoteChromeDriver()
-        : base(RemoteSeleniumServer.ServerUri, new ChromeOptions())
-    {
-        this.FileDetector = new LocalFileDetector();
-    }
-}
+global using global::NUnit.Framework;
+global using global::OpenQA.Selenium.Testing.WebServer;
+global using global::System;
+global using global::System.Collections.Generic;
+global using global::System.Linq;
+global using global::System.Threading.Tasks;

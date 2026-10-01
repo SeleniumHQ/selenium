@@ -19,7 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 

@@ -1,4 +1,4 @@
-// <copyright file="SafariTechnologyPreviewDriver.cs" company="Selenium Committers">
+// <copyright file="NightlyChannelFirefoxDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,38 +17,30 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Safari;
+using OpenQA.Selenium.Firefox;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-// This is a simple wrapper class to create a SafariDriver that
-// uses the technology preview implementation and has no parameters in the
+// This is a simple wrapper class to create a FirefoxDriver that
+// uses the Marionette implementation and has no parameters in the
 // constructor.
-public class SafariTechnologyPreviewDriver : SafariDriver
+public class NightlyChannelFirefoxDriver : FirefoxDriver
 {
-    public SafariTechnologyPreviewDriver()
+    public NightlyChannelFirefoxDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public SafariTechnologyPreviewDriver(SafariOptions options)
+    public NightlyChannelFirefoxDriver(FirefoxOptions options)
         : base(options)
     {
     }
 
-    public SafariTechnologyPreviewDriver(SafariDriverService service, SafariOptions options)
+    public NightlyChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
         : base(service, options)
     {
     }
 
-    public static SafariOptions DefaultOptions
-    {
-        get
-        {
-            SafariOptions options = new SafariOptions();
-            options.UseTechnologyPreview();
-            return options;
-        }
-    }
+    public static FirefoxOptions DefaultOptions => new FirefoxOptions() { BrowserVersion = "nightly", AcceptInsecureCertificates = true, EnableDevToolsProtocol = true };
 }

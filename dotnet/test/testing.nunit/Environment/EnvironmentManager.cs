@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Bazel;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class EnvironmentManager
 {
@@ -38,7 +38,7 @@ public class EnvironmentManager
         try
         {
             runfiles = Runfiles.Create();
-            dataFilePath = runfiles.Rlocation("_main/dotnet/test/webdriver/appconfig.json");
+            dataFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
         }
         catch (FileNotFoundException)
         {

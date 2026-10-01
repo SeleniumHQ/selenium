@@ -24,7 +24,7 @@ using System.Text;
 using BenderProxy;
 using BenderProxy.Writers;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 

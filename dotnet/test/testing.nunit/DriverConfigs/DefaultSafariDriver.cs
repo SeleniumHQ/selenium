@@ -1,4 +1,4 @@
-// <copyright file="StableChannelChromeDriver.cs" company="Selenium Committers">
+// <copyright file="DefaultSafariDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,23 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Safari;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-public class StableChannelChromeDriver : ChromeDriver
+// This is a simple wrapper class to create a SafariDriver that
+// uses the technology preview implementation and has no parameters in the
+// constructor.
+public class DefaultSafariDriver : SafariDriver
 {
-    public StableChannelChromeDriver()
-        : base(DefaultOptions)
-    {
-    }
-
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelChromeDriver(ChromeOptions options)
+    public DefaultSafariDriver(SafariOptions options)
         : base(options)
     {
     }
 
-    public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+    public DefaultSafariDriver(SafariDriverService service, SafariOptions options)
         : base(service, options)
     {
     }
-
-    public static ChromeOptions DefaultOptions => new ChromeOptions();
 }

@@ -1,4 +1,4 @@
-// <copyright file="EdgeInternetExplorerModeDriver.cs" company="Selenium Committers">
+// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,30 +17,27 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Edge;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-// This is a simple wrapper class to create an InternetExplorerDriver that
-// uses the enables RequireWindowFocus as the default input simplation.
-public class EdgeInternetExplorerModeDriver : InternetExplorerDriver
+public class StableChannelEdgeDriver : EdgeDriver
 {
 
-    public EdgeInternetExplorerModeDriver()
+    public StableChannelEdgeDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public EdgeInternetExplorerModeDriver(InternetExplorerOptions options)
+    public StableChannelEdgeDriver(EdgeOptions options)
         : base(options)
     {
     }
 
-    public EdgeInternetExplorerModeDriver(InternetExplorerDriverService service, InternetExplorerOptions options)
+    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
         : base(service, options)
     {
     }
-
-    public static InternetExplorerOptions DefaultOptions => new InternetExplorerOptions() { RequireWindowFocus = true, UsePerProcessProxy = true, AttachToEdgeChrome = true };
+    public static EdgeOptions DefaultOptions => new EdgeOptions();
 }

@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.Support.Events;
-using OpenQA.Selenium.Tests;
 
 namespace OpenQA.Selenium.Support.Tests.Events;
 
