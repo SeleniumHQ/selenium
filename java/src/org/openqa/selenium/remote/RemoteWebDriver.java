@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -319,12 +320,10 @@ public class RemoteWebDriver
       sessionId = new SessionId(response.getSessionId());
       this.biDi = createBiDi();
     } catch (Exception e) {
-      // If session creation fails, stop the driver service to prevent zombie processes or zombie
-      // http clients
-      try (var hce =
-          executor instanceof HttpCommandExecutor ? (HttpCommandExecutor) executor : null) {
-        throw e;
-      }
+      // quit() is a no-op without a session id, so this is the only chance to release the
+      // executor's HTTP client and threads before the caller retries with a new driver
+      closeExecutor();
+      throw e;
     }
   }
 
@@ -552,8 +551,7 @@ public class RemoteWebDriver
       return;
     }
 
-    try (HttpCommandExecutor httpCommandExecutor =
-        (executor instanceof HttpCommandExecutor) ? (HttpCommandExecutor) executor : null) {
+    try {
       if (this instanceof HasDevTools) {
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
       }
@@ -563,6 +561,19 @@ public class RemoteWebDriver
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;
+      closeExecutor();
+    }
+  }
+
+  private void closeExecutor() {
+    if (!(executor instanceof Closeable)) {
+      return;
+    }
+    try {
+      ((Closeable) executor).close();
+    } catch (Exception e) {
+      // Never mask the failure (or success) of the operation that triggered the clean-up
+      LOG.log(Level.FINE, "Failed to close the command executor", e);
     }
   }
 
