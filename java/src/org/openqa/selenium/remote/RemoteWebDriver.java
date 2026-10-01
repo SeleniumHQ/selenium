@@ -357,6 +357,17 @@ public class RemoteWebDriver
     return clientConfig;
   }
 
+  /**
+   * Returns the factory this driver uses to create HTTP clients, for example the BiDi WebSocket
+   * client. Subclasses can use it to create their own clients with the same configuration (and
+   * tracing, when enabled).
+   *
+   * @return the HTTP client factory of this driver
+   */
+  protected HttpClient.Factory getClientFactory() {
+    return clientFactory;
+  }
+
   public CommandExecutor getCommandExecutor() {
     return executor;
   }
