@@ -46,7 +46,7 @@ public class HttpCommandExecutor implements CommandExecutor, Closeable {
   protected final Map<String, CommandInfo> additionalCommands;
 
   /**
-   * @deprecated this field will become {@code protected} in 4.52; read it from a subclass instead.
+   * @deprecated this field will become {@code protected} in 4.53; read it from a subclass instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")
   public final HttpClient client;
@@ -55,7 +55,7 @@ public class HttpCommandExecutor implements CommandExecutor, Closeable {
    * The factory that created {@link #client}, or {@code null} when the executor was created from an
    * {@link HttpClient}.
    *
-   * @deprecated this field will be removed in 4.52; keep a reference to the factory in the subclass
+   * @deprecated this field will be removed in 4.53; keep a reference to the factory in the subclass
    *     instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")

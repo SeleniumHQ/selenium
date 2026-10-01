@@ -374,4 +374,16 @@ class RemoteWebDriverInitializationTest {
 
     assertThat(executor.getAdditionalCommands()).containsEntry(commandName, commandInfo);
   }
+
+  @Test
+  void subclassesCanUseTheClientFactory() {
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    CommandExecutor executor = WebDriverFixture.echoCapabilities::apply;
+
+    RemoteWebDriver driver =
+        new RemoteWebDriver(
+            executor, new ImmutableCapabilities(), factory, ClientConfig.defaultConfig());
+
+    assertThat(driver.getClientFactory()).isSameAs(factory);
+  }
 }
