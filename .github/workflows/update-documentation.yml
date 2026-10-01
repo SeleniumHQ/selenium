@@ -19,6 +19,14 @@ on:
           - python
           - dotnet
           - javascript
+      generate:
+        description: Build the documentation
+        type: boolean
+        default: true
+      commit:
+        description: Push the documentation to gh-pages
+        type: boolean
+        default: true
 
   workflow_call:
     inputs:
@@ -28,10 +36,14 @@ on:
       language:
         type: string
         default: ""
-      skip:
-        description: We're not releasing this one right now
+      generate:
+        description: Build the documentation
         type: boolean
-        default: false
+        default: true
+      commit:
+        description: Push the documentation to gh-pages
+        type: boolean
+        default: true
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
@@ -45,7 +57,6 @@ env:
 jobs:
   parse:
     name: Parse Tag
-    if: ${{ !inputs.skip }}
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.parse.outputs.version }}
@@ -72,7 +83,7 @@ jobs:
   generate-docs:
     name: Generate Documentation
     needs: parse
-    if: ${{ !inputs.skip }}
+    if: ${{ inputs.generate }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: Generate Docs
@@ -84,7 +95,9 @@ jobs:
   commit-docs:
     name: Commit Documentation
     needs: [parse, generate-docs]
-    if: ${{ !inputs.skip }}
+    if: >-
+      ${{ !cancelled() && inputs.commit &&
+          needs.parse.result == 'success' && needs.generate-docs.result != 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout gh-pages
@@ -95,7 +108,8 @@ jobs:
       - name: Download documentation
         uses: actions/download-artifact@v8
         with:
-          name: documentation-${{ needs.parse.outputs.language }}
+          pattern: documentation-*
+          merge-multiple: true
           path: docs/api
       - name: Commit documentation
         run: |
@@ -104,8 +118,4 @@ jobs:
           git add docs/api/
           git diff --staged --quiet && exit 0
           git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
-          for _ in 1 2 3 4 5; do
-            git pull --rebase origin gh-pages && git push origin gh-pages && exit 0
-            sleep 5
-          done
-          exit 1
+          git push origin gh-pages
