@@ -20,3 +20,4 @@ javascript/grid-ui/node_modules
 javascript/selenium-webdriver/node_modules
 node_modules
 .local
+.claude

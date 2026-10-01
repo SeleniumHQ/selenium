@@ -102,6 +102,9 @@ task :release do |_task, arguments|
 
     ENV['GEM_HOST_API_KEY'] = "Bearer #{ENV.fetch('GITHUB_TOKEN', nil)}"
 
+    puts 'Updating Ruby version to nightly...'
+    Rake::Task['rb:version'].invoke('nightly')
+
     puts 'Bumping Ruby nightly version...'
     Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
