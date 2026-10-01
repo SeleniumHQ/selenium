@@ -30,8 +30,6 @@ def test_rejects_non_positive_response_wait_interval(interval):
 def test_accepts_positive_response_wait_interval(monkeypatch):
     monkeypatch.setattr(WebSocketConnection, "_start_ws", lambda self: None)
     monkeypatch.setattr(WebSocketConnection, "_wait_until", lambda self, condition: None)
-
     connection = WebSocketConnection("ws://localhost", timeout=1, interval=0.1)
-
     assert connection.response_wait_timeout == 1
     assert connection.response_wait_interval == 0.1
