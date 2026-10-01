@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Testing.NUnit;
-
 namespace OpenQA.Selenium.Support.Tests;
 
 [SetUpFixture]
