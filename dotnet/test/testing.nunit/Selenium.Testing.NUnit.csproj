@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="4.6.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.13.0" />
+    <PackageReference Include="NUnit" Version="5.0.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.15.0" />
     <PackageReference Include="Runfiles" Version="0.14.0" />
   </ItemGroup>
 
