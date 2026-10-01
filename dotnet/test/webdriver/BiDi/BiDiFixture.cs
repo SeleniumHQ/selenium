@@ -42,7 +42,7 @@ public abstract class BiDiTestFixture
             UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore,
         };
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = new DriverFactory(EnvironmentManager.Instance).CreateDriver(options);
 
         bidi = await driver.AsBiDiAsync();
 

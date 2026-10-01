@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using OpenQA.Selenium.Chrome;
@@ -30,18 +31,35 @@ namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class DriverFactory
 {
+    private static readonly ConcurrentDictionary<string, Type> driverTypes = new();
+
+    private readonly Type driverType;
     private readonly string driverPath;
     private readonly string browserBinaryLocation;
+    private readonly bool headless;
     private readonly Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
     private readonly Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
 
-    public DriverFactory(string driverPath, string browserBinaryLocation)
+    public DriverFactory(EnvironmentManager environment)
     {
-        this.driverPath = driverPath;
-        this.browserBinaryLocation = browserBinaryLocation;
+        this.driverType = driverTypes.GetOrAdd(environment.DriverTypeName, ResolveDriverType);
+        this.driverPath = environment.DriverServiceLocation;
+        this.browserBinaryLocation = environment.BrowserLocation;
+        this.headless = environment.Headless;
 
         this.PopulateServiceTypes();
         this.PopulateOptionsTypes();
+    }
+
+    private static Type ResolveDriverType(string driverTypeName)
+    {
+        // Bazel uses unpredictable assembly names to execute tests, so search all loaded assemblies.
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .AsEnumerable()
+            .Reverse()
+            .Select(assembly => assembly.GetType(driverTypeName))
+            .FirstOrDefault(t => t != null)
+            ?? throw new ArgumentOutOfRangeException(nameof(driverTypeName), $"Unable to find driver type {driverTypeName}");
     }
 
     private void PopulateOptionsTypes()
@@ -64,12 +82,7 @@ public class DriverFactory
 
     public event EventHandler<DriverStartingEventArgs> DriverStarting;
 
-    public IWebDriver CreateDriver(Type driverType, bool logging = false)
-    {
-        return CreateDriverWithOptions(driverType, null, logging);
-    }
-
-    public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions, bool logging = false)
+    public IWebDriver CreateDriver(DriverOptions driverOptions = null, bool logging = false)
     {
         Browser browser = Browser.All;
         DriverService service = null;
@@ -84,7 +97,7 @@ public class DriverFactory
 
             var chromeOptions = (ChromeOptions)options;
             chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-            if (EnvironmentManager.Instance.Headless)
+            if (this.headless)
             {
                 chromeOptions.AddArgument("--headless");
             }
@@ -106,7 +119,7 @@ public class DriverFactory
 
             var edgeOptions = (EdgeOptions)options;
             edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-            if (EnvironmentManager.Instance.Headless)
+            if (this.headless)
             {
                 edgeOptions.AddArgument("--headless");
             }
@@ -135,7 +148,7 @@ public class DriverFactory
         {
             browser = Browser.Firefox;
             options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
-            if (EnvironmentManager.Instance.Headless)
+            if (this.headless)
             {
                 ((FirefoxOptions)options).AddArgument("-headless");
             }

@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+
 namespace OpenQA.Selenium.Support.Tests;
 
 [SetUpFixture]

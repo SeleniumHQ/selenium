@@ -42,7 +42,6 @@ public abstract class AssemblyFixtureBase
     [OneTimeTearDown]
     public async Task RunAfterAnyTestsAsync()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
         await EnvironmentManager.Instance.WebServer.StopAsync();
         if (StartRemoteServer)
         {

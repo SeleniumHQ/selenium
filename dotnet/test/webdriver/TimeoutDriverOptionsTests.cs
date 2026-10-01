@@ -24,6 +24,7 @@ namespace OpenQA.Selenium.Tests;
 [TestFixture]
 public class TimeoutDriverOptionsTests
 {
+    private readonly DriverFactory driverFactory = new(EnvironmentManager.Instance);
     private IWebDriver driver;
 
     private readonly TimeSpan defaultScriptTimeout = TimeSpan.FromMilliseconds(30_000);
@@ -50,7 +51,7 @@ public class TimeoutDriverOptionsTests
         Assert.That(options.PageLoadTimeout, Is.Null);
         Assert.That(options.ImplicitWaitTimeout, Is.Null);
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = driverFactory.CreateDriver(options);
 
         Assert.That(driver.Manage().Timeouts().AsynchronousJavaScript, Is.EqualTo(expectedScriptTimeout));
 
@@ -73,7 +74,7 @@ public class TimeoutDriverOptionsTests
         Assert.That(options.ScriptTimeout, Is.Null);
         Assert.That(options.ImplicitWaitTimeout, Is.Null);
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = driverFactory.CreateDriver(options);
 
         Assert.That(driver.Manage().Timeouts().PageLoad, Is.EqualTo(expectedPageLoadTimeout));
 
@@ -96,7 +97,7 @@ public class TimeoutDriverOptionsTests
         Assert.That(options.ScriptTimeout, Is.Null);
         Assert.That(options.PageLoadTimeout, Is.Null);
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = driverFactory.CreateDriver(options);
 
         Assert.That(driver.Manage().Timeouts().ImplicitWait, Is.EqualTo(expectedImplicitWaitTimeout));
 
@@ -122,7 +123,7 @@ public class TimeoutDriverOptionsTests
         Assert.That(options.PageLoadTimeout, Is.EqualTo(expectedPageLoadTimeout));
         Assert.That(options.ImplicitWaitTimeout, Is.EqualTo(expectedImplicitWaitTimeout));
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = driverFactory.CreateDriver(options);
 
         Assert.That(driver.Manage().Timeouts().AsynchronousJavaScript, Is.EqualTo(expectedScriptTimeout));
         Assert.That(driver.Manage().Timeouts().PageLoad, Is.EqualTo(expectedPageLoadTimeout));

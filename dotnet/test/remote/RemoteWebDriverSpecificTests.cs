@@ -52,7 +52,7 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         DriverOptions options = OperatingSystem.IsWindows() ? new EdgeOptions() : new ChromeOptions();
         RemoteWebDriver noSlashDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, options);
         noSlashDriver.Url = Urls.JavascriptPage;

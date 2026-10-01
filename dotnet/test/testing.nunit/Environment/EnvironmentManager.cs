@@ -26,10 +26,7 @@ namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class EnvironmentManager
 {
-    private static EnvironmentManager instance;
-    private readonly Type driverType;
-    private IWebDriver driver;
-    private readonly DriverFactory driverFactory;
+    private static readonly Lazy<EnvironmentManager> instance = new(() => new EnvironmentManager());
 
     private EnvironmentManager()
     {
@@ -69,22 +66,9 @@ public class EnvironmentManager
         DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
 
         Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
-
-        this.driverFactory = new DriverFactory(driverServiceLocation, browserLocation);
-        this.driverFactory.DriverStarting += OnDriverStarting;
-
-        // Search for the driver type in the all assemblies,
-        // bazel uses unpredictable assembly names to execute tests
-        driverType = AppDomain.CurrentDomain.GetAssemblies()
-            .AsEnumerable()
-            .Reverse()
-            .Select(assembly => assembly.GetType(driverConfig.DriverTypeName))
-            .FirstOrDefault(t => t != null);
-
-        if (driverType == null)
-        {
-            throw new ArgumentOutOfRangeException($"Unable to find driver type {driverConfig.DriverTypeName}");
-        }
+        DriverServiceLocation = driverServiceLocation;
+        BrowserLocation = browserLocation;
+        DriverTypeName = driverConfig.DriverTypeName;
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
@@ -142,16 +126,19 @@ public class EnvironmentManager
     {
         RemoteServer?.StopAsync().Wait();
         WebServer?.StopAsync().Wait();
-        CloseCurrentDriver();
     }
 
-    public event EventHandler<DriverStartingEventArgs> DriverStarting;
-
-    public static EnvironmentManager Instance => instance ??= new EnvironmentManager();
+    public static EnvironmentManager Instance => instance.Value;
 
     public Browser Browser { get; }
 
     public bool Headless { get; }
+
+    public string DriverTypeName { get; }
+
+    public string DriverServiceLocation { get; }
+
+    public string BrowserLocation { get; }
 
     public string CurrentDirectory
     {
@@ -172,39 +159,6 @@ public class EnvironmentManager
     public RemoteSeleniumServer RemoteServer { get; }
 
     public string RemoteCapabilities { get; }
-
-    public IWebDriver GetCurrentDriver()
-    {
-        return driver ?? CreateFreshDriver();
-    }
-
-    public IWebDriver CreateDriverInstance()
-    {
-        return driverFactory.CreateDriver(driverType);
-    }
-
-    public IWebDriver CreateDriverInstance(DriverOptions options)
-    {
-        return driverFactory.CreateDriverWithOptions(driverType, options);
-    }
-
-    public IWebDriver CreateFreshDriver()
-    {
-        CloseCurrentDriver();
-        driver = CreateDriverInstance();
-        return driver;
-    }
-
-    public void CloseCurrentDriver()
-    {
-        driver?.Quit();
-        driver = null;
-    }
-
-    protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
-    {
-        this.DriverStarting?.Invoke(sender, e);
-    }
 
     private static string FindProjectRoot(string startDirectory)
     {

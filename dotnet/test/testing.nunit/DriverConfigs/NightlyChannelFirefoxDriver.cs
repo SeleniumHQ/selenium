@@ -31,7 +31,7 @@ public class NightlyChannelFirefoxDriver : FirefoxDriver
     {
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public NightlyChannelFirefoxDriver(FirefoxOptions options)
         : base(options)
     {

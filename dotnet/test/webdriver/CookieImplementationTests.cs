@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -874,7 +873,7 @@ public class CookieImplementationTests : DriverTestFixture
             // This may mask some errors, where DeleteAllCookies doesn't fully
             // delete all it should, but that's a tradeoff we need to be willing
             // to make.
-            Driver = EnvironmentManager.Instance.CreateFreshDriver();
+            CreateFreshDriver();
             GoToPage(page);
         }
     }

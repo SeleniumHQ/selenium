@@ -48,7 +48,7 @@ public class DevChannelChromeDriver : ChromeDriver
     {
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public DevChannelChromeDriver(ChromeOptions options)
         : base(options)
     {

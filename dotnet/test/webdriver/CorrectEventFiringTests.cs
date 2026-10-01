@@ -42,7 +42,7 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
     public void ShouldFireFocusEventInNonTopmostWindow()
     {
-        IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+        IWebDriver driver2 = CreateDriverInstance();
         try
         {
             // topmost
@@ -283,7 +283,7 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
     public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
     {
-        IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+        IWebDriver driver2 = CreateDriverInstance();
         IWebElement element;
         IWebElement element2;
         try

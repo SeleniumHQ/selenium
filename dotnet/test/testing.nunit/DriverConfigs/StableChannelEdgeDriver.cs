@@ -29,7 +29,7 @@ public class StableChannelEdgeDriver : EdgeDriver
     {
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public StableChannelEdgeDriver(EdgeOptions options)
         : base(options)
     {
