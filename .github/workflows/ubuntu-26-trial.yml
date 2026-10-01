@@ -136,7 +136,11 @@ jobs:
         run: |
           bin=rust/target/${{ matrix.target }}/release/selenium-manager
           file "$bin"
-          file "$bin" | grep -q "statically linked" || { echo "::error::binary is no longer static"; exit 1; }
+          # musl links x86_64 as static-pie and aarch64 as plain static; both are static.
+          file "$bin" | grep -qE "static-pie linked|statically linked" \
+            || { echo "::error::binary is no longer static"; exit 1; }
+          ldd "$bin" 2>&1 | grep -q "not a dynamic executable\|statically linked" \
+            || { echo "::error::binary has dynamic dependencies"; ldd "$bin"; exit 1; }
           "$bin" --version
 
   # Covers the sm-snapshot.yml sbom job.
@@ -253,3 +257,35 @@ jobs:
       ruby-version: jruby-10.1.0.0
       run: ./scripts/github-actions/prepare-release.sh
       artifact-name: trial-prepare-release
+
+  # 24.04 controls. Any job above that fails is only a migration finding if its
+  # control passes, so the two jobs that failed on the first trial run are
+  # repeated here on the image we are moving away from.
+  docs-ruby-baseline:
+    name: Docs ruby (24.04 control)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs ruby 24.04
+      os: ubuntu-24.04
+      ruby-version: jruby-10.1.0.0
+      run: ./go ruby:docs_generate
+
+  prepare-release-baseline:
+    name: Prepare Release (24.04 control)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Prepare Release 24.04
+      os: ubuntu-24.04
+      ruby-version: jruby-10.1.0.0
+      run: ./scripts/github-actions/prepare-release.sh
+
+  # The 26.04 JRuby crash was a JVM SIGSEGV in CDS, which is the kind of fault
+  # that can be intermittent. Repeat the job so a one-off is distinguishable from
+  # a reproducible break.
+  docs-ruby-repeat:
+    name: Docs ruby (26.04 repeat)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs ruby repeat
+      ruby-version: jruby-10.1.0.0
+      run: ./go ruby:docs_generate

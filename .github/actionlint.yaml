@@ -1,0 +1,9 @@
+# actionlint validates `runs-on` against a list of labels baked into the release
+# it was built from, so a GitHub-hosted image newer than that release is reported
+# as an unknown label. actionlint 1.7.12 predates the Ubuntu 26.04 images, which
+# went GA on 2026-09-17. Declaring them here is the documented workaround; drop
+# these two entries once the pinned actionlint knows them.
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
+    - ubuntu-26.04-arm
