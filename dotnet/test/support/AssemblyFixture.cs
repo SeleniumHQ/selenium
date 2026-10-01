@@ -18,6 +18,7 @@
 // </copyright>
 
 [assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: SingleSessionBrowser(Browser.Safari, Browser.IE)]
 
 namespace OpenQA.Selenium.Support.Tests;
 
