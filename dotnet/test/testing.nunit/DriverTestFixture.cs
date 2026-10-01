@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Testing.NUnit.Environment;
-using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium.Testing.NUnit;
 
@@ -60,7 +60,7 @@ public abstract class DriverTestFixture
     [TearDown]
     public void ResetOnError()
     {
-        if (TestContext.CurrentContext.Result.Outcome == Error)
+        if (TestContext.CurrentContext.Result.Outcome == ResultState.Error)
         {
             Driver?.Dispose();
             Driver = EnvironmentManager.Instance.CreateFreshDriver();
