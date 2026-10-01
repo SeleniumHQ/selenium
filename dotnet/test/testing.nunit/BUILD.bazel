@@ -1,5 +1,10 @@
 load("//dotnet:defs.bzl", "csharp_library", "nuget_package")
 
+exports_files(
+    ["appconfig.json"],
+    visibility = ["//dotnet/test:__subpackages__"],
+)
+
 csharp_library(
     name = "testing.nunit",
     testonly = True,
@@ -11,13 +16,6 @@ csharp_library(
         ],
     ),
     out = "Testing.NUnit",
-    data = [
-        "appconfig.json",
-        "//dotnet/src/webdriver:manager-linux-arm64",
-        "//dotnet/src/webdriver:manager-linux-x86_64",
-        "//dotnet/src/webdriver:manager-macos",
-        "//dotnet/src/webdriver:manager-windows",
-    ],
     project_sdk = "web",
     target_frameworks = ["net10.0"],
     visibility = [

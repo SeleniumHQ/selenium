@@ -13,6 +13,13 @@ dotnet_nunit_test_suite(
     browsers = [
         "firefox",
     ],
+    data = [
+        "//dotnet/src/webdriver:manager-linux-arm64",
+        "//dotnet/src/webdriver:manager-linux-x86_64",
+        "//dotnet/src/webdriver:manager-macos",
+        "//dotnet/src/webdriver:manager-windows",
+        "//dotnet/test/testing.nunit:appconfig.json",
+    ],
     project_sdk = "web",
     target_frameworks = ["net10.0"],
     deps = [

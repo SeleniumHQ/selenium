@@ -17,10 +17,4 @@
     <ProjectReference Include="..\testing.webserver\Selenium.Testing.WebServer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="appconfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

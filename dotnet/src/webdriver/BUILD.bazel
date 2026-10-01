@@ -167,28 +167,28 @@ copy_file(
     name = "manager-linux-x86_64",
     src = "//common/manager:selenium-manager-linux-x86_64",
     out = "manager/linux-x86_64/selenium-manager",
-    visibility = ["//dotnet/test/testing.nunit:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-linux-arm64",
     src = "//common/manager:selenium-manager-linux-arm64",
     out = "manager/linux-arm64/selenium-manager",
-    visibility = ["//dotnet/test/testing.nunit:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/testing.nunit:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
-    visibility = ["//dotnet/test/testing.nunit:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 nuget_pack(
