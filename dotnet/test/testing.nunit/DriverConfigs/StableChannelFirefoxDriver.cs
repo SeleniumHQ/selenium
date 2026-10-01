@@ -1,4 +1,4 @@
-// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
+// <copyright file="StableChannelFirefoxDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,30 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Firefox;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.DriverConfigs;
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 
-public class StableChannelEdgeDriver : EdgeDriver
+// This is a simple wrapper class to create a FirefoxDriver that
+// uses the Marionette implementation and has no parameters in the
+// constructor.
+public class StableChannelFirefoxDriver : FirefoxDriver
 {
-
-    public StableChannelEdgeDriver()
+    public StableChannelFirefoxDriver()
         : base(DefaultOptions)
     {
     }
 
     // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelEdgeDriver(EdgeOptions options)
+    public StableChannelFirefoxDriver(FirefoxOptions options)
         : base(options)
     {
     }
 
-    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
+    public StableChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
         : base(service, options)
     {
     }
-    public static EdgeOptions DefaultOptions => new EdgeOptions();
+
+    public static FirefoxOptions DefaultOptions => new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true };
 }

@@ -55,7 +55,7 @@ public class VirtualAuthenticatorTests : DriverTestFixture
              + "NpLwcR8fqaYOdAHWWz636osVEqosRrHzJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fB"
              + "nzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4HBYGpI8g==";
 
-        byte[] bytes = System.Convert.FromBase64String(base64EncodedRSAPK);
+        byte[] bytes = Convert.FromBase64String(base64EncodedRSAPK);
         base64EncodedPK = Base64UrlEncoder.Encode(bytes);
 
         jsDriver = (IJavaScriptExecutor)Driver;
@@ -150,7 +150,7 @@ public class VirtualAuthenticatorTests : DriverTestFixture
         byte[] ret = new byte[list.Count];
         for (int i = 0; i < list.Count; i++)
         {
-            ret[i] = ((byte)list[i]);
+            ret[i] = (byte)list[i];
         }
 
         return ret;

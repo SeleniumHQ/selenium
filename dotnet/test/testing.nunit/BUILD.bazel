@@ -1,0 +1,31 @@
+load("//dotnet:defs.bzl", "csharp_library", "nuget_package")
+
+exports_files(
+    ["appconfig.json"],
+    visibility = ["//dotnet/test:__subpackages__"],
+)
+
+csharp_library(
+    name = "testing.nunit",
+    testonly = True,
+    srcs = glob(
+        ["**/*.cs"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
+    ),
+    out = "Testing.NUnit",
+    project_sdk = "web",
+    target_frameworks = ["net10.0"],
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net8.0",
+        "//dotnet/test/testing.webserver",
+        nuget_package("NUnit"),
+        nuget_package("NUnit.Analyzers"),
+        nuget_package("Runfiles"),
+    ],
+)

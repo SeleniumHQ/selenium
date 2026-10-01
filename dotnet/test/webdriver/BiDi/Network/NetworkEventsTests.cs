@@ -103,8 +103,8 @@ internal class NetworkEventsTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome)]
-    [IgnoreBrowser(Infrastructure.Browser.Edge)]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome)]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge)]
     public async Task CanListenToOnAuthRequiredEvent()
     {
         TaskCompletionSource<AuthRequiredEventArgs> tcs = new();

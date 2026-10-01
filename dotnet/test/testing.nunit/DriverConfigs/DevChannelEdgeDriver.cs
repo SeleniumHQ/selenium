@@ -1,4 +1,4 @@
-// <copyright file="DriverStartingEventArgs.cs" company="Selenium Committers">
+// <copyright file="DevChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,11 +17,27 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Edge;
 
-public class DriverStartingEventArgs(DriverService service, DriverOptions options)
+namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
+
+public class DevChannelEdgeDriver : EdgeDriver
 {
-    public DriverService Service { get; } = service;
+    public DevChannelEdgeDriver()
+        : base(DefaultOptions)
+    {
+    }
 
-    public DriverOptions Options { get; } = options;
+    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    public DevChannelEdgeDriver(EdgeOptions options)
+        : base(options)
+    {
+    }
+
+    public DevChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        : base(service, options)
+    {
+    }
+
+    public static EdgeOptions DefaultOptions => new EdgeOptions() { BrowserVersion = "dev" };
 }

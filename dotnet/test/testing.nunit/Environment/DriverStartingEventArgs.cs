@@ -1,4 +1,4 @@
-// <copyright file="DriverConfig.cs" company="Selenium Committers">
+// <copyright file="DriverStartingEventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
-namespace OpenQA.Selenium.Tests.Infrastructure.Environment;
-
-public class DriverConfig
+public class DriverStartingEventArgs(DriverService service, DriverOptions options)
 {
-    public string DriverTypeName { get; set; }
+    public DriverService Service { get; } = service;
 
-    [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
-    public Browser BrowserValue { get; set; }
-
-    public string RemoteCapabilities { get; set; }
-
-    public bool AutoStartRemoteServer { get; set; }
-
-    public bool Logging { get; set; }
+    public DriverOptions Options { get; } = options;
 }
