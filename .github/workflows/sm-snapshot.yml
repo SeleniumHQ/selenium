@@ -44,7 +44,7 @@ jobs:
   check:
     name: "Check Trigger"
     if: ${{ !contains(github.event.head_commit.modified, 'common/selenium_manager.bzl') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - run: echo "Building Selenium Manager"
 
