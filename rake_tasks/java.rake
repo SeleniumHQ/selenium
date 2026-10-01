@@ -188,7 +188,8 @@ module Sonatype
     if repo['state'] == 'closed'
       status = portal_status(repo['portal_deployment_id'])
       return false unless for_version?(status, version)
-      return true if status['deploymentState'] == 'PUBLISHED'
+      # The Portal lists purls once it has examined the deployment, so only then is it known to hold this version
+      return status.fetch('purls', []).any? if status['deploymentState'] == 'PUBLISHED'
       unless status['deploymentState'] == 'FAILED'
         raise "A previous attempt is still #{status['deploymentState']} at the Portal (#{repo['key']}); " \
               'rerun once it settles.'
