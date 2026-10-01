@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -451,7 +450,7 @@ public class AlertsTests : DriverTestFixture
         Driver.Url = CreateAlertPage("cheese");
         Driver.FindElement(By.Id("alert")).Click();
         IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
     }
 
     [Test]

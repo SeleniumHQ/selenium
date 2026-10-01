@@ -20,7 +20,6 @@
 using System.IO;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -32,7 +31,7 @@ public class DownloadsTests : DriverTestFixture
     [SetUp]
     public void ResetDriver()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         InitLocalDriver();
     }
 
@@ -45,7 +44,7 @@ public class DownloadsTests : DriverTestFixture
             localDriver = null;
         }
 
-        EnvironmentManager.Instance.CreateFreshDriver();
+        CreateFreshDriver();
     }
 
     [Test]
@@ -105,7 +104,7 @@ public class DownloadsTests : DriverTestFixture
         DownloadableFilesOptions options = new DownloadableFilesOptions();
         options.EnableDownloads = true;
 
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
     }
 
     public class DownloadableFilesOptions : DriverOptions

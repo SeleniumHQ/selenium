@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Testing.NUnit.DriverConfigs;
 // constructor.
 public class DefaultSafariDriver : SafariDriver
 {
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public DefaultSafariDriver(SafariOptions options)
         : base(options)
     {

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Testing.NUnit.Environment;
-
 namespace OpenQA.Selenium.Tests;
 
 [TestFixture]
@@ -29,7 +27,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
     }
 
     [TearDown]
@@ -41,7 +39,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
             localDriver = null;
         }
 
-        EnvironmentManager.Instance.CreateFreshDriver();
+        CreateFreshDriver();
     }
 
     [Test]
@@ -106,7 +104,7 @@ public class UnexpectedAlertBehaviorTests : DriverTestFixture
             UnhandledPromptBehavior = behavior,
         };
 
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
         localDriver.Url = Urls.AlertsPage;
         IWebElement resultElement = localDriver.FindElement(By.Id("text"));
         localDriver.FindElement(By.Id("prompt-with-default")).Click();

@@ -28,7 +28,7 @@ public class StableChannelChromeDriver : ChromeDriver
     {
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public StableChannelChromeDriver(ChromeOptions options)
         : base(options)
     {

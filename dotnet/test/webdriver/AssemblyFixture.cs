@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: SingleSessionBrowser(Browser.Safari, Browser.IE)]
+
 namespace OpenQA.Selenium.Tests;
 
 [SetUpFixture]

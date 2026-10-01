@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework.Interfaces;
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Testing.NUnit;
 
@@ -32,8 +31,7 @@ public class NeedsFreshDriverAttribute : TestActionAttribute
     {
         if (test.Fixture is DriverTestFixture fixtureInstance && this.IsCreatedBeforeTest)
         {
-            EnvironmentManager.Instance.CreateFreshDriver();
-            fixtureInstance.Driver = EnvironmentManager.Instance.GetCurrentDriver();
+            fixtureInstance.CreateFreshDriver();
         }
 
         base.BeforeTest(test);
@@ -43,8 +41,7 @@ public class NeedsFreshDriverAttribute : TestActionAttribute
     {
         if (test.Fixture is DriverTestFixture fixtureInstance && this.IsCreatedAfterTest)
         {
-            EnvironmentManager.Instance.CreateFreshDriver();
-            fixtureInstance.Driver = EnvironmentManager.Instance.GetCurrentDriver();
+            fixtureInstance.CreateFreshDriver();
         }
 
         base.AfterTest(test);

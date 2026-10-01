@@ -31,7 +31,7 @@ public class EdgeInternetExplorerModeDriver : InternetExplorerDriver
     {
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    // Required for dynamic setting with `DriverFactory.CreateDriver(options)`
     public EdgeInternetExplorerModeDriver(InternetExplorerOptions options)
         : base(options)
     {

@@ -1,4 +1,4 @@
-// <copyright file="AssemblyFixtureBase.cs" company="Selenium Committers">
+// <copyright file="SingleSessionBrowserAttribute.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,35 +17,29 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
+using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
 using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Testing.NUnit;
 
-// NUnit only discovers [SetUpFixture] in the test assembly, so each test project derives its own.
-public abstract class AssemblyFixtureBase
+/// <summary>
+/// Runs the whole assembly sequentially when the active browser supports only one session at a time.
+/// </summary>
+/// <remarks>
+/// An explicit NumberOfTestWorkers run setting takes precedence over this attribute.
+/// </remarks>
+[AttributeUsage(AttributeTargets.Assembly)]
+public sealed class SingleSessionBrowserAttribute(params Browser[] browsers) : NUnitAttribute, IApplyToTest
 {
-    protected virtual bool StartRemoteServer => EnvironmentManager.Instance.Browser == Browser.Remote;
+    public IReadOnlyList<Browser> Browsers { get; } = browsers;
 
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
+    public void ApplyToTest(Test test)
     {
-        Log.SetLevel(LogEventLevel.Trace);
-
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-        if (StartRemoteServer)
+        if (Browsers.Contains(EnvironmentManager.Instance.Browser))
         {
-            await EnvironmentManager.Instance.RemoteServer.StartAsync();
-        }
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-        if (StartRemoteServer)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StopAsync();
+            // Zero workers makes NUnit use the sequential dispatcher, ignoring [Parallelizable].
+            test.Properties.Set(PropertyNames.LevelOfParallelism, 0);
         }
     }
 }

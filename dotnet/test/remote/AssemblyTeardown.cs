@@ -20,6 +20,9 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Testing.NUnit;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: SingleSessionBrowser(Browser.Safari, Browser.IE)]
+
 [SetUpFixture]
 #pragma warning disable // Outside a namespace to affect the entire assembly
 public class AssemblyTeardown : AssemblyFixtureBase

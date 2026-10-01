@@ -44,17 +44,20 @@ public abstract class DriverTestFixture
         }
     }
 
+    protected DriverFactory DriverFactory { get; private set; }
+
     [OneTimeSetUp]
-    public void SetUp()
+    public void InitFixtureDriver()
     {
-        Driver = EnvironmentManager.Instance.GetCurrentDriver();
+        DriverFactory = CreateDriverFactory();
+        Driver = CreateDriverInstance();
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public void DisposeFixtureDriver()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
         Driver?.Dispose();
+        Driver = null;
     }
 
     [TearDown]
@@ -63,16 +66,30 @@ public abstract class DriverTestFixture
         if (TestContext.CurrentContext.Result.Outcome == ResultState.Error)
         {
             Driver?.Dispose();
-            Driver = EnvironmentManager.Instance.CreateFreshDriver();
+            Driver = CreateDriverInstance();
         }
     }
 
-    /// <summary>
-    /// Exists because a given test might require a fresh driver.
-    /// </summary>
-    protected void CreateFreshDriver()
+    protected virtual DriverFactory CreateDriverFactory()
     {
-        Driver = EnvironmentManager.Instance.CreateFreshDriver();
+        return new DriverFactory(EnvironmentManager.Instance);
+    }
+
+    protected IWebDriver CreateDriverInstance(DriverOptions options = null)
+    {
+        return DriverFactory.CreateDriver(options);
+    }
+
+    protected internal void CloseDriver()
+    {
+        Driver?.Dispose();
+        Driver = null;
+    }
+
+    protected internal void CreateFreshDriver()
+    {
+        CloseDriver();
+        Driver = CreateDriverInstance();
     }
 
     protected void WaitFor(Func<bool> waitFunction, string timeoutMessage)
@@ -87,17 +104,16 @@ public abstract class DriverTestFixture
 
     protected T WaitFor<T>(Func<T> waitFunction, TimeSpan timeout, string timeoutMessage)
     {
-        var waiter = new WebDriverWait(Driver, timeout)
+        // Not bound to Driver: callers may wait on a local driver while the fixture driver is closed.
+        var waiter = new DefaultWait<Func<T>>(waitFunction)
         {
+            Timeout = timeout,
             PollingInterval = TimeSpan.FromMilliseconds(100),
             Message = $"Condition timed out: {timeoutMessage}",
         };
 
         waiter.IgnoreExceptionTypes(typeof(Exception));
 
-        return waiter.Until((driver) =>
-        {
-            return waitFunction();
-        });
+        return waiter.Until(func => func());
     }
 }
