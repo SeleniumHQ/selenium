@@ -68,7 +68,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
     {
-        Driver.Url = (Urls.XhtmlTestPage);
+        Driver.Url = Urls.XhtmlTestPage;
         String current = Driver.CurrentWindowHandle;
         int currentWindowHandles = Driver.WindowHandles.Count;
 
@@ -97,7 +97,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
     {
-        Driver.Url = (Urls.XhtmlTestPage);
+        Driver.Url = Urls.XhtmlTestPage;
         String current = Driver.CurrentWindowHandle;
         int currentWindowHandles = Driver.WindowHandles.Count;
 
@@ -130,7 +130,7 @@ public class WindowSwitchingTests : DriverTestFixture
     [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
     public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
     {
-        Driver.Url = (Urls.XhtmlTestPage);
+        Driver.Url = Urls.XhtmlTestPage;
         String current = Driver.CurrentWindowHandle;
         int currentWindowHandles = Driver.WindowHandles.Count;
 

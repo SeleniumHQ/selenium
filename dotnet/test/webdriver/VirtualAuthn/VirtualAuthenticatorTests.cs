@@ -150,7 +150,7 @@ public class VirtualAuthenticatorTests : DriverTestFixture
         byte[] ret = new byte[list.Count];
         for (int i = 0; i < list.Count; i++)
         {
-            ret[i] = ((byte)list[i]);
+            ret[i] = (byte)list[i];
         }
 
         return ret;

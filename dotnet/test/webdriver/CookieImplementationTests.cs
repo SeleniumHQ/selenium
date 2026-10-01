@@ -373,7 +373,7 @@ public class CookieImplementationTests : DriverTestFixture
         Driver.Manage().Cookies.AddCookie(cookie3);
         count = Driver.Manage().Cookies.AllCookies.Count;
 
-        Driver.Url = (Urls.WhereIs("child/grandchild"));
+        Driver.Url = Urls.WhereIs("child/grandchild");
         Driver.Manage().Cookies.DeleteCookieNamed("rodent");
         count = Driver.Manage().Cookies.AllCookies.Count;
 
