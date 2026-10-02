@@ -154,7 +154,10 @@ public class UrlChecker {
               "Timed out waiting for %s to become unavailable after %d ms",
               url, System.currentTimeMillis() - start),
           e);
-    } catch (InterruptedException | ExecutionException e) {
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
   }
