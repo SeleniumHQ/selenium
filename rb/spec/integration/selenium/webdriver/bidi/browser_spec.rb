@@ -82,6 +82,57 @@ module Selenium
 
           expect(active_window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
         end
+
+        # Skip all browsers until browser.setClientWindowState is implemented
+        it 'maximizes window', except: {browser: %i[chrome edge firefox]} do
+          browser = described_class.new(bidi)
+          window = browser.window
+
+          window.maximize
+          expect(window.state).to eq(:maximized)
+        end
+
+        # Skip all browsers until browser.setClientWindowState is implemented
+        it 'minimizes window', except: {browser: %i[chrome edge firefox]} do
+          browser = described_class.new(bidi)
+          window = browser.window
+
+          window.minimize
+          expect(window.state).to eq(:minimized)
+        end
+
+        # Skip all browsers until browser.setClientWindowState is implemented
+        it 'sets window to fullscreen', except: {browser: %i[chrome edge firefox]} do
+          browser = described_class.new(bidi)
+          window = browser.window
+
+          window.fullscreen
+          expect(window.state).to eq(:fullscreen)
+        end
+
+        # Skip all browsers until browser.setClientWindowState is implemented
+        it 'resizes window', except: {browser: %i[chrome edge firefox]} do
+          browser = described_class.new(bidi)
+          window = browser.window
+
+          window.resize(width: 800, height: 600)
+          expect(window.state).to eq(:normal)
+          expect(window.width).to eq(800)
+          expect(window.height).to eq(600)
+        end
+
+        # Skip all browsers until browser.setClientWindowState is implemented
+        it 'sets window state with position', except: {browser: %i[chrome edge firefox]} do
+          browser = described_class.new(bidi)
+          window = browser.window
+
+          window.set_state(state: :normal, width: 1024, height: 768, x: 100, y: 50)
+          expect(window.state).to eq(:normal)
+          expect(window.width).to eq(1024)
+          expect(window.height).to eq(768)
+          expect(window.x).to eq(100)
+          expect(window.y).to eq(50)
+        end
       end
     end
   end
