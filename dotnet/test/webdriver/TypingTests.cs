@@ -743,16 +743,16 @@ public class TypingTests : DriverTestFixture
 
     private string PrimaryModifier()
     {
-        return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Command : Keys.Control;
+        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? Keys.Command : Keys.Control;
     }
 
     private string HomeKey()
     {
-        return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Up : Keys.Home;
+        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? Keys.Up : Keys.Home;
     }
 
     private string EndKey()
     {
-        return (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ? Keys.Down : Keys.End;
+        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? Keys.Down : Keys.End;
     }
 }

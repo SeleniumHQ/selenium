@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -39,13 +40,13 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class HttpCommandExecutor implements CommandExecutor {
+public class HttpCommandExecutor implements CommandExecutor, Closeable {
 
   private final URL remoteServer;
   protected final Map<String, CommandInfo> additionalCommands;
 
   /**
-   * @deprecated this field will become {@code protected} in 4.52; read it from a subclass instead.
+   * @deprecated this field will become {@code protected} in 4.53; read it from a subclass instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")
   public final HttpClient client;
@@ -54,7 +55,7 @@ public class HttpCommandExecutor implements CommandExecutor {
    * The factory that created {@link #client}, or {@code null} when the executor was created from an
    * {@link HttpClient}.
    *
-   * @deprecated this field will be removed in 4.52; keep a reference to the factory in the subclass
+   * @deprecated this field will be removed in 4.53; keep a reference to the factory in the subclass
    *     instead.
    */
   @Deprecated(forRemoval = true, since = "4.50.0")
@@ -269,5 +270,10 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
       throw e;
     }
+  }
+
+  @Override
+  public void close() {
+    client.close();
   }
 }

@@ -477,14 +477,14 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
 
         ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Fetch.RequestPausedEventArgs> requestPausedHandler = (async (sender, e) =>
+        EventHandler<CurrentCdpVersion.Fetch.RequestPausedEventArgs> requestPausedHandler = async (sender, e) =>
         {
             await domains.Fetch.ContinueRequest(new CurrentCdpVersion.Fetch.ContinueRequestCommandSettings()
             {
                 RequestId = e.RequestId
             });
             requestSync.Set();
-        });
+        };
         domains.Fetch.RequestPaused += requestPausedHandler;
 
         var pattern = new CurrentCdpVersion.Fetch.RequestPattern()

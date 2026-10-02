@@ -17,6 +17,9 @@ on:
       language:
         description: 'The language (ruby, python, etc.) or "all" for full releases'
         value: ${{ jobs.parse.outputs.language }}
+      languages:
+        description: 'JSON list of the languages being released, for use as a job matrix'
+        value: ${{ jobs.parse.outputs.languages }}
 
 permissions: {}
 
@@ -28,6 +31,7 @@ jobs:
       tag: ${{ steps.parse.outputs.tag }}
       version: ${{ steps.parse.outputs.version }}
       language: ${{ steps.parse.outputs.language }}
+      languages: ${{ steps.parse.outputs.languages }}
     steps:
       - name: Parse and validate tag
         id: parse
@@ -68,12 +72,15 @@ jobs:
           # Set language (already validated by regex above)
           if [[ -n "$LANG_SUFFIX" ]]; then
             LANGUAGE="$LANG_SUFFIX"
+            LANGUAGES="[\"$LANG_SUFFIX\"]"
           else
             LANGUAGE="all"
+            LANGUAGES='["java", "python", "ruby", "dotnet", "javascript"]'
           fi
 
           {
             echo "tag=$TAG"
             echo "version=$VERSION"
             echo "language=$LANGUAGE"
+            echo "languages=$LANGUAGES"
           } >> "$GITHUB_OUTPUT"

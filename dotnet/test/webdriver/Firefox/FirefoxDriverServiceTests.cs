@@ -24,6 +24,7 @@ using OpenQA.Selenium.Internal.Logging;
 namespace OpenQA.Selenium.Tests.Firefox;
 
 [TestFixture]
+[NonParallelizable]
 [IgnoreBrowser(Browser.Chrome)]
 [IgnoreBrowser(Browser.Edge)]
 [IgnoreBrowser(Browser.Safari)]

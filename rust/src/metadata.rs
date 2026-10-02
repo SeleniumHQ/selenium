@@ -84,7 +84,7 @@ pub fn now_unix_timestamp() -> u64 {
 }
 
 fn new_metadata(log: &Logger) -> Metadata {
-    log.trace("Metadata file does not exist. Creating a new one".to_string());
+    log.trace("Metadata file is not usable. Creating a new (empty) one".to_string());
     Metadata {
         browsers: Vec::new(),
         drivers: Vec::new(),
@@ -99,12 +99,19 @@ pub fn get_metadata(log: &Logger, cache_path: &Option<PathBuf>) -> Metadata {
         log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
         if metadata_path.exists() {
-            let metadata_file = File::open(&metadata_path).unwrap_or_else(|err| {
-                panic!(
-                    "Metadata file {} cannot be opened: {err}",
-                    metadata_path.display()
-                )
-            });
+            // The metadata file is only a cache of TTL'd version lookups, so any failure to
+            // read it costs one round of re-discovery. Degrade to an empty cache instead of
+            // stopping Selenium Manager.
+            let metadata_file = match File::open(&metadata_path) {
+                Ok(file) => file,
+                Err(err) => {
+                    log.warn(format!(
+                        "Metadata file {} cannot be opened: {err}. Using empty metadata",
+                        metadata_path.display()
+                    ));
+                    return new_metadata(log);
+                }
+            };
             let metadata: Metadata = match serde_json::from_reader(&metadata_file) {
                 Ok::<Metadata, serde_json::Error>(mut meta) => {
                     let now = now_unix_timestamp();
@@ -113,7 +120,13 @@ pub fn get_metadata(log: &Logger, cache_path: &Option<PathBuf>) -> Metadata {
                     meta.stats.retain(|s| s.stats_ttl > now);
                     meta
                 }
-                Err(_e) => new_metadata(log), // Empty metadata
+                Err(err) => {
+                    log.warn(format!(
+                        "Metadata file {} cannot be parsed: {err}. Using empty metadata",
+                        metadata_path.display()
+                    ));
+                    new_metadata(log)
+                }
             };
             return metadata;
         }
