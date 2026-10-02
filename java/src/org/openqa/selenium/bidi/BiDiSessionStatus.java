@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
@@ -24,6 +25,7 @@ import org.openqa.selenium.internal.Require;
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#command-session-status">BiDi spec</a>
  */
 @Beta
+@ApiStatus.Internal
 public class BiDiSessionStatus {
 
   private final boolean ready;
