@@ -32,14 +32,24 @@ ij_java_do_while_brace_force = always
 [*.py]
 indent_style = space
 indent_size = 4
+max_line_length = 120
 
 [*.rb]
 indent_style = space
 indent_size = 2
+max_line_length = 120
 
 [*.js]
 indent_style = space
 indent_size = 2
+
+[javascript/selenium-webdriver/**.js]
+max_line_length = 120
+
+[*.rs]
+indent_style = space
+indent_size = 4
+max_line_length = 100
 
 [*.html]
 indent_style = space
@@ -58,6 +68,6 @@ indent_style = space
 indent_size = 2
 charset = utf-8
 
-[{*.bazel,WORKSPACE}]
+[{*.bazel,*.bzl,WORKSPACE}]
 indent_style = space
 indent_size = 4
