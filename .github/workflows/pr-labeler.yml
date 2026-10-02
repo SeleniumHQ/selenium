@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   label:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout base repo to get config file
         uses: actions/checkout@v6

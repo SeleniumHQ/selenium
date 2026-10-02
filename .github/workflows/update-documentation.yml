@@ -57,7 +57,7 @@ env:
 jobs:
   parse:
     name: Parse Tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       version: ${{ steps.parse.outputs.version }}
       language: ${{ steps.parse.outputs.language }}
@@ -98,7 +98,13 @@ jobs:
     if: >-
       ${{ !cancelled() && inputs.commit &&
           needs.parse.result == 'success' && needs.generate-docs.result != 'failure' }}
-    runs-on: ubuntu-latest
+    # The retry loop around `git pull --rebase` is gone, so the push below is
+    # the only thing standing between two concurrent callers and a rejected
+    # non-fast-forward. Serialise every gh-pages writer instead.
+    concurrency:
+      group: gh-pages-write
+      cancel-in-progress: false
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout gh-pages
         uses: actions/checkout@v6

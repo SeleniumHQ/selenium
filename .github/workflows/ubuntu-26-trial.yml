@@ -1,0 +1,433 @@
+name: Trial - Ubuntu 26.04
+
+# TEMPORARY. Delete before this branch merges.
+#
+# `ubuntu-latest` migrates from Ubuntu 24.04 to 26.04 between 2026-10-19 and
+# 2026-11-19. Every runner label in .github/workflows is pinned to ubuntu-26.04
+# on this branch so the existing workflows can be dispatched against the new
+# image directly.
+#
+# That covers everything we can safely run end to end. This workflow covers the
+# rest: the OS-coupled steps of workflows that publish, push, or open PRs and so
+# must not be dispatched. Each job below mirrors the runner-dependent half of one
+# such workflow, minus its side effect.
+
+# workflow_dispatch alone is not enough: GitHub only registers that trigger for
+# workflows present on the default branch, and this file only exists here. The
+# pull_request trigger is what actually starts it while the trial branch is open.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ubuntu-26-trial.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ubuntu-26-trial-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Keep in sync with sm-snapshot.yml
+  RUST_VERSION: "1.98.1"
+
+jobs:
+  # Covers the ubuntu-only steps of the shared bazel.yml job, which every
+  # bazel-backed workflow funnels through, plus the scripts they call.
+  runner-inventory:
+    name: Runner inventory (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-26.04, ubuntu-26.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+
+      - name: Image and preinstalled tooling
+        run: |
+          echo "=== OS ==="
+          cat /etc/os-release
+          uname -m
+          echo "=== Preinstalled tooling CI touches ==="
+          for tool in python3 java javac node npm ruby jq gh git curl unzip zip shasum gcc cc pkg-config \
+                      gpg mvn dotnet cargo rustc file tar make perl openssl xvfb-run; do
+            if command -v "$tool" >/dev/null 2>&1; then
+              printf '%-12s %s\n' "$tool" "$(command -v "$tool")"
+              "$tool" --version 2>&1 | head -1 || true
+            else
+              echo "::warning::$tool is NOT on PATH (present on ubuntu-24.04)"
+            fi
+          done
+          echo "=== Runner-provided driver/browser env vars ==="
+          echo "CHROMEWEBDRIVER=${CHROMEWEBDRIVER:-<unset>}"
+          echo "EDGEWEBDRIVER=${EDGEWEBDRIVER:-<unset>}"
+          echo "GECKOWEBDRIVER=${GECKOWEBDRIVER:-<unset>}"
+
+      - name: Delete browsers and drivers
+        run: ./scripts/github-actions/delete-browsers-drivers.sh
+
+      - name: Disk status
+        run: . ./scripts/github-actions/disk-status.sh
+
+      - name: Free disk space
+        run: |
+          . ./scripts/github-actions/disk-status.sh
+          before=$AVAIL_GB
+          ./scripts/github-actions/free-disk-space.sh
+          . ./scripts/github-actions/disk-status.sh
+          echo "Freed $((AVAIL_GB - before))GB (${before}GB -> ${AVAIL_GB}GB)"
+          if [ "$AVAIL_GB" -lt 25 ]; then
+            echo "::warning::Only ${AVAIL_GB}GB free after cleanup; free-disk-space.sh may need new paths for 26.04"
+          fi
+
+      - name: Setup Fluxbox and Xvfb
+        run: |
+          sudo apt-get update && sudo apt-get -y install fluxbox x11-utils
+          Xvfb :99 &
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || { echo "::error::X server :99 failed to start"; exit 1; }
+          fluxbox -display :99 &
+          sleep 2
+          pgrep -x fluxbox >/dev/null || { echo "::error::fluxbox did not stay up"; exit 1; }
+          echo "Xvfb + fluxbox OK"
+
+  # Covers sm-snapshot.yml linux-stable and linux-debug without the publish job,
+  # which pushes to SeleniumHQ/selenium_manager_artifacts.
+  selenium-manager-musl:
+    name: Selenium Manager musl (${{ matrix.label }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: x86_64
+            runner: ubuntu-26.04
+            target: x86_64-unknown-linux-musl
+          - label: aarch64
+            runner: ubuntu-26.04-arm
+            target: aarch64-unknown-linux-musl
+          # x86_64 came out static-pie rather than plain static on 26.04. That is
+          # still static, but the same build on 24.04 has to be in the logs next
+          # to it before we can say whether the new image changed the linkage.
+          - label: x86_64 (24.04 control)
+            runner: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v6
+      - name: Install musl toolchain
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
+          rustup target add ${{ matrix.target }}
+          rustc -vV
+      - name: Build release binary
+        run: cargo build --target ${{ matrix.target }} --release
+        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
+      - name: Build debug binary
+        run: cargo build --target ${{ matrix.target }} --profile dev
+        working-directory: rust
+        env:
+          TARGET_CC: musl-gcc
+      - name: Verify the binary is still static and runs
+        run: |
+          bin=rust/target/${{ matrix.target }}/release/selenium-manager
+          file "$bin"
+          # musl links x86_64 as static-pie and aarch64 as plain static; both are
+          # static. Surface which one this runner produced so the 24.04 control
+          # can be compared against the 26.04 jobs without reading full logs.
+          if file "$bin" | grep -q "static-pie linked"; then
+            echo "::notice::${{ matrix.label }} on ${{ matrix.runner }}: static-pie linked"
+          elif file "$bin" | grep -q "statically linked"; then
+            echo "::notice::${{ matrix.label }} on ${{ matrix.runner }}: statically linked"
+          else
+            echo "::error::binary is no longer static"; exit 1
+          fi
+          ldd "$bin" 2>&1 | grep -q "not a dynamic executable\|statically linked" \
+            || { echo "::error::binary has dynamic dependencies"; ldd "$bin"; exit 1; }
+          "$bin" --version
+
+  # Covers the sm-snapshot.yml sbom job.
+  selenium-manager-sbom:
+    name: Selenium Manager SBOM
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v6
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install ${{ env.RUST_VERSION }}
+          rustup default ${{ env.RUST_VERSION }}
+          rustc -vV
+      - name: Install SBOM tools
+        run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
+      - name: Generate SBOM and third-party notices
+        working-directory: rust
+        run: |
+          cargo cyclonedx --format json --all-features --target all
+          cargo about generate about.hbs > selenium-manager-THIRD-PARTY-NOTICES.txt
+          test -s selenium-manager.cdx.json
+          test -s selenium-manager-THIRD-PARTY-NOTICES.txt
+
+  # Covers the shell halves of prune-caches.yml, mirror-selenium-releases.yml and
+  # flaky-report.yml. All three are read-only here: no cache is deleted, nothing
+  # is committed or pushed, no Slack message is sent.
+  gh-cli-scripts:
+    name: gh CLI scripts (read-only)
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      actions: read
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Prune CodeQL caches (dry run)
+        run: ./scripts/github-actions/prune-codeql-caches.sh
+      - name: Regenerate the Selenium mirror index
+        run: |
+          ./scripts/github-actions/update_selenium_mirror.sh
+          test -s common/mirror/selenium
+          git --no-pager diff --stat -- common/mirror/selenium
+      - name: Build the flaky report
+        continue-on-error: true
+        env:
+          WEEK_OFFSET: 1
+        run: ./scripts/github-actions/flaky-report.sh
+
+  # Covers dependency-updates.yml. The repin itself is the OS-coupled part; the
+  # PR the real workflow opens is not.
+  update-dependencies:
+    name: Update Dependencies
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Dependencies
+      run: ./go update
+      artifact-name: trial-update-dependencies
+
+  # Covers update-cddl.yml.
+  update-cddl:
+    name: Update CDDL Specs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update CDDL Specs
+      run: ./go update_cddl
+      artifact-name: trial-update-cddl
+
+  # Covers pin-browsers.yml.
+  pin-browsers:
+    name: Pin Browsers
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Pin Browsers
+      run: ./scripts/github-actions/update_browsers.sh
+      artifact-name: trial-pin-browsers
+
+  # Covers ci-build-index.yml, which only runs on trunk.
+  build-test-index:
+    name: Build Test Index
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Test Index
+      run: ./go bazel:build_test_index bazel-test-file-index
+      artifact-name: trial-bazel-test-file-index
+      artifact-path: bazel-test-file-index
+
+  # Covers the doc generation half of update-documentation.yml without the commit
+  # to the docs branch.
+  docs:
+    name: Docs (${{ matrix.language }})
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, python, ruby, dotnet, javascript]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs ${{ matrix.language }}
+      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
+      # docs_generate, not docs: the docs task aborts on snapshot/nightly versions,
+      # which is what trunk always is. docs_generate is the part that builds.
+      run: ./go ${{ matrix.language }}:docs_generate
+
+  # Covers the prepare-release step shared by nightly.yml and ci-rbe.yml. Writes
+  # files only; nothing is tagged or published.
+  #
+  # prepare-release.sh itself is `bazel build --config=rbe-ci --config=release`,
+  # and remote execution is not authorized from a pull request, so the script
+  # cannot run here. It is inlined below without the rbe-ci half, which is also
+  # what makes it an image test: with rbe-ci every action runs in an EngFlow
+  # container and the runner's OS barely participates.
+  prepare-release:
+    name: Prepare Release
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Prepare Release
+      ruby-version: jruby-10.1.0.0
+      run: >-
+        bazel build --config=release
+        $(bazel query 'kind(maven_publish, //java/...)' | tr '\n' ' ')
+        //java/src/org/openqa/selenium:client-zip
+        //java/src/org/openqa/selenium/grid:server-zip
+        //java/src/org/openqa/selenium/grid:executable-grid
+        //py:selenium-wheel //py:selenium-sdist
+        //rb:selenium-webdriver //rb:selenium-devtools
+        //dotnet:release
+        //javascript/selenium-webdriver:selenium-webdriver
+
+  # Covers parse-release-tag.yml, the shell-only tag parser both release
+  # workflows gate on.
+  parse-release-tag:
+    name: Parse Release Tag
+    uses: ./.github/workflows/parse-release-tag.yml
+    with:
+      tag: selenium-4.50.0
+
+  # Covers check-authorization.yml, the actor gate on pre-release.yml and
+  # release.yml.
+  check-authorization:
+    name: Check Authorization
+    uses: ./.github/workflows/check-authorization.yml
+
+  # Covers pre-release.yml verify-cdp, the one release job that runs on a bare
+  # runner with a sparse checkout rather than through bazel.yml.
+  verify-cdp:
+    name: Verify CDP is Current
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout the DevTools listing
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            common/devtools/chromium
+            scripts/github-actions
+          persist-credentials: false
+      - name: Verify CDP covers the current Stable Chrome
+        run: ./scripts/github-actions/verify_cdp.sh
+
+  # Covers pre-release.yml update-changelogs and update-authors. Both deepen the
+  # shallow clone first, which is the part that depends on the runner's git.
+  prerelease-changelogs:
+    name: Generate Changelogs
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update changelogs
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh selenium-4.50.0 && ./go all:changelogs
+      artifact-name: trial-changelogs
+
+  prerelease-authors:
+    name: Update Authors
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update Authors
+      run: ./scripts/github-actions/deepen-fetch-to-tag.sh selenium-4.50.0 && ./go authors
+      artifact-name: trial-authors
+
+  # Covers release.yml reset-version. Writes files only; nothing is pushed.
+  release-reset-version:
+    name: Generate Nightly Versions
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Reset Versions
+      run: ./go all:version nightly && ./go rust:version nightly
+      artifact-name: trial-version-reset
+
+  # Covers release.yml build-python: the whole wheel and sdist build, minus the
+  # PyPI upload that follows it.
+  release-build-python:
+    name: Build Python
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Python
+      run: ./go py:build --config=release
+      artifact-name: trial-pypi-distributions
+      artifact-path: |
+        bazel-bin/py/selenium-*.whl
+        bazel-bin/py/selenium-[0-9]*.tar.gz
+
+  # Covers release.yml nightly-grid and the Java/.NET packaging inside `publish`,
+  # minus the Maven and NuGet uploads.
+  release-package:
+    name: Package Java and .NET
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Package java dotnet
+      ruby-version: jruby-10.1.0.0
+      run: ./go java:version nightly && ./go all:package --config=release
+      artifact-name: trial-release-packages
+      artifact-path: build/dist/*.*
+
+  # Covers the Ruby and JavaScript halves of release.yml `publish`. `:build` is
+  # the gem/tarball build that `:release` runs before it pushes.
+  release-build-ruby-javascript:
+    name: Build ${{ matrix.language }} release artifacts
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: ruby
+            run: ./go rb:build --config=release
+            ruby-version: jruby-10.1.0.0
+            node-version: ''
+          - language: javascript
+            run: ./go node:build --config=release
+            ruby-version: ''
+            node-version: '24.14.1'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build ${{ matrix.language }} release artifacts
+      ruby-version: ${{ matrix.ruby-version }}
+      node-version: ${{ matrix.node-version }}
+      run: ${{ matrix.run }}
+
+  # 24.04 controls. Any job above that fails is only a migration finding if its
+  # control passes, so the two jobs that failed on the first trial run are
+  # repeated here on the image we are moving away from.
+  docs-ruby-baseline:
+    name: Docs ruby (24.04 control)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs ruby 24.04
+      os: ubuntu-24.04
+      ruby-version: jruby-10.1.0.0
+      run: ./go ruby:docs_generate
+
+  prepare-release-baseline:
+    name: Prepare Release (24.04 control)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Prepare Release 24.04
+      os: ubuntu-24.04
+      ruby-version: jruby-10.1.0.0
+      run: >-
+        bazel build --config=release
+        $(bazel query 'kind(maven_publish, //java/...)' | tr '\n' ' ')
+        //java/src/org/openqa/selenium:client-zip
+        //java/src/org/openqa/selenium/grid:server-zip
+        //java/src/org/openqa/selenium/grid:executable-grid
+        //py:selenium-wheel //py:selenium-sdist
+        //rb:selenium-webdriver //rb:selenium-devtools
+        //dotnet:release
+        //javascript/selenium-webdriver:selenium-webdriver
+
+  # The 26.04 JRuby crash was a JVM SIGSEGV in CDS, which is the kind of fault
+  # that can be intermittent. Repeat the job so a one-off is distinguishable from
+  # a reproducible break.
+  docs-ruby-repeat:
+    name: Docs ruby (26.04 repeat)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Docs ruby repeat
+      ruby-version: jruby-10.1.0.0
+      run: ./go ruby:docs_generate

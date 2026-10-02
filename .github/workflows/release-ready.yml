@@ -16,7 +16,7 @@ jobs:
       github.event.pull_request.merged == true &&
       github.event.pull_request.head.ref == 'pinned-browser-updates' &&
       contains(github.event.pull_request.title, 'with CDP')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2

@@ -13,7 +13,7 @@ jobs:
   report:
     name: Report Flaky Tests
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v6

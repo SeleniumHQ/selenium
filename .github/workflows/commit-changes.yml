@@ -28,7 +28,7 @@ on:
 jobs:
   commit:
     name: Commit Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
       actions: read

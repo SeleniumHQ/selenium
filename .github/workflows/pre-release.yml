@@ -57,7 +57,7 @@ jobs:
     name: Cleanup Rust Branch
     needs: [parse-tag, selenium-manager]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -70,7 +70,7 @@ jobs:
   verify-cdp:
     name: Verify CDP is Current
     needs: parse-tag
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout the DevTools listing
         uses: actions/checkout@v6
@@ -171,7 +171,7 @@ jobs:
        (needs.update-rust-changelogs.result == 'success' &&
         needs.update-authors.result == 'success' &&
         needs.update-manager.result == 'success'))
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout trunk
         uses: actions/checkout@v6
@@ -242,7 +242,7 @@ jobs:
     name: Cleanup Staging Branch
     needs: [parse-tag, create-pr]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -265,7 +265,7 @@ jobs:
 
   on-prerelease-failure:
     name: On Pre-release Failure
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [parse-tag, verify-cdp, restrict-trunk, generate-rust-version, push-rust-version, selenium-manager, update-versions, commit-versions, update-changelogs, update-rust-changelogs, update-authors, update-manager, create-pr]
     if: failure() || cancelled()
     steps:
