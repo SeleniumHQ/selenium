@@ -46,6 +46,7 @@ pub struct Props {
     pub os: String,
     pub arch: String,
     pub lang: String,
+    pub lang_version: String,
     pub selenium_version: String,
 }
 
