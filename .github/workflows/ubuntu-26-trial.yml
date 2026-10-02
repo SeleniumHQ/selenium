@@ -100,17 +100,23 @@ jobs:
   # Covers sm-snapshot.yml linux-stable and linux-debug without the publish job,
   # which pushes to SeleniumHQ/selenium_manager_artifacts.
   selenium-manager-musl:
-    name: Selenium Manager musl (${{ matrix.arch }})
+    name: Selenium Manager musl (${{ matrix.label }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - arch: x86_64
+          - label: x86_64
             runner: ubuntu-26.04
             target: x86_64-unknown-linux-musl
-          - arch: aarch64
+          - label: aarch64
             runner: ubuntu-26.04-arm
             target: aarch64-unknown-linux-musl
+          # x86_64 came out static-pie rather than plain static on 26.04. That is
+          # still static, but the same build on 24.04 has to be in the logs next
+          # to it before we can say whether the new image changed the linkage.
+          - label: x86_64 (24.04 control)
+            runner: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout project
@@ -137,9 +143,16 @@ jobs:
         run: |
           bin=rust/target/${{ matrix.target }}/release/selenium-manager
           file "$bin"
-          # musl links x86_64 as static-pie and aarch64 as plain static; both are static.
-          file "$bin" | grep -qE "static-pie linked|statically linked" \
-            || { echo "::error::binary is no longer static"; exit 1; }
+          # musl links x86_64 as static-pie and aarch64 as plain static; both are
+          # static. Surface which one this runner produced so the 24.04 control
+          # can be compared against the 26.04 jobs without reading full logs.
+          if file "$bin" | grep -q "static-pie linked"; then
+            echo "::notice::${{ matrix.label }} on ${{ matrix.runner }}: static-pie linked"
+          elif file "$bin" | grep -q "statically linked"; then
+            echo "::notice::${{ matrix.label }} on ${{ matrix.runner }}: statically linked"
+          else
+            echo "::error::binary is no longer static"; exit 1
+          fi
           ldd "$bin" 2>&1 | grep -q "not a dynamic executable\|statically linked" \
             || { echo "::error::binary has dynamic dependencies"; ldd "$bin"; exit 1; }
           "$bin" --version
