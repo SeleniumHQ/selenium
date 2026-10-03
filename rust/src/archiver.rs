@@ -187,18 +187,15 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
     for log in &recording.console_logs {
         let log_time = log.timestamp.saturating_sub(recording.start_time);
         append_ndjson(&mut trace_lines, json!({
-            "type": "event",
-            "method": "log.entryAdded",
+            "type": "console",
             "time": log_time,
             "pageId": page_id,
-            "params": {
-                "text": log.message,
-                "type": log.level,
-                "location": {
-                    "url": log.url,
-                    "lineNumber": log.line_number,
-                    "columnNumber": log.column_number,
-                },
+            "messageType": log.level,
+            "text": log.message,
+            "location": {
+                "url": log.url,
+                "lineNumber": log.line_number,
+                "columnNumber": log.column_number,
             },
         }));
     }
