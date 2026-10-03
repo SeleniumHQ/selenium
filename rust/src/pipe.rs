@@ -143,7 +143,7 @@ impl PipeMode {
 #[tokio::main]
 async fn start_pipe(
     webdriver_url: String,
-    mut recorder: Option<Recorder>,
+    recorder: Option<Recorder>,
     http_client: Client,
     port_tx: Sender<u16>,
 ) {
