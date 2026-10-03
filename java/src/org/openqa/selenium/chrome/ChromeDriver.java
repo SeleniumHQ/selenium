@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.chrome;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -103,12 +106,82 @@ public class ChromeDriver extends ChromiumDriver {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
+
+    // Pipe mode (recording): start selenium-manager --pipe --record instead
+    String recordPath = options.getRecordPath();
+    if (recordPath != null && !recordPath.isEmpty()) {
+      return createPipeExecutor(service, options, clientConfig, recordPath);
+    }
+
     DriverFinder finder = new DriverFinder(service, options);
     service.setExecutable(finder.getDriverPath());
     if (finder.hasBrowserPath()) {
       options.setBinary(finder.getBrowserPath());
       options.setCapability("browserVersion", (Object) null);
     }
+    return new ChromeDriverCommandExecutor(service, clientConfig);
+  }
+
+  private static ChromeDriverCommandExecutor createPipeExecutor(
+      ChromeDriverService service,
+      ChromeOptions options,
+      ClientConfig clientConfig,
+      String recordPath) {
+    // Build selenium-manager --pipe --record args
+    java.util.List<String> args = new java.util.ArrayList<>();
+    args.add("--pipe");
+    args.add("--record");
+    args.add(recordPath);
+    args.add("--browser");
+    args.add("chrome");
+    args.add("--output");
+    args.add("json");
+
+    // Start selenium-manager as a subprocess
+    org.openqa.selenium.os.ExternalProcess.Builder builder =
+        org.openqa.selenium.os.ExternalProcess.builder().bufferSize(-1);
+    builder.environment("SE_AVOID_STATS", "true");
+
+    org.openqa.selenium.os.ExternalProcess process =
+        builder
+            .command(
+                org.openqa.selenium.manager.SeleniumManager.getInstance().getBinaryPath(),
+                args)
+            .start();
+
+    // Read the first line of stdout (JSON with proxy_url)
+    String output;
+    try {
+      output = process.getOutput(java.nio.charset.StandardCharsets.UTF_8);
+    } catch (Exception e) {
+      process.shutdown();
+      throw new WebDriverException("Failed to read proxy URL from selenium-manager", e);
+    }
+
+    // Parse: {"proxy_url":"http://localhost:PORT",...}
+    String proxyUrl;
+    try {
+      @SuppressWarnings("unchecked")
+      java.util.Map<String, Object> json =
+          new Json().toType(output, java.util.Map.class);
+      proxyUrl = (String) json.get("proxy_url");
+    } catch (Exception e) {
+      process.shutdown();
+      throw new WebDriverException("Failed to parse selenium-manager output: " + output, e);
+    }
+
+    if (proxyUrl == null || proxyUrl.isEmpty()) {
+      process.shutdown();
+      throw new WebDriverException("proxy_url not found in selenium-manager output: " + output);
+    }
+
+    try {
+      clientConfig = clientConfig.baseUrl(new URL(proxyUrl));
+    } catch (java.net.MalformedURLException e) {
+      process.shutdown();
+      throw new WebDriverException("Invalid proxy URL: " + proxyUrl, e);
+    }
+
     return new ChromeDriverCommandExecutor(service, clientConfig);
   }
 

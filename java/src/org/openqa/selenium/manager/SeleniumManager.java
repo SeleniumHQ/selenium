@@ -240,6 +240,15 @@ public class SeleniumManager {
   }
 
   /**
+   * Returns the path to the Selenium Manager binary.
+   *
+   * @return the path to the Selenium Manager binary.
+   */
+  public Path getBinaryPath() {
+    return getBinary();
+  }
+
+  /**
    * Executes Selenium Manager to get the locations of the requested assets
    *
    * @param arguments List of command line arguments to send to Selenium Manager binary
