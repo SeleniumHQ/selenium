@@ -120,9 +120,8 @@ class Server:
 
     @version.setter
     def version(self, version):
-        if version:
-            if not re.match(r"^\d+\.\d+\.\d+$", str(version)):
-                raise TypeError(f"{__class__.__name__}.__init__() got an invalid version: '{version}'")
+        if version and not re.match(r"^\d+\.\d+\.\d+$", str(version)):
+            raise TypeError(f"{__class__.__name__}.__init__() got an invalid version: '{version}'")
         self._version = version
 
     @property
