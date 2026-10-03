@@ -182,6 +182,23 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
         }
     }
 
+    // Console logs
+    for log in &recording.console_logs {
+        let log_time = log.timestamp.saturating_sub(recording.start_time);
+        append_ndjson(&mut trace_lines, json!({
+            "type": "console",
+            "time": log_time,
+            "pageId": page_id,
+            "messageType": log.level,
+            "text": log.message,
+            "location": {
+                "url": log.url,
+                "lineNumber": log.line_number,
+                "columnNumber": log.column_number,
+            },
+        }));
+    }
+
     zip.start_file("trace.trace", options)?;
     zip.write_all(&trace_lines)?;
 

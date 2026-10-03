@@ -33,6 +33,16 @@ pub struct RecordedAction {
 }
 
 #[derive(Clone)]
+pub struct ConsoleLog {
+    pub timestamp: u64,
+    pub level: String,
+    pub message: String,
+    pub url: String,
+    pub line_number: u32,
+    pub column_number: u32,
+}
+
+#[derive(Clone)]
 pub struct Recording {
     pub path: PathBuf,
     pub actions: Vec<RecordedAction>,
@@ -41,6 +51,7 @@ pub struct Recording {
     pub browser_name: String,
     pub platform: String,
     pub title: String,
+    pub console_logs: Vec<ConsoleLog>,
 }
 
 #[derive(Clone)]
@@ -60,6 +71,7 @@ impl Recorder {
                 browser_name: String::new(),
                 platform: String::new(),
                 title: String::new(),
+                console_logs: Vec::new(),
             },
             current_action_start: 0,
         }
@@ -109,6 +121,17 @@ impl Recorder {
                 self.recording.session_id = sid;
             }
         }
+    }
+
+    pub fn add_console_log(&mut self, level: &str, message: &str, url: &str, line: u32, col: u32) {
+        self.recording.console_logs.push(ConsoleLog {
+            timestamp: now_millis(),
+            level: level.to_string(),
+            message: message.to_string(),
+            url: url.to_string(),
+            line_number: line,
+            column_number: col,
+        });
     }
 
     pub fn set_screenshot(&mut self, bytes: Vec<u8>) {

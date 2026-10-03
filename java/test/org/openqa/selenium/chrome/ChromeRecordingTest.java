@@ -50,9 +50,9 @@ public void canRecordTraceSession() throws Exception {
       driver.findElement(By.id("password")).sendKeys("pass");
       driver.findElement(By.tagName("button")).click();
 
-      // 3. Navigate to navigation page
-      driver.get("https://bonigarcia.dev/selenium-webdriver-java/navigation1.html");
-      assertThat(driver.getCurrentUrl()).contains("navigation1");
+      // 3. Navigate to console logs page
+      driver.get("https://bonigarcia.dev/selenium-webdriver-java/console-logs.html");
+      assertThat(driver.getCurrentUrl()).contains("console-logs");
 
     } finally {
       driver.quit();

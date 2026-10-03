@@ -305,6 +305,34 @@ async fn handle_client(
                     }
                 }
             }
+
+            // Capture browser console logs
+            let log_url = format!("{}/session/{}/log", webdriver_url, session_id);
+            let log_req = format!(r#"{{"type":"browser"}}"#);
+            if let Ok(log_resp) = client.post(&log_url)
+                .header("Content-Type", "application/json")
+                .body(log_req.as_bytes().to_vec())
+                .send().await {
+                if let Ok(log_body) = log_resp.bytes().await {
+                    if let Ok(log_val) = serde_json::from_slice::<serde_json::Value>(&log_body) {
+                        if let Some(ref entries) = log_val["value"].as_array() {
+                            for i in 0..entries.len() {
+                                let entry = &entries[i];
+                                if let Some(level_v) = entry["level"].as_str() {
+                                    let message_v = entry["message"].as_str().unwrap_or("");
+                                    let source_v = &entry["source"];
+                                    let url_v = source_v["url"].as_str().unwrap_or("");
+                                    let line_v = source_v["lineNumber"].as_u64().unwrap_or(0) as u32;
+                                    let col_v = source_v["columnNumber"].as_u64().unwrap_or(0) as u32;
+                                    if let Ok(mut r) = recorder.as_ref().unwrap().lock() {
+                                        r.add_console_log(level_v, message_v, url_v, line_v, col_v);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
