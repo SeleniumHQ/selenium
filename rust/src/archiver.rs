@@ -193,6 +193,7 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
         let method = &action.method;
         if status > 0 && !url.is_empty() {
             let net_time = action.timestamp.saturating_sub(recording.start_time);
+            let status_text = if status == 200 { "OK" } else if status == 201 { "Created" } else if status == 204 { "No Content" } else if status == 400 { "Bad Request" } else if status == 404 { "Not Found" } else if status == 500 { "Internal Server Error" } else { "Unknown" };
             append_ndjson(&mut network_lines, json!({
                 "type": "resource-snapshot",
                 "time": net_time,
@@ -206,13 +207,19 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
                         "headersSize": 0,
                         "bodySize": 0,
                         "queryString": [],
+                        "httpVersion": "HTTP/1.1",
                     },
                     "response": {
                         "status": status,
+                        "statusText": status_text,
                         "headers": [],
                         "cookies": [],
                         "headersSize": 0,
                         "bodySize": 0,
+                        "content": {
+                            "size": 0,
+                            "mimeType": "application/json",
+                        },
                     },
                 }
             }));
