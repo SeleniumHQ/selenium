@@ -69,6 +69,7 @@ pub mod logger;
 pub mod metadata;
 pub mod mirror;
 pub mod pipe;
+pub mod recorder;
 pub mod rules;
 pub mod safari;
 pub mod safaritp;
