@@ -21,7 +21,8 @@ module Selenium
   module WebDriver
     class Script
       def initialize(bridge)
-        @log_handler = BiDi::LogHandler.new(bridge.bidi)
+        @bidi = bridge.bidi
+        @log_handler = BiDi::LogHandler.new(@bidi)
       end
 
       # @return [int] id of the handler
@@ -40,6 +41,26 @@ module Selenium
       end
 
       alias remove_javascript_error_handler remove_console_message_handler
+
+      # Pins a script that is evaluated on every fresh browsing context (page)
+      # before the page's own scripts run. Useful for injecting helpers,
+      # polyfills, or instrumentation that should be present on every navigation.
+      #
+      # @param [String] script the function declaration to pin,
+      #   e.g. "() => { window.helper = () => 42; }"
+      # @return [String] the id of the pinned script, for use with #unpin
+      def pin(script)
+        result = @bidi.send_cmd('script.addPreloadScript', functionDeclaration: script)
+        result['script']
+      end
+
+      # Unpins a previously pinned script so it no longer runs on new pages.
+      #
+      # @param [String] script_id the id returned by #pin
+      # @return [void]
+      def unpin(script_id)
+        @bidi.send_cmd('script.removePreloadScript', script: script_id)
+      end
     end # Script
   end # WebDriver
 end # Selenium

@@ -33,6 +33,10 @@ module Selenium
       def remove_console_message_handler: (Integer id) -> bool?
 
       alias remove_javascript_error_handler remove_console_message_handler
+
+      def pin: (String script) -> String
+
+      def unpin: (String script_id) -> void
     end
   end
 end
