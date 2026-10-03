@@ -1,0 +1,72 @@
+# Selenium (Python bindings)
+
+> The official Python bindings for Selenium WebDriver, maintained by the Selenium
+> project. This file ships inside the installed package so that tools reading a
+> project's dependencies can find the project's own guidance rather than inferring
+> it. The version of the package that contains this file is the version its rules
+> describe; read `selenium.__version__` to confirm.
+
+## Documentation
+
+- [Documentation](https://www.selenium.dev/documentation/): task-oriented guides for
+  every binding — waits, locators, browser options, Grid, and WebDriver BiDi.
+- [Python API reference](https://www.selenium.dev/selenium/docs/api/py/): exact
+  signatures, arguments, return types and exceptions for this package.
+- [Machine-readable index for the Python API reference](https://www.selenium.dev/selenium/docs/api/py/llms.txt)
+- [Deprecated APIs and their replacements](https://www.selenium.dev/selenium/docs/api/py/deprecations.json):
+  generated from the source; check an API against this before suggesting it.
+- [Changelog](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+- [Issues](https://github.com/SeleniumHQ/selenium/issues)
+
+## Writing Selenium code
+
+These rules correct the patterns that appear most often in code written from older
+sources. Each names the release in which the old form stopped being correct.
+
+- Do not set a driver path and do not add a third-party driver manager package.
+  Selenium Manager downloads and configures both the browser and its driver, so
+  `webdriver.Chrome()` is complete and correct on its own. `executable_path=` was
+  removed in 4.10; `Service(ChromeDriverManager().install())` adds a dependency that
+  duplicates what Selenium already does. Pass a `Service` only to override a specific
+  local binary or a driver log setting.
+- Configure the browser with an options object, never with capability dictionaries.
+  `desired_capabilities=` was removed in 4.10. Use
+  `webdriver.Chrome(options=ChromeOptions())`, and set values with
+  `options.add_argument(...)` or `options.set_capability(...)`.
+- Locate elements with `By`: `driver.find_element(By.ID, "submit")`. The
+  `find_element_by_*` methods were removed in 4.3.
+- Wait for a condition, never for a duration. Replace `time.sleep(...)` with
+  `WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "submit")))`.
+  Do not combine `driver.implicitly_wait(...)` with `WebDriverWait`; the two wait
+  strategies compound unpredictably.
+- Prefer WebDriver BiDi over CDP. `driver.script`, `driver.network`,
+  `driver.browsing_context` and `driver.webextension` are cross-browser and stable.
+  CDP is Chromium-only and pinned to a browser version.
+- Headless mode is an argument, not a property: `options.add_argument("--headless=new")`
+  for Chrome and Edge, `options.add_argument("-headless")` for Firefox. The
+  `options.headless` property was removed in 4.9.
+- End a session with `driver.quit()`, which closes every window and stops the driver
+  process. `driver.close()` only closes the current window.
+
+## A complete, current example
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+options = webdriver.ChromeOptions()
+options.add_argument("--headless=new")
+
+driver = webdriver.Chrome(options=options)
+try:
+    driver.get("https://www.selenium.dev/selenium/web/web-form.html")
+    driver.find_element(By.NAME, "my-text").send_keys("Selenium")
+    driver.find_element(By.CSS_SELECTOR, "button").click()
+
+    message = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "message")))
+    assert message.text == "Received!"
+finally:
+    driver.quit()
+```
