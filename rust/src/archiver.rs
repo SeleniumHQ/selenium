@@ -168,16 +168,16 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
         // Per-action screenshot
         if let Some(ref ss_bytes) = action.screenshot_bytes {
             let ss_name = format!("page@{}-action-{}.png", sid, i);
+            let ss_file = format!("resources/{}", ss_name);
             append_ndjson(&mut trace_lines, json!({
                 "type": "screencast-frame",
                 "pageId": page_id,
-                "sha1": ss_name,
+                "file": ss_file,
                 "width": 1280,
                 "height": 720,
                 "timestamp": start_time,
             }));
-            let ss_path = format!("resources/{}", ss_name);
-            let _ = zip.start_file(&ss_path, options);
+            let _ = zip.start_file(&ss_file, options);
             let _ = zip.write_all(ss_bytes);
         }
     }
@@ -233,7 +233,7 @@ fn append_ndjson(buf: &mut Vec<u8>, value: serde_json::Value) {
 fn context_options(recording: &Recording) -> serde_json::Value {
     let sid = recording.session_id.as_deref().unwrap_or("default");
     json!({
-        "version": 8,
+        "version": 10,
         "type": "context-options",
         "origin": "library",
         "libraryName": "selenium",
