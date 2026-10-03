@@ -233,7 +233,7 @@ fn append_ndjson(buf: &mut Vec<u8>, value: serde_json::Value) {
 fn context_options(recording: &Recording) -> serde_json::Value {
     let sid = recording.session_id.as_deref().unwrap_or("default");
     json!({
-        "version": 10,
+        "version": 9,
         "type": "context-options",
         "origin": "library",
         "libraryName": "selenium",
