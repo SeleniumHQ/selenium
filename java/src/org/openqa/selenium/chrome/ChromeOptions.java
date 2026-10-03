@@ -54,28 +54,8 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   @SuppressWarnings("unused")
   public static final String LOGGING_PREFS = "goog:loggingPrefs";
 
-  private @Nullable String recordPath;
-
   public ChromeOptions() {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
-  }
-
-  /**
-   * Enable trace recording. The session will be recorded and saved to the specified path.
-   *
-   * @param path Path where the recording (trace.zip/trace.json) will be saved.
-   * @return This instance for chaining.
-   */
-  public ChromeOptions setRecord(String path) {
-    this.recordPath = path;
-    return this;
-  }
-
-  /**
-   * @return The recording path or {@code null} if recording is not enabled.
-   */
-  public @Nullable String getRecordPath() {
-    return recordPath;
   }
 
   @Override

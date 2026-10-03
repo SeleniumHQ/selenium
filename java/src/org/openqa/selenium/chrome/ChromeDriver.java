@@ -19,6 +19,7 @@ package org.openqa.selenium.chrome;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.os.ExternalProcess;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -138,9 +140,17 @@ public class ChromeDriver extends ChromiumDriver {
     args.add("--output");
     args.add("json");
 
+    String smBinary = System.getenv("SELENIUM_MANAGER_BINARY");
+    if (smBinary == null || smBinary.isEmpty()) {
+      smBinary = System.getProperty("selenium.manager.binary");
+    }
+    if (smBinary == null || smBinary.isEmpty()) {
+      smBinary = SeleniumManager.getInstance().getBinaryPath().toString();
+    }
+
     ExternalProcess process =
         ExternalProcess.builder()
-            .command(SeleniumManager.getInstance().getBinaryPath().toString(), args)
+            .command(smBinary, args)
             .environment("SE_AVOID_STATS", "true")
             .start();
 
@@ -164,37 +174,35 @@ public class ChromeDriver extends ChromiumDriver {
 
     if (proxyUrl == null) {
       process.shutdown();
-      throw new WebDriverException(
-          "proxy_url not found in selenium-manager output within timeout");
+      throw new WebDriverException("proxy_url not found in selenium-manager output within timeout");
     }
 
     try {
-      clientConfig = clientConfig.baseUrl(new URL(proxyUrl));
+      URL parsedUrl = new URL(proxyUrl);
+      clientConfig = clientConfig.baseUrl(parsedUrl);
+
+      // Store process for cleanup when driver quits
+      ChromeDriverCommandExecutor executor =
+          new ChromeDriverCommandExecutor(clientConfig, parsedUrl);
+      executor.pipeProcess = process;
+      return executor;
     } catch (java.net.MalformedURLException e) {
       process.shutdown();
       throw new WebDriverException("Invalid proxy URL: " + proxyUrl, e);
     }
-
-    // Store process for cleanup when driver quits
-    ChromeDriverCommandExecutor executor = new ChromeDriverCommandExecutor(null, clientConfig);
-    executor.pipeProcess = process;
-    return executor;
   }
 
   private static String extractProxyUrl(String output) {
-    // Output is JSON log lines; find one with proxy_url
+    // SM prints {"proxy_url":"http://localhost:PORT1","session_port":PORT2} directly to stdout
     for (String line : output.split("\n")) {
+      line = line.trim();
       if (line.contains("proxy_url")) {
         try {
           @SuppressWarnings("unchecked")
-          Map<String, Object> json = new Json().toType(line.trim(), Map.class);
-          Object message = json.get("message");
-          if (message instanceof String) {
-            Map<String, Object> inner = new Json().toType((String) message, Map.class);
-            Object url = inner.get("proxy_url");
-            if (url instanceof String) {
-              return (String) url;
-            }
+          Map<String, Object> json = new Json().toType(line, Map.class);
+          Object url = json.get("proxy_url");
+          if (url instanceof String) {
+            return (String) url;
           }
         } catch (Exception ignored) {
           // try next line
@@ -209,11 +217,22 @@ public class ChromeDriver extends ChromiumDriver {
     return RemoteWebDriver.builder().oneOf(new ChromeOptions());
   }
 
-  private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
+  private static class ChromeDriverCommandExecutor extends HttpCommandExecutor {
     ExternalProcess pipeProcess;
 
+    public ChromeDriverCommandExecutor(ClientConfig clientConfig, URL remoteUrl) {
+      super(getExtraCommands(), remoteUrl, clientConfig);
+    }
+
     public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
-      super(service, getExtraCommands(), clientConfig);
+      super(getExtraCommands(), service.getUrl(), clientConfig);
+    }
+
+    @Override
+    public void close() {
+      if (pipeProcess != null) {
+        pipeProcess.shutdown();
+      }
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

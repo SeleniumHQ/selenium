@@ -1,3 +1,21 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -20,6 +38,9 @@ pub struct Recording {
     pub actions: Vec<RecordedAction>,
     pub session_id: Option<String>,
     pub start_time: u64,
+    pub browser_name: String,
+    pub platform: String,
+    pub title: String,
 }
 
 #[derive(Clone)]
@@ -36,9 +57,18 @@ impl Recorder {
                 actions: Vec::new(),
                 session_id: None,
                 start_time: now_millis(),
+                browser_name: String::new(),
+                platform: String::new(),
+                title: String::new(),
             },
             current_action_start: 0,
         }
+    }
+
+    pub fn set_metadata(&mut self, browser_name: &str, platform: &str, title: &str) {
+        self.recording.browser_name = browser_name.to_string();
+        self.recording.platform = platform.to_string();
+        self.recording.title = title.to_string();
     }
 
     pub fn record_start(&mut self, command: &str, url: &str, method: &str, body: &str) {
@@ -55,7 +85,6 @@ impl Recorder {
             screenshot_bytes: None,
         });
 
-        // Try to extract session ID from POST /session response
         if self.recording.session_id.is_none() {
             let sid = extract_session_id(body);
             if sid.is_some() {

@@ -19,7 +19,12 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -33,8 +38,12 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.manager.SeleniumManager;
+import org.openqa.selenium.os.ExternalProcess;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -115,6 +124,12 @@ public class FirefoxDriver extends RemoteWebDriver
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     Require.nonNull("Driver clientConfig", clientConfig);
+
+    String recordPath = options.getRecordPath();
+    if (recordPath != null && !recordPath.isEmpty()) {
+      return createPipeExecutor(clientConfig, recordPath);
+    }
+
     DriverFinder finder = new DriverFinder(service, options);
     service.setExecutable(finder.getDriverPath());
     if (finder.hasBrowserPath()) {
@@ -122,6 +137,85 @@ public class FirefoxDriver extends RemoteWebDriver
       options.setCapability("browserVersion", (Object) null);
     }
     return new FirefoxDriverCommandExecutor(service, clientConfig);
+  }
+
+  private static FirefoxDriverCommandExecutor createPipeExecutor(
+      ClientConfig clientConfig, String recordPath) {
+    List<String> args = new ArrayList<>();
+    args.add("--pipe");
+    args.add("--record");
+    args.add(recordPath);
+    args.add("--browser");
+    args.add("firefox");
+    args.add("--output");
+    args.add("json");
+
+    String smBinary = System.getenv("SELENIUM_MANAGER_BINARY");
+    if (smBinary == null || smBinary.isEmpty()) {
+      smBinary = System.getProperty("selenium.manager.binary");
+    }
+    if (smBinary == null || smBinary.isEmpty()) {
+      smBinary = SeleniumManager.getInstance().getBinaryPath().toString();
+    }
+
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command(smBinary, args)
+            .environment("SE_AVOID_STATS", "true")
+            .start();
+
+    String proxyUrl = null;
+    long deadline = System.nanoTime() + Duration.ofSeconds(30).toNanos();
+    while (System.nanoTime() < deadline && proxyUrl == null) {
+      String output = process.getOutput(StandardCharsets.UTF_8);
+      if (output != null && !output.isEmpty()) {
+        proxyUrl = extractProxyUrl(output);
+      }
+      if (proxyUrl == null) {
+        try {
+          Thread.sleep(Duration.ofMillis(200).toMillis());
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
+      }
+    }
+
+    if (proxyUrl == null) {
+      process.shutdown();
+      throw new WebDriverException("proxy_url not found in selenium-manager output within timeout");
+    }
+
+    try {
+      URL parsedUrl = new URL(proxyUrl);
+      clientConfig = clientConfig.baseUrl(parsedUrl);
+
+      FirefoxDriverCommandExecutor executor =
+          new FirefoxDriverCommandExecutor(clientConfig, parsedUrl);
+      executor.pipeProcess = process;
+      return executor;
+    } catch (java.net.MalformedURLException e) {
+      process.shutdown();
+      throw new WebDriverException("Invalid proxy URL: " + proxyUrl, e);
+    }
+  }
+
+  private static String extractProxyUrl(String output) {
+    for (String line : output.split("\n")) {
+      line = line.trim();
+      if (line.contains("proxy_url")) {
+        try {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> json = new Json().toType(line, Map.class);
+          Object url = json.get("proxy_url");
+          if (url instanceof String) {
+            return (String) url;
+          }
+        } catch (Exception ignored) {
+        }
+      }
+    }
+    return null;
   }
 
   private FirefoxDriver(
@@ -234,16 +328,22 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
   }
 
-  private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
-
-    /** Use {@link #FirefoxDriverCommandExecutor(DriverService, ClientConfig)} instead */
-    @Deprecated
-    public FirefoxDriverCommandExecutor(DriverService service) {
-      this(service, ClientConfig.defaultConfig());
-    }
+  private static class FirefoxDriverCommandExecutor extends HttpCommandExecutor {
+    ExternalProcess pipeProcess;
 
     public FirefoxDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
-      super(service, getExtraCommands(), clientConfig);
+      super(getExtraCommands(), service.getUrl(), clientConfig);
+    }
+
+    public FirefoxDriverCommandExecutor(ClientConfig clientConfig, URL remoteUrl) {
+      super(getExtraCommands(), remoteUrl, clientConfig);
+    }
+
+    @Override
+    public void close() {
+      if (pipeProcess != null) {
+        pipeProcess.shutdown();
+      }
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

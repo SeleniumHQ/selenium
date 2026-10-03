@@ -21,24 +21,47 @@ use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
+use selenium_manager::archiver;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
+use selenium_manager::pipe::{PipeConfig, PipeMode, WebDriverProcess};
+use selenium_manager::recorder::Recorder;
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
     CACHE_TTL_DAYS, SeleniumManager, clear_cache, format_error, get_manager_by_browser,
     get_manager_by_driver, prune_old_cache_entries,
 };
-use selenium_manager::pipe::{PipeConfig, PipeMode, WebDriverProcess};
-use selenium_manager::recorder::Recorder;
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
 use std::process::exit;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::Receiver;
+use std::sync::{Arc, Mutex};
+
+static SHUTDOWN: AtomicBool = AtomicBool::new(false);
+
+unsafe extern "C" {
+    fn signal(sig: i32, handler: usize) -> usize;
+}
+
+const SIGINT: i32 = 2;
+const SIGTERM: i32 = 15;
+
+extern "C" fn handle_signal(_sig: i32) {
+    SHUTDOWN.store(true, Ordering::SeqCst);
+}
+
+fn install_signal_handlers() {
+    unsafe {
+        signal(SIGINT, handle_signal as *const () as usize);
+        signal(SIGTERM, handle_signal as *const () as usize);
+    }
+}
 
 const LICENSE: &str = include_str!("../LICENSE");
 const NOTICE: &str = include_str!("../NOTICE");
@@ -331,10 +354,13 @@ fn main() {
             let wd = WebDriverProcess::start(&driver_str)?;
             log.debug(format!("WebDriver ready at {}", wd.base_url));
 
-            let mut recorder: Option<Recorder> = None;
+            let mut recorder: Option<Arc<Mutex<Recorder>>> = None;
             if let Some(record_path) = cli.record {
                 let path = Path::new(&record_path).to_path_buf();
-                recorder = Some(Recorder::new(path));
+                let mut rec = Recorder::new(path);
+                let platform = std::env::consts::OS;
+                rec.set_metadata("chrome", platform, "Selenium Trace Recording");
+                recorder = Some(Arc::new(Mutex::new(rec)));
                 log.debug(format!("Recording to {}", record_path));
             }
 
@@ -355,7 +381,30 @@ fn main() {
             );
             // Direct print to stdout (bypasses the JSON logger which buffers)
             println!("{}", output);
-            pipe.wait();
+            install_signal_handlers();
+            log.debug("Pipe mode running, waiting for shutdown signal");
+            while !SHUTDOWN.load(Ordering::SeqCst) {
+                std::thread::sleep(std::time::Duration::from_millis(500));
+            }
+            log.debug("Shutdown signal received, stopping pipe mode");
+
+            // Package recording if enabled
+            if let Some(ref rec_arc) = pipe.config().recorder {
+                if let Ok(rec) = rec_arc.lock() {
+                    if rec.has_actions() {
+                        log.info("Packaging trace recording...");
+                        archiver::package(&rec.recording)?;
+                        log.info(format!("Trace saved to {}", rec.recording.path.display()));
+                    } else {
+                        log.info("No actions recorded, skipping package");
+                    }
+                }
+            }
+
+            // Stop WebDriver
+            let mut wd = wd;
+            wd.stop()?;
+            log.debug("WebDriver stopped");
             Ok(driver_path)
         })
         .map(|driver_path| {

@@ -1,6 +1,9 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
 load("//java:version.bzl", "TOOLS_JAVA_VERSION")
+load("//java/private:junit5_test.bzl", "junit5_test")
+load("//common:browsers.bzl", "COMMON_TAGS", "chrome_data", "chrome_beta_data")
+load("//java:browsers.bzl", "chrome_jvm_flags", "chrome_beta_jvm_flags")
 
 SMALL_TESTS = [
     "ChromeDriverServiceTest.java",
@@ -23,12 +26,34 @@ java_test_suite(
     ] + JUNIT5_DEPS,
 )
 
+junit5_test(
+    name = "ChromeRecordingTest",
+    size = "large",
+    srcs = ["ChromeRecordingTest.java"],
+    data = chrome_data + [
+        "//rust:selenium-manager",
+    ],
+    jvm_flags = chrome_jvm_flags + [
+        "-Dselenium.manager.binary=$(location //rust:selenium-manager)",
+    ],
+    tags = COMMON_TAGS + ["chrome", "selenium-remote"],
+    deps = [
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = glob(
         ["*Test.java"],
-        exclude = SMALL_TESTS,
+        exclude = SMALL_TESTS + ["ChromeRecordingTest.java"],
     ),
     browsers = [
         "chrome",

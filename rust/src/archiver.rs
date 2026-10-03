@@ -1,176 +1,260 @@
-use serde::Serialize;
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 use std::fs::File;
 use std::io::Write;
-use std::io::BufWriter;
+use serde_json::json;
 
 use crate::recorder::Recording;
+use zip::CompressionMethod;
+use zip::write::{SimpleFileOptions, ZipWriter};
+
+fn action_class(url: &str) -> (String, String) {
+    let p = url.to_ascii_lowercase();
+    // Find the path portion after the session ID
+    let mut path = p.clone();
+    let session_marker = "/session/";
+    let session_start = path.find(session_marker);
+    if session_start.is_some() {
+        let after_session = session_start.unwrap() + session_marker.len();
+        if after_session < path.len() {
+            let rest = &path.as_str()[after_session..];
+            let slash = rest.find('/');
+            if slash.is_some() {
+                path = rest[slash.unwrap()..].to_string();
+            }
+        }
+    }
+
+    if path.ends_with("/url") {
+        return ("Page".to_string(), "navigate".to_string());
+    }
+    if path.ends_with("/back") {
+        return ("Page".to_string(), "goBack".to_string());
+    }
+    if path.ends_with("/forward") {
+        return ("Page".to_string(), "goForward".to_string());
+    }
+    if path.ends_with("/click") {
+        return ("Element".to_string(), "click".to_string());
+    }
+    if path.ends_with("/value") || path.contains("/keys") {
+        return ("Element".to_string(), "fill".to_string());
+    }
+    if path.contains("/element") && !path.contains("/elements") {
+        return ("Page".to_string(), "find".to_string());
+    }
+    if path.ends_with("/elements") {
+        return ("Page".to_string(), "find".to_string());
+    }
+    if path.ends_with("/refresh") {
+        return ("Page".to_string(), "reload".to_string());
+    }
+    if path.contains("/execute/sync") || path.contains("/execute/async") {
+        return ("Page".to_string(), "evaluate".to_string());
+    }
+    if path.contains("/window") || path.contains("/frame") || path.contains("/actions") {
+        return ("Page".to_string(), "other".to_string());
+    }
+    (String::new(), String::new())
+}
 
 pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
-    let trace_json = build_trace_json(recording)?;
     let output = recording.path.as_path();
     if output.exists() {
         std::fs::remove_file(output)?;
     }
 
     let file = File::create(output)?;
-    let mut writer = BufWriter::new(&file);
+    let mut zip = ZipWriter::new(file);
+    let options = SimpleFileOptions::default().compression_method(CompressionMethod::Stored);
 
-    let trace_bytes = trace_json.as_bytes();
-    let name_bytes: &[u8] = b"trace.json";
-    let crc = calc_crc32(trace_bytes);
-    let size = trace_bytes.len() as u32;
-    let name_len = name_bytes.len() as u16;
+    // trace.trace: NDJSON with context-options, before/after events
+    let mut trace_lines: Vec<u8> = Vec::new();
+    append_ndjson(&mut trace_lines, context_options(recording));
 
-    // Local file header
-    let mut header = Vec::new();
-    write_le_u32(&mut header, 0x04034b50);
-    write_le_u16(&mut header, 20);
-    write_le_u16(&mut header, 0);
-    write_le_u16(&mut header, 0);
-    write_le_u16(&mut header, 0);
-    write_le_u16(&mut header, 0);
-    write_le_u32(&mut header, crc);
-    write_le_u32(&mut header, size);
-    write_le_u32(&mut header, size);
-    write_le_u16(&mut header, name_len);
-    write_le_u16(&mut header, 0);
-    header.extend(name_bytes);
+    let sid = recording.session_id.as_deref().unwrap_or("default");
+    let context_id = format!("context@{}", sid);
+    let page_id = format!("page@{}", sid);
 
-    let local_size = (22 + name_len) as u64;
-    let total_size = local_size + trace_bytes.len() as u64;
+    for (i, action) in recording.actions.iter().enumerate() {
+        let call_id = format!("call@{}", i + 1);
+        let start_time = action.timestamp.saturating_sub(recording.start_time);
+        let (act_class, act_method) = action_class(&action.url);
+        let display_method = if act_method.is_empty() {
+            String::from("webdriver.send")
+        } else {
+            format!("{}.{}", act_class.to_ascii_lowercase(), act_method)
+        };
+        let display_class = if act_class.is_empty() { "Selenium" } else { &act_class };
+        let title = if !act_class.is_empty() {
+            format!("{}.{}", act_class, act_method)
+        } else {
+            format!("{} {}", action.method, shorten_path(&action.url))
+        };
 
-    writer.write(&header)?;
-    writer.write(trace_bytes)?;
+        let mut params = json!({
+            "method": action.method,
+            "path": action.url,
+            "request_body": action.request_body,
+        });
+        // Extract semantic values from request_body for display in viewer
+        let body = &action.request_body;
+        if !body.is_empty() {
+            if let Ok(val) = serde_json::from_str::<serde_json::Value>(body) {
+                if act_method == "fill" {
+                    if let Some(ref arr) = val["value"].as_array() {
+                        let mut joined = String::new();
+                        for i in 0..arr.len() {
+                            if let Some(ref part) = arr[i].as_str() {
+                                joined = format!("{}{}", joined, part);
+                            }
+                        }
+                        if !joined.is_empty() {
+                            params = json!({
+                                "method": action.method,
+                                "path": action.url,
+                                "request_body": action.request_body,
+                                "value": joined,
+                            });
+                        }
+                    }
+                } else if act_method == "navigate" {
+                    if let Some(ref u) = val["url"].as_str() {
+                        params = json!({
+                            "method": action.method,
+                            "path": action.url,
+                            "request_body": action.request_body,
+                            "url": u,
+                        });
+                    }
+                }
+            }
+        }
 
-    // Central directory entry
-    let mut cent = Vec::new();
-    write_le_u32(&mut cent, 0x02014b50);
-    write_le_u16(&mut cent, 20);
-    write_le_u16(&mut cent, 20);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u32(&mut cent, crc);
-    write_le_u32(&mut cent, size);
-    write_le_u32(&mut cent, size);
-    write_le_u16(&mut cent, name_len);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u16(&mut cent, 0);
-    write_le_u32(&mut cent, 0);
-    write_le_u32(&mut cent, 0);
-    cent.extend(name_bytes);
+        append_ndjson(&mut trace_lines, json!({
+            "type": "before",
+            "title": title,
+            "callId": call_id,
+            "startTime": start_time,
+            "class": display_class,
+            "method": display_method,
+            "pageId": page_id,
+            "contextId": context_id,
+            "parentId": null,
+            "params": params,
+        }));
 
-    writer.write(&cent)?;
+        append_ndjson(&mut trace_lines, json!({
+            "type": "after",
+            "callId": call_id,
+            "endTime": start_time + action.duration_ms,
+        }));
 
-    // End of central directory
-    let mut eocd = Vec::new();
-    write_le_u32(&mut eocd, 0x06054b50);
-    write_le_u16(&mut eocd, 0);
-    write_le_u16(&mut eocd, 0);
-    write_le_u16(&mut eocd, 1);
-    write_le_u16(&mut eocd, 1);
-    write_le_u32(&mut eocd, cent.len() as u32);
-    write_le_u32(&mut eocd, total_size as u32);
-    write_le_u16(&mut eocd, 0);
+        // Per-action screenshot
+        if let Some(ref ss_bytes) = action.screenshot_bytes {
+            let ss_name = format!("page@{}-action-{}.png", sid, i);
+            append_ndjson(&mut trace_lines, json!({
+                "type": "screencast-frame",
+                "pageId": page_id,
+                "sha1": ss_name,
+                "width": 1280,
+                "height": 720,
+                "timestamp": start_time,
+            }));
+            let ss_path = format!("resources/{}", ss_name);
+            let _ = zip.start_file(&ss_path, options);
+            let _ = zip.write_all(ss_bytes);
+        }
+    }
 
-    writer.write(&eocd)?;
-    writer.flush()?;
+    zip.start_file("trace.trace", options)?;
+    zip.write_all(&trace_lines)?;
+
+    // trace.network: NDJSON with resource snapshots (minimal)
+    let mut network_lines: Vec<u8> = Vec::new();
+    for action in &recording.actions {
+        let url = &action.url;
+        let status = action.status;
+        let method = &action.method;
+        if status > 0 && !url.is_empty() {
+            append_ndjson(&mut network_lines, json!({
+                "type": "resource-snapshot",
+                "snapshot": {
+                    "request": {
+                        "method": method,
+                        "url": url,
+                        "headers": [],
+                        "cookies": [],
+                        "headersSize": 0,
+                        "bodySize": 0,
+                        "queryString": [],
+                    },
+                    "response": {
+                        "status": status,
+                        "headers": [],
+                        "cookies": [],
+                        "headersSize": 0,
+                        "bodySize": 0,
+                    },
+                }
+            }));
+        }
+    }
+    zip.start_file("trace.network", options)?;
+    zip.write_all(&network_lines)?;
+
+    zip.finish()?;
     Ok(())
 }
 
-fn write_le_u16(buf: &mut Vec<u8>, value: u16) {
-    buf.push((value & 0xff) as u8);
-    buf.push(((value >> 8) & 0xff) as u8);
+fn append_ndjson(buf: &mut Vec<u8>, value: serde_json::Value) {
+    buf.extend(serde_json::to_string(&value).unwrap().as_bytes());
+    buf.push(b'\n');
 }
 
-fn write_le_u32(buf: &mut Vec<u8>, value: u32) {
-    buf.push((value & 0xff) as u8);
-    buf.push(((value >> 8) & 0xff) as u8);
-    buf.push(((value >> 16) & 0xff) as u8);
-    buf.push(((value >> 24) & 0xff) as u8);
+fn context_options(recording: &Recording) -> serde_json::Value {
+    let sid = recording.session_id.as_deref().unwrap_or("default");
+    json!({
+        "version": 8,
+        "type": "context-options",
+        "origin": "library",
+        "libraryName": "selenium",
+        "libraryVersion": "4.51.0",
+        "browserName": recording.browser_name,
+        "platform": recording.platform,
+        "wallTime": recording.start_time,
+        "monotonicTime": 0,
+        "sdkLanguage": "java",
+        "title": recording.title,
+        "contextId": format!("context@{}", sid),
+        "options": {
+            "viewport": {"height": 720, "width": 1280}
+        },
+    })
 }
 
-fn calc_crc32(data: &[u8]) -> u32 {
-    let mut table: [u32; 256] = [0u32; 256];
-    for i in 0..256 {
-        let mut crc = i as u32;
-        for _ in 0..8 {
-            crc = if (crc & 1) != 0 { (crc >> 1) ^ 0xedb88320 } else { crc >> 1 };
+fn shorten_path(full_url: &str) -> &str {
+    // Extract the path from a URL
+    if let Some(start) = full_url.find("://") {
+        let after_host = &full_url[start + 3..];
+        if let Some(slash) = after_host.find('/') {
+            return &after_host[slash..];
         }
-        table[i as usize] = crc;
     }
-    let mut crc = 0xffffffffu32;
-    for b in data {
-        crc = table[((crc ^ (*b as u32)) & 0xff) as usize] ^ (crc >> 8);
-    }
-    crc ^ 0xffffffff
-}
-
-fn build_trace_json(recording: &Recording) -> Result<String, anyhow::Error> {
-    let mut commands = Vec::new();
-
-    for i in 0..recording.actions.len() {
-        let a = &recording.actions[i];
-        let mut screenshot_file: Option<String> = None;
-
-        if a.screenshot_bytes.is_some() {
-            screenshot_file = Some(format!("screenshots/s{}.png", i));
-        }
-
-        commands.push(TraceCommand {
-            r#type: a.command.clone(),
-            action: format!("{} {}", a.method, a.url),
-            timestamp: a.timestamp,
-            duration: a.duration_ms,
-            status: a.status,
-            url: a.url.clone(),
-            request_body: a.request_body.clone(),
-            response_body: a.response_body.clone(),
-            screenshot_file,
-        });
-    }
-
-    let trace = TraceFile {
-        r#type: "trace".to_string(),
-        version: 2,
-        pages: vec![TracePage {
-            page_id: recording.session_id.clone().unwrap_or("default".to_string()),
-            title: String::new(),
-            url: String::new(),
-            commands,
-        }],
-    };
-
-    Ok(serde_json::to_string_pretty(&trace)?)
-}
-
-#[derive(Serialize)]
-struct TraceCommand {
-    r#type: String,
-    action: String,
-    timestamp: u64,
-    duration: u64,
-    status: u16,
-    url: String,
-    request_body: String,
-    response_body: String,
-    screenshot_file: Option<String>,
-}
-
-#[derive(Serialize)]
-struct TracePage {
-    page_id: String,
-    title: String,
-    url: String,
-    commands: Vec<TraceCommand>,
-}
-
-#[derive(Serialize)]
-struct TraceFile {
-    r#type: String,
-    version: u32,
-    pages: Vec<TracePage>,
+    full_url
 }

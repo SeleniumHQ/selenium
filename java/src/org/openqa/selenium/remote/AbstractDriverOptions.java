@@ -110,6 +110,26 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     return self();
   }
 
+  private @Nullable String recordPath;
+
+  /**
+   * Enable trace recording. The session will be recorded and saved to the specified path.
+   *
+   * @param path Path where the recording (trace.zip) will be saved.
+   * @return This instance for chaining.
+   */
+  public DO setRecord(String path) {
+    this.recordPath = path;
+    return self();
+  }
+
+  /**
+   * @return The recording path or {@code null} if recording is not enabled.
+   */
+  public @Nullable String getRecordPath() {
+    return recordPath;
+  }
+
   @SuppressWarnings("unchecked")
   private DO self() {
     return (DO) this;

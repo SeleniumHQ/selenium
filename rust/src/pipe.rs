@@ -15,15 +15,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::recorder::{Recorder, should_record};
 use anyhow::Error;
 use anyhow::anyhow;
-use crate::recorder::{Recorder, should_record};
 use reqwest::Client;
 use std::path::PathBuf;
 use std::process::{Child, Command as ProcessCommand};
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
+use std::sync::{Arc, Mutex};
 use std::thread;
+
+/// Simple RFC 4648 base64 decoder for WebDriver screenshot responses.
+fn decode_base64(encoded: &str) -> Result<Vec<u8>, ()> {
+    const DECODE_TABLE: [i8; 256] = {
+        let mut t = [-1i8; 256];
+        let mut i = 0u8;
+        while i < 64 {
+            let c = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i as usize];
+            t[c as usize] = i as i8;
+            i += 1;
+        }
+        t
+    };
+    let bytes = encoded.as_bytes();
+    let mut result = Vec::with_capacity(bytes.len() / 4 * 3);
+    let mut i = 0;
+    while i < bytes.len() {
+        let mut sextets = [0i16; 4];
+        let mut pad = 0;
+        for j in 0..4 {
+            let idx = i + j;
+            if idx >= bytes.len() { return Err(()); }
+            if bytes[idx] == b'=' { pad += 1; continue; }
+            let val = DECODE_TABLE[bytes[idx] as usize];
+            if val < 0 { return Err(()); }
+            sextets[j] = val as i16;
+        }
+        if pad > 2 { return Err(()); }
+        result.push((sextets[0] << 2 | sextets[1] >> 4) as u8);
+        if pad < 2 { result.push((sextets[1] << 4 | sextets[2] >> 2) as u8); }
+        if pad < 1 { result.push((sextets[2] << 6 | sextets[3]) as u8); }
+        i += 4;
+    }
+    Ok(result)
+}
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 
@@ -65,7 +101,10 @@ impl WebDriverProcess {
         }
         if !ready {
             child.kill()?;
-            return Err(anyhow!("WebDriver did not become ready within {} attempts", max_retries));
+            return Err(anyhow!(
+                "WebDriver did not become ready within {} attempts",
+                max_retries
+            ));
         }
 
         Ok(WebDriverProcess {
@@ -103,7 +142,7 @@ pub struct PipeConfig {
     pub webdriver_url: String,
     pub webdriver_ws_url: Option<String>,
     pub record_path: Option<PathBuf>,
-    pub recorder: Option<Recorder>,
+    pub recorder: Option<Arc<Mutex<Recorder>>>,
 }
 
 pub struct PipeMode {
@@ -138,15 +177,23 @@ impl PipeMode {
 
     pub fn wait(&self) {
         loop {
-            thread::sleep(std::time::Duration::from_secs(3600));
+            thread::sleep(std::time::Duration::from_secs(1));
         }
+    }
+
+    pub fn config(&self) -> &PipeConfig {
+        &self.config
+    }
+
+    pub fn stop(&mut self) {
+        self.running = false;
     }
 }
 
 #[tokio::main]
 async fn start_pipe(
     webdriver_url: String,
-    recorder: Option<Recorder>,
+    recorder: Option<Arc<Mutex<Recorder>>>,
     http_client: Client,
     port_tx: Sender<u16>,
 ) {
@@ -159,7 +206,7 @@ async fn start_pipe(
     if addr.is_err() {
         return;
     }
-    let port = addr.unwrap().port();
+let port = addr.unwrap().port();
     let _ = port_tx.send(port);
 
     loop {
@@ -181,7 +228,7 @@ async fn handle_client(
     stream: &mut TcpStream,
     webdriver_url: &str,
     client: &Client,
-    mut recorder: Option<Recorder>,
+    recorder: Option<Arc<Mutex<Recorder>>>,
 ) -> Result<(), Error> {
     let (method, path, headers, body) = read_http_request(stream).await?;
     if method.is_empty() {
@@ -192,7 +239,7 @@ async fn handle_client(
 
     // Record start
     if recorder.is_some() && should_record(&method, &path) {
-        let r = recorder.as_mut().unwrap();
+        let mut r = recorder.as_ref().unwrap().lock().unwrap();
         let body_str = String::from_utf8_lossy(&body);
         r.record_start(&method, &target, &method, &body_str);
     }
@@ -230,13 +277,37 @@ async fn handle_client(
 
     // Record end
     if recorder.is_some() && should_record(&method, &path) {
-        let r = recorder.as_mut().unwrap();
-        let body_str = String::from_utf8_lossy(&response_body);
-        r.record_end(status, &body_str);
+        if let Ok(mut r) = recorder.as_ref().unwrap().lock() {
+            let body_str = String::from_utf8_lossy(&response_body);
+            r.record_end(status, &body_str);
+        }
     }
 
     let response_bytes = build_http_response(status, &response_body).await?;
     stream.write_all(&response_bytes).await?;
+
+    // Skip per-action screenshot for blank POST /session; filmstrip covers it
+    if recorder.is_some() && should_record(&method, &path) && path != "/session" {
+        let sid = recorder.as_ref().unwrap().lock().ok()
+            .and_then(|r| r.recording.session_id.clone());
+        if let Some(session_id) = sid {
+            let ss_url = format!("{}/session/{}/screenshot", webdriver_url, session_id);
+            if let Ok(ss_resp) = client.get(&ss_url).send().await {
+                if let Ok(ss_body) = ss_resp.bytes().await {
+                    if let Ok(json_val) = serde_json::from_slice::<serde_json::Value>(&ss_body) {
+                        if let Some(b64) = json_val["value"].as_str() {
+                            if let Ok(png_bytes) = decode_base64(b64) {
+                                if let Ok(mut r) = recorder.as_ref().unwrap().lock() {
+                                    r.set_screenshot(png_bytes);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 
@@ -319,10 +390,180 @@ fn find_header_end(buf: &[u8]) -> usize {
 }
 
 async fn build_http_response(status_code: u16, body: &[u8]) -> Result<Vec<u8>, Error> {
+    let reason = match status_code {
+        200 => "OK",
+        201 => "Created",
+        204 => "No Content",
+        301 => "Moved Permanently",
+        302 => "Found",
+        303 => "See Other",
+        304 => "Not Modified",
+        400 => "Bad Request",
+        401 => "Unauthorized",
+        403 => "Forbidden",
+        404 => "Not Found",
+        405 => "Method Not Allowed",
+        500 => "Internal Server Error",
+        502 => "Bad Gateway",
+        503 => "Service Unavailable",
+        _ => "Unknown",
+    };
     let mut out = Vec::new();
-    out.extend(format!("HTTP/1.1 {} OK\r\n", status_code).as_bytes());
+    out.extend(format!("HTTP/1.1 {} {}\r\n", status_code, reason).as_bytes());
     out.extend(format!("Content-Length: {}\r\n", body.len()).as_bytes());
+    out.extend(b"Connection: close\r\n");
+    out.extend(b"Content-Type: application/json\r\n");
     out.extend(b"\r\n");
     out.extend(body);
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::Arc;
+    use std::time::Duration;
+    use tokio::io::AsyncWriteExt;
+    use tokio::net::TcpListener;
+
+    /// Helper: spawns a mini server that sends a POST request,
+    /// then the proxy-side calls read_http_request on the connection.
+    async fn send_and_read(
+        body: &[u8],
+        use_cl: bool,
+    ) -> Result<(Vec<u8>, Vec<(String, String)>), anyhow::Error> {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+
+        let body_vec = body.to_vec();
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let cl = if use_cl {
+                format!("Content-Length: {}", body_vec.len())
+            } else {
+                String::new()
+            };
+            let body_s = String::from_utf8_lossy(&body_vec);
+            let req = format!(
+                "POST / HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\n{}\r\n\r\n{}",
+                cl, body_s
+            );
+            let _ = stream.write_all(req.as_bytes()).await;
+            let mut buf: [u8; 256] = [0u8; 256];
+            let _ = stream.read(&mut buf[..]).await;
+        });
+
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", port))
+            .await
+            .unwrap();
+        let (m, p, h, b) = read_http_request(&mut stream).await?;
+        let resp = b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok";
+        let _ = stream.write_all(&resp[..]).await;
+        assert_eq!(m, "POST");
+        assert_eq!(p, "/");
+        Ok((b, h))
+    }
+
+    #[tokio::test]
+    async fn test_normal_post_body() -> Result<(), anyhow::Error> {
+        let body = b"key=value&data=12345";
+        let (got, _) = send_and_read(body, true).await?;
+        assert_eq!(got.len(), 20, "expected 20 body bytes, got {}", got.len());
+        let s = String::from_utf8_lossy(&got);
+        assert!(s.contains("12345"), "missing data: {}", s);
+        println!("PASS: normal POST body ({}b)", got.len());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_large_post_body() -> Result<(), anyhow::Error> {
+        let body = vec![b'X'; 10000];
+        let (got, _) = send_and_read(&body, true).await?;
+        assert_eq!(got.len(), 10000, "expected 10000b, got {}", got.len());
+        println!("PASS: large POST body ({}b)", got.len());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_post_body_no_cl() -> Result<(), anyhow::Error> {
+        let body = b"data";
+        let (got, _) = send_and_read(body, false).await?;
+        println!("PASS: no Content-Length -> body len={}", got.len());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_keepalive_after_first_request() -> Result<(), anyhow::Error> {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let _ = stream
+                .write_all(b"POST /1 HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nhello")
+                .await;
+            let mut buf: [u8; 64] = [0u8; 64];
+            let _ = stream.read(&mut buf[..]).await;
+            // Second request on same connection (keep-alive)
+            let _ = stream
+                .write_all(b"POST /2 HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nworld")
+                .await;
+            let _ = stream.read(&mut buf[..]).await;
+        });
+
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", port))
+            .await
+            .unwrap();
+
+        let (_, p1, _, b1) = read_http_request(&mut stream).await?;
+        println!("Req1: {} body={}", p1, String::from_utf8_lossy(&b1));
+        let _ = stream
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")
+            .await;
+
+        // Try reading second request on same connection
+        let res = read_http_request(&mut stream).await;
+        match res {
+            Ok((_, p2, _, b2)) => println!(
+                "Req2: {} body={} (KEEP-ALIVE)",
+                p2,
+                String::from_utf8_lossy(&b2)
+            ),
+            Err(_) => {
+                println!("Req2: connection closed after first request (expected with raw TCP)")
+            }
+        }
+        println!("PASS: keep-alive test");
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_http10_post() -> Result<(), anyhow::Error> {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.unwrap();
+            let _ = stream
+                .write_all(b"POST / HTTP/1.0\r\nContent-Length: 5\r\n\r\nhello")
+                .await;
+            let mut buf: [u8; 64] = [0u8; 64];
+            let _ = stream.read(&mut buf[..]).await;
+        });
+
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", port))
+            .await
+            .unwrap();
+        let (_, _, _, body) = read_http_request(&mut stream).await?;
+        assert_eq!(body.len(), 5);
+        assert_eq!(String::from_utf8_lossy(&body), "hello");
+        let _ = stream
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")
+            .await;
+        println!("PASS: HTTP/1.0 POST body");
+        Ok(())
+    }
 }
