@@ -36,7 +36,7 @@ bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
 bazel_dep(name = "rules_oci", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "1.2.0")
-bazel_dep(name = "rules_python", version = "1.9.0")
+bazel_dep(name = "rules_python", version = "2.3.4")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.28.0")
 bazel_dep(name = "rules_rs", version = "0.0.109")
@@ -158,12 +158,13 @@ register_toolchains("@dotnet_toolchains//:all")
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    python_version = "3.10.19",
+    python_version = "3.10.20",
 )
-python.toolchain(python_version = "3.11.14")
-python.toolchain(python_version = "3.12.12")
-python.toolchain(python_version = "3.13.11")
-python.toolchain(python_version = "3.14.2")
+python.toolchain(python_version = "3.11.15")
+python.toolchain(python_version = "3.12.13")
+python.toolchain(python_version = "3.13.13")
+python.toolchain(python_version = "3.14.4")
+python.toolchain(python_version = "3.15.0a8")
 use_repo(python, "pythons_hub")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
@@ -175,11 +176,12 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         requirements_lock = "//py:requirements_lock.txt",
     )
     for version in [
-        "3.10.19",
-        "3.11.14",
-        "3.12.12",
-        "3.13.11",
-        "3.14.2",
+        "3.10.20",
+        "3.11.15",
+        "3.12.13",
+        "3.13.13",
+        "3.14.4",
+        "3.15.0a8",
     ]
 ]
 
