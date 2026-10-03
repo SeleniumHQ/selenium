@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+#[derive(Clone)]
 pub struct RecordedAction {
     pub command: String,
     pub url: String,
@@ -13,6 +14,7 @@ pub struct RecordedAction {
     pub screenshot_bytes: Option<Vec<u8>>,
 }
 
+#[derive(Clone)]
 pub struct Recording {
     pub path: PathBuf,
     pub actions: Vec<RecordedAction>,
@@ -20,6 +22,7 @@ pub struct Recording {
     pub start_time: u64,
 }
 
+#[derive(Clone)]
 pub struct Recorder {
     pub recording: Recording,
     current_action_start: u64,

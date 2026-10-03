@@ -17,6 +17,7 @@
 
 use anyhow::Error;
 use anyhow::anyhow;
+use crate::recorder::{Recorder, should_record};
 use reqwest::Client;
 use std::path::PathBuf;
 use std::process::{Child, Command as ProcessCommand};
@@ -99,6 +100,7 @@ pub struct PipeConfig {
     pub webdriver_url: String,
     pub webdriver_ws_url: Option<String>,
     pub record_path: Option<PathBuf>,
+    pub recorder: Option<Recorder>,
 }
 
 pub struct PipeMode {
@@ -119,10 +121,11 @@ impl PipeMode {
     pub fn start(&mut self) -> Result<u16, Error> {
         let (port_tx, port_rx): (Sender<u16>, Receiver<u16>) = mpsc::channel();
         let webdriver_url = self.config.webdriver_url.clone();
+        let recorder = self.config.recorder.clone();
 
         thread::spawn(move || {
             let client = Client::builder().build().unwrap_or_default();
-            start_pipe(webdriver_url, client, port_tx);
+            start_pipe(webdriver_url, recorder, client, port_tx);
         });
 
         self.proxy_port = port_rx.recv()?;
@@ -140,6 +143,7 @@ impl PipeMode {
 #[tokio::main]
 async fn start_pipe(
     webdriver_url: String,
+    mut recorder: Option<Recorder>,
     http_client: Client,
     port_tx: Sender<u16>,
 ) {
@@ -164,8 +168,9 @@ async fn start_pipe(
         let mut stream: TcpStream = stream;
         let url = webdriver_url.clone();
         let client = http_client.clone();
+        let rec = recorder.clone();
 
-        let _ = handle_client(&mut stream, &url, &client).await;
+        let _ = handle_client(&mut stream, &url, &client, rec).await;
     }
 }
 
@@ -173,6 +178,7 @@ async fn handle_client(
     stream: &mut TcpStream,
     webdriver_url: &str,
     client: &Client,
+    mut recorder: Option<Recorder>,
 ) -> Result<(), Error> {
     let (method, path, headers, body) = read_http_request(stream).await?;
     if method.is_empty() {
@@ -180,6 +186,13 @@ async fn handle_client(
     }
 
     let target = format!("{}{}", webdriver_url, path);
+
+    // Record start
+    if recorder.is_some() && should_record(&method, &path) {
+        let r = recorder.as_mut().unwrap();
+        let body_str = String::from_utf8_lossy(&body);
+        r.record_start(&method, &target, &method, &body_str);
+    }
 
     let mut req = if method == "GET" {
         client.get(&target)
@@ -209,7 +222,17 @@ async fn handle_client(
     }
 
     let wd_response = req.send().await?;
-    let response_bytes = build_http_response(wd_response).await?;
+    let status = wd_response.status().as_u16();
+    let response_body = wd_response.bytes().await?;
+
+    // Record end
+    if recorder.is_some() && should_record(&method, &path) {
+        let r = recorder.as_mut().unwrap();
+        let body_str = String::from_utf8_lossy(&response_body);
+        r.record_end(status, &body_str);
+    }
+
+    let response_bytes = build_http_response(status, &response_body).await?;
     stream.write_all(&response_bytes).await?;
     Ok(())
 }
@@ -292,31 +315,9 @@ fn find_header_end(buf: &[u8]) -> usize {
     0
 }
 
-async fn build_http_response(response: reqwest::Response) -> Result<Vec<u8>, Error> {
-    let status = response.status();
-    let status_code = status.as_u16();
-
-    // Collect headers before consuming body
-    let mut header_pairs: Vec<(String, String)> = Vec::new();
-    for (key, value) in response.headers() {
-        let key_str = key.to_string();
-        let val_str = value.to_str().unwrap_or_default().to_string();
-        header_pairs.push((key_str, val_str));
-    }
-
-    let body = response.bytes().await?;
-
+async fn build_http_response(status_code: u16, body: &[u8]) -> Result<Vec<u8>, Error> {
     let mut out = Vec::new();
     out.extend(format!("HTTP/1.1 {} OK\r\n", status_code).as_bytes());
-
-    for (key_str, val_str) in header_pairs {
-        let key_lower = key_str.to_ascii_lowercase();
-        if key_lower == "content-encoding" || key_lower == "transfer-encoding" {
-            continue;
-        }
-        out.extend(format!("{}: {}\r\n", key_str, val_str).as_bytes());
-    }
-
     out.extend(format!("Content-Length: {}\r\n", body.len()).as_bytes());
     out.extend(b"\r\n");
     out.extend(body);
