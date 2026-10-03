@@ -192,9 +192,12 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
         let status = action.status;
         let method = &action.method;
         if status > 0 && !url.is_empty() {
+            let net_time = action.timestamp.saturating_sub(recording.start_time);
             append_ndjson(&mut network_lines, json!({
                 "type": "resource-snapshot",
+                "time": net_time,
                 "snapshot": {
+                    "_monotonicTime": net_time,
                     "request": {
                         "method": method,
                         "url": url,
