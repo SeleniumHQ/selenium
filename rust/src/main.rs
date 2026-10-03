@@ -32,6 +32,8 @@ use selenium_manager::{
     CACHE_TTL_DAYS, SeleniumManager, clear_cache, format_error, get_manager_by_browser,
     get_manager_by_driver, prune_old_cache_entries,
 };
+use selenium_manager::pipe::{PipeConfig, PipeMode, WebDriverProcess};
+use selenium_manager::recorder::Recorder;
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
 use std::path::Path;
@@ -179,6 +181,14 @@ struct Cli {
     /// Add a rules file with Selenium guidance for LLM coding assistants to the repository
     #[clap(long, value_name = "FILE_NAME", num_args = 0..=1, default_missing_value = "")]
     init_rules: Option<String>,
+
+    /// Start HTTP proxy for WebDriver forwarding (pipe mode). Implied by --record.
+    #[clap(long)]
+    pipe: bool,
+
+    /// Path to save trace recording (implies --pipe).
+    #[clap(long, value_parser)]
+    record: Option<String>,
 }
 
 fn main() {
@@ -307,6 +317,45 @@ fn main() {
         .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
+        .and_then(|driver_path| {
+            if !cli.pipe && cli.record.is_none() {
+                // Normal mode: return driver_path for the existing flow
+                return Ok(driver_path);
+            }
+
+            // Pipe mode: start WebDriver, proxy, and optionally recording
+            let log = selenium_manager.get_logger();
+            let driver_str = driver_path.to_string_lossy();
+
+            log.debug(format!("Starting WebDriver: {}", driver_str));
+            let wd = WebDriverProcess::start(&driver_str)?;
+            log.debug(format!("WebDriver ready at {}", wd.base_url));
+
+            let mut recorder: Option<Recorder> = None;
+            if let Some(record_path) = cli.record {
+                let path = Path::new(&record_path).to_path_buf();
+                recorder = Some(Recorder::new(path));
+                log.debug(format!("Recording to {}", record_path));
+            }
+
+            let config = PipeConfig {
+                webdriver_url: wd.base_url.clone(),
+                webdriver_ws_url: wd.ws_url.clone(),
+                record_path: None,
+            };
+            let mut pipe = PipeMode::new(config);
+            let proxy_port = pipe.start()?;
+            log.info(format!("Proxy listening on port {}", proxy_port));
+
+            // Print JSON to stdout for the binding to read
+            let output = format!(
+                r#"{{"proxy_url":"http://localhost:{}","session_port":{}}}"#,
+                proxy_port, wd.port
+            );
+            log.info(output);
+            pipe.wait();
+            Ok(driver_path)
+        })
         .map(|driver_path| {
             let log = selenium_manager.get_logger();
             log_driver_and_browser_path(

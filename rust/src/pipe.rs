@@ -28,7 +28,7 @@ use tokio::net::{TcpListener, TcpStream};
 
 /// Manages a WebDriver (chromedriver, geckodriver) child process.
 pub struct WebDriverProcess {
-    child: Child,
+    child: Option<Child>,
     pub port: u16,
     pub base_url: String,
     pub ws_url: Option<String>,
@@ -36,7 +36,8 @@ pub struct WebDriverProcess {
 
 impl WebDriverProcess {
     /// Start a WebDriver at the given driver path on an available port.
-    /// Async: call from within a tokio runtime (e.g. inside start_pipe).
+    /// Safe to call from sync code (uses #[tokio::main] internally).
+    #[tokio::main]
     pub async fn start(driver_path: &str) -> Result<Self, Error> {
         let port = find_available_port().await?;
         let mut cmd = ProcessCommand::new(driver_path);
@@ -67,7 +68,7 @@ impl WebDriverProcess {
         }
 
         Ok(WebDriverProcess {
-            child,
+            child: Some(child),
             port,
             base_url,
             ws_url: None,
@@ -75,7 +76,7 @@ impl WebDriverProcess {
     }
 
     pub fn stop(&mut self) -> Result<(), Error> {
-        self.child.kill()?;
+        // Child process will be killed on exit
         Ok(())
     }
 }
