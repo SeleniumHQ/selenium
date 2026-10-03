@@ -27,6 +27,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.webextension.HasWebExtensions;
+import org.openqa.selenium.webextension.WebExtension;
 
 class RemoteFirefoxDriverTest extends JupiterTestBase {
 
@@ -38,6 +40,20 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
     assertThatCode(() -> ((HasExtensions) driver).uninstallExtension(id))
+        .doesNotThrowAnyException();
+  }
+
+  @Test
+  @NoDriverAfterTest
+  public void shouldAllowRemoteWebDriverBuilderToUseHasWebExtensionsWithNoAugmentation() {
+    Path extension = InProject.locate("common/extensions/webextensions-selenium-example.xpi");
+
+    // RemoteWebDriver implements HasWebExtensions directly, unlike HasExtensions above which
+    // needs the Augmenter; a plain cast is enough even for a builder-created driver.
+    WebExtension installed = ((HasWebExtensions) driver).installWebExtension(extension);
+    assertThat(installed.getId()).isEqualTo("webextensions-selenium-example-v3@example.com");
+
+    assertThatCode(() -> ((HasWebExtensions) driver).uninstallWebExtension(installed))
         .doesNotThrowAnyException();
   }
 

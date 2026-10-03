@@ -67,6 +67,7 @@ java_library(
         "//java/src/org/openqa/selenium/bidi/module",
         "//java/src/org/openqa/selenium/bidi/network",
         "//java/src/org/openqa/selenium/bidi/script",
+        "//java/src/org/openqa/selenium/bidi/webextension",
         "//java/src/org/openqa/selenium/concurrent",
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
