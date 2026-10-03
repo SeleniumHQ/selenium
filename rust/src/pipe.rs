@@ -77,7 +77,10 @@ impl WebDriverProcess {
     }
 
     pub fn stop(&mut self) -> Result<(), Error> {
-        // Child process will be killed on exit
+        if self.child.is_some() {
+            let mut child = self.child.take().unwrap();
+            child.kill()?;
+        }
         Ok(())
     }
 }
