@@ -24,6 +24,7 @@ import sys
 import sysconfig
 from pathlib import Path
 
+from selenium import __version__ as VERSION
 from selenium.common import WebDriverException
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ class SeleniumManager:
     """
 
     def binary_paths(self, args: list) -> dict:
-        """Determines the locations of the requested assets.
+        """Builds the Selenium Manager command line argument list and runs it.
 
         Args:
             args: the commands to send to the selenium manager binary.
@@ -49,6 +50,8 @@ class SeleniumManager:
             args.append("--debug")
         args.append("--language-binding")
         args.append("python")
+        args.append("--selenium-version")
+        args.append(VERSION)
         args.append("--output")
         args.append("json")
 
