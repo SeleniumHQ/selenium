@@ -62,12 +62,15 @@ class CollectionCoercer<T extends Collection, I extends T> extends TypeCoercer<T
       throw new IllegalArgumentException("Unhandled type: " + type.getClass());
     }
 
+    // Resolve the element coercer once rather than paying a cache lookup per element.
+    BiFunction<JsonInput, PropertySetting, Object> valueCoercer = coercer.lazyResolve(valueType);
+
     return (jsonInput, setting) -> {
       jsonInput.beginArray();
       I toReturn = supplier.get();
       Consumer<Object> consumer = consumerFactory.apply(toReturn);
       while (jsonInput.hasNext()) {
-        consumer.accept(coercer.coerce(jsonInput, valueType, setting));
+        consumer.accept(valueCoercer.apply(jsonInput, setting));
       }
       jsonInput.endArray();
 

@@ -95,6 +95,7 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -237,8 +238,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     HttpRequest request = new HttpRequest(spec.method, uri);
 
     if (HttpMethod.POST == spec.method) {
-      String content = json.toJson(parameters);
-      byte[] data = content.getBytes(UTF_8);
+      StringBuilder content = new StringBuilder();
+      try (JsonOutput out = json.newOutput(content)) {
+        out.setPrettyPrint(false).write(parameters);
+      }
+      byte[] data = content.toString().getBytes(UTF_8);
 
       request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
       request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
