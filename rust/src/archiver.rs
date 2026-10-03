@@ -172,6 +172,7 @@ pub fn package(recording: &Recording) -> Result<(), anyhow::Error> {
             append_ndjson(&mut trace_lines, json!({
                 "type": "screencast-frame",
                 "pageId": page_id,
+                "sha1": ss_name,
                 "file": ss_file,
                 "width": 1280,
                 "height": 720,
