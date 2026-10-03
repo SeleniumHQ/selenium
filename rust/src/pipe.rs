@@ -86,7 +86,7 @@ impl WebDriverProcess {
 }
 
 pub async fn find_available_port() -> Result<u16, Error> {
-    let listener = TcpListener::bind("0.0.0.0:0").await;
+    let listener = TcpListener::bind("127.0.0.1:0").await;
     if listener.is_err() {
         return Err(anyhow!("cannot find available port"));
     }
@@ -150,7 +150,7 @@ async fn start_pipe(
     http_client: Client,
     port_tx: Sender<u16>,
 ) {
-    let listener = TcpListener::bind("0.0.0.0:0").await;
+    let listener = TcpListener::bind("127.0.0.1:0").await;
     if listener.is_err() {
         return;
     }

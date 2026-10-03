@@ -353,7 +353,8 @@ fn main() {
                 r#"{{"proxy_url":"http://localhost:{}","session_port":{}}}"#,
                 proxy_port, wd.port
             );
-            log.info(output);
+            // Direct print to stdout (bypasses the JSON logger which buffers)
+            println!("{}", output);
             pipe.wait();
             Ok(driver_path)
         })
