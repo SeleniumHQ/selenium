@@ -19,11 +19,80 @@ use anyhow::Error;
 use anyhow::anyhow;
 use reqwest::Client;
 use std::path::PathBuf;
+use std::process::{Child, Command as ProcessCommand};
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
+
+/// Manages a WebDriver (chromedriver, geckodriver) child process.
+pub struct WebDriverProcess {
+    child: Child,
+    pub port: u16,
+    pub base_url: String,
+    pub ws_url: Option<String>,
+}
+
+impl WebDriverProcess {
+    /// Start a WebDriver at the given driver path on an available port.
+    /// Async: call from within a tokio runtime (e.g. inside start_pipe).
+    pub async fn start(driver_path: &str) -> Result<Self, Error> {
+        let port = find_available_port().await?;
+        let mut cmd = ProcessCommand::new(driver_path);
+        cmd.arg(format!("--port={}", port));
+        cmd.arg("--verbose");
+        let mut child = cmd.spawn()?;
+        let base_url = format!("http://localhost:{}", port);
+
+        // Wait for WebDriver to become ready (poll /status)
+        let client = Client::builder().build().unwrap_or_default();
+        let status_url = format!("{}/status", base_url);
+        let max_retries = 30;
+        let mut ready = false;
+        for _ in 0..max_retries {
+            thread::sleep(std::time::Duration::from_millis(500));
+            let response = client.get(&status_url).send().await;
+            if response.is_err() {
+                continue;
+            }
+            if response.unwrap().status().as_u16() == 200 {
+                ready = true;
+                break;
+            }
+        }
+        if !ready {
+            child.kill()?;
+            return Err(anyhow!("WebDriver did not become ready within {} attempts", max_retries));
+        }
+
+        Ok(WebDriverProcess {
+            child,
+            port,
+            base_url,
+            ws_url: None,
+        })
+    }
+
+    pub fn stop(&mut self) -> Result<(), Error> {
+        self.child.kill()?;
+        Ok(())
+    }
+}
+
+pub async fn find_available_port() -> Result<u16, Error> {
+    let listener = TcpListener::bind("0.0.0.0:0").await;
+    if listener.is_err() {
+        return Err(anyhow!("cannot find available port"));
+    }
+    let listener = listener.unwrap();
+    let addr = listener.local_addr();
+    if addr.is_err() {
+        return Err(anyhow!("cannot get local address"));
+    }
+    let port = addr.unwrap().port();
+    Ok(port)
+}
 
 pub struct PipeConfig {
     pub webdriver_url: String,
