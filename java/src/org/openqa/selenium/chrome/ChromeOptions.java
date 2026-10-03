@@ -19,7 +19,6 @@ package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.remote.Browser.CHROME;
 
-import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
