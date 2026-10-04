@@ -233,6 +233,9 @@ public class BiDiGenerator {
       for (Map.Entry<String, Map<String, Object>> e : types.entrySet()) {
         Map<String, Object> node = e.getValue();
         if (!Boolean.TRUE.equals(node.get("synthetic"))) continue;
+        // A synthetic map record is inlined as java.util.Map<String, V> on its field (see
+        // syntheticMapValue), so it must not also be emitted as an empty nested class.
+        if (syntheticMapValue(node) != null) continue;
         String owner = str(node, "owner");
         if (owner != null) {
           result.computeIfAbsent(owner, k -> new ArrayList<>()).add(e.getKey());
@@ -2262,8 +2265,42 @@ public class BiDiGenerator {
       boolean required = Boolean.TRUE.equals(raw.get("required"));
       @SuppressWarnings("unchecked")
       Map<String, Object> type = (Map<String, Object>) raw.get("type");
+      type = inlineSyntheticMap(type);
       // wire key stays as the original spec name for JSON serialization
       return new FieldInfo(name, wire != null ? wire : rawName, required, type);
+    }
+
+    // The schema projector has no inline map form for a field, so a CDDL map such as
+    // script.NodeProperties.attributes ({*text => text}) is hoisted into a synthetic record with
+    // no fields and the value type under "map" (e.g. script.NodePropertiesAttributes). Resolving
+    // that ref as a record would emit an empty nested class whose @WarnOnUnknownFields drops
+    // every entry. Rewriting the field's ref to the inline map typeRef instead routes it through
+    // the existing map handling in resolveJavaType, serializeExpr and immutableCopyExpr.
+    private Map<String, Object> inlineSyntheticMap(Map<String, Object> typeRef) {
+      if (typeRef == null || !typeRef.containsKey("ref")) return typeRef;
+      Map<String, Object> value = syntheticMapValue(types.get(str(typeRef, "ref")));
+      if (value == null) return typeRef;
+      Map<String, Object> inlined = new LinkedHashMap<>(typeRef);
+      inlined.remove("ref");
+      inlined.put("map", value);
+      return inlined;
+    }
+
+    // Returns the value typeRef of a field-less synthetic map record, or null if the node is not
+    // one. Only primitive-valued maps are inlined for now, per the scope agreed in #18106; a ref-
+    // or union-valued map keeps its current shape until its value typing is decided. (The only
+    // such maps in the schema today are Mozilla vendor types, which this generator does not read.)
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> syntheticMapValue(Map<String, Object> node) {
+      if (node == null) return null;
+      if (!Boolean.TRUE.equals(node.get("synthetic"))) return null;
+      if (!"record".equals(str(node, "kind"))) return null;
+      List<Object> fields = (List<Object>) node.get("fields");
+      if (fields != null && !fields.isEmpty()) return null;
+      Object value = node.get("map");
+      if (!(value instanceof Map)) return null;
+      Map<String, Object> valueRef = (Map<String, Object>) value;
+      return valueRef.containsKey("primitive") ? valueRef : null;
     }
 
     private static Map<String, List<Map<String, Object>>> groupByDomain(
