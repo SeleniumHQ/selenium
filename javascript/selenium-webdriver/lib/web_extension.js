@@ -134,7 +134,7 @@ async function encodeExtension(extension) {
  * bytes travel inline.
  * @param {!./webdriver.WebDriver} driver
  * @param {string} extension
- * @return {!Promise<{type: string, path: (string|undefined), value: (string|undefined)}>}
+ * @return {!Promise<import('../bidi/generated/webextension').WebExtensionExtensionData>}
  */
 async function extensionData(driver, extension) {
   checkExtensionArg(extension)
