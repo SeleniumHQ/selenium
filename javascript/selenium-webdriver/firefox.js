@@ -610,7 +610,7 @@ class Driver extends webdriver.WebDriver {
    *     `permanent` keeps the extension installed across browser restarts instead of removing it
    *     at shutdown; `allowPrivateBrowsing` lets it run in private windows.
    * @return {!Promise<!webExtension.WebExtension>} the installed extension.
-   * @throws {error.InvalidArgumentError} on an option other than these two, or a non-boolean value.
+   * @throws {./lib/error.InvalidArgumentError} on an option other than these two, or a non-boolean value.
    * @override
    */
   async installWebExtension(extension, options = undefined) {
