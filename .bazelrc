@@ -16,6 +16,7 @@ common --legacy_external_runfiles
 # Ensure Windows support is accurate.
 startup --windows_enable_symlinks
 build --enable_runfiles
+
 # For Python, use a venv site-packages layout on to avoid MAX_PATH failures
 # when loading native extensions.
 build:windows --@rules_python//python/config_settings:venvs_site_packages=yes
