@@ -273,6 +273,14 @@ function generateTypeScript(ast, model, vendorModel, args) {
     `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types`,
   )
 
+  // A type a vendor extends keeps undeclared fields (`moz:name` on browsingContext.Info) instead of
+  // dropping them, as the Ruby generator does; the vendor variant types only command params.
+  for (const section of Object.values(schema.vendor ?? {})) {
+    for (const typeName of Object.keys(section.extends ?? {})) {
+      if (schema.types[typeName]) schema.types[typeName] = { ...schema.types[typeName], extensible: true }
+    }
+  }
+
   const typesByDomain = groupTypesByDomain(schema.types)
   const allCommands = schemaToCommands(schema)
   const allEvents = schemaToEvents(schema)
@@ -758,14 +766,15 @@ const PRIMITIVE_TS = { string: 'string', integer: 'number', number: 'number', bo
 function typeNodeToTs(node) {
   if (!node) return 'unknown'
   let base
-  if (node.primitive !== undefined) {
+  // Before `primitive`: an inline literal choice (a vendor field such as `moz:scope`) carries both.
+  if (node.enum !== undefined) {
+    base = node.enum.map((v) => JSON.stringify(v)).join(' | ')
+  } else if (node.primitive !== undefined) {
     base = PRIMITIVE_TS[node.primitive] ?? 'unknown'
   } else if (node.const !== undefined) {
     base = JSON.stringify(node.const)
   } else if (node.ref !== undefined) {
     base = normalizeDottedName(node.ref)
-  } else if (node.enum !== undefined) {
-    base = node.enum.map((v) => JSON.stringify(v)).join(' | ')
   } else if (node.list !== undefined) {
     base = `Array<${typeNodeToTs(node.list)}>`
   } else if (node.map !== undefined) {

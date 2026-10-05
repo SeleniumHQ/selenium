@@ -20,6 +20,7 @@
 const assert = require('node:assert')
 const { DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { WebExtension, MozWebExtension } = require('selenium-webdriver/bidi/generated/webextension')
+const { MozBrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
 
 /** A transport that records each command as it would be serialized onto the socket. */
 function recordingBidi(result) {
@@ -60,6 +61,30 @@ describe('Generated vendor (moz) variant of a spec domain', function () {
       'moz:permanent': false,
       'moz:allowPrivateBrowsing': true,
     })
+  })
+
+  it('serializes a vendor literal-choice field and rejects a value outside it', async function () {
+    const bidi = recordingBidi({ contexts: [] })
+    const browsingContext = new MozBrowsingContext(bidi, DOMAIN_TOKEN)
+    await browsingContext.getTree({ scope: 'chrome' })
+    assert.deepStrictEqual(bidi.frames[0].params, { 'moz:scope': 'chrome' })
+    await assert.rejects(browsingContext.getTree({ scope: 'tab' }))
+  })
+
+  it('keeps vendor fields of a received record a vendor extends', async function () {
+    const info = {
+      children: null,
+      clientWindow: 'w1',
+      context: 'c1',
+      originalOpener: null,
+      url: 'about:blank',
+      userContext: 'default',
+      'moz:name': 'main',
+      'moz:scope': 'content',
+    }
+    const result = await new MozBrowsingContext(recordingBidi({ contexts: [info] }), DOMAIN_TOKEN).getTree({})
+    assert.strictEqual(result.contexts[0]['moz:name'], 'main')
+    assert.strictEqual(result.contexts[0]['moz:scope'], 'content')
   })
 
   it('adds vendor commands without their namespace in the method name', async function () {
