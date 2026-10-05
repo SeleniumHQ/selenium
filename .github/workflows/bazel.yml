@@ -189,7 +189,9 @@ jobs:
         with:
           cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
-          bazelrc: common --color=yes
+          bazelrc: |
+            common --color=yes
+            ${{ inputs.os == 'windows' && 'build --nolegacy_external_runfiles' || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
