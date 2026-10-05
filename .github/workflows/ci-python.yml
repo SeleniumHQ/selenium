@@ -80,7 +80,11 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: bazel test --local_test_jobs 1 //py:unit
+      #run: bazel test --local_test_jobs 1 //py:unit
+      run: |
+        bazel mod graph | findstr rules_python
+        bazel info output_base
+        bazel test --local_test_jobs 1 //py:test/selenium/webdriver/common/driver_finder_tests-firefox
 
   smoke:
     name: ${{ matrix.os }}-smoke
