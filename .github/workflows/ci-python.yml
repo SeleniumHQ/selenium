@@ -80,7 +80,7 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: bazel test --local_test_jobs 1 //py:unit
+      run: bazel test --local_test_jobs 1 --noenable_runfiles //py:unit
 
   smoke:
     name: ${{ matrix.os }}-smoke
@@ -132,6 +132,7 @@ jobs:
       rerun-with-debug: true
       run: >
         bazel test
+        --noenable_runfiles
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
