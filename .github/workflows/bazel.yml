@@ -129,6 +129,15 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
+      - name: Enable Windows long paths
+        if: inputs.os == 'windows'
+        shell: pwsh
+        run: |
+          Set-ItemProperty `
+            -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' `
+            -Name LongPathsEnabled `
+            -Type DWord `
+            -Value 1
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         shell: bash
