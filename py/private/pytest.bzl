@@ -78,11 +78,5 @@ def pytest_test(name, srcs, deps = None, args = None, data = None, python_versio
         main = runner_target,
         legacy_create_init = False,
         imports = ["."],
-        config_settings = select({
-            "@platforms//os:windows": {
-                "@rules_python//command_line_option:enable_runfiles": "false",
-            },
-            "//conditions:default": {},
-        }),
         **kwargs
     )
