@@ -76,7 +76,7 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.50.0.202609091537"
+SE_VERSION = "4.51.0.202609302012"
 
 BROWSER_VERSIONS = [
     "v152",
@@ -764,7 +764,7 @@ generate_bidi(
         "@permissions_all_cddl//file:spec.cddl",
         "@prefetch_all_cddl//file:spec.cddl",
         "@ua_client_hints_all_cddl//file:spec.cddl",
-        "@bluetooth_scanning_all_cddl//file:spec.cddl",
+        "@bluetooth_all_cddl//file:spec.cddl",
     ],
     extra_srcs = [
         "//py/private:_event_manager.py",
