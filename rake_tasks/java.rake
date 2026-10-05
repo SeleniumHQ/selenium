@@ -88,18 +88,9 @@ module Sonatype
     end
 
     puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
-    settings = File.read(settings_path)
-    found_section = false
-    settings.each_line do |line|
-      if !found_section
-        found_section = line.include? '<id>central</id>'
-      elsif line.include?('<username>')
-        ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
-      elsif line.include?('<password>')
-        ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
-      end
-      break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-    end
+    server = File.read(settings_path)[%r{<id>central</id>.*?</server>}m].to_s
+    ENV['MAVEN_USER'] = server[%r{<username>(.*?)</username>}, 1]
+    ENV['MAVEN_PASSWORD'] = server[%r{<password>(.*?)</password>}, 1]
   end
 
   def auth_token
@@ -164,29 +155,56 @@ module Sonatype
     request_json(req).fetch('published')
   end
 
-  # A repository still open or closed is a previous attempt that has not landed — mid-publish, or
-  # rejected by the Portal. Both want a look at the deployments page before another deploy piles on.
+  def drop_repository(key)
+    req = Net::HTTP::Delete.new(URI("https://ossrh-staging-api.central.sonatype.com/manual/drop/repository/#{key}"))
+    req['Authorization'] = "Basic #{auth_token}"
+    res = SeleniumRake.get_request(req)
+    raise "Failed to drop staging repository #{key} (HTTP #{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+  end
+
+  def portal_status(deployment_id)
+    req = Net::HTTP::Post.new(URI("https://central.sonatype.com/api/v1/publisher/status?id=#{deployment_id}"))
+    req['Authorization'] = "Bearer #{auth_token}"
+    req['Content-Length'] = '0'
+    request_json(req)
+  end
+
+  def for_version?(status, version)
+    purls = status.fetch('purls', [])
+    purls.empty? || purls.any? { |purl| purl.end_with?("@#{version}") }
+  end
+
   def already_deployed?(version)
-    unfinished = %w[open closed]
-    if staging_repositories.any? { |repo| unfinished.include?(repo['state']) }
-      raise 'A previous attempt left a staging repository behind; check it at ' \
-            'https://central.sonatype.com/publishing/deployments before releasing again.'
+    deployed = published?(version) || staging_repositories.any? { |repo| leftover_published?(repo, version) }
+    puts "#{version} is already deployed — skipping the deploy." if deployed
+    deployed
+  end
+
+  # Release runs are serialized and staging repositories are visible only to the token that created
+  # them, so a leftover is a dead earlier attempt: drop it, unless the Portal is still working on it.
+  def leftover_published?(repo, version)
+    return false if repo['state'] == 'released'
+
+    if repo['state'] == 'closed'
+      status = portal_status(repo['portal_deployment_id'])
+      return false unless for_version?(status, version)
+      # The Portal lists purls once it has examined the deployment, so only then is it known to hold this version
+      return status.fetch('purls', []).any? if status['deploymentState'] == 'PUBLISHED'
+      unless status['deploymentState'] == 'FAILED'
+        raise "A previous attempt is still #{status['deploymentState']} at the Portal (#{repo['key']}); " \
+              'rerun once it settles.'
+      end
     end
 
-    return false unless published?(version)
-
-    puts "#{version} is already deployed — skipping the deploy."
-    true
+    puts "Dropping staging repository #{repo['key']} left #{repo['state']} by a previous attempt"
+    drop_repository(repo['key'])
+    false
   end
 
   def deployment_status(version)
     staging_repositories.filter_map { |repo| repo['portal_deployment_id'] }.each do |id|
-      req = Net::HTTP::Post.new(URI("https://central.sonatype.com/api/v1/publisher/status?id=#{id}"))
-      req['Authorization'] = "Bearer #{auth_token}"
-      req['Content-Length'] = '0'
-      status = request_json(req)
-      purls = status.fetch('purls', [])
-      return status if purls.empty? || purls.any? { |purl| purl.end_with?("@#{version}") }
+      status = portal_status(id)
+      return status if for_version?(status, version)
     end
     nil
   end

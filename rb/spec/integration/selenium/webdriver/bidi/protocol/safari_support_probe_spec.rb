@@ -48,15 +48,6 @@ module Selenium
             expect(Browser.new(driver).get_client_windows.client_windows).to be_an(Array)
           end
 
-          it 'digital credentials are unimplemented on Safari',
-             pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},
-                          reason: 'when green, unblock digital_credentials_spec.rb'} do
-            result = DigitalCredentials.new(driver).set_virtual_wallet_behavior(
-              action: :clear, context: driver.window_handle
-            )
-            expect(result).to be_empty
-          end
-
           it 'emulation is unimplemented on Safari',
              pending_if: {browser_family: :safari, exception: {class: Error::UnknownCommandError},
                           reason: 'when green, unblock emulation_spec.rb'} do

@@ -309,6 +309,7 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.artifact-path || 'changes.patch' }}
           retention-days: 6
+          overwrite: true
           if-no-files-found: ${{ inputs.artifact-path != '' && 'error' || 'ignore' }}
       - name: Low Disk Warning
         if: always()
