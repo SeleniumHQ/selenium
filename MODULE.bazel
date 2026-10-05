@@ -174,6 +174,7 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         hub_name = "py_dev_requirements",
         python_version = version,
         requirements_lock = "//py:requirements_lock.txt",
+        use_hub_alias_dependencies = True,
     )
     for version in [
         "3.10.20",
