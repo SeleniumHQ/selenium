@@ -197,6 +197,7 @@ SMALL_TESTS = [
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
     "test/bidi/serialization/wire_contract_test.js",
+    "test/bidi/vendor_test.js",
     "test/http/http_test.js",
     "test/http/util_test.js",
     "test/io/io_test.js",
