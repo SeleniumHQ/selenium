@@ -88,7 +88,7 @@ _BROWSERS = {
             "ActiveDriverConfig=IE",
         ],
         "data": [],
-        "tags": [],
+        "tags": ["exclusive-if-local"],  # IE cannot run in parallel.
         "target_compatible_with": ["@platforms//os:windows"],
     },
     "safari": {
@@ -97,7 +97,7 @@ _BROWSERS = {
             "ActiveDriverConfig=Safari",
         ],
         "data": [],
-        "tags": [],
+        "tags": ["exclusive-if-local"],  # Safari cannot run in parallel.
         "target_compatible_with": ["@platforms//os:osx"],
     },
     "remote": {

@@ -24,7 +24,7 @@ using System.Text;
 using BenderProxy;
 using BenderProxy.Writers;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -38,9 +38,7 @@ public class ProxySettingTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        Driver = EnvironmentManager.Instance.GetCurrentDriver();
         proxyServer = new ProxyServer();
-        EnvironmentManager.Instance.DriverStarting += EnvironmentManagerDriverStarting;
     }
 
     [TearDown]
@@ -57,8 +55,6 @@ public class ProxySettingTests : DriverTestFixture
             proxyServer.Quit();
             proxyServer = null;
         }
-
-        EnvironmentManager.Instance.DriverStarting -= EnvironmentManagerDriverStarting;
     }
 
     [Test]
@@ -143,7 +139,14 @@ public class ProxySettingTests : DriverTestFixture
         }
     }
 
-    private void EnvironmentManagerDriverStarting(object sender, DriverStartingEventArgs e)
+    protected override DriverFactory CreateDriverFactory()
+    {
+        DriverFactory factory = base.CreateDriverFactory();
+        factory.DriverStarting += DriverFactoryDriverStarting;
+        return factory;
+    }
+
+    private void DriverFactoryDriverStarting(object sender, DriverStartingEventArgs e)
     {
         if (e.Options is InternetExplorerOptions ieOptions)
         {
@@ -153,7 +156,7 @@ public class ProxySettingTests : DriverTestFixture
 
     private void InitLocalDriver(Proxy proxy)
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         if (localDriver != null)
         {
             localDriver.Quit();
@@ -161,7 +164,7 @@ public class ProxySettingTests : DriverTestFixture
 
         ProxyOptions options = new ProxyOptions();
         options.Proxy = proxy;
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
     }
 
     private class ProxyOptions : DriverOptions

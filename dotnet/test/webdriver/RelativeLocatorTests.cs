@@ -28,7 +28,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithTagName()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("below"));
 
@@ -41,7 +41,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("bottomLeft"));
 
@@ -54,7 +54,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("below"));
 
@@ -67,7 +67,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFilters()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.TagName("td")).Above(By.Id("center")).RightOf(By.Id("top")));
 
@@ -78,7 +78,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFiltersWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.XPath("//td[1]")).Below(By.Id("top")).Above(By.Id("bottomLeft")));
 
@@ -89,7 +89,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFiltersWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(
             RelativeBy.WithLocator(By.CssSelector("td")).Above(By.Id("center")).RightOf(By.Id("top")));
@@ -101,7 +101,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithTagName()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.TagName("td")).Near(By.Id("center")));
 
@@ -121,7 +121,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.XPath("//td")).Near(By.Id("center")));
 
@@ -141,7 +141,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.CssSelector("td")).Near(By.Id("center")));
 
@@ -199,7 +199,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void NearLocatorShouldFindNearElements()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var rect1 = Driver.FindElement(By.Id("rect1"));
 
@@ -211,7 +211,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void NearLocatorShouldNotFindFarElements()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var rect = Driver.FindElement(By.Id("rect1"));
 
@@ -279,7 +279,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyListWhenNoElementsFound()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var elements = Driver.FindElements(RelativeBy.WithLocator(By.TagName("does-not-exist")));
 

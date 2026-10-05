@@ -13,7 +13,9 @@ import urllib3
 RELEASES = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases"
 RAW = "https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts"
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def get_latest_tag():
