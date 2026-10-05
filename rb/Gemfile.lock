@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.154.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.50.0.nightly)
+    selenium-webdriver (4.51.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
       rubyzip (>= 1.2.2, < 4.0)

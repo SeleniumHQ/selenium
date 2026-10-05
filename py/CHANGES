@@ -1,3 +1,12 @@
+Selenium 4.50.0
+* Support CDP versions: v152, v153, v154
+* cleanup for ruff b904 raise from  (#18030)
+* Apply ClientConfig `user_agent` and `extra_headers` per connection (#17944)
+* Type BaseOptions.set_capability parameters (#18027)
+* Type WebElement.get_attribute name (#18028)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* declare Firefox default preferences in each binding (#18070)
+
 Selenium 4.49.0
 * Support CDP versions: v151, v152, v153
 * derive BiDi field names and enum value types in the schema (#17966)

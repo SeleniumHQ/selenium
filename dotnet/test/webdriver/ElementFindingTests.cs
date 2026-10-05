@@ -573,7 +573,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected.html"));
+        Driver.Url = Urls.WhereIs("locators_tests/boolean_attribute_selected.html");
         IWebElement element = Driver.FindElement(By.CssSelector("option[selected='selected']"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -581,7 +581,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected.html"));
+        Driver.Url = Urls.WhereIs("locators_tests/boolean_attribute_selected.html");
         IWebElement element = Driver.FindElement(By.CssSelector("option[selected]"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -589,7 +589,7 @@ public class ElementFindingTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page()
     {
-        Driver.Url = (Urls.WhereIs("locators_tests/boolean_attribute_selected_html4.html"));
+        Driver.Url = Urls.WhereIs("locators_tests/boolean_attribute_selected_html4.html");
         IWebElement element = Driver.FindElement(By.CssSelector("option[selected]"));
         Assert.That(element.GetAttribute("value"), Is.EqualTo("two"));
     }
@@ -683,7 +683,7 @@ public class ElementFindingTests : DriverTestFixture
             return;
         }
 
-        Driver.Url = (Urls.WhereIs("actualXhtmlPage.xhtml"));
+        Driver.Url = Urls.WhereIs("actualXhtmlPage.xhtml");
         string linkText = "Foo";
         IWebElement element = Driver.FindElement(By.LinkText(linkText));
         Assert.That(element.Text, Is.EqualTo(linkText));
@@ -693,7 +693,7 @@ public class ElementFindingTests : DriverTestFixture
     [IgnoreBrowser(Browser.Remote)]
     public void LinkWithFormattingTags()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         IWebElement elem = Driver.FindElement(By.Id("links"));
 
         IWebElement res = elem.FindElement(By.PartialLinkText("link with formatting tags"));

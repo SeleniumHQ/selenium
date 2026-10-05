@@ -87,7 +87,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
 
         while (!IsElementAvailable(Driver, By.Id("draggable")) && (DateTime.Now < waitEndTime))
         {
-            System.Threading.Thread.Sleep(200);
+            Thread.Sleep(200);
         }
 
         if (!IsElementAvailable(Driver, By.Id("draggable")))
@@ -324,7 +324,7 @@ public class BasicMouseInterfaceTests : DriverTestFixture
         new Actions(Driver).MoveToElement(element).Perform();
 
         // Intentionally wait to make sure hover persists.
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
 
         WaitFor(ElementTextToNotEqual(item, ""), "Element text was empty after timeout");
 
