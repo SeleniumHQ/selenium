@@ -80,11 +80,7 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: >
-        # Shorten the output base on Windows because it can't handle long paths
-        bazel ${{ matrix.os == 'windows' && '--output_base=D:\bo' || '' }} test
-        --local_test_jobs 1
-        //py:unit
+      run: bazel test --local_test_jobs 1 //py:unit
 
   smoke:
     name: ${{ matrix.os }}-smoke
@@ -135,8 +131,7 @@ jobs:
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
-        # Shorten the output base on Windows because it can't handle long paths
-        bazel ${{ matrix.os == 'windows' && '--output_base=D:\bo' || '' }} test
+        bazel test
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
