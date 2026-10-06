@@ -66,11 +66,6 @@ on:
         required: false
         type: boolean
         default: false
-      gpg-sign:
-        description: Import GPG key for signing (Java releases)
-        required: false
-        type: boolean
-        default: false
       cache-name:
         description: Name for cache restore (restores {name}.gz with key {name}-)
         required: false
@@ -105,6 +100,8 @@ jobs:
       TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       MSYS_NO_PATHCONV: 1
       MSYS2_ARG_CONV_EXCL: "*"
     steps:
@@ -241,12 +238,6 @@ jobs:
           brew update --quiet
           brew install --cask safari-technology-preview
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
-      - name: Import GPG key
-        if: inputs.gpg-sign
-        uses: crazy-max/ghaction-import-gpg@v7
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
