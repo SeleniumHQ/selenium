@@ -45,6 +45,10 @@ indent_size = 2
 
 [javascript/selenium-webdriver/**.js]
 max_line_length = 120
+ij_javascript_use_semicolon_after_statement = false
+ij_javascript_force_semicolon_style = true
+ij_javascript_use_double_quotes = false
+ij_javascript_force_quote_style = true
 
 [*.rs]
 indent_style = space
