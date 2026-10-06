@@ -422,7 +422,7 @@
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
     "org.redisson:redisson": -630806419,
     "org.redisson:redisson:jar:sources": 1741527651,
-    "org.rnorth.duct-tape:duct-tape": -1059401544,
+    "org.rnorth.duct-tape:duct-tape": 133152594,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
     "org.seleniumhq.selenium:selenium-api": 849837103,
     "org.seleniumhq.selenium:selenium-api:jar:sources": -2123713838,
