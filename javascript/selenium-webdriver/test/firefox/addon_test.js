@@ -29,7 +29,7 @@ const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
 const EXT_UNSIGNED_ZIP = locate('common/extensions/webextensions-selenium-example-unsigned.zip')
 const EXT_SIGNED_ZIP = locate('common/extensions/webextensions-selenium-example.zip')
 const EXT_UNSIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
-const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
+const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example-signed')
 const EXT_ID = 'webextensions-selenium-example-v3@example.com'
 
 suite(
@@ -110,9 +110,7 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        // Installs the unsigned directory temporarily, so hits the same bug
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
-        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by signed directory', async function () {
+        it('installs and uninstalls by signed directory', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
@@ -127,8 +125,7 @@ suite(
         })
       })
 
-      // The test environment enables BiDi, so these exercise the moz webExtension.install command;
-      // the classic fallback is covered by test/lib/web_extension_test.js.
+      // The test environment enables BiDi, so these exercise the moz webExtension.install command.
       describe('installWebExtension', function () {
         it('installs and uninstalls an xpi file', async function () {
           driver = await env.builder().build()
@@ -175,6 +172,22 @@ suite(
           },
         )
 
+        // A permanent install is checked for a signature, so it needs the signed archive.
+        it('installs an xpi file permanently', async function () {
+          driver = await env.builder().build()
+          await driver.get(Pages.blankPage)
+
+          const extension = await driver.installWebExtension(EXT_XPI, { permanent: true })
+          assert.strictEqual(extension.id, EXT_ID)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallWebExtension(extension)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
         it('rejects a permanent install of a directory', async function () {
           driver = await env.builder().build()
           await assert.rejects(
@@ -201,6 +214,44 @@ suite(
             await driver.get(Pages.blankPage)
             await verifyWebExtensionNotInstalled()
           })
+        })
+      })
+
+      describe('installWebExtension without BiDi', function () {
+        beforeEach(async function () {
+          const options = env.builder().getFirefoxOptions() || new firefox.Options()
+          // Firefox options are applied after the test environment enables BiDi, so this wins.
+          options.set('webSocketUrl', false)
+          driver = await env.builder().setFirefoxOptions(options).build()
+          assert.ok(!(await driver.getCapabilities()).get('webSocketUrl'), 'BiDi should be disabled')
+        })
+
+        it('falls back to the classic endpoint for an archive', async function () {
+          await driver.get(Pages.blankPage)
+
+          const extension = await driver.installWebExtension(EXT_XPI)
+          assert.strictEqual(extension.id, EXT_ID)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallWebExtension(extension)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('falls back to the classic endpoint for a directory', async function () {
+          await driver.get(Pages.blankPage)
+
+          const extension = await driver.installWebExtension(EXT_SIGNED_DIR, { permanent: false })
+          assert.strictEqual(extension.id, EXT_ID)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallWebExtension(extension)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
         })
       })
 
