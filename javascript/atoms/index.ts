@@ -15,6 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-export { default as getAttribute } from './typescript/get-attribute'
-export { default as findElements } from './typescript/find-elements'
-export { default as isDisplayed } from './typescript/is-displayed'
+// Specifiers carry the emitted .js extension because Node's ESM resolver does
+// not probe for extensions. "module": "esnext" rewrites nothing, so what is
+// written here is what consumers resolve against.
+export { default as getAttribute } from './typescript/get-attribute.js'
+export { default as findElements } from './typescript/find-elements.js'
+export { default as isDisplayed } from './typescript/is-displayed.js'

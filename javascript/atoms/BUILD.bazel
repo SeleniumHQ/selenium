@@ -6,28 +6,33 @@ load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.51.0-nightly202609302012"
+
+# These build tools are CommonJS; the .cjs extension keeps that true regardless
+# of the "type": "module" declared by the @seleniumhq/atoms package.json above
+# them in this directory.
 js_binary(
     name = "cjs_to_iife",
-    data = ["typescript/cjs-to-iife.js"],
-    entry_point = "typescript/cjs-to-iife.js",
+    data = ["typescript/cjs-to-iife.cjs"],
+    entry_point = "typescript/cjs-to-iife.cjs",
 )
 
 js_binary(
     name = "wrap_get_attribute_as_global",
-    data = ["typescript/wrap-get-attribute-as-global.js"],
-    entry_point = "typescript/wrap-get-attribute-as-global.js",
+    data = ["typescript/wrap-get-attribute-as-global.cjs"],
+    entry_point = "typescript/wrap-get-attribute-as-global.cjs",
 )
 
 js_binary(
     name = "wrap_as_global",
-    data = ["typescript/wrap-as-global.js"],
-    entry_point = "typescript/wrap-as-global.js",
+    data = ["typescript/wrap-as-global.cjs"],
+    entry_point = "typescript/wrap-as-global.cjs",
 )
 
 js_binary(
     name = "wrap_find_elements_as_global",
-    data = ["typescript/wrap-find-elements-as-global.js"],
-    entry_point = "typescript/wrap-find-elements-as-global.js",
+    data = ["typescript/wrap-find-elements-as-global.cjs"],
+    entry_point = "typescript/wrap-find-elements-as-global.cjs",
 )
 
 # ── get-attribute ────────────────────────────────────────────────────────────
@@ -143,21 +148,44 @@ ts_project(
     tsconfig = "tsconfig.json",
 )
 
+# npm_package does not pick up filegroup sources.
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
 npm_package(
     name = "selenium-atoms-package",
     srcs = [
+        # README.md in this directory is the contributor guide; the npm page
+        # gets its own file, renamed into place below.
+        "README.npm.md",
+        # Published so the emitted .d.ts.map / .js.map resolve for consumers.
+        "index.ts",
         "package.json",
+        "typescript/find-elements.ts",
+        "typescript/get-attribute.ts",
+        "typescript/is-displayed.ts",
         ":atoms-npm-compiled",
+        ":license",
     ],
     package = "@seleniumhq/atoms",
     publishable = True,
+    replace_prefixes = {"README.npm.md": "README.md"},
     tags = ["release-artifact"],
+    version = VERSION,
     visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "atoms",
     srcs = glob([
+        "**/*.cjs",
         "**/*.html",
         "**/*.jpg",
         "**/*.js",

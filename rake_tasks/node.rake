@@ -160,7 +160,12 @@ task :version, [:version] do |_task, arguments|
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
   puts "Updating Node from #{old_version} to #{new_version}"
 
-  %w[javascript/selenium-webdriver/package.json javascript/selenium-webdriver/BUILD.bazel].each do |file|
+  %w[
+    javascript/selenium-webdriver/package.json
+    javascript/selenium-webdriver/BUILD.bazel
+    javascript/atoms/package.json
+    javascript/atoms/BUILD.bazel
+  ].each do |file|
     text = File.read(file).gsub(old_version, new_version)
     File.open(file, 'w') { |f| f.puts text }
   end
