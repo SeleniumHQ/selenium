@@ -15,14 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const fs = require('node:fs');
-
-const [inputPath, outputPath] = process.argv.slice(2);
-
-if (!inputPath || !outputPath) {
-  throw new Error('Expected input and output file paths');
-}
-
-const input = fs.readFileSync(inputPath, 'utf8');
-const output = input.replace(/;\s*$/, '');
-fs.writeFileSync(outputPath, output);
+// Specifiers carry the emitted .js extension because Node's ESM resolver does
+// not probe for extensions. "module": "esnext" rewrites nothing, so what is
+// written here is what consumers resolve against.
+export { default as getAttribute } from './typescript/get-attribute.js'
+export { default as findElements } from './typescript/find-elements.js'
+export { default as isDisplayed } from './typescript/is-displayed.js'
