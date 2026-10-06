@@ -40,6 +40,20 @@ module SeleniumRake
     {version: version, language: language, patch: patch}
   end
 
+  VERSION_FILE = 'version.bzl'
+
+  def self.version(binding)
+    match = File.read(VERSION_FILE).match(/^\s*"#{binding}": "([^"]+)"/)
+    raise "No #{binding} entry in #{VERSION_FILE}" unless match
+
+    match[1]
+  end
+
+  def self.write_version(binding, new_version)
+    text = File.read(VERSION_FILE).sub(/^(\s*"#{binding}": ")[^"]+(")/, "\\1#{new_version}\\2")
+    File.write(VERSION_FILE, text)
+  end
+
   def self.updated_version(current, desired = nil, nightly = nil)
     if !desired.nil? && desired != 'nightly'
       # If desired is present, return full 3 digit version

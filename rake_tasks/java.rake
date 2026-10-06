@@ -33,9 +33,7 @@ JAVA_RELEASE_TARGETS = %w[
 ].freeze
 
 def java_version
-  File.foreach('java/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('java')
 end
 
 def java_release_targets
@@ -555,10 +553,7 @@ task :version, [:version] do |_task, arguments|
   old_version = java_version
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-SNAPSHOT')
   puts "Updating Java from #{old_version} to #{new_version}"
-
-  file = 'java/version.bzl'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('java', new_version)
 end
 
 desc 'Format Java code with google-java-format'
