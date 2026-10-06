@@ -739,7 +739,7 @@ module Selenium
           NodeProperties = Serialization::Record.define(
             node_type: {wire_key: 'nodeType', primitive: 'integer'},
             child_node_count: {wire_key: 'childNodeCount', primitive: 'integer'},
-            attributes: {wire_key: 'attributes', required: false},
+            attributes: {wire_key: 'attributes', required: false, map: 'string'},
             children: {wire_key: 'children', required: false, ref: 'Script::NodeRemoteValue', list: true},
             local_name: {wire_key: 'localName', required: false, primitive: 'string'},
             mode: {wire_key: 'mode', required: false, enum: 'Script::NODE_PROPERTIES_MODE'},
