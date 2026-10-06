@@ -1,3 +1,19 @@
+## 4.50.0
+
+- Support CDP versions: v152, v153, v154
+- [build] Automated Dependency Update (#18032)
+- [build] generate webref_cddl.bzl from the BiDi spec's external specifications list (#18055)
+- [build] replace the BiDi KNOWN_INCOMPLETE allowlist with spec-shaped CDDL overlays (#18057)
+- [build] Automated Dependency Update (#18061)
+- [build] generate the BiDi schema vendor section from Mozilla's Firefox CDDL (#18060)
+- remove deprecated Firefox profile extension and cert methods (#18066)
+- [build] add support for Mozilla's Commands fragment in the BiDi schema (#18071)
+- Align BiDi Generator with the low-level contract (#17973)
+- [build] Automated Browser Version Update (major) with CDP (#18067)
+- [build] Automated CDDL Spec Update (#18075)
+- [build] Automated Dependency Update (#18082)
+- Run tests on Grid, MacOS and Windows (#18081)
+
 ## 4.49.0
 
 - Support CDP versions: v151, v152, v153

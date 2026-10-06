@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 
 namespace OpenQA.Selenium.Tests.BiDi;
@@ -42,7 +42,7 @@ public abstract class BiDiTestFixture
             UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore,
         };
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        driver = new DriverFactory(EnvironmentManager.Instance).CreateDriver(options);
 
         bidi = await driver.AsBiDiAsync();
 

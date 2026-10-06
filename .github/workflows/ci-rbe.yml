@@ -27,9 +27,24 @@ permissions:
   packages: read
 
 jobs:
+  # Everything but the release PR waits while trunk is locked, so RBE stays free for the release.
+  wait-for-unlock:
+    name: Wait for Trunk Unlock
+    if: ${{ !startsWith(github.head_ref, 'release-preparation-') }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while gh api "repos/$GITHUB_REPOSITORY/rulesets" --jq 'any(.[]; .name == "Release: Restrict Trunk")' | grep -q true; do
+            echo "Trunk is locked for a release; waiting"
+            sleep 60
+          done
+
   test:
     name: Test
-    if: github.event.repository.fork == false
+    needs: wait-for-unlock
+    if: ${{ !cancelled() && github.event.repository.fork == false }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests

@@ -307,7 +307,7 @@ public class TakesScreenshotTests : DriverTestFixture
 
     private string FormatColorToHex(int colorValue)
     {
-        string pixelColorString = string.Format("#{0:x2}{1:x2}{2:x2}", (colorValue & 0xFF0000) >> 16, (colorValue & 0x00FF00) >> 8, (colorValue & 0x0000FF));
+        string pixelColorString = string.Format("#{0:x2}{1:x2}{2:x2}", (colorValue & 0xFF0000) >> 16, (colorValue & 0x00FF00) >> 8, colorValue & 0x0000FF);
         return pixelColorString;
     }
 

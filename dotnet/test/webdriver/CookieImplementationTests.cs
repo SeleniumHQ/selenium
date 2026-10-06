@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -373,7 +372,7 @@ public class CookieImplementationTests : DriverTestFixture
         Driver.Manage().Cookies.AddCookie(cookie3);
         count = Driver.Manage().Cookies.AllCookies.Count;
 
-        Driver.Url = (Urls.WhereIs("child/grandchild"));
+        Driver.Url = Urls.WhereIs("child/grandchild");
         Driver.Manage().Cookies.DeleteCookieNamed("rodent");
         count = Driver.Manage().Cookies.AllCookies.Count;
 
@@ -874,7 +873,7 @@ public class CookieImplementationTests : DriverTestFixture
             // This may mask some errors, where DeleteAllCookies doesn't fully
             // delete all it should, but that's a tradeoff we need to be willing
             // to make.
-            Driver = EnvironmentManager.Instance.CreateFreshDriver();
+            CreateFreshDriver();
             GoToPage(page);
         }
     }
@@ -884,7 +883,7 @@ public class CookieImplementationTests : DriverTestFixture
         bool correct = this.hostname != null && IsValidHostNameForCookieTests(this.hostname);
         if (!correct)
         {
-            System.Console.WriteLine("Skipping test: unable to find domain name to use");
+            Console.WriteLine("Skipping test: unable to find domain name to use");
         }
 
         return correct;

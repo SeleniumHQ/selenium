@@ -23,8 +23,8 @@ using OpenQA.Selenium.BiDi.WebExtension;
 
 namespace OpenQA.Selenium.Tests.BiDi.WebExtension;
 
-[IgnoreBrowser(Infrastructure.Browser.Chrome, ChromiumIgnoreReason)]
-[IgnoreBrowser(Infrastructure.Browser.Edge, ChromiumIgnoreReason)]
+[IgnoreBrowser(Testing.NUnit.Browser.Chrome, ChromiumIgnoreReason)]
+[IgnoreBrowser(Testing.NUnit.Browser.Edge, ChromiumIgnoreReason)]
 internal class WebExtensionTests : BiDiTestFixture
 {
     private const string ChromiumIgnoreReason = """
@@ -47,8 +47,8 @@ internal class WebExtensionTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Archived and Base64 extensions are not supported?")]
     public async Task CanInstallArchiveWebExtension()
     {
         string path = LocateRelativePath("common/extensions/webextensions-selenium-example.zip");
@@ -60,8 +60,8 @@ internal class WebExtensionTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Chrome, "Archived and Base64 extensions are not supported?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "Archived and Base64 extensions are not supported?")]
     public async Task CanInstallBase64WebExtension()
     {
         var path = LocateRelativePath("common/extensions/webextensions-selenium-example.zip");
