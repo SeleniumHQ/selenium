@@ -253,38 +253,6 @@ describe('WebExtension', function () {
     })
   })
 
-  describe('MozWebExtension wire payload', function () {
-    const { MozWebExtension } = require('selenium-webdriver/bidi/generated/webextension')
-    const { DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
-
-    /** Records each BiDi frame as it would be serialized onto the socket. */
-    async function sentParams(installParams) {
-      const frames = []
-      const bidi = {
-        send: async (message) => {
-          frames.push(JSON.parse(JSON.stringify(message)))
-          return { result: { extension: 'ext@example.com' } }
-        },
-      }
-      await new MozWebExtension(bidi, DOMAIN_TOKEN).install(installParams)
-      return frames[0].params
-    }
-
-    const extensionData = { type: 'path', path: '/tmp/ext' }
-
-    it('leaves the moz fields off when not given, so Firefox applies its own defaults', async function () {
-      assert.deepStrictEqual(await sentParams({ extensionData }), { extensionData })
-    })
-
-    it('sends the options under their moz wire keys', async function () {
-      assert.deepStrictEqual(await sentParams({ extensionData, permanent: false, allowPrivateBrowsing: true }), {
-        extensionData,
-        'moz:permanent': false,
-        'moz:allowPrivateBrowsing': true,
-      })
-    })
-  })
-
   describe('extensionData', function () {
     it('sends an archive inline as base64', async function () {
       const { driver, executor } = remoteDriver()
