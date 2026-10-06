@@ -25,6 +25,20 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
+  # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
+  wait-for-unlock:
+    name: Wait for Trunk Unlock
+    if: ${{ !startsWith(github.head_ref, 'release-preparation-') }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while gh api "repos/$GITHUB_REPOSITORY/rulesets" --jq 'any(.[]; .name == "Release: Restrict Trunk")' | grep -q true; do
+            echo "Trunk is locked for a release; waiting"
+            sleep 60
+          done
+
   targets-mode:
     name: Targets Mode
     runs-on: ubuntu-latest
@@ -134,25 +148,25 @@ jobs:
           if-no-files-found: ignore
   dotnet:
     name: .NET
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-dotnet.yml
     if: "!cancelled() && needs.read-targets.outputs.dotnet != ''"
 
   java:
     name: Java
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-java.yml
     if: "!cancelled() && needs.read-targets.outputs.java != ''"
 
   grid:
     name: Grid
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-grid.yml
     if: "!cancelled() && needs.read-targets.outputs.grid != ''"
 
   python:
     name: Python
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-python.yml
     if: "!cancelled() && needs.read-targets.outputs.py != ''"
     with:
@@ -160,7 +174,7 @@ jobs:
 
   ruby:
     name: Ruby
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-ruby.yml
     if: "!cancelled() && needs.read-targets.outputs.rb != ''"
     with:
@@ -168,13 +182,13 @@ jobs:
 
   rust:
     name: Rust
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-rust.yml
     if: "!cancelled() && needs.read-targets.outputs.rust != ''"
 
   javascript:
     name: JavaScript
-    needs: read-targets
+    needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-javascript.yml
     if: "!cancelled() && needs.read-targets.outputs.js != ''"
 

@@ -24,10 +24,7 @@ module Selenium
   module WebDriver
     class BiDi
       module Protocol
-        describe DigitalCredentials,
-                 skip_if: {browser_family: :safari,
-                           reason: 'Safari coverage tracked in safari_support_probe_spec.rb'},
-                 skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
+        describe DigitalCredentials, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
           after { |example| reset_driver!(example: example) }
 
           let(:digital_credentials) { described_class.new(driver) }

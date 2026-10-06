@@ -124,7 +124,9 @@ module Selenium
               expect(driver.window_handles).to include(result.context)
             end
 
-            it 'emits a context created event' do
+            it 'emits a context created event',
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
+                            reason: 'Safari session.subscribe result fails strict deserialization'} do
               event_name = 'browsingContext.contextCreated'
               connection = driver.send(:bridge).connection
               session = Session.new(driver)
@@ -401,6 +403,7 @@ module Selenium
                                  reason: 'Safari does not implement browsingContext.startScreencast'}] do
             # Firefox 156 ignores destinationFolder and records into the user's Downloads folder
             def record_screencast(directory, **)
+              directory = WebDriver::Platform.windows_path(directory) if WebDriver::Platform.windows?
               result = browsing_context.start_screencast(
                 context: driver.window_handle,
                 destination_folder: directory,

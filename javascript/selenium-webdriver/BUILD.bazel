@@ -114,7 +114,7 @@ generate_bidi_library(
     vendor_cddl_files = BIDI_VENDOR_CDDL_FILES,
 )
 
-VERSION = "4.50.0-nightly202609091537"
+VERSION = "4.51.0-nightly202609302012"
 
 BROWSER_VERSIONS = [
     "v152",
@@ -197,6 +197,7 @@ SMALL_TESTS = [
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
     "test/bidi/serialization/wire_contract_test.js",
+    "test/bidi/vendor_test.js",
     "test/http/http_test.js",
     "test/http/util_test.js",
     "test/io/io_test.js",

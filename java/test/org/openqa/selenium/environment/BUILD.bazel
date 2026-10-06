@@ -33,7 +33,7 @@ java_library(
         "//javascript/atoms",
         "//javascript/atoms:deps",
         "//third_party/closure/goog",
-        "//third_party/js/sizzle",
+        "//third_party/js/qunit",
     ],
     javacopts = [
         "--release",

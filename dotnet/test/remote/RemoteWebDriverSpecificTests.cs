@@ -21,9 +21,8 @@ using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Tests;
-using OpenQA.Selenium.Tests.Infrastructure;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -53,7 +52,7 @@ public class RemoteWebDriverSpecificTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         DriverOptions options = OperatingSystem.IsWindows() ? new EdgeOptions() : new ChromeOptions();
         RemoteWebDriver noSlashDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, options);
         noSlashDriver.Url = Urls.JavascriptPage;

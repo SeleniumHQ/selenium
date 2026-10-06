@@ -41,8 +41,16 @@ env:
   RUST_VERSION: "1.98.1"
 
 jobs:
+  check:
+    name: "Check Trigger"
+    if: ${{ !contains(github.event.head_commit.modified, 'common/selenium_manager.bzl') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building Selenium Manager"
+
   windows-stable:
     name: "Windows Stable"
+    needs: check
     runs-on: windows-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -70,6 +78,7 @@ jobs:
 
   windows-debug:
     name: "Windows Debug"
+    needs: check
     runs-on: windows-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -97,6 +106,7 @@ jobs:
 
   linux-stable:
     name: "Linux Stable (${{ matrix.arch }})"
+    needs: check
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -139,6 +149,7 @@ jobs:
 
   linux-debug:
     name: "Linux Debug (${{ matrix.arch }})"
+    needs: check
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -182,6 +193,7 @@ jobs:
 
   macos-stable:
     name: "MacOS Stable"
+    needs: check
     runs-on: macos-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -214,6 +226,7 @@ jobs:
 
   macos-debug:
     name: "MacOS Debug"
+    needs: check
     runs-on: macos-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -248,6 +261,7 @@ jobs:
 
   sbom:
     name: "SBOM and Notices"
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout project"
