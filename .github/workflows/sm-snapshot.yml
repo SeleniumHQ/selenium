@@ -279,7 +279,14 @@ jobs:
           rustup default ${{ env.RUST_VERSION }}
           rustc -vV
       - name: "Install SBOM tools"
-        run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
+        env:
+          CARGO_ABOUT_URL: https://github.com/EmbarkStudios/cargo-about/releases/download/0.6.6/cargo-about-0.6.6-x86_64-unknown-linux-musl.tar.gz
+          CARGO_CYCLONEDX_URL: https://github.com/CycloneDX/cyclonedx-rust-cargo/releases/download/cargo-cyclonedx-0.5.7/cargo-cyclonedx-x86_64-unknown-linux-musl.tar.xz
+        run: |
+          curl -sSfL --retry 3 --retry-delay 2 --retry-all-errors -o cargo-about.tar.gz "$CARGO_ABOUT_URL"
+          curl -sSfL --retry 3 --retry-delay 2 --retry-all-errors -o cargo-cyclonedx.tar.xz "$CARGO_CYCLONEDX_URL"
+          tar -xzf cargo-about.tar.gz -C ~/.cargo/bin --strip-components=1 --wildcards '*/cargo-about'
+          tar -xJf cargo-cyclonedx.tar.xz -C ~/.cargo/bin --strip-components=1 --wildcards '*/cargo-cyclonedx'
       - name: "Generate SBOM and third-party notices"
         working-directory: rust
         run: |
