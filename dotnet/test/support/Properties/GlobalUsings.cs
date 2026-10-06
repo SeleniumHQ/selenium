@@ -18,7 +18,6 @@
 // </copyright>
 
 global using global::NUnit.Framework;
-global using global::OpenQA.Selenium.Tests.Infrastructure;
+global using global::OpenQA.Selenium.Testing.NUnit;
 global using global::System;
 global using global::System.Collections.Generic;
-global using global::System.Threading.Tasks;

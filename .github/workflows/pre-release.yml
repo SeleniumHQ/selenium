@@ -44,6 +44,9 @@ jobs:
   selenium-manager:
     name: Release Selenium Manager
     needs: [parse-tag, push-rust-version]
+    permissions:
+      contents: write
+      actions: read
     uses: ./.github/workflows/sm-snapshot.yml
     with:
       branch: rust-release-${{ needs.parse-tag.outputs.version }}
@@ -155,7 +158,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update Selenium Manager Binaries
-      run: ./go update_manager
+      run: ./go update_manager ${{ needs.selenium-manager.outputs.tag }}
       artifact-name: patch-manager
 
   create-pr:
@@ -283,5 +286,6 @@ jobs:
             • Authors: ${{ needs.update-authors.result }}
             • Selenium Manager Update: ${{ needs.update-manager.result }}
             • Create PR: ${{ needs.create-pr.result }}
-          MSG_MINIMAL: actions url
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

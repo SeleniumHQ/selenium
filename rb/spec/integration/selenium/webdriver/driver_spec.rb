@@ -364,6 +364,8 @@ module Selenium
 
     describe Driver do
       context 'when BiDi is enabled',
+              skip_if: {browser_family: :safari,
+                        reason: 'Unskip when the web extensions probe in safari_support_probe_spec.rb passes'},
               skip_unless: {bidi: true, reason: 'extensions install over the webExtension BiDi command'} do
         let(:extensions) { '../../../../../common/extensions/' }
 

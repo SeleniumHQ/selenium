@@ -68,6 +68,16 @@
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
  * was lifted out of and `label` is the member name within it, so a binding can
  * keep the flat name or nest it (e.g. `Owner::Label`) without parsing the key.
+ *
+ * Everything a vendor grammar (Firefox's `moz:` CDDL) contributes lands in `vendor.<namespace>`:
+ *   extends  — `{ <sharedType>: { via, fields } }`, the fields a `<Type>Extension` group adds to
+ *              that shared record (under their wire names), `via` naming the group.
+ *   commands — the vendor's own modules' commands and events, in the top-level shape; `domain`
+ *   events      keeps its wire prefix (`moz:debugging`), as every wire-derived value does.
+ *   types    — the vendor's own types (a module's params and results, a helper record an
+ *              extension field references, a synthetic lifted out of one), shaped like `types`.
+ * Refs cross from the vendor section into the shared `types`, never the other way; a binding
+ * that reads only the shared sections never sees vendor content.
  */
 
 import { pathToFileURL } from 'node:url'
@@ -489,6 +499,12 @@ function correlatedUnions(types) {
     const root = envelopeResultUnion(t, types)
     if (root) roots.add(root)
   }
+  // An extension module (an adjacent spec or a vendor module) declares its result grouping as
+  // a bare `<Module>Result` union that the core `ResultData` never references — the same
+  // convention the model builder relies on for `<Module>Command` — so seed those too. A dotted
+  // `<domain>.<Name>Result` is a payload type (script.EvaluateResult) and is not one.
+  for (const [name, t] of Object.entries(types))
+    if (t.kind === 'union' && !name.includes('.') && name.endsWith('Result')) roots.add(name)
   // A union is payload-dispatched — and so must keep its selector — when it has a
   // discriminator OR a structural selector that can actually distinguish its arms
   // (matching the validity the gate enforces). The result groupings fail this
@@ -609,9 +625,12 @@ function reachableTypes(roots, types) {
  * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
  *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
  *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
- * @returns {{schemaVersion: number, generatedBy: string, regenerateWith: string, commands: object[], events: object[], types: object, domains: object}} The schema.
+ * @param {object} [vendorModel] The model built from the vendor-overlaid AST. Only its
+ *   `vendor`-tagged commands and events are used (the rest duplicates `model`), each filed
+ *   under `vendor.<namespace>`. Omit it (or pass a vendor-free model) for no vendor modules.
+ * @returns {{schemaVersion: number, generatedBy: string, regenerateWith: string, commands: object[], events: object[], types: object, domains: object, vendor?: object}} The schema.
  */
-export function projectSchema(ast, model, links = {}) {
+export function projectSchema(ast, model, links = {}, vendorModel = null) {
   const types = {}
   for (const def of normalizeAst(ast)) {
     if (!def?.Name) continue
@@ -625,6 +644,9 @@ export function projectSchema(ast, model, links = {}) {
       node.owner = def['x-selenium-owner']
       node.label = def['x-selenium-label']
     }
+    // A vendor's own type (generate_bidi.mjs tags the def). Carried on the node only until
+    // extractVendor routes it into the `vendor` section.
+    if (def['x-selenium-vendor']) node.vendor = def['x-selenium-vendor']
     // Link to the type's definition in the live spec, when the index covers it —
     // the readable prose section where one exists, else the CDDL production.
     // Synthetic types have no spec definition and are (correctly) never in it.
@@ -643,39 +665,56 @@ export function projectSchema(ast, model, links = {}) {
   for (const node of Object.values(types))
     if (node.kind === 'union' && node.variants.every((v) => variantIsObject(v, types))) node.objectOnly = true
 
-  const commands = []
-  const events = []
   const envelopeParams = commandEnvelopeParams(types)
   // Commands and events link to their own prose section (`#command-*` / `#event-*`),
   // keyed by the wire method; domains to their `#module-*` section. Present-only-when-known.
   const link = (map, key) => (typeof key === 'string' ? map?.[key.toLowerCase()] : undefined)
-  for (const [domain, entry] of Object.entries(model)) {
-    for (const c of entry.commands ?? []) {
-      const cmd = {
-        domain,
-        method: c.method,
-        name: c.name,
-        // Prefer the envelope's params (it captures inline params the model drops).
-        params: typeRef(envelopeParams.get(c.method) ?? c.params),
-        result: typeRef(c.result),
+  const projectMessages = (modelEntries) => {
+    const commands = []
+    const events = []
+    for (const [domain, entry] of modelEntries) {
+      for (const c of entry.commands ?? []) {
+        const cmd = {
+          domain,
+          method: c.method,
+          name: c.name,
+          // Prefer the envelope's params (it captures inline params the model drops).
+          params: typeRef(envelopeParams.get(c.method) ?? c.params),
+          result: typeRef(c.result),
+        }
+        const href = link(links.commands, c.method)
+        if (href) cmd.specHref = href
+        if (c.vendor) cmd.vendor = c.vendor
+        commands.push(cmd)
       }
-      const href = link(links.commands, c.method)
-      if (href) cmd.specHref = href
-      commands.push(cmd)
+      for (const e of entry.events ?? []) {
+        const ev = {
+          domain,
+          method: e.method,
+          name: e.name,
+          params: typeRef(envelopeParams.get(e.method) ?? e.params),
+        }
+        const href = link(links.events, e.method)
+        if (href) ev.specHref = href
+        if (e.vendor) ev.vendor = e.vendor
+        events.push(ev)
+      }
     }
-    for (const e of entry.events ?? []) {
-      const ev = { domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) }
-      const href = link(links.events, e.method)
-      if (href) ev.specHref = href
-      events.push(ev)
-    }
+    return { commands, events }
   }
+  const { commands, events } = projectMessages(Object.entries(model))
+  const vendorMessages = projectMessages(vendorModelEntries(vendorModel))
 
   // Per-type directionality (see the header block): reachable from a command's params
   // (outbound) vs from a command's result or an event's params (inbound), closed over
-  // the same ref edges the integrity check walks — no name heuristics.
-  const outboundRoots = commands.map((c) => c.params?.ref).filter(Boolean)
-  const inboundRoots = [...commands.map((c) => c.result?.ref), ...events.map((e) => e.params?.ref)].filter(Boolean)
+  // the same ref edges the integrity check walks — no name heuristics. Vendor messages
+  // count too: a type a vendor command sends is outbound for that vendor.
+  const allCommands = [...commands, ...vendorMessages.commands]
+  const allEvents = [...events, ...vendorMessages.events]
+  const outboundRoots = allCommands.map((c) => c.params?.ref).filter(Boolean)
+  const inboundRoots = [...allCommands.map((c) => c.result?.ref), ...allEvents.map((e) => e.params?.ref)].filter(
+    Boolean,
+  )
   const outboundReach = reachableTypes(outboundRoots, types)
   const inboundReach = reachableTypes(inboundRoots, types)
   for (const [name, node] of Object.entries(types))
@@ -694,7 +733,7 @@ export function projectSchema(ast, model, links = {}) {
   // Partition vendor-tagged fields out of the shared, browser-neutral schema into a namespaced
   // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
   // binding that reads only `types`/`commands`/`events` never sees vendor fields.
-  const vendor = extractVendor(types)
+  const vendor = extractVendor(types, vendorMessages)
   const schema = {
     schemaVersion: 1,
     generatedBy: 'javascript/selenium-webdriver/project_bidi_schema.mjs',
@@ -709,20 +748,29 @@ export function projectSchema(ast, model, links = {}) {
 }
 
 /**
- * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
- * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
- * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
- * group flatten) is what proves the merge happened — this only re-routes the output. The pure
- * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
- * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * Move everything vendor-tagged out of the shared `types` into the `vendor` section (see the
+ * header block). A field's `via` names the extension group it flowed through; the field having
+ * resolved into a real shared record (the extension-group splice and group flatten) is what
+ * proves the merge happened — this only re-routes the output. The pure extension-group anchor
+ * type (e.g. `webExtension.InstallParametersExtension`), left with no spec fields once its
+ * vendor fields move out, is dropped. A vendor-tagged type moves whole into `types`.
  * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
  * @param {object} types The projected `types` map (mutated in place).
- * @returns {object} The vendor section, empty when there are no vendor fields.
+ * @returns {object} The vendor section, empty when there is no vendor content.
  */
-function extractVendor(types) {
+function extractVendor(types, messages) {
   const vendor = {}
   const anchors = new Set()
+  const section = (ns) => (vendor[ns] ??= { extends: {}, commands: [], events: [], types: {} })
+  for (const kind of ['commands', 'events'])
+    for (const { vendor: ns, ...clean } of messages[kind]) section(ns)[kind].push(clean)
   for (const [typeName, node] of Object.entries(types)) {
+    if (node.vendor) {
+      const { vendor: ns, ...clean } = node
+      section(ns).types[typeName] = clean
+      delete types[typeName]
+      continue
+    }
     if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
     const kept = []
     for (const field of node.fields) {
@@ -735,8 +783,7 @@ function extractVendor(types) {
       // itself is removed below) and route only the copy that resolved into a real target type.
       if (field.via === typeName) continue
       const { vendor: ns, via, ...clean } = field
-      const bucket = (vendor[ns] ??= { extends: {} })
-      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      const entry = (section(ns).extends[typeName] ??= { via, fields: [] })
       entry.fields.push(clean)
     }
     node.fields = kept
@@ -748,6 +795,30 @@ function extractVendor(types) {
   return vendor
 }
 
+// The vendor model's `vendor`-tagged commands and events, as model entries. The untagged
+// rest duplicates the shared model (the vendor AST is the base AST plus overlays).
+function vendorModelEntries(vendorModel) {
+  const entries = []
+  for (const [domain, entry] of Object.entries(vendorModel ?? {})) {
+    const commands = (entry.commands ?? []).filter((c) => c.vendor)
+    const events = (entry.events ?? []).filter((e) => e.vendor)
+    if (commands.length || events.length) entries.push([domain, { commands, events }])
+  }
+  return entries
+}
+
+// The shared sections with every vendor section folded in: what the validators check, since
+// vendor refs resolve into the shared types and vendor messages need the same guarantees.
+function withVendor(schema) {
+  const sections = Object.values(schema.vendor ?? {})
+  return {
+    ...schema,
+    commands: [...schema.commands, ...sections.flatMap((s) => s.commands ?? [])],
+    events: [...schema.events, ...sections.flatMap((s) => s.events ?? [])],
+    types: Object.assign({}, schema.types, ...sections.map((s) => s.types ?? {})),
+  }
+}
+
 /**
  * Fail-closed validation: every type reference resolves, and no type projects to
  * `unknown` (which would mean an unhandled CDDL form) — across command/event
@@ -755,9 +826,11 @@ function extractVendor(types) {
  * @param {object} schema The projected schema (`{commands, events, types}`).
  * @returns {string[]} One message per problem; empty when valid.
  */
-export function checkSchema(schema) {
+export function checkSchema(source) {
+  const schema = withVendor(source)
+  const allTypes = schema.types
   const errors = []
-  const has = (name) => Object.hasOwn(schema.types, name)
+  const has = (name) => Object.hasOwn(allTypes, name)
   const hasUnknown = (node) =>
     !node
       ? false
@@ -803,7 +876,14 @@ export function checkSchema(schema) {
     if (expected && c.params?.ref !== expected)
       errors.push(`${c.method}: params ${c.params?.ref ?? 'null'} does not match required envelope params ${expected}`)
   }
-  for (const [name, node] of Object.entries(schema.types)) {
+  // A vendor extension adds fields to a shared record: the record must exist as a record, and
+  // its fields resolve like any other. Vendor types get the same per-type checks as shared ones.
+  for (const [ns, sec] of Object.entries(schema.vendor ?? {}))
+    for (const [target, entry] of Object.entries(sec.extends ?? {})) {
+      if (source.types[target]?.kind !== 'record') errors.push(`${ns}: extends ${target}, which is not a shared record`)
+      for (const f of entry.fields) report(`${ns}:${target}.${f.name}`, f.type)
+    }
+  for (const [name, node] of Object.entries(allTypes)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
       const wireByName = new Map()
@@ -922,12 +1002,15 @@ async function main() {
       // The core spec's prose-anchor index (see extract_bidi_anchors.mjs). Optional;
       // upgrades type links to prose sections and adds command/event/domain links.
       anchors: { type: 'string' },
+      // The model built from the vendor-overlaid AST; its vendor-tagged messages are filed
+      // under `vendor.<namespace>`. Optional.
+      'vendor-model': { type: 'string' },
     },
   })
   if (!args.ast || !args.model || !args['dump-schema']) {
     console.error(
       'Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>' +
-        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>]',
+        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>] [--vendor-model <model.json>]',
     )
     process.exit(1)
   }
@@ -936,7 +1019,8 @@ async function main() {
   const model = JSON.parse(readFileSync(resolveInput(args.model), 'utf8'))
   const dfnsDocs = (args.dfns ?? []).map((p) => JSON.parse(readFileSync(resolveInput(p), 'utf8')))
   const anchors = args.anchors ? JSON.parse(readFileSync(resolveInput(args.anchors), 'utf8')) : {}
-  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors))
+  const vendorModel = args['vendor-model'] ? JSON.parse(readFileSync(resolveInput(args['vendor-model']), 'utf8')) : null
+  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors), vendorModel)
 
   // Generation is the gate: a broken or incomplete schema fails the build.
   const errors = [...checkSchema(schema), ...checkCompleteness(ast, schema)]
@@ -954,6 +1038,11 @@ async function main() {
     `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types` +
       ` (${linkedTypes.length} spec-linked, ${proseTypes} prose) → ${args['dump-schema']}`,
   )
+  for (const [ns, section] of Object.entries(schema.vendor ?? {}))
+    console.log(
+      `  vendor ${ns}: extends ${Object.keys(section.extends).length} types; ${section.commands.length} commands,` +
+        ` ${section.events.length} events, ${Object.keys(section.types).length} types`,
+    )
 }
 
 // Run main() when invoked as the entry module. Uses an argv comparison rather
@@ -975,7 +1064,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
  * @param {object} schema The projected schema to check against.
  * @returns {string[]} One message per dropped or stale-allowlisted method; empty when complete.
  */
-export function checkCompleteness(rawAst, schema) {
+export function checkCompleteness(rawAst, source) {
+  const schema = withVendor(source)
   const emitted = new Set([...schema.commands, ...schema.events].map((c) => c.method))
   const errors = []
   for (const def of rawAst) {

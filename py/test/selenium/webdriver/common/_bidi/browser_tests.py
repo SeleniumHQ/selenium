@@ -115,15 +115,15 @@ def test_create_user_context_with_accept_insecure_certs(driver):
     browser.remove_user_context(user_context=user_context)
 
 
-def test_create_user_context_with_direct_proxy(driver):
+def test_create_user_context_with_direct_proxy(driver, pages):
     browser = Browser(driver)
     user_context = browser.create_user_context(proxy=DirectProxyConfiguration()).user_context
 
     bc = BrowsingContext(driver).create(type=CreateType.WINDOW, user_context=user_context).context
     driver.switch_to.window(bc)
 
-    driver.get("http://example.com/")
-    assert "example domain" in driver.find_element(By.TAG_NAME, "body").text.lower()
+    pages.load("simpleTest.html")
+    assert driver.title == "Hello WebDriver"
 
     browser.remove_user_context(user_context=user_context)
 

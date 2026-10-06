@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Aggregate the results.jsonl artifacts written by parse-flaky-results.sh.
 #
-# Flaky means a target did not pass first time in at least one run but ended
-# green in at least one. That covers a test saved by a retry, one that only
-# passed in the debug rerun, and one that simply fails some days and passes
-# others — the last being the only kind visible in jobs configured without
-# retries or a rerun.
+# Flaky means a target failed and then passed within the same run, either on a
+# retry or in the debug rerun. Every job feeding this report has the rerun, so a
+# run that never went green failed every chance it had. That is never counted as
+# a flake; a target whose last FAILING_RUNS runs all ended that way is failing.
 #
 # Both halves of the rate come from the records themselves: every execution is
 # one sample, so nothing here assumes how often anything is scheduled. If a
@@ -19,13 +18,16 @@
 # because a week is too few samples to divide by. Recency is kept separately: a
 # target is only reported if it flaked within RECENT_DAYS, so one that was fixed
 # drops out immediately even though its flakes are still inside the rate window.
+#
+# Runs per target are too few for a percentage threshold to mean anything more
+# than a count, so what gets reported is decided by MIN_FLAKES alone.
 
 set -euo pipefail
 
-WINDOW_DAYS="${WINDOW_DAYS:-21}"
-RECENT_DAYS="${RECENT_DAYS:-7}"
-MIN_RUNS="${MIN_RUNS:-15}"
-MIN_RATE="${MIN_RATE:-5}"
+WINDOW_DAYS=21
+RECENT_DAYS=7
+MIN_FLAKES=2
+FAILING_RUNS=2
 REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must be set}"
 
 WORK=$(mktemp -d)
@@ -76,47 +78,70 @@ if [ "$downloaded" -lt "$available" ]; then
 fi
 echo "Read $downloaded of $available result files"
 
-jq -s --arg recent "$recent_start" --arg window "$window_start" '
+jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson minFlakes "$MIN_FLAKES" '
   map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
-      [.[] | select(.status != "passed")] as $bad
+      [.[] | select(.status | endswith("-recovered")) | .timestamp] as $flakes
       | {
           target: .[0].target,
           os: .[0].os,
           ran: length,
-          # Ended green, whether first time or only after a retry.
-          succeeded: ([.[] | select(.status != "failed")] | length),
-          flaked: ($bad | length),
-          failed: ([$bad[].failed] | add // 0),
-          attempts: ([$bad[].attempts] | add // 0),
-          outcomes: ([$bad[].status] | unique | sort | join(", ")),
-          last: ([$bad[].timestamp] | max)
+          flaked: ($flakes | length),
+          failed: ([.[] | select(.status == "failed")] | length),
+          last: ($flakes | max),
+          # Every flake it has is recent, so it started this week.
+          new: (($flakes | min // "9999") >= $recent)
         }
       | . + {
-          rate: (if .ran > 0 then (.flaked * 100 / .ran) else 0 end),
+          rate: (.flaked * 100 / .ran),
           # Still happening, so worth someone looking at it now.
-          recent: (.last != null and .last >= $recent),
-          # Every failure it has is recent, so it started this week.
-          new: ((([$bad[].timestamp] | min) // "9999") >= $recent)
+          reported: (.flaked >= $minFlakes and .last >= $recent)
         })
-  # Flaky means it did not pass first time in at least one run, but did end green
-  # at least once. A target that never ended green is broken rather than flaky;
-  # one that always passed first time is simply fine. Needing a retry every single
-  # run counts as 100% flaky, not as broken.
-  | map(select(.flaked > 0 and .succeeded > 0))
-  | sort_by(-.rate, .target)
+  | map(select(.flaked > 0))
+  | sort_by((.reported | not), -.rate, .target)
 ' "$WORK/all.jsonl" > "$WORK/report.json"
 
+# The latest run must be recent so a target dropped from the schedule while
+# failing is not reported for the rest of the window.
+jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failingRuns "$FAILING_RUNS" '
+  map(select(.timestamp >= $window))
+  | group_by([.target, .os])
+  | map(
+      sort_by(.timestamp)
+      | {
+          target: .[0].target,
+          os: .[0].os,
+          streak: ([.[].status == "failed"] | reverse | index(false) // length),
+          lastRan: .[-1].timestamp,
+          lastPassed: ([.[] | select(.status != "failed") | .timestamp] | max)
+        })
+  | map(select(.streak >= $failingRuns and .lastRan >= $recent))
+  | sort_by(-.streak, .target)
+' "$WORK/all.jsonl" > "$WORK/failing.json"
+
 {
+  echo "## Failing tests"
+  echo
+  echo "Failed every attempt, including the debug rerun, in at least their last $FAILING_RUNS runs."
+  echo
+  if jq -e 'length > 0' "$WORK/failing.json" > /dev/null; then
+    echo "| target | os | failed in a row | last passed |"
+    echo "|---|---|---|---|"
+    jq -r '.[] | "| `\(.target)` | \(.os) | \(.streak) | \(.lastPassed // "not in window") |"' "$WORK/failing.json"
+  else
+    echo "None."
+  fi
+  echo
   echo "## Flaky tests"
   echo
   echo "Every execution counts as one sample, taken from $downloaded scheduled runs over the last $WINDOW_DAYS days."
-  echo "Reported to Slack when a target flaked within the last $RECENT_DAYS days, ran at least $MIN_RUNS times, and flaked in more than $MIN_RATE% of them."
+  echo "Reported to Slack when a target flaked at least $MIN_FLAKES times, at least once within the last $RECENT_DAYS days."
+  echo "Runs that never went green are counted under failed, not as flakes."
   echo
-  echo "| target | os | failed | of runs | rate | attempts failed | still failing | new | outcomes | last seen |"
-  echo "|---|---|---|---|---|---|---|---|---|---|"
-  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.ran) | \(.rate | round)% | \(.failed) of \(.attempts) | \(if .recent then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.outcomes) | \(.last) |"' "$WORK/report.json"
+  echo "| target | os | flaked | failed | of runs | rate | reported | new | last flaked |"
+  echo "|---|---|---|---|---|---|---|---|---|"
+  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .reported then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.last) |"' "$WORK/report.json"
 } > "$WORK/report.md"
 
 # Every flaky target, whatever the thresholds say. The thresholds only decide
@@ -125,19 +150,15 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" '
 cat "$WORK/report.md"
 cat "$WORK/report.md" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
 
-# Rate is compared unrounded so nothing crosses the threshold only because the
-# table rounded it up. MIN_RUNS keeps a barely-sampled target from reporting one
-# flake out of three runs as a 33% failure rate.
-significant=$(jq --argjson minRate "$MIN_RATE" --argjson minRuns "$MIN_RUNS" \
-  '[.[] | select(.recent and .ran >= $minRuns and .rate > $minRate)] | length' "$WORK/report.json")
+failing=$(jq 'length' "$WORK/failing.json")
+flaky=$(jq '[.[] | select(.reported)] | length' "$WORK/report.json")
 
-if [ "$significant" -eq 0 ]; then
-  echo "Nothing to report: no target flaked in the last $RECENT_DAYS days in more than $MIN_RATE% of at least $MIN_RUNS runs."
+if [ "$failing" -eq 0 ] && [ "$flaky" -eq 0 ]; then
+  echo "Nothing to report: no target failed its last $FAILING_RUNS runs or flaked at least $MIN_FLAKES times with one in the last $RECENT_DAYS days."
   exit 0
 fi
 
-[ "$significant" -eq 1 ] && noun=target || noun=targets
 {
-  echo "flaky=true"
-  echo "message=$significant $noun failed in > ${MIN_RATE}% of runs"
+  echo "notify=true"
+  echo "message=$failing failing, $flaky flaky targets"
 } >> "${GITHUB_OUTPUT:-/dev/null}"

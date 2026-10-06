@@ -68,9 +68,12 @@ fi
 jq -Rc \
   --arg os "${RUNNER_OS:-}" \
   --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --arg run "${GITHUB_RUN_ID:-}" \
+  --arg job "${JOB_ID:-}" \
   'select(length > 0) | split("\t")
    | { target: .[0], status: .[1], failed: (.[2] | tonumber), attempts: (.[3] | tonumber),
-       os: $os, timestamp: $timestamp }' \
+       os: $os, timestamp: $timestamp }
+   | if .status == "passed" then . else . + { run: $run, job: $job } end' \
   "$RESULTS" > "$FAILURES/results.jsonl"
 
 echo "results=true" >> "${GITHUB_OUTPUT:-/dev/null}"

@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -234,9 +235,13 @@ public class RelativeLocator {
     public List<WebElement> findElements(SearchContext context) {
       JavascriptExecutor js = getJavascriptExecutor(context);
 
+      // The atom searches from the document when its root is null.
+      Object atomRoot = context instanceof WebDriver ? null : context;
+
       @SuppressWarnings("unchecked")
       List<WebElement> elements =
-          (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
+          (List<WebElement>)
+              js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this), atomRoot);
       return requireNonNull(elements);
     }
 

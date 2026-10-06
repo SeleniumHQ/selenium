@@ -45,6 +45,20 @@ module Selenium
             def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> instance
           end
 
+          class CapabilityResponse < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader accept_insecure_certs: bool
+            attr_reader browser_name: String
+            attr_reader browser_version: String
+            attr_reader platform_name: String
+            attr_reader set_window_rect: bool
+            attr_reader user_agent: String
+            attr_reader proxy: untyped
+            attr_reader unhandled_prompt_behavior: untyped
+            attr_reader web_socket_url: untyped
+            attr_reader extensions: Hash[String, untyped]
+            def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
+          end
+
           class ProxyConfiguration < ::Selenium::WebDriver::BiDi::Serialization::Union
             def self.autodetect: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::AutodetectProxyConfiguration
             def self.direct: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> ::Selenium::WebDriver::BiDi::Protocol::Session::DirectProxyConfiguration
@@ -135,22 +149,8 @@ module Selenium
 
           class NewResult < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader session_id: String
-            attr_reader capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult::Capabilities
-            def self.new: (session_id: String, capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult::Capabilities) -> instance
-
-            class Capabilities < ::Selenium::WebDriver::BiDi::Serialization::Record
-              attr_reader accept_insecure_certs: bool
-              attr_reader browser_name: String
-              attr_reader browser_version: String
-              attr_reader platform_name: String
-              attr_reader set_window_rect: bool
-              attr_reader user_agent: String
-              attr_reader proxy: untyped
-              attr_reader unhandled_prompt_behavior: untyped
-              attr_reader web_socket_url: untyped
-              attr_reader extensions: Hash[String, untyped]
-              def self.new: (accept_insecure_certs: bool, browser_name: String, browser_version: String, platform_name: String, set_window_rect: bool, user_agent: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?web_socket_url: String, ?extensions: Hash[String, untyped]) -> instance
-            end
+            attr_reader capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityResponse
+            def self.new: (session_id: String, capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityResponse) -> instance
           end
 
           class SubscribeResult < ::Selenium::WebDriver::BiDi::Serialization::Record

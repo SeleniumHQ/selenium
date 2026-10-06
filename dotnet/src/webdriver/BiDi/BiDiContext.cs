@@ -19,32 +19,25 @@
 
 namespace OpenQA.Selenium.BiDi;
 
-internal sealed class BiDiContext
+internal static class BiDiContext
 {
-    private static readonly AsyncLocal<BiDiContext?> _current = new();
+    private static readonly AsyncLocal<IBiDi?> _current = new();
 
-    internal static BiDiContext Current => _current.Value
+    internal static IBiDi Current => _current.Value
         ?? throw new InvalidOperationException("No BiDiContext is available in the current context. Ensure the operation is performed within a BiDiContext.Use() scope.");
-
-    internal IBiDi BiDi { get; }
-
-    private BiDiContext(IBiDi bidi)
-    {
-        BiDi = bidi;
-    }
 
     internal static Scope Use(IBiDi bidi)
     {
         var previous = _current.Value;
-        _current.Value = new BiDiContext(bidi);
+        _current.Value = bidi;
         return new Scope(previous);
     }
 
     internal readonly struct Scope : IDisposable
     {
-        private readonly BiDiContext? _previous;
+        private readonly IBiDi? _previous;
 
-        internal Scope(BiDiContext? previous)
+        internal Scope(IBiDi? previous)
         {
             _previous = previous;
         }
