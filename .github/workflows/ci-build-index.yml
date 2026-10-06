@@ -20,7 +20,7 @@ jobs:
   cache:
     name: Cache Index
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions: {}
     steps:
       - name: Download index

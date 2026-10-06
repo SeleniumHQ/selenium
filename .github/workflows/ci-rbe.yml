@@ -31,7 +31,7 @@ jobs:
   wait-for-unlock:
     name: Wait for Trunk Unlock
     if: ${{ !startsWith(github.head_ref, 'release-preparation-') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - env:
           GH_TOKEN: ${{ github.token }}

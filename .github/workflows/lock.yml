@@ -13,7 +13,7 @@ permissions:
 jobs:
   action:
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: dessant/lock-threads@v6
         with:

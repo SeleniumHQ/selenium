@@ -8,7 +8,7 @@ on:
 jobs:
   check-authorization:
     name: Check Authorization
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Fail for unauthorized actor
         if: ${{ !contains(fromJSON('["AutomatedTester","selenium-ci","jimevans","p0deje","titusfortner","bonigarcia","diemol","pujagani","harsha509"]'), github.actor) }}

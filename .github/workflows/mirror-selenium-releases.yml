@@ -10,7 +10,7 @@ permissions:
 jobs:
   build:
     if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
     - uses: actions/checkout@v6
       with:
