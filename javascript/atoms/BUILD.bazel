@@ -1,177 +1,191 @@
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.51.0-nightly202609302012"
+
+# These build tools are CommonJS; the .cjs extension keeps that true regardless
+# of the "type": "module" declared by the @seleniumhq/atoms package.json above
+# them in this directory.
 js_binary(
-    name = "strip_trailing_semicolon",
-    data = ["typescript/strip-trailing-semicolon.js"],
-    entry_point = "typescript/strip-trailing-semicolon.js",
+    name = "cjs_to_iife",
+    data = ["typescript/cjs-to-iife.cjs"],
+    entry_point = "typescript/cjs-to-iife.cjs",
 )
 
 js_binary(
     name = "wrap_get_attribute_as_global",
-    data = ["typescript/wrap-get-attribute-as-global.js"],
-    entry_point = "typescript/wrap-get-attribute-as-global.js",
+    data = ["typescript/wrap-get-attribute-as-global.cjs"],
+    entry_point = "typescript/wrap-get-attribute-as-global.cjs",
 )
 
-js_run_binary(
+js_binary(
+    name = "wrap_as_global",
+    data = ["typescript/wrap-as-global.cjs"],
+    entry_point = "typescript/wrap-as-global.cjs",
+)
+
+js_binary(
+    name = "wrap_find_elements_as_global",
+    data = ["typescript/wrap-find-elements-as-global.cjs"],
+    entry_point = "typescript/wrap-find-elements-as-global.cjs",
+)
+
+# ── get-attribute ────────────────────────────────────────────────────────────
+
+ts_project(
     name = "get-attribute-typescript-compiled",
     srcs = ["typescript/get-attribute.ts"],
-    outs = ["typescript/get-attribute.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        # These atoms are self-contained and import nothing; pin typeRoots to the (type-free)
-        # source dir so unrelated ambient @types packages in node_modules cannot break the build.
-        "--typeRoots",
-        "javascript/atoms/typescript",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/get-attribute.compiled.js)",
-        "$(rootpath :typescript/get-attribute.ts)",
-    ],
-    tool = "@npm_typescript//:tsc",
+    declaration = False,
+    source_map = False,
+    tsconfig = "typescript/tsconfig-get-attribute.json",
 )
 
 js_run_binary(
     name = "get-attribute-typescript-generated",
-    srcs = [":get-attribute-typescript-compiled"],
+    srcs = [":typescript/get-attribute.js"],
     outs = ["typescript/get-attribute.generated.js"],
     args = [
-        "$(rootpath :get-attribute-typescript-compiled)",
+        "$(rootpath :typescript/get-attribute.js)",
         "$(rootpath :typescript/get-attribute.generated.js)",
     ],
-    tool = ":strip_trailing_semicolon",
+    tool = ":cjs_to_iife",
 )
 
 js_run_binary(
     name = "get-attribute-global",
-    srcs = [":get-attribute-typescript-compiled"],
+    srcs = [":typescript/get-attribute.js"],
     outs = ["typescript/get-attribute-global.js"],
     args = [
-        "$(rootpath :get-attribute-typescript-compiled)",
+        "$(rootpath :typescript/get-attribute.js)",
         "$(rootpath :typescript/get-attribute-global.js)",
     ],
     tool = ":wrap_get_attribute_as_global",
 )
 
-js_binary(
-    name = "wrap_as_global",
-    data = ["typescript/wrap-as-global.js"],
-    entry_point = "typescript/wrap-as-global.js",
-)
+# ── find-elements ────────────────────────────────────────────────────────────
 
-js_binary(
-    name = "wrap_find_elements_as_global",
-    data = ["typescript/wrap-find-elements-as-global.js"],
-    entry_point = "typescript/wrap-find-elements-as-global.js",
-)
-
-js_run_binary(
+ts_project(
     name = "find-elements-typescript-compiled",
     srcs = ["typescript/find-elements.ts"],
-    outs = ["typescript/find-elements.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        # These atoms are self-contained and import nothing; pin typeRoots to the (type-free)
-        # source dir so unrelated ambient @types packages in node_modules cannot break the build.
-        "--typeRoots",
-        "javascript/atoms/typescript",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/find-elements.compiled.js)",
-        "$(rootpath :typescript/find-elements.ts)",
-    ],
-    tool = "@npm_typescript//:tsc",
+    declaration = False,
+    source_map = False,
+    tsconfig = "typescript/tsconfig-find-elements.json",
 )
 
 js_run_binary(
     name = "find-elements-typescript-generated",
-    srcs = [":find-elements-typescript-compiled"],
+    srcs = [":typescript/find-elements.js"],
     outs = ["typescript/find-elements.generated.js"],
     args = [
-        "$(rootpath :find-elements-typescript-compiled)",
+        "$(rootpath :typescript/find-elements.js)",
         "$(rootpath :typescript/find-elements.generated.js)",
     ],
-    tool = ":strip_trailing_semicolon",
+    tool = ":cjs_to_iife",
 )
 
 js_run_binary(
     name = "find-elements-global",
-    srcs = [":find-elements-typescript-compiled"],
+    srcs = [":typescript/find-elements.js"],
     outs = ["typescript/find-elements-global.js"],
     args = [
-        "$(rootpath :find-elements-typescript-compiled)",
+        "$(rootpath :typescript/find-elements.js)",
         "$(rootpath :typescript/find-elements-global.js)",
     ],
     tool = ":wrap_find_elements_as_global",
 )
 
-js_run_binary(
+# ── is-displayed ─────────────────────────────────────────────────────────────
+
+ts_project(
     name = "is-displayed-typescript-compiled",
     srcs = ["typescript/is-displayed.ts"],
-    outs = ["typescript/is-displayed.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        # These atoms are self-contained and import nothing; pin typeRoots to the (type-free)
-        # source dir so unrelated ambient @types packages in node_modules cannot break the build.
-        "--typeRoots",
-        "javascript/atoms/typescript",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/is-displayed.compiled.js)",
-        "$(rootpath typescript/is-displayed.ts)",
-    ],
-    tool = "@npm_typescript//:tsc",
+    declaration = False,
+    source_map = False,
+    tsconfig = "typescript/tsconfig-is-displayed.json",
 )
 
 js_run_binary(
     name = "is-displayed-typescript-generated",
-    srcs = [":is-displayed-typescript-compiled"],
+    srcs = [":typescript/is-displayed.js"],
     outs = ["typescript/is-displayed.generated.js"],
     args = [
-        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed.js)",
         "$(rootpath :typescript/is-displayed.generated.js)",
     ],
-    tool = ":strip_trailing_semicolon",
+    tool = ":cjs_to_iife",
 )
 
 js_run_binary(
     name = "is-displayed-global",
-    srcs = [":is-displayed-typescript-compiled"],
+    srcs = [":typescript/is-displayed.js"],
     outs = ["typescript/is-displayed-global.js"],
     args = [
-        "$(rootpath :is-displayed-typescript-compiled)",
+        "$(rootpath :typescript/is-displayed.js)",
         "$(rootpath :typescript/is-displayed-global.js)",
     ],
     tool = ":wrap_as_global",
 )
 
+# ── @seleniumhq/atoms npm package ────────────────────────────────────────────
+
+ts_project(
+    name = "atoms-npm-compiled",
+    srcs = [
+        "index.ts",
+        "typescript/find-elements.ts",
+        "typescript/get-attribute.ts",
+        "typescript/is-displayed.ts",
+    ],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
+# npm_package does not pick up filegroup sources.
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+npm_package(
+    name = "selenium-atoms-package",
+    srcs = [
+        # README.md in this directory is the contributor guide; the npm page
+        # gets its own file, renamed into place below.
+        "README.npm.md",
+        # Published so the emitted .d.ts.map / .js.map resolve for consumers.
+        "index.ts",
+        "package.json",
+        "typescript/find-elements.ts",
+        "typescript/get-attribute.ts",
+        "typescript/is-displayed.ts",
+        ":atoms-npm-compiled",
+        ":license",
+    ],
+    package = "@seleniumhq/atoms",
+    publishable = True,
+    replace_prefixes = {"README.npm.md": "README.md"},
+    tags = ["release-artifact"],
+    version = VERSION,
+    visibility = ["//visibility:public"],
+)
+
 filegroup(
     name = "atoms",
     srcs = glob([
+        "**/*.cjs",
         "**/*.html",
         "**/*.jpg",
         "**/*.js",
