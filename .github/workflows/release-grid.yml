@@ -22,10 +22,19 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: build/dist
       - name: Create nightly release
-        uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: nightly
-          title: Nightly
-          prerelease: true
-          files: build/dist/*.*
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if gh api "repos/$GH_REPO/git/ref/tags/nightly" >/dev/null 2>&1; then
+            gh api -X DELETE "repos/$GH_REPO/git/refs/tags/nightly"
+          fi
+          gh release create nightly build/dist/*.* \
+            --target "$GITHUB_SHA" \
+            --title Nightly \
+            --prerelease \
+            --generate-notes
