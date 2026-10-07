@@ -150,7 +150,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
-      gpg-sign: ${{ matrix.language == 'java' }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
       ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
