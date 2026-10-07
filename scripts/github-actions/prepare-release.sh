@@ -27,4 +27,5 @@ if wanted ruby; then targets+=(//rb:selenium-webdriver //rb:selenium-devtools); 
 if wanted dotnet; then targets+=(//dotnet:release); fi
 if wanted javascript; then targets+=(//javascript/selenium-webdriver:selenium-webdriver); fi
 
-bazel build --config=rbe-ci --config=release "${targets[@]}"
+# The publish jobs bundle the pinned manager, so override rbe-ci's --manager=stub or they miss the cache.
+bazel build --config=rbe-ci --config=release --manager=download "${targets[@]}"
