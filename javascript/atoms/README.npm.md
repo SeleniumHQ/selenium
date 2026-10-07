@@ -1,4 +1,4 @@
-# @seleniumhq/atoms
+# @selenium/atoms
 
 Browser injection atoms for Selenium WebDriver, published as TypeScript-typed
 ES modules.
@@ -14,7 +14,7 @@ needs to match Selenium's behaviour exactly.
 ## Installation
 
 ```sh
-npm install @seleniumhq/atoms
+npm install @selenium/atoms
 ```
 
 This is an ES-module-only package and requires Node.js 18 or newer.
@@ -22,16 +22,16 @@ This is an ES-module-only package and requires Node.js 18 or newer.
 ## Usage
 
 ```js
-import { getAttribute, findElements, isDisplayed } from '@seleniumhq/atoms'
+import { getAttribute, findElements, isDisplayed } from '@selenium/atoms'
 ```
 
 Each atom is also available as its own subpath export, so a bundler can tree
 shake down to just the one you need:
 
 ```js
-import getAttribute from '@seleniumhq/atoms/get-attribute'
-import findElements from '@seleniumhq/atoms/find-elements'
-import isDisplayed from '@seleniumhq/atoms/is-displayed'
+import getAttribute from '@selenium/atoms/get-attribute'
+import findElements from '@selenium/atoms/find-elements'
+import isDisplayed from '@selenium/atoms/is-displayed'
 ```
 
 ### API

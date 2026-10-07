@@ -9,7 +9,7 @@ package(default_visibility = ["//visibility:public"])
 VERSION = "4.51.0-nightly202609302012"
 
 # These build tools are CommonJS; the .cjs extension keeps that true regardless
-# of the "type": "module" declared by the @seleniumhq/atoms package.json above
+# of the "type": "module" declared by the @selenium/atoms package.json above
 # them in this directory.
 js_binary(
     name = "cjs_to_iife",
@@ -131,7 +131,7 @@ js_run_binary(
     tool = ":wrap_as_global",
 )
 
-# ── @seleniumhq/atoms npm package ────────────────────────────────────────────
+# ── @selenium/atoms npm package ──────────────────────────────────────────────
 
 ts_project(
     name = "atoms-npm-compiled",
@@ -174,7 +174,7 @@ npm_package(
         ":atoms-npm-compiled",
         ":license",
     ],
-    package = "@seleniumhq/atoms",
+    package = "@selenium/atoms",
     publishable = True,
     replace_prefixes = {"README.npm.md": "README.md"},
     tags = ["release-artifact"],
