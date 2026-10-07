@@ -1,3 +1,19 @@
+v4.50.0
+======
+* Support CDP versions: v152, v153, v154
+* remove deprecated methods from the HttpClient interface (#17993)
+* Parse each BiDi command response only once (#18011)
+* Use one HttpClient.Factory inside one RemoteWebDriver instance (#18038)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* resolve exceptions from the W3C state in ErrorHandler (#18059)
+* declare Firefox default preferences in each binding (#18070)
+* Support relative locators from elements and shadow roots (#17907)
+* [build] Automated Browser Version Update (major) with CDP (#18067)
+* [bidi] Clear fetchError listener in Network.close() (#17903)
+* [bidi] Clear realm listeners in Script.close() (#18080)
+* Restore HttpCommandExecutor client and httpClientFactory fields as deprecated (#18098)
+* Keep guarded runnables alive when a task throws an Error (#18091)
+
 v4.49.0
 ======
 * Support CDP versions: v151, v152, v153

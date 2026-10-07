@@ -66,6 +66,7 @@ py_binary(
 py_binary(
     name = "update_multitool_binaries",
     srcs = ["update_multitool_binaries.py"],
+    deps = [requirement("urllib3")],
 )
 
 py_binary(

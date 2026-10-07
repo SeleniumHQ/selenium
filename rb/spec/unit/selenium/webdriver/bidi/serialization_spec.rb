@@ -657,6 +657,44 @@ module Selenium
               expect(parsed.name).to be_nil
             end
           end
+
+          # script.NodeProperties.attributes is `{*text => text}`: a string-keyed map of strings,
+          # carried as a `map:` descriptor rather than an opaque pass-through.
+          describe 'primitive-valued map fields' do
+            def node_properties(attributes)
+              Script::NodeProperties.from_json('nodeType' => 1, 'childNodeCount' => 0, 'attributes' => attributes)
+            end
+
+            it 'reads a conforming map as a Hash' do
+              expect(node_properties('id' => 'main', 'class' => 'a b').attributes)
+                .to eq('id' => 'main', 'class' => 'a b')
+            end
+
+            it 'raises when the map arrives as a scalar' do
+              expect { node_properties('oops') }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'raises when the map arrives as a list' do
+              expect { node_properties(%w[id main]) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map/)
+            end
+
+            it 'raises when a map value is not the declared primitive' do
+              expect { node_properties('id' => 1) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes\["id"\] expected string, got 1/)
+            end
+
+            it 'rejects a non-map at construction, mirroring the inbound check' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: 'oops') }
+                .to raise_error(ArgumentError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'rejects a wrong-typed map value at construction' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: {'id' => 1}) }
+                .to raise_error(ArgumentError, /NodeProperties#attributes\["id"\] expected string, got 1/)
+            end
+          end
         end
       end # Protocol
     end # BiDi

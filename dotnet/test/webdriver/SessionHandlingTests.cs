@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -31,7 +30,7 @@ public class SessionHandlingTests : DriverTestFixture
         Driver.Url = Urls.SimpleTestPage;
         Driver.Quit();
         Driver.Quit();
-        Driver = EnvironmentManager.Instance.CreateDriverInstance();
+        Driver = CreateDriverInstance();
         Driver.Url = Urls.XhtmlTestPage;
         Driver.Quit();
     }
@@ -40,12 +39,12 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CallingQuitAfterClosingTheLastWindowIsANoOp()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         testDriver.Url = Urls.SimpleTestPage;
         testDriver.Close();
         testDriver.Quit();
-        testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        testDriver = CreateDriverInstance();
         testDriver.Url = Urls.XhtmlTestPage;
         Assert.That(testDriver.Title, Is.EqualTo("XHTML Test Page"));
         testDriver.Quit();
@@ -56,8 +55,8 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CallingAnyOperationAfterClosingTheLastWindowShouldThrowAnException()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         try
         {
             string url = string.Empty;
@@ -75,8 +74,8 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void CallingAnyOperationAfterQuitShouldThrowAnException()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         try
         {
             string url = string.Empty;
@@ -97,12 +96,12 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToStartNewDriverAfterCallingCloseOnOnlyOpenWindow()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         testDriver.Url = Urls.SimpleTestPage;
         testDriver.Close();
         testDriver.Dispose();
-        testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        testDriver = CreateDriverInstance();
         testDriver.Url = Urls.XhtmlTestPage;
         Assert.That(testDriver.Title, Is.EqualTo("XHTML Test Page"));
         testDriver.Close();
@@ -113,8 +112,8 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToDisposeOfDriver()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         testDriver.Url = Urls.SimpleTestPage;
         testDriver.Dispose();
     }
@@ -123,8 +122,8 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToCallDisposeConsecutively()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         testDriver.Url = Urls.SimpleTestPage;
         testDriver.Dispose();
         testDriver.Dispose();
@@ -134,12 +133,12 @@ public class SessionHandlingTests : DriverTestFixture
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldBeAbleToCallDisposeAfterQuit()
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        IWebDriver testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        CloseDriver();
+        IWebDriver testDriver = CreateDriverInstance();
         testDriver.Url = Urls.SimpleTestPage;
         testDriver.Quit();
         testDriver.Dispose();
-        testDriver = EnvironmentManager.Instance.CreateDriverInstance();
+        testDriver = CreateDriverInstance();
         testDriver.Url = Urls.XhtmlTestPage;
         Assert.That(testDriver.Title, Is.EqualTo("XHTML Test Page"));
         testDriver.Quit();
@@ -150,7 +149,6 @@ public class SessionHandlingTests : DriverTestFixture
     {
         for (int i = 0; i < 5; i++)
         {
-            EnvironmentManager.Instance.CloseCurrentDriver();
             CreateFreshDriver();
             Driver.Url = Urls.SimpleTestPage;
             Assert.That(Driver.Title, Is.EqualTo("Hello WebDriver"));

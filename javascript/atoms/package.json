@@ -1,14 +1,51 @@
 {
-  "name": "selenium-atoms",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Build tools for Selenium Browser Automation Atoms",
-  "license": "Apache-2.0",
+  "name": "@seleniumhq/atoms",
+  "version": "4.51.0-nightly202609302012",
+  "description": "Browser injection atoms for Selenium WebDriver",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./get-attribute": {
+      "types": "./dist/typescript/get-attribute.d.ts",
+      "default": "./dist/typescript/get-attribute.js"
+    },
+    "./find-elements": {
+      "types": "./dist/typescript/find-elements.d.ts",
+      "default": "./dist/typescript/find-elements.js"
+    },
+    "./is-displayed": {
+      "types": "./dist/typescript/is-displayed.d.ts",
+      "default": "./dist/typescript/is-displayed.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "get-attribute": ["./dist/typescript/get-attribute.d.ts"],
+      "find-elements": ["./dist/typescript/find-elements.d.ts"],
+      "is-displayed": ["./dist/typescript/is-displayed.d.ts"]
+    }
+  },
+  "engines": {
+    "node": ">= 22.12.0"
+  },
+  "files": [
+    "dist/",
+    "index.ts",
+    "typescript/",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/SeleniumHQ/selenium.git"
+    "url": "https://github.com/SeleniumHQ/selenium.git",
+    "directory": "javascript/atoms"
   },
-  "devDependencies": {
-    "google-closure-deps": "^20230802.0.0"
-  }
+  "license": "Apache-2.0"
 }

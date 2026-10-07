@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -98,7 +99,6 @@ import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.jdk.ConnectionException;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
@@ -320,13 +320,11 @@ public class RemoteWebDriver
       sessionId = new SessionId(response.getSessionId());
       this.biDi = createBiDi();
     } catch (Exception e) {
-      // If session creation fails, stop the driver service to prevent zombie processes
-      if (executor instanceof DriverCommandExecutor) {
-        try {
-          ((DriverCommandExecutor) executor).close();
-        } catch (Exception ignored) {
-          // Ignore cleanup exceptions, we'll propagate the original failure
-        }
+      // Without a session id quit() is a no-op, so this is the only chance to release the
+      // executor's HTTP client and threads; with one, the constructor's quit() must still be able
+      // to end the remote session before it closes the executor
+      if (sessionId == null) {
+        closeExecutor();
       }
       throw e;
     }
@@ -357,6 +355,17 @@ public class RemoteWebDriver
 
   public ClientConfig getClientConfig() {
     return clientConfig;
+  }
+
+  /**
+   * Returns the factory this driver uses to create HTTP clients, for example the BiDi WebSocket
+   * client. Subclasses can use it to create their own clients with the same configuration (and
+   * tracing, when enabled).
+   *
+   * @return the HTTP client factory of this driver
+   */
+  protected HttpClient.Factory getClientFactory() {
+    return clientFactory;
   }
 
   public CommandExecutor getCommandExecutor() {
@@ -566,6 +575,19 @@ public class RemoteWebDriver
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;
+      closeExecutor();
+    }
+  }
+
+  private void closeExecutor() {
+    if (!(executor instanceof Closeable)) {
+      return;
+    }
+    try {
+      ((Closeable) executor).close();
+    } catch (Exception e) {
+      // Never mask the failure (or success) of the operation that triggered the clean-up
+      LOG.log(Level.FINE, "Failed to close the command executor", e);
     }
   }
 
