@@ -19,7 +19,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: ci-rbe-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ci-rbe-${{ github.event_name }}-${{ github.event_name == 'push' && github.sha || github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
