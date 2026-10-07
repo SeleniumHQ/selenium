@@ -63,6 +63,7 @@ csharp_sourcelink_library(
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
         nuget_package("System.Collections.Immutable"),
+        nuget_package("System.Diagnostics.DiagnosticSource"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -97,6 +98,7 @@ csharp_sourcelink_library(
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
         nuget_package("System.Buffers"),
         nuget_package("System.Collections.Immutable"),
+        nuget_package("System.Diagnostics.DiagnosticSource"),
         nuget_package("System.Threading.Channels"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
@@ -165,28 +167,28 @@ copy_file(
     name = "manager-linux-x86_64",
     src = "//common/manager:selenium-manager-linux-x86_64",
     out = "manager/linux-x86_64/selenium-manager",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-linux-arm64",
     src = "//common/manager:selenium-manager-linux-arm64",
     out = "manager/linux-arm64/selenium-manager",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-macos",
     src = "//common/manager:selenium-manager-macos",
     out = "manager/macos/selenium-manager",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "manager/windows/selenium-manager.exe",
-    visibility = ["//dotnet/test/webdriver:__pkg__"],
+    visibility = ["//dotnet/test:__subpackages__"],
 )
 
 nuget_pack(

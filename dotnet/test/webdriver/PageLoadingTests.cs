@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -29,7 +28,10 @@ public class PageLoadingTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        Driver = EnvironmentManager.Instance.GetCurrentDriver();
+        if (Driver is null)
+        {
+            CreateFreshDriver();
+        }
     }
 
     [TearDown]
@@ -459,7 +461,7 @@ public class PageLoadingTests : DriverTestFixture
 
     private void InitLocalDriver(PageLoadStrategy strategy)
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         if (localDriver != null)
         {
             localDriver.Quit();
@@ -467,7 +469,7 @@ public class PageLoadingTests : DriverTestFixture
 
         PageLoadStrategyOptions options = new PageLoadStrategyOptions();
         options.PageLoadStrategy = strategy;
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
     }
 
     private class PageLoadStrategyOptions : DriverOptions

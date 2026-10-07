@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Tests.Internal.Logging;
 
+[NonParallelizable]
 public class LogTests
 {
     private TestLogHandler testLogHandler;

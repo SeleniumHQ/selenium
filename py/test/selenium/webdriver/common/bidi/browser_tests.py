@@ -20,7 +20,11 @@ import os
 import pytest
 
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowNamedState
+from selenium.webdriver.common.bidi.browser import (
+    ClientWindowInfo,
+    ClientWindowNamedState,
+    ClientWindowRectState,
+)
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
 from selenium.webdriver.common.by import By
@@ -99,12 +103,47 @@ def test_raises_exception_when_removing_default_user_context(driver):
         driver.browser.remove_user_context("default")
 
 
-def test_client_window_state_constants(driver):
-    """Test ClientWindowNamedState constants."""
-    assert ClientWindowNamedState.FULLSCREEN == "fullscreen"
-    assert ClientWindowNamedState.MAXIMIZED == "maximized"
-    assert ClientWindowNamedState.MINIMIZED == "minimized"
-    assert ClientWindowNamedState.NORMAL == "normal"
+def _restore_client_window(driver, window):
+    """Put a client window back the way it was found.
+
+    The driver is shared across the whole session, so a test that resizes a
+    window has to hand it back unchanged.
+    """
+    if window.get_state() == ClientWindowNamedState.NORMAL:
+        state = ClientWindowRectState(
+            width=window.get_width(),
+            height=window.get_height(),
+            x=window.get_x(),
+            y=window.get_y(),
+        )
+    else:
+        state = window.get_state()
+    driver.browser.set_client_window_state(client_window=window.get_client_window(), state=state)
+
+
+def test_set_client_window_state_to_a_rect(driver):
+    """Test setting a client window to an explicit rectangle.
+
+    The rect members have to reach the browser as siblings of ``clientWindow``;
+    nesting them under ``state`` is rejected as an invalid argument.
+    See https://github.com/SeleniumHQ/selenium/issues/18085.
+    """
+    original = driver.browser.get_client_windows()[0]
+
+    try:
+        result = driver.browser.set_client_window_state(
+            client_window=original.get_client_window(),
+            state=ClientWindowRectState(width=640, height=480, x=10, y=10),
+        )
+
+        assert result["clientWindow"] == original.get_client_window()
+        assert result["state"] == ClientWindowNamedState.NORMAL
+        # A window manager is free to clamp or ignore the requested geometry, so
+        # only the state transition is asserted exactly.
+        assert result["width"] > 0
+        assert result["height"] > 0
+    finally:
+        _restore_client_window(driver, original)
 
 
 def test_create_user_context_with_accept_insecure_certs(driver):
@@ -126,7 +165,7 @@ def test_create_user_context_with_accept_insecure_certs(driver):
     driver.browser.remove_user_context(user_context)
 
 
-def test_create_user_context_with_direct_proxy(driver):
+def test_create_user_context_with_direct_proxy(driver, pages):
     """Test creating a user context with direct proxy configuration."""
     proxy = Proxy()
     proxy.proxy_type = ProxyType.DIRECT
@@ -138,9 +177,8 @@ def test_create_user_context_with_direct_proxy(driver):
     driver.switch_to.window(bc)
 
     # Visiting a site should load directly without proxy
-    driver.get("http://example.com/")
-    body_text = driver.find_element(By.TAG_NAME, "body").text.lower()
-    assert "example domain" in body_text
+    pages.load("simpleTest.html")
+    assert driver.title == "Hello WebDriver"
 
     # Clean up
     driver.browser.remove_user_context(user_context)

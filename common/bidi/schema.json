@@ -869,7 +869,7 @@
       "method": "browsingContext.contextCreated",
       "name": "contextCreated",
       "params": {
-        "ref": "browsingContext.Info"
+        "ref": "browsingContext.ContextCreatedParameters"
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#event-browsingContext-contextCreated"
     },
@@ -1910,6 +1910,87 @@
       "outbound": true,
       "inbound": false
     },
+    "session.CapabilityResponse": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "acceptInsecureCerts",
+          "wire": "acceptInsecureCerts",
+          "required": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "name": "browserName",
+          "wire": "browserName",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "browserVersion",
+          "wire": "browserVersion",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "platformName",
+          "wire": "platformName",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "setWindowRect",
+          "wire": "setWindowRect",
+          "required": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "name": "userAgent",
+          "wire": "userAgent",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "proxy",
+          "wire": "proxy",
+          "required": false,
+          "type": {
+            "ref": "session.ProxyConfiguration"
+          }
+        },
+        {
+          "name": "unhandledPromptBehavior",
+          "wire": "unhandledPromptBehavior",
+          "required": false,
+          "type": {
+            "ref": "session.UserPromptHandler"
+          }
+        },
+        {
+          "name": "webSocketUrl",
+          "wire": "webSocketUrl",
+          "required": false,
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "extensible": true,
+      "specHref": "https://w3c.github.io/webdriver-bidi/#type-session-CapabilityResponse",
+      "outbound": false,
+      "inbound": true
+    },
     "session.ProxyConfiguration": {
       "kind": "union",
       "variants": [
@@ -2359,7 +2440,7 @@
           "wire": "capabilities",
           "required": true,
           "type": {
-            "ref": "session.NewResultCapabilities"
+            "ref": "session.CapabilityResponse"
           }
         }
       ],
@@ -3232,6 +3313,73 @@
         }
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextinfolist"
+    },
+    "browsingContext.BaseInfo": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "children",
+          "wire": "children",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.InfoList",
+            "nullable": true
+          }
+        },
+        {
+          "name": "clientWindow",
+          "wire": "clientWindow",
+          "required": true,
+          "type": {
+            "ref": "browser.ClientWindow"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext"
+          }
+        },
+        {
+          "name": "originalOpener",
+          "wire": "originalOpener",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "url",
+          "wire": "url",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "userContext",
+          "wire": "userContext",
+          "required": true,
+          "type": {
+            "ref": "browser.UserContext"
+          }
+        },
+        {
+          "name": "parent",
+          "wire": "parent",
+          "required": false,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextbaseinfo",
+      "outbound": false,
+      "inbound": false
     },
     "browsingContext.Info": {
       "kind": "record",
@@ -5033,7 +5181,7 @@
           "wire": "params",
           "required": true,
           "type": {
-            "ref": "browsingContext.Info"
+            "ref": "browsingContext.ContextCreatedParameters"
           }
         }
       ],
@@ -16523,6 +16671,81 @@
       "outbound": false,
       "inbound": true
     },
+    "browsingContext.ContextCreatedParameters": {
+      "kind": "record",
+      "fields": [
+        {
+          "name": "children",
+          "wire": "children",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.InfoList",
+            "nullable": true
+          }
+        },
+        {
+          "name": "clientWindow",
+          "wire": "clientWindow",
+          "required": true,
+          "type": {
+            "ref": "browser.ClientWindow"
+          }
+        },
+        {
+          "name": "context",
+          "wire": "context",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext"
+          }
+        },
+        {
+          "name": "originalOpener",
+          "wire": "originalOpener",
+          "required": true,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "url",
+          "wire": "url",
+          "required": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "name": "userContext",
+          "wire": "userContext",
+          "required": true,
+          "type": {
+            "ref": "browser.UserContext"
+          }
+        },
+        {
+          "name": "parent",
+          "wire": "parent",
+          "required": false,
+          "type": {
+            "ref": "browsingContext.BrowsingContext",
+            "nullable": true
+          }
+        },
+        {
+          "name": "hasPlannedNavigation",
+          "wire": "hasPlannedNavigation",
+          "required": false,
+          "type": {
+            "primitive": "boolean"
+          }
+        }
+      ],
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextcontextcreatedparameters",
+      "outbound": false,
+      "inbound": true
+    },
     "DigitalCredentialsCommand": {
       "kind": "alias",
       "type": {
@@ -17545,89 +17768,6 @@
       "label": "CancelParameters",
       "outbound": true,
       "inbound": false
-    },
-    "session.NewResultCapabilities": {
-      "kind": "record",
-      "fields": [
-        {
-          "name": "acceptInsecureCerts",
-          "wire": "acceptInsecureCerts",
-          "required": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "name": "browserName",
-          "wire": "browserName",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "browserVersion",
-          "wire": "browserVersion",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "platformName",
-          "wire": "platformName",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "setWindowRect",
-          "wire": "setWindowRect",
-          "required": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "name": "userAgent",
-          "wire": "userAgent",
-          "required": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "name": "proxy",
-          "wire": "proxy",
-          "required": false,
-          "type": {
-            "ref": "session.ProxyConfiguration"
-          }
-        },
-        {
-          "name": "unhandledPromptBehavior",
-          "wire": "unhandledPromptBehavior",
-          "required": false,
-          "type": {
-            "ref": "session.UserPromptHandler"
-          }
-        },
-        {
-          "name": "webSocketUrl",
-          "wire": "webSocketUrl",
-          "required": false,
-          "type": {
-            "primitive": "string"
-          }
-        }
-      ],
-      "extensible": true,
-      "synthetic": true,
-      "owner": "session.NewResult",
-      "label": "Capabilities",
-      "outbound": false,
-      "inbound": true
     },
     "browsingContext.AccessibilityLocatorValue": {
       "kind": "record",

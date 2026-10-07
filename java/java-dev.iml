@@ -10,14 +10,9 @@
     <content url="file://$MODULE_DIR$/src/dev">
       <sourceFolder url="file://$MODULE_DIR$/src/dev" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../third_party/js/sizzle">
-      <sourceFolder url="file://$MODULE_DIR$/../third_party/js/sizzle" type="java-test-resource" />
-    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="java" />
-    <orderEntry type="library" name="maven" level="project" />
-    <orderEntry type="library" name="tools" level="project" />
     <orderEntry type="library" name="java-libs" level="project" />
   </component>
 </module>

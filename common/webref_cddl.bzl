@@ -9,37 +9,49 @@ see scripts/update_cddl.py for how they are resolved and when the pins advance.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 # The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
-_COMMIT = "02d4baf9e469b27e9d3e561440c23319cbb68b11"
+_COMMIT = "db9ee48e003ef8368d0b933a3443cf21923077d0"
 _CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 _DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
 
 # The rendered WebDriver BiDi spec, pinned at a w3c/webdriver-bidi "gh-pages" commit. Only this
 # file carries the readable prose section ids (`#type-`/`#command-`/`#event-`/`#module-`).
-_BIDI_SPEC_HTML_COMMIT = "4426125061e1785d7ca093fcb244413494d6a47b"
-_BIDI_SPEC_HTML_SHA256 = "dedede951ab45865c9789c20347e2e3a259f119d2623da4d5ca51237611cbfd0"
+_BIDI_SPEC_HTML_COMMIT = "2a0260f9c50be3dceae9ca556ecccd35ac30a99f"
+_BIDI_SPEC_HTML_SHA256 = "443ca1febb1a3b1745d56d289a447e41f0676abe69a08213ac28ba90c7b14593"
 _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/index.html".format(
     commit = _BIDI_SPEC_HTML_COMMIT,
 )
+
+# The last mozilla-firefox/firefox "main" commit to change remote/webdriver-bidi/cddl.
+_MOZ_COMMIT = "511b0de4764c52d9acb0d813c7ef712cabd6b975"
+_MOZ_CDDL_BASE_URL = "https://raw.githubusercontent.com/mozilla-firefox/firefox/{commit}/remote/webdriver-bidi/cddl".format(commit = _MOZ_COMMIT)
 
 # (repo_name, filename, sha256). Each grammar is downloaded as "spec.cddl" and each dfns
 # index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
 # @<repo_name>//file:dfns.json.
 _CDDL_FILES = [
-    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "3eead6840423c63dcebaede1b19528c6bd41ae137c361a44d8767585df1cfac2"),
+    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "5d51a44b540db39923065162de0c0958997f9ba3b8eeadba1bc69c1afc3e56c7"),
     ("digital_credentials_all_cddl", "digital-credentials-all.cddl", "04acd2815f32a7e6d12c03464af8d6f909b03579e2a31e82d18c0068d8084ca9"),
     ("permissions_all_cddl", "permissions-all.cddl", "50e9b0017415e27a18a190bf37df048d4513f8432e42fe97901c9f2d55204b50"),
     ("prefetch_all_cddl", "prefetch-all.cddl", "51409b998176a81f681252f8ee16bea5a54a3be9d1cfee9f13ca34efd1feb5ea"),
     ("ua_client_hints_all_cddl", "ua-client-hints-all.cddl", "6bb41f05d09c755305226b7350970e54f6404698510ea2e1e7a931eaa2647aeb"),
-    ("bluetooth_scanning_all_cddl", "bluetooth-scanning-all.cddl", "3480a9c2c7cc312a50535024d8667283e79a77d5a40c5c0bc19ea023697b24d4"),
+    ("bluetooth_all_cddl", "bluetooth-all.cddl", "3480a9c2c7cc312a50535024d8667283e79a77d5a40c5c0bc19ea023697b24d4"),
 ]
 
 _DFNS_FILES = [
-    ("webdriver_bidi_dfns", "webdriver-bidi.json", "2b52e78175ead92c5c0a9bc8c49ef7463fed40479fa0571e078a0d5766018988"),
+    ("webdriver_bidi_dfns", "webdriver-bidi.json", "94f304bd2a27f4ee342bd91d30a3bd80f1cdcdd22c9b063835ff7d8e219b2a94"),
     ("digital_credentials_dfns", "digital-credentials.json", "48582ab383e7e7be22463d5068d02151974080c5793713ce7d8e7bb08c0fcbf5"),
     ("permissions_dfns", "permissions.json", "bc5d2907c61e2548c6fc4a42a32c86396b56a68033c62299c4d563db510c105f"),
     ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
     ("ua_client_hints_dfns", "ua-client-hints.json", "56a31bf6fd2ba03158500498d14742f8edd7a2d560580b4aa7f4a703977e40cf"),
-    ("bluetooth_scanning_dfns", "bluetooth-scanning.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
+    ("bluetooth_dfns", "bluetooth.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
+]
+
+# (repo_name, url, sha256). Downloaded as "spec.cddl" like the webref grammars.
+_VENDOR_CDDL_FILES = [
+    ("moz_commands_cddl", _MOZ_CDDL_BASE_URL + "/Commands.cddl", "40815dbde13842af6ebfcd1da424f799f90b2bda820209d4a1697d8f7929ec18"),
+    ("moz_debugging_cddl", _MOZ_CDDL_BASE_URL + "/Debugging.cddl", "b45d989156abbfa24704f2dce2f454c6ef1e4183166e6e602b152ae0a62ed874"),
+    ("moz_fields_cddl", _MOZ_CDDL_BASE_URL + "/Fields.cddl", "4ed7a770d29e47f6da2f702cb0f739b389e21e163bd7d92a1f608e9892aedd68"),
+    ("moz_profiler_cddl", _MOZ_CDDL_BASE_URL + "/Profiler.cddl", "3890f9161a991e4808bcfdec2fcbbd4eea1bcb9e8a09fea38977e4d7922026ae"),
 ]
 
 # The merged specs as labels, for the BUILD files that feed schema generation: the core
@@ -51,7 +63,7 @@ BIDI_EXTENSION_CDDL_FILES = [
     "@permissions_all_cddl//file:spec.cddl",
     "@prefetch_all_cddl//file:spec.cddl",
     "@ua_client_hints_all_cddl//file:spec.cddl",
-    "@bluetooth_scanning_all_cddl//file:spec.cddl",
+    "@bluetooth_all_cddl//file:spec.cddl",
 ]
 
 BIDI_DFNS_FILES = [
@@ -60,17 +72,16 @@ BIDI_DFNS_FILES = [
     "@permissions_dfns//file:dfns.json",
     "@prefetch_dfns//file:dfns.json",
     "@ua_client_hints_dfns//file:dfns.json",
-    "@bluetooth_scanning_dfns//file:dfns.json",
+    "@bluetooth_dfns//file:dfns.json",
 ]
 
-# Vendor grammars keyed by namespace (`moz` for `moz:` fields). Selenium copies, held until each
-# can be pinned from its vendor's tree (Firefox: mozilla-central remote/doc/webdriver-bidi).
+# Vendor grammars keyed by namespace (`moz` for `moz:` fields).
 BIDI_VENDOR_CDDL_FILES = {
     "moz": [
-        "//common/bidi:Commands.cddl",
-        "//common/bidi:Debugging.cddl",
-        "//common/bidi:Fields.cddl",
-        "//common/bidi:Profiler.cddl",
+        "@moz_commands_cddl//file:spec.cddl",
+        "@moz_debugging_cddl//file:spec.cddl",
+        "@moz_fields_cddl//file:spec.cddl",
+        "@moz_profiler_cddl//file:spec.cddl",
     ],
 }
 
@@ -88,6 +99,13 @@ def _webref_cddl_impl(_ctx):
             downloaded_file_path = "dfns.json",
             sha256 = sha256,
             url = _DFNS_BASE_URL + "/" + filename,
+        )
+    for name, url, sha256 in _VENDOR_CDDL_FILES:
+        http_file(
+            name = name,
+            downloaded_file_path = "spec.cddl",
+            sha256 = sha256,
+            url = url,
         )
     http_file(
         name = "webdriver_bidi_spec_html",

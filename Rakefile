@@ -58,10 +58,11 @@ task :update_browsers do |_task, _arguments|
   Bazel.execute('run', [], '//scripts:pinned_browsers')
 end
 
-desc 'Update Selenium Manager to latest release'
-task :update_manager do |_task, _arguments|
+desc 'Update Selenium Manager to the given selenium_manager_artifacts tag, or the latest release'
+task :update_manager, [:tag] do |_task, arguments|
   puts 'Updating Selenium Manager references'
-  Bazel.execute('run', [], '//scripts:selenium_manager')
+  args = arguments[:tag] ? ['--', arguments[:tag]] : []
+  Bazel.execute('run', args, '//scripts:selenium_manager')
 end
 
 desc 'Update multitool binaries to latest releases'

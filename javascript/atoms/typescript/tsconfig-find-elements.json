@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "removeComments": true,
+    "pretty": false,
+    "strict": false
+  },
+  "files": ["find-elements.ts"]
+}

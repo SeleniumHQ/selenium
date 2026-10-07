@@ -16,7 +16,9 @@ from packaging.version import InvalidVersion, Version
 NUGET_INDEX_URL = "https://api.nuget.org/v3-flatcontainer/docfx/index.json"
 NUGET_NUPKG_URL = "https://api.nuget.org/v3-flatcontainer/docfx/{version}/docfx.{version}.nupkg"
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def fetch_json(url):

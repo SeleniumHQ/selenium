@@ -62,6 +62,26 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-CapabilityResponse
+          CapabilityResponse = Serialization::Record.define(
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', primitive: 'boolean'},
+            browser_name: {wire_key: 'browserName', primitive: 'string'},
+            browser_version: {wire_key: 'browserVersion', primitive: 'string'},
+            platform_name: {wire_key: 'platformName', primitive: 'string'},
+            set_window_rect: {wire_key: 'setWindowRect', primitive: 'boolean'},
+            user_agent: {wire_key: 'userAgent', primitive: 'string'},
+            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            unhandled_prompt_behavior: {
+              wire_key: 'unhandledPromptBehavior',
+              required: false,
+              ref: 'Session::UserPromptHandler'
+            },
+            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
+            extensible: true
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-ProxyConfiguration
           class ProxyConfiguration < Serialization::Union
             discriminator 'proxyType', {
@@ -192,26 +212,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionnewresult
           NewResult = Serialization::Record.define(
             session_id: {wire_key: 'sessionId', primitive: 'string'},
-            capabilities: {wire_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
-          )
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NewResult::Capabilities = Serialization::Record.define(
-            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', primitive: 'boolean'},
-            browser_name: {wire_key: 'browserName', primitive: 'string'},
-            browser_version: {wire_key: 'browserVersion', primitive: 'string'},
-            platform_name: {wire_key: 'platformName', primitive: 'string'},
-            set_window_rect: {wire_key: 'setWindowRect', primitive: 'boolean'},
-            user_agent: {wire_key: 'userAgent', primitive: 'string'},
-            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
-            unhandled_prompt_behavior: {
-              wire_key: 'unhandledPromptBehavior',
-              required: false,
-              ref: 'Session::UserPromptHandler'
-            },
-            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
-            extensible: true
+            capabilities: {wire_key: 'capabilities', ref: 'Session::CapabilityResponse'}
           )
 
           # @api private

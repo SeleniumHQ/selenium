@@ -20,7 +20,8 @@ const noOnlyTests = require('eslint-plugin-no-only-tests')
 const js = require('@eslint/js')
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended')
 const mochaPlugin = require('eslint-plugin-mocha').default
-const nodePlugin = require('eslint-plugin-n').default
+// eslint-plugin-n 18 is an ES module; require() returns its 'module.exports' export, which has no .default.
+const nodePlugin = require('eslint-plugin-n')
 
 module.exports = [
   js.configs.recommended,

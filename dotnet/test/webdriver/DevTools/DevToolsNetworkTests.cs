@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V153;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V154;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -477,14 +477,14 @@ public class DevToolsNetworkTests : DevToolsTestFixture
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
 
         ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-        EventHandler<CurrentCdpVersion.Fetch.RequestPausedEventArgs> requestPausedHandler = (async (sender, e) =>
+        EventHandler<CurrentCdpVersion.Fetch.RequestPausedEventArgs> requestPausedHandler = async (sender, e) =>
         {
             await domains.Fetch.ContinueRequest(new CurrentCdpVersion.Fetch.ContinueRequestCommandSettings()
             {
                 RequestId = e.RequestId
             });
             requestSync.Set();
-        });
+        };
         domains.Fetch.RequestPaused += requestPausedHandler;
 
         var pattern = new CurrentCdpVersion.Fetch.RequestPattern()

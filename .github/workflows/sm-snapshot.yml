@@ -17,6 +17,10 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: false
+    outputs:
+      tag:
+        description: Tag of the selenium_manager_artifacts release this run published
+        value: ${{ jobs.publish.outputs.tag }}
   workflow_dispatch:
     inputs:
       branch:
@@ -37,8 +41,16 @@ env:
   RUST_VERSION: "1.98.1"
 
 jobs:
+  check:
+    name: "Check Trigger"
+    if: ${{ !contains(github.event.head_commit.modified, 'common/selenium_manager.bzl') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building Selenium Manager"
+
   windows-stable:
     name: "Windows Stable"
+    needs: check
     runs-on: windows-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -66,6 +78,8 @@ jobs:
 
   windows-debug:
     name: "Windows Debug"
+    needs: check
+    if: github.event_name == 'push'
     runs-on: windows-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -93,6 +107,7 @@ jobs:
 
   linux-stable:
     name: "Linux Stable (${{ matrix.arch }})"
+    needs: check
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -135,6 +150,8 @@ jobs:
 
   linux-debug:
     name: "Linux Debug (${{ matrix.arch }})"
+    needs: check
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -177,8 +194,17 @@ jobs:
           retention-days: 6
 
   macos-stable:
-    name: "MacOS Stable"
+    name: "MacOS Stable (${{ matrix.arch }})"
+    needs: check
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            target: x86_64-apple-darwin
+          - arch: aarch64
+            target: aarch64-apple-darwin
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
@@ -190,26 +216,22 @@ jobs:
         run: |
           rustup toolchain install ${{ env.RUST_VERSION }}
           rustup default ${{ env.RUST_VERSION }}
-          rustup target add x86_64-apple-darwin
-          rustup target add aarch64-apple-darwin
+          rustup target add ${{ matrix.target }}
           rustc -vV
       - name: "Build release binary"
-        run: |
-          cargo build --target x86_64-apple-darwin --release
-          cargo build --target aarch64-apple-darwin --release
-          lipo -create -output target/selenium-manager-macos \
-            target/aarch64-apple-darwin/release/selenium-manager \
-            target/x86_64-apple-darwin/release/selenium-manager
+        run: cargo build --target ${{ matrix.target }} --release
         working-directory: rust
       - name: "Upload release binary"
         uses: actions/upload-artifact@v7
         with:
-          name: selenium-manager-macos
-          path: rust/target/selenium-manager-macos
+          name: selenium-manager-macos-${{ matrix.arch }}
+          path: rust/target/${{ matrix.target }}/release/selenium-manager
           retention-days: 6
 
   macos-debug:
     name: "MacOS Debug"
+    needs: check
+    if: github.event_name == 'push'
     runs-on: macos-latest
     env:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
@@ -244,6 +266,7 @@ jobs:
 
   sbom:
     name: "SBOM and Notices"
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout project"
@@ -256,7 +279,14 @@ jobs:
           rustup default ${{ env.RUST_VERSION }}
           rustc -vV
       - name: "Install SBOM tools"
-        run: cargo install --locked cargo-cyclonedx@0.5.7 cargo-about@0.6.6
+        env:
+          CARGO_ABOUT_URL: https://github.com/EmbarkStudios/cargo-about/releases/download/0.6.6/cargo-about-0.6.6-x86_64-unknown-linux-musl.tar.gz
+          CARGO_CYCLONEDX_URL: https://github.com/CycloneDX/cyclonedx-rust-cargo/releases/download/cargo-cyclonedx-0.5.7/cargo-cyclonedx-x86_64-unknown-linux-musl.tar.xz
+        run: |
+          curl -sSfL --retry 3 --retry-delay 2 --retry-all-errors -o cargo-about.tar.gz "$CARGO_ABOUT_URL"
+          curl -sSfL --retry 3 --retry-delay 2 --retry-all-errors -o cargo-cyclonedx.tar.xz "$CARGO_CYCLONEDX_URL"
+          tar -xzf cargo-about.tar.gz -C ~/.cargo/bin --strip-components=1 --wildcards '*/cargo-about'
+          tar -xJf cargo-cyclonedx.tar.xz -C ~/.cargo/bin --strip-components=1 --wildcards '*/cargo-cyclonedx'
       - name: "Generate SBOM and third-party notices"
         working-directory: rust
         run: |
@@ -275,8 +305,10 @@ jobs:
   publish:
     name: "Publish Snapshot"
     runs-on: ubuntu-latest
-    needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
-    if: github.event.repository.fork == false
+    needs: [ check, macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug, sbom ]
+    if: ${{ !cancelled() && github.event.repository.fork == false && needs.check.result == 'success' && !contains(needs.*.result, 'failure') }}
+    outputs:
+      tag: ${{ steps.commit.outputs.tag }}
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v6
@@ -287,7 +319,15 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: artifacts
+      - name: "Create macOS universal binary"
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends llvm-18
+          mkdir -p artifacts/selenium-manager-macos
+          llvm-lipo-18 -create -output artifacts/selenium-manager-macos/selenium-manager-macos \
+            artifacts/selenium-manager-macos-aarch64/selenium-manager \
+            artifacts/selenium-manager-macos-x86_64/selenium-manager
       - name: "Prepare and Commit"
+        id: commit
         run: |
           linux_x86_64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-x86_64/selenium-manager-linux-x86_64 | awk '{print $1}')
           linux_arm64_sha=$(shasum -a 256 artifacts/selenium-manager-linux-arm64/selenium-manager-linux-arm64 | awk '{print $1}')
@@ -302,6 +342,7 @@ jobs:
           git commit -m "Update hash values for latest binaries"
           short_hash=$(git rev-parse --short HEAD)
           echo "TAG_NAME=selenium-manager-$short_hash" >> "$GITHUB_ENV"
+          echo "tag=selenium-manager-$short_hash" >> "$GITHUB_OUTPUT"
           git tag "selenium-manager-$short_hash"
           git push && git push --tags
       - name: "Release"
@@ -333,7 +374,7 @@ jobs:
     with:
       name: "Update Bazel Pin"
       ref: trunk
-      run: ./go update_manager
+      run: ./go update_manager ${{ needs.publish.outputs.tag }}
       artifact-name: selenium-manager-pin
 
   commit-pin:

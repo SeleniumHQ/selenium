@@ -15,7 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-(function (element: Element, attribute: string): string | null {
+/**
+ * Get the value of the given property or attribute. If the "attribute" is for
+ * a boolean property, we return null in the case where the value is false. If
+ * the attribute name is "style" an attempt to convert that style into a string
+ * is done.
+ *
+ * @param element The element to use.
+ * @param attribute The name of the attribute to look up.
+ * @return The string value of the attribute or property, or null.
+ */
+function get(element: Element, attribute: string): string | null {
   const PROPERTY_ALIASES: Record<string, string> = {
     'class': 'className',
     'readonly': 'readOnly',
@@ -184,4 +194,6 @@
   }
 
   return property != null ? String(property) : null;
-})
+}
+
+export default get;
