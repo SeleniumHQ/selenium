@@ -20,6 +20,7 @@ string_flag(
     values = [
         "download",
         "host",
+        "stub",
         "all",
     ],
 )
@@ -28,6 +29,13 @@ config_setting(
     name = "manager_host",
     flag_values = {
         ":manager": "host",
+    },
+)
+
+config_setting(
+    name = "manager_stub",
+    flag_values = {
+        ":manager": "stub",
     },
 )
 
