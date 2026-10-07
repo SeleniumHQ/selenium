@@ -159,7 +159,30 @@ async function uploadDirectory(driver, dir) {
   const zip = new Zip()
   await zip.addDir(dir, path.basename(dir))
   const encoded = (await zip.toBuffer('DEFLATE')).toString('base64')
-  return driver.execute(new command.Command(command.Name.UPLOAD_FILE).setParameter('file', encoded))
+  try {
+    return await driver.execute(new command.Command(command.Name.UPLOAD_FILE).setParameter('file', encoded))
+  } catch (err) {
+    if (!isUnsupportedCommand(err)) {
+      throw err
+    }
+    const unsupported = new error.UnsupportedOperationError(
+      'Could not upload the extension directory to the remote end. Installing an unpacked ' +
+        'extension over a remote session needs a remote end that accepts file uploads, such as ' +
+        'the Selenium Grid.',
+    )
+    unsupported.cause = err
+    throw unsupported
+  }
+}
+
+function isUnsupportedCommand(err) {
+  return (
+    err instanceof error.UnknownCommandError ||
+    err instanceof error.UnknownMethodError ||
+    err instanceof error.UnsupportedOperationError ||
+    // geckodriver answers an unknown endpoint with a bare 405, which decodes to no specific type.
+    (err instanceof error.WebDriverError && err.message === 'HTTP method not allowed')
+  )
 }
 
 async function statOrNull(file) {

@@ -288,6 +288,26 @@ describe('WebExtension', function () {
       })
       await assert.rejects(extensionData(driver, EXT_DIR), /disk full/)
     })
+
+    for (const [remoteEnd, rejection] of [
+      ['chromedriver', new error.UnknownCommandError('unknown command: unknown command: session/1/se/file')],
+      ['geckodriver', new error.WebDriverError('HTTP method not allowed')],
+      ['a remote end answering 404 without a JSON body', new error.UnsupportedOperationError('uploadFile: Not Found')],
+    ]) {
+      it(`explains a directory needs file uploads when ${remoteEnd} has none`, async function () {
+        const { driver } = remoteDriver({
+          [Name.UPLOAD_FILE]: () => {
+            throw rejection
+          },
+        })
+        await assert.rejects(extensionData(driver, EXT_DIR), (err) => {
+          assert.ok(err instanceof error.UnsupportedOperationError)
+          assert.match(err.message, /remote end that accepts file uploads, such as the Selenium Grid/)
+          assert.strictEqual(err.cause, rejection)
+          return true
+        })
+      })
+    }
   })
 })
 
