@@ -185,8 +185,8 @@ class RouterTest {
   void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
-    URI firstNodeUri = new URI("https://example1.com");
-    URI secondNodeUri = new URI("https://example2.com");
+    URI firstNodeUri = new URI("https://node1.example.test");
+    URI secondNodeUri = new URI("https://node2.example.test");
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 

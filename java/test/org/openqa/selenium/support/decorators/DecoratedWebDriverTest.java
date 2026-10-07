@@ -139,12 +139,12 @@ class DecoratedWebDriverTest {
 
   @Test
   void get() {
-    verifyFunction(d -> d.get("http://selenium.dev/"));
+    verifyFunction(d -> d.get("http://example.test/"));
   }
 
   @Test
   void getCurrentUrl() {
-    verifyFunction(WebDriver::getCurrentUrl, "http://selenium2.ru/");
+    verifyFunction(WebDriver::getCurrentUrl, "http://selenium2.test/");
   }
 
   @Test
