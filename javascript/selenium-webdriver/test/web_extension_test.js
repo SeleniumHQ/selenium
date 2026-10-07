@@ -19,7 +19,7 @@
 
 const assert = require('node:assert')
 const { Browser, By, until } = require('selenium-webdriver')
-const { ignore, Pages, suite } = require('../lib/test')
+const { Pages, suite } = require('../lib/test')
 const { locate } = require('../lib/test/resources')
 
 // Signed, so Firefox also runs it from a directory; Chromium installs only unpacked directories.
@@ -38,9 +38,7 @@ suite(
         return driver.quit()
       })
 
-      // Firefox installs a directory only temporarily, and temporarily installed extensions no
-      // longer inject content scripts: https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
-      ignore(env.browsers(Browser.FIREFOX)).it('installs an unpacked directory', async function () {
+      it('installs an unpacked directory', async function () {
         const extension = await driver.installWebExtension(EXT_SIGNED_DIR)
         assert.ok(extension.id)
 
@@ -48,7 +46,7 @@ suite(
         await verifyWebExtensionWasInstalled(driver)
       })
 
-      ignore(env.browsers(Browser.FIREFOX)).it('uninstalls an installed extension', async function () {
+      it('uninstalls an installed extension', async function () {
         const extension = await driver.installWebExtension(EXT_SIGNED_DIR)
         await driver.get(Pages.blankPage)
         await verifyWebExtensionWasInstalled(driver)

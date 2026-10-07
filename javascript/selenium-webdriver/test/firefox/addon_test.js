@@ -21,7 +21,7 @@ const assert = require('node:assert')
 const fs = require('node:fs')
 const firefox = require('selenium-webdriver/firefox')
 const { Browser } = require('selenium-webdriver/index')
-const { ignore, Pages, suite } = require('../../lib/test')
+const { Pages, suite } = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 const { until, By } = require('selenium-webdriver/index')
 
@@ -64,9 +64,7 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        // Temporarily installed unsigned extensions no longer inject content scripts
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
-        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by unsigned zip file', async function () {
+        it('installs and uninstalls by unsigned zip file', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
@@ -94,9 +92,7 @@ suite(
           await verifyWebExtensionNotInstalled()
         })
 
-        // Temporarily installed unsigned extensions no longer inject content scripts
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
-        ignore(env.browsers(Browser.FIREFOX)).it('installs and uninstalls by unsigned directory', async function () {
+        it('installs and uninstalls by unsigned directory', async function () {
           await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
@@ -155,22 +151,17 @@ suite(
           await driver.uninstallWebExtension(extension)
         })
 
-        // Temporarily installed unsigned extensions no longer inject content scripts
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=2045054
-        ignore(env.browsers(Browser.FIREFOX)).it(
-          'installs an unsigned directory when not permanent',
-          async function () {
-            driver = await env.builder().build()
-            await driver.get(Pages.blankPage)
+        it('installs an unsigned directory when not permanent', async function () {
+          driver = await env.builder().build()
+          await driver.get(Pages.blankPage)
 
-            const extension = await driver.installWebExtension(EXT_UNSIGNED_DIR, { permanent: false })
-            assert.strictEqual(extension.id, EXT_ID)
+          const extension = await driver.installWebExtension(EXT_UNSIGNED_DIR, { permanent: false })
+          assert.strictEqual(extension.id, EXT_ID)
 
-            await driver.navigate().refresh()
-            await verifyWebExtensionWasInstalled()
-            await driver.uninstallWebExtension(extension)
-          },
-        )
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+          await driver.uninstallWebExtension(extension)
+        })
 
         // A permanent install is checked for a signature, so it needs the signed archive.
         it('installs an xpi file permanently', async function () {
