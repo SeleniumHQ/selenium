@@ -368,7 +368,7 @@ public class RemoteNode extends Node implements Closeable {
             return new Result(DRAINING, externalUri + " is draining");
 
           case UP:
-            return new Result(UP, externalUri + " is ok");
+            return new Result(UP, externalUri + " is ok", status);
 
           default:
             throw new IllegalStateException(

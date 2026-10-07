@@ -23,7 +23,9 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -33,10 +35,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
@@ -46,6 +51,8 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
@@ -202,6 +209,60 @@ class LocalNodeRegistryTest {
     return (ExecutorService) field.get(registry);
   }
 
+  @Test
+  void healthCheckShouldReleaseSlotsTheNodeNoLongerReports() {
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+    URI uri = URI.create("http://example:4444");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "chrome");
+    SlotId slotId = new SlotId(nodeId, UUID.randomUUID());
+    SessionId sessionId = new SessionId(UUID.randomUUID());
+
+    Session session = new Session(sessionId, uri, stereotype, stereotype, Instant.now());
+    NodeStatus busy = statusWith(nodeId, uri, new Slot(slotId, stereotype, Instant.now(), session));
+    NodeStatus idle = statusWith(nodeId, uri, new Slot(slotId, stereotype, Instant.now(), null));
+
+    AtomicReference<NodeStatus> reported = new AtomicReference<>(busy);
+    Node node =
+        new TestNode(
+            tracer,
+            nodeId,
+            uri,
+            registrationSecret,
+            () -> new HealthCheck.Result(UP, "ok", reported.get()),
+            busy);
+
+    registry.add(node);
+    assertThat(sessionIdsInModel()).containsExactly(sessionId);
+
+    // The Node has stopped the session, but the Hub never received the SessionClosedEvent.
+    reported.set(idle);
+    registry.runHealthChecks();
+
+    assertThat(sessionIdsInModel()).isEmpty();
+  }
+
+  private NodeStatus statusWith(NodeId nodeId, URI uri, Slot slot) {
+    return new NodeStatus(
+        nodeId,
+        uri,
+        1,
+        Set.of(slot),
+        UP,
+        Duration.ofSeconds(5),
+        Duration.ofSeconds(5),
+        "test",
+        Map.of("name", "test", "arch", "test", "version", "test"));
+  }
+
+  private Set<SessionId> sessionIdsInModel() {
+    return registry.getModel().getSnapshot().stream()
+        .flatMap(node -> node.getSlots().stream())
+        .map(Slot::getSession)
+        .filter(Objects::nonNull)
+        .map(Session::getId)
+        .collect(Collectors.toSet());
+  }
+
   private static class TestNode extends Node {
 
     private final NodeStatus status;
@@ -209,9 +270,12 @@ class LocalNodeRegistryTest {
 
     TestNode(
         Tracer tracer, NodeId nodeId, URI uri, Secret registrationSecret, HealthCheck healthCheck) {
-      super(tracer, nodeId, uri, registrationSecret, Duration.ofSeconds(5));
-      this.healthCheck = healthCheck;
-      this.status =
+      this(
+          tracer,
+          nodeId,
+          uri,
+          registrationSecret,
+          healthCheck,
           new NodeStatus(
               nodeId,
               uri,
@@ -221,7 +285,19 @@ class LocalNodeRegistryTest {
               Duration.ofSeconds(5),
               Duration.ofSeconds(5),
               "test",
-              Map.of("name", "test", "arch", "test", "version", "test"));
+              Map.of("name", "test", "arch", "test", "version", "test")));
+    }
+
+    TestNode(
+        Tracer tracer,
+        NodeId nodeId,
+        URI uri,
+        Secret registrationSecret,
+        HealthCheck healthCheck,
+        NodeStatus status) {
+      super(tracer, nodeId, uri, registrationSecret, Duration.ofSeconds(5));
+      this.healthCheck = healthCheck;
+      this.status = status;
     }
 
     @Override

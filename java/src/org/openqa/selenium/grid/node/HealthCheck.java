@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.grid.node;
 
+import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.internal.Require;
 
 @FunctionalInterface
@@ -28,10 +31,16 @@ public interface HealthCheck {
   class Result {
     private final Availability availability;
     private final String message;
+    private final @Nullable NodeStatus status;
 
     public Result(Availability availability, String message) {
+      this(availability, message, null);
+    }
+
+    public Result(Availability availability, String message, @Nullable NodeStatus status) {
       this.availability = availability;
       this.message = Require.nonNull("Message", message);
+      this.status = status;
     }
 
     public Availability getAvailability() {
@@ -40,6 +49,15 @@ public interface HealthCheck {
 
     public String getMessage() {
       return message;
+    }
+
+    /**
+     * The status reported by the Node during this check, when the implementation was able to
+     * retrieve one. Health checks reach the Node over HTTP, so this is available even when event
+     * bus delivery is unreliable, and lets the Distributor reconcile its view of the Node's slots.
+     */
+    public Optional<NodeStatus> getStatus() {
+      return Optional.ofNullable(status);
     }
   }
 }
