@@ -368,8 +368,8 @@ jobs:
   update-pin:
     name: "Update Bazel Pin"
     needs: publish
-    # Only trunk snapshots feed the pin; release builds bump it from pre-release.yml
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.branch == 'trunk')
+    # Only trunk pushes feed the pin; release builds bump it from pre-release.yml
+    if: github.event_name == 'push'
     uses: ./.github/workflows/bazel.yml
     with:
       name: "Update Bazel Pin"
@@ -396,7 +396,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [update-pin, commit-pin]
     # Same gate as update-pin: the release flow reports its own failures
-    if: failure() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.branch == 'trunk'))
+    if: failure() && github.event_name == 'push'
     steps:
       - name: "Slack Notification"
         uses: rtCamp/action-slack-notify@v2
