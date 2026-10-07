@@ -335,18 +335,16 @@ task :package do |_task, arguments|
 end
 
 desc 'Validate Java release credentials'
-task :check_credentials do |_task, arguments|
-  nightly = arguments.to_a.include?('nightly')
-
+task :check_credentials do
   Sonatype.load_credentials
   unless ENV['MAVEN_USER'] && ENV['MAVEN_PASSWORD']
     raise 'Missing Maven credentials: set MAVEN_USER/MAVEN_PASSWORD or configure ~/.m2/settings.xml'
   end
 
-  next if nightly
-
-  has_gpg = system('which gpg >/dev/null 2>&1') || system('where gpg >NUL 2>&1')
-  raise 'Missing GPG: gpg command not found (required for signing releases)' unless has_gpg
+  load_pgp_signing_key
+  if ENV['PGP_SIGNING_KEY'].empty? || ENV['PGP_SIGNING_PWD'].empty?
+    raise 'Missing signing key: set GPG_PRIVATE_KEY and GPG_PASSPHRASE (required for signing releases)'
+  end
 end
 
 desc 'Deploy all jars to Maven'
@@ -355,7 +353,7 @@ task :release do |_task, arguments|
   nightly = args.delete('nightly')
   config = args.delete('rbe') ? 'rbe_release' : 'release'
 
-  Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
+  Rake::Task['java:check_credentials'].invoke
 
   repo_domain = 'central.sonatype.com'
   repo = if nightly
@@ -364,7 +362,8 @@ task :release do |_task, arguments|
            "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
          end
   ENV['MAVEN_REPO'] = "https://#{repo}"
-  ENV['GPG_SIGN'] = (!nightly).to_s
+  ENV['USE_IN_MEMORY_PGP_KEYS'] = 'true'
+  ENV['GPG_SIGN'] = 'false'
 
   if nightly
     puts 'Updating Java version to nightly...'
@@ -383,6 +382,12 @@ task :release do |_task, arguments|
   next if nightly
 
   Sonatype.trigger_publish
+end
+
+def load_pgp_signing_key
+  key = ENV.fetch('GPG_PRIVATE_KEY', '')
+  ENV['PGP_SIGNING_KEY'] = key.start_with?('-----BEGIN PGP') ? Base64.strict_encode64(key) : key
+  ENV['PGP_SIGNING_PWD'] = ENV.fetch('GPG_PASSPHRASE', '')
 end
 
 def maven_central_pom_url

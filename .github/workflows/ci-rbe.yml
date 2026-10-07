@@ -19,7 +19,7 @@ on:
   workflow_call:
 
 concurrency:
-  group: ci-rbe-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ci-rbe-${{ github.event_name }}-${{ github.event_name == 'push' && github.sha || github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
@@ -55,7 +55,7 @@ jobs:
   # Warm stamped build cache prior to release
   prepare-release:
     name: Prepare Release
-    if: github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || startsWith(github.head_ref, 'release-preparation-'))
+    if: github.event.repository.fork == false && startsWith(github.head_ref, 'release-preparation-')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Prepare Release

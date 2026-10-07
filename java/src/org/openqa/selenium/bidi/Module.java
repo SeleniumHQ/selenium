@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi;
 
 import java.util.function.Consumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
@@ -29,6 +30,7 @@ import org.openqa.selenium.internal.Require;
  * WebSocket connection is opened.
  */
 @Beta
+@ApiStatus.Internal
 public abstract class Module {
 
   private final Handle handle;

@@ -21,11 +21,19 @@ jobs:
     name: Generate Rust Version
     needs: [parse-tag, verify-cdp]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Update Rust Version
-      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
-      artifact-name: rust-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Update Rust version
+        run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
+      - name: Save git diff
+        run: git diff > changes.patch
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: rust-version
+          path: changes.patch
 
   push-rust-version:
     name: Push Rust Version
