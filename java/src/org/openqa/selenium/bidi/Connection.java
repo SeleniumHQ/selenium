@@ -43,6 +43,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
@@ -55,6 +56,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
 
 @Beta
+@ApiStatus.Internal
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
