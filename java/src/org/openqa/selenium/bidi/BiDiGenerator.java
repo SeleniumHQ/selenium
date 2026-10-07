@@ -702,8 +702,7 @@ public class BiDiGenerator {
       }
       // Unions are generated as interfaces, so a type belonging to more than one union (e.g.
       // PrimitiveProtocolValue in both RemoteValue and LocalValue) genuinely implements all of
-      // them — no single-inheritance 
-      to work around.
+      // them — no single-inheritance to work around.
       List<String> parentUnionRefs = reachableParents(typeName);
       String implementsClause =
           parentUnionRefs.isEmpty()
