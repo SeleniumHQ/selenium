@@ -47,5 +47,9 @@
     "url": "https://github.com/SeleniumHQ/selenium.git",
     "directory": "javascript/atoms"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "license": "Apache-2.0"
 }
