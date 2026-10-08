@@ -18,14 +18,12 @@
 package org.openqa.selenium.bidi.protocol.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.protocol.script.AddPreloadScriptParameters;
 import org.openqa.selenium.bidi.protocol.script.AddPreloadScriptResult;
 import org.openqa.selenium.bidi.protocol.script.ArrayRemoteValue;
@@ -49,7 +47,6 @@ import org.openqa.selenium.bidi.protocol.script.StringValue;
 import org.openqa.selenium.bidi.protocol.script.WindowRealmInfo;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.Pages;
 
 class ScriptModuleTest extends JupiterTestBase {
@@ -209,15 +206,16 @@ class ScriptModuleTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
   void canListenToRealmDestroyedEvent() throws Exception {
+    String originalWindow = driver.getWindowHandle();
+    driver.switchTo().newWindow(WindowType.TAB);
+
     Script script = new Script(driver);
     CompletableFuture<RealmDestroyedParameters> future = new CompletableFuture<>();
     script.subscribe(Script.REALM_DESTROYED, future::complete);
 
     driver.close();
+    driver.switchTo().window(originalWindow);
 
     RealmDestroyedParameters realmDestroyed = future.get(5, TimeUnit.SECONDS);
     assertThat(realmDestroyed.getRealm()).isNotNull();
