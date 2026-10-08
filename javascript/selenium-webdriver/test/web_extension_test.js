@@ -23,7 +23,7 @@ const { Pages, suite } = require('../lib/test')
 const { locate } = require('../lib/test/resources')
 
 // Signed, so Firefox also runs it from a directory; Chromium installs only unpacked directories.
-const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example-signed')
+const EXT_SIGNED_DIR = locate('javascript/selenium-webdriver/test/extensions/webextensions-selenium-example-signed')
 
 suite(
   function (env) {

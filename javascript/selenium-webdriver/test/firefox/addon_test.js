@@ -28,8 +28,8 @@ const { until, By } = require('selenium-webdriver/index')
 const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
 const EXT_UNSIGNED_ZIP = locate('common/extensions/webextensions-selenium-example-unsigned.zip')
 const EXT_SIGNED_ZIP = locate('common/extensions/webextensions-selenium-example.zip')
-const EXT_UNSIGNED_DIR = locate('common/extensions/webextensions-selenium-example')
-const EXT_SIGNED_DIR = locate('common/extensions/webextensions-selenium-example-signed')
+const EXT_UNSIGNED_DIR = locate('javascript/selenium-webdriver/test/extensions/webextensions-selenium-example')
+const EXT_SIGNED_DIR = locate('javascript/selenium-webdriver/test/extensions/webextensions-selenium-example-signed')
 const EXT_ID = 'webextensions-selenium-example-v3@example.com'
 
 suite(
