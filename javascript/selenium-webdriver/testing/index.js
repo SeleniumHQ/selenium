@@ -381,7 +381,13 @@ class Environment {
       } else if (urlOrServer) {
         builder.usingServer(urlOrServer.address())
       }
-      return realBuild.call(builder)
+      const built = realBuild.call(builder)
+      if (process.platform === 'win32' && (browser.name === Browser.CHROME || browser.name === Browser.EDGE)) {
+        // new Windows session sometimes silently abandons navigation
+        // TODO - remove when this lands: https://issues.chromium.org/issues/402796660
+        return built.then((driver) => new Promise((resolve) => setTimeout(() => resolve(driver), 1000)))
+      }
+      return built
     }
 
     return builder
