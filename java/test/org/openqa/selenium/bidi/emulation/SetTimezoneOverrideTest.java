@@ -31,6 +31,7 @@ import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -84,39 +85,43 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetTimeZoneOverrideInUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();
+    try {
 
-    BrowsingContext context =
-        new BrowsingContext(
-            driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
-    String contextId = context.getId();
+      BrowsingContext context =
+          new BrowsingContext(
+              driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
+      String contextId = context.getId();
 
-    String url = appServer.whereIs("blank.html");
-    context.navigate(url, ReadinessState.COMPLETE);
+      String url = appServer.whereIs("blank.html");
+      context.navigate(url, ReadinessState.COMPLETE);
 
-    Emulation emul = new Emulation(driver);
-    String timezone = "Europe/London";
-    String tzOrg = getTimezoneString(driver, contextId);
-    emul.setTimezoneOverride(
-        new SetTimezoneOverrideParameters(timezone).userContexts(List.of(userContext)));
+      Emulation emul = new Emulation(driver);
+      String timezone = "Europe/London";
+      String tzOrg = getTimezoneString(driver, contextId);
+      emul.setTimezoneOverride(
+          new SetTimezoneOverrideParameters(timezone).userContexts(List.of(userContext)));
 
-    String tzString = getTimezoneString(driver, contextId);
-    Number tzOffset = getTimezoneOffset(driver, contextId);
+      String tzString = getTimezoneString(driver, contextId);
+      Number tzOffset = getTimezoneOffset(driver, contextId);
 
-    int expectedOffset = getExpectedTimezoneOffset(timezone);
+      int expectedOffset = getExpectedTimezoneOffset(timezone);
 
-    assertThat(tzString).isEqualTo(timezone);
-    assertThat(tzOffset.intValue()).isEqualTo(expectedOffset);
+      assertThat(tzString).isEqualTo(timezone);
+      assertThat(tzOffset.intValue()).isEqualTo(expectedOffset);
 
-    emul.setTimezoneOverride(
-        new SetTimezoneOverrideParameters(null).userContexts(List.of(userContext)));
-    String TzNew = getTimezoneString(driver, contextId);
-    assertThat(TzNew).isEqualTo(tzOrg);
+      emul.setTimezoneOverride(
+          new SetTimezoneOverrideParameters(null).userContexts(List.of(userContext)));
+      String TzNew = getTimezoneString(driver, contextId);
+      assertThat(TzNew).isEqualTo(tzOrg);
 
-    context.close();
-    browser.removeUserContext(userContext);
+      context.close();
+    } finally {
+      browser.removeUserContext(userContext);
+    }
   }
 
   @Test

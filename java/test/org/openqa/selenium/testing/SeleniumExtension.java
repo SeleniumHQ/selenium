@@ -334,6 +334,21 @@ public class SeleniumExtension
     return testName.get();
   }
 
+  public static void closeExtraWindows(WebDriver driver, String initialWindowHandle) {
+    Set<String> handles = driver.getWindowHandles();
+    if (handles.isEmpty()) {
+      return;
+    }
+    String keep =
+        handles.contains(initialWindowHandle) ? initialWindowHandle : handles.iterator().next();
+    for (String handle : handles) {
+      if (!handle.equals(keep)) {
+        driver.switchTo().window(handle).close();
+      }
+    }
+    driver.switchTo().window(keep);
+  }
+
   private static class Instances {
     public final WebDriver driver;
     public final String initialWindowHandle;
@@ -423,22 +438,8 @@ public class SeleniumExtension
       if (currentInstances == null) {
         return;
       }
-      WebDriver driver = currentInstances.driver;
       try {
-        Set<String> handles = driver.getWindowHandles();
-        if (handles.isEmpty()) {
-          return;
-        }
-        String keep =
-            handles.contains(currentInstances.initialWindowHandle)
-                ? currentInstances.initialWindowHandle
-                : handles.iterator().next();
-        for (String handle : handles) {
-          if (!handle.equals(keep)) {
-            driver.switchTo().window(handle).close();
-          }
-        }
-        driver.switchTo().window(keep);
+        closeExtraWindows(currentInstances.driver, currentInstances.initialWindowHandle);
       } catch (WebDriverException e) {
         LOG.log(Level.FINE, "Unable to close extra windows after " + displayName(context), e);
       }

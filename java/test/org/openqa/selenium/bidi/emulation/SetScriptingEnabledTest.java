@@ -36,6 +36,7 @@ import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -76,50 +77,55 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   @Ignore(FIREFOX)
+  @CloseExtraWindowsAfterTest
   void canSetScriptingEnabledWithUserContexts() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();
-    BrowsingContext context =
-        new BrowsingContext(
-            driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
-    String contextId = context.getId();
+    try {
+      BrowsingContext context =
+          new BrowsingContext(
+              driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
+      String contextId = context.getId();
 
-    driver.switchTo().window(contextId);
+      driver.switchTo().window(contextId);
 
-    Emulation emulation = new Emulation(driver);
-    emulation.setScriptingEnabled(scriptingDisabled().userContexts(List.of(userContext)));
+      Emulation emulation = new Emulation(driver);
+      emulation.setScriptingEnabled(scriptingDisabled().userContexts(List.of(userContext)));
 
-    String url = appServer.whereIs("javascriptPage.html");
-    context.navigate(url, ReadinessState.COMPLETE);
+      String url = appServer.whereIs("javascriptPage.html");
+      context.navigate(url, ReadinessState.COMPLETE);
 
-    // Check that inline event handlers don't work; this page has an onclick handler
-    WebElement clickField = driver.findElement(By.id("clickField"));
-    String initialValue = clickField.getAttribute("value"); // initial value is 'Hello'
-    clickField.click();
+      // Check that inline event handlers don't work; this page has an onclick handler
+      WebElement clickField = driver.findElement(By.id("clickField"));
+      String initialValue = clickField.getAttribute("value"); // initial value is 'Hello'
+      clickField.click();
 
-    // Get the value after click, it should remain unchanged if scripting is disabled
-    Script script = new Script(driver);
-    EvaluateResult result =
-        script.evaluateFunctionInBrowsingContext(
-            contextId, "document.getElementById('clickField').value", false, Optional.empty());
+      // Get the value after click, it should remain unchanged if scripting is disabled
+      Script script = new Script(driver);
+      EvaluateResult result =
+          script.evaluateFunctionInBrowsingContext(
+              contextId, "document.getElementById('clickField').value", false, Optional.empty());
 
-    String resultValue = ((EvaluateResultSuccess) result).getResult().getValue().get().toString();
-    assertThat(resultValue).isEqualTo(initialValue);
+      String resultValue = ((EvaluateResultSuccess) result).getResult().getValue().get().toString();
+      assertThat(resultValue).isEqualTo(initialValue);
 
-    // Clear the scripting override
-    emulation.setScriptingEnabled(scriptingEnabled().userContexts(List.of(userContext)));
+      // Clear the scripting override
+      emulation.setScriptingEnabled(scriptingEnabled().userContexts(List.of(userContext)));
 
-    context.navigate(url, ReadinessState.COMPLETE);
+      context.navigate(url, ReadinessState.COMPLETE);
 
-    // Click the element again, it should change to 'Clicked' now
-    driver.findElement(By.id("clickField")).click();
-    EvaluateResult result2 =
-        script.evaluateFunctionInBrowsingContext(
-            contextId, "document.getElementById('clickField').value", false, Optional.empty());
+      // Click the element again, it should change to 'Clicked' now
+      driver.findElement(By.id("clickField")).click();
+      EvaluateResult result2 =
+          script.evaluateFunctionInBrowsingContext(
+              contextId, "document.getElementById('clickField').value", false, Optional.empty());
 
-    String resultValue2 = ((EvaluateResultSuccess) result2).getResult().getValue().get().toString();
-    assertThat(resultValue2).isEqualTo("Clicked");
+      String resultValue2 =
+          ((EvaluateResultSuccess) result2).getResult().getValue().get().toString();
+      assertThat(resultValue2).isEqualTo("Clicked");
 
-    browser.removeUserContext(userContext);
+    } finally {
+      browser.removeUserContext(userContext);
+    }
   }
 }
