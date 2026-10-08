@@ -37,6 +37,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -266,6 +267,28 @@ impl ChromeManager {
 }
 
 impl SeleniumManager for ChromeManager {
+    // Chrome's sandboxed services need an AppContainer ACL on the install directory, which the
+    // installer normally grants; setup.exe ships in the CfT zip to grant it on an unpacked copy.
+    fn configure_browser_in_cache(&self, browser_path_in_cache: &Path) {
+        let setup = browser_path_in_cache.join("setup.exe");
+        if !WINDOWS.is(self.get_os()) || !setup.exists() {
+            return;
+        }
+        let argument = format!(
+            "--configure-browser-in-directory={}",
+            browser_path_in_cache.display()
+        );
+        self.get_logger()
+            .debug(format!("Running command: {} {}", setup.display(), argument));
+        let outcome = match Command::new(&setup).arg(&argument).status() {
+            Ok(status) if status.success() => return,
+            Ok(status) => format!("setup.exe exited with {status}"),
+            Err(err) => err.to_string(),
+        };
+        self.get_logger()
+            .warn(format!("Unable to configure the Chrome sandbox: {outcome}"));
+    }
+
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
