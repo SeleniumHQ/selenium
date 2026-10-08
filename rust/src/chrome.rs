@@ -19,15 +19,12 @@ use crate::config::ARCH::{ARM64, X32};
 use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{
-    BrowserPath, compose_driver_path_in_cache, first_existing_path, path_to_string,
-};
+use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata,
     should_cache_driver_version, write_metadata,
 };
-use crate::shell::{Command, run_shell_command_with_log};
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
@@ -40,6 +37,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -280,11 +278,15 @@ impl SeleniumManager for ChromeManager {
             "--configure-browser-in-directory={}",
             browser_path_in_cache.display()
         );
-        let command = Command::new(path_to_string(&setup), vec![argument]);
-        if let Err(err) = run_shell_command_with_log(self.get_logger(), command) {
-            self.get_logger()
-                .warn(format!("Unable to configure the Chrome sandbox: {err}"));
-        }
+        self.get_logger()
+            .debug(format!("Running command: {} {}", setup.display(), argument));
+        let outcome = match Command::new(&setup).arg(&argument).status() {
+            Ok(status) if status.success() => return,
+            Ok(status) => format!("setup.exe exited with {status}"),
+            Err(err) => err.to_string(),
+        };
+        self.get_logger()
+            .warn(format!("Unable to configure the Chrome sandbox: {outcome}"));
     }
 
     fn get_browser_name(&self) -> &str {
