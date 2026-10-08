@@ -24,7 +24,6 @@ using System.Text;
 using BenderProxy;
 using BenderProxy.Writers;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
