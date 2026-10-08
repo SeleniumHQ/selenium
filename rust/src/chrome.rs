@@ -19,12 +19,15 @@ use crate::config::ARCH::{ARM64, X32};
 use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{BrowserPath, compose_driver_path_in_cache, first_existing_path};
+use crate::files::{
+    BrowserPath, compose_driver_path_in_cache, first_existing_path, path_to_string,
+};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata,
     should_cache_driver_version, write_metadata,
 };
+use crate::shell::{Command, run_shell_command_with_log};
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
     SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
@@ -266,6 +269,24 @@ impl ChromeManager {
 }
 
 impl SeleniumManager for ChromeManager {
+    // Chrome's sandboxed services need an AppContainer ACL on the install directory, which the
+    // installer normally grants; setup.exe ships in the CfT zip to grant it on an unpacked copy.
+    fn configure_browser_in_cache(&self, browser_path_in_cache: &Path) {
+        let setup = browser_path_in_cache.join("setup.exe");
+        if !WINDOWS.is(self.get_os()) || !setup.exists() {
+            return;
+        }
+        let argument = format!(
+            "--configure-browser-in-directory={}",
+            browser_path_in_cache.display()
+        );
+        let command = Command::new(path_to_string(&setup), vec![argument]);
+        if let Err(err) = run_shell_command_with_log(self.get_logger(), command) {
+            self.get_logger()
+                .warn(format!("Unable to configure the Chrome sandbox: {err}"));
+        }
+    }
+
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
