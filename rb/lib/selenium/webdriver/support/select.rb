@@ -21,6 +21,9 @@ module Selenium
   module WebDriver
     module Support
       class Select
+        HIDDEN_CSS_VALUES = %w[hidden none 0 0.0].to_set.freeze
+        VISIBILITY_PROPERTIES = %w[visibility display opacity].freeze
+
         #
         # @param [Element] element The select element to use
         #
@@ -161,11 +164,33 @@ module Selenium
         private
 
         def select_by_text(text)
+          assert_select_enabled
+          assert_select_visible
+
           opts = find_by_text text
 
-          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}" if opts.empty?
 
-          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
+          opts.each do |opt|
+            raise Error::NoSuchElementError, "invisible option with text: #{text.inspect}" unless option_visible?(opt)
+
+            select_option(opt)
+            break unless multiple?
+          end
+        end
+
+        def assert_select_enabled
+          return if @element.enabled?
+
+          raise Error::UnsupportedOperationError,
+                'You may not select an option in a disabled select'
+        end
+
+        def assert_select_visible
+          return if option_visible?(@element)
+
+          raise Error::UnsupportedOperationError,
+                'You may not select an option in an invisible select'
         end
 
         def select_by_index(index)
@@ -265,6 +290,10 @@ module Selenium
 
         def find_by_value(value)
           @element.find_elements(xpath: ".//option[@value = #{Escaper.escape value}]")
+        end
+
+        def option_visible?(element)
+          VISIBILITY_PROPERTIES.none? { |property| HIDDEN_CSS_VALUES.include?(element.css_value(property)) }
         end
       end # Select
     end # Support
