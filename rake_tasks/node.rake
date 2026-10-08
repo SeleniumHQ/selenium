@@ -1,9 +1,47 @@
 # frozen_string_literal: true
 
-def node_version
-  File.foreach('javascript/selenium-webdriver/package.json') do |line|
+# This file is loaded twice — once as `node:`, once aliased as `javascript:` —
+# so these are methods rather than constants to avoid redefinition warnings.
+def webdriver_package_json
+  'javascript/selenium-webdriver/package.json'
+end
+
+def atoms_package_json
+  'javascript/atoms/package.json'
+end
+
+def webdriver_publish_target
+  '//javascript/selenium-webdriver:selenium-webdriver.publish'
+end
+
+def atoms_publish_target
+  '//javascript/atoms:selenium-atoms-package.publish'
+end
+
+def package_json_version(path)
+  File.foreach(path) do |line|
     return line.split(':').last.strip.tr('",', '') if line.include?('version')
   end
+end
+
+def node_version
+  package_json_version(webdriver_package_json)
+end
+
+def atoms_version
+  package_json_version(atoms_package_json)
+end
+
+def publish_npm_package(target, config, dry_run)
+  bazel_args = ["--config=#{config}"]
+  bazel_args += ['--', '--dry-run=true'] if dry_run
+
+  Bazel.execute('run', bazel_args, target)
+rescue RuntimeError => e
+  raise if dry_run
+  raise unless e.message.match?(/cannot publish over the previously published/i)
+
+  puts "#{target} version already published — skipping."
 end
 
 def setup_github_npm_auth
@@ -26,16 +64,24 @@ def setup_github_npm_auth
   File.chmod(0o600, npmrc)
 
   # Update package.json for GitHub Packages
-  package_json = 'javascript/selenium-webdriver/package.json'
-  content = File.read(package_json)
+  content = File.read(webdriver_package_json)
   content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
   content = content.gsub('"name": "selenium-webdriver"', '"name": "@seleniumhq/selenium-webdriver"')
-  File.write(package_json, content)
+  File.write(webdriver_package_json, content)
+
+  # @seleniumhq/atoms is already scoped, so only the registry needs redirecting.
+  # GitHub Packages derives visibility from the repository, so drop the npmjs
+  # access flag rather than send one it does not honour.
+  content = File.read(atoms_package_json)
+  content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
+  content = content.gsub(/^\s*"access": "public",\n/, '')
+  File.write(atoms_package_json, content)
 end
 
-desc 'Build Node npm package'
+desc 'Build Node npm packages'
 task :build do |_task, arguments|
   args = arguments.to_a
+  Bazel.execute('build', args, '//javascript/atoms:selenium-atoms-package')
   Bazel.execute('build', args, '//javascript/selenium-webdriver')
 end
 
@@ -87,7 +133,7 @@ task :release do |_task, arguments|
     end
 
     if already_published
-      puts 'Node package already published — skipping release.'
+      puts 'Node packages already published — skipping release.'
       next
     end
   end
@@ -101,23 +147,16 @@ task :release do |_task, arguments|
   end
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
-  target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
-  bazel_args = ["--config=#{config}"]
-  bazel_args += ['--', '--dry-run=true'] if dry_run
-
-  begin
-    Bazel.execute('run', bazel_args, target)
-  rescue RuntimeError => e
-    raise if dry_run
-    raise unless e.message.match?(/cannot publish over the previously published/i)
-
-    puts 'npm package version already published — skipping.'
-  end
+  # @seleniumhq/atoms publishes first so the lower-level package is on the
+  # registry before anything that may start depending on it.
+  publish_npm_package(atoms_publish_target, config, dry_run)
+  publish_npm_package(webdriver_publish_target, config, dry_run)
 end
 
-desc 'Verify Node package is published on npm'
+desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
+  SeleniumRake.verify_package_published("https://registry.npmjs.org/@seleniumhq%2Fatoms/#{atoms_version}")
 end
 
 desc 'Alias for node:release'
@@ -156,6 +195,13 @@ end
 desc 'Update Node version'
 task :version, [:version] do |_task, arguments|
   old_version = node_version
+  # Both packages are bumped by substituting old_version, so a drifted
+  # @seleniumhq/atoms would silently keep its stale version and then fail
+  # `node:verify` after the release has already gone out.
+  if atoms_version != old_version
+    raise "Version mismatch: selenium-webdriver is #{old_version} but @seleniumhq/atoms is #{atoms_version}"
+  end
+
   nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
   puts "Updating Node from #{old_version} to #{new_version}"
