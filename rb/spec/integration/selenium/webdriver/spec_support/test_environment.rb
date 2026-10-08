@@ -41,6 +41,7 @@ module Selenium
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
+          pin_driver_path
         end
 
         def print_env
@@ -252,6 +253,14 @@ module Selenium
 
         private
 
+        # The class-level path also reaches the services that specs build themselves.
+        def pin_driver_path
+          path = driver_path
+          return unless path
+
+          WebDriver::Service.send(browser).class.driver_path = path
+        end
+
         def new_driver_instance(**)
           method = :"#{driver}_driver"
           instance = private_methods.include?(method) ? send(method, **) : WebDriver::Driver.for(driver, **)
@@ -276,12 +285,13 @@ module Selenium
           WebDriver.logger.warn("could not read driver version from #{path}: #{e.message}")
         end
 
-        def build_options(**)
+        def build_options(**opts)
+          opts[:binary] ||= browser_path if browser_path
           options_method = :"#{browser}_options"
           if private_methods.include?(options_method)
-            send(options_method, **)
+            send(options_method, **opts)
           else
-            WebDriver::Options.send(browser, **)
+            WebDriver::Options.send(browser, **opts)
           end
         end
 
@@ -345,7 +355,6 @@ module Selenium
           service ||= WebDriver::Service.chrome
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = runfiles_path('CHROMEDRIVER_BINARY') if ENV.key?('CHROMEDRIVER_BINARY')
           WebDriver::Driver.for(:chrome, service: service, **)
         end
 
@@ -353,14 +362,12 @@ module Selenium
           service ||= WebDriver::Service.edge
           service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
           service.args << '--verbose' if WebDriver.logger.debug?
-          service.executable_path = runfiles_path('MSEDGEDRIVER_BINARY') if ENV.key?('MSEDGEDRIVER_BINARY')
           WebDriver::Driver.for(:edge, service: service, **)
         end
 
         def firefox_driver(service: nil, **)
           service ||= WebDriver::Service.firefox
           service.args.push('--log', 'trace') if WebDriver.logger.debug?
-          service.executable_path = runfiles_path('GECKODRIVER_BINARY') if ENV.key?('GECKODRIVER_BINARY')
           WebDriver::Driver.for(:firefox, service: service, **)
         end
 
@@ -379,7 +386,6 @@ module Selenium
         def chrome_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= runfiles_path('CHROME_BINARY') if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -390,7 +396,6 @@ module Selenium
         def edge_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= runfiles_path('EDGE_BINARY') if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
           args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
@@ -401,7 +406,6 @@ module Selenium
         def firefox_options(args: [], **opts)
           opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
-          opts[:binary] ||= runfiles_path('FIREFOX_BINARY') if ENV.key?('FIREFOX_BINARY')
           opts[:unhandled_prompt_behavior] ||= 'ignore'
           args << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(args: args, **opts)
