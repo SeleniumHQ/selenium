@@ -139,16 +139,9 @@ public class ProxySettingTests : DriverTestFixture
         }
     }
 
-    protected override DriverFactory CreateDriverFactory()
+    protected override void ConfigureDriverOptions(DriverOptions options)
     {
-        DriverFactory factory = base.CreateDriverFactory();
-        factory.DriverStarting += DriverFactoryDriverStarting;
-        return factory;
-    }
-
-    private void DriverFactoryDriverStarting(object sender, DriverStartingEventArgs e)
-    {
-        if (e.Options is InternetExplorerOptions ieOptions)
+        if (options is InternetExplorerOptions ieOptions)
         {
             ieOptions.EnsureCleanSession = true;
         }
