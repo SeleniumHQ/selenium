@@ -53,7 +53,7 @@ jobs:
           base: trunk
           title: "[build] Automated Browser Version Update${{ contains(needs.update.outputs.output, 'major') && ' (major)' || '' }}${{ contains(needs.update.outputs.output, 'cdp') && ' with CDP' || '' }}"
           body: |
-            This is an automated pull request to update pinned browsers and drivers.${{ contains(needs.update.outputs.output, 'major') && ' Major Chrome/Firefox bump: CI runs the full Ruby matrix.' || '' }}${{ contains(needs.update.outputs.output, 'cdp') && ' Chrome DevTools (CDP) was regenerated to match.' || '' }}
+            This is an automated pull request to update pinned browsers and drivers.${{ contains(needs.update.outputs.output, 'major') && ' Major Chrome/Firefox bump: CI runs the full Python and Ruby browser matrix.' || '' }}${{ contains(needs.update.outputs.output, 'cdp') && ' Chrome DevTools (CDP) was regenerated to match.' || '' }}
 
             Merge after verifying the new browser versions are properly passing the tests
           branch: "pinned-browser-updates"
