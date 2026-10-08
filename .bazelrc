@@ -17,6 +17,10 @@ common --legacy_external_runfiles
 startup --windows_enable_symlinks
 build --enable_runfiles
 
+# For Python, use a venv site-packages layout on to avoid MAX_PATH failures
+# when loading native extensions.
+build:windows --@rules_python//python/config_settings:venvs_site_packages=yes
+
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 build --flag_alias=manager=//common:manager
