@@ -1,3 +1,4 @@
+load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
@@ -270,6 +271,22 @@ mocha_test(
     ],
 )
 
+# Browsers refuse to load an unpacked extension whose files are runfiles symlinks pointing
+# outside its directory, so tests get the fixture directories as real copies.
+copy_directory(
+    name = "webextensions-selenium-example-dir",
+    testonly = True,
+    src = "//common/extensions:webextensions-selenium-example",
+    out = "test/extensions/webextensions-selenium-example",
+)
+
+copy_directory(
+    name = "webextensions-selenium-example-signed-dir",
+    testonly = True,
+    src = "//common/extensions:webextensions-selenium-example-signed",
+    out = "test/extensions/webextensions-selenium-example-signed",
+)
+
 LARGE_TEST_DATA = [
     ":large-test-srcs",
     ":node_modules/express",
@@ -279,6 +296,8 @@ LARGE_TEST_DATA = [
     ":node_modules/serve-index",
     ":node_modules/sinon",
     ":test-data",
+    ":webextensions-selenium-example-dir",
+    ":webextensions-selenium-example-signed-dir",
     "//:node_modules/selenium-webdriver",
     "//common/extensions:js-lib",
     "//common/src/web:js-lib",
