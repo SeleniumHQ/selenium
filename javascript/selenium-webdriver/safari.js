@@ -26,6 +26,7 @@
 const http = require('./http')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
+const Symbols = require('./lib/symbols')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { getBinaryPaths } = require('./common/driverFinder')
 
@@ -141,6 +142,7 @@ class Driver extends webdriver.WebDriver {
       service.setExecutable(getBinaryPaths(caps).driverPath)
     }
     let executor = new http.Executor(service.start().then((url) => new http.HttpClient(url)))
+    executor[Symbols.localDriverService] = true
 
     return /** @type {!Driver} */ (super.createSession(executor, caps, () => service.kill()))
   }
