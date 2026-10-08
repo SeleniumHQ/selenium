@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -51,6 +52,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
@@ -145,6 +147,9 @@ public class SeleniumExtension
     // SwitchToTopRule
     SwitchToTopRule switchToTopRule = new SwitchToTopRule(context);
     switchToTopRule.apply();
+
+    CloseExtraWindowsRule closeExtraWindowsRule = new CloseExtraWindowsRule(context);
+    closeExtraWindowsRule.apply();
 
     Level logLevel =
         context.getExecutionException().map(testFailed -> Level.ALL).orElse(Level.WARNING);
@@ -295,7 +300,7 @@ public class SeleniumExtension
       StaticResources.ensureAvailable();
       WebDriver driver = new WebDriverBuilder().get(capabilities);
       nullDriver = false;
-      instances.set(new Instances(driver, regularWait, shortWait));
+      instances.set(new Instances(driver, driver.getWindowHandle(), regularWait, shortWait));
     }
     return instances.get().driver;
   }
@@ -331,11 +336,14 @@ public class SeleniumExtension
 
   private static class Instances {
     public final WebDriver driver;
+    public final String initialWindowHandle;
     public final Wait<WebDriver> regularWait;
     public final Wait<WebDriver> shortWait;
 
-    public Instances(WebDriver driver, Duration regularWait, Duration shortWait) {
+    public Instances(
+        WebDriver driver, String initialWindowHandle, Duration regularWait, Duration shortWait) {
       this.driver = driver;
+      this.initialWindowHandle = initialWindowHandle;
       this.regularWait = new WebDriverWait(driver, regularWait, Duration.ofMillis(20));
       this.shortWait = new WebDriverWait(driver, shortWait, Duration.ofMillis(20));
     }
@@ -396,6 +404,44 @@ public class SeleniumExtension
       List<NotWorkingInRemoteBazelBuilds> notWorking =
           findRepeatableAnnotations(element, NotWorkingInRemoteBazelBuilds.class);
       return notWorkingYet(notWorkingList) || notWorkingYet(notWorking.stream());
+    }
+  }
+
+  private static class CloseExtraWindowsRule {
+    ExtensionContext context;
+
+    public CloseExtraWindowsRule(ExtensionContext context) {
+      this.context = context;
+    }
+
+    protected void apply() {
+      if (findAnnotation(context.getTestClass(), CloseExtraWindowsAfterTest.class).isEmpty()
+          && findAnnotation(context.getTestMethod(), CloseExtraWindowsAfterTest.class).isEmpty()) {
+        return;
+      }
+      Instances currentInstances = instances.get();
+      if (currentInstances == null) {
+        return;
+      }
+      WebDriver driver = currentInstances.driver;
+      try {
+        Set<String> handles = driver.getWindowHandles();
+        if (handles.isEmpty()) {
+          return;
+        }
+        String keep =
+            handles.contains(currentInstances.initialWindowHandle)
+                ? currentInstances.initialWindowHandle
+                : handles.iterator().next();
+        for (String handle : handles) {
+          if (!handle.equals(keep)) {
+            driver.switchTo().window(handle).close();
+          }
+        }
+        driver.switchTo().window(keep);
+      } catch (WebDriverException e) {
+        LOG.log(Level.FINE, "Unable to close extra windows after " + displayName(context), e);
+      }
     }
   }
 

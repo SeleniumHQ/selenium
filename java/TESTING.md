@@ -87,6 +87,7 @@ If `createNewDriver(capabilities)` is called without an annotation, it closes th
 | Annotation | When to Use |
 |------------|-------------|
 | `@SwitchToTopAfterTest` | Test navigates into frames. Automatically switches to default content after. |
+| `@CloseExtraWindowsAfterTest` | Test opens windows or tabs. Closes everything except the session's first window after and switches back to it. Class-level or method-level. |
 | `@NeedsSecureServer` | Class-level. All tests in the class need HTTPS. |
 
 ## Build Files

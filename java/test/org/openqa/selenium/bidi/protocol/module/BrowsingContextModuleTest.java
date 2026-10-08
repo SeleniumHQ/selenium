@@ -37,9 +37,11 @@ import org.openqa.selenium.bidi.protocol.browsingcontext.NavigateParameters;
 import org.openqa.selenium.bidi.protocol.browsingcontext.NavigateResult;
 import org.openqa.selenium.bidi.protocol.browsingcontext.NavigationInfo;
 import org.openqa.selenium.bidi.protocol.browsingcontext.ReadinessState;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
+@CloseExtraWindowsAfterTest
 class BrowsingContextModuleTest extends JupiterTestBase {
 
   @Test
