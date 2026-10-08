@@ -461,7 +461,7 @@ module Selenium
             attr_reader namespace_uri: untyped
             attr_reader node_value: untyped
             attr_reader shadow_root: untyped
-            def self.new: (node_type: Integer, child_node_count: Integer, ?attributes: untyped, ?children: Array[::Selenium::WebDriver::BiDi::Protocol::Script::NodeRemoteValue], ?local_name: String, ?mode: Symbol, ?namespace_uri: String, ?node_value: String, ?shadow_root: ::Selenium::WebDriver::BiDi::Protocol::Script::NodeRemoteValue?) -> instance
+            def self.new: (node_type: Integer, child_node_count: Integer, ?attributes: Hash[String, String], ?children: Array[::Selenium::WebDriver::BiDi::Protocol::Script::NodeRemoteValue], ?local_name: String, ?mode: Symbol, ?namespace_uri: String, ?node_value: String, ?shadow_root: ::Selenium::WebDriver::BiDi::Protocol::Script::NodeRemoteValue?) -> instance
           end
 
           class WindowProxyRemoteValue < ::Selenium::WebDriver::BiDi::Serialization::Record

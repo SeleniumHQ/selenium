@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi;
 
 import java.util.function.Consumer;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 
 /**
@@ -29,6 +30,7 @@ import org.openqa.selenium.Beta;
  * instance via {@link BiDi#asHandle()}.
  */
 @Beta
+@ApiStatus.Internal
 public class Handle {
 
   private final BiDi bidi;
