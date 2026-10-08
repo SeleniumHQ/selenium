@@ -41,6 +41,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -75,27 +76,10 @@ public class SeleniumManager {
   @Nullable private final String managerPath = System.getenv("SE_MANAGER_PATH");
 
   @Nullable private Path binary = managerPath == null ? null : Paths.get(managerPath);
-  private boolean binaryInTemporalFolder = false;
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
-    if (managerPath == null) {
-      Runtime.getRuntime()
-          .addShutdownHook(
-              new Thread(
-                  () -> {
-                    if (binaryInTemporalFolder && binary != null && Files.exists(binary)) {
-                      try {
-                        Files.delete(binary);
-                      } catch (IOException e) {
-                        LOG.warning(
-                            String.format(
-                                "%s deleting temporal file: %s",
-                                e.getClass().getSimpleName(), e.getMessage()));
-                      }
-                    }
-                  }));
-    } else {
+    if (managerPath != null) {
       LOG.fine(String.format("Selenium Manager set by env 'SE_MANAGER_PATH': %s", managerPath));
     }
   }
@@ -302,8 +286,8 @@ public class SeleniumManager {
     String releaseLabel = new BuildInfo().getReleaseLabel();
     Path cacheParent = Paths.get(cachePath);
     if (!Files.isWritable(cacheParent) || "unknown".equals(releaseLabel)) {
-      cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
-      binaryInTemporalFolder = true;
+      cacheParent =
+          TemporaryFilesystem.getDefaultTmpFS().createTempDir(SELENIUM_MANAGER, "").toPath();
     }
 
     return Paths.get(
