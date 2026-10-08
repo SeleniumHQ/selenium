@@ -178,7 +178,7 @@ public class SeleniumManager {
    * @return the path to the Selenium Manager binary.
    */
   private synchronized Path getBinary() {
-    if (binary == null) {
+    if (binary == null || (managerPath == null && !Files.exists(binary))) {
       try {
         Platform current = Platform.getCurrent();
         String folder = "";
