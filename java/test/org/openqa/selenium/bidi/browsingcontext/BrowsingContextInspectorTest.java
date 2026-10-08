@@ -81,9 +81,11 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
             closedWindows.put(context.getId(), context);
           });
 
+      String originalWindow = driver.getWindowHandle();
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
       driver.close();
+      driver.switchTo().window(originalWindow);
 
       wait.until(d -> closedWindows.containsKey(windowHandle));
 

@@ -162,6 +162,7 @@ class BrowsingContextModuleTest extends JupiterTestBase {
   @NeedsFreshDriver
   void canListenToBrowsingContextDestroyedEvent() throws Exception {
     BrowsingContext browsingContext = new BrowsingContext(driver);
+    String originalWindow = driver.getWindowHandle();
     String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
     // CONTEXT_DESTROYED can only be subscribed globally (Module.subscribe has no per-context
@@ -178,6 +179,7 @@ class BrowsingContextModuleTest extends JupiterTestBase {
         });
 
     driver.close();
+    driver.switchTo().window(originalWindow);
 
     Info info = future.get(5, TimeUnit.SECONDS);
     assertThat(info.getContext()).isEqualTo(windowHandle);
