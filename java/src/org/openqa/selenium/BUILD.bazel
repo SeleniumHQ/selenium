@@ -113,8 +113,7 @@ genrule(
     """ % SE_VERSION,
         "//conditions:default": """
         mkdir -p META-INF &&
-        echo "Selenium-Version = VERSION_STUB" >META-INF/selenium-build.properties &&
-        echo "Build-Revision = Unknown"  >>META-INF/selenium-build.properties &&
+        echo "Build-Revision = Unknown" >META-INF/selenium-build.properties &&
         $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
     """,
     }),
@@ -150,7 +149,6 @@ genrule(
       echo "" >>META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
       echo Name: Build-Info >>META-INF/MANIFEST.MF &&
-      echo Selenium-Version: VERSION_STUB >>META-INF/MANIFEST.MF &&
       echo Build-Revision: Unknown >>META-INF/MANIFEST.MF &&
       echo Build-Time: Wed Jan 3 21:49:10 2007 +0000 >>META-INF/MANIFEST.MF &&
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF

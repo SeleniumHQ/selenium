@@ -299,14 +299,14 @@ public class SeleniumManager {
     cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
 
     // If cache path is not writable, SM will be extracted to a temporal folder
+    String releaseLabel = new BuildInfo().getReleaseLabel();
     Path cacheParent = Paths.get(cachePath);
-    if (!Files.isWritable(cacheParent)) {
+    if (!Files.isWritable(cacheParent) || "unknown".equals(releaseLabel)) {
       cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
       binaryInTemporalFolder = true;
     }
 
     return Paths.get(
-        cacheParent.toString(),
-        String.format(BINARY_PATH_FORMAT, new BuildInfo().getReleaseLabel(), binaryName));
+        cacheParent.toString(), String.format(BINARY_PATH_FORMAT, releaseLabel, binaryName));
   }
 }
