@@ -3,7 +3,7 @@ module(name = "selenium")
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.26.0")
-bazel_dep(name = "aspect_rules_jest", version = "0.25.2")
+bazel_dep(name = "aspect_rules_jest", version = "0.26.0")
 bazel_dep(name = "aspect_rules_js", version = "3.1.2")
 bazel_dep(name = "aspect_rules_ts", version = "3.8.9")
 bazel_dep(name = "bazel_features", version = "1.50.0")
@@ -31,15 +31,15 @@ bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 # See below for actual version used
 bazel_dep(name = "rules_java", version = "9.6.1")
-bazel_dep(name = "rules_jvm_external", version = "7.0")
+bazel_dep(name = "rules_jvm_external", version = "7.1")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
 bazel_dep(name = "rules_oci", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_python", version = "2.4.1")
 bazel_dep(name = "rules_proto", version = "7.1.0")
-bazel_dep(name = "rules_ruby", version = "0.28.0")
-bazel_dep(name = "rules_rs", version = "0.0.109")
+bazel_dep(name = "rules_ruby", version = "0.29.0")
+bazel_dep(name = "rules_rs", version = "0.1.0")
 
 # Shorter toolchain dir names keep Windows sysroot paths under MAX_PATH; drop once upstream does
 single_version_override(
@@ -55,32 +55,20 @@ bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
 bazel_dep(name = "xz", version = "5.4.5.bcr.8")
 bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
 
+# Adds `transitive` and `third_party_prefixes` to `javadoc` for the merged client/grid javadoc jars; no upstream equivalent
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_jvm_external_javadoc.patch",
-        "//third_party/bazel:rules_jvm_external_maven_publisher.patch",
     ],
 )
 
-# aspect_rules_jest 0.25.2 does not declare bazel_lib 3.x as a dep
-# (aspect_bazel_lib → bazel_lib rename)
-single_version_override(
-    module_name = "aspect_rules_jest",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:aspect_rules_jest_bazel_lib.patch",
-    ],
-)
-
-# Patch support for bazel-contrib/rules_ruby#393 remove in next rules_ruby release
-# rb_gem_push omits the interpreter from runfiles (breaks under JRuby); remove once fixed upstream
+# Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
-        "//third_party/bazel:rules_ruby_windows_batch_crlf.patch",
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
     ],
 )
@@ -403,13 +391,6 @@ use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 register_toolchains("@ruby_toolchains//:all")
 
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
-
-# Carries hermeticbuild/rules_rust#54: gcc <= 12 doesn't pass `-ffile-prefix-map`
-# to the assembler, so ring and zstd-sys `.S` debug info trips the hermeticity check.
-rules_rust.patch(
-    patches = ["//third_party/bazel:rules_rust_debug_prefix_map.patch"],
-    strip = 1,
-)
 use_repo(rules_rust, "rules_rust")
 
 rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")
