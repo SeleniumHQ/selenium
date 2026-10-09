@@ -9,6 +9,7 @@ load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_b
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
 load("//common:webref_cddl.bzl", "BIDI_DFNS_FILES", "BIDI_EXTENSION_CDDL_FILES", "BIDI_VENDOR_CDDL_FILES", "WEBDRIVER_BIDI_CDDL")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
 load("//javascript/private:jsdoc.bzl", "jsdoc")
@@ -317,7 +318,7 @@ OS_SENSITIVE_TESTS = [
     "test/window_test.js",
 ]
 
-# Find the driver through Selenium Manager, which RBE's pinned browsers bypass.
+# Find the driver through Selenium Manager, so they take no pinned driver or browser.
 SE_MANAGER_TESTS = [
     "test/chrome/service_test.js",
     "test/edge/service_test.js",
@@ -337,10 +338,11 @@ SE_MANAGER_TESTS = [
                 test,
             ],
             chdir = package_name(),
-            data = LARGE_TEST_DATA + BROWSERS[browser]["data"],
+            data = LARGE_TEST_DATA + (SE_MANAGER_TEST_DATA if test in SE_MANAGER_TESTS else BROWSERS[browser]["data"]),
             env = {
                 "SELENIUM_BROWSER": browser,
-            } | BROWSERS[browser]["env"],
+            } | (SE_MANAGER_TEST_ENV if test in SE_MANAGER_TESTS else BROWSERS[browser]["env"]),
+            exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if test in SE_MANAGER_TESTS else {},
             tags = [browser] + LARGE_TEST_TAGS +
                    (["os-sensitive"] if test in OS_SENSITIVE_TESTS else []) +
                    (["se-manager"] if test in SE_MANAGER_TESTS else []),

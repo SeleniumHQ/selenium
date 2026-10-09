@@ -42,6 +42,7 @@ module Selenium
           @driver_instance = nil
           @remote_server = nil
           pin_driver_path
+          ENV['SE_MANAGER_PATH'] = runfiles_path('SE_MANAGER_PATH') if ENV.key?('SE_MANAGER_PATH')
         end
 
         def print_env
