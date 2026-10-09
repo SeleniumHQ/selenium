@@ -148,6 +148,8 @@ exec.log
 # Engflow
 *.crt
 *.key
+!/common/certificates/localhost.crt
+!/common/certificates/localhost.key
 javascript/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin

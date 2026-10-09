@@ -20,13 +20,14 @@ import urllib3
 
 from selenium import webdriver
 from selenium.webdriver.common.options import ArgOptions as Options
+from selenium.webdriver.remote.client_config import ClientConfig
+from test.selenium.webdriver.common.webserver import CERT_FILE
 
 
-def test_command_executor_ssl_certificate_is_verified():
-    options = Options()
-    site = "wrong.host.badssl.com"
+def test_command_executor_ssl_certificate_is_verified(webserver):
+    executor = f"https://127.0.0.1:{webserver.secure_port}/"
+    client_config = ClientConfig(remote_server_addr=executor, ca_certs=CERT_FILE)
     with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
-        webdriver.Remote(command_executor="https://wrong.host.badssl.com/", options=options)
+        webdriver.Remote(command_executor=executor, options=Options(), client_config=client_config)
     assert isinstance(excinfo.value.reason, urllib3.exceptions.SSLError)
-    assert site in str(excinfo.value)
     assert "certificate is not valid" in str(excinfo.value).lower()

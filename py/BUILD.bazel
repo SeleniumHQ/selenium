@@ -850,6 +850,7 @@ py_library(
         "test/selenium/webdriver/common/webserver.py",
     ],
     data = [
+        "//common/certificates",
         "//common/src/web",
     ],
     deps = [],
