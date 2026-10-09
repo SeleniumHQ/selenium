@@ -924,6 +924,14 @@ OS_SENSITIVE_TESTS = [
     "test/selenium/webdriver/common/window_tests.py",
 ]
 
+# Load pages from badssl.com, which RBE cannot reach; see .local plan local_https_test_server
+# for the local HTTPS fixture that will replace it.
+INTERNET_TESTS = [
+    "test/selenium/webdriver/common/_bidi/browser_tests.py",
+    "test/selenium/webdriver/common/bidi/browser_tests.py",
+    "test/selenium/webdriver/remote/remote_hub_connection_tests.py",
+]
+
 # Browser-specific test configuration
 BROWSER_TESTS = {
     "chrome": {
@@ -1138,6 +1146,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
+        extra_tags = {src: ["skip-rbe"] for src in INTERNET_TESTS if src in BIDI_TESTS},
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-bidi" % browser,
@@ -1254,6 +1263,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
+        extra_tags = {src: ["skip-rbe"] for src in INTERNET_TESTS if src in GRID_TESTS},
         tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,

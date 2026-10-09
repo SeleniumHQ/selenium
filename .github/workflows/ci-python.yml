@@ -90,6 +90,10 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["os-sensitive,se-manager,skip-rbe"]
+        include:
+          # RBE has no internet; ubuntu keeps Linux coverage for the tests that need it.
+          - os: ubuntu
+            tag_filters: skip-rbe
     with:
       name: ${{ matrix.os }}
       needs-display: true
