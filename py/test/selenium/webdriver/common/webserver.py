@@ -229,8 +229,7 @@ class SimpleWebServer:
                 LOGGER.debug(f"port {port} is in use, trying to next one")
                 port += 1
 
-        # The certificate only names localhost, so the secure listener stays on loopback even under --use-lan-ip.
-        self.secure_server = ThreadedHTTPServer((DEFAULT_HOST_IP, 0), HtmlOnlyHandler)
+        self.secure_server = ThreadedHTTPServer((self.host, 0), HtmlOnlyHandler)
         self.secure_port = self.secure_server.server_address[1]
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(CERT_FILE, KEY_FILE)
@@ -257,16 +256,14 @@ class SimpleWebServer:
         with contextlib.suppress(IOError):
             _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
         with contextlib.suppress(OSError):
-            socket.create_connection((DEFAULT_HOST_IP, self.secure_port), timeout=1).close()
+            socket.create_connection((self.host, self.secure_port), timeout=1).close()
 
     def where_is(self, path, localhost=False, secure=False) -> str:
-        if secure:
-            return f"https://{DEFAULT_HOST}:{self.secure_port}/{path}"
+        scheme, port = ("https", self.secure_port) if secure else ("http", self.port)
         # True force serve the page from localhost
         # 0.0.0.0 shouldn't be used as a destination address, so fallback to localhost
-        if localhost or self.host == "0.0.0.0":
-            return f"http://{DEFAULT_HOST}:{self.port}/{path}"
-        return f"http://{self.host}:{self.port}/{path}"
+        host = DEFAULT_HOST if localhost or self.host == "0.0.0.0" else self.host
+        return f"{scheme}://{host}:{port}/{path}"
 
 
 def main(argv=None):

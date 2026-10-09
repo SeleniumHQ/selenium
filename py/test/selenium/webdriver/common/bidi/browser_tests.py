@@ -239,7 +239,7 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_
 
     try:
         # Visit a site with an invalid certificate
-        driver.get(pages.url("simpleTest.html", secure=True))
+        driver.get(pages.url("simpleTest.html", localhost=True, secure=True))
         assert driver.title == "Hello WebDriver"
 
         # Visit a site that should go through the fake proxy

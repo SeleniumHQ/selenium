@@ -25,7 +25,7 @@ from test.selenium.webdriver.common.webserver import CERT_FILE
 
 
 def test_command_executor_ssl_certificate_is_verified(webserver):
-    executor = f"https://127.0.0.1:{webserver.secure_port}/"
+    executor = f"https://{webserver.host}:{webserver.secure_port}/"
     client_config = ClientConfig(remote_server_addr=executor, ca_certs=CERT_FILE)
     with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
         webdriver.Remote(command_executor=executor, options=Options(), client_config=client_config)
