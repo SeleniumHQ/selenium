@@ -105,6 +105,30 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  # ci and ci-rbe workflows wait while trunk is locked so RBE capacity and macOS runners stay free for the release.
+  # This cancels in-progress workflows & restarts them so they are also queued.
+  requeue-ci:
+    name: Requeue CI Behind Lock
+    needs: restrict-trunk
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Cancel and rerun in-flight CI runs
+        run: |
+          mapfile -t ids < <(for workflow in ci.yml ci-rbe.yml; do for state in queued in_progress; do
+            gh run list --workflow "$workflow" --status "$state" --limit 100 --json databaseId,headBranch \
+              --jq '.[] | select(.headBranch | startswith("release-preparation-") | not) | .databaseId'
+          done; done)
+          cancelled=()
+          for id in "${ids[@]}"; do gh run cancel "$id" && cancelled+=("$id"); done
+          for id in "${cancelled[@]}"; do
+            gh run watch "$id" > /dev/null && gh run rerun "$id" || echo "::warning::Run $id was cancelled but could not be rerun"
+          done
+
   update-versions:
     name: Bump Versions
     needs: [parse-tag, restrict-trunk]
