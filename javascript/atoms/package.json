@@ -1,6 +1,6 @@
 {
   "name": "@selenium/atoms",
-  "version": "4.51.0-nightly202609302012",
+  "version": "4.51.0",
   "description": "Browser injection atoms for Selenium WebDriver",
   "type": "module",
   "main": "./dist/index.js",

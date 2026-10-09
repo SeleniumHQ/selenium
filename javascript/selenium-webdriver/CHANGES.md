@@ -1,3 +1,11 @@
+## 4.51.0
+
+- Support CDP versions: v153, v154, v155
+- [build] Automated Dependency Update (#18124)
+- [bidi] Add vendor specific class generation (#18125)
+- Add webextension methods on the driver with BiDi and fallback (#18127)
+- [build] Automated Browser Version Update (major) with CDP (#18131)
+
 ## 4.50.0
 
 - Support CDP versions: v152, v153, v154
