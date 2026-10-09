@@ -5,7 +5,7 @@ load("//:version.bzl", "VERSIONS")
 SE_VERSION = VERSIONS["dotnet"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v152",
+    "v155",
     "v153",
     "v154",
 ]

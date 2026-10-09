@@ -364,6 +364,26 @@ experimental domain Ads
     returns
       AdMetrics metrics
 
+  # An ad script.
+  # Note: when the script is a transitive ad script, we only fill in the
+  # immediate ancestor script in the provenance's adScriptAncestry field (as its
+  # first entry), rather than filling in the full ancestry. This saves work for
+  # the backend, and the frontend can reconstruct the full ancestry if
+  # necessary.
+  type AdScript extends object
+    properties
+      # The script ID.
+      Runtime.ScriptId scriptId
+      # The ad provenance.
+      Network.AdProvenance provenance
+
+  # Retrieves ad scripts for the current page. To minimize payload size, this
+  # only returns the newly tracked ad scripts since the last call to
+  # getAdScripts (i.e., the delta).
+  command getAdScripts
+    returns
+      array of AdScript newScripts
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -903,6 +923,9 @@ experimental domain Audits
       InvalidAllowlistItemType
       ReportingEndpointNotToken
       InvalidUrlPattern
+      IFrameAttributeLoosensEmbeddingRequirement
+      InvalidAllowConnectionAllowlistFrom
+      EmbeddingRequirementNotSatisfied
 
 # Details for issues about documents in Quirks Mode
 # or Limited Quirks Mode that affects page layouting.
@@ -1030,6 +1053,7 @@ experimental domain Audits
       TooManyRequests
       WellKnownHttpNotFound
       WellKnownNoResponse
+      WellKnownBlockedByConnectionAllowlist
       WellKnownInvalidResponse
       WellKnownListEmpty
       WellKnownInvalidContentType
@@ -1037,6 +1061,7 @@ experimental domain Audits
       WellKnownTooBig
       ConfigHttpNotFound
       ConfigNoResponse
+      ConfigBlockedByConnectionAllowlist
       ConfigInvalidResponse
       ConfigInvalidContentType
       IdpNotPotentiallyTrustworthy
@@ -1046,11 +1071,13 @@ experimental domain Audits
       InvalidSigninResponse
       AccountsHttpNotFound
       AccountsNoResponse
+      AccountsBlockedByConnectionAllowlist
       AccountsInvalidResponse
       AccountsListEmpty
       AccountsInvalidContentType
       IdTokenHttpNotFound
       IdTokenNoResponse
+      IdTokenBlockedByConnectionAllowlist
       IdTokenInvalidResponse
       IdTokenIdpErrorResponse
       IdTokenCrossSiteIdpErrorResponse
@@ -1068,6 +1095,7 @@ experimental domain Audits
       UiDismissedNoEmbargo
       CorsError
       SuppressedBySegmentationPlatform
+      PopupBlockedByConnectionAllowlist
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -1154,6 +1182,7 @@ experimental domain Audits
       TokenVerificationKbInvalidSdHash
       TokenVerificationKbMissingCnf
       TokenVerificationKbSignatureFailed
+      CrossOriginIframeNotSupported
 
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
@@ -1294,6 +1323,21 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
+  type WebInstallIssueReason extends string
+    enum
+      ManifestParsingOrNetworkError
+      StartUrlInvalid
+      ManifestMissingNameOrShortName
+      ManifestMissingId
+      NoManifest
+
+  # This issue reports a failure involving a web app manifest used by a Web
+  # Install operation.
+  type WebInstallIssueDetails extends object
+    properties
+      optional string manifestUrl
+      WebInstallIssueReason reason
+
   # The issue warns about blocked calls to privacy sensitive APIs via the
   # Selective Permissions Intervention.
   type SelectivePermissionsInterventionIssueDetails extends object
@@ -1351,6 +1395,7 @@ experimental domain Audits
       SelectivePermissionsInterventionIssue
       EmailVerificationRequestIssue
       LazyLoadImageIssue
+      WebInstallIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1387,6 +1432,7 @@ experimental domain Audits
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
       optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
       optional LazyLoadImageIssueDetails lazyLoadImageIssueDetails
+      optional WebInstallIssueDetails webInstallIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2085,6 +2131,16 @@ domain Browser
       # Commandline parameters
       array of string arguments
 
+  # Adds or updates a mock camera in the shared video capture device list for
+  # test automation. The mock camera is not scoped to a particular page or
+  # frame and is removed when the DevTools session that created it disconnects.
+  experimental command addMockCamera
+    parameters
+      # Required non-empty identifier for the mock camera. This is mapped to an
+      # internal virtual-device identifier and is not the MediaDeviceInfo.deviceId
+      # exposed to the page.
+      string deviceId
+
   # Chrome histogram bucket.
   experimental type Bucket extends object
     properties
@@ -2192,6 +2248,20 @@ domain Browser
   command addPrivacySandboxEnrollmentOverride
     parameters
       string url
+
+  # Gets the current globally-applied privacy control status
+  # See https://www.w3.org/TR/gpc/#get-global-privacy-control
+  experimental command getGlobalPrivacyControl
+    returns
+      boolean gpc
+
+  # Sets and then gets the current globally-applied privacy control status
+  # See https://www.w3.org/TR/gpc/#set-global-privacy-control
+  experimental command setGlobalPrivacyControl
+    parameters
+      boolean gpc
+    returns
+      boolean gpc
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -4316,6 +4386,55 @@ domain DOM
       # List of popovers that were closed in order to respect popover stacking order.
       array of NodeId nodeIds
 
+  # Returns candidate nodes that are configured as triggers for the given popover.
+  experimental command getImplicitAnchorCandidates
+    parameters
+      # Id of the popover HTMLElement.
+      NodeId nodeId
+    returns
+      # Candidate elements that can invoke this popover.
+      array of BackendNodeId backendNodeIds
+
+  # When enabling, this API forces an element to gain interest in its target,
+  # keeping interest active until disabled.
+  experimental command forceShowInterest
+    parameters
+      # Id of the interest invoker HTMLElement.
+      NodeId nodeId
+      # If true, opens and holds interest. If false, releases forced interest.
+      boolean enable
+
+  # Sets a spelling or grammar error marker on the given range of text.
+  # See https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
+  # Note: exactly one between nodeId, backendNodeId and objectId should be passed
+  # to identify the node.
+  experimental command setTextMarker
+    parameters
+      # Identifier of the node.
+      optional NodeId nodeId
+      # Identifier of the backend node.
+      optional BackendNodeId backendNodeId
+      # JavaScript object id of the node wrapper.
+      optional Runtime.RemoteObjectId objectId
+      # The type of marker to set on the given range of text.
+      enum type
+        # A spelling error marker, rendered as ::spelling-error
+        spelling
+        # A grammar error marker, rendered as ::grammar-error
+        grammar
+      # Start offset into the element's rendered text in UTF-16 code units.
+      # For a text control, an offset into the control's value.
+      # Offsets count text in DOM order and do not enter shadow trees.
+      # To mark text inside a shadow tree, pass the element inside the shadow tree.
+      integer start
+      # End offset (exclusive) in the same units and space as start.
+      integer end
+
+  # Clears the spelling and grammar error text markers overlapping the ranges
+  # set by setTextMarker in this session. These markers are also removed when
+  # the DOM domain is disabled or the session ends.
+  experimental command clearTextMarkers
+
   # Fired when `Element`'s attribute is modified.
   event attributeModified
     parameters
@@ -5339,6 +5458,16 @@ domain Emulation
     parameters
       SafeAreaInsets insets
 
+  # Overrides virtual keyboard geometry in CSS pixels, relative to the top-level viewport. The
+  # provided rect is used for navigator.virtualKeyboard.boundingRect, geometrychange events, and
+  # env(keyboard-inset-*) values on the inspected frame. The override applies independently of
+  # navigator.virtualKeyboard.overlaysContent so clients can preview overlay geometry without
+  # mutating page state. Values are rounded to the nearest CSS pixel. Omitting the rect clears the
+  # override.
+  experimental command setVirtualKeyboardGeometryOverride
+    parameters
+      optional DOM.Rect keyboardRect
+
   # Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
   # window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
   # query results).
@@ -5393,6 +5522,14 @@ domain Emulation
       # useful for emulating mobile device orientation lock behavior in
       # responsive design mode.
       experimental optional boolean screenOrientationLockEmulation
+      # Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,
+      # the viewport meta tag is always enabled.
+      experimental optional enum viewportMeta
+        # Enables viewport meta tag processing.
+        enable
+        # Restores the default viewport meta behavior (disabled on desktop,
+        # enabled on mobile).
+        default
 
   # Start reporting the given posture value to the Device Posture API.
   # This override can also be set in setDeviceMetricsOverride().
@@ -5640,6 +5777,22 @@ domain Emulation
     parameters
       # Hardware concurrency to report
       integer hardwareConcurrency
+
+  # Overrides the value of navigator.cpuPerformance
+  experimental command setCPUPerformanceOverride
+    parameters
+      # Override value. Omitting the parameter disables the override.
+      optional enum performanceTier
+        # Tier 0: Unknown
+        unknown
+        # Tier 1: Low
+        low
+        # Tier 2: Mid
+        mid
+        # Tier 3: High
+        high
+        # Tier 4: Ultra
+        ultra
 
   # Allows overriding user agent with the given string.
   # `userAgentMetadata` must be set for Client Hint headers to be sent.
@@ -7499,9 +7652,6 @@ domain Network
   # a network request.
   type RequestId extends string
 
-  # Unique intercepted request identifier.
-  type InterceptionId extends string
-
   # Network level fetch failure reason.
   type ErrorReason extends string
     enum
@@ -8306,24 +8456,6 @@ domain Network
       # ProvideCredentials.
       optional string password
 
-  # Stages of the interception to begin intercepting. Request will intercept before the request is
-  # sent. Response will intercept after the response is received.
-  experimental type InterceptionStage extends string
-    enum
-      Request
-      HeadersReceived
-
-  # Request pattern for interception.
-  experimental type RequestPattern extends object
-    properties
-      # Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
-      # backslash. Omitting is equivalent to `"*"`.
-      optional string urlPattern
-      # If set, only requests for matching resource types will be intercepted.
-      optional ResourceType resourceType
-      # Stage at which to begin intercepting requests. Default is Request.
-      optional InterceptionStage interceptionStage
-
   # Information about a signed exchange signature.
   # https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1
   experimental type SignedExchangeSignature extends object
@@ -8397,22 +8529,6 @@ domain Network
       # Errors occurred while handling the signed exchange.
       optional array of SignedExchangeError errors
 
-  # List of content encodings supported by the backend.
-  experimental type ContentEncoding extends string
-    enum
-      deflate
-      gzip
-      br
-      zstd
-
-  # Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
-  experimental command setAcceptedEncodings
-    parameters
-      # List of accepted content encodings.
-      array of ContentEncoding encodings
-
-  # Clears accepted encodings set by setAcceptedEncodings
-  experimental command clearAcceptedEncodingsOverride
 
   # Tells whether clearing browser cache is supported.
   deprecated command canClearBrowserCache
@@ -8437,35 +8553,6 @@ domain Network
 
   # Clears browser cookies.
   command clearBrowserCookies
-
-  # Response to Network.requestIntercepted which either modifies the request to continue with any
-  # modifications, or blocks it, or completes it with the provided response bytes. If a network
-  # fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
-  # event will be sent with the same InterceptionId.
-  # Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.
-  experimental deprecated command continueInterceptedRequest
-    parameters
-      InterceptionId interceptionId
-      # If set this causes the request to fail with the given reason. Passing `Aborted` for requests
-      # marked with `isNavigationRequest` also cancels the navigation. Must not be set in response
-      # to an authChallenge.
-      optional ErrorReason errorReason
-      # If set the requests completes using with the provided base64 encoded raw response, including
-      # HTTP status line and headers etc... Must not be set in response to an authChallenge.
-      optional binary rawResponse
-      # If set the request url will be modified in a way that's not observable by page. Must not be
-      # set in response to an authChallenge.
-      optional string url
-      # If set this allows the request method to be overridden. Must not be set in response to an
-      # authChallenge.
-      optional string method
-      # If set this allows postData to be set. Must not be set in response to an authChallenge.
-      optional string postData
-      # If set this allows the request headers to be changed. Must not be set in response to an
-      # authChallenge.
-      optional Headers headers
-      # Response to a requestIntercepted with an authChallenge. Must not be set otherwise.
-      optional AuthChallengeResponse authChallengeResponse
 
   # Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
   command deleteCookies
@@ -8643,27 +8730,6 @@ domain Network
       # True, if content was sent as base64.
       boolean base64Encoded
 
-  # Returns content served for the given currently intercepted request.
-  experimental command getResponseBodyForInterception
-    parameters
-      # Identifier for the intercepted request to get body for.
-      InterceptionId interceptionId
-    returns
-      # Response body.
-      string body
-      # True, if content was sent as base64.
-      boolean base64Encoded
-
-  # Returns a handle to the stream representing the response body. Note that after this command,
-  # the intercepted request can't be continued as is -- you either need to cancel it or to provide
-  # the response body. The stream only supports sequential read, IO.read will fail if the position
-  # is specified.
-  experimental command takeResponseBodyForInterceptionAsStream
-    parameters
-      InterceptionId interceptionId
-    returns
-      IO.StreamHandle stream
-
   # This method sends a new XMLHttpRequest which is identical to the original one. The following
   # parameters should be identical: method, url, async, request body, extra headers, withCredentials
   # attribute, user, password.
@@ -8771,14 +8837,6 @@ domain Network
       # Whether to attach a page script stack for debugging purpose.
       boolean enabled
 
-  # Sets the requests to intercept that match the provided patterns and optionally resource types.
-  # Deprecated, please use Fetch.enable instead.
-  experimental deprecated command setRequestInterception
-    parameters
-      # Requests matching any of these patterns will be forwarded and wait for the corresponding
-      # continueInterceptedRequest call.
-      array of RequestPattern patterns
-
   # Allows overriding user agent with the given string.
   command setUserAgentOverride
     redirect Emulation
@@ -8858,43 +8916,6 @@ domain Network
       MonotonicTime timestamp
       # Total number of bytes received for this request.
       number encodedDataLength
-
-  # Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
-  # mocked.
-  # Deprecated, use Fetch.requestPaused instead.
-  experimental deprecated event requestIntercepted
-    parameters
-      # Each request the page makes will have a unique id, however if any redirects are encountered
-      # while processing that fetch, they will be reported with the same id as the original fetch.
-      # Likewise if HTTP authentication is needed then the same fetch id will be used.
-      InterceptionId interceptionId
-      Request request
-      # The id of the frame that initiated the request.
-      Page.FrameId frameId
-      # How the requested resource will be used.
-      ResourceType resourceType
-      # Whether this is a navigation request, which can abort the navigation completely.
-      boolean isNavigationRequest
-      # Set if the request is a navigation that will result in a download.
-      # Only present after response is received from the server (i.e. HeadersReceived stage).
-      optional boolean isDownload
-      # Redirect location, only sent if a redirect was intercepted.
-      optional string redirectUrl
-      # Details of the Authorization Challenge encountered. If this is set then
-      # continueInterceptedRequest must contain an authChallengeResponse.
-      optional AuthChallenge authChallenge
-      # Response error if intercepted at response stage or if redirect occurred while intercepting
-      # request.
-      optional ErrorReason responseErrorReason
-      # Response code if intercepted at response stage or if redirect occurred while intercepting
-      # request or auth retry occurred.
-      optional integer responseStatusCode
-      # Response headers if intercepted at the response stage or if redirect occurred while
-      # intercepting request or auth retry occurred.
-      optional Headers responseHeaders
-      # If the intercepted request had a corresponding requestWillBeSent event fired for it, then
-      # this requestId will be the same as the requestId present in the requestWillBeSent event.
-      optional RequestId requestId
 
   # Fired if request ended up loading from cache.
   event requestServedFromCache
@@ -9114,7 +9135,7 @@ domain Network
   experimental event directTCPSocketAborted
     parameters
       RequestId identifier
-      string errorMessage
+      ErrorReason errorMessage
       MonotonicTime timestamp
 
   # Fired when direct_socket.TCPSocket is closed.
@@ -9193,7 +9214,7 @@ domain Network
   experimental event directUDPSocketAborted
     parameters
       RequestId identifier
-      string errorMessage
+      ErrorReason errorMessage
       MonotonicTime timestamp
 
   # Fired when direct_socket.UDPSocket is closed.
@@ -9290,6 +9311,9 @@ domain Network
       # The filterlist rule that matched, if any.
       optional string filterlistRule
       # The script ancestry that created the ad, if any.
+      # Note: depending on the context, this may represent the full ancestry up
+      # to the root script, or it may contain only one script representing the
+      # immediate ancestor.
       optional AdAncestry adScriptAncestry
 
   # Fired when additional information about a requestWillBeSent event is available from the
@@ -9683,6 +9707,8 @@ domain Network
       InvalidPreProvisionedKeyInitiatorMissing
       PreProvisionedKeyAccessNotGranted
       PreProvisionedKeyNotFound
+      AttestationCertificationError
+      AttestationSigningError
   # LINT.ThenChange(//content/browser/devtools/protocol/network_handler.cc:DeviceBoundSessionFetchResult)
 
   # Details about a failed device bound session network request.
@@ -9715,6 +9741,7 @@ domain Network
   experimental type RefreshEventDetails extends object
     properties
       # The result of a refresh.
+      # LINT.IfChange(DeviceBoundSessionRefreshResult)
       enum refreshResult
         Refreshed
         InitializedService
@@ -9724,6 +9751,8 @@ domain Network
         SigningQuotaExceeded
         RefreshedAsWaiter
         TransientSigningError
+        InScopeRefreshNotYetNeeded
+      # LINT.ThenChange(//net/device_bound_sessions/refresh_result.h:DeviceBoundSessionRefreshResult,//content/browser/devtools/protocol/network_handler.cc:DeviceBoundSessionRefreshResult)
       # If there was a fetch attempt, the result of that.
       optional DeviceBoundSessionFetchResult fetchResult
       # The session display if there was a newly created session. This is populated
@@ -9749,6 +9778,7 @@ domain Network
         InvalidSessionParams
         RefreshFatalError
         DevTools
+        Replaced
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -10679,11 +10709,11 @@ domain Page
       gamepad
       geolocation
       gyroscope
+      haptics
       hid
       identity-credentials-get
       idle-detection
       interest-cohort
-      join-ad-interest-group
       keyboard-map
       language-detector
       language-model
@@ -10700,17 +10730,16 @@ domain Page
       otp-credentials
       payment
       picture-in-picture
-      private-aggregation
       private-state-token-issuance
       private-state-token-redemption
       publickey-credentials-create
       publickey-credentials-get
-      record-ad-auction-events
       rewriter
-      run-ad-auction
       screen-wake-lock
       serial
+      # Deprecated.
       shared-storage
+      # Deprecated.
       shared-storage-select-url
       smart-card
       speaker-selection
@@ -11236,7 +11265,6 @@ domain Page
     properties
       string action
       string name
-      optional array of ImageResource icons
       # Mimic a map, name is the key, accepts is the value.
       optional array of FileFilter accepts
       # Won't repeat the enums, using string for easy comparison. Same as the
@@ -11725,8 +11753,36 @@ domain Page
       optional integer maxWidth
       # Maximum screenshot height.
       optional integer maxHeight
-      # Send every n-th frame.
+      # Send every n-th frame. Must be a positive integer.
       optional integer everyNthFrame
+      # Maximum number of frames sent until screencastFrameAck is required.
+      # Defaults to 3. Must be a positive integer.
+      optional integer maxFramesInFlight
+      # By default, after screencastFrameAck arrives, the next produced frame is sent.
+      # Passing this flag enables storing the last produced frame in memory, which is
+      # immediately sent upon screencastFrameAck. This way, overall performance is
+      # traded for a better latency.
+      optional boolean sendLastFrame
+
+  # Starts screencast video recording.
+  experimental command startScreenRecording
+    parameters
+      optional boolean audio
+      # Maximum frame width in pixels.
+      optional integer maxWidth
+      # Maximum frame height in pixels.
+      optional integer maxHeight
+      # Maximum frame rate in frames per second.
+      optional integer frameRate
+    returns
+      # A handle of the stream that holds resulting screencast data.
+      experimental IO.StreamHandle stream
+
+  # Stops screencast video recording.
+  experimental command stopScreenRecording
+    returns
+      # A handle of the stream that holds resulting screencast data.
+      experimental IO.StreamHandle stream
 
   # Force the page stop all navigations and pending resource fetches.
   command stopLoading
@@ -12178,6 +12234,7 @@ domain Page
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
       EmbedderExtensionFrame
+      EmbedderPrivilegedWebContents
       RequestedByWebViewClient
       PostMessageByWebViewClient
       CacheControlNoStoreDeviceBoundSessionTerminated
@@ -12684,6 +12741,7 @@ experimental domain Preload
       PrefetchIsStale
       PrefetchNotEligibleBlockedByConnectionAllowlist
       PrefetchNotEligibleBrowserContextOffTheRecord
+      PrefetchNotEligibleCrossOrigin
       PrefetchNotEligibleDataSaverEnabled
       PrefetchNotEligibleExistingProxy
       PrefetchNotEligibleHostIsNonUnique
@@ -12977,6 +13035,52 @@ experimental domain ServiceWorker
       activated
       redundant
 
+  # Mostly corresponds to `RouterCondition` in ServiceWorker spec
+  # (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
+  type ServiceWorkerRouterCondition extends object
+    properties
+      # Plain text, or JSON serialization of URLPatternInit or URLPattern
+      optional string urlPattern
+      optional string requestMethod
+      optional string requestMode
+      optional string requestDestination
+      optional ServiceWorkerVersionRunningStatus runningStatus
+      optional array of ServiceWorkerRouterCondition or
+      optional ServiceWorkerRouterCondition not
+
+  type ServiceWorkerRouterSourceType extends string
+    enum
+      # https://www.w3.org/TR/service-workers/#enumdef-routersourceenum
+      cache
+      fetchEvent
+      network
+      raceNetworkAndFetchHandler
+      raceNetworkAndCache
+      # Tag for https://www.w3.org/TR/service-workers/#dictdef-routersourcedict
+      sourceDict
+
+  # https://www.w3.org/TR/service-workers/#dictdef-routersourcedict
+  type ServiceWorkerRouterSourceDict extends object
+    properties
+      string cacheName
+
+  # Corresponds to `RouterSource` in the spec while the representation is different as follows.
+  # (https://www.w3.org/TR/service-workers/#typedefdef-routersource)
+  # - `RouterSourceEnum`: `type` equals `cache`, `sourceDict` is null.
+  # - `RouterSourceDict`: `type` equals `sourceDict`, `sourceDict` has valid value.
+  type ServiceWorkerRouterSource extends object
+    properties
+      ServiceWorkerRouterSourceType type
+      # Non-empty iff `type` equals "sourceDict".
+      optional ServiceWorkerRouterSourceDict sourceDict
+
+  type ServiceWorkerRouterRule extends object
+    properties
+      ServiceWorkerRouterCondition condition
+      ServiceWorkerRouterSource source
+      # Rule ID assigned by the browser. Unique within each ServiceWorkerVersion.
+      integer id
+
   # ServiceWorker version.
   type ServiceWorkerVersion extends object
     properties
@@ -12992,7 +13096,11 @@ experimental domain ServiceWorker
       optional number scriptResponseTime
       optional array of Target.TargetID controlledClients
       optional Target.TargetID targetId
+      # Migration to `typedRouterRules` is in progress. The browser sends either
+      # `routerRules` or `typedRouterRules`.
+      # TODO(crbug.com/540469610): Remove `routerRules` after the migration.
       optional string routerRules
+      optional array of ServiceWorkerRouterRule typedRouterRules
 
   # ServiceWorker error message.
   type ServiceWorkerErrorMessage extends object
@@ -13493,7 +13601,6 @@ experimental domain Storage
       websql
       service_workers
       cache_storage
-      shared_storage
       storage_buckets
       all
       other
@@ -13513,147 +13620,6 @@ experimental domain Storage
       string issuerOrigin
       number count
 
-
-  # Enum of shared storage access scopes.
-  type SharedStorageAccessScope extends string
-    enum
-      window
-      sharedStorageWorklet
-      header
-
-  # Enum of shared storage access methods.
-  type SharedStorageAccessMethod extends string
-    enum
-      addModule
-      createWorklet
-      selectURL
-      run
-      batchUpdate
-      set
-      append
-      delete
-      clear
-      get
-      keys
-      values
-      entries
-      length
-      remainingBudget
-
-  # Struct for a single key-value pair in an origin's shared storage.
-  type SharedStorageEntry extends object
-    properties
-      string key
-      string value
-
-  # Details for an origin's shared storage.
-  type SharedStorageMetadata extends object
-    properties
-      # Time when the origin's shared storage was last created.
-      Network.TimeSinceEpoch creationTime
-      # Number of key-value pairs stored in origin's shared storage.
-      integer length
-      # Current amount of bits of entropy remaining in the navigation budget.
-      number remainingBudget
-      # Total number of bytes stored as key-value pairs in origin's shared
-      # storage.
-      integer bytesUsed
-
-  # Represents a dictionary object passed in as privateAggregationConfig to
-  # run or selectURL.
-  type SharedStoragePrivateAggregationConfig extends object
-    properties
-      # The chosen aggregation service deployment.
-      optional string aggregationCoordinatorOrigin
-      # The context ID provided.
-      optional string contextId
-      # Configures the maximum size allowed for filtering IDs.
-      integer filteringIdMaxBytes
-      # The limit on the number of contributions in the final report.
-      optional integer maxContributions
-
-  # Pair of reporting metadata details for a candidate URL for `selectURL()`.
-  type SharedStorageReportingMetadata extends object
-    properties
-      string eventType
-      string reportingUrl
-
-  # Bundles a candidate URL with its reporting metadata.
-  type SharedStorageUrlWithMetadata extends object
-    properties
-      # Spec of candidate URL.
-      string url
-      # Any associated reporting metadata.
-      array of SharedStorageReportingMetadata reportingMetadata
-
-  # Bundles the parameters for shared storage access events whose
-  # presence/absence can vary according to SharedStorageAccessType.
-  type SharedStorageAccessParams extends object
-    properties
-      # Spec of the module script URL.
-      # Present only for SharedStorageAccessMethods: addModule and
-      # createWorklet.
-      optional string scriptSourceUrl
-      # String denoting "context-origin", "script-origin", or a custom
-      # origin to be used as the worklet's data origin.
-      # Present only for SharedStorageAccessMethod: createWorklet.
-      optional string dataOrigin
-      # Name of the registered operation to be run.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional string operationName
-      # ID of the operation call.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional string operationId
-      # Whether or not to keep the worket alive for future run or selectURL
-      # calls.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional boolean keepAlive
-      # Configures the private aggregation options.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional SharedStoragePrivateAggregationConfig privateAggregationConfig
-      # The operation's serialized data in bytes (converted to a string).
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      # TODO(crbug.com/401011862): Consider updating this parameter to binary.
-      optional string serializedData
-      # Array of candidate URLs' specs, along with any associated metadata.
-      # Present only for SharedStorageAccessMethod: selectURL.
-      optional array of SharedStorageUrlWithMetadata urlsWithMetadata
-      # Spec of the URN:UUID generated for a selectURL call.
-      # Present only for SharedStorageAccessMethod: selectURL.
-      optional string urnUuid
-      # Key for a specific entry in an origin's shared storage.
-      # Present only for SharedStorageAccessMethods: set, append, delete, and
-      # get.
-      optional string key
-      # Value for a specific entry in an origin's shared storage.
-      # Present only for SharedStorageAccessMethods: set and append.
-      optional string value
-      # Whether or not to set an entry for a key if that key is already present.
-      # Present only for SharedStorageAccessMethod: set.
-      optional boolean ignoreIfPresent
-      # A number denoting the (0-based) order of the worklet's
-      # creation relative to all other shared storage worklets created by
-      # documents using the current storage partition.
-      # Present only for SharedStorageAccessMethods: addModule, createWorklet.
-      optional integer workletOrdinal
-      # Hex representation of the DevTools token used as the TargetID for the
-      # associated shared storage worklet.
-      # Present only for SharedStorageAccessMethods: addModule, createWorklet,
-      # run, selectURL, and any other SharedStorageAccessMethod when the
-      # SharedStorageAccessScope is sharedStorageWorklet.
-      optional Target.TargetID workletTargetId
-      # Name of the lock to be acquired, if present.
-      # Optionally present only for SharedStorageAccessMethods: batchUpdate,
-      # set, append, delete, and clear.
-      optional string withLock
-      # If the method has been called as part of a batchUpdate, then this
-      # number identifies the batch to which it belongs.
-      # Optionally present only for SharedStorageAccessMethods:
-      # batchUpdate (required), set, append, delete, and clear.
-      optional string batchUpdateId
-      # Number of modifier methods sent in batch.
-      # Present only for SharedStorageAccessMethod: batchUpdate.
-      optional integer batchSize
 
   type StorageBucketsDurability extends string
     enum
@@ -13823,51 +13789,6 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
-  # Gets metadata for an origin's shared storage.
-  experimental command getSharedStorageMetadata
-    parameters
-      string ownerOrigin
-    returns
-      SharedStorageMetadata metadata
-
-  # Gets the entries in an given origin's shared storage.
-  experimental command getSharedStorageEntries
-    parameters
-      string ownerOrigin
-    returns
-      array of SharedStorageEntry entries
-
-  # Sets entry with `key` and `value` for a given origin's shared storage.
-  experimental command setSharedStorageEntry
-    parameters
-      string ownerOrigin
-      string key
-      string value
-      # If `ignoreIfPresent` is included and true, then only sets the entry if
-      # `key` doesn't already exist.
-      optional boolean ignoreIfPresent
-
-  # Deletes entry for `key` (if it exists) for a given origin's shared storage.
-  experimental command deleteSharedStorageEntry
-    parameters
-      string ownerOrigin
-      string key
-
-  # Clears all entries for a given origin's shared storage.
-  experimental command clearSharedStorageEntries
-    parameters
-      string ownerOrigin
-
-  # Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
-  experimental command resetSharedStorageBudget
-    parameters
-      string ownerOrigin
-
-  # Enables/disables issuing of sharedStorageAccessed events.
-  experimental command setSharedStorageTracking
-    parameters
-      boolean enable
-
   # Set tracking for a storage key's buckets.
   experimental command setStorageBucketTracking
     parameters
@@ -13929,47 +13850,6 @@ experimental domain Storage
       string storageKey
       # Storage bucket to update.
       string bucketId
-
-  # Shared storage was accessed by the associated page.
-  # The following parameters are included in all events.
-  event sharedStorageAccessed
-    parameters
-      # Time of the access.
-      Network.TimeSinceEpoch accessTime
-      # Enum value indicating the access scope.
-      SharedStorageAccessScope scope
-      # Enum value indicating the Shared Storage API method invoked.
-      SharedStorageAccessMethod method
-      # DevTools Frame Token for the primary frame tree's root.
-      Page.FrameId mainFrameId
-      # Serialization of the origin owning the Shared Storage data.
-      string ownerOrigin
-      # Serialization of the site owning the Shared Storage data.
-      string ownerSite
-      # The sub-parameters wrapped by `params` are all optional and their
-      # presence/absence depends on `type`.
-      SharedStorageAccessParams params
-
-  # A shared storage run or selectURL operation finished its execution.
-  # The following parameters are included in all events.
-  event sharedStorageWorkletOperationExecutionFinished
-    parameters
-      # Time that the operation finished.
-      Network.TimeSinceEpoch finishedTime
-      # Time, in microseconds, from start of shared storage JS API call until
-      # end of operation execution in the worklet.
-      integer executionTime
-      # Enum value indicating the Shared Storage API method invoked.
-      SharedStorageAccessMethod method
-      # ID of the operation call.
-      string operationId
-      # Hex representation of the DevTools token used as the TargetID for the
-      # associated shared storage worklet.
-      Target.TargetID workletTargetId
-      # DevTools Frame Token for the primary frame tree's root.
-      Page.FrameId mainFrameId
-      # Serialization of the origin owning the Shared Storage data.
-      string ownerOrigin
 
   event storageBucketCreatedOrUpdated
     parameters
@@ -14765,6 +14645,7 @@ experimental domain WebAudio
       number maxOutputChannelCount
       # Context sample rate.
       number sampleRate
+      number renderQuantumSize
 
 # Protocol object for AudioListener
   type AudioListener extends object
@@ -14916,6 +14797,7 @@ experimental domain WebAuthn
       ctap2_1
       ctap2_2
 
+  # LINT.IfChange(AuthenticatorTransport)
   type AuthenticatorTransport extends string
     enum
       # Cross-Platform authenticator attachments:
@@ -14923,8 +14805,11 @@ experimental domain WebAuthn
       nfc
       ble
       cable
+      hybrid
+      smart-card
       # Platform authenticator attachment:
       internal
+  # LINT.ThenChange(//content/browser/devtools/protocol/webauthn_handler.cc:ConvertToFidoTransportProtocol)
 
   type VirtualAuthenticatorOptions extends object
     properties
@@ -14996,7 +14881,7 @@ experimental domain WebAuthn
       # If -1, the credential won't have an associated signature counter, and
       # every assertion operation will report a value of 0.
       # See https://w3c.github.io/webauthn/#signature-counter
-      optional integer signCount
+      number signCount
       # The large blob associated with the credential.
       # See https://w3c.github.io/webauthn/#sctn-large-blob-extension
       optional binary largeBlob
@@ -15123,7 +15008,7 @@ experimental domain WebAuthn
       # If -1, the signature counter is removed from the credential, and every
       # assertion operation will report a value of 0.
       # See https://w3c.github.io/webauthn/#signature-counter
-      optional integer signCount
+      optional number signCount
 
   # Triggered when a credential is added to an authenticator.
   event credentialAdded
@@ -15170,6 +15055,8 @@ experimental domain WebMCP
       optional boolean readOnly
       # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
       optional boolean untrustedContent
+      # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+      optional boolean consequential
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
 
