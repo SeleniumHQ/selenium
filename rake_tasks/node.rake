@@ -123,22 +123,6 @@ task :release do |_task, arguments|
   dry_run = args.delete('dry-run')
   config = args.delete('rbe') ? 'rbe_release' : 'release'
 
-  unless nightly || dry_run
-    already_published = begin
-      Rake::Task['node:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['node:verify'].reenable
-    end
-
-    if already_published
-      puts 'Node packages already published — skipping release.'
-      next
-    end
-  end
-
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
 
   if nightly

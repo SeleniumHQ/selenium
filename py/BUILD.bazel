@@ -27,6 +27,7 @@ py_binary(
     ],
     args = [
         "upload",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -49,6 +50,7 @@ py_binary(
         "upload",
         "--repository",
         "testpypi",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
