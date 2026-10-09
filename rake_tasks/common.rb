@@ -148,8 +148,15 @@ module SeleniumRake
 
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
-    res = get_request(url)
-    raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 300
+    loop do
+      res = get_request(url)
+      break if res.is_a?(Net::HTTPSuccess)
+      raise "Package not published: #{url}" if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+      puts "  #{res.code} from registry, retrying in 15s..."
+      sleep 15
+    end
 
     puts 'Verified!'
   end
