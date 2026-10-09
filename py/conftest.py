@@ -634,8 +634,8 @@ def pytest_exception_interact(node, call, report):
 @pytest.fixture
 def pages(driver, webserver):
     class Pages:
-        def url(self, name, localhost=False):
-            return webserver.where_is(name, localhost)
+        def url(self, name, localhost=False, secure=False):
+            return webserver.where_is(name, localhost, secure)
 
         def load(self, name):
             driver.get(self.url(name))

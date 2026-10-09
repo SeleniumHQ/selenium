@@ -146,9 +146,8 @@ def test_set_client_window_state_to_a_rect(driver):
         _restore_client_window(driver, original)
 
 
-def test_create_user_context_with_accept_insecure_certs(driver):
+def test_create_user_context_with_accept_insecure_certs(driver, pages):
     """Test creating a user context with accept_insecure_certs parameter."""
-    INSECURE_TEST_SITE = "https://self-signed.badssl.com/"
     user_context = driver.browser.create_user_context(accept_insecure_certs=True)
 
     bc = driver.browsing_context.create(type=WindowTypes.WINDOW, user_context=user_context)
@@ -156,10 +155,8 @@ def test_create_user_context_with_accept_insecure_certs(driver):
     assert user_context is not None
     assert bc is not None
 
-    driver.get(INSECURE_TEST_SITE)
-
-    h1 = driver.find_element(By.TAG_NAME, "h1")
-    assert h1.text.strip() == "self-signed.\nbadssl.com"
+    driver.get(pages.url("simpleTest.html", secure=True))
+    assert driver.title == "Hello WebDriver"
 
     # Clean up
     driver.browser.remove_user_context(user_context)
@@ -224,7 +221,7 @@ def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server):
+def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server, pages):
     """Test creating a user context with both acceptInsecureCerts and proxy parameters."""
     create_proxy_server = proxy_server(response_content=b"proxied response")
     port = create_proxy_server["port"]
@@ -233,7 +230,7 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_
     proxy.proxy_type = ProxyType.MANUAL
     proxy.http_proxy = f"localhost:{port}"
     proxy.ssl_proxy = f"localhost:{port}"
-    proxy.no_proxy = ["self-signed.badssl.com"]
+    proxy.no_proxy = ["localhost"]
 
     user_context = driver.browser.create_user_context(accept_insecure_certs=True, proxy=proxy)
 
@@ -242,9 +239,8 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_
 
     try:
         # Visit a site with an invalid certificate
-        driver.get("https://self-signed.badssl.com/")
-        h1 = driver.find_element(By.TAG_NAME, "h1")
-        assert "badssl.com" in h1.text.lower()
+        driver.get(pages.url("simpleTest.html", localhost=True, secure=True))
+        assert driver.title == "Hello WebDriver"
 
         # Visit a site that should go through the fake proxy
         driver.get("http://example.com/")

@@ -101,16 +101,15 @@ def test_client_window_state_constants():
     assert ClientWindowInfoState.NORMAL == "normal"
 
 
-def test_create_user_context_with_accept_insecure_certs(driver):
+def test_create_user_context_with_accept_insecure_certs(driver, pages):
     browser = Browser(driver)
     user_context = browser.create_user_context(accept_insecure_certs=True).user_context
 
     bc = BrowsingContext(driver).create(type=CreateType.WINDOW, user_context=user_context).context
     driver.switch_to.window(bc)
 
-    driver.get("https://self-signed.badssl.com/")
-    h1 = driver.find_element(By.TAG_NAME, "h1")
-    assert h1.text.strip() == "self-signed.\nbadssl.com"
+    driver.get(pages.url("simpleTest.html", secure=True))
+    assert driver.title == "Hello WebDriver"
 
     browser.remove_user_context(user_context=user_context)
 
@@ -174,7 +173,7 @@ def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server):
+def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server, pages):
     create_proxy_server = proxy_server(response_content=b"proxied response")
     port = create_proxy_server["port"]
 
@@ -183,7 +182,7 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_
         ssl_proxy=f"localhost:{port}",
         socks_proxy=f"localhost:{port}",
         socks_version=5,
-        no_proxy=["self-signed.badssl.com"],
+        no_proxy=["localhost"],
     )
     browser = Browser(driver)
     user_context = browser.create_user_context(accept_insecure_certs=True, proxy=proxy).user_context
@@ -192,8 +191,8 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_
     driver.switch_to.window(bc)
 
     try:
-        driver.get("https://self-signed.badssl.com/")
-        assert "badssl.com" in driver.find_element(By.TAG_NAME, "h1").text.lower()
+        driver.get(pages.url("simpleTest.html", localhost=True, secure=True))
+        assert driver.title == "Hello WebDriver"
 
         driver.get("http://example.com/")
         assert "proxied response" in driver.find_element(By.TAG_NAME, "body").text.lower()
