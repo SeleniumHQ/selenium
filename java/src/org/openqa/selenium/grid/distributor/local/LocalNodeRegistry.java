@@ -475,6 +475,15 @@ public class LocalNodeRegistry implements NodeRegistry {
       }
 
       updateNodeAvailability(node.getUri(), id, result.getAvailability());
+
+      // Health checks reach the Node over HTTP, so the status they return is a reliable view of
+      // what the Node is actually running. Use it to reconcile the Grid model: without this, the
+      // only thing that refreshes slot state is NodeStatusEvent on the event bus, so a dropped
+      // SessionClosedEvent leaves a session in a slot indefinitely and the Node loses capacity.
+      if (result.getAvailability() == UP) {
+        result.getStatus().ifPresent(model::refresh);
+      }
+
       if (checkFailed) {
         throw new HealthCheckFailedException("Node " + id, failedCheckException);
       }
