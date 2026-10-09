@@ -40,14 +40,14 @@ def nuget_pack_impl(ctx):
         assembly_info = lib[DotnetAssemblyRuntimeInfo]
         tfm = _guess_dotnet_version(assembly_info)
         for dll in assembly_info.libs:
-            layout[dll] = "lib/%s/%s.dll" % (tfm, name)
+            layout["lib/%s/%s.dll" % (tfm, name)] = dll
         for pdb in assembly_info.pdbs:
-            layout[pdb] = "lib/%s/%s.pdb" % (tfm, name)
+            layout["lib/%s/%s.pdb" % (tfm, name)] = pdb
         for doc in assembly_info.xml_docs:
-            layout[doc] = "lib/%s/%s.xml" % (tfm, name)
+            layout["lib/%s/%s.xml" % (tfm, name)] = doc
 
     for (file, name) in ctx.attr.files.items():
-        layout[file.files.to_list()[0]] = name
+        layout[name] = file.files.to_list()[0]
 
     csproj_file = ctx.actions.declare_file("%s-generated.csproj" % ctx.label.name)
     ctx.actions.write(csproj_file, _CSPROJ_TEMPLATE.format(id = ctx.attr.id))
@@ -79,7 +79,7 @@ def nuget_pack_impl(ctx):
 
     # Copy files directly into the working directory layout (no intermediate zip)
     copy_cmds = []
-    for (file, rel_path) in layout.items():
+    for (rel_path, file) in layout.items():
         dest = working_dir + "/" + rel_path
         copy_cmds.append("mkdir -p \"$(dirname '{dest}')\" && cp '{src}' '{dest}'".format(
             dest = dest,
@@ -124,7 +124,7 @@ def nuget_pack_impl(ctx):
 
     ctx.actions.run_shell(
         outputs = [pkg, symbols_pkg],
-        inputs = list(layout.keys()) + [nuspec, csproj_file, dotnet, packages],
+        inputs = list(layout.values()) + [nuspec, csproj_file, dotnet, packages],
         tools = [dotnet] + toolchain.default.files.to_list() + toolchain.runtime.default_runfiles.files.to_list() + toolchain.runtime.data_runfiles.files.to_list(),
         command = cmd,
         mnemonic = "CreateNupkg",
