@@ -247,7 +247,7 @@ jobs:
           delete-branch: true
           branch: release-preparation-${{ needs.parse-tag.outputs.tag }}
           base: trunk
-          title: "[build] Prepare for release of ${{ needs.parse-tag.outputs.tag }}"
+          title: "Release ${{ needs.parse-tag.outputs.tag }}"
           body: |
 
             ### Release Info
