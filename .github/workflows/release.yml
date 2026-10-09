@@ -342,7 +342,7 @@ jobs:
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
       needs.update-version.result == 'success' &&
-      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+      (needs.parse-tag.outputs.language != 'all' || needs.mirror.result == 'success')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       unlock: true
