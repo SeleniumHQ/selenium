@@ -90,10 +90,6 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["os-sensitive,se-manager,skip-rbe"]
-        include:
-          # RBE already runs the os-sensitive targets on Linux; ubuntu is here for what needs network.
-          - os: ubuntu
-            tag_filters: se-manager,skip-rbe
     with:
       name: ${{ matrix.os }}
       needs-display: true

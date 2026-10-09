@@ -68,10 +68,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows, macos]
+        os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
-          # Chrome has no linux-arm64 build before 153; Edge has none at all.
+          # RBE runs the Linux x86_64 se-manager targets with the pin off.
+          - os: ubuntu
+            tag_filters: "unit,os-sensitive,skip-rbe"
+          # Chrome has no linux-arm64 build before 153; Edge has none at all. RBE is x86_64 only, so se-manager stays.
           - os: ubuntu-24.04-arm
             tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-chrome,-edge"
     with:
