@@ -79,9 +79,12 @@ exports_files(
 # Windows hosts run the manager in every browser test and cannot execute the shell-script stub.
 filegroup(
     name = "stub-selenium-manager-windows",
-    srcs = ["stub-selenium-manager"],
-    target_compatible_with = select({
-        "//common:windows": ["@platforms//:incompatible"],
-        "//conditions:default": [],
-    }),
+    srcs = select(
+        {
+            "//common:linux": ["stub-selenium-manager"],
+            "//common:macos": ["stub-selenium-manager"],
+        },
+        no_match_error = "--manager=stub is not supported on Windows hosts; use --manager=download",
+    ),
+    tags = ["manual"],
 )
