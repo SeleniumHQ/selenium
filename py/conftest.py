@@ -262,11 +262,14 @@ _DRIVER_PATH_ENV_KEYS = {
 
 
 def pytest_configure(config):
-    """Export the pinned driver so services the tests build without a path skip Selenium Manager."""
+    """Export the pinned driver for services built without a path, and resolve a runfiles SE_MANAGER_PATH."""
     executable = config.option.executable
     driver = next((d for d in config.option.drivers or [] if d.lower() in _DRIVER_PATH_ENV_KEYS), None)
     if driver and executable:
         os.environ[_DRIVER_PATH_ENV_KEYS[driver.lower()]] = _resolve_bazel_path(executable).strip("'")
+    manager = os.environ.get("SE_MANAGER_PATH")
+    if manager and not Path(manager).exists() and Runfiles is not None:
+        os.environ["SE_MANAGER_PATH"] = Runfiles.Create().Rlocation(manager)
 
 
 def get_extensions_location():
