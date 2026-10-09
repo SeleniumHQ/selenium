@@ -118,7 +118,7 @@ generate_bidi_library(
 VERSION = "4.51.0-nightly202609302012"
 
 BROWSER_VERSIONS = [
-    "v152",
+    "v155",
     "v153",
     "v154",
 ]
