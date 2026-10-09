@@ -264,9 +264,6 @@ module Selenium
         def new_driver_instance(**)
           method = :"#{driver}_driver"
           instance = private_methods.include?(method) ? send(method, **) : WebDriver::Driver.for(driver, **)
-          #  new Windows session sometimes silently abandons navigation
-          # TODO - remove when this lands: https://issues.chromium.org/issues/402796660
-          sleep 1 if Platform.windows? && browser_family == :chromium
           print_driver_version(instance)
 
           instance
