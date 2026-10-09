@@ -4,10 +4,9 @@ on:
   pull_request:
     types: [closed]
     paths:
-      - 'java/version.bzl'
+      - 'version.bzl'
       - 'rb/lib/selenium/webdriver/version.rb'
       - 'py/selenium/__init__.py'
-      - 'dotnet/version.bzl'
       - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
@@ -364,8 +363,8 @@ jobs:
           SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
           SLACK_MESSAGE: |
+            ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
             • Tag Created: ${{ needs.create-tag.result }}

@@ -251,6 +251,24 @@ def _pinned_grid_args(config):
     ]
 
 
+# Maps the test driver name to the env var its Service consults before invoking Selenium Manager.
+_DRIVER_PATH_ENV_KEYS = {
+    "chrome": "SE_CHROMEDRIVER",
+    "edge": "SE_EDGEDRIVER",
+    "firefox": "SE_GECKODRIVER",
+    "ie": "SE_IEDRIVER",
+    "safari": "SE_SAFARIDRIVER",
+}
+
+
+def pytest_configure(config):
+    """Export the pinned driver so services the tests build without a path skip Selenium Manager."""
+    executable = config.option.executable
+    driver = next((d for d in config.option.drivers or [] if d.lower() in _DRIVER_PATH_ENV_KEYS), None)
+    if driver and executable:
+        os.environ[_DRIVER_PATH_ENV_KEYS[driver.lower()]] = _resolve_bazel_path(executable).strip("'")
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
