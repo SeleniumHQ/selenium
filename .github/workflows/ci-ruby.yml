@@ -68,9 +68,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows, macos]
+        os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
+          - os: ubuntu
+            tag_filters: "unit,os-sensitive,skip-rbe"
           # Edge has no linux-arm64 build
           - os: ubuntu-24.04-arm
             tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
