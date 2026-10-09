@@ -35,8 +35,8 @@ import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 

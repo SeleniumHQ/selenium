@@ -32,8 +32,8 @@ import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.bidi.module.Permission;
 import org.openqa.selenium.bidi.permissions.PermissionState;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsSecureServer;
@@ -232,7 +232,6 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     assertThat(r2)
         .as("We expected an error because there's no real geolocation available")
         .containsKey("error");
-
   }
 
   private String getOrigin() {

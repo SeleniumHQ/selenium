@@ -30,8 +30,8 @@ import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 

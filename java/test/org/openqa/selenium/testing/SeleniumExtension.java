@@ -440,8 +440,10 @@ public class SeleniumExtension
       }
       try {
         closeExtraWindows(currentInstances.driver, currentInstances.initialWindowHandle);
+      } catch (NoSuchSessionException e) {
+        LOG.log(Level.FINE, "No session left to clean up after " + displayName(context), e);
       } catch (WebDriverException e) {
-        LOG.log(Level.FINE, "Unable to close extra windows after " + displayName(context), e);
+        LOG.log(Level.WARNING, "Unable to close extra windows after " + displayName(context), e);
       }
     }
   }
