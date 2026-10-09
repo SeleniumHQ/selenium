@@ -7,41 +7,41 @@ def selenium_manager():
     http_file(
         name = "download_sm_linux_x86_64",
         executable = True,
-        sha256 = "ebb19cbd821362416d49685124bf1cf2ff60c3a0fc7e8ff8039b9ec213deee0a",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager-linux-x86_64",
+        sha256 = "085fd5daa28593d81a363bac67599ea0dc02949f4bb3545886ea5a0a3c283d89",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager-linux-x86_64",
     )
 
     http_file(
         name = "download_sm_linux_arm64",
         executable = True,
-        sha256 = "d731461ff6e555e85e84ef44493a81bcdbd4c5a6fdb6557d29b76efb25c6ab32",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager-linux-arm64",
+        sha256 = "a1f5100359f2fa1d35765a11e2eb44ea584df5f1c884b51b2f3496b21fe67970",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager-linux-arm64",
     )
 
     http_file(
         name = "download_sm_macos",
         executable = True,
-        sha256 = "9449b13ce26ef57af218e03d9f5489358caeba95065d579c0723b002d8a04082",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager-macos",
+        sha256 = "606d5ff69dd2311208806d4600f54cecb3b907e4e2beee40dbd06d66128c6cc6",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager-macos",
     )
 
     http_file(
         name = "download_sm_windows",
         executable = True,
-        sha256 = "34a3cb4f5269bff71a477f649e4fdf96b61c8de77af33e7bce5ec982877149d3",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager-windows.exe",
+        sha256 = "1be3717362c16061c394a5c0240f044b9d4ffe96dccef3d6105f3d80d39853b7",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager-windows.exe",
     )
 
     http_file(
         name = "download_sm_sbom",
-        sha256 = "a1bf73c35344184f0fad1c0f3d1bb79b8c32f6d408f92aed6c8616609693c034",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager.cdx.json",
+        sha256 = "8ae5bddf80699cb13ab1f4f4945f11680e434644ff4a5d3e9d71cd5a9a16c41b",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager.cdx.json",
     )
 
     http_file(
         name = "download_sm_notice",
-        sha256 = "c6da938b5e19a5ba8c7fc177784225ec0463f956efee95da5a1eaa2ebb7a9d9f",
-        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-2296473/selenium-manager-THIRD-PARTY-NOTICES.txt",
+        sha256 = "68cca3acb3931cc30056c9ef7681f40316ed10baab07feedd9e614a1b0a19c94",
+        url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-a5e431c/selenium-manager-THIRD-PARTY-NOTICES.txt",
     )
 
 def _selenium_manager_artifacts_impl(_ctx):
