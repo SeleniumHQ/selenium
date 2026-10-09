@@ -44,7 +44,7 @@ alias(
     actual = select({
         "//common:manager_all": "//rust:_xc_file-windows",
         "//common:manager_host": "//rust:selenium-manager-windows",
-        "//common:manager_stub": ":stub-selenium-manager",
+        "//common:manager_stub": ":stub-selenium-manager-windows",
         "//conditions:default": "@download_sm_windows//file",
     }),
 )
@@ -74,4 +74,14 @@ exports_files(
         "stub-selenium-manager-THIRD-PARTY-NOTICES.txt",
     ],
     visibility = ["//rust:__pkg__"],
+)
+
+# Windows hosts run the manager in every browser test and cannot execute the shell-script stub.
+filegroup(
+    name = "stub-selenium-manager-windows",
+    srcs = ["stub-selenium-manager"],
+    target_compatible_with = select({
+        "//common:windows": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
 )
