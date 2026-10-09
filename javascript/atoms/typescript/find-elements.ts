@@ -15,21 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import { botError, INVALID_ARGUMENT, INVALID_SELECTOR, NO_SUCH_ELEMENT } from './core/error.js'
+
 function findElements(target: Record<string, unknown>, root?: Document | Element | ShadowRoot): Element[] {
   type LocatorTarget = Record<string, unknown>
   type Root = Document | Element | ShadowRoot
   type Rect = { left: number; top: number; width: number; height: number }
   type RelativeFilter = { kind: string; args: unknown[] }
-
-  const INVALID_SELECTOR = 'invalid selector'
-  const INVALID_ARGUMENT = 'invalid argument'
-  const NO_SUCH_ELEMENT = 'no such element'
-
-  function botError(code: string, message: string): Error {
-    const err = new Error(message)
-    ;(err as unknown as Record<string, unknown>)['code'] = code
-    return err
-  }
 
   function cssEscapeId(s: string): string {
     return s.replace(/[\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]()]/g, (c) => '\\' + c)

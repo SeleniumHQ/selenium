@@ -1,8 +1,10 @@
-load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library", "js_test")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
+load("//javascript/atoms:typescript/defs.bzl", "ATOMS", "typescript_atom")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -12,135 +14,63 @@ VERSION = "4.51.0-nightly202609302012"
 # of the "type": "module" declared by the @selenium/atoms package.json above
 # them in this directory.
 js_binary(
-    name = "cjs_to_iife",
-    data = ["typescript/cjs-to-iife.cjs"],
-    entry_point = "typescript/cjs-to-iife.cjs",
-)
-
-js_binary(
-    name = "wrap_get_attribute_as_global",
-    data = ["typescript/wrap-get-attribute-as-global.cjs"],
-    entry_point = "typescript/wrap-get-attribute-as-global.cjs",
-)
-
-js_binary(
     name = "wrap_as_global",
     data = ["typescript/wrap-as-global.cjs"],
     entry_point = "typescript/wrap-as-global.cjs",
 )
 
-js_binary(
-    name = "wrap_find_elements_as_global",
-    data = ["typescript/wrap-find-elements-as-global.cjs"],
-    entry_point = "typescript/wrap-find-elements-as-global.cjs",
+js_library(
+    name = "esbuild-atom-config",
+    srcs = ["typescript/esbuild.atom.config.mjs"],
 )
 
-# ── get-attribute ────────────────────────────────────────────────────────────
-
-ts_project(
-    name = "get-attribute-typescript-compiled",
-    srcs = ["typescript/get-attribute.ts"],
-    declaration = False,
-    source_map = False,
-    tsconfig = "typescript/tsconfig-get-attribute.json",
+write_file(
+    name = "atom-registry",
+    out = "typescript/atoms.json",
+    content = [json.encode(ATOMS)],
 )
 
-js_run_binary(
-    name = "get-attribute-typescript-generated",
-    srcs = [":typescript/get-attribute.js"],
-    outs = ["typescript/get-attribute.generated.js"],
-    args = [
-        "$(rootpath :typescript/get-attribute.js)",
-        "$(rootpath :typescript/get-attribute.generated.js)",
+# Adding an atom without extending the published surface is the drift this
+# guards against; the failure prints the blocks to paste into package.json.
+js_test(
+    name = "exports-up-to-date",
+    data = [
+        "package.json",
+        ":atom-registry",
     ],
-    tool = ":cjs_to_iife",
-)
-
-js_run_binary(
-    name = "get-attribute-global",
-    srcs = [":typescript/get-attribute.js"],
-    outs = ["typescript/get-attribute-global.js"],
-    args = [
-        "$(rootpath :typescript/get-attribute.js)",
-        "$(rootpath :typescript/get-attribute-global.js)",
+    entry_point = "typescript/generate-exports.cjs",
+    fixed_args = [
+        "$(rootpath :atom-registry)",
+        "$(rootpath package.json)",
+        "--check",
     ],
-    tool = ":wrap_get_attribute_as_global",
 )
 
-# ── find-elements ────────────────────────────────────────────────────────────
+# Every atom can reach every shared module, so the bundler gets the whole set
+# and tree-shakes down to what each entry point actually imports.
+ATOM_SRCS = glob([
+    "typescript/*.ts",
+    "typescript/core/*.ts",
+])
 
-ts_project(
-    name = "find-elements-typescript-compiled",
-    srcs = ["typescript/find-elements.ts"],
-    declaration = False,
-    source_map = False,
-    tsconfig = "typescript/tsconfig-find-elements.json",
-)
+# ── the atoms ────────────────────────────────────────────────────────────────
 
-js_run_binary(
-    name = "find-elements-typescript-generated",
-    srcs = [":typescript/find-elements.js"],
-    outs = ["typescript/find-elements.generated.js"],
-    args = [
-        "$(rootpath :typescript/find-elements.js)",
-        "$(rootpath :typescript/find-elements.generated.js)",
-    ],
-    tool = ":cjs_to_iife",
-)
-
-js_run_binary(
-    name = "find-elements-global",
-    srcs = [":typescript/find-elements.js"],
-    outs = ["typescript/find-elements-global.js"],
-    args = [
-        "$(rootpath :typescript/find-elements.js)",
-        "$(rootpath :typescript/find-elements-global.js)",
-    ],
-    tool = ":wrap_find_elements_as_global",
-)
-
-# ── is-displayed ─────────────────────────────────────────────────────────────
-
-ts_project(
-    name = "is-displayed-typescript-compiled",
-    srcs = ["typescript/is-displayed.ts"],
-    declaration = False,
-    source_map = False,
-    tsconfig = "typescript/tsconfig-is-displayed.json",
-)
-
-js_run_binary(
-    name = "is-displayed-typescript-generated",
-    srcs = [":typescript/is-displayed.js"],
-    outs = ["typescript/is-displayed.generated.js"],
-    args = [
-        "$(rootpath :typescript/is-displayed.js)",
-        "$(rootpath :typescript/is-displayed.generated.js)",
-    ],
-    tool = ":cjs_to_iife",
-)
-
-js_run_binary(
-    name = "is-displayed-global",
-    srcs = [":typescript/is-displayed.js"],
-    outs = ["typescript/is-displayed-global.js"],
-    args = [
-        "$(rootpath :typescript/is-displayed.js)",
-        "$(rootpath :typescript/is-displayed-global.js)",
-    ],
-    tool = ":wrap_as_global",
-)
+[
+    typescript_atom(
+        name = atom["name"],
+        srcs = ATOM_SRCS,
+        global_name = atom["global"],
+    )
+    for atom in ATOMS
+]
 
 # ── @selenium/atoms npm package ──────────────────────────────────────────────
 
+# esbuild only strips types, so this is also what type-checks the atoms: it is
+# the one target that runs tsc over them.
 ts_project(
     name = "atoms-npm-compiled",
-    srcs = [
-        "index.ts",
-        "typescript/find-elements.ts",
-        "typescript/get-attribute.ts",
-        "typescript/is-displayed.ts",
-    ],
+    srcs = ["index.ts"] + ATOM_SRCS,
     declaration = True,
     declaration_map = True,
     out_dir = "dist",
@@ -168,12 +98,9 @@ npm_package(
         # Published so the emitted .d.ts.map / .js.map resolve for consumers.
         "index.ts",
         "package.json",
-        "typescript/find-elements.ts",
-        "typescript/get-attribute.ts",
-        "typescript/is-displayed.ts",
         ":atoms-npm-compiled",
         ":license",
-    ],
+    ] + ATOM_SRCS,
     package = "@selenium/atoms",
     publishable = True,
     replace_prefixes = {"README.npm.md": "README.md"},
@@ -192,7 +119,7 @@ filegroup(
         "**/*.png",
         "**/*.svg",
         "**/*.ts",
-    ]) + [":get-attribute-global"] + [":is-displayed-global"] + [":find-elements-global"],
+    ]) + [":%s-global" % atom["name"] for atom in ATOMS],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
