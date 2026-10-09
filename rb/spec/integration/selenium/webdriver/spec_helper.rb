@@ -57,6 +57,7 @@ def create_guards(example)
   guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
   guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
   guards.add_condition(:rbe, GlobalTestEnv.rbe?)
+  guards.add_condition(:pinned, !GlobalTestEnv.driver_path.nil?)
   guards.add_condition(:version, GlobalTestEnv.browser_version)
   guards
 end
