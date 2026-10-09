@@ -6,7 +6,7 @@ load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
-VERSION = "4.51.0"
+VERSION = "4.52.0-nightly202610091837"
 
 # These build tools are CommonJS; the .cjs extension keeps that true regardless
 # of the "type": "module" declared by the @selenium/atoms package.json above
