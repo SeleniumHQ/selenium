@@ -115,7 +115,7 @@ generate_bidi_library(
     vendor_cddl_files = BIDI_VENDOR_CDDL_FILES,
 )
 
-VERSION = "4.51.0-nightly202609302012"
+VERSION = "4.51.0"
 
 BROWSER_VERSIONS = [
     "v155",
