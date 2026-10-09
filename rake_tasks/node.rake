@@ -69,11 +69,12 @@ def setup_github_npm_auth
   content = content.gsub('"name": "selenium-webdriver"', '"name": "@seleniumhq/selenium-webdriver"')
   File.write(webdriver_package_json, content)
 
-  # @seleniumhq/atoms is already scoped, so only the registry needs redirecting.
-  # GitHub Packages derives visibility from the repository, so drop the npmjs
-  # access flag rather than send one it does not honour.
+  # GitHub Packages only accepts the repository owner's scope, so @selenium
+  # becomes @seleniumhq. It also derives visibility from the repository, so
+  # drop the npmjs access flag rather than send one it does not honour.
   content = File.read(atoms_package_json)
   content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
+  content = content.gsub('"name": "@selenium/atoms"', '"name": "@seleniumhq/atoms"')
   content = content.gsub(/^\s*"access": "public",\n/, '')
   File.write(atoms_package_json, content)
 end
@@ -147,7 +148,7 @@ task :release do |_task, arguments|
   end
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
-  # @seleniumhq/atoms publishes first so the lower-level package is on the
+  # @selenium/atoms publishes first so the lower-level package is on the
   # registry before anything that may start depending on it.
   publish_npm_package(atoms_publish_target, config, dry_run)
   publish_npm_package(webdriver_publish_target, config, dry_run)
@@ -156,7 +157,7 @@ end
 desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
-  SeleniumRake.verify_package_published("https://registry.npmjs.org/@seleniumhq%2Fatoms/#{atoms_version}")
+  SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{atoms_version}")
 end
 
 desc 'Alias for node:release'
@@ -196,10 +197,10 @@ desc 'Update Node version'
 task :version, [:version] do |_task, arguments|
   old_version = node_version
   # Both packages are bumped by substituting old_version, so a drifted
-  # @seleniumhq/atoms would silently keep its stale version and then fail
+  # @selenium/atoms would silently keep its stale version and then fail
   # `node:verify` after the release has already gone out.
   if atoms_version != old_version
-    raise "Version mismatch: selenium-webdriver is #{old_version} but @seleniumhq/atoms is #{atoms_version}"
+    raise "Version mismatch: selenium-webdriver is #{old_version} but @selenium/atoms is #{atoms_version}"
   end
 
   nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"

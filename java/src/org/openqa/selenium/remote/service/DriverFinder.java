@@ -158,13 +158,17 @@ public class DriverFinder {
         && proxy.getProxyType() != Proxy.ProxyType.DIRECT
         && proxy.getProxyType() != Proxy.ProxyType.AUTODETECT
         && proxy.getProxyType() != Proxy.ProxyType.SYSTEM) {
-      arguments.add("--proxy");
+      String proxyUrl = null;
       if (proxy.getSslProxy() != null) {
-        arguments.add(proxy.getSslProxy());
+        proxyUrl = proxy.getSslProxy();
       } else if (proxy.getHttpProxy() != null) {
-        arguments.add(proxy.getHttpProxy());
+        proxyUrl = proxy.getHttpProxy();
       } else if (proxy.getProxyAutoconfigUrl() != null) {
-        arguments.add(proxy.getProxyAutoconfigUrl());
+        proxyUrl = proxy.getProxyAutoconfigUrl();
+      }
+      if (proxyUrl != null) {
+        arguments.add("--proxy");
+        arguments.add(proxyUrl);
       }
     }
     return arguments;

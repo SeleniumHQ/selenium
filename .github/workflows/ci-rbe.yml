@@ -60,4 +60,4 @@ jobs:
     with:
       name: Prepare Release
       ruby-version: jruby-10.1.0.0
-      run: ./scripts/github-actions/prepare-release.sh
+      run: ./scripts/github-actions/prepare-release.sh "$GITHUB_HEAD_REF"

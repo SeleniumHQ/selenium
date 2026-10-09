@@ -49,9 +49,7 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @BeforeEach
   void resetMousePointer() {
-    WebElement body = driver.findElement(By.tagName("body"));
-    Dimension size = body.getSize();
-    getBuilder(driver).moveToElement(body, -size.width / 2, -size.height / 2).perform();
+    getBuilder(driver).moveToLocation(0, 0).perform();
   }
 
   private Actions getBuilder(WebDriver driver) {

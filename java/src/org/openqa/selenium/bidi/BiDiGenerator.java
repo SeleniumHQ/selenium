@@ -206,8 +206,10 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     Generator(Map<String, Object> schema) {
-      this.schema = schema;
-      Map<String, Object> rawTypes = (Map<String, Object>) schema.get("types");
+      this.schema =
+          (Map<String, Object>)
+              inlineSyntheticMaps(schema, (Map<String, Object>) schema.get("types"));
+      Map<String, Object> rawTypes = (Map<String, Object>) this.schema.get("types");
       if (rawTypes != null) {
         for (Map.Entry<String, Object> entry : rawTypes.entrySet()) {
           types.put(entry.getKey(), (Map<String, Object>) entry.getValue());
@@ -702,7 +704,7 @@ public class BiDiGenerator {
       }
       // Unions are generated as interfaces, so a type belonging to more than one union (e.g.
       // PrimitiveProtocolValue in both RemoteValue and LocalValue) genuinely implements all of
-      // them — no single-inheritance to work around.
+      // them — no single-inheritance conflict to work around.
       List<String> parentUnionRefs = reachableParents(typeName);
       String implementsClause =
           parentUnionRefs.isEmpty()
@@ -2265,7 +2267,6 @@ public class BiDiGenerator {
       boolean required = Boolean.TRUE.equals(raw.get("required"));
       @SuppressWarnings("unchecked")
       Map<String, Object> type = (Map<String, Object>) raw.get("type");
-      type = inlineSyntheticMap(type);
       // wire key stays as the original spec name for JSON serialization
       return new FieldInfo(name, wire != null ? wire : rawName, required, type);
     }
@@ -2274,22 +2275,38 @@ public class BiDiGenerator {
     // script.NodeProperties.attributes ({*text => text}) is hoisted into a synthetic record with
     // no fields and the value type under "map" (e.g. script.NodePropertiesAttributes). Resolving
     // that ref as a record would emit an empty nested class whose @WarnOnUnknownFields drops
-    // every entry. Rewriting the field's ref to the inline map typeRef instead routes it through
-    // the existing map handling in resolveJavaType, serializeExpr and immutableCopyExpr.
-    private Map<String, Object> inlineSyntheticMap(Map<String, Object> typeRef) {
-      if (typeRef == null || !typeRef.containsKey("ref")) return typeRef;
-      Map<String, Object> value = syntheticMapValue(types.get(str(typeRef, "ref")));
-      if (value == null) return typeRef;
-      Map<String, Object> inlined = new LinkedHashMap<>(typeRef);
-      inlined.remove("ref");
-      inlined.put("map", value);
-      return inlined;
+    // every entry. Rewriting every ref to it into the inline map typeRef instead routes it through
+    // the existing map handling in resolveJavaType, serializeExpr and immutableCopyExpr. This
+    // runs over the whole schema, not just record fields, so that a ref nested in a list, map,
+    // union, alias or command/event payload is inlined too — computeSyntheticChildren drops the
+    // nested class for every such type, so any ref left behind would name a class that no longer
+    // exists.
+    @SuppressWarnings("unchecked")
+    private static Object inlineSyntheticMaps(Object node, Map<String, Object> rawTypes) {
+      if (node instanceof List) {
+        return ((List<Object>) node)
+            .stream().map(item -> inlineSyntheticMaps(item, rawTypes)).collect(Collectors.toList());
+      }
+      if (!(node instanceof Map)) return node;
+      Map<String, Object> result = new LinkedHashMap<>();
+      for (Map.Entry<String, Object> e : ((Map<String, Object>) node).entrySet()) {
+        result.put(e.getKey(), inlineSyntheticMaps(e.getValue(), rawTypes));
+      }
+      String ref = str(result, "ref");
+      Map<String, Object> value =
+          ref == null || rawTypes == null ? null : syntheticMapValue(mapField(rawTypes, ref));
+      if (value != null) {
+        result.remove("ref");
+        result.put("map", value);
+      }
+      return result;
     }
 
     // Returns the value typeRef of a field-less synthetic map record, or null if the node is not
-    // one. Only primitive-valued maps are inlined for now, per the scope agreed in #18106; a ref-
-    // or union-valued map keeps its current shape until its value typing is decided. (The only
-    // such maps in the schema today are Mozilla vendor types, which this generator does not read.)
+    // one. Only primitive-valued maps are inlined for now, per the scope agreed in #18106. A ref-
+    // or union-valued map is not: it still becomes an empty nested class that drops every entry
+    // on receipt, a known gap until its value typing is decided. (The only such maps in the schema
+    // today are Mozilla vendor types, which this generator does not read.)
     @SuppressWarnings("unchecked")
     private static Map<String, Object> syntheticMapValue(Map<String, Object> node) {
       if (node == null) return null;
