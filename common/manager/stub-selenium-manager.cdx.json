@@ -6,7 +6,7 @@
   "properties": [
     {
       "name": "selenium:stub",
-      "value": "placeholder SBOM for a --manager=host build; the pinned or --manager=all build carries the real one"
+      "value": "placeholder SBOM from a --manager=stub or --manager=host build; the --manager=download or --manager=all build carries the real one"
     }
   ]
 }
