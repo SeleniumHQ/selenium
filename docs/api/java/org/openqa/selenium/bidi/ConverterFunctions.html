@@ -55,10 +55,17 @@ loadScripts(document, 'script');</script>
 <div class="toc-header">Contents&nbsp;<input type="text" class="filter-input" disabled placeholder="Filter contents (type .)" aria-label="Filter table of contents" autocomplete="off" spellcheck="false"><input type="reset" class="reset-filter" disabled tabindex="-1" value="Reset"></div>
 <ol class="toc-list" tabindex="-1">
 <li><a href="#" tabindex="0">Description</a></li>
+<li><a href="#field-summary" tabindex="0">Field Summary</a></li>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
+<li><a href="#field-detail" tabindex="0">Field Details</a>
+<ol class="toc-list">
+<li><a href="#JSON" tabindex="0">JSON</a></li>
+</ol>
+</li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#map(java.lang.String,java.lang.reflect.Type)" tabindex="0">map(String, Type)</a></li>
+<li><a href="#fromMap(java.lang.Class)" tabindex="0">fromMap(Class)</a></li>
 </ol>
 </li>
 </ol>
@@ -75,12 +82,32 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="annotations"><a href="../Beta.html" title="annotation interface in org.openqa.selenium">@Beta</a>
+@Internal
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">ConverterFunctions</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 </div>
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final <a href="../json/Json.html" title="class in org.openqa.selenium.json">Json</a></code></div>
+<div class="col-second even-row-color"><code><a href="#JSON" class="member-name-link">JSON</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">The shared <a href="../json/Json.html" title="class in org.openqa.selenium.json"><code>Json</code></a> every generated BiDi type is decoded through, including via <a href="#fromMap(java.lang.Class)"><code>fromMap(Class)</code></a> and — through <a href="Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a>'s <code>Type</code>-based constructor — every plain command
+result too, so a command and an event never disagree on how strictly to accept the same wire
+shape.</div>
+</div>
+</div>
+</section>
+</li>
 <!-- ========== METHOD SUMMARY =========== -->
 <li>
 <section class="method-summary" id="method-summary">
@@ -92,10 +119,17 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>, X&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;keyName,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfX)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;, T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromMap(java.lang.Class)" class="member-name-link">fromMap</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;type)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns a function that deserializes a <code>Map&lt;String, Object&gt;</code> event payload (or a nested
+union variant, already parsed into a map) into an instance of <code>type</code> via <a href="../json/Json.html#convert(java.lang.Object,java.lang.reflect.Type)"><code>Json.convert(Object, Type)</code></a> — the same single-round-trip primitive <a href="#map(java.lang.String,java.lang.reflect.Type)"><code>map(String, Type)</code></a>
+uses, rather than a second hand-rolled <code>toJson</code>/<code>JsonInput</code> pair.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;X&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>, X&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#map(java.lang.String,java.lang.reflect.Type)" class="member-name-link">map</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;keyName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Type.html" title="class or interface in java.lang.reflect" class="external-link">Type</a>&nbsp;typeOfX)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Build a <a href="Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a> result mapper for the common case where the useful value is a single
 field of the response's <code>result</code> object.</div>
 </div>
@@ -111,6 +145,28 @@ field of the response's <code>result</code> object.</div>
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="JSON">
+<h3>JSON</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="../json/Json.html" title="class in org.openqa.selenium.json">Json</a></span>&nbsp;<span class="element-name">JSON</span></div>
+<div class="block">The shared <a href="../json/Json.html" title="class in org.openqa.selenium.json"><code>Json</code></a> every generated BiDi type is decoded through, including via <a href="#fromMap(java.lang.Class)"><code>fromMap(Class)</code></a> and — through <a href="Command.html" title="class in org.openqa.selenium.bidi"><code>Command</code></a>'s <code>Type</code>-based constructor — every plain command
+result too, so a command and an event never disagree on how strictly to accept the same wire
+shape. Adds <code>StrictLongCoercer</code>/<code>StrictStringCoercer</code>/<code>StrictNumberCoercer</code>
+(each rejects a value of the wrong JSON type for a String/integer/number field, instead of
+silently converting it — e.g. a numeric <code>url</code> or a quoted <code>timeOrigin</code>) and <a href="../json/StaticInitializerCoercer.html" title="class in org.openqa.selenium.json"><code>StaticInitializerCoercer</code></a> ahead of <code>EnumCoercer</code> (so a generated enum's exact-match
+<code>fromJson</code> runs, not the case-insensitive default) — all scoped to this instance only.</div>
+</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ============ METHOD DETAIL ========== -->
 <li>
 <section class="method-details" id="method-detail">
@@ -133,6 +189,17 @@ field are required: a missing <code>result</code> or a <code>null</code>/absent 
 <dd><code>keyName</code> - the field to read from the command's <code>result</code> object</dd>
 <dd><code>typeOfX</code> - the type to deserialize that field to (class or <a href="../json/TypeToken.html" title="class in org.openqa.selenium.json"><code>TypeToken</code></a>)</dd>
 </dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="fromMap(java.lang.Class)">
+<h3>fromMap</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;, T&gt;</span>&nbsp;<span class="element-name">fromMap</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;type)</span></div>
+<div class="block">Returns a function that deserializes a <code>Map&lt;String, Object&gt;</code> event payload (or a nested
+union variant, already parsed into a map) into an instance of <code>type</code> via <a href="../json/Json.html#convert(java.lang.Object,java.lang.reflect.Type)"><code>Json.convert(Object, Type)</code></a> — the same single-round-trip primitive <a href="#map(java.lang.String,java.lang.reflect.Type)"><code>map(String, Type)</code></a>
+uses, rather than a second hand-rolled <code>toJson</code>/<code>JsonInput</code> pair.</div>
 </div>
 </section>
 </li>

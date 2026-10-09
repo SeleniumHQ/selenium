@@ -456,7 +456,7 @@ calls to Create Session to a <a href="../../../grid/node/Node.html" title="class
 <div class="col-second even-row-color"><span class="type-name-label">HttpCommandExecutor.</span><code><a href="../../HttpCommandExecutor.html#httpClientFactory" class="member-name-link">httpClientFactory</a></code></div>
 <div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">this field will be removed in 4.52; keep a reference to the factory in the subclass
+<div class="deprecation-comment">this field will be removed in 4.53; keep a reference to the factory in the subclass
     instead.</div>
 </div>
 </div>
@@ -466,9 +466,15 @@ calls to Create Session to a <a href="../../../grid/node/Node.html" title="class
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static <a href="../HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">HttpCommandExecutor.</span><code><a href="../../HttpCommandExecutor.html#getDefaultClientFactory()" class="member-name-link">getDefaultClientFactory</a>()</code></div>
+<div class="col-first even-row-color"><code>protected <a href="../HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.</span><code><a href="../../RemoteWebDriver.html#getClientFactory()" class="member-name-link">getClientFactory</a>()</code></div>
 <div class="col-last even-row-color">
+<div class="block">Returns the factory this driver uses to create HTTP clients, for example the BiDi WebSocket
+client.</div>
+</div>
+<div class="col-first odd-row-color"><code>static <a href="../HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">HttpCommandExecutor.</span><code><a href="../../HttpCommandExecutor.html#getDefaultClientFactory()" class="member-name-link">getDefaultClientFactory</a>()</code></div>
+<div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 </div>
 </div>

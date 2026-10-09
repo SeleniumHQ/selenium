@@ -87,6 +87,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#defineCommand(java.lang.String,org.openqa.selenium.remote.CommandInfo)" tabindex="0">defineCommand(String, CommandInfo)</a></li>
 <li><a href="#getAddressOfRemoteServer()" tabindex="0">getAddressOfRemoteServer()</a></li>
 <li><a href="#execute(org.openqa.selenium.remote.Command)" tabindex="0">execute(Command)</a></li>
+<li><a href="#close()" tabindex="0">close()</a></li>
 </ol>
 </li>
 </ol>
@@ -102,7 +103,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>, <a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 </dl>
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
@@ -112,7 +113,7 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">HttpCommandExecutor</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></span></div>
+implements <a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a></span></div>
 </div>
 </section>
 <section class="summary">
@@ -133,7 +134,7 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <div class="col-second odd-row-color"><code><a href="#client" class="member-name-link">client</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">this field will become <code>protected</code> in 4.52; read it from a subclass instead.</div>
+<div class="deprecation-comment">this field will become <code>protected</code> in 4.53; read it from a subclass instead.</div>
 </div>
 </div>
 <div class="col-first even-row-color"><code>protected @Nullable <a href="CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a><wbr>&lt;<a href="http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
@@ -143,7 +144,7 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <div class="col-second odd-row-color"><code><a href="#httpClientFactory" class="member-name-link">httpClientFactory</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">this field will be removed in 4.52; keep a reference to the factory in the subclass
+<div class="deprecation-comment">this field will be removed in 4.53; keep a reference to the factory in the subclass
     instead.</div>
 </div>
 </div>
@@ -224,29 +225,32 @@ addition to the standard.</div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds or updates additional commands.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defineCommand(java.lang.String,org.openqa.selenium.remote.CommandInfo)" class="member-name-link">defineCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defineCommand(java.lang.String,org.openqa.selenium.remote.CommandInfo)" class="member-name-link">defineCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;commandName,
  <a href="CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&nbsp;info)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">It may be useful to extend the commands understood by this <code>HttpCommandExecutor</code> at run
 time, and this can be achieved via this method.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(org.openqa.selenium.remote.Command)" class="member-name-link">execute</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>, <a href="CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAdditionalCommands()" class="member-name-link">getAdditionalCommands</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Response.html" title="class in org.openqa.selenium.remote">Response</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#execute(org.openqa.selenium.remote.Command)" class="member-name-link">execute</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>, <a href="CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAdditionalCommands()" class="member-name-link">getAdditionalCommands</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns an immutable view of the additional commands.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getAddressOfRemoteServer()" class="member-name-link">getAddressOfRemoteServer</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getAddressOfRemoteServer()" class="member-name-link">getAddressOfRemoteServer</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDefaultClientFactory()" class="member-name-link">getDefaultClientFactory</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDefaultClientFactory()" class="member-name-link">getDefaultClientFactory</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 </div>
 </div>
@@ -282,7 +286,7 @@ time, and this can be achieved via this method.</div>
             <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50.0")
 </span><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></span>&nbsp;<span class="element-name">client</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">this field will become <code>protected</code> in 4.52; read it from a subclass instead.</div>
+<div class="deprecation-comment">this field will become <code>protected</code> in 4.53; read it from a subclass instead.</div>
 </div>
 </div>
 </section>
@@ -295,7 +299,7 @@ time, and this can be achieved via this method.</div>
             <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="4.50.0")
 </span><span class="modifiers">protected final</span>&nbsp;<span class="return-type">@Nullable <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></span>&nbsp;<span class="element-name">httpClientFactory</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
-<div class="deprecation-comment">this field will be removed in 4.52; keep a reference to the factory in the subclass
+<div class="deprecation-comment">this field will be removed in 4.53; keep a reference to the factory in the subclass
     instead.</div>
 </div>
 <div class="block">The factory that created <a href="#client"><code>client</code></a>, or <code>null</code> when the executor was created from an
@@ -527,6 +531,20 @@ for subclasses only to call this.</div>
 <dd><code><a href="CommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></code>&nbsp;in interface&nbsp;<code><a href="CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="close()">
+<h3>close</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">close</span>()</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html#close()" title="class or interface in java.lang" class="external-link">close</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></code></dd>
+<dt>Specified by:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html#close()" title="class or interface in java.io" class="external-link">close</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a></code></dd>
 </dl>
 </div>
 </section>

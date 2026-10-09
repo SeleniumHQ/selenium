@@ -70,12 +70,13 @@ loadScripts(document, 'script');</script>
 </dl>
 <dl class="notes">
 <dt>All Superinterfaces:</dt>
-<dd><code>com.google.common.base.Function&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;</code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;</code></dd>
 </dl>
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">ExpectedCondition&lt;T extends @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span><span class="extends-implements">
-extends com.google.common.base.Function&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;</span></div>
+<div class="type-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">ExpectedCondition&lt;T extends @Nullable <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span><span class="extends-implements">
+extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, T&gt;</span></div>
 <div class="block">Models a condition that might reasonably be expected to eventually evaluate to something that is
 neither null nor false. Examples would include determining if a web page has loaded or that an
 element is visible.
@@ -92,11 +93,8 @@ have unexpected side effects.</div>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-com.google.common.base.Function">Methods inherited from interface&nbsp;com.google.common.base.Function</h3>
-<code>apply, equals</code></div>
-<div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.util.function.Function">Methods inherited from interface&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#method-summary" title="class or interface in java.util.function" class="external-link">Function</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#andThen(java.util.function.Function)" title="class or interface in java.util.function" class="external-link">andThen</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#compose(java.util.function.Function)" title="class or interface in java.util.function" class="external-link">compose</a></code></div>
+<code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#andThen(java.util.function.Function)" title="class or interface in java.util.function" class="external-link">andThen</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#apply(T)" title="class or interface in java.util.function" class="external-link">apply</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html#compose(java.util.function.Function)" title="class or interface in java.util.function" class="external-link">compose</a></code></div>
 </section>
 </li>
 </ul>

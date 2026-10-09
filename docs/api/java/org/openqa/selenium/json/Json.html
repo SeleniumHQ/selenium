@@ -69,6 +69,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
 <li><a href="#%3Cinit%3E()" tabindex="0">Json()</a></li>
+<li><a href="#%3Cinit%3E(java.lang.Iterable)" tabindex="0">Json(Iterable)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -212,6 +213,8 @@ runtime-visible parameter names in every type you need to deserialize.</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">Json</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.Iterable)" class="member-name-link">Json</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Iterable.html" title="class or interface in java.lang" class="external-link">Iterable</a>&lt;<a href="TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;&gt;&nbsp;extraCoercers)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -364,6 +367,21 @@ values to properties in the deserialized object.</div>
 <h3>Json</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Json</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.lang.Iterable)">
+<h3>Json</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Json</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Iterable.html" title="class or interface in java.lang" class="external-link">Iterable</a>&lt;<a href="TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;&gt;&nbsp;extraCoercers)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>extraCoercers</code> - Additional <a href="TypeCoercer.html" title="class in org.openqa.selenium.json"><code>TypeCoercer</code></a>s, tried in the given order before the
+    built-in ones — lets a caller customize how a particular type is converted to or from JSON
+    (a stricter check, a different wire representation, support for a type the built-in
+    coercers don't handle, etc.) for just this <code>Json</code> instance.</dd>
+</dl>
 </div>
 </section>
 </li>
