@@ -1,2 +1,2 @@
-Placeholder notices file for a --manager=host build.
-The pinned or --manager=all build carries the real third-party notices for Selenium Manager.
+Placeholder notices file from a --manager=stub or --manager=host build.
+The --manager=download or --manager=all build carries the real third-party notices for Selenium Manager.
