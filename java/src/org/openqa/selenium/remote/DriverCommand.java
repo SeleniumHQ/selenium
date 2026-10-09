@@ -221,6 +221,11 @@ public interface DriverCommand {
 
   String FIRE_SESSION_EVENT = "fireSessionEvent";
 
+  // Web extensions — classic Firefox fallback for HasWebExtensions. The URLs are bound by
+  // org.openqa.selenium.firefox.AddHasExtensions via AdditionalHttpCommands.
+  String INSTALL_EXTENSION = "installExtension";
+  String UNINSTALL_EXTENSION = "uninstallExtension";
+
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
     return NEW_SESSION(singleton(capabilities));
