@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.bidi.ConverterFunctions;
 import org.openqa.selenium.json.JsonException;
 
 @Tag("UnitTests")
@@ -36,11 +36,10 @@ class NodePropertiesTest {
   @Test
   void attributesDeserializeAsAStringMap() {
     NodeProperties props =
-        new Json()
-            .toType(
-                "{\"nodeType\": 1, \"childNodeCount\": 0,"
-                    + " \"attributes\": {\"id\": \"main\", \"class\": \"a b\"}}",
-                NodeProperties.class);
+        ConverterFunctions.JSON.toType(
+            "{\"nodeType\": 1, \"childNodeCount\": 0,"
+                + " \"attributes\": {\"id\": \"main\", \"class\": \"a b\"}}",
+            NodeProperties.class);
 
     assertThat(props.getAttributes()).hasValue(Map.of("id", "main", "class", "a b"));
   }
@@ -48,10 +47,9 @@ class NodePropertiesTest {
   @Test
   void attributesAreUnmodifiable() {
     NodeProperties props =
-        new Json()
-            .toType(
-                "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": {\"id\": \"main\"}}",
-                NodeProperties.class);
+        ConverterFunctions.JSON.toType(
+            "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": {\"id\": \"main\"}}",
+            NodeProperties.class);
 
     Map<String, String> attributes = props.getAttributes().orElseThrow();
     assertThatThrownBy(() -> attributes.put("id", "other"))
@@ -61,7 +59,8 @@ class NodePropertiesTest {
   @Test
   void absentAttributesAreEmpty() {
     NodeProperties props =
-        new Json().toType("{\"nodeType\": 1, \"childNodeCount\": 0}", NodeProperties.class);
+        ConverterFunctions.JSON.toType(
+            "{\"nodeType\": 1, \"childNodeCount\": 0}", NodeProperties.class);
 
     assertThat(props.getAttributes()).isEmpty();
   }
@@ -70,10 +69,19 @@ class NodePropertiesTest {
   void attributesThatAreNotAnObjectAreRejected() {
     assertThatThrownBy(
             () ->
-                new Json()
-                    .toType(
-                        "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": \"oops\"}",
-                        NodeProperties.class))
+                ConverterFunctions.JSON.toType(
+                    "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": \"oops\"}",
+                    NodeProperties.class))
+        .isInstanceOf(JsonException.class);
+  }
+
+  @Test
+  void attributesWithNonStringValuesAreRejected() {
+    assertThatThrownBy(
+            () ->
+                ConverterFunctions.JSON.toType(
+                    "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": {\"id\": 1}}",
+                    NodeProperties.class))
         .isInstanceOf(JsonException.class);
   }
 }
