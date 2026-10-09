@@ -284,8 +284,8 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: "Release preparation failed: ${{ needs.parse-tag.outputs.tag }}"
           SLACK_MESSAGE: |
+            Release preparation failed: ${{ needs.parse-tag.outputs.tag }}
             • CDP Current: ${{ needs.verify-cdp.result }}
             • Selenium Manager: ${{ needs.selenium-manager.result }}
             • Versions: ${{ needs.commit-versions.result }}

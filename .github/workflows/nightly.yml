@@ -113,7 +113,6 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly ${{ needs.prepare.outputs.language }} Release failed
-          SLACK_MESSAGE: "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          SLACK_MESSAGE: "${{ needs.prepare.outputs.language == 'all' && 'Nightly release failed' || format('Nightly {0} release failed', needs.prepare.outputs.language) }}: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
