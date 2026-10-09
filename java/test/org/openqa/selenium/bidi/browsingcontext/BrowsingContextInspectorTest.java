@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -55,17 +56,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToWindowBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }
@@ -104,16 +102,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }

@@ -20,7 +20,9 @@ package org.openqa.selenium.bidi.protocol.module;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WindowType;
@@ -149,13 +151,14 @@ class BrowsingContextModuleTest extends JupiterTestBase {
     // contextCreated's payload is browsingContext.ContextCreatedParameters, not
     // browsingContext.Info — the spec declares it as its own type (same fields as Info, but
     // distinct), unlike contextDestroyed below, which really does use Info.
-    CompletableFuture<ContextCreatedParameters> future = new CompletableFuture<>();
-    browsingContext.subscribe(BrowsingContext.CONTEXT_CREATED, future::complete);
+    Map<String, ContextCreatedParameters> created = new ConcurrentHashMap<>();
+    browsingContext.subscribe(
+        BrowsingContext.CONTEXT_CREATED, info -> created.put(info.getContext(), info));
 
     String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
-    ContextCreatedParameters info = future.get(5, TimeUnit.SECONDS);
-    assertThat(info.getContext()).isEqualTo(windowHandle);
+    wait.until(d -> created.containsKey(windowHandle));
+    ContextCreatedParameters info = created.get(windowHandle);
     assertThat(info.getUrl()).isEqualTo("about:blank");
     assertThat(info.getChildren()).isNull();
   }
