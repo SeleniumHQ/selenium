@@ -1,3 +1,17 @@
+v4.51.0
+======
+* Support CDP versions: v153, v154, v155
+* Do not leak the HttpClient on startup failure (#18047)
+* Add RemoteWebDriver.getClientFactory() and move HttpCommandExecutor field removal to 4.53 (#18111)
+* [bidi] Decode nested RemoteValues from the parsed tree instead of re-serializing each subtree (#18095)
+* remove guava from client bindings #12737 (#13739)
+* [bidi] Add BiDi code generator (#17777)
+* [bidi] Type field-less synthetic map records as Map<String, V> (#18122)
+* [build] source the Java and .NET versions from a root version.bzl that tests do not read (#18138)
+* Do not pass a bare --proxy to Selenium Manager (#18089)
+* [bidi] Update tests to use converter functions (#18146)
+* [build] Automated Browser Version Update (major) with CDP (#18131)
+
 v4.50.0
 ======
 * Support CDP versions: v152, v153, v154
