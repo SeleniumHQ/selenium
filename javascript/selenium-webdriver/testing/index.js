@@ -23,11 +23,11 @@
  * "ignore" function. If the provided predicate returns true, the attached
  * test case will be skipped:
  *
- *     test.ignore(maybe()).it('is flaky', function() {
- *       if (Math.random() < 0.5) throw Error();
- *     });
+ *    test.ignore(maybe()).it('is flaky', function() {
+ *      if (Math.random() < 0.5) throw Error();
+ *    });
  *
- *     function maybe() { return Math.random() < 0.5; }
+ *    function maybe() { return Math.random() < 0.5; }
  */
 
 'use strict'
@@ -74,7 +74,7 @@ TargetBrowser.prototype.version
 /**
  * The specific {@linkplain ../lib/capabilities.Platform platform} for the
  * targeted browser, if any.
- * @type {(string|undefined)}.
+ * @type {(string|undefined)}
  */
 TargetBrowser.prototype.platform
 
@@ -103,7 +103,7 @@ function warn(msg) {
  * Extracts the browsers for a test suite to target from the `SELENIUM_BROWSER`
  * environment variable.
  *
- * @return {{name: string, version: string, platform: string}}[] the browsers to target.
+ * @return {{name: string, version: string, platform: string}[]} the browsers to target.
  */
 function getBrowsersToTestFromEnv() {
   let browsers = process.env['SELENIUM_BROWSER']
@@ -156,7 +156,7 @@ function getAvailableBrowsers() {
   }
 
   if (availableBrowsers.length === 0) {
-    warn(`Unable to locate any WebDriver executables for testing`)
+    warn('Unable to locate any WebDriver executables for testing')
   }
 
   return availableBrowsers
@@ -176,10 +176,10 @@ let seleniumServer
  *
  * Specific browsers can be selected at runtime by setting the
  * `SELENIUM_BROWSER` environment variable. This environment variable has the
- * same semantics as  with the WebDriver {@link ../index.Builder Builder},
+ * same semantics as with the WebDriver {@link ../index.Builder Builder},
  * except you may use a comma-delimited list to run against multiple browsers:
  *
- *     SELENIUM_BROWSER=chrome,firefox mocha --recursive tests/
+ *   SELENIUM_BROWSER=chrome,firefox mocha --recursive tests/
  *
  * The `SELENIUM_REMOTE_URL` environment variable may be set to configure tests
  * to run against an externally managed (usually remote) Selenium server. When
@@ -207,6 +207,7 @@ function init(force = false) {
   if (wasInit && !force) {
     return
   }
+
   wasInit = true
 
   // If force re-init, kill the current server if there is one.
@@ -254,6 +255,68 @@ function init(force = false) {
 
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
 const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
+
+/**
+ * Model of run configuration parsed once from environment variables.
+ */
+class RunConfig {
+  constructor() {
+    this.headless = process.env['SE_HEADLESS'] === 'true' || process.env['SE_HEADLESS'] === '1'
+    this.bidi = process.env['SE_BIDI'] !== 'false' && process.env['SE_BIDI'] !== '0'
+
+    this.drivers = {
+      [Browser.CHROME]: process.env['SE_CHROMEDRIVER'] ? locate(process.env['SE_CHROMEDRIVER']) : null,
+      [Browser.EDGE]: process.env['SE_EDGEDRIVER'] ? locate(process.env['SE_EDGEDRIVER']) : null,
+      [Browser.FIREFOX]: process.env['SE_GECKODRIVER'] ? locate(process.env['SE_GECKODRIVER']) : null,
+    }
+
+    this.binaries = {
+      [Browser.CHROME]: process.env['SE_CHROME'] ? locate(process.env['SE_CHROME']) : null,
+      [Browser.EDGE]: process.env['SE_EDGE'] ? locate(process.env['SE_EDGE']) : null,
+      [Browser.FIREFOX]: process.env['SE_FIREFOX'] ? locate(process.env['SE_FIREFOX']) : null,
+    }
+  }
+}
+
+let cachedRunConfig = null
+function getRunConfig() {
+  if (!cachedRunConfig) {
+    cachedRunConfig = new RunConfig()
+  }
+  return cachedRunConfig
+}
+
+function getOrCreateOptions(browser, builder) {
+  switch (browser.name) {
+    case Browser.CHROME:
+      return builder.getChromeOptions() || new chrome.Options()
+    case Browser.EDGE:
+      return builder.getEdgeOptions() || new edge.Options()
+    case Browser.FIREFOX:
+      return builder.getFirefoxOptions() || new firefox.Options()
+    default:
+      return null
+  }
+}
+
+function setOptions(browser, builder, options) {
+  if (!options) {
+    return
+  }
+  switch (browser.name) {
+    case Browser.CHROME:
+      builder.setChromeOptions(options)
+      break
+    case Browser.EDGE:
+      builder.setEdgeOptions(options)
+      break
+    case Browser.FIREFOX:
+      builder.setFirefoxOptions(options)
+      break
+    default:
+      break
+  }
+}
 
 /**
  * Defines the environment a {@linkplain suite test suite} is running against.
@@ -312,48 +375,56 @@ class Environment {
     const urlOrServer = URL_MAP.get(this)
 
     const builder = new Builder()
+    const config = getRunConfig()
 
-    // Sniff the environment variables for paths to use for the common browsers
-    // Chrome
-    if ('SE_CHROMEDRIVER' in process.env) {
-      const found = locate(process.env.SE_CHROMEDRIVER)
-      const service = new chrome.ServiceBuilder(found)
-      builder.setChromeService(service)
+    // 1. Driver Service (only for targeted browser)
+    const driver = config.drivers[browser.name]
+    if (driver) {
+      if (browser.name === Browser.CHROME) {
+        builder.setChromeService(new chrome.ServiceBuilder(driver))
+      } else if (browser.name === Browser.EDGE) {
+        builder.setEdgeService(new edge.ServiceBuilder(driver))
+      } else if (browser.name === Browser.FIREFOX) {
+        builder.setFirefoxService(new firefox.ServiceBuilder(driver))
+      }
     }
-    if ('SE_CHROME' in process.env) {
-      const binary = locate(process.env.SE_CHROME)
-      const options = new chrome.Options()
-      options.setChromeBinaryPath(binary)
-      options.setAcceptInsecureCerts(true)
-      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
-      builder.setChromeOptions(options)
-    }
-    // Edge
-    if ('SE_EDGEDRIVER' in process.env) {
-      const found = locate(process.env.SE_EDGEDRIVER)
-      const service = new edge.ServiceBuilder(found)
-      builder.setEdgeService(service)
-    }
-    if ('SE_EDGE' in process.env) {
-      const binary = locate(process.env.SE_EDGE)
-      const options = new edge.Options()
-      options.setBinaryPath(binary)
-      options.setAcceptInsecureCerts(true)
-      options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
-      builder.setEdgeOptions(options)
-    }
-    // Firefox
-    if ('SE_GECKODRIVER' in process.env) {
-      const found = locate(process.env.SE_GECKODRIVER)
-      const service = new firefox.ServiceBuilder(found)
-      builder.setFirefoxService(service)
-    }
-    if ('SE_FIREFOX' in process.env) {
-      const binary = locate(process.env.SE_FIREFOX)
-      const options = new firefox.Options()
-      options.enableBidi()
-      options.setBinary(binary)
-      builder.setFirefoxOptions(options)
+
+    // 2. Options Composition
+    const options = getOrCreateOptions(browser, builder)
+    if (options) {
+      // Pinned binary
+      const binary = config.binaries[browser.name]
+      if (binary) {
+        if (browser.name === Browser.CHROME) {
+          options.setChromeBinaryPath(binary)
+        } else if (browser.name === Browser.EDGE) {
+          options.setBinaryPath(binary)
+        } else if (browser.name === Browser.FIREFOX) {
+          options.setBinary(binary)
+        }
+      }
+
+      // Baseline stability flags (Chromium)
+      if (browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+        options.setAcceptInsecureCerts(true)
+        options.addArguments('disable-infobars', 'disable-breakpad', 'disable-dev-shm-usage', 'no-sandbox')
+      }
+
+      // Toggle: Headless
+      if (config.headless) {
+        if (browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+          options.addArguments('--headless=new')
+        } else if (browser.name === Browser.FIREFOX) {
+          options.addArguments('-headless')
+        }
+      }
+
+      // Toggle: BiDi
+      if (config.bidi && browser.name === Browser.FIREFOX) {
+        options.enableBidi()
+      }
+
+      setOptions(browser, builder, options)
     }
 
     builder.disableEnvironmentOverrides()
@@ -370,8 +441,8 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
-      // Enable BiDi for supporting browsers.
-      if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+      // Enable BiDi for supporting browsers when toggle is active
+      if (config.bidi && (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE)) {
         builder.setCapability('webSocketUrl', true)
         builder.setCapability('unhandledPromptBehavior', 'ignore')
       }
@@ -402,7 +473,7 @@ function SuiteOptions() {}
 
 /**
  * The browsers to run the test suite against.
- * @type {!Array<!(Browser|TargetBrowser)>}
+ * @type {!Array<(Browser|TargetBrowser)>}
  */
 SuiteOptions.prototype.browsers
 
@@ -417,35 +488,35 @@ let inSuite = false
  *
  * Sample usage:
  *
- *     const {By, Key, until} = require('selenium-webdriver');
- *     const {suite} = require('selenium-webdriver/testing');
+ *   const {By, Key, until} = require('selenium-webdriver');
+ *   const {suite} = require('selenium-webdriver/testing');
  *
- *     suite(function(env) {
- *       describe('Google Search', function() {
- *         let driver;
+ *   suite(function(env) {
+ *     describe('Google Search', function() {
+ *       let driver;
  *
- *         before(async function() {
- *           driver = await env.builder().build();
- *         });
+ *       before(async function() {
+ *         driver = await env.builder().build();
+ *       });
  *
- *         after(() => driver.quit());
+ *       after(() => driver.quit());
  *
- *         it('demo', async function() {
- *           await driver.get('http://www.google.com/ncr');
+ *       it('demo', async function() {
+ *         await driver.get('http://www.google.com/ncr');
  *
- *           let q = await driver.findElement(By.name('q'));
- *           await q.sendKeys('webdriver', Key.RETURN);
- *           await driver.wait(
- *               until.titleIs('webdriver - Google Search'), 1000);
- *         });
+ *         let q = await driver.findElement(By.name('q'));
+ *         await q.sendKeys('webdriver', Key.RETURN);
+ *         await driver.wait(
+ *           until.titleIs('webdriver - Google Search'), 1000);
  *       });
  *     });
+ *   });
  *
  * By default, this example suite will run against every WebDriver-enabled
  * browser on the current system. Alternatively, the `SELENIUM_BROWSER`
  * environment variable may be used to run against a specific browser:
  *
- *     SELENIUM_BROWSER=firefox mocha -t 120000 example_test.js
+ *   SELENIUM_BROWSER=firefox mocha -t 120000 example_test.js
  *
  * @param {function(!Environment)} fn the function to call to build the test
  *     suite.
@@ -482,24 +553,24 @@ function suite(fn, options = undefined) {
             loopback: true,
             args: ['--host', '127.0.0.1', ...pinnedGridArgs(targetBrowsers.map((b) => b.name))],
           })
-
-          const startTimeout = 65 * 1000
-
-          function startSelenium() {
-            if (typeof this.timeout === 'function') {
-              this.timeout(startTimeout) // For mocha.
-            }
-
-            info(`Starting selenium server ${seleniumJar}`)
-            return seleniumServer.start(60 * 1000)
-          }
-
-          const /** !Function */ beforeHook = global.beforeAll || global.before
-          beforeHook(startSelenium, startTimeout)
         }
 
-        fn(new Environment(browser, seleniumUrl || seleniumServer))
+        const startTimeout = 65 * 1000
+
+        function startSelenium() {
+          if (typeof this.timeout === 'function') {
+            this.timeout(startTimeout) // For mocha.
+          }
+
+          info(`Starting selenium server ${seleniumJar}`)
+          return seleniumServer.start(60 * 1000)
+        }
+
+        const /** !Function */ beforeHook = global.beforeAll || global.before
+        beforeHook(startSelenium, startTimeout)
       })
+
+      fn(new Environment(browser, seleniumUrl || seleniumServer))
     }
   } finally {
     inSuite = false
@@ -513,18 +584,17 @@ function suite(fn, options = undefined) {
  *
  * Sample usage:
  *
- *     const {Browser} = require('selenium-webdriver');
- *     const {suite, ignore} = require('selenium-webdriver/testing');
+ *   const {Browser} = require('selenium-webdriver');
+ *   const {suite, ignore} = require('selenium-webdriver/testing');
  *
- *     suite(function(env) {
- *
- *         // Skip tests the current environment targets Chrome.
- *         ignore(env.browsers(Browser.CHROME)).
- *         describe('something', async function() {
- *           let driver = await env.builder().build();
- *           // etc.
- *         });
+ *   suite(function(env) {
+ *     // Skip tests the current environment targets Chrome.
+ *     ignore(env.browsers(Browser.CHROME)).
+ *     describe('something', async function() {
+ *       let driver = await env.builder().build();
+ *       // etc.
  *     });
+ *   });
  *
  * @param {function(): boolean} predicateFn A predicate to call to determine
  *     if the test should be suppressed. This function MUST be synchronous.
@@ -540,6 +610,7 @@ function ignore(predicateFn) {
     it: getTestHook('it'),
     xit: getTestHook('xit'),
   }
+
   hooks.fdescribe = isJasmine ? getTestHook('fdescribe') : hooks.describe.only
   hooks.fit = isJasmine ? getTestHook('fit') : hooks.it.only
 
@@ -566,22 +637,13 @@ function ignore(predicateFn) {
   }
 }
 
-/**
- * @param {string} name
- * @return {!Function}
- * @throws {TypeError}
- */
 function getTestHook(name) {
   let fn = global[name]
-  let type = typeof fn
-  if (type !== 'function') {
-    throw TypeError(
-      `Expected global.${name} to be a function, but is ${type}.` +
-        ' This can happen if you try using this module when running with' +
-        ' node directly instead of using jasmine or mocha',
-    )
+  return function (...args) {
+    if (typeof fn === 'function') {
+      return fn(...args)
+    }
   }
-  return fn
 }
 
 /**
