@@ -169,6 +169,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
+      use-cache: false
       run: ./go py:build --config=rbe_release
       artifact-name: pypi-distributions
       artifact-path: |
@@ -271,6 +272,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
+      use-cache: false
       ref: ${{ needs.parse-tag.outputs.tag }}
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
     secrets: inherit
@@ -281,6 +283,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
+      use-cache: false
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 

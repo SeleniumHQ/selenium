@@ -76,6 +76,11 @@ on:
         required: false
         type: boolean
         default: false
+      use-cache:
+        description: Restore the Bazel repository cache
+        required: false
+        type: boolean
+        default: true
       gem-trusted-publishing:
         description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
         required: false
@@ -191,16 +196,8 @@ jobs:
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
           external-cache: false
-          repository-cache: |
-            - MODULE.bazel
-            - multitool.lock.json
-            - pnpm-lock.yaml
-            - rust/Cargo.lock
-            - java/maven_install.json
-            - py/requirements_lock.txt
-            - rb/Gemfile.lock
-            - dotnet/paket.lock
-            - common/selenium_manager.bzl
+          # Keep the key files in sync with the paths filter in gh-cache.yml
+          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, common/selenium_manager.bzl]' || 'false' }}
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash

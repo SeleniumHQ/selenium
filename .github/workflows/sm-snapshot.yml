@@ -383,6 +383,7 @@ jobs:
       ref: trunk
       run: ./go update_manager ${{ needs.publish.outputs.tag }}
       artifact-name: selenium-manager-pin
+      use-cache: false
 
   commit-pin:
     name: "Commit Bazel Pin"

@@ -137,6 +137,7 @@ jobs:
       name: Bump versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
       artifact-name: patch-versions
+      use-cache: false
 
   commit-versions:
     name: Commit Versions
@@ -161,6 +162,7 @@ jobs:
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
+      use-cache: false
 
   update-rust-changelogs:
     name: Update Rust Changelogs
@@ -172,6 +174,7 @@ jobs:
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go rust:changelogs
       artifact-name: patch-rust-changelogs
+      use-cache: false
 
   update-authors:
     name: Update Authors
@@ -182,6 +185,7 @@ jobs:
       name: Update Authors
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go authors
       artifact-name: patch-authors
+      use-cache: false
 
   update-manager:
     name: Update Selenium Manager Binaries
@@ -192,6 +196,7 @@ jobs:
       name: Update Selenium Manager Binaries
       run: ./go update_manager ${{ needs.selenium-manager.outputs.tag }}
       artifact-name: patch-manager
+      use-cache: false
 
   create-pr:
     name: Create Pull Request
