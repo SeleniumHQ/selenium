@@ -128,8 +128,8 @@ def add_test_to_index(index, test, srcs)
   srcs.each do |src|
     # Convert //pkg:file to pkg/file
     filepath = src.sub(%r{^//}, '').tr(':', '/')
-    # Skip dotnet tests for java sources (dotnet depends on java server but has no remote tests)
-    next if filepath.start_with?('java/') && test.start_with?('//dotnet/')
+    # Not currently running grid tests in other bindings on GitHub Runners
+    next if filepath.start_with?('java/') && !test.start_with?('//java/')
 
     index[filepath] << test
   end
@@ -239,8 +239,7 @@ def query_unindexed_file(filepath)
     targets = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
 
-  # dotnet tests depend on java server, but there are no remote tests, so safe to ignore
-  filepath.start_with?('java/') ? targets.reject { |t| t.start_with?('//dotnet/') } : targets
+  filepath.start_with?('java/') ? targets.select { |t| t.start_with?('//java/') } : targets
 rescue StandardError => e
   puts "  Warning: Failed to query unindexed file #{filepath}: #{e.message}"
   []
