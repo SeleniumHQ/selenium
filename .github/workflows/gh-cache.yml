@@ -44,3 +44,21 @@ jobs:
         //javascript/selenium-webdriver:* //dotnet/test/... &&
         bazel fetch --repo=@download_sm_linux_x86_64 --repo=@download_sm_linux_arm64
         --repo=@download_sm_macos --repo=@download_sm_windows
+  prune:
+    name: Prune Superseded Caches
+    needs: populate
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Prune superseded setup-bazel caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --key setup-bazel- --limit 1000 --json id,key,createdAt \
+            --jq '[.[] | . + {group: (.key | sub("-[0-9a-f]+$"; ""))}]
+                  | group_by(.group) | map(sort_by(.createdAt) | reverse | .[1:])
+                  | flatten | .[].id' \
+            | xargs -r -n1 gh cache delete
