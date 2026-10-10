@@ -34,15 +34,6 @@ permissions:
 # or dispatch and exclude the smoke tags, so they are the nightly complement of
 # smoke rather than the whole tree.
 jobs:
-  build:
-    name: Build
-    if: github.event_name == 'schedule' || !inputs.smoke
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: |
-        bazel build //py:selenium-wheel //py:selenium-sdist
-
   lint-ruff:
     name: Lint (ruff)
     uses: ./.github/workflows/bazel.yml

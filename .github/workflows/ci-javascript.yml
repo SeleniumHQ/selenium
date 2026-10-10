@@ -21,13 +21,6 @@ permissions:
 
 # RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //javascript/selenium-webdriver
-
   # Prettier is checked by ci-lint.yml.
   lint:
     name: Lint

@@ -16,14 +16,6 @@ jobs:
       os: windows
       run: ./go dotnet:lint
 
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      os: windows
-      run: bazel build //dotnet:all
-
   integration-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
