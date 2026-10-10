@@ -9,19 +9,19 @@ see scripts/update_cddl.py for how they are resolved and when the pins advance.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 # The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
-_COMMIT = "db9ee48e003ef8368d0b933a3443cf21923077d0"
+_COMMIT = "094e50116ac02149aba555e0e321ff30d00cd406"
 _CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 _DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
 
 # The rendered WebDriver BiDi spec, pinned at a w3c/webdriver-bidi "gh-pages" commit. Only this
 # file carries the readable prose section ids (`#type-`/`#command-`/`#event-`/`#module-`).
-_BIDI_SPEC_HTML_COMMIT = "2a0260f9c50be3dceae9ca556ecccd35ac30a99f"
-_BIDI_SPEC_HTML_SHA256 = "443ca1febb1a3b1745d56d289a447e41f0676abe69a08213ac28ba90c7b14593"
+_BIDI_SPEC_HTML_COMMIT = "336307349d67dc6445370477ae691c60584eb44a"
+_BIDI_SPEC_HTML_SHA256 = "d07f85f8afd9e2d2ee616832f4f280ffd2c9ba06ff00b5ad9591eb5ad2b8e1bb"
 _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{commit}/index.html".format(
     commit = _BIDI_SPEC_HTML_COMMIT,
 )
 
-# The last mozilla-firefox/firefox "main" commit to change remote/webdriver-bidi/cddl.
+# The last mozilla-firefox/firefox "beta" commit to change remote/webdriver-bidi/cddl.
 _MOZ_COMMIT = "511b0de4764c52d9acb0d813c7ef712cabd6b975"
 _MOZ_CDDL_BASE_URL = "https://raw.githubusercontent.com/mozilla-firefox/firefox/{commit}/remote/webdriver-bidi/cddl".format(commit = _MOZ_COMMIT)
 
@@ -29,7 +29,7 @@ _MOZ_CDDL_BASE_URL = "https://raw.githubusercontent.com/mozilla-firefox/firefox/
 # index as "dfns.json", so they are referenced as @<repo_name>//file:spec.cddl and
 # @<repo_name>//file:dfns.json.
 _CDDL_FILES = [
-    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "5d51a44b540db39923065162de0c0958997f9ba3b8eeadba1bc69c1afc3e56c7"),
+    ("webdriver_bidi_all_cddl", "webdriver-bidi-all.cddl", "ec63b838d2e4b617a9229ad970b1d635a43538bd7a8231ecce5773918d0793ff"),
     ("digital_credentials_all_cddl", "digital-credentials-all.cddl", "04acd2815f32a7e6d12c03464af8d6f909b03579e2a31e82d18c0068d8084ca9"),
     ("permissions_all_cddl", "permissions-all.cddl", "50e9b0017415e27a18a190bf37df048d4513f8432e42fe97901c9f2d55204b50"),
     ("prefetch_all_cddl", "prefetch-all.cddl", "51409b998176a81f681252f8ee16bea5a54a3be9d1cfee9f13ca34efd1feb5ea"),
@@ -38,7 +38,7 @@ _CDDL_FILES = [
 ]
 
 _DFNS_FILES = [
-    ("webdriver_bidi_dfns", "webdriver-bidi.json", "94f304bd2a27f4ee342bd91d30a3bd80f1cdcdd22c9b063835ff7d8e219b2a94"),
+    ("webdriver_bidi_dfns", "webdriver-bidi.json", "947f44e610083fcf5430559aed829b56ccbcea15496c7148efcf05a0ac240c88"),
     ("digital_credentials_dfns", "digital-credentials.json", "48582ab383e7e7be22463d5068d02151974080c5793713ce7d8e7bb08c0fcbf5"),
     ("permissions_dfns", "permissions.json", "bc5d2907c61e2548c6fc4a42a32c86396b56a68033c62299c4d563db510c105f"),
     ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
