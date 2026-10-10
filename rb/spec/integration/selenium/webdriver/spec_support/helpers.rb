@@ -37,8 +37,8 @@ module Selenium
           GlobalTestEnv.create_driver!(...)
         end
 
-        def url_for(filename)
-          GlobalTestEnv.url_for filename
+        def url_for(filename, secure: false)
+          GlobalTestEnv.url_for filename, secure: secure
         end
 
         def fix_windows_path(path)

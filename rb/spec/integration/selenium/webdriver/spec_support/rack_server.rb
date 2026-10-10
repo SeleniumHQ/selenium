@@ -17,7 +17,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'openssl'
 require 'rack'
+require 'rack/handler/webrick'
 
 module Selenium
   module WebDriver
@@ -25,12 +27,14 @@ module Selenium
       class RackServer
         START_TIMEOUT = 30
 
-        def initialize(path, port)
+        def initialize(path, port, secure_port:, certificates:)
           @path = path
           @app  = TestApp.new(path)
 
           @host = ENV.fetch('localhost', 'localhost')
           @port = port
+          @secure_port = secure_port
+          @certificates = certificates
         end
 
         def start
@@ -40,17 +44,18 @@ module Selenium
             start_forked
           end
 
-          return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
+          return if [@port, @secure_port].all? { |port| SocketPoller.new(@host, port, START_TIMEOUT).connected? }
 
           raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 
         def run
-          handler.run @app, Host: @host, Port: @port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)
+          Thread.new { Rack::Handler::WEBrick.run @app, **server_options(@secure_port), **ssl_options }
+          Rack::Handler::WEBrick.run @app, **server_options(@port)
         end
 
-        def where_is(file)
-          "http://#{@host}:#{@port}/#{file}"
+        def where_is(file, secure: false)
+          secure ? "https://#{@host}:#{@secure_port}/#{file}" : "http://#{@host}:#{@port}/#{file}"
         end
 
         def stop
@@ -66,24 +71,16 @@ module Selenium
 
         private
 
-        def handler
-          # can't use Platform here since it's being run as a file on Windows + IE.
-          handlers = if RUBY_PLATFORM.match?(/mswin|msys|mingw32/)
-                       %w[mongrel webrick]
-                     else
-                       %w[thin mongrel webrick]
-                     end
-
-          handler = handlers.find { |h| load_handler h }
-          constant = handler == 'webrick' ? 'WEBrick' : handler.capitalize
-          Rack::Handler.const_get constant
+        def server_options(port)
+          {Host: @host, Port: port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)}
         end
 
-        def load_handler(handler)
-          require handler
-          true
-        rescue LoadError
-          false
+        def ssl_options
+          {
+            SSLEnable: true,
+            SSLCertificate: OpenSSL::X509::Certificate.new(File.read(File.join(@certificates, 'localhost.crt'))),
+            SSLPrivateKey: OpenSSL::PKey.read(File.read(File.join(@certificates, 'localhost.key')))
+          }
         end
 
         def start_forked
