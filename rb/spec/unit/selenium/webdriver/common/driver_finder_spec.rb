@@ -111,6 +111,42 @@ module Selenium
                                                                      '--proxy',
                                                                      options.proxy.ssl)
       end
+
+      it 'omits the proxy argument when only socks is set' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'browser_path' => '/path/to/browser',
+                                                                     'driver_path' => '/path/to/driver'})
+        allow(Platform).to receive(:assert_executable).and_return(true)
+        options = Options.chrome(proxy: Proxy.new(socks: 'localhost:1080'))
+
+        described_class.new(options, Service.chrome).driver_path
+
+        expect(SeleniumManager).to have_received(:binary_paths).with('--browser', options.browser_name)
+      end
+
+      it 'omits the proxy argument when only no_proxy is set' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'browser_path' => '/path/to/browser',
+                                                                     'driver_path' => '/path/to/driver'})
+        allow(Platform).to receive(:assert_executable).and_return(true)
+        options = Options.chrome(proxy: Proxy.new(no_proxy: 'localhost'))
+
+        described_class.new(options, Service.chrome).driver_path
+
+        expect(SeleniumManager).to have_received(:binary_paths).with('--browser', options.browser_name)
+      end
+
+      it 'passes the http proxy when ssl is not set' do
+        allow(SeleniumManager).to receive(:binary_paths).and_return({'browser_path' => '/path/to/browser',
+                                                                     'driver_path' => '/path/to/driver'})
+        allow(Platform).to receive(:assert_executable).and_return(true)
+        options = Options.chrome(proxy: Proxy.new(http: 'http://plain:8080'))
+
+        described_class.new(options, Service.chrome).driver_path
+
+        expect(SeleniumManager).to have_received(:binary_paths).with('--browser',
+                                                                     options.browser_name,
+                                                                     '--proxy',
+                                                                     'http://plain:8080')
+      end
     end
   end
 end
