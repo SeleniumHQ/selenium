@@ -80,9 +80,7 @@ public class DriverFactory
         this.serviceTypes[Browser.Safari] = typeof(SafariDriverService);
     }
 
-    public event EventHandler<DriverStartingEventArgs> DriverStarting;
-
-    public IWebDriver CreateDriver(DriverOptions driverOptions = null, bool logging = false)
+    public IWebDriver CreateDriver(DriverOptions driverOptions = null, bool logging = false, Action<DriverOptions> configureOptions = null)
     {
         Browser browser = Browser.All;
         DriverService service = null;
@@ -175,7 +173,10 @@ public class DriverFactory
             service.DriverServiceExecutableName = Path.GetFileName(this.driverPath);
         }
 
-        this.OnDriverLaunching(service, options);
+        if (options != null)
+        {
+            configureOptions?.Invoke(options);
+        }
 
         if (browser != Browser.All)
         {
@@ -190,15 +191,6 @@ public class DriverFactory
 
         IWebDriver driver = (IWebDriver)Activator.CreateInstance(driverType);
         return driver;
-    }
-
-    protected void OnDriverLaunching(DriverService service, DriverOptions options)
-    {
-        if (this.DriverStarting != null)
-        {
-            DriverStartingEventArgs args = new DriverStartingEventArgs(service, options);
-            this.DriverStarting(this, args);
-        }
     }
 
     private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()

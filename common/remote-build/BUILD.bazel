@@ -43,7 +43,7 @@ platform(
     exec_properties = {
         "container-image": "docker://docker.io/selenium/selenium-remote-build@sha256:7f917a409785aceff81e72358222c6d1bdc24d0b7df2d02f0f46e7392d5c8871",
         "OSFamily": "Linux",
-        "dockerNetwork": "standard",  # Allow internet access for the Rust tests
+        "dockerNetwork": "off",  # No internet by default; SE_MANAGER_TEST_EXEC_PROPERTIES in //common/manager:defs.bzl grants it per target
         "dockerReuse": "True",
         "dockerRunAsRoot": "False",
         "dockerUseEntrypoint": "True",

@@ -21,11 +21,19 @@ jobs:
     name: Generate Rust Version
     needs: [parse-tag, verify-cdp]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Update Rust Version
-      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
-      artifact-name: rust-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Update Rust version
+        run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
+      - name: Save git diff
+        run: git diff > changes.patch
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: rust-version
+          path: changes.patch
 
   push-rust-version:
     name: Push Rust Version
@@ -97,6 +105,30 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  # ci and ci-rbe workflows wait while trunk is locked so RBE capacity and macOS runners stay free for the release.
+  # This cancels in-progress workflows & restarts them so they are also queued.
+  requeue-ci:
+    name: Requeue CI Behind Lock
+    needs: restrict-trunk
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Cancel and rerun in-flight CI runs
+        run: |
+          mapfile -t ids < <(for workflow in ci.yml ci-rbe.yml; do for state in queued in_progress; do
+            gh run list --workflow "$workflow" --status "$state" --limit 100 --json databaseId,headBranch \
+              --jq '.[] | select(.headBranch | startswith("release-preparation-") | not) | .databaseId'
+          done; done)
+          cancelled=()
+          for id in "${ids[@]}"; do gh run cancel "$id" && cancelled+=("$id"); done
+          for id in "${cancelled[@]}"; do
+            gh run watch "$id" > /dev/null && gh run rerun "$id" || echo "::warning::Run $id was cancelled but could not be rerun"
+          done
+
   update-versions:
     name: Bump Versions
     needs: [parse-tag, restrict-trunk]
@@ -105,6 +137,7 @@ jobs:
       name: Bump versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
       artifact-name: patch-versions
+      use-cache: false
 
   commit-versions:
     name: Commit Versions
@@ -129,6 +162,7 @@ jobs:
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
+      use-cache: false
 
   update-rust-changelogs:
     name: Update Rust Changelogs
@@ -140,6 +174,7 @@ jobs:
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go rust:changelogs
       artifact-name: patch-rust-changelogs
+      use-cache: false
 
   update-authors:
     name: Update Authors
@@ -150,6 +185,7 @@ jobs:
       name: Update Authors
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go authors
       artifact-name: patch-authors
+      use-cache: false
 
   update-manager:
     name: Update Selenium Manager Binaries
@@ -160,6 +196,7 @@ jobs:
       name: Update Selenium Manager Binaries
       run: ./go update_manager ${{ needs.selenium-manager.outputs.tag }}
       artifact-name: patch-manager
+      use-cache: false
 
   create-pr:
     name: Create Pull Request
@@ -215,7 +252,7 @@ jobs:
           delete-branch: true
           branch: release-preparation-${{ needs.parse-tag.outputs.tag }}
           base: trunk
-          title: "[build] Prepare for release of ${{ needs.parse-tag.outputs.tag }}"
+          title: "Release ${{ needs.parse-tag.outputs.tag }}"
           body: |
 
             ### Release Info
@@ -276,8 +313,8 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: "Release preparation failed: ${{ needs.parse-tag.outputs.tag }}"
           SLACK_MESSAGE: |
+            Release preparation failed: ${{ needs.parse-tag.outputs.tag }}
             • CDP Current: ${{ needs.verify-cdp.result }}
             • Selenium Manager: ${{ needs.selenium-manager.result }}
             • Versions: ${{ needs.commit-versions.result }}

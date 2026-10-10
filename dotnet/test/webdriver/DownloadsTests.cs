@@ -26,24 +26,14 @@ namespace OpenQA.Selenium.Tests;
 [TestFixture]
 public class DownloadsTests : DriverTestFixture
 {
-    private IWebDriver localDriver;
+    protected override void ConfigureDriverOptions(DriverOptions options)
+    {
+        options.EnableDownloads = true;
+    }
 
     [SetUp]
     public void ResetDriver()
     {
-        CloseDriver();
-        InitLocalDriver();
-    }
-
-    [TearDown]
-    public void QuitAdditionalDriver()
-    {
-        if (localDriver != null)
-        {
-            localDriver.Dispose();
-            localDriver = null;
-        }
-
         CreateFreshDriver();
     }
 
@@ -91,32 +81,11 @@ public class DownloadsTests : DriverTestFixture
     private void DownloadWithBrowser()
     {
         string downloadPage = Urls.WhereIs("downloads/download.html");
-        localDriver.Url = downloadPage;
+        Driver.Url = downloadPage;
         Driver.FindElement(By.Id("file-1")).Click();
         Driver.FindElement(By.Id("file-2")).Click();
 
         WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(3));
         wait.Until(d => ((RemoteWebDriver)d).GetDownloadableFiles().Contains("file_2.jpg"));
     }
-
-    private void InitLocalDriver()
-    {
-        DownloadableFilesOptions options = new DownloadableFilesOptions();
-        options.EnableDownloads = true;
-
-        localDriver = CreateDriverInstance(options);
-    }
-
-    public class DownloadableFilesOptions : DriverOptions
-    {
-        public override void AddAdditionalOption(string capabilityName, object capabilityValue)
-        {
-        }
-
-        public override ICapabilities ToCapabilities()
-        {
-            return null;
-        }
-    }
 }
-

@@ -3,7 +3,7 @@ module(name = "selenium")
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.26.0")
-bazel_dep(name = "aspect_rules_jest", version = "0.25.2")
+bazel_dep(name = "aspect_rules_jest", version = "0.26.0")
 bazel_dep(name = "aspect_rules_js", version = "3.1.2")
 bazel_dep(name = "aspect_rules_ts", version = "3.8.9")
 bazel_dep(name = "bazel_features", version = "1.50.0")
@@ -31,15 +31,15 @@ bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 # See below for actual version used
 bazel_dep(name = "rules_java", version = "9.6.1")
-bazel_dep(name = "rules_jvm_external", version = "7.0")
+bazel_dep(name = "rules_jvm_external", version = "7.1")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
 bazel_dep(name = "rules_oci", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "1.2.0")
-bazel_dep(name = "rules_python", version = "1.9.0")
+bazel_dep(name = "rules_python", version = "2.4.1")
 bazel_dep(name = "rules_proto", version = "7.1.0")
-bazel_dep(name = "rules_ruby", version = "0.28.0")
-bazel_dep(name = "rules_rs", version = "0.0.109")
+bazel_dep(name = "rules_ruby", version = "0.29.0")
+bazel_dep(name = "rules_rs", version = "0.1.0")
 
 # Shorter toolchain dir names keep Windows sysroot paths under MAX_PATH; drop once upstream does
 single_version_override(
@@ -55,32 +55,20 @@ bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
 bazel_dep(name = "xz", version = "5.4.5.bcr.8")
 bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
 
+# Adds `transitive` and `third_party_prefixes` to `javadoc` for the merged client/grid javadoc jars; no upstream equivalent
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_jvm_external_javadoc.patch",
-        "//third_party/bazel:rules_jvm_external_maven_publisher.patch",
     ],
 )
 
-# aspect_rules_jest 0.25.2 does not declare bazel_lib 3.x as a dep
-# (aspect_bazel_lib → bazel_lib rename)
-single_version_override(
-    module_name = "aspect_rules_jest",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel:aspect_rules_jest_bazel_lib.patch",
-    ],
-)
-
-# Patch support for bazel-contrib/rules_ruby#393 remove in next rules_ruby release
-# rb_gem_push omits the interpreter from runfiles (breaks under JRuby); remove once fixed upstream
+# Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
-        "//third_party/bazel:rules_ruby_windows_batch_crlf.patch",
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
     ],
 )
@@ -158,12 +146,13 @@ register_toolchains("@dotnet_toolchains//:all")
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    python_version = "3.10.19",
+    python_version = "3.10.20",
 )
-python.toolchain(python_version = "3.11.14")
-python.toolchain(python_version = "3.12.12")
-python.toolchain(python_version = "3.13.11")
-python.toolchain(python_version = "3.14.2")
+python.toolchain(python_version = "3.11.15")
+python.toolchain(python_version = "3.12.13")
+python.toolchain(python_version = "3.13.13")
+python.toolchain(python_version = "3.14.4")
+python.toolchain(python_version = "3.15.0rc3")
 use_repo(python, "pythons_hub")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
@@ -173,13 +162,15 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         hub_name = "py_dev_requirements",
         python_version = version,
         requirements_lock = "//py:requirements_lock.txt",
+        use_hub_alias_dependencies = True,
     )
     for version in [
-        "3.10.19",
-        "3.11.14",
-        "3.12.12",
-        "3.13.11",
-        "3.14.2",
+        "3.10.20",
+        "3.11.15",
+        "3.12.13",
+        "3.13.13",
+        "3.14.4",
+        "3.15.0rc3",
     ]
 ]
 
@@ -202,18 +193,18 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
-        "org.checkerframework:checker-qual:4.2.3",
+        "org.checkerframework:checker-qual:4.3.0",
         "com.github.javaparser:javaparser-core:3.28.2",
         "com.github.spotbugs:spotbugs:4.10.4",
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         "com.google.code.findbugs:jsr305:3.0.2",
         "com.google.code.gson:gson:2.14.0",
-        "com.google.guava:guava:33.7.1-jre",
+        "com.google.guava:guava:33.7.2-jre",
         "com.github.ben-manes.caffeine:caffeine:3.3.0",
         "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
-        "com.google.googlejavaformat:google-java-format:1.36.1",
+        "com.google.googlejavaformat:google-java-format:1.37.0",
         "com.google.protobuf:protobuf-java:4.36.2",
         "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:26.1",
@@ -251,6 +242,7 @@ maven.install(
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.4",
         "org.jboss.marshalling:jboss-marshalling:2.3.0",
+        "org.jetbrains:annotations:26.1.0",
         "org.jspecify:jspecify:1.0.1",
         "org.junit.jupiter:junit-jupiter-api",
         "org.junit.jupiter:junit-jupiter-engine",
@@ -260,10 +252,10 @@ maven.install(
         "org.junit.platform:junit-platform-commons",
         "org.junit.platform:junit-platform-engine",
         "org.mockito:mockito-core:5.24.0",
-        "org.redisson:redisson:4.7.0",
+        "org.redisson:redisson:4.8.0",
         "org.slf4j:slf4j-api:2.0.20",
         "org.slf4j:slf4j-jdk14:2.0.20",
-        "org.tomlj:tomlj:2.1.1",
+        "org.tomlj:tomlj:2.2.0",
         "org.zeromq:jeromq:0.6.0",
         "uk.org.webcompere:system-stubs-jupiter:2.1.8",
         "uk.org.webcompere:system-stubs-core:2.1.8",
@@ -340,9 +332,9 @@ ruby.bundle_fetch(
         "json-3.0.2-java": "2afafb9c82faabfb60ed2f37707973fdcb766dba2c99f0b9ed85f073d1d4c3d0",
         "language_server-protocol-3.17.0.6": "5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0",
         "lint_roller-1.1.0": "2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87",
-        "listen-3.10.0": "c6e182db62143aeccc2e1960033bebe7445309c7272061979bb098d03760c9d2",
+        "listen-3.10.1": "4c3f32855657f348747da4dd2372ff3790d90a6b1d3e4f21a3706adb2d04783c",
         "logger-1.7.0": "196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203",
-        "parallel-2.2.0": "e1059c5fd7b649558a0aec38a769f06a42942bdb40503d005a59c352fe011cd8",
+        "parallel-2.3.0": "f75a3e904101ce6a1ccb6b8dc800cbafd42166d83330192438dcf29395167a6f",
         "parser-3.3.12.0": "21a6d7f755d5a24dfbdc6e6b772e4e879a52e7631a88bc5a3a134606052c9828",
         "pp-0.6.4": "dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570",
         "prettyprint-0.2.0": "2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193",
@@ -358,8 +350,8 @@ ruby.bundle_fetch(
         "rbs-4.2.0": "51f7b886dcc05bc09e10b901daa6a81829f6adc03101d6ca9ea4aac6103e0674",
         "rbs-4.2.0-java": "a19282d89c307dd6d33c6a72cc60f75b10d6d35a5996796e864789c903cddb3c",
         "rchardet-1.10.2": "e041cb195f464dc10e49ab130f78c8b5956cd9a4f4f6df84e0c183b87c135f33",
-        "rdoc-8.0.0": "03bf8c08a9639658855a0cfd77c0abca8325c227693f7f33f82957811348c469",
-        "regexp_parser-2.13.0": "d105d95d2138954e73914d2fbfb3d0a8f8605a49a3e89864c32e78b9107cb770",
+        "rdoc-8.1.0": "befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a",
+        "regexp_parser-2.13.1": "5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b",
         "reline-0.7.0": "5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d",
         "rexml-3.4.4": "19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142",
         "rspec-3.13.2": "206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587",
@@ -399,13 +391,6 @@ use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 register_toolchains("@ruby_toolchains//:all")
 
 rules_rust = use_extension("@rules_rs//rs:rules_rust.bzl", "rules_rust")
-
-# Carries hermeticbuild/rules_rust#54: gcc <= 12 doesn't pass `-ffile-prefix-map`
-# to the assembler, so ring and zstd-sys `.S` debug info trips the hermeticity check.
-rules_rust.patch(
-    patches = ["//third_party/bazel:rules_rust_debug_prefix_map.patch"],
-    strip = 1,
-)
 use_repo(rules_rust, "rules_rust")
 
 rust_toolchains = use_extension("@rules_rs//rs/toolchains:module_extension.bzl", "toolchains")

@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    selenium-devtools (0.154.0)
+    selenium-devtools (0.155.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.51.0.nightly)
+    selenium-webdriver (4.52.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
       rubyzip (>= 1.2.2, < 4.0)
@@ -48,12 +48,12 @@ GEM
     json (3.0.2-java)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
-    listen (3.10.0)
+    listen (3.10.1)
       logger
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    parallel (2.2.0)
+    parallel (2.3.0)
     parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
@@ -80,12 +80,12 @@ GEM
       prism (>= 1.6.0)
       tsort
     rchardet (1.10.2)
-    rdoc (8.0.0)
+    rdoc (8.1.0)
       erb
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    regexp_parser (2.13.0)
+    regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
     rexml (3.4.4)

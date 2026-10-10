@@ -28,6 +28,7 @@ module Selenium
       attr_accessor read_timeout: Numeric?
       attr_accessor max_redirects: Integer
       attr_accessor proxy: Selenium::WebDriver::Proxy?
+      attr_accessor ignore_certificates: bool?
       def extra_headers: -> Hash[String, String]?
       attr_writer extra_headers: Hash[String, String]?
       def user_agent: -> String
@@ -41,6 +42,7 @@ module Selenium
           ?read_timeout: Numeric?,
           ?max_redirects: Integer,
           ?proxy: Selenium::WebDriver::Proxy?,
+          ?ignore_certificates: bool?,
           ?extra_headers: Hash[String, String]?,
           ?user_agent: String?,
           ?server_url: (String | URI)?

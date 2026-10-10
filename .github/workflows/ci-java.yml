@@ -2,7 +2,19 @@ name: CI - Java
 
 on:
   workflow_call:
+    inputs:
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
+    inputs:
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,12 +35,12 @@ jobs:
       rerun-with-debug: true
       run: >
         bazel test --flaky_test_attempts 2
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
         //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
         //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
         //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
         //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
 
   browser-tests-macos:
@@ -51,21 +63,3 @@ jobs:
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
         //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
         //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-
-  remote-tests:
-    name: Remote Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Remote Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      needs-display: true
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

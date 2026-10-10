@@ -4,10 +4,9 @@ on:
   pull_request:
     types: [closed]
     paths:
-      - 'java/version.bzl'
+      - 'version.bzl'
       - 'rb/lib/selenium/webdriver/version.rb'
       - 'py/selenium/__init__.py'
-      - 'dotnet/version.bzl'
       - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
@@ -150,7 +149,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Publish ${{ matrix.language }}
-      gpg-sign: ${{ matrix.language == 'java' }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
       ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
@@ -171,6 +169,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
+      use-cache: false
       run: ./go py:build --config=rbe_release
       artifact-name: pypi-distributions
       artifact-path: |
@@ -210,31 +209,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repo
-        if: needs.parse-tag.outputs.language == 'all'
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
       - name: Download release packages
         uses: actions/download-artifact@v8
         with:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
-      - name: Delete nightly release and tag
-        if: needs.parse-tag.outputs.language == 'all'
-        env:
-          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-        run: |
-          if gh release view nightly >/dev/null 2>&1; then
-            gh release delete nightly --yes
-          fi
-          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
-            gh api -X DELETE /repos/${{ github.repository }}/git/refs/tags/nightly
-          fi
       - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
           BASE_VERSION="${VERSION%.*}.0"
@@ -288,6 +272,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
+      use-cache: false
       ref: ${{ needs.parse-tag.outputs.tag }}
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
     secrets: inherit
@@ -298,6 +283,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Reset Versions
+      use-cache: false
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 
@@ -321,9 +307,9 @@ jobs:
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
-  # github-release-publish deletes the nightly tag, and mirror needs a nightly grid jar back under it.
-  # The build can run any time; only publish-nightly-grid has to sit between those two jobs.
-  nightly-grid:
+  # The mirror job needs a grid artifact in the nightly GitHub release. This build job can run any time,
+  # but nightly-grid-publish has to sit between github-release-publish and mirror.
+  nightly-grid-build:
     name: Build Nightly Grid
     needs: [parse-tag, check-authorization]
     if: needs.parse-tag.outputs.language == 'all'
@@ -334,9 +320,9 @@ jobs:
       artifact-name: nightly-grid
       artifact-path: build/dist/*.*
 
-  publish-nightly-grid:
+  nightly-grid-publish:
     name: Publish Nightly Grid
-    needs: [parse-tag, nightly-grid, github-release-publish]
+    needs: [parse-tag, nightly-grid-build, github-release-publish]
     if: needs.parse-tag.outputs.language == 'all'
     permissions:
       contents: write
@@ -346,7 +332,7 @@ jobs:
 
   mirror:
     name: Update Release Mirror
-    needs: [parse-tag, update-version, publish-nightly-grid]
+    needs: [parse-tag, update-version, nightly-grid-publish]
     if: needs.parse-tag.outputs.language == 'all'
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
@@ -359,7 +345,7 @@ jobs:
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
       needs.update-version.result == 'success' &&
-      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+      (needs.parse-tag.outputs.language != 'all' || needs.mirror.result == 'success')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       unlock: true
@@ -370,7 +356,7 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [extract-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, publish-nightly-grid, mirror, verify, unrestrict-trunk]
+    needs: [extract-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid-publish, mirror, verify, unrestrict-trunk]
     if: always() && !cancelled() && needs.extract-tag.result != 'skipped' && needs.check-authorization.result != 'failure'
     steps:
       - uses: actions/checkout@v6
@@ -381,8 +367,8 @@ jobs:
           SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
           SLACK_MESSAGE: |
+            ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
             • Tag Created: ${{ needs.create-tag.result }}
@@ -390,7 +376,7 @@ jobs:
             • Docs Updated: ${{ needs.docs.result }}
             • GitHub Release Published: ${{ needs.github-release-publish.result }}
             • Nightly Version Updated: ${{ needs.update-version.result }}
-            • Nightly Grid: ${{ needs.publish-nightly-grid.result }}
+            • Nightly Grid: ${{ needs.nightly-grid-publish.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
             • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}

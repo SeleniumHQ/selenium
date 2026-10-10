@@ -68,12 +68,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows, macos]
+        os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         include:
-          # Chrome has no linux-arm64 build before 153; Edge has none at all.
+          - os: ubuntu
+            tag_filters: "unit,os-sensitive,skip-rbe"
+          # Edge has no linux-arm64 build
           - os: ubuntu-24.04-arm
-            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-chrome,-edge"
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
     with:
       name: ${{ matrix.os }}
       needs-display: true
@@ -89,7 +91,7 @@ jobs:
         --local_test_jobs 1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
+        ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true

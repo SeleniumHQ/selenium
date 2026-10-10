@@ -40,6 +40,20 @@ module SeleniumRake
     {version: version, language: language, patch: patch}
   end
 
+  VERSION_FILE = 'version.bzl'
+
+  def self.version(binding)
+    match = File.read(VERSION_FILE).match(/^\s*"#{binding}": "([^"]+)"/)
+    raise "No #{binding} entry in #{VERSION_FILE}" unless match
+
+    match[1]
+  end
+
+  def self.write_version(binding, new_version)
+    text = File.read(VERSION_FILE).sub(/^(\s*"#{binding}": ")[^"]+(")/, "\\1#{new_version}\\2")
+    File.write(VERSION_FILE, text)
+  end
+
   def self.updated_version(current, desired = nil, nightly = nil)
     if !desired.nil? && desired != 'nightly'
       # If desired is present, return full 3 digit version
@@ -134,8 +148,15 @@ module SeleniumRake
 
   def self.verify_package_published(url)
     puts "Verifying #{url}..."
-    res = get_request(url)
-    raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 300
+    loop do
+      res = get_request(url)
+      break if res.is_a?(Net::HTTPSuccess)
+      raise "Package not published: #{url}" if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+      puts "  #{res.code} from registry, retrying in 15s..."
+      sleep 15
+    end
 
     puts 'Verified!'
   end

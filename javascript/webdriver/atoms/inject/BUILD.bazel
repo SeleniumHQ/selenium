@@ -14,14 +14,12 @@ closure_js_deps(
     ],
     deps = [
         ":action",
-        ":appcache",
         ":dom",
         ":execute-script",
         ":find-element",
         ":frame",
         ":local-storage",
         ":session-storage",
-        ":sql-database",
     ],
 )
 
@@ -39,18 +37,6 @@ closure_js_library(
         "//javascript/atoms:inject",
         "//javascript/webdriver/atoms:atoms-lib",
         "//third_party/closure/goog/json",
-    ],
-)
-
-closure_js_library(
-    name = "appcache",
-    srcs = ["appcache.js"],
-    suppress = [
-        "JSC_USE_OF_GOOG_PROVIDE",
-    ],
-    deps = [
-        "//javascript/atoms:inject",
-        "//javascript/webdriver/atoms:atoms-lib",
     ],
 )
 
@@ -133,21 +119,6 @@ closure_js_library(
     ],
     deps = [
         ":execute-script",
-        "//javascript/webdriver/atoms:atoms-lib",
-    ],
-)
-
-closure_js_library(
-    name = "sql-database",
-    srcs = ["sql_database.js"],
-    suppress = [
-        "JSC_USE_OF_GOOG_PROVIDE",
-    ],
-    deps = [
-        ":execute-script",
-        "//javascript/atoms:errors",
-        "//javascript/atoms:html5",
-        "//javascript/atoms:inject",
         "//javascript/webdriver/atoms:atoms-lib",
     ],
 )
@@ -396,11 +367,4 @@ closure_fragment(
     deps = [
         ":action",
     ],
-)
-
-closure_fragment(
-    name = "get-appcache-status",
-    function = "webdriver.atoms.inject.storage.appcache.getStatus",
-    module = "webdriver.atoms.inject.storage.appcache",
-    deps = [":appcache"],
 )

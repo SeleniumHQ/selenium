@@ -34,4 +34,12 @@ module.exports = {
    * another object with a promised property.
    */
   serialize: Symbol('serialize'),
+
+  /**
+   * Set on a command executor for a driver service this client started itself (chromedriver,
+   * geckodriver, ...), so its browser shares this machine's filesystem. Any other executor may
+   * reach a remote end on another machine (such as a Grid), where a client-local path means
+   * nothing and a file must be uploaded first. Internal.
+   */
+  localDriverService: Symbol('localDriverService'),
 }

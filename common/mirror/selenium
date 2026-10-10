@@ -1,5 +1,36 @@
 [
   {
+    "tag_name": "selenium-4.51.0",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-dotnet-4.51.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-java-4.51.0.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-server-4.51.0.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-server-4.51.0.zip"
+      }
+    ]
+  },
+  {
+    "tag_name": "nightly",
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.52.0-SNAPSHOT.zip"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.52.0-SNAPSHOT.jar"
+      },
+      {
+        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.52.0-SNAPSHOT.zip"
+      }
+    ]
+  },
+  {
     "tag_name": "selenium-4.50.0",
     "assets": [
       {
@@ -13,20 +44,6 @@
       },
       {
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.50.0/selenium-server-4.50.0.zip"
-      }
-    ]
-  },
-  {
-    "tag_name": "nightly",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-java-4.51.0-SNAPSHOT.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.51.0-SNAPSHOT.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/nightly/selenium-server-4.51.0-SNAPSHOT.zip"
       }
     ]
   },

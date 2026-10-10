@@ -8,6 +8,11 @@ on:
         required: false
         type: boolean
         default: true
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       smoke:
@@ -15,19 +20,17 @@ on:
         required: false
         type: boolean
         default: false
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
-# RBE runs every test on Linux with pinned browsers; these jobs cover macOS, Windows and Selenium Manager.
+# RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //javascript/selenium-webdriver
-
   # Prettier is checked by ci-lint.yml.
   lint:
     name: Lint
@@ -58,26 +61,26 @@ jobs:
       matrix:
         os: [macos, windows]
         tag_filters: ['os-sensitive,se-manager']
-        include:
-          # RBE already runs the os-sensitive targets on Linux, but always with pinned browsers.
-          - os: ubuntu
-            tag_filters: se-manager
     with:
       name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
-        bazel test
+        [ -s bazel-targets-js.txt ] || echo //javascript/selenium-webdriver/... > bazel-targets-js.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
         --build_tests_only
+        --skip_incompatible_explicit_targets
         --pin_browsers=false
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_tag_filters=${{ matrix.tag_filters }}
-        //javascript/selenium-webdriver/...
+        --target_pattern_file=bazel-targets-js.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full

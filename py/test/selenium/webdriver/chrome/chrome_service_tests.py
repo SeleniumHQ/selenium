@@ -152,10 +152,8 @@ class TestChromeDriverService:
     service_path = "/path/to/chromedriver"
 
     @pytest.fixture(autouse=True)
-    def setup_and_teardown(self):
-        os.environ["SE_CHROMEDRIVER"] = self.service_path
-        yield
-        os.environ.pop("SE_CHROMEDRIVER", None)
+    def pin_driver_env(self, monkeypatch):
+        monkeypatch.setenv("SE_CHROMEDRIVER", self.service_path)
 
     def test_uses_path_from_env_variable(self, service):
         assert "chromedriver" in service.path

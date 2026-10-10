@@ -18,17 +18,15 @@
 import pytest
 
 from selenium.webdriver import Firefox
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 
 
 @pytest.fixture
-def driver(request):
+def driver(request, clean_options):
     if request.config.getoption("remote"):
         pytest.skip("system access cannot be granted per-session on Grid")
-    options = Options()
     service = Service(service_args=["--allow-system-access"])
-    driver = Firefox(options=options, service=service)
+    driver = Firefox(options=clean_options, service=service)
     yield driver
     driver.quit()
 

@@ -50,11 +50,20 @@ bazel test //java/... --test_tag_filters=remote-browser  # all browser tests tha
 bazel test //java/... --test_tag_filters=-safari  # no safari tests (use `-` to exclude a tag)
 
 # Additional Arguments
-bazel test //java/... --pin_browsers  # Use pinned browser versions (recommended)
 bazel test //java/... --flaky_test_attempts=3 # Rerun failed tests up to 3 times
 bazel test //java/... --test_output=all # displays all test output at end of run
 bazel test //java/... --test_output=streamed # displays test output in real time (disables parallel execution)
 ```
+
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ## Skipping Tests
 
@@ -87,6 +96,7 @@ If `createNewDriver(capabilities)` is called without an annotation, it closes th
 | Annotation | When to Use |
 |------------|-------------|
 | `@SwitchToTopAfterTest` | Test navigates into frames. Automatically switches to default content after. |
+| `@CloseExtraWindowsAfterTest` | Test opens windows or tabs. Closes everything except the session's first window after and switches back to it. Class-level or method-level. |
 | `@NeedsSecureServer` | Class-level. All tests in the class need HTTPS. |
 
 ## Build Files
