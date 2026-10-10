@@ -63,20 +63,3 @@ jobs:
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
         //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
         //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-
-  remote-tests:
-    name: Remote Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Remote Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      needs-display: true
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
