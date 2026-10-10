@@ -112,7 +112,7 @@ module Selenium
            pending_if: {browser: :firefox,
                         reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
            skip_unless: {driver: :none,
-                         reason: 'Cannot be tested on localhost'} do
+                         reason: 'localhost is a secure context, so browsers accept secure cookies over http'} do
           driver.get 'http://watir.com'
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
@@ -121,16 +121,28 @@ module Selenium
           expect(driver.manage.all_cookies.size).to eq(0)
         end
 
-        it 'adds secure cookie when https',
-           skip_unless: {driver: :none,
-                         reason: 'Can only be tested on https site'} do
-          driver.get 'https://www.selenium.dev'
+        context 'when https', skip_if: {browser_family: :safari, reason: 'Safari does not accept insecure certs'} do
+          before do
+            reset_driver!(accept_insecure_certs: true)
+            driver.get url_for('xhtmlTest.html', secure: true)
+          end
 
-          driver.manage.add_cookie name: 'secure',
-                                   value: 'https',
-                                   secure: true
+          it 'adds secure cookie' do
+            driver.manage.add_cookie name: 'secure',
+                                     value: 'https',
+                                     secure: true
 
-          expect(driver.manage.cookie_named('secure')[:secure]).to be(true)
+            expect(driver.manage.cookie_named('secure')[:secure]).to be(true)
+          end
+
+          it 'allows adding sameSite with value None' do
+            driver.manage.add_cookie name: 'samesite',
+                                     value: 'none-secure',
+                                     same_site: 'None',
+                                     secure: true
+
+            expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('None')
+          end
         end
 
         describe 'sameSite' do
@@ -147,19 +159,6 @@ module Selenium
                                      value: 'lax',
                                      same_site: 'Lax'
             expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Lax')
-          end
-
-          it 'allows adding with value None',
-             skip_unless: {driver: :none,
-                           reason: 'Can only be tested on https site'} do
-            driver.get 'https://selenium.dev'
-
-            driver.manage.add_cookie name: 'samesite',
-                                     value: 'none-secure',
-                                     same_site: 'None',
-                                     secure: true
-
-            expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('None')
           end
 
           it 'does not allow adding with value None when secure is false',

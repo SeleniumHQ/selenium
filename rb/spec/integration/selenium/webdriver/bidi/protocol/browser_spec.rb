@@ -59,6 +59,20 @@ module Selenium
               ensure
                 browser.remove_user_context(user_context: user_context) if user_context
               end
+
+              it 'accepts insecure certificates when configured to' do
+                user_context = browser.create_user_context(accept_insecure_certs: true).user_context
+                browsing_context = BrowsingContext.new(driver)
+                context = browsing_context.create(type: :tab, user_context: user_context).context
+                url = url_for('simpleTest.html', secure: true)
+
+                browsing_context.navigate(context: context, url: url, wait: :complete)
+
+                expect(browsing_context.get_tree(root: context).contexts.first.url).to eq(url)
+              ensure
+                browsing_context.close(context: context) if context
+                browser.remove_user_context(user_context: user_context) if user_context
+              end
             end
 
             describe '#get_client_windows' do
