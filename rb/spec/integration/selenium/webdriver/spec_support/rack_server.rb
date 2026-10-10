@@ -46,12 +46,14 @@ module Selenium
 
           return if [@port, @secure_port].all? { |port| SocketPoller.new(@host, port, START_TIMEOUT).connected? }
 
+          stop
           raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 
         def run
-          Thread.new { Rack::Handler::WEBrick.run @app, **server_options(@secure_port), **ssl_options }
-          Rack::Handler::WEBrick.run @app, **server_options(@port)
+          Thread.abort_on_exception = true
+          Thread.new { serve(@secure_port, **ssl_options) }
+          serve(@port)
         end
 
         def where_is(file, secure: false)
@@ -59,8 +61,8 @@ module Selenium
         end
 
         def stop
-          if defined?(@thread) && @thread
-            @thread.kill
+          if defined?(@threads) && @threads
+            @threads.each(&:kill)
           elsif defined?(@pid) && @pid
             Process.kill('KILL', @pid)
             Process.waitpid(@pid)
@@ -71,8 +73,9 @@ module Selenium
 
         private
 
-        def server_options(port)
-          {Host: @host, Port: port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)}
+        def serve(port, **ssl)
+          options = {Host: @host, Port: port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)}
+          Rack::Handler::WEBrick.run @app, **options, **ssl
         end
 
         def ssl_options
@@ -89,7 +92,7 @@ module Selenium
 
         def start_threaded
           Thread.abort_on_exception = true
-          @thread = Thread.new { run }
+          @threads = [Thread.new { serve(@port) }, Thread.new { serve(@secure_port, **ssl_options) }]
           sleep 0.5
         end
 
