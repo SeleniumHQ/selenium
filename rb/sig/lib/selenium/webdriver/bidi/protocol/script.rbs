@@ -35,7 +35,7 @@ module Selenium
 
           SERIALIZATION_OPTIONS_INCLUDE_SHADOW_TREE: Hash[Symbol, String]
 
-          type evaluate_result = ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResultSuccess | ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResultException
+          type evaluation_result = ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResultSuccess | ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResultException
           type local_value = ::Selenium::WebDriver::BiDi::Protocol::Script::UndefinedValue | ::Selenium::WebDriver::BiDi::Protocol::Script::NullValue | ::Selenium::WebDriver::BiDi::Protocol::Script::StringValue | ::Selenium::WebDriver::BiDi::Protocol::Script::NumberValue | ::Selenium::WebDriver::BiDi::Protocol::Script::BooleanValue | ::Selenium::WebDriver::BiDi::Protocol::Script::BigIntValue | ::Selenium::WebDriver::BiDi::Protocol::Script::ChannelValue | ::Selenium::WebDriver::BiDi::Protocol::Script::ArrayLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::DateLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::MapLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::ObjectLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::RegExpLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::SetLocalValue | ::Selenium::WebDriver::BiDi::Protocol::Script::RemoteReference
           type primitive_protocol_value = ::Selenium::WebDriver::BiDi::Protocol::Script::UndefinedValue | ::Selenium::WebDriver::BiDi::Protocol::Script::NullValue | ::Selenium::WebDriver::BiDi::Protocol::Script::StringValue | ::Selenium::WebDriver::BiDi::Protocol::Script::NumberValue | ::Selenium::WebDriver::BiDi::Protocol::Script::BooleanValue | ::Selenium::WebDriver::BiDi::Protocol::Script::BigIntValue
           type realm_info = ::Selenium::WebDriver::BiDi::Protocol::Script::WindowRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::DedicatedWorkerRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::SharedWorkerRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::ServiceWorkerRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::WorkerRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::PaintWorkletRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::AudioWorkletRealmInfo | ::Selenium::WebDriver::BiDi::Protocol::Script::WorkletRealmInfo
@@ -56,19 +56,19 @@ module Selenium
             def self.new: (channel: String, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?ownership: Symbol) -> instance
           end
 
-          class EvaluateResult < ::Selenium::WebDriver::BiDi::Serialization::Union
-            def self.success: (?type: String, result: ::Selenium::WebDriver::BiDi::Protocol::Script::remote_value, realm: String) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResultSuccess
-            def self.exception: (?type: String, exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails, realm: String) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResultException
+          class EvaluationResult < ::Selenium::WebDriver::BiDi::Serialization::Union
+            def self.success: (?type: String, result: ::Selenium::WebDriver::BiDi::Protocol::Script::remote_value, realm: String) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResultSuccess
+            def self.exception: (?type: String, exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails, realm: String) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResultException
           end
 
-          class EvaluateResultSuccess < ::Selenium::WebDriver::BiDi::Serialization::Record
+          class EvaluationResultSuccess < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader result: ::Selenium::WebDriver::BiDi::Protocol::Script::remote_value
             attr_reader realm: String
             def self.new: (?type: String, result: ::Selenium::WebDriver::BiDi::Protocol::Script::remote_value, realm: String) -> instance
           end
 
-          class EvaluateResultException < ::Selenium::WebDriver::BiDi::Serialization::Record
+          class EvaluationResultException < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader type: String
             attr_reader exception_details: ::Selenium::WebDriver::BiDi::Protocol::Script::ExceptionDetails
             attr_reader realm: String
@@ -615,9 +615,9 @@ module Selenium
           def context_target: (context: String, ?sandbox: String) -> ContextTarget
           def target: () -> singleton(Target)
           def add_preload_script: (function_declaration: String, ?arguments: Array[::Selenium::WebDriver::BiDi::Protocol::Script::ChannelValue], ?contexts: Array[String], ?user_contexts: Array[String], ?sandbox: String) -> ::Selenium::WebDriver::BiDi::Protocol::Script::AddPreloadScriptResult
-          def call_function: (function_declaration: String, await_promise: bool, target: ::Selenium::WebDriver::BiDi::Protocol::Script::target, ?arguments: Array[::Selenium::WebDriver::BiDi::Protocol::Script::local_value], ?result_ownership: Symbol, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?this: ::Selenium::WebDriver::BiDi::Protocol::Script::local_value, ?user_activation: bool) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResult
+          def call_function: (function_declaration: String, await_promise: bool, target: ::Selenium::WebDriver::BiDi::Protocol::Script::target, ?arguments: Array[::Selenium::WebDriver::BiDi::Protocol::Script::local_value], ?result_ownership: Symbol, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?this: ::Selenium::WebDriver::BiDi::Protocol::Script::local_value, ?user_activation: bool) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResult
           def disown: (handles: Array[String], target: ::Selenium::WebDriver::BiDi::Protocol::Script::target) -> untyped
-          def evaluate: (expression: String, target: ::Selenium::WebDriver::BiDi::Protocol::Script::target, await_promise: bool, ?result_ownership: Symbol, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?user_activation: bool) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluateResult
+          def evaluate: (expression: String, target: ::Selenium::WebDriver::BiDi::Protocol::Script::target, await_promise: bool, ?result_ownership: Symbol, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?user_activation: bool) -> ::Selenium::WebDriver::BiDi::Protocol::Script::EvaluationResult
           def get_realms: (?context: String, ?type: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::Script::GetRealmsResult
           def remove_preload_script: (script: String) -> untyped
         end

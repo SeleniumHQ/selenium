@@ -32,9 +32,9 @@ import org.openqa.selenium.bidi.protocol.script.ChannelProperties;
 import org.openqa.selenium.bidi.protocol.script.ChannelValue;
 import org.openqa.selenium.bidi.protocol.script.ContextTarget;
 import org.openqa.selenium.bidi.protocol.script.EvaluateParameters;
-import org.openqa.selenium.bidi.protocol.script.EvaluateResult;
-import org.openqa.selenium.bidi.protocol.script.EvaluateResultException;
-import org.openqa.selenium.bidi.protocol.script.EvaluateResultSuccess;
+import org.openqa.selenium.bidi.protocol.script.EvaluationResult;
+import org.openqa.selenium.bidi.protocol.script.EvaluationResultException;
+import org.openqa.selenium.bidi.protocol.script.EvaluationResultSuccess;
 import org.openqa.selenium.bidi.protocol.script.GetRealmsParameters;
 import org.openqa.selenium.bidi.protocol.script.GetRealmsResult;
 import org.openqa.selenium.bidi.protocol.script.MessageParameters;
@@ -57,11 +57,11 @@ class ScriptModuleTest extends JupiterTestBase {
     Script script = new Script(driver);
     ContextTarget target = new ContextTarget(driver.getWindowHandle());
 
-    EvaluateResult result =
+    EvaluationResult result =
         script.callFunction(new CallFunctionParameters("()=>{return 1+2;}", false, target));
 
-    assertThat(result).isInstanceOf(EvaluateResultSuccess.class);
-    EvaluateResultSuccess success = (EvaluateResultSuccess) result;
+    assertThat(result).isInstanceOf(EvaluationResultSuccess.class);
+    EvaluationResultSuccess success = (EvaluationResultSuccess) result;
     assertThat(success.getRealm()).isNotNull();
     assertThat(success.getResult()).isInstanceOf(NumberValue.class);
     assertThat(((NumberValue) success.getResult()).getValue()).isEqualTo(3L);
@@ -73,7 +73,7 @@ class ScriptModuleTest extends JupiterTestBase {
     Script script = new Script(driver);
     ContextTarget target = new ContextTarget(driver.getWindowHandle());
 
-    EvaluateResult result =
+    EvaluationResult result =
         script.callFunction(
             new CallFunctionParameters("(...args)=>{return args}", false, target)
                 .setArguments(
@@ -81,8 +81,8 @@ class ScriptModuleTest extends JupiterTestBase {
                         new StringValue("string", "ARGUMENT_STRING_VALUE"),
                         new NumberValue("number", 42L))));
 
-    assertThat(result).isInstanceOf(EvaluateResultSuccess.class);
-    EvaluateResultSuccess success = (EvaluateResultSuccess) result;
+    assertThat(result).isInstanceOf(EvaluationResultSuccess.class);
+    EvaluationResultSuccess success = (EvaluationResultSuccess) result;
     assertThat(success.getResult()).isInstanceOf(ArrayRemoteValue.class);
     List<RemoteValue> args = ((ArrayRemoteValue) success.getResult()).getValue().orElseThrow();
     assertThat(args).hasSize(2);
@@ -96,7 +96,7 @@ class ScriptModuleTest extends JupiterTestBase {
     Script script = new Script(driver);
     ContextTarget target = new ContextTarget(driver.getWindowHandle());
 
-    EvaluateResult result =
+    EvaluationResult result =
         script.callFunction(
             new CallFunctionParameters(
                 "async function() {"
@@ -106,8 +106,8 @@ class ScriptModuleTest extends JupiterTestBase {
                 true,
                 target));
 
-    assertThat(result).isInstanceOf(EvaluateResultSuccess.class);
-    EvaluateResultSuccess success = (EvaluateResultSuccess) result;
+    assertThat(result).isInstanceOf(EvaluationResultSuccess.class);
+    EvaluationResultSuccess success = (EvaluationResultSuccess) result;
     assertThat(success.getResult()).isInstanceOf(StringValue.class);
     assertThat(((StringValue) success.getResult()).getValue()).isEqualTo("SOME_DELAYED_RESULT");
   }
@@ -118,12 +118,12 @@ class ScriptModuleTest extends JupiterTestBase {
     Script script = new Script(driver);
     ContextTarget target = new ContextTarget(driver.getWindowHandle());
 
-    EvaluateResult result =
+    EvaluationResult result =
         script.callFunction(
             new CallFunctionParameters(")))!!@@## some invalid JS script (((", false, target));
 
-    assertThat(result).isInstanceOf(EvaluateResultException.class);
-    EvaluateResultException exception = (EvaluateResultException) result;
+    assertThat(result).isInstanceOf(EvaluationResultException.class);
+    EvaluationResultException exception = (EvaluationResultException) result;
     assertThat(exception.getRealm()).isNotNull();
     assertThat(exception.getExceptionDetails().getException()).isInstanceOf(RemoteValue.class);
     assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError");
@@ -137,10 +137,10 @@ class ScriptModuleTest extends JupiterTestBase {
     Script script = new Script(driver);
     ContextTarget target = new ContextTarget(driver.getWindowHandle());
 
-    EvaluateResult result = script.evaluate(new EvaluateParameters("1 + 2", target, true));
+    EvaluationResult result = script.evaluate(new EvaluateParameters("1 + 2", target, true));
 
-    assertThat(result).isInstanceOf(EvaluateResultSuccess.class);
-    EvaluateResultSuccess success = (EvaluateResultSuccess) result;
+    assertThat(result).isInstanceOf(EvaluationResultSuccess.class);
+    EvaluationResultSuccess success = (EvaluationResultSuccess) result;
     assertThat(success.getResult()).isInstanceOf(NumberValue.class);
     assertThat(((NumberValue) success.getResult()).getValue()).isEqualTo(3L);
   }
