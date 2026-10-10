@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'delegate'
 require 'openssl'
 require 'rack'
 require 'rack/handler/webrick'
@@ -26,6 +27,20 @@ module Selenium
     module SpecSupport
       class RackServer
         START_TIMEOUT = 30
+
+        # jruby-openssl reads past the TLS handshake into its own buffer, so WEBrick's readiness poll on the
+        # raw socket never fires and the first request on each connection stalls until RequestTimeout.
+        module BufferedTlsRequest
+          def run(sock)
+            if sock.is_a?(OpenSSL::SSL::SSLSocket)
+              io = SimpleDelegator.new(sock.to_io)
+              io.define_singleton_method(:wait_readable) { |_timeout| true }
+              sock.define_singleton_method(:to_io) { io }
+            end
+            super
+          end
+        end
+        WEBrick::HTTPServer.prepend(BufferedTlsRequest) if Platform.jruby?
 
         def initialize(path, port, secure_port:, certificates:)
           @path = path
