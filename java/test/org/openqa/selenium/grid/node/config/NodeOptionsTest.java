@@ -491,7 +491,7 @@ class NodeOptionsTest {
     String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.setBinary(chLocation);
-    chromeOptions.addArguments("--homepage=https://www.selenium.dev");
+    chromeOptions.addArguments("--homepage=https://www.example.test");
 
     StringBuilder chromeCaps = new StringBuilder();
     new Json().newOutput(chromeCaps).setPrettyPrint(false).write(chromeOptions);
@@ -525,7 +525,7 @@ class NodeOptionsTest {
         .asInstanceOf(MAP)
         .extractingByKey("args")
         .asInstanceOf(LIST)
-        .containsAnyOf("--homepage=https://www.selenium.dev");
+        .containsAnyOf("--homepage=https://www.example.test");
   }
 
   @Test
@@ -647,12 +647,12 @@ class NodeOptionsTest {
   void settingTheHubFlagSetsTheGridUrlAndEventBusFlags() {
     String[] rawConfig =
         new String[] {
-          "[node]", "hub = \"cheese.com\"",
+          "[node]", "hub = \"cheese.test\"",
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri()).contains(create("http://cheese.com:4444"));
+    assertThat(nodeOptions.getPublicGridUri()).contains(create("http://cheese.test:4444"));
   }
 
   @Test
