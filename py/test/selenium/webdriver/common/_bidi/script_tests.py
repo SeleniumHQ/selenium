@@ -30,8 +30,8 @@ from selenium.webdriver.common._bidi.script import (
     ChannelValue,
     ContextTarget,
     DateLocalValue,
-    EvaluateResultException,
-    EvaluateResultSuccess,
+    EvaluationResultException,
+    EvaluationResultSuccess,
     NullValue,
     NumberValue,
     ObjectLocalValue,
@@ -178,7 +178,7 @@ def test_evaluate_expression(driver, pages):
 
     result = _evaluate(driver, "1 + 2", driver.current_window_handle)
 
-    assert isinstance(result, EvaluateResultSuccess)
+    assert isinstance(result, EvaluationResultSuccess)
     assert result.realm is not None
     assert result.result.type == "number"
     assert result.result.value == 3
@@ -198,7 +198,7 @@ def test_evaluate_with_exception(driver, pages):
 
     result = _evaluate(driver, "throw new Error('Test error')", driver.current_window_handle)
 
-    assert isinstance(result, EvaluateResultException)
+    assert isinstance(result, EvaluationResultException)
     assert "Test error" in result.exception_details.text
 
 
@@ -326,7 +326,7 @@ def test_call_function_with_exception(driver, pages):
         ContextTarget(context=driver.current_window_handle),
     )
 
-    assert isinstance(result, EvaluateResultException)
+    assert isinstance(result, EvaluationResultException)
     assert "Function error" in result.exception_details.text
 
 
