@@ -135,7 +135,7 @@ module Selenium
               acceptor = Thread.new do
                 loop do
                   server.accept.close
-                rescue OpenSSL::SSL::SSLError
+                rescue OpenSSL::SSL::SSLError, SystemCallError
                   next
                 end
               end
