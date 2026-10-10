@@ -13,7 +13,13 @@ TARGET_OVERRIDES = {
   'java/maven_install.json' => 'java',
   'py/requirements_lock.txt' => 'py',
   'rb/Gemfile.lock' => 'rb',
-  'javascript/selenium-webdriver/package.json' => 'javascript'
+  'javascript/selenium-webdriver/package.json' => 'javascript',
+  '.github/workflows/ci-dotnet.yml' => 'dotnet',
+  '.github/workflows/ci-java.yml' => 'java',
+  '.github/workflows/ci-javascript.yml' => 'javascript',
+  '.github/workflows/ci-python.yml' => 'py',
+  '.github/workflows/ci-ruby.yml' => 'rb',
+  '.github/workflows/ci-rust.yml' => 'rust'
 }.freeze
 
 # ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
