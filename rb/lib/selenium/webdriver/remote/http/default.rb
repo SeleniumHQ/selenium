@@ -72,7 +72,11 @@ module Selenium
               http = new_http_client
               if server_url.scheme == 'https'
                 http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+                http.verify_mode = if client_config.ignore_certificates
+                                     OpenSSL::SSL::VERIFY_NONE
+                                   else
+                                     OpenSSL::SSL::VERIFY_PEER
+                                   end
               end
 
               http.open_timeout = open_timeout if open_timeout
@@ -84,6 +88,18 @@ module Selenium
           end
 
           def start(http)
+            http.start
+          rescue OpenSSL::SSL::SSLError => e
+            failure = e.message[/certificate verify failed.*/]
+            raise unless failure
+
+            remedies = 'ClientConfig#ignore_certificates = true for a self-signed certificate, ' \
+                       'or a trusted CA bundle for one signed by a private CA'
+            raise e.class, "#{e.message}; #{remedies}", e.backtrace unless client_config.ignore_certificates.nil?
+
+            WebDriver.logger.deprecate("Connecting to #{server_url.host} although its #{failure}", remedies,
+                                       id: :ignore_certificates)
+            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             http.start
           end
 
