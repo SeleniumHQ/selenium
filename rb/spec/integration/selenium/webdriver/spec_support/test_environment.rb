@@ -103,7 +103,12 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            app_server = RackServer.new(root.join('common/src/web').to_s, random_port)
+            port = random_port
+            secure_port = random_port
+            secure_port = random_port while secure_port == port
+            app_server = RackServer.new(root.join('common/src/web').to_s, port,
+                                        secure_port: secure_port,
+                                        certificates: root.join('common/certificates').to_s)
             app_server.start
 
             app_server
@@ -217,8 +222,8 @@ module Selenium
           @driver_instance = @app_server = @remote_server = nil
         end
 
-        def url_for(filename)
-          app_server.where_is filename
+        def url_for(filename, secure: false)
+          app_server.where_is filename, secure: secure
         end
 
         def root

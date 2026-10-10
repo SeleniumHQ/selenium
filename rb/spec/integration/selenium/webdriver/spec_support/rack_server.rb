@@ -17,7 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'delegate'
+require 'openssl'
 require 'rack'
+require 'rack/handler/webrick'
 
 module Selenium
   module WebDriver
@@ -25,12 +28,28 @@ module Selenium
       class RackServer
         START_TIMEOUT = 30
 
-        def initialize(path, port)
+        # jruby-openssl reads past the TLS handshake into its own buffer, so WEBrick's readiness poll on the
+        # raw socket never fires and the first request on each connection stalls until RequestTimeout.
+        module BufferedTlsRequest
+          def run(sock)
+            if sock.is_a?(OpenSSL::SSL::SSLSocket)
+              io = SimpleDelegator.new(sock.to_io)
+              io.define_singleton_method(:wait_readable) { |_timeout| true }
+              sock.define_singleton_method(:to_io) { io }
+            end
+            super
+          end
+        end
+        WEBrick::HTTPServer.prepend(BufferedTlsRequest) if Platform.jruby?
+
+        def initialize(path, port, secure_port:, certificates:)
           @path = path
           @app  = TestApp.new(path)
 
           @host = ENV.fetch('localhost', 'localhost')
           @port = port
+          @secure_port = secure_port
+          @certificates = certificates
         end
 
         def start
@@ -40,22 +59,25 @@ module Selenium
             start_forked
           end
 
-          return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
+          return if [@port, @secure_port].all? { |port| SocketPoller.new(@host, port, START_TIMEOUT).connected? }
 
+          stop
           raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 
         def run
-          handler.run @app, Host: @host, Port: @port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)
+          Thread.abort_on_exception = true
+          Thread.new { serve(@secure_port, **ssl_options) }
+          serve(@port)
         end
 
-        def where_is(file)
-          "http://#{@host}:#{@port}/#{file}"
+        def where_is(file, secure: false)
+          secure ? "https://#{@host}:#{@secure_port}/#{file}" : "http://#{@host}:#{@port}/#{file}"
         end
 
         def stop
-          if defined?(@thread) && @thread
-            @thread.kill
+          if defined?(@threads) && @threads
+            @threads.each(&:kill)
           elsif defined?(@pid) && @pid
             Process.kill('KILL', @pid)
             Process.waitpid(@pid)
@@ -66,24 +88,17 @@ module Selenium
 
         private
 
-        def handler
-          # can't use Platform here since it's being run as a file on Windows + IE.
-          handlers = if RUBY_PLATFORM.match?(/mswin|msys|mingw32/)
-                       %w[mongrel webrick]
-                     else
-                       %w[thin mongrel webrick]
-                     end
-
-          handler = handlers.find { |h| load_handler h }
-          constant = handler == 'webrick' ? 'WEBrick' : handler.capitalize
-          Rack::Handler.const_get constant
+        def serve(port, **ssl)
+          options = {Host: @host, Port: port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)}
+          Rack::Handler::WEBrick.run @app, **options, **ssl
         end
 
-        def load_handler(handler)
-          require handler
-          true
-        rescue LoadError
-          false
+        def ssl_options
+          {
+            SSLEnable: true,
+            SSLCertificate: OpenSSL::X509::Certificate.new(File.read(File.join(@certificates, 'localhost.crt'))),
+            SSLPrivateKey: OpenSSL::PKey.read(File.read(File.join(@certificates, 'localhost.key')))
+          }
         end
 
         def start_forked
@@ -92,7 +107,7 @@ module Selenium
 
         def start_threaded
           Thread.abort_on_exception = true
-          @thread = Thread.new { run }
+          @threads = [Thread.new { serve(@port) }, Thread.new { serve(@secure_port, **ssl_options) }]
           sleep 0.5
         end
 

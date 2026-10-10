@@ -226,7 +226,10 @@ def rb_integration_test(
                 size = "large",
                 srcs = srcs,
                 args = ["rb/spec/"],
-                data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data + ["//common/src/web"],
+                data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data + [
+                    "//common/certificates",
+                    "//common/src/web",
+                ],
                 env = _browser_env(browser, se_manager),
                 exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if se_manager else {},
                 main = "@bundle//bin:rspec",
@@ -244,6 +247,7 @@ def rb_integration_test(
                     srcs = srcs,
                     args = ["rb/spec/"],
                     data = BROWSERS[browser]["data"] + data + [
+                        "//common/certificates",
                         "//common/src/web",
                         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                         "//rb/spec:java-location",
@@ -266,7 +270,10 @@ def rb_integration_test(
                 size = "large",
                 srcs = srcs,
                 args = ["rb/spec/"],
-                data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
+                data = BROWSERS[browser]["data"] + data + [
+                    "//common/certificates",
+                    "//common/src/web",
+                ],
                 env = _browser_env(browser) | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
                 tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["bidi", "{}-bidi".format(browser)] + family_tags,
@@ -287,6 +294,7 @@ def rb_integration_test(
                     srcs = srcs,
                     args = ["rb/spec/"],
                     data = BROWSERS[browser]["data"] + data + [
+                        "//common/certificates",
                         "//common/src/web",
                         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                         "//rb/spec:java-location",
