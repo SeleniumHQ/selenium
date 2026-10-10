@@ -63,17 +63,20 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
-        bazel test
+        [ -s bazel-targets-js.txt ] || echo //javascript/selenium-webdriver/... > bazel-targets-js.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 3
         --local_test_jobs 1
         --build_tests_only
+        --skip_incompatible_explicit_targets
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_tag_filters=${{ matrix.tag_filters }}
-        //javascript/selenium-webdriver/...
+        --target_pattern_file=bazel-targets-js.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full

@@ -137,9 +137,9 @@ jobs:
           check_binding "openqa/selenium/grid" "grid"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
-          check_binding "//javascript" "js"
           process_binding "//rb" "rb"
           process_binding "//py" "py"
+          process_binding "//javascript" "js"
       - name: Upload target files
         uses: actions/upload-artifact@v7
         with:
