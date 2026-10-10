@@ -271,6 +271,7 @@ mocha_test(
         "//common/extensions:js-lib",
         "//common/src/web:js-lib",
     ],
+    tags = ["unit"],
 )
 
 # Browsers refuse to load an unpacked extension whose files are runfiles symlinks pointing

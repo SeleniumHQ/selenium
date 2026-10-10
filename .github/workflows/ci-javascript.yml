@@ -41,11 +41,12 @@ jobs:
 
   unit-tests:
     name: Unit Tests
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['22.22.0', '24.14.1']
+        node-version: ['24.14.1']
         os: [ubuntu]
     with:
       name: Unit Tests (${{ matrix.node-version }}, ${{ matrix.os }})
@@ -60,7 +61,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos, windows]
-        tag_filters: ['os-sensitive,se-manager']
+        tag_filters: ['unit,os-sensitive,se-manager']
     with:
       name: ${{ matrix.os }}
       needs-display: true

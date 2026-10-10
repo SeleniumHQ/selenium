@@ -839,6 +839,7 @@ py_test_suite(
     args = [
         "--instafail",
     ],
+    tags = ["unit"],
     deps = [
         ":init-tree",
         ":selenium",

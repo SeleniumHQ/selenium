@@ -65,8 +65,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.15']
-        os: [ubuntu, macos, windows]
+        python-version: ['3.15']
+        os: [ubuntu]
     with:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
@@ -80,7 +80,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows, macos]
-        tag_filters: ["os-sensitive,se-manager,skip-rbe"]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
     with:
       name: ${{ matrix.os }}
       needs-display: true

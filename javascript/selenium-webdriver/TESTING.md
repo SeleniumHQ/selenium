@@ -55,7 +55,7 @@ bazel test //javascript/selenium-webdriver:test-upload-test.js-chrome-remote
 bazel test //javascript/selenium-webdriver/... --test_tag_filters=chrome-remote
 
 # What GitHub Actions runs on every pull request, on macOS and Windows
-bazel test //javascript/selenium-webdriver/... --test_tag_filters=os-sensitive,se-manager
+bazel test //javascript/selenium-webdriver/... --test_tag_filters=unit,os-sensitive,se-manager
 
 # Additional Arguments
 bazel test //javascript/selenium-webdriver/... --flaky_test_attempts=3
