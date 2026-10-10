@@ -151,12 +151,16 @@ jobs:
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-dotnet.yml
     if: "!cancelled() && needs.read-targets.outputs.dotnet != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   java:
     name: Java
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-java.yml
     if: "!cancelled() && needs.read-targets.outputs.java != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   grid:
     name: Grid
@@ -193,6 +197,8 @@ jobs:
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-javascript.yml
     if: "!cancelled() && needs.read-targets.outputs.js != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   merge-flaky-results:
     name: Merge Flaky Results
