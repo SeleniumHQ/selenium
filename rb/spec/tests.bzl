@@ -8,6 +8,7 @@ load(
     "firefox_beta_data",
     "firefox_data",
 )
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 
 BROWSERS = {
     "chrome": {
@@ -20,6 +21,10 @@ BROWSERS = {
             "WD_REMOTE_BROWSER": "chrome",
             "WD_SPEC_DRIVER": "chrome",
         } | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+        "pinned_env": select({
             "@selenium//common:use_pinned_linux_chrome": {
                 "CHROME_BINARY": "$(rlocationpath @linux_chrome//:chrome-linux64/chrome)",
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @linux_chromedriver//:chromedriver)",
@@ -28,9 +33,6 @@ BROWSERS = {
                 "CHROME_BINARY": "$(rlocationpath @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_chromedriver//:chromedriver)",
             },
-            "//conditions:default": {},
-        }) | select({
-            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
         }),
     },
@@ -45,6 +47,10 @@ BROWSERS = {
             "WD_SPEC_DRIVER": "chrome",
             "WD_BROWSER_VERSION": "beta",
         } | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+        "pinned_env": select({
             "@selenium//common:use_pinned_linux_chrome": {
                 "CHROME_BINARY": "$(rlocationpath @linux_beta_chrome//:chrome-linux64/chrome)",
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @linux_beta_chromedriver//:chromedriver)",
@@ -53,9 +59,6 @@ BROWSERS = {
                 "CHROME_BINARY": "$(rlocationpath @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
                 "CHROMEDRIVER_BINARY": "$(rlocationpath @mac_beta_chromedriver//:chromedriver)",
             },
-            "//conditions:default": {},
-        }) | select({
-            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
         }),
     },
@@ -69,6 +72,10 @@ BROWSERS = {
             "WD_REMOTE_BROWSER": "edge",
             "WD_SPEC_DRIVER": "edge",
         } | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+        "pinned_env": select({
             "@selenium//common:use_pinned_linux_edge": {
                 "EDGE_BINARY": "$(rlocationpath @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
                 "MSEDGEDRIVER_BINARY": "$(rlocationpath @linux_edgedriver//:msedgedriver)",
@@ -77,9 +84,6 @@ BROWSERS = {
                 "EDGE_BINARY": "$(rlocationpath @mac_edge//:Edge.app)/Contents/MacOS/Microsoft\\ Edge",
                 "MSEDGEDRIVER_BINARY": "$(rlocationpath @mac_edgedriver//:msedgedriver)",
             },
-            "//conditions:default": {},
-        }) | select({
-            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
         }),
     },
@@ -93,6 +97,10 @@ BROWSERS = {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",
         } | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+        "pinned_env": select({
             "@selenium//common:use_pinned_linux_firefox": {
                 "FIREFOX_BINARY": "$(rlocationpath @linux_firefox//:firefox/firefox)",
                 "GECKODRIVER_BINARY": "$(rlocationpath @linux_geckodriver//:geckodriver)",
@@ -101,9 +109,6 @@ BROWSERS = {
                 "FIREFOX_BINARY": "$(rlocationpath @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
                 "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
-            "//conditions:default": {},
-        }) | select({
-            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
         }),
     },
@@ -118,6 +123,10 @@ BROWSERS = {
             "WD_SPEC_DRIVER": "firefox",
             "WD_BROWSER_VERSION": "beta",
         } | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+        "pinned_env": select({
             "@selenium//common:use_pinned_linux_firefox": {
                 "FIREFOX_BINARY": "$(rlocationpath @linux_beta_firefox//:firefox/firefox)",
                 "GECKODRIVER_BINARY": "$(rlocationpath @linux_geckodriver//:geckodriver)",
@@ -126,9 +135,6 @@ BROWSERS = {
                 "FIREFOX_BINARY": "$(rlocationpath @mac_beta_firefox//:Firefox.app)/Contents/MacOS/firefox",
                 "GECKODRIVER_BINARY": "$(rlocationpath @mac_geckodriver//:geckodriver)",
             },
-            "//conditions:default": {},
-        }) | select({
-            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
             "//conditions:default": {},
         }),
     },
@@ -186,6 +192,10 @@ def _split_filtered_tags(tags, browser):
     remote_tags = ["{}-{}".format(browser, t) for t in tags if t in _REMOTE_TAGS]
     return universal_tags, local_tags, remote_tags
 
+def _browser_env(browser, se_manager = False):
+    overlay = SE_MANAGER_TEST_ENV if se_manager else BROWSERS[browser].get("pinned_env", {})
+    return BROWSERS[browser]["env"] | overlay
+
 def rb_integration_test(
         name,
         srcs,
@@ -202,6 +212,7 @@ def rb_integration_test(
         generate_bidi = BROWSERS[browser].get("bidi", False)
 
         universal_tags, local_tags, remote_tags = _split_filtered_tags(tags, browser)
+        se_manager = "se-manager" in local_tags
 
         # Family groups beta/preview variants with their stable counterpart so
         # e.g. `--test_tag_filters=chrome` matches chrome and chrome-beta targets.
@@ -215,8 +226,9 @@ def rb_integration_test(
                 size = "large",
                 srcs = srcs,
                 args = ["rb/spec/"],
-                data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
-                env = BROWSERS[browser]["env"],
+                data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data + ["//common/src/web"],
+                env = _browser_env(browser, se_manager),
+                exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if se_manager else {},
                 main = "@bundle//bin:rspec",
                 tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + local_tags + ["{}-local".format(browser)] + family_tags,
                 deps = ["//rb/spec/integration/selenium/webdriver:spec_helper"] + BROWSERS[browser]["deps"] + deps,
@@ -237,7 +249,7 @@ def rb_integration_test(
                         "//rb/spec:java-location",
                         "@bazel_tools//tools/jdk:current_java_runtime",
                     ],
-                    env = BROWSERS[browser]["env"] | {
+                    env = _browser_env(browser) | {
                         "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
                         "WD_SPEC_DRIVER": "remote",
                     },
@@ -255,7 +267,7 @@ def rb_integration_test(
                 srcs = srcs,
                 args = ["rb/spec/"],
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
-                env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
+                env = _browser_env(browser) | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
                 tags = COMMON_TAGS + BROWSERS[browser]["tags"] + universal_tags + ["bidi", "{}-bidi".format(browser)] + family_tags,
                 deps = {d: True for d in (
@@ -280,7 +292,7 @@ def rb_integration_test(
                         "//rb/spec:java-location",
                         "@bazel_tools//tools/jdk:current_java_runtime",
                     ],
-                    env = BROWSERS[browser]["env"] | {
+                    env = _browser_env(browser) | {
                         "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
                         "WD_SPEC_DRIVER": "remote",
                         "WEBDRIVER_BIDI": "true",

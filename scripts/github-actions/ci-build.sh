@@ -8,11 +8,11 @@ set -x
 FULL_RUN="${1:-false}"
 
 # Bazel only sees the latest `--test_tag_filters`, so this overrides .bazelrc.remote
-TEST_FILTER="--test_tag_filters=-skip-rbe,-se-manager,-chrome-beta,-firefox-beta"
+TEST_FILTER="--test_tag_filters=-skip-rbe,-chrome-beta,-firefox-beta"
 CACHE_RESULTS="auto"
 
 if [ "${FULL_RUN}" = "true" ]; then
-  TEST_FILTER="--test_tag_filters=-skip-rbe,-se-manager"
+  TEST_FILTER="--test_tag_filters=-skip-rbe"
   CACHE_RESULTS="no"
 fi
 

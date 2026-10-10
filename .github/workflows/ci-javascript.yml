@@ -19,7 +19,7 @@ on:
 permissions:
   contents: read
 
-# RBE runs every test on Linux with pinned browsers; these jobs cover macOS, Windows and Selenium Manager.
+# RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
   build:
     name: Build
@@ -58,10 +58,6 @@ jobs:
       matrix:
         os: [macos, windows]
         tag_filters: ['os-sensitive,se-manager']
-        include:
-          # RBE already runs the os-sensitive targets on Linux, but always with pinned browsers.
-          - os: ubuntu
-            tag_filters: se-manager
     with:
       name: ${{ matrix.os }}
       needs-display: true
