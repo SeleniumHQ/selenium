@@ -35,24 +35,28 @@ public class MyFeatureTest : DriverTestFixture
 Tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then
 generates a target per test class, plus a per-browser variant for each supported browser. The
 bare class target runs on the default browser (Firefox, the first entry in the `browsers` list in
-[`BUILD.bazel`](test/webdriver/BUILD.bazel)). Always use `--pin_browsers`.
+[`BUILD.bazel`](test/webdriver/BUILD.bazel)).
 
 ```shell
-bazel test //dotnet/test/webdriver/... --pin_browsers=true            # All tests, all browsers
-bazel test //dotnet/test/webdriver:ElementFindingTests --pin_browsers=true        # One class, default browser
-bazel test //dotnet/test/webdriver:ElementFindingTests-chrome --pin_browsers=true # One class on Chrome
-bazel test //dotnet/test/webdriver:ElementFindingTests-edge --pin_browsers=true   # One class on Edge
+bazel test //dotnet/test/webdriver/...                        # All tests, all browsers
+bazel test //dotnet/test/webdriver:ElementFindingTests        # One class, default browser
+bazel test //dotnet/test/webdriver:ElementFindingTests-chrome # One class on Chrome
+bazel test //dotnet/test/webdriver:ElementFindingTests-edge   # One class on Edge
 
 # Additional Arguments
-bazel test //dotnet/test/webdriver/... --flaky_test_attempts=3 --pin_browsers=true
-bazel test //dotnet/test/webdriver/... --test_output=all --pin_browsers=true
+bazel test //dotnet/test/webdriver/... --flaky_test_attempts=3
+bazel test //dotnet/test/webdriver/... --test_output=all
 ```
 
-To avoid passing `--pin_browsers=true` on every invocation, set it once in `.bazelrc.local`:
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
 
-```
-build --//common:pin_browsers
-```
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ### Running Tests in an IDE
 

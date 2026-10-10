@@ -67,11 +67,15 @@ the ones its `suite()` is limited to (`{ browsers: [...] }`), as recorded in
 `test/test_browsers.bzl`. It also gets chrome and firefox `-remote` targets, except the files in
 `NO_GRID_TESTS` in `BUILD.bazel`, which test a local driver service itself.
 
-CI runs every target on Linux (RBE), with pinned browsers. On GitHub Actions, every pull request
-also runs what RBE cannot vouch for: the tests tagged `os-sensitive` (`OS_SENSITIVE_TESTS`) on
-macOS and Windows, and those tagged `se-manager` (`SE_MANAGER_TESTS`, which find the browser and
-driver through Selenium Manager) on macOS, Windows and Linux. Everything else runs on Windows
-nightly.
+By default on Linux, Bazel uses pinned versions of the browser and driver, so tests do not depend on
+what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ## Skipping Tests
 
