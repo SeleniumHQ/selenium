@@ -97,6 +97,71 @@ module Selenium
             end
           end
 
+          describe 'with a self-signed certificate' do
+            around do |example|
+              WebMock.disable!
+              with_self_signed_server do |url|
+                client.server_url = URI.parse(url)
+                example.run
+              end
+            ensure
+              WebMock.enable!
+            end
+
+            it 'falls back to an unverified connection with a deprecation by default' do
+              http = nil
+              expect { http = client.send(:http) }
+                .to have_deprecated(:ignore_certificates, /self-signed certificate/)
+
+              expect(http.verify_mode).to eq(OpenSSL::SSL::VERIFY_NONE)
+              expect(http).to be_started
+            end
+
+            it 'rejects the certificate when the config requires verification' do
+              client.client_config.ignore_certificates = false
+
+              expect { client.send :http }.to raise_error(OpenSSL::SSL::SSLError, /ignore_certificates/)
+            end
+
+            it 'connects without a deprecation when the config ignores certificates' do
+              client.client_config.ignore_certificates = true
+
+              expect { client.send :http }.not_to have_deprecated(:ignore_certificates)
+              expect(client.send(:http)).to be_started
+            end
+
+            def with_self_signed_server
+              server = OpenSSL::SSL::SSLServer.new(TCPServer.new('127.0.0.1', 0), self_signed_context)
+              acceptor = Thread.new do
+                loop do
+                  server.accept.close
+                rescue OpenSSL::SSL::SSLError
+                  next
+                end
+              end
+
+              yield "https://127.0.0.1:#{server.addr[1]}"
+            ensure
+              acceptor&.kill
+              server&.close
+            end
+
+            def self_signed_context
+              key = OpenSSL::PKey::EC.generate('prime256v1')
+              cert = OpenSSL::X509::Certificate.new
+              cert.subject = cert.issuer = OpenSSL::X509::Name.parse('/CN=localhost')
+              cert.public_key = key
+              cert.not_before = Time.now - 60
+              cert.not_after = Time.now + 60
+              cert.sign(key, OpenSSL::Digest.new('SHA256'))
+
+              OpenSSL::SSL::SSLContext.new.tap do |context|
+                context.cert = cert
+                context.key = key
+              end
+            end
+          end
+
           it 'uses the specified proxy' do
             client.proxy = Proxy.new(http: 'http://foo:bar@proxy.org:8080')
             http = client.send :http
