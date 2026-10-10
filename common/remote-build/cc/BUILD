@@ -15,13 +15,31 @@
 # This becomes the BUILD file for @local_config_cc// under non-BSD unixes.
 
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("@rules_cc//cc:defs.bzl", "cc_toolchain", "cc_toolchain_suite")
+load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
+load("@rules_cc//cc/toolchains:cc_toolchain_suite.bzl", "cc_toolchain_suite")
 load(":armeabi_cc_toolchain_config.bzl", "armeabi_cc_toolchain_config")
 load(":cc_toolchain_config.bzl", "cc_toolchain_config")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
+
+cc_library(name = "empty_lib")
+
+# Label flag for extra libraries to be linked into every binary.
+label_flag(
+    name = "link_extra_libs",
+    build_setting_default = ":empty_lib",
+)
+
+# The final extra library to be linked into every binary target. This collects
+# the above flag, but may also include more libraries depending on config.
+cc_library(
+    name = "link_extra_lib",
+    deps = [
+        ":link_extra_libs",
+    ],
+)
 
 cc_library(
     name = "malloc",
@@ -38,11 +56,26 @@ filegroup(
 )
 
 filegroup(
+    name = "validate_static_library",
+    srcs = ["validate_static_library.sh"],
+)
+
+filegroup(
+    name = "deps_scanner_wrapper",
+    srcs = ["deps_scanner_wrapper.sh"],
+)
+
+filegroup(
     name = "compiler_deps",
     srcs = glob(
         ["extra_tools/**"],
         allow_empty = True,
-    ) + [":builtin_include_directory_paths"],
+    ) + [
+        ":builtin_include_directory_paths",
+        ":cc_wrapper",
+        ":deps_scanner_wrapper",
+        ":validate_static_library",
+    ],
 )
 
 # This is the entry point for --crosstool_top.  Toolchains are found
@@ -69,6 +102,7 @@ cc_toolchain(
     module_map = None,
     objcopy_files = ":empty",
     strip_files = ":empty",
+    supports_header_parsing = 1,
     supports_param_files = 1,
     toolchain_config = ":local",
     toolchain_identifier = "local",
@@ -78,6 +112,7 @@ cc_toolchain_config(
     name = "local",
     abi_libc_version = "local",
     abi_version = "local",
+    all_compile_flags = [],
     compile_flags = [
         "-fstack-protector",
         "-Wall",
@@ -86,31 +121,38 @@ cc_toolchain_config(
         "-fno-omit-frame-pointer",
     ],
     compiler = "gcc",
+    conly_flags = [],
     coverage_compile_flags = ["--coverage"],
     coverage_link_flags = ["--coverage"],
     cpu = "k8",
     cxx_builtin_include_directories = [
-        "/usr/lib/gcc/x86_64-linux-gnu/9/include",
+        "/usr/lib/gcc/x86_64-linux-gnu/11/include",
         "/usr/local/include",
         "/usr/include/x86_64-linux-gnu",
         "/usr/include",
-        "/usr/include/c++/9",
-        "/usr/include/x86_64-linux-gnu/c++/9",
-        "/usr/include/c++/9/backward",
+        "/usr/include/c++/11",
+        "/usr/include/x86_64-linux-gnu/c++/11",
+        "/usr/include/c++/11/backward",
     ],
-    cxx_flags = ["-std=c++0x"],
+    cxx_flags = ["-std=c++17"],
     dbg_compile_flags = ["-g"],
+    extra_flags_per_feature = {},
+    fastbuild_compile_flags = [],
     host_system_name = "local",
     link_flags = [
         "-fuse-ld=gold",
+        "-B/usr/bin",
         "-Wl,-no-as-needed",
         "-Wl,-z,relro,-z,now",
-        "-B/usr/bin",
         "-pass-exit-codes",
     ],
     link_libs = [
+        "-Wl,--push-state,-as-needed",
         "-lstdc++",
+        "-Wl,--pop-state",
+        "-Wl,--push-state,-as-needed",
         "-lm",
+        "-Wl,--pop-state",
     ],
     opt_compile_flags = [
         "-g0",
@@ -127,8 +169,6 @@ cc_toolchain_config(
     tool_paths = {
         "ar": "/usr/bin/ar",
         "ld": "/usr/bin/ld",
-        "llvm-cov": "None",
-        "llvm-profdata": "None",
         "cpp": "/usr/bin/cpp",
         "gcc": "/usr/bin/gcc",
         "dwp": "/usr/bin/dwp",
@@ -137,6 +177,10 @@ cc_toolchain_config(
         "objcopy": "/usr/bin/objcopy",
         "objdump": "/usr/bin/objdump",
         "strip": "/usr/bin/strip",
+        "c++filt": "/usr/bin/c++filt",
+        "cpp-module-deps-scanner": "deps_scanner_wrapper.sh",
+        "parse_headers": "cc_wrapper.sh",
+        "validate_static_library": "validate_static_library.sh",
     },
     toolchain_identifier = "local",
     unfiltered_compile_flags = [
