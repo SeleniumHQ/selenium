@@ -25,6 +25,8 @@ import re
 from pathlib import Path
 
 py_root = Path(__file__).resolve().parent
-version_bzl = (py_root.parent / "version.bzl").read_text()
-version = re.search(r'"python": "([^"]+)"', version_bzl).group(1)
-(py_root / "selenium" / "_version.py").write_text(f'__version__ = "{version}"\n')
+version_bzl = py_root.parent / "version.bzl"
+match = re.search(r'^\s*"python": "([^"]+)"', version_bzl.read_text(), re.MULTILINE)
+if not match:
+    raise SystemExit(f"No python entry in {version_bzl}")
+(py_root / "selenium" / "_version.py").write_text(f'__version__ = "{match.group(1)}"\n')
