@@ -132,6 +132,92 @@ ATOMS = [
         "global": "bot.dom.typescript.getText",
         "aliases": [],
     },
+    # The storage atoms publish under bot.storage rather than bot.dom: they
+    # are ports of bot.storage.*, and nothing about them is a DOM read.
+    {
+        "name": "get-local-storage-item",
+        "export": "getLocalStorageItem",
+        "global": "bot.storage.typescript.getLocalStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "get-local-storage-key",
+        "export": "getLocalStorageKey",
+        "global": "bot.storage.typescript.getLocalStorageKey",
+        "aliases": [],
+    },
+    {
+        "name": "get-local-storage-keys",
+        "export": "getLocalStorageKeys",
+        "global": "bot.storage.typescript.getLocalStorageKeys",
+        "aliases": [],
+    },
+    {
+        "name": "get-local-storage-size",
+        "export": "getLocalStorageSize",
+        "global": "bot.storage.typescript.getLocalStorageSize",
+        "aliases": [],
+    },
+    {
+        "name": "set-local-storage-item",
+        "export": "setLocalStorageItem",
+        "global": "bot.storage.typescript.setLocalStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "remove-local-storage-item",
+        "export": "removeLocalStorageItem",
+        "global": "bot.storage.typescript.removeLocalStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "clear-local-storage",
+        "export": "clearLocalStorage",
+        "global": "bot.storage.typescript.clearLocalStorage",
+        "aliases": [],
+    },
+    {
+        "name": "get-session-storage-item",
+        "export": "getSessionStorageItem",
+        "global": "bot.storage.typescript.getSessionStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "get-session-storage-key",
+        "export": "getSessionStorageKey",
+        "global": "bot.storage.typescript.getSessionStorageKey",
+        "aliases": [],
+    },
+    {
+        "name": "get-session-storage-keys",
+        "export": "getSessionStorageKeys",
+        "global": "bot.storage.typescript.getSessionStorageKeys",
+        "aliases": [],
+    },
+    {
+        "name": "get-session-storage-size",
+        "export": "getSessionStorageSize",
+        "global": "bot.storage.typescript.getSessionStorageSize",
+        "aliases": [],
+    },
+    {
+        "name": "set-session-storage-item",
+        "export": "setSessionStorageItem",
+        "global": "bot.storage.typescript.setSessionStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "remove-session-storage-item",
+        "export": "removeSessionStorageItem",
+        "global": "bot.storage.typescript.removeSessionStorageItem",
+        "aliases": [],
+    },
+    {
+        "name": "clear-session-storage",
+        "export": "clearSessionStorage",
+        "global": "bot.storage.typescript.clearSessionStorage",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
