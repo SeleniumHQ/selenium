@@ -7,6 +7,7 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
+load("//:version.bzl", "VERSIONS")
 load("//common:defs.bzl", "copy_file")
 load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
@@ -80,7 +81,7 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.52.0.202610091837"
+SE_VERSION = VERSIONS["python"]
 
 BROWSER_VERSIONS = [
     "v155",
@@ -255,11 +256,29 @@ copy_file(
 # Module Targets (following Ruby's modular pattern)
 # ==============================================================================
 
+_VERSION_PY_CMD = "sed -e 's/^/# /' -e 's/ *$$//' $< > $@ && printf '\\n__version__ = \"%s\"\\n' >> $@"
+
+# Tests get a fixed placeholder so a version bump does not invalidate them; packages get the real version.
+genrule(
+    name = "version-py",
+    srcs = [":license_header_local"],
+    outs = ["selenium/_version.py"],
+    cmd = _VERSION_PY_CMD % "VERSION_STUB",
+)
+
+genrule(
+    name = "version-py-release",
+    srcs = [":license_header_local"],
+    outs = ["release/selenium/_version.py"],
+    cmd = _VERSION_PY_CMD % SE_VERSION,
+)
+
 # Exceptions and package init (no deps - foundational)
 py_library(
     name = "exceptions",
     srcs = [
         "selenium/__init__.py",
+        "selenium/_version.py",
         "selenium/webdriver/__init__.py",
     ] + glob(["selenium/common/**/*.py"]),
     data = ["selenium/webdriver/__init__.pyi"],
@@ -611,9 +630,11 @@ pkg_files(
         ":notice",
         ":selenium-pkg",
         ":selenium-pkginfo",
+        ":version-py-release",
         "//rust:selenium_manager_srcs",
     ],
     excludes = [
+        ":version-py",
         ":manager-linux-x86_64",
         ":manager-linux-arm64",
         ":manager-macos",
@@ -621,7 +642,15 @@ pkg_files(
         ":manager-sbom",
         ":manager-windows",
     ],
+    renames = {":version-py-release": "selenium/_version.py"},
     strip_prefix = strip_prefix.from_pkg(),
+)
+
+pkg_files(
+    name = "selenium-wheel-srcs",
+    srcs = [":selenium-pkg"],
+    excludes = [":version-py"],
+    strip_prefix = strip_prefix.from_root(),
 )
 
 pkg_tar(
@@ -678,6 +707,7 @@ py_wheel(
         "websocket-client>=1.8.0,<2.0",
     ],
     strip_path_prefixes = [
+        "py/release/",
         "py/",
     ],
     summary = "Official Python bindings for Selenium WebDriver",
@@ -689,7 +719,8 @@ py_wheel(
     deps = [
         ":license-wheel",
         ":notice-wheel",
-        ":selenium-pkg",
+        ":selenium-wheel-srcs",
+        ":version-py-release",
     ],
 )
 
@@ -1419,6 +1450,7 @@ sphinx_docs(
     name = "docs",
     srcs = glob(["docs/source/**/*.rst"]),
     config = "docs/source/conf.py",
+    release = SE_VERSION,
     sphinx = ":sphinx-build",
 )
 
