@@ -98,6 +98,18 @@ ATOMS = [
         "global": "bot.dom.typescript.getAttributeValue",
         "aliases": [],
     },
+    {
+        "name": "get-size",
+        "export": "getSize",
+        "global": "bot.dom.typescript.getSize",
+        "aliases": [],
+    },
+    {
+        "name": "get-location",
+        "export": "getLocation",
+        "global": "bot.dom.typescript.getLocation",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
