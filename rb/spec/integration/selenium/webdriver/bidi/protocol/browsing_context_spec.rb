@@ -48,10 +48,7 @@ module Selenium
             end
           end
 
-          describe '#capture_screenshot',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari does not implement browsingContext.captureScreenshot'} do
+          describe '#capture_screenshot' do
             it 'returns base64 PNG screenshot data' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -78,7 +75,9 @@ module Selenium
                pending_if: [{browser_family: :chromium,
                              reason: 'Chromium ignores the captureScreenshot imageSize parameter'},
                             {browser: :firefox, version: 'stable',
-                             reason: 'Firefox 156 ignores the captureScreenshot imageSize; works in 158'}] do
+                             reason: 'Firefox 156 ignores the captureScreenshot imageSize; works in 158'},
+                            {browser_family: :safari,
+                             reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
               result = browsing_context.capture_screenshot(

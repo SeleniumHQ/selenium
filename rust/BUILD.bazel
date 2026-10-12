@@ -9,7 +9,9 @@ rustfmt_config(
 
 # We want the release versions of Selenium to include the prebuilt
 # binaries, but if we're working on Selenium Manager itself, then
-# `--manager=host` should swap in a local build.
+# `--manager=host` should swap in a local build. The other platforms
+# then get a stub, so a pin bump invalidates nothing that bundles the
+# manager.
 #
 # We tag the compiled versions as `manual` so that when we do a
 # `bazel build //...` we don't do any additional work
@@ -80,7 +82,7 @@ genrule(
         name = "selenium-manager-%s" % platform,
         actual = select({
             "//common:%s" % platform.replace("-", "_"): ":selenium-manager",
-            "//conditions:default": "@download_sm_%s//file" % platform.replace("-", "_"),
+            "//conditions:default": "//common/manager:stub-selenium-manager",
         }),
         tags = [
             "manual",
@@ -123,7 +125,7 @@ rust_binary(
     rustc_env = {
         "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
     },
-    version = "0.4.51-nightly",
+    version = "0.4.52-nightly",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",

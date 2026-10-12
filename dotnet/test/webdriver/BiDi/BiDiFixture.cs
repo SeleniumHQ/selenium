@@ -36,17 +36,21 @@ public abstract class BiDiTestFixture
     [SetUp]
     public async Task BiDiSetUp()
     {
-        var options = new BiDiEnabledDriverOptions()
+        var driverFactory = new DriverFactory(EnvironmentManager.Instance);
+        driver = driverFactory.CreateDriver(configureOptions: options =>
         {
-            UseWebSocketUrl = true,
-            UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore,
-        };
-
-        driver = new DriverFactory(EnvironmentManager.Instance).CreateDriver(options);
+            options.UseWebSocketUrl = true;
+            options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+            ConfigureDriverOptions(options);
+        });
 
         bidi = await driver.AsBiDiAsync();
 
         context = (await bidi.BrowsingContext.GetTreeAsync()).Contexts[0].Context;
+    }
+
+    protected virtual void ConfigureDriverOptions(DriverOptions options)
+    {
     }
 
     [TearDown]
@@ -60,18 +64,6 @@ public abstract class BiDiTestFixture
         if (driver is not null)
         {
             await driver.DisposeAsync();
-        }
-    }
-
-    public class BiDiEnabledDriverOptions : DriverOptions
-    {
-        public override void AddAdditionalOption(string capabilityName, object capabilityValue)
-        {
-        }
-
-        public override ICapabilities ToCapabilities()
-        {
-            return null;
         }
     }
 }

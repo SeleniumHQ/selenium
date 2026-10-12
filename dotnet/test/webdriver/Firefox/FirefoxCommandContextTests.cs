@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests.Firefox;
 
@@ -34,7 +35,10 @@ public class FirefoxCommandContextTests
         FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
         service.AllowSystemAccess = true;
 
-        FirefoxDriver driver = new FirefoxDriver(service);
+        FirefoxOptions options = new FirefoxOptions();
+        options.BinaryLocation = EnvironmentManager.Instance.BrowserLocation;
+
+        FirefoxDriver driver = new FirefoxDriver(service, options);
         try
         {
             Assert.That(driver.GetContext(), Is.EqualTo(FirefoxCommandContext.Content));

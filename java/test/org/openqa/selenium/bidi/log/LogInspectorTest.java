@@ -35,9 +35,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.script.Source;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
+@CloseExtraWindowsAfterTest
 class LogInspectorTest extends JupiterTestBase {
 
   String page;

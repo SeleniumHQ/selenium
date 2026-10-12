@@ -9951,23 +9951,23 @@
       "outbound": true,
       "inbound": false
     },
-    "script.EvaluateResult": {
+    "script.EvaluationResult": {
       "kind": "union",
       "variants": [
-        "script.EvaluateResultSuccess",
-        "script.EvaluateResultException"
+        "script.EvaluationResultSuccess",
+        "script.EvaluationResultException"
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-EvaluateResult",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-EvaluationResult",
       "selector": {
         "by": "type",
         "variants": [
           {
             "value": "success",
-            "ref": "script.EvaluateResultSuccess"
+            "ref": "script.EvaluationResultSuccess"
           },
           {
             "value": "exception",
-            "ref": "script.EvaluateResultException"
+            "ref": "script.EvaluationResultException"
           }
         ]
       },
@@ -9975,7 +9975,7 @@
       "outbound": false,
       "inbound": true
     },
-    "script.EvaluateResultSuccess": {
+    "script.EvaluationResultSuccess": {
       "kind": "record",
       "fields": [
         {
@@ -10003,11 +10003,11 @@
           }
         }
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultsuccess",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultsuccess",
       "outbound": false,
       "inbound": true
     },
-    "script.EvaluateResultException": {
+    "script.EvaluationResultException": {
       "kind": "record",
       "fields": [
         {
@@ -10035,7 +10035,7 @@
           }
         }
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultexception",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultexception",
       "outbound": false,
       "inbound": true
     },
@@ -12491,7 +12491,7 @@
     "script.CallFunctionResult": {
       "kind": "alias",
       "type": {
-        "ref": "script.EvaluateResult"
+        "ref": "script.EvaluationResult"
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptcallfunctionresult"
     },
@@ -12574,6 +12574,13 @@
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateparameters",
       "outbound": true,
       "inbound": false
+    },
+    "script.EvaluateResult": {
+      "kind": "alias",
+      "type": {
+        "ref": "script.EvaluationResult"
+      },
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresult"
     },
     "script.GetRealms": {
       "kind": "record",

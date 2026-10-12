@@ -1,0 +1,8 @@
+filegroup(
+    name = "certificates",
+    srcs = [
+        "localhost.crt",
+        "localhost.key",
+    ],
+    visibility = ["//py:__pkg__"],
+)

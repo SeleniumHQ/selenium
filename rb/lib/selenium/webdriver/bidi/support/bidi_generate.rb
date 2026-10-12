@@ -355,7 +355,7 @@ module BiDiGenerate
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
   FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
-                       :rbs, keyword_init: true) do
+                       :map_of, :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
@@ -375,11 +375,19 @@ module BiDiGenerate
       facts << 'required: false' unless required
       facts << 'nullable: true' if nullable
       facts << "const: #{BiDiGenerate.ruby_literal(const)}" unless const.nil?
+      facts + type_facts
+    end
+
+    # The facts describing the value's type and shape: what the runtime reads it as and checks
+    # it against. `map_of` is the value primitive of a string-keyed map (`{*text => text}`).
+    def type_facts
+      facts = []
       facts << "ref: '#{ref}'" if ref
       facts << 'list: true' if list
       facts << "scalar: #{scalar_literal}" if scalar
       facts << "enum: '#{enum}'" if enum
       facts << "primitive: '#{primitive}'" if primitive
+      facts << "map: '#{map_of}'" if map_of
       facts
     end
 
@@ -926,7 +934,7 @@ module BiDiGenerate
       if node.key?('ref')
         named = resolve_named(node['ref'])
         return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
-                rbs: nilable(named[:rbs], nullable)}
+                map: named[:map], rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
@@ -972,12 +980,24 @@ module BiDiGenerate
       return OPAQUE unless type
 
       case type['kind']
-      when 'record' then type['fields'].empty? ? OPAQUE : named_type(name)
+      when 'record' then type['fields'].empty? ? map_record(type) : named_type(name)
       when 'union' then named_union(name)
       when 'enum' then {ref: nil, list: false, rbs: 'Symbol'}
       when 'alias' then resolve_named_alias(name, type['type'], seen)
       else OPAQUE
       end
+    end
+
+    # A field-less record is either a genuinely empty one (EmptyParams, Extensible — opaque)
+    # or the projector's stand-in for an inline map (`{*text => text}` is hoisted to a record
+    # with no fields and the value type under `map`, e.g. script.NodePropertiesAttributes).
+    # A primitive-valued map becomes a `map` descriptor the runtime checks and a typed Hash;
+    # a ref- or union-valued one (the Mozilla vendor types) stays opaque for now.
+    def map_record(type)
+      primitive = type.dig('map', 'primitive')
+      return OPAQUE unless primitive && CHECKABLE_PRIMITIVES.include?(primitive)
+
+      {ref: nil, list: false, map: primitive, rbs: "Hash[String, #{PRIMITIVE_RBS.fetch(primitive)}]"}
     end
 
     # A named structured type's serialization ref (nil for a dotless/global type, never
@@ -1072,7 +1092,7 @@ module BiDiGenerate
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
                   primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
-                  const: leaf_const(field['type']), rbs: resolved[:rbs])
+                  const: leaf_const(field['type']), map_of: resolved[:map], rbs: resolved[:rbs])
     end
 
     # The literal value of a const field, following alias chains, so the runtime can reject a

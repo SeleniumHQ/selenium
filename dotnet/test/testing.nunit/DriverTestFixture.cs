@@ -75,9 +75,17 @@ public abstract class DriverTestFixture
         return new DriverFactory(EnvironmentManager.Instance);
     }
 
-    protected IWebDriver CreateDriverInstance(DriverOptions options = null)
+    protected virtual void ConfigureDriverOptions(DriverOptions options)
     {
-        return DriverFactory.CreateDriver(options);
+    }
+
+    protected IWebDriver CreateDriverInstance(DriverOptions options = null, Action<DriverOptions> configureOptions = null)
+    {
+        return DriverFactory.CreateDriver(options, configureOptions: driverOptions =>
+        {
+            ConfigureDriverOptions(driverOptions);
+            configureOptions?.Invoke(driverOptions);
+        });
     }
 
     protected internal void CloseDriver()

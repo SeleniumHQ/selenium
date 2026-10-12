@@ -94,4 +94,51 @@ module BiDiGenerate
         .to raise_error(/collides with the accessor/)
     end
   end
+
+  describe 'Schema#types_for with a field-less synthetic map record' do
+    # The projector has no inline map form for a field, so `{*text => text}` is hoisted into a
+    # field-less record carrying the value type under `map` (script.NodeProperties.attributes).
+    def synthetic_map(value_type)
+      {'kind' => 'record', 'fields' => [], 'map' => value_type, 'synthetic' => true,
+       'owner' => 'x.Owner', 'label' => 'Attributes', 'outbound' => false, 'inbound' => true}
+    end
+
+    def schema(value_type)
+      types = {
+        'x.Owner' => {'kind' => 'record', 'outbound' => false, 'inbound' => true,
+                      'fields' => [{'name' => 'attributes', 'wire' => 'attributes', 'required' => false,
+                                    'type' => {'ref' => 'x.OwnerAttributes'}}]},
+        'x.OwnerAttributes' => synthetic_map(value_type),
+        'x.Value' => {'kind' => 'record', 'outbound' => false, 'inbound' => true,
+                      'fields' => [{'name' => 'v', 'wire' => 'v', 'required' => true,
+                                    'type' => {'primitive' => 'string'}}]}
+      }
+      BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
+    end
+
+    def attributes_field(value_type)
+      owner = schema(value_type).types_for('x').find { |t| t.schema_name == 'x.Owner' }
+      owner.fields.find { |f| f.ruby_name == 'attributes' }
+    end
+
+    it 'carries a primitive-valued map as a map descriptor' do
+      expect(attributes_field('primitive' => 'string').spec_entry)
+        .to eq("attributes: {wire_key: 'attributes', required: false, map: 'string'}")
+    end
+
+    it 'types a primitive-valued map as a Hash of its value type' do
+      expect(attributes_field('primitive' => 'string').rbs).to eq('Hash[String, String]')
+    end
+
+    it 'does not emit the synthetic map record as a class' do
+      expect(schema('primitive' => 'string').types_for('x').map(&:schema_name)).not_to include('x.OwnerAttributes')
+    end
+
+    it 'leaves a ref-valued map opaque' do
+      field = attributes_field('ref' => 'x.Value')
+
+      expect(field.spec_entry).to eq("attributes: {wire_key: 'attributes', required: false}")
+      expect(field.rbs).to eq('untyped')
+    end
+  end
 end

@@ -1,3 +1,10 @@
+4.51.0 (2026-10-09)
+=========================
+* Support CDP versions: v153, v154, v155
+* [build] Automated CDDL Spec Update (#18118)
+* type a field-less synthetic map record as a validated map (#18121)
+* [build] Automated Browser Version Update (major) with CDP (#18131)
+
 4.50.0 (2026-09-30)
 =========================
 * Support CDP versions: v152, v153, v154

@@ -18,11 +18,17 @@
 package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -32,8 +38,11 @@ import org.openqa.selenium.bidi.script.RemoteReference;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 public class SetFilesCommandTest extends JupiterTestBase {
+  private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
+
   private Input input;
 
   private String windowHandle;
@@ -117,5 +126,76 @@ public class SetFilesCommandTest extends JupiterTestBase {
         windowHandle, ((RemoteWebElement) uploadElement).getId(), file.getAbsolutePath());
 
     assertThat(uploadElement.getAttribute("value")).endsWith(file.getName());
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @SwitchToTopAfterTest
+  void setFilesUploadsTheFileContentsToTheServer() {
+    driver.get(pages.uploadPage);
+    WebElement uploadElement = driver.findElement(By.id("upload"));
+
+    File file = createTmpFile("<div>" + LOREM_IPSUM_TEXT + "</div>");
+
+    input.setFiles(
+        windowHandle,
+        new RemoteReference(
+            RemoteReference.Type.SHARED_ID, ((RemoteWebElement) uploadElement).getId()),
+        file.getAbsolutePath());
+
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're tiny
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @SwitchToTopAfterTest
+  void setFilesUploadsEveryFileItSets() {
+    driver.get(pages.uploadPage);
+    WebElement uploadElement = driver.findElement(By.id("upload"));
+
+    List<String> contents = List.of("first file", "second file", "third file");
+    List<String> paths =
+        contents.stream()
+            .map(text -> "<div>" + text + "</div>")
+            .map(this::createTmpFile)
+            .map(File::getAbsolutePath)
+            .collect(Collectors.toList());
+
+    input.setFiles(
+        windowHandle,
+        new RemoteReference(
+            RemoteReference.Type.SHARED_ID, ((RemoteWebElement) uploadElement).getId()),
+        paths);
+
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're tiny
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, String.join("\n", contents)));
+  }
+
+  private File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.writeString(f.toPath(), content);
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }

@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V154;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V155;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 

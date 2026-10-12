@@ -32,22 +32,6 @@ task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
   config = arguments.to_a.include?('rbe') ? 'rbe_release' : 'release'
 
-  unless nightly
-    already_published = begin
-      Rake::Task['py:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['py:verify'].reenable
-    end
-
-    if already_published
-      puts 'Python package already published — skipping release.'
-      next
-    end
-  end
-
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
 
   if nightly

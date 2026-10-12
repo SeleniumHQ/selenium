@@ -5,6 +5,12 @@ These "atoms" provide reusable building blocks for browser automation
 Google Closure Compiler, but at some point, we'd love to migrate them
 to TypeScript since Closure isn't as widely known.
 
+The atoms that have already been migrated to TypeScript are additionally
+published to npm as `@selenium/atoms`, for tooling outside the Selenium
+bindings that needs to match Selenium's behaviour. `README.npm.md` is the
+consumer-facing documentation for that package; this file is for contributors
+working on the atoms themselves.
+
 ## Testing the Atoms
 
 ### Iteratively

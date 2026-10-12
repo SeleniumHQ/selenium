@@ -251,6 +251,27 @@ def _pinned_grid_args(config):
     ]
 
 
+# Maps the test driver name to the env var its Service consults before invoking Selenium Manager.
+_DRIVER_PATH_ENV_KEYS = {
+    "chrome": "SE_CHROMEDRIVER",
+    "edge": "SE_EDGEDRIVER",
+    "firefox": "SE_GECKODRIVER",
+    "ie": "SE_IEDRIVER",
+    "safari": "SE_SAFARIDRIVER",
+}
+
+
+def pytest_configure(config):
+    """Export the pinned driver for services built without a path, and resolve a runfiles SE_MANAGER_PATH."""
+    executable = config.option.executable
+    driver = next((d for d in config.option.drivers or [] if d.lower() in _DRIVER_PATH_ENV_KEYS), None)
+    if driver and executable:
+        os.environ[_DRIVER_PATH_ENV_KEYS[driver.lower()]] = _resolve_bazel_path(executable).strip("'")
+    manager = os.environ.get("SE_MANAGER_PATH")
+    if manager and not Path(manager).exists() and Runfiles is not None:
+        os.environ["SE_MANAGER_PATH"] = Runfiles.Create().Rlocation(manager)
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
@@ -414,6 +435,8 @@ class Driver:
 
         if cls_name.lower() in ("chrome", "edge"):
             self._options.add_argument("--disable-dev-shm-usage")
+            if self.exe_platform == "Linux":
+                self._options.add_argument("--no-sandbox")
 
         if self.is_remote:
             self._options.enable_downloads = True
@@ -616,8 +639,8 @@ def pytest_exception_interact(node, call, report):
 @pytest.fixture
 def pages(driver, webserver):
     class Pages:
-        def url(self, name, localhost=False):
-            return webserver.where_is(name, localhost)
+        def url(self, name, localhost=False, secure=False):
+            return webserver.where_is(name, localhost, secure)
 
         def load(self, name):
             driver.get(self.url(name))

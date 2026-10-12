@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.script;
 import static java.util.Collections.unmodifiableMap;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,8 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
 
 @Beta
 public class RemoteValue {
@@ -154,6 +155,93 @@ public class RemoteValue {
     return new RemoteValue(valueType, handle, internalId, value, sharedId);
   }
 
+  /**
+   * Builds a {@code RemoteValue} from an already-parsed JSON object. Nested values are decoded
+   * directly from the parsed tree rather than being serialized back to JSON text and re-read, so
+   * each node is visited once and decoding is not bounded by {@code JsonOutput}'s maximum depth.
+   *
+   * <p>Deliberately not named {@code fromJson}: {@code StaticInitializerCoercer} only binds a class
+   * that declares exactly one static {@code fromJson} method.
+   */
+  static @Nullable RemoteValue fromMap(@Nullable Object raw) {
+    if (raw == null) {
+      // A JSON null where a remote value is expected decodes to null, as it did before.
+      return null;
+    }
+    Map<String, Object> map = asMap(raw, "remote value");
+
+    String typeName = coerceScalar(map.get("type"), String.class, "type");
+    if (typeName == null) {
+      throw new JsonException("Remote value has no \"type\"");
+    }
+    Type type = Type.findByName(typeName);
+
+    Object rawValue = map.get("value");
+    Optional<Object> value =
+        rawValue == null ? Optional.empty() : Optional.ofNullable(deserializeValue(rawValue, type));
+
+    return new RemoteValue(
+        type,
+        optionalString(map, "handle"),
+        optionalString(map, "internalId"),
+        value,
+        optionalString(map, "sharedId"));
+  }
+
+  @SuppressWarnings("unchecked")
+  static Map<String, Object> asMap(Object raw, String what) {
+    if (!(raw instanceof Map)) {
+      throw new JsonException("Expected a JSON object for " + what + " but got: " + describe(raw));
+    }
+    return (Map<String, Object>) raw;
+  }
+
+  @SuppressWarnings("unchecked")
+  static List<Object> asList(Object raw, String what) {
+    if (!(raw instanceof List)) {
+      throw new JsonException("Expected a JSON array for " + what + " but got: " + describe(raw));
+    }
+    return (List<Object>) raw;
+  }
+
+  static Optional<String> optionalString(Map<String, Object> map, String key) {
+    return Optional.ofNullable(coerceScalar(map.get(key), String.class, key));
+  }
+
+  /**
+   * Converts a scalar from the parsed tree using the same coercion the JSON layer applies when
+   * reading that type (so {@code "1"} still becomes {@code 1L} and {@code 1} still becomes {@code
+   * "1"}). A value that is already of the target type is returned as is. Objects and arrays are
+   * rejected rather than serialized, so this never round-trips a subtree.
+   */
+  static <T> @Nullable T coerceScalar(@Nullable Object value, Class<T> type, String what) {
+    if (value == null) {
+      return null;
+    }
+    if (type.isInstance(value)) {
+      return type.cast(value);
+    }
+    if (value instanceof Map || value instanceof List) {
+      throw new JsonException(
+          "Expected a " + type.getSimpleName() + " for " + what + " but got: " + describe(value));
+    }
+    return JSON.toType(JSON.toJson(value), type);
+  }
+
+  // Payloads can be large, so errors name the JSON type rather than echoing the value.
+  static String describe(@Nullable Object value) {
+    if (value == null) {
+      return "null";
+    }
+    if (value instanceof Map) {
+      return "object";
+    }
+    if (value instanceof List) {
+      return "array";
+    }
+    return value.getClass().getSimpleName();
+  }
+
   public String getType() {
     return type.toString();
   }
@@ -190,38 +278,52 @@ public class RemoteValue {
   private static Object deserializeValue(Object value, Type type) {
     Object finalValue;
 
+    // Container values are decoded straight from the parsed tree. Round-tripping each child through
+    // JSON text re-serializes its whole subtree once per level above it, and fails outright once a
+    // subtree is deeper than JsonOutput's maximum depth. See #18076.
     switch (type) {
       case ARRAY:
       case NODE_LIST:
       case SET:
-        try (StringReader reader = new StringReader(JSON.toJson(value));
-            JsonInput input = JSON.newInput(reader)) {
-          finalValue = input.read(new TypeToken<List<RemoteValue>>() {}.getType());
+        List<Object> items = asList(value, type + " value");
+        List<RemoteValue> list = new ArrayList<>(items.size());
+        for (Object item : items) {
+          list.add(fromMap(item));
         }
+        finalValue = list;
         break;
 
       case MAP:
       case OBJECT:
-        List<List<Object>> result = (List<List<Object>>) value;
+        List<Object> entries = asList(value, type + " value");
         Map<Object, RemoteValue> map = new HashMap<>();
 
-        for (List<Object> list : result) {
-          Object key = list.get(0);
+        for (Object rawEntry : entries) {
+          List<Object> entry = asList(rawEntry, type + " entry");
+          if (entry.size() < 2) {
+            throw new JsonException(
+                "Expected a [key, value] pair in "
+                    + type
+                    + " value but got "
+                    + entry.size()
+                    + " items");
+          }
+          Object key = entry.get(0);
           if (!(key instanceof String)) {
-            try (StringReader reader = new StringReader(JSON.toJson(key));
-                JsonInput keyInput = JSON.newInput(reader)) {
-              key = keyInput.read(RemoteValue.class);
-            }
+            key = fromMap(key);
           }
-          try (StringReader reader = new StringReader(JSON.toJson(list.get(1)));
-              JsonInput valueInput = JSON.newInput(reader)) {
-            RemoteValue value1 = valueInput.read(RemoteValue.class);
-            map.put(key, value1);
-          }
+          map.put(key, fromMap(entry.get(1)));
         }
         finalValue = map;
         break;
 
+      case NODE:
+        // Not a leaf: children and shadowRoot are remote values themselves.
+        finalValue = NodeProperties.fromMap(value);
+        break;
+
+      // RegExpValue and WindowProxyProperties are genuine leaves (strings only), so a single
+      // round trip through JSON text is bounded and cheap.
       case REGULAR_EXPRESSION:
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
@@ -233,13 +335,6 @@ public class RemoteValue {
         try (StringReader reader = new StringReader(JSON.toJson(value));
             JsonInput input = JSON.newInput(reader)) {
           finalValue = input.read(WindowProxyProperties.class);
-        }
-        break;
-
-      case NODE:
-        try (StringReader reader = new StringReader(JSON.toJson(value));
-            JsonInput input = JSON.newInput(reader)) {
-          finalValue = input.read(NodeProperties.class);
         }
         break;
 
