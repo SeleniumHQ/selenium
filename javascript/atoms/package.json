@@ -66,6 +66,10 @@
     "./get-top-left-coordinates": {
       "types": "./dist/typescript/get-top-left-coordinates.d.ts",
       "default": "./dist/typescript/get-top-left-coordinates.js"
+    },
+    "./get-text": {
+      "types": "./dist/typescript/get-text.d.ts",
+      "default": "./dist/typescript/get-text.js"
     }
   },
   "typesVersions": {
@@ -83,7 +87,8 @@
       "get-location": ["./dist/typescript/get-location.d.ts"],
       "get-effective-style": ["./dist/typescript/get-effective-style.d.ts"],
       "get-value-of-css-property": ["./dist/typescript/get-effective-style.d.ts"],
-      "get-top-left-coordinates": ["./dist/typescript/get-top-left-coordinates.d.ts"]
+      "get-top-left-coordinates": ["./dist/typescript/get-top-left-coordinates.d.ts"],
+      "get-text": ["./dist/typescript/get-text.d.ts"]
     }
   },
   "engines": {
