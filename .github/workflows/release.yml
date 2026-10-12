@@ -6,7 +6,6 @@ on:
     paths:
       - 'version.bzl'
       - 'rb/lib/selenium/webdriver/version.rb'
-      - 'py/selenium/__init__.py'
       - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
