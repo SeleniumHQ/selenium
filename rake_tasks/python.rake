@@ -35,6 +35,8 @@ task :release do |_task, arguments|
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one is dev0
+    SeleniumRake.write_version('python', python_version.sub(/dev0$/, "dev#{Time.now.strftime('%Y%m%d%H%M')}"))
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
@@ -98,7 +100,7 @@ end
 
 desc 'Generate and stage Python documentation'
 task :docs do |_task, arguments|
-  if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/) && !arguments.to_a.include?('force')
+  if python_version.include?('dev') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
@@ -147,8 +149,7 @@ end
 desc 'Update Python version'
 task :version, [:version] do |_task, arguments|
   old_version = python_version
-  nightly = ".#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '.dev0')
   puts "Updating Python from #{old_version} to #{new_version}"
   SeleniumRake.write_version('python', new_version)
 end
