@@ -70,6 +70,62 @@
     "./get-text": {
       "types": "./dist/typescript/get-text.d.ts",
       "default": "./dist/typescript/get-text.js"
+    },
+    "./get-local-storage-item": {
+      "types": "./dist/typescript/get-local-storage-item.d.ts",
+      "default": "./dist/typescript/get-local-storage-item.js"
+    },
+    "./get-local-storage-key": {
+      "types": "./dist/typescript/get-local-storage-key.d.ts",
+      "default": "./dist/typescript/get-local-storage-key.js"
+    },
+    "./get-local-storage-keys": {
+      "types": "./dist/typescript/get-local-storage-keys.d.ts",
+      "default": "./dist/typescript/get-local-storage-keys.js"
+    },
+    "./get-local-storage-size": {
+      "types": "./dist/typescript/get-local-storage-size.d.ts",
+      "default": "./dist/typescript/get-local-storage-size.js"
+    },
+    "./set-local-storage-item": {
+      "types": "./dist/typescript/set-local-storage-item.d.ts",
+      "default": "./dist/typescript/set-local-storage-item.js"
+    },
+    "./remove-local-storage-item": {
+      "types": "./dist/typescript/remove-local-storage-item.d.ts",
+      "default": "./dist/typescript/remove-local-storage-item.js"
+    },
+    "./clear-local-storage": {
+      "types": "./dist/typescript/clear-local-storage.d.ts",
+      "default": "./dist/typescript/clear-local-storage.js"
+    },
+    "./get-session-storage-item": {
+      "types": "./dist/typescript/get-session-storage-item.d.ts",
+      "default": "./dist/typescript/get-session-storage-item.js"
+    },
+    "./get-session-storage-key": {
+      "types": "./dist/typescript/get-session-storage-key.d.ts",
+      "default": "./dist/typescript/get-session-storage-key.js"
+    },
+    "./get-session-storage-keys": {
+      "types": "./dist/typescript/get-session-storage-keys.d.ts",
+      "default": "./dist/typescript/get-session-storage-keys.js"
+    },
+    "./get-session-storage-size": {
+      "types": "./dist/typescript/get-session-storage-size.d.ts",
+      "default": "./dist/typescript/get-session-storage-size.js"
+    },
+    "./set-session-storage-item": {
+      "types": "./dist/typescript/set-session-storage-item.d.ts",
+      "default": "./dist/typescript/set-session-storage-item.js"
+    },
+    "./remove-session-storage-item": {
+      "types": "./dist/typescript/remove-session-storage-item.d.ts",
+      "default": "./dist/typescript/remove-session-storage-item.js"
+    },
+    "./clear-session-storage": {
+      "types": "./dist/typescript/clear-session-storage.d.ts",
+      "default": "./dist/typescript/clear-session-storage.js"
     }
   },
   "typesVersions": {
@@ -88,7 +144,21 @@
       "get-effective-style": ["./dist/typescript/get-effective-style.d.ts"],
       "get-value-of-css-property": ["./dist/typescript/get-effective-style.d.ts"],
       "get-top-left-coordinates": ["./dist/typescript/get-top-left-coordinates.d.ts"],
-      "get-text": ["./dist/typescript/get-text.d.ts"]
+      "get-text": ["./dist/typescript/get-text.d.ts"],
+      "get-local-storage-item": ["./dist/typescript/get-local-storage-item.d.ts"],
+      "get-local-storage-key": ["./dist/typescript/get-local-storage-key.d.ts"],
+      "get-local-storage-keys": ["./dist/typescript/get-local-storage-keys.d.ts"],
+      "get-local-storage-size": ["./dist/typescript/get-local-storage-size.d.ts"],
+      "set-local-storage-item": ["./dist/typescript/set-local-storage-item.d.ts"],
+      "remove-local-storage-item": ["./dist/typescript/remove-local-storage-item.d.ts"],
+      "clear-local-storage": ["./dist/typescript/clear-local-storage.d.ts"],
+      "get-session-storage-item": ["./dist/typescript/get-session-storage-item.d.ts"],
+      "get-session-storage-key": ["./dist/typescript/get-session-storage-key.d.ts"],
+      "get-session-storage-keys": ["./dist/typescript/get-session-storage-keys.d.ts"],
+      "get-session-storage-size": ["./dist/typescript/get-session-storage-size.d.ts"],
+      "set-session-storage-item": ["./dist/typescript/set-session-storage-item.d.ts"],
+      "remove-session-storage-item": ["./dist/typescript/remove-session-storage-item.d.ts"],
+      "clear-session-storage": ["./dist/typescript/clear-session-storage.d.ts"]
     }
   },
   "engines": {

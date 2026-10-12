@@ -21,6 +21,9 @@
 export const INVALID_SELECTOR = 'invalid selector'
 export const INVALID_ARGUMENT = 'invalid argument'
 export const NO_SUCH_ELEMENT = 'no such element'
+// bot.Error.State.UNKNOWN_ERROR, which bot.ErrorCode.UNKNOWN_ERROR (13) mapped
+// onto. The storage atoms raise it when web storage is unavailable.
+export const UNKNOWN_ERROR = 'unknown error'
 
 export function botError(code: string, message: string): Error {
   const err = new Error(message)
