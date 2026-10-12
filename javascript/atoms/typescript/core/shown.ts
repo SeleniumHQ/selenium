@@ -16,31 +16,20 @@
 // under the License.
 
 import { getParentElement, getParentNodeInComposedDom, isElement } from './element.js'
+import {
+  Coordinate,
+  ImageMapResult,
+  Rect,
+  getClientRect as readClientRect,
+  getClientRegion as readClientRegion,
+  maybeFindImageMap as findImageMap,
+} from './geometry.js'
 
 type OverflowState = 'none' | 'hidden' | 'scroll';
-
-interface Rect {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-  width: number;
-  height: number;
-}
-
-interface ImageMapResult {
-  image: Element | null;
-  rect: Rect;
-}
 
 interface OverflowStyles {
   x: string;
   y: string;
-}
-
-interface Coordinate {
-  x: number;
-  y: number;
 }
 
 function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
@@ -73,125 +62,26 @@ function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
     return parent ? opacity * getOpacity(parent) : opacity;
   }
 
-  function createRect(left: number, top: number, width: number, height: number): Rect {
-    return {
-      left: left,
-      top: top,
-      right: left + width,
-      bottom: top + height,
-      width: width,
-      height: height,
-    };
-  }
-
+  // Memoising delegates over the shared geometry primitives. One isDisplayed
+  // call reads the same element's rect many times over, so the cache is what
+  // keeps that from forcing a reflow each time; the uncached primitives live
+  // in core/geometry.ts for every other caller.
   function getClientRect(elem: Element): Rect {
     var cachedRect = clientRectCache.get(elem);
     if (cachedRect) {
       return cachedRect;
     }
-
-    var rect: Rect;
-    var imageMap = maybeFindImageMap(elem);
-    if (imageMap) {
-      rect = imageMap.rect;
-    } else {
-      var elemTagName = typeof (elem as Element).tagName === 'string' ? (elem as Element).tagName : '';
-      if (elemTagName.toUpperCase() === 'HTML') {
-        var doc = (elem as Element).ownerDocument;
-        // In quirks mode (no DOCTYPE), viewport dimensions come from document.body;
-        // documentElement.clientWidth/Height is unreliable and can be 0.
-        var sizeElem = doc.compatMode === 'CSS1Compat' ? doc.documentElement : (doc.body || doc.documentElement);
-        rect = createRect(0, 0, sizeElem.clientWidth, sizeElem.clientHeight);
-      } else {
-        try {
-          var nativeRect = (elem as Element).getBoundingClientRect();
-          rect = {
-            left: nativeRect.left,
-            top: nativeRect.top,
-            right: nativeRect.right,
-            bottom: nativeRect.bottom,
-            width: nativeRect.right - nativeRect.left,
-            height: nativeRect.bottom - nativeRect.top,
-          };
-        } catch (_error) {
-          rect = createRect(0, 0, 0, 0);
-        }
-      }
-    }
-
+    var rect = readClientRect(elem, getClientRect);
     clientRectCache.set(elem, rect);
     return rect;
   }
 
-  function getAreaRelativeRect(area: HTMLAreaElement): Rect {
-    var shape = area.shape.toLowerCase();
-    var coords = area.coords.split(',').map(function (value) {
-      return Number(value.trim());
-    });
-
-    if (shape === 'rect' && coords.length === 4) {
-      return createRect(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1]);
-    }
-
-    if (shape === 'circle' && coords.length === 3) {
-      return createRect(coords[0] - coords[2], coords[1] - coords[2], coords[2] * 2, coords[2] * 2);
-    }
-
-    if (shape === 'poly' && coords.length > 2) {
-      var minX = coords[0];
-      var minY = coords[1];
-      var maxX = minX;
-      var maxY = minY;
-
-      for (var index = 2; index + 1 < coords.length; index += 2) {
-        minX = Math.min(minX, coords[index]);
-        maxX = Math.max(maxX, coords[index]);
-        minY = Math.min(minY, coords[index + 1]);
-        maxY = Math.max(maxY, coords[index + 1]);
-      }
-
-      return createRect(minX, minY, maxX - minX, maxY - minY);
-    }
-
-    return createRect(0, 0, 0, 0);
-  }
-
-  function findImageUsingMap(mapName: string, doc: Document): Element | null {
-    // Use querySelector instead of a full-DOM scan; escape the map name so
-    // special characters in the CSS attribute value string are handled safely.
-    return doc.querySelector('[usemap="#' + mapName.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]');
-  }
-
   function maybeFindImageMap(elem: Element): ImageMapResult | null {
-    var isMap = isElement(elem, 'MAP');
-    if (!isMap && !isElement(elem, 'AREA')) {
-      return null;
-    }
-
-    var map = isMap ? elem : isElement(elem.parentNode, 'MAP') ? elem.parentNode : null;
-    var image: Element | null = null;
-    var rect = createRect(0, 0, 0, 0);
-
-    if (isElement(map, 'MAP') && (map as HTMLMapElement).name) {
-      image = findImageUsingMap((map as HTMLMapElement).name, (map as HTMLMapElement).ownerDocument);
-      if (image) {
-        rect = getClientRect(image);
-        if (!isMap && isElement(elem, 'AREA') && (elem as HTMLAreaElement).shape.toLowerCase() !== 'default') {
-          var relativeRect = getAreaRelativeRect(elem as HTMLAreaElement);
-          var relativeX = Math.min(Math.max(relativeRect.left, 0), rect.width);
-          var relativeY = Math.min(Math.max(relativeRect.top, 0), rect.height);
-          var width = Math.min(relativeRect.width, rect.width - relativeX);
-          var height = Math.min(relativeRect.height, rect.height - relativeY);
-          rect = createRect(relativeX + rect.left, relativeY + rect.top, width, height);
-        }
-      }
-    }
-
-    return { image: image, rect: rect };
+    return findImageMap(elem, getClientRect);
   }
 
   function getClientRegion(elem: Element): Rect {
-    return getClientRect(elem);
+    return readClientRegion(elem, undefined, getClientRect);
   }
 
   function getOverflowState(elem: Element): OverflowState {
