@@ -103,8 +103,7 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            app_server = RackServer.new(root.join('common/src/web').to_s, random_port,
-                                        secure_port: random_port,
+            app_server = RackServer.new(root.join('common/src/web').to_s,
                                         certificates: root.join('common/certificates').to_s)
             app_server.start
 
