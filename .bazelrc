@@ -94,7 +94,6 @@ common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUIL
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 common --incompatible_enable_proto_toolchain_resolution
-build --incompatible_enable_cc_toolchain_resolution
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
