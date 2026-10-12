@@ -1445,9 +1445,11 @@ class WebDriver(BaseWebDriver):
                 (`.xpi`, `.crx` or `.zip`), or the base64-encoded bytes of such
                 an archive. Chromium installs unpacked directories only.
             permanent: Firefox only. Install the extension permanently rather
-                than for the lifetime of the session. Omitting it leaves the
-                choice to the browser. Firefox installs only a packed, signed
-                extension permanently; a directory is rejected.
+                than for the lifetime of the session. When omitted, the default
+                depends on the protocol: BiDi installs temporarily, while the
+                WebDriver-Classic fallback installs permanently. Firefox installs
+                only a packed, signed extension permanently; a directory is
+                rejected.
             allow_private_browsing: Firefox only. Let the extension run in
                 private browsing windows. On Android it additionally requires
                 `permanent=True`.

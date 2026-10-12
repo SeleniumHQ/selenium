@@ -108,7 +108,7 @@ class WebDriver(LocalWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
-        .. deprecated:: 4.49
+        .. deprecated:: 4.52
             Use `install_web_extension` instead, which works on every browser
             that supports web extensions and returns a `WebExtension` object.
 
@@ -149,7 +149,7 @@ class WebDriver(LocalWebDriver):
     def uninstall_addon(self, identifier) -> None:
         """Uninstalls Firefox addon using its identifier.
 
-        .. deprecated:: 4.49
+        .. deprecated:: 4.52
             Use `uninstall_web_extension` instead, which works on every browser
             that supports web extensions.
 
