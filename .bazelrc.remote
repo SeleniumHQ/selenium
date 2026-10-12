@@ -19,7 +19,7 @@ build:rbe --extra_toolchains=//common/remote-build:cc-toolchain
 build:rbe --host_platform=//common/remote-build:platform
 build:rbe --platforms=//common/remote-build:platform
 
-# Keep the output directory k8-fastbuild whatever host launches the build so remote cache keys match CI
+# Define output directory by remote worker architecture so hosts of any architecture share the cache
 build:rbe --cpu=k8
 build:rbe --host_cpu=k8
 
