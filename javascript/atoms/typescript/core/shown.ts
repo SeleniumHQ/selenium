@@ -17,20 +17,13 @@
 
 import { getParentElement, getParentNodeInComposedDom, isElement } from './element.js'
 import {
-  Coordinate,
   ImageMapResult,
   Rect,
   getClientRect as readClientRect,
   getClientRegion as readClientRegion,
   maybeFindImageMap as findImageMap,
 } from './geometry.js'
-
-type OverflowState = 'none' | 'hidden' | 'scroll';
-
-interface OverflowStyles {
-  x: string;
-  y: string;
-}
+import { OverflowState, getOverflowState as readOverflowState } from './overflow.js'
 
 function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
   // Per-call memoisation caches. Scoped here so they live only for the
@@ -84,128 +77,10 @@ function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
     return readClientRegion(elem, undefined, getClientRect);
   }
 
+  // The memoised readers are threaded through so the overflow walk shares this
+  // call's caches; isDisplayed asks about the whole element, never a region.
   function getOverflowState(elem: Element): OverflowState {
-    var region = getClientRegion(elem);
-    var ownerDoc = elem.ownerDocument;
-    var htmlElem = ownerDoc.documentElement;
-    var bodyElem = ownerDoc.body;
-    var htmlOverflowStyle = getEffectiveStyle(htmlElem, 'overflow') || 'visible';
-    var treatAsFixedPosition = false;
-
-    function canBeOverflowed(container: Element, position: string | null): boolean {
-      if (container === htmlElem) {
-        return true;
-      }
-
-      var display = getEffectiveStyle(container, 'display') || '';
-      if (display.indexOf('inline') === 0 || display === 'contents') {
-        return false;
-      }
-
-      if (position === 'absolute' && getEffectiveStyle(container, 'position') === 'static') {
-        return false;
-      }
-
-      return true;
-    }
-
-    function getOverflowParent(current: Element): Element | null {
-      var position = getEffectiveStyle(current, 'position');
-      if (position === 'fixed') {
-        treatAsFixedPosition = true;
-        return current === htmlElem ? null : htmlElem;
-      }
-
-      var parent = getParentElement(current);
-      while (parent && !canBeOverflowed(parent, position)) {
-        parent = getParentElement(parent);
-      }
-      return parent;
-    }
-
-    function getOverflowStyles(current: Element): OverflowStyles {
-      var overflowElem = current;
-      if (htmlOverflowStyle === 'visible') {
-        if (current === htmlElem && bodyElem) {
-          overflowElem = bodyElem;
-        } else if (current === bodyElem) {
-          return { x: 'visible', y: 'visible' };
-        }
-      }
-
-      var overflow = {
-        x: getEffectiveStyle(overflowElem, 'overflow-x') || 'visible',
-        y: getEffectiveStyle(overflowElem, 'overflow-y') || 'visible',
-      };
-
-      if (current === htmlElem) {
-        overflow.x = overflow.x === 'visible' ? 'auto' : overflow.x;
-        overflow.y = overflow.y === 'visible' ? 'auto' : overflow.y;
-      }
-
-      return overflow;
-    }
-
-    function getScroll(current: Element): Coordinate {
-      if (current === htmlElem) {
-        return {
-          x: ownerDoc.defaultView ? ownerDoc.defaultView.pageXOffset : 0,
-          y: ownerDoc.defaultView ? ownerDoc.defaultView.pageYOffset : 0,
-        };
-      }
-
-      return { x: current.scrollLeft, y: current.scrollTop };
-    }
-
-    for (var container = getOverflowParent(elem); container; container = getOverflowParent(container)) {
-      var containerOverflow = getOverflowStyles(container);
-      if (containerOverflow.x === 'visible' && containerOverflow.y === 'visible') {
-        continue;
-      }
-
-      var containerRect = getClientRect(container);
-      if (containerRect.width === 0 || containerRect.height === 0) {
-        return 'hidden';
-      }
-
-      var underflowsX = region.right < containerRect.left;
-      var underflowsY = region.bottom < containerRect.top;
-      if ((underflowsX && containerOverflow.x === 'hidden') || (underflowsY && containerOverflow.y === 'hidden')) {
-        return 'hidden';
-      }
-
-      if ((underflowsX && containerOverflow.x !== 'visible') || (underflowsY && containerOverflow.y !== 'visible')) {
-        var containerScroll = getScroll(container);
-        var unscrollableX = region.right < containerRect.left - containerScroll.x;
-        var unscrollableY = region.bottom < containerRect.top - containerScroll.y;
-        if ((unscrollableX && containerOverflow.x !== 'visible') || (unscrollableY && containerOverflow.y !== 'visible')) {
-          return 'hidden';
-        }
-
-        var containerUnderflowState = getOverflowState(container);
-        return containerUnderflowState === 'hidden' ? 'hidden' : 'scroll';
-      }
-
-      var overflowsX = region.left >= containerRect.left + containerRect.width;
-      var overflowsY = region.top >= containerRect.top + containerRect.height;
-      if ((overflowsX && containerOverflow.x === 'hidden') || (overflowsY && containerOverflow.y === 'hidden')) {
-        return 'hidden';
-      }
-
-      if ((overflowsX && containerOverflow.x !== 'visible') || (overflowsY && containerOverflow.y !== 'visible')) {
-        if (treatAsFixedPosition) {
-          var docScroll = getScroll(container);
-          if (region.left >= htmlElem.scrollWidth - docScroll.x || region.right >= htmlElem.scrollHeight - docScroll.y) {
-            return 'hidden';
-          }
-        }
-
-        var containerOverflowState = getOverflowState(container);
-        return containerOverflowState === 'hidden' ? 'hidden' : 'scroll';
-      }
-    }
-
-    return 'none';
+    return readOverflowState(elem, undefined, getEffectiveStyle, getClientRect);
   }
 
   function isShownInternal(elem: Element, ignoreOpacity: boolean, displayedFn: (element: Node) => boolean): boolean {

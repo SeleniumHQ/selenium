@@ -120,6 +120,12 @@ ATOMS = [
         "global": "bot.dom.typescript.getEffectiveStyle",
         "aliases": ["get-value-of-css-property"],
     },
+    {
+        "name": "get-top-left-coordinates",
+        "export": "getTopLeftCoordinates",
+        "global": "bot.dom.typescript.getTopLeftCoordinates",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
