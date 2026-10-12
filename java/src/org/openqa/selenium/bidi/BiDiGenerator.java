@@ -656,20 +656,6 @@ public class BiDiGenerator {
       String pkg = domainPackage(domain);
       String cls = simpleNameOf(typeName);
       boolean isReceivable = receivableTypes.contains(typeName);
-      boolean extensible = Boolean.TRUE.equals(node.get("extensible"));
-      List<Map<String, Object>> rawFields =
-          (List<Map<String, Object>>)
-              Optional.ofNullable(node.get("fields")).orElse(Collections.emptyList());
-      boolean hasReservedWordField =
-          rawFields.stream().map(this::parseField).anyMatch(f -> !f.name.equals(f.wire));
-      // A receivable, non-extensible type deserializes through ConstructorCoercer (no generated
-      // fromJson of its own, unless a reserved-word field forces one — that bypasses
-      // ConstructorCoercer entirely via StaticInitializerCoercer, so the annotation would be
-      // inert there). Everywhere else, this opts the type into the "warn instead of silently
-      // ignoring" half of undeclared-field handling — extensible types don't need it, since they
-      // capture rather than drop.
-      boolean warnsOnUnknownFields = isReceivable && !extensible && !hasReservedWordField;
-
       StringBuilder sb = new StringBuilder();
       sb.append(LICENSE);
       sb.append("package ").append(pkg).append(";\n\n");
@@ -680,7 +666,7 @@ public class BiDiGenerator {
       sb.append("import java.util.Collections;\n");
       sb.append("import java.util.LinkedHashMap;\n");
       // Always imported: needed by fromJson() (see appendFromJson) whenever this class, or any
-      // nested synthetic class in this file, has an escaped-reserved-word field.
+      // nested synthetic class in this file, decodes a record.
       sb.append("import java.util.Map;\n");
       sb.append("import java.util.Objects;\n");
       sb.append("import java.util.Optional;\n");
@@ -695,13 +681,10 @@ public class BiDiGenerator {
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
       sb.append("import org.openqa.selenium.json.Json;\n");
       sb.append("import org.openqa.selenium.json.TypeToken;\n");
-      sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
+      sb.append("\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
       sb.append("@ApiStatus.Internal\n");
-      if (warnsOnUnknownFields) {
-        sb.append("@WarnOnUnknownFields\n");
-      }
       // Unions are generated as interfaces, so a type belonging to more than one union (e.g.
       // PrimitiveProtocolValue in both RemoteValue and LocalValue) genuinely implements all of
       // them — no single-inheritance conflict to work around.
@@ -769,6 +752,8 @@ public class BiDiGenerator {
       // from "never set" — see appendConstructorAssignment).
       List<FieldInfo> nullableOptional =
           optional.stream().filter(f -> isNullable(f.typeRef)).collect(Collectors.toList());
+      // Both wire decoding and Builder.build() must preserve explicit null presence.
+      boolean supportsSetOverride = !nullableOptional.isEmpty();
 
       // Fields — an immutable type's fields (including their xSet presence flags) are final:
       // assigned once, in the single deserialization constructor, never mutated afterward.
@@ -834,7 +819,7 @@ public class BiDiGenerator {
       // When there is a user-facing constructor (any record with optional fields gets one, even
       // if it ends up no-arg), this one is intentionally hidden. Skipped entirely when it would
       // be a no-op duplicate of that public constructor: the public ctor's params are exactly
-      // `required`, and this one's are `required` (+ optional, + a needsBuilder SetOverride each,
+      // `required`, and this one's are `required` (+ optional, + a nullable-field SetOverride each,
       // + extensions when needsExtrasCapture) — identical only when there are no real optional
       // fields to add and no extras param either, which happens for a sender-only type whose only
       // reason for hasOptionals is needsExtrasSend (not receivable, so no "extensions" ctor
@@ -851,7 +836,7 @@ public class BiDiGenerator {
               fields.stream()
                   .map(f -> paramDecl(f, domain))
                   .collect(Collectors.toCollection(ArrayList::new));
-          if (needsBuilder) {
+          if (supportsSetOverride) {
             for (FieldInfo f : nullableOptional) {
               ctorParams.add("Optional<Boolean> " + f.name + "SetOverride");
             }
@@ -862,7 +847,7 @@ public class BiDiGenerator {
           sb.append(String.join(", ", ctorParams));
           sb.append(") {\n");
           for (FieldInfo f : fields) {
-            appendConstructorAssignment(sb, f, domain, m + "  ", needsBuilder, isReceivable);
+            appendConstructorAssignment(sb, f, domain, m + "  ", supportsSetOverride, isReceivable);
           }
           if (needsExtrasCapture) {
             // Copy rather than alias: when this constructor is called from a Builder's build(),
@@ -1023,31 +1008,17 @@ public class BiDiGenerator {
         appendBuilder(sb, cls, fields, required, optional, domain, m, needsExtras);
       }
 
-      // A field whose spec name collides with a Java reserved word (e.g.
-      // script.CallFunctionParameters'
-      // "this", session.UserPromptHandler's "default") gets its Java identifier escaped
-      // (escapeReserved) but keeps its original wire key. ConstructorCoercer matches JSON
-      // properties to constructor parameters by exact name, so it can never find the wire key
-      // "this" for a parameter named "this_" — that field would silently deserialize as absent.
-      // fromJson reads every field by its wire key directly and calls the all-fields constructor,
-      // bypassing that name-matching entirely; StaticInitializerCoercer picks up a class's own
-      // "fromJson" ahead of ConstructorCoercer whenever one is present. A type that must preserve
-      // undeclared fields on receipt needs the same bypass for the same reason: ConstructorCoercer
-      // has no notion of "collect whatever's left over."
-      boolean needsFromJson =
-          fields.stream().anyMatch(f -> !f.name.equals(f.wire)) || needsExtrasCapture;
-      if (needsFromJson) {
-        appendFromJson(
-            sb,
-            cls,
-            fields,
-            domain,
-            m,
-            needsBuilder,
-            nullableOptional,
-            needsExtrasCapture,
-            isReceivable && !extensible);
-      }
+      // Decode by wire key to enforce presence and nullability before Optional erases them.
+      appendFromJson(
+          sb,
+          cls,
+          fields,
+          domain,
+          m,
+          supportsSetOverride,
+          nullableOptional,
+          needsExtrasCapture,
+          isReceivable && !extensible);
     }
 
     // A caller-added extension must never shadow a declared field's wire key — that would leave
@@ -1067,7 +1038,7 @@ public class BiDiGenerator {
         List<FieldInfo> fields,
         String domain,
         String m,
-        boolean needsBuilder,
+        boolean supportsSetOverride,
         List<FieldInfo> nullableOptional,
         boolean needsExtrasCapture,
         boolean warnOnUnknownFields) {
@@ -1082,6 +1053,32 @@ public class BiDiGenerator {
       // accepted from a string/fraction or matched case-insensitively.
       sb.append(m).append("  Json json = ConverterFunctions.JSON;\n");
       for (FieldInfo f : fields) {
+        if (f.required) {
+          sb.append(m)
+              .append("  if (!map.containsKey(\"")
+              .append(f.wire)
+              .append("\")) {\n")
+              .append(m)
+              .append("    throw new BiDiException(\"")
+              .append(f.wire)
+              .append(" is required\");\n")
+              .append(m)
+              .append("  }\n");
+        }
+        if (!isNullable(f.typeRef)) {
+          sb.append(m)
+              .append("  if (map.containsKey(\"")
+              .append(f.wire)
+              .append("\") && map.get(\"")
+              .append(f.wire)
+              .append("\") == null) {\n")
+              .append(m)
+              .append("    throw new BiDiException(\"")
+              .append(f.wire)
+              .append(" must not be null\");\n")
+              .append(m)
+              .append("  }\n");
+        }
         String decodeType =
             f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);
         sb.append(m)
@@ -1097,13 +1094,9 @@ public class BiDiGenerator {
       }
       List<String> ctorArgs =
           fields.stream().map(f -> f.name).collect(Collectors.toCollection(ArrayList::new));
-      if (needsBuilder) {
-        // The shared constructor's <field>SetOverride params exist so Builder.build() can state
-        // explicit-null-vs-never-set for certain; fromJson has no such certainty (a missing key
-        // and an absent Optional look identical here — a separate, pre-existing limitation), so
-        // it always defers to the constructor's own Optional.isPresent()-derived fallback.
-        for (int i = 0; i < nullableOptional.size(); i++) {
-          ctorArgs.add("Optional.empty()");
+      if (supportsSetOverride) {
+        for (FieldInfo f : nullableOptional) {
+          ctorArgs.add("Optional.of(map.containsKey(\"" + f.wire + "\"))");
         }
       }
       if (needsExtrasCapture) {
@@ -1117,15 +1110,11 @@ public class BiDiGenerator {
         sb.append(m).append("  }\n");
         ctorArgs.add("extensions");
       } else if (warnOnUnknownFields) {
-        // This type would otherwise deserialize through ConstructorCoercer, which honors
-        // @WarnOnUnknownFields — but a reserved-word field (see generateRecord) forces this
-        // custom fromJson instead, bypassing ConstructorCoercer entirely. Without this call an
-        // undeclared response member would be silently dropped here with no warning at all,
-        // unlike every other receivable, non-extensible generated type.
+        // Custom decoding bypasses ConstructorCoercer's unknown-field warning.
         sb.append(m)
             .append("  org.openqa.selenium.json.UnknownFieldsWarning.warnOnUnknownFields(")
             .append(cls)
-            .append(".class, Set.of(")
+            .append(".class, java.util.Set.of(")
             .append(
                 fields.stream().map(f -> "\"" + f.wire + "\"").collect(Collectors.joining(", ")))
             .append("), map);\n");
@@ -1274,22 +1263,7 @@ public class BiDiGenerator {
                       + parentRefs.stream()
                           .map(r -> resolveRefToJavaClass(r, domain))
                           .collect(Collectors.joining(", "));
-          // Same condition generateRecord() uses for a top-level type — a nested synthetic
-          // record (e.g. emulation.MediaFeatures) is just as receivable as one, and was
-          // silently missing this annotation, so an unknown field on it never warned.
-          boolean childIsReceivable = receivableTypes.contains(childName);
-          boolean childExtensible = Boolean.TRUE.equals(childNode.get("extensible"));
-          List<Map<String, Object>> childRawFields =
-              (List<Map<String, Object>>)
-                  Optional.ofNullable(childNode.get("fields")).orElse(Collections.emptyList());
-          boolean childHasReservedWordField =
-              childRawFields.stream().map(this::parseField).anyMatch(f -> !f.name.equals(f.wire));
-          boolean childWarnsOnUnknownFields =
-              childIsReceivable && !childExtensible && !childHasReservedWordField;
           sb.append("\n").append(m);
-          if (childWarnsOnUnknownFields) {
-            sb.append("@WarnOnUnknownFields\n").append(m);
-          }
           sb.append("public static class ").append(label).append(implementsClause).append(" {\n\n");
           appendRecordBody(sb, childName, childNode, domain, m + "  ");
           appendNestedSynthetics(sb, childName, domain, m + "  ");
@@ -1316,15 +1290,6 @@ public class BiDiGenerator {
       appendConstructorAssignment(sb, f, domain, bodyIndent, false, false);
     }
 
-    // supportsSetOverride is true only for the all-fields constructor of a type that has a
-    // Builder (immutable + sendable). That constructor is called from two places: the shared
-    // JSON deserializer (which can never distinguish an explicit wire "null" from an absent key
-    // once the value has collapsed to Optional.empty() — a separate, pre-existing limitation, out
-    // of scope here) and Builder.build() (which knows for certain whether its setter was called,
-    // independent of the value passed). The extra <field>SetOverride parameter lets build() state
-    // that fact explicitly; it is Optional-typed so ConstructorCoercer's reflection-based matching
-    // — which only requires non-Optional parameters to correspond to a real wire key — leaves it
-    // untouched (defaulting to empty) when the constructor is invoked from deserialization.
     // Neither a List nor a Map field type is itself immutable — a caller (or a Builder reused
     // after build()) that kept its own reference to the collection it passed in could mutate a
     // supposedly-immutable received/built instance out from under it, and the field's own getter
@@ -1378,6 +1343,27 @@ public class BiDiGenerator {
       }
       @SuppressWarnings("unchecked")
       List<Map<String, Object>> arms = (List<Map<String, Object>>) f.typeRef.get("union");
+      boolean acceptsString = arms.stream().anyMatch(arm -> "string".equals(str(arm, "primitive")));
+      if (!acceptsString) {
+        for (Map<String, Object> arm : arms) {
+          String ref = str(arm, "ref");
+          if (ref != null
+              && "enum".equals(resolvedKindOf(ref))
+              && !"integer".equals(str(types.get(ref), "primitive"))) {
+            sb.append(bodyIndent).append("if (").append(varName).append(" instanceof String) {\n");
+            sb.append(bodyIndent)
+                .append("  ")
+                .append(varName)
+                .append(" = ")
+                .append(resolveRefToJavaClass(ref, domain))
+                .append(".fromJson((String) ")
+                .append(varName)
+                .append(");\n");
+            sb.append(bodyIndent).append("}\n");
+            break;
+          }
+        }
+      }
       List<String> checks = new ArrayList<>();
       for (Map<String, Object> arm : arms) {
         if (arm.containsKey("primitive")) {
@@ -1710,7 +1696,7 @@ public class BiDiGenerator {
       sb.append("import org.openqa.selenium.bidi.ConverterFunctions;\n");
       sb.append("import org.openqa.selenium.json.Json;\n");
       sb.append("import org.openqa.selenium.json.TypeToken;\n");
-      sb.append("import org.openqa.selenium.json.WarnOnUnknownFields;\n\n");
+      sb.append("\n");
       sb.append(API_JAVADOC);
       sb.append("@Beta\n");
       sb.append("@ApiStatus.Internal\n");
@@ -2109,6 +2095,30 @@ public class BiDiGenerator {
           return serializeExpr(varName, inner, domain, wire, depth);
         }
         return varName;
+      }
+      if (typeRef.containsKey("union")) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> arms = (List<Map<String, Object>>) typeRef.get("union");
+        String expression = varName;
+        for (Map<String, Object> arm : arms) {
+          String ref = str(arm, "ref");
+          if (ref != null && "enum".equals(resolvedKindOf(ref))) {
+            String enumType = resolveRefToJavaClass(ref, domain);
+            expression =
+                "("
+                    + varName
+                    + " instanceof "
+                    + enumType
+                    + " ? (("
+                    + enumType
+                    + ") "
+                    + varName
+                    + ").toWireValue() : "
+                    + expression
+                    + ")";
+          }
+        }
+        return expression;
       }
       if (typeRef.containsKey("list")) {
         // Recurse on the element's own type ref — not just its one-level "kind" — so a
