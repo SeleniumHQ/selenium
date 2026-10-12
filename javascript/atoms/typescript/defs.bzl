@@ -126,6 +126,12 @@ ATOMS = [
         "global": "bot.dom.typescript.getTopLeftCoordinates",
         "aliases": [],
     },
+    {
+        "name": "get-text",
+        "export": "getText",
+        "global": "bot.dom.typescript.getText",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
