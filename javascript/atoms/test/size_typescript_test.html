@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>size_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-size-global.js"></script>
+  <style>
+    #fixed-size {
+      width: 100px;
+      height: 50px;
+      padding: 0;
+      border: 0;
+    }
+
+    #padded {
+      width: 100px;
+      height: 50px;
+      padding: 10px;
+      border: 5px solid black;
+      box-sizing: content-box;
+    }
+
+    #fractional {
+      width: 100.5px;
+      height: 50.25px;
+      padding: 0;
+      border: 0;
+    }
+
+    #transformed {
+      width: 100px;
+      height: 50px;
+      padding: 0;
+      border: 0;
+      transform: scale(2);
+    }
+
+    #hidden {
+      display: none;
+      width: 100px;
+      height: 50px;
+    }
+  </style>
+  <script type="text/javascript">
+    // getSize is deliberately getBoundingClientRect-based rather than a port of
+    // goog.style.getSize, which the get-size Closure fragment used. Three
+    // consequences are asserted below because they are visible behaviour
+    // changes, not incidental ones: sizes are fractional rather than integer,
+    // transform-aware rather than transform-ignorant, and a display:none
+    // element measures 0x0 instead of being temporarily forced visible.
+    var getSize = window.bot.dom.typescript.getSize;
+
+    function sizeOf(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no such element: ' + id);
+      }
+      return getSize(element);
+    }
+
+    // Sub-pixel layout means an exact equality assertion on a fractional size
+    // is not portable; everything here is compared within a tolerance.
+    function assertClose(assert, actual, expected, message) {
+      assert.ok(Math.abs(actual - expected) < 0.01,
+        message + ' (expected ' + expected + ', got ' + actual + ')');
+    }
+
+    QUnit.test('returns the width and height of a plain element', function (assert) {
+      var size = sizeOf('fixed-size');
+      assertClose(assert, size.width, 100, 'width');
+      assertClose(assert, size.height, 50, 'height');
+    });
+
+    QUnit.test('measures the border box, not the content box', function (assert) {
+      var size = sizeOf('padded');
+      assertClose(assert, size.width, 130, 'width includes padding and border');
+      assertClose(assert, size.height, 80, 'height includes padding and border');
+    });
+
+    QUnit.test('does not round fractional sizes', function (assert) {
+      var size = sizeOf('fractional');
+      assertClose(assert, size.width, 100.5, 'width keeps its fraction');
+      assertClose(assert, size.height, 50.25, 'height keeps its fraction');
+    });
+
+    QUnit.test('accounts for transforms', function (assert) {
+      var size = sizeOf('transformed');
+      assertClose(assert, size.width, 200, 'scaled width');
+      assertClose(assert, size.height, 100, 'scaled height');
+    });
+
+    QUnit.test('reports a hidden element as zero sized', function (assert) {
+      var size = sizeOf('hidden');
+      assert.strictEqual(size.width, 0, 'width');
+      assert.strictEqual(size.height, 0, 'height');
+    });
+
+    QUnit.test('measures an SVG element', function (assert) {
+      var size = sizeOf('svg-rect');
+      assertClose(assert, size.width, 40, 'width');
+      assertClose(assert, size.height, 20, 'height');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="fixed-size"></div>
+  <div id="padded"></div>
+  <div id="fractional"></div>
+  <div id="transformed"></div>
+  <div id="hidden"></div>
+  <svg width="100" height="100">
+    <rect id="svg-rect" x="0" y="0" width="40" height="20"></rect>
+  </svg>
+</body>
+
+</html>

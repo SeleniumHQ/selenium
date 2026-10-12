@@ -46,6 +46,14 @@
     "./get-attribute-value": {
       "types": "./dist/typescript/get-attribute-value.d.ts",
       "default": "./dist/typescript/get-attribute-value.js"
+    },
+    "./get-size": {
+      "types": "./dist/typescript/get-size.d.ts",
+      "default": "./dist/typescript/get-size.js"
+    },
+    "./get-location": {
+      "types": "./dist/typescript/get-location.d.ts",
+      "default": "./dist/typescript/get-location.js"
     }
   },
   "typesVersions": {
@@ -58,7 +66,9 @@
       "is-editable": ["./dist/typescript/is-editable.d.ts"],
       "is-focusable": ["./dist/typescript/is-focusable.d.ts"],
       "is-interactable": ["./dist/typescript/is-interactable.d.ts"],
-      "get-attribute-value": ["./dist/typescript/get-attribute-value.d.ts"]
+      "get-attribute-value": ["./dist/typescript/get-attribute-value.d.ts"],
+      "get-size": ["./dist/typescript/get-size.d.ts"],
+      "get-location": ["./dist/typescript/get-location.d.ts"]
     }
   },
   "engines": {
