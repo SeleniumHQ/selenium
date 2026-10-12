@@ -22,13 +22,43 @@
     "./is-displayed": {
       "types": "./dist/typescript/is-displayed.d.ts",
       "default": "./dist/typescript/is-displayed.js"
+    },
+    "./is-enabled": {
+      "types": "./dist/typescript/is-enabled.d.ts",
+      "default": "./dist/typescript/is-enabled.js"
+    },
+    "./is-selected": {
+      "types": "./dist/typescript/is-selected.d.ts",
+      "default": "./dist/typescript/is-selected.js"
+    },
+    "./is-editable": {
+      "types": "./dist/typescript/is-editable.d.ts",
+      "default": "./dist/typescript/is-editable.js"
+    },
+    "./is-focusable": {
+      "types": "./dist/typescript/is-focusable.d.ts",
+      "default": "./dist/typescript/is-focusable.js"
+    },
+    "./is-interactable": {
+      "types": "./dist/typescript/is-interactable.d.ts",
+      "default": "./dist/typescript/is-interactable.js"
+    },
+    "./get-attribute-value": {
+      "types": "./dist/typescript/get-attribute-value.d.ts",
+      "default": "./dist/typescript/get-attribute-value.js"
     }
   },
   "typesVersions": {
     "*": {
       "get-attribute": ["./dist/typescript/get-attribute.d.ts"],
       "find-elements": ["./dist/typescript/find-elements.d.ts"],
-      "is-displayed": ["./dist/typescript/is-displayed.d.ts"]
+      "is-displayed": ["./dist/typescript/is-displayed.d.ts"],
+      "is-enabled": ["./dist/typescript/is-enabled.d.ts"],
+      "is-selected": ["./dist/typescript/is-selected.d.ts"],
+      "is-editable": ["./dist/typescript/is-editable.d.ts"],
+      "is-focusable": ["./dist/typescript/is-focusable.d.ts"],
+      "is-interactable": ["./dist/typescript/is-interactable.d.ts"],
+      "get-attribute-value": ["./dist/typescript/get-attribute-value.d.ts"]
     }
   },
   "engines": {
