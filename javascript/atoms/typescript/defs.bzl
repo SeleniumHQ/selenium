@@ -62,6 +62,42 @@ ATOMS = [
         "global": "bot.dom.typescript.isShown",
         "aliases": [],
     },
+    {
+        "name": "is-enabled",
+        "export": "isEnabled",
+        "global": "bot.dom.typescript.isEnabled",
+        "aliases": [],
+    },
+    {
+        "name": "is-selected",
+        "export": "isSelected",
+        "global": "bot.dom.typescript.isSelected",
+        "aliases": [],
+    },
+    {
+        "name": "is-editable",
+        "export": "isEditable",
+        "global": "bot.dom.typescript.isEditable",
+        "aliases": [],
+    },
+    {
+        "name": "is-focusable",
+        "export": "isFocusable",
+        "global": "bot.dom.typescript.isFocusable",
+        "aliases": [],
+    },
+    {
+        "name": "is-interactable",
+        "export": "isInteractable",
+        "global": "bot.dom.typescript.isInteractable",
+        "aliases": [],
+    },
+    {
+        "name": "get-attribute-value",
+        "export": "getAttributeValue",
+        "global": "bot.dom.typescript.getAttributeValue",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
