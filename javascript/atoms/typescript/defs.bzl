@@ -110,6 +110,16 @@ ATOMS = [
         "global": "bot.dom.typescript.getLocation",
         "aliases": [],
     },
+    # get-value-of-css-property is an export-map alias over this one artifact,
+    # not a second build target: two targets would be two bundles that can
+    # drift, and the bindings disagree on the name badly enough that neither
+    # spelling can be dropped.
+    {
+        "name": "get-effective-style",
+        "export": "getEffectiveStyle",
+        "global": "bot.dom.typescript.getEffectiveStyle",
+        "aliases": ["get-value-of-css-property"],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):

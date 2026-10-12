@@ -54,6 +54,14 @@
     "./get-location": {
       "types": "./dist/typescript/get-location.d.ts",
       "default": "./dist/typescript/get-location.js"
+    },
+    "./get-effective-style": {
+      "types": "./dist/typescript/get-effective-style.d.ts",
+      "default": "./dist/typescript/get-effective-style.js"
+    },
+    "./get-value-of-css-property": {
+      "types": "./dist/typescript/get-effective-style.d.ts",
+      "default": "./dist/typescript/get-effective-style.js"
     }
   },
   "typesVersions": {
@@ -68,7 +76,9 @@
       "is-interactable": ["./dist/typescript/is-interactable.d.ts"],
       "get-attribute-value": ["./dist/typescript/get-attribute-value.d.ts"],
       "get-size": ["./dist/typescript/get-size.d.ts"],
-      "get-location": ["./dist/typescript/get-location.d.ts"]
+      "get-location": ["./dist/typescript/get-location.d.ts"],
+      "get-effective-style": ["./dist/typescript/get-effective-style.d.ts"],
+      "get-value-of-css-property": ["./dist/typescript/get-effective-style.d.ts"]
     }
   },
   "engines": {
