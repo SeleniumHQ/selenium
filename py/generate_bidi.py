@@ -147,7 +147,7 @@ def load_enhancements_manifest(manifest_path: str | None) -> dict[str, Any]:
             "method_docstrings": method_docstrings,
         }
     except Exception as e:
-        logger.error(f"Failed to load enhancement manifest: {e}", exc_info=True)
+        logger.exception(f"Failed to load enhancement manifest: {e}")
         return {}
 
 
@@ -1727,5 +1727,5 @@ if __name__ == "__main__":
         )
         sys.exit(0)
     except Exception as e:
-        logger.error(f"Generation failed: {e}", exc_info=True)
+        logger.exception(f"Generation failed: {e}")
         sys.exit(1)

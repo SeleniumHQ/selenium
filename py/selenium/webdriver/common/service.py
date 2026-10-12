@@ -121,7 +121,7 @@ class Service(ABC):
             try:
                 self.stop()
             except Exception:
-                logger.error("Error stopping service after a failed start.", exc_info=True)
+                logger.exception("Error stopping service after a failed start.")
             raise
 
     def assert_process_still_running(self) -> None:
@@ -182,9 +182,8 @@ class Service(ABC):
                 try:
                     self.process.wait(60)
                 except subprocess.TimeoutExpired:
-                    logger.error(
-                        "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
-                        exc_info=True,
+                    logger.exception(
+                        "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL."
                     )
                     self.process.kill()
             for stream in (
@@ -197,7 +196,7 @@ class Service(ABC):
                 except AttributeError:
                     pass
         except OSError:
-            logger.error("Error terminating service process.", exc_info=True)
+            logger.exception("Error terminating service process.")
 
     def __del__(self) -> None:
         # `subprocess.Popen` doesn't send signal on `__del__`;

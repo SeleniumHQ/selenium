@@ -167,8 +167,10 @@ select = [
     "FURB167",
     "FURB188",
     "FURB192",
+    "G201",
     "PERF102",
     "PLR0133",
+    "PYI041",
 ]
 fixable = ["ALL"]
 extend-ignore = [
