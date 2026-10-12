@@ -33,6 +33,7 @@ So the expectations below are written by hand from the intended output rather th
 from the generator, which is what makes them an oracle.
 """
 
+import ast
 import re
 
 import pytest
@@ -459,7 +460,33 @@ def test_a_single_discriminator_value_keeps_its_set_literal():
     assert '    _DISCRIMINATOR_VALUES = frozenset({"only"})' in _emit_union(union)
 
 
+def _presence_of(emitted: str) -> tuple:
+    """The `_PRESENCE` value as Python reads it, whether emitted on one line or wrapped."""
+    for node in ast.walk(ast.parse(emitted)):
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "_PRESENCE" for t in node.targets):
+            return ast.literal_eval(node.value)
+    raise AssertionError("no _PRESENCE emitted")
+
+
 def test_a_presence_union_records_the_fields_each_variant_requires():
+    union = UnionIR(
+        class_name="Sample",
+        schema_name="x.Sample",
+        discriminator=None,
+        discriminator_values=None,
+        variants=[
+            VariantIR(mode="presence", value=None, ref="x.A", requires=("width", "height")),
+            VariantIR(mode="presence", value=None, ref="x.B", requires=("x", "y")),
+        ],
+        variant_types=["A", "B"],
+    )
+
+    assert _presence_of(_emit_union(union)) == (("x.A", ("width", "height")), ("x.B", ("x", "y")))
+
+
+def test_a_single_presence_arm_keeps_its_trailing_comma():
+    # Without the comma Python reads the lone entry as the tuple itself, so
+    # `for variant, keys in _PRESENCE` would unpack the variant name and its keys instead.
     union = UnionIR(
         class_name="Sample",
         schema_name="x.Sample",
@@ -469,7 +496,27 @@ def test_a_presence_union_records_the_fields_each_variant_requires():
         variant_types=["A"],
     )
 
-    assert '    _PRESENCE = (("x.A", ("width", "height")))' in _emit_union(union)
+    emitted = _emit_union(union)
+
+    assert '    _PRESENCE = (("x.A", ("width", "height")),)' in emitted
+    assert _presence_of(emitted) == (("x.A", ("width", "height")),)
+
+
+def test_a_single_presence_arm_too_long_for_one_line_is_still_a_tuple_of_entries():
+    requires = tuple(f"someRatherLongFieldName{i}" for i in range(4))
+    union = UnionIR(
+        class_name="Sample",
+        schema_name="x.Sample",
+        discriminator=None,
+        discriminator_values=None,
+        variants=[VariantIR(mode="presence", value=None, ref="x.A", requires=requires)],
+        variant_types=["A"],
+    )
+
+    emitted = _emit_union(union)
+
+    assert "    _PRESENCE = (\n" in emitted
+    assert _presence_of(emitted) == (("x.A", requires),)
 
 
 def test_a_union_with_a_fallback_arm_records_it():

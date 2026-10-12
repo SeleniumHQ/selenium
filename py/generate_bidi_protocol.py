@@ -974,7 +974,12 @@ def _emit_union(u: UnionIR) -> str:
         lines.append("    }")
     if presence:
         entries = [f"({lit(v.ref)}, {tuple_lit(v.requires)})" for v in presence]
-        lines.append(wrap_call("    _PRESENCE = (", entries, ")", 4))
+        presence_lit = wrap_call("    _PRESENCE = (", entries, ")", 4)
+        # A lone entry needs its trailing comma or it is the tuple, not a tuple of entries;
+        # the wrapped form already ends every entry with one.
+        if len(entries) == 1 and "\n" not in presence_lit:
+            presence_lit = presence_lit[:-1] + ",)"
+        lines.append(presence_lit)
     if fallback:
         lines.append(f"    _FALLBACK = {lit(fallback.ref)}")
     if u.discriminator_values:
