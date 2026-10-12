@@ -65,11 +65,13 @@ single_version_override(
 )
 
 # Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
+# Generated bundle srcs let @bundle install a generated version.rb, so a version bump leaves Ruby tests cached
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
+        "//third_party/bazel:rules_ruby_lazy_bundle_srcs.patch",
     ],
 )
 
@@ -302,7 +304,6 @@ ruby.bundle_fetch(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
-        "//:rb/lib/selenium/webdriver/version.rb",
         "//:rb/selenium-devtools.gemspec",
         "//:rb/selenium-webdriver.gemspec",
     ],
@@ -382,6 +383,7 @@ ruby.bundle_fetch(
     },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
+    generated_srcs = ["//rb/lib/selenium/webdriver:version.rb"],
     jar_checksums = {
         "org.snakeyaml:snakeyaml-engine:2.10": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
     },

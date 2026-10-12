@@ -140,18 +140,6 @@ rb_gem_push(
     gem = ":selenium-devtools",
 )
 
-rb_binary(
-    name = "selenium-webdriver-bump-nightly-version",
-    args = [
-        "rb/support/nightly_version_generator.rb",
-        "rb/lib/selenium/webdriver/version.rb",
-    ],
-    deps = [
-        "//rb/lib/selenium/webdriver:version",
-        "//rb/support:nightly_version_generator",
-    ],
-)
-
 rb_gem_push(
     name = "selenium-webdriver-release-nightly",
     args = [
