@@ -37,8 +37,8 @@ jobs:
       name: Lint
       run: ./go rb:lint
 
-  # jruby is run on RBE; minimum MRI is run by os-tests. This matrix
-  # covers truffleruby and the most recent MRI release.
+  # Minimum MRI is run by os-tests and RBE. This matrix covers the most
+  # recent MRI release, jruby and truffleruby.
   unit-tests:
     name: Unit Tests
     if: github.event_name == 'schedule' || !inputs.smoke
@@ -48,6 +48,8 @@ jobs:
       matrix:
         include:
           - ruby-version: 4.0.4
+            os: ubuntu
+          - ruby-version: jruby-10.1.0.0
             os: ubuntu
           - ruby-version: truffleruby-34.0.1
             os: ubuntu
