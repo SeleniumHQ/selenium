@@ -162,7 +162,8 @@ public class BiDiGenerator {
   // Generator
   // ═══════════════════════════════════════════════════════════════
 
-  private static class Generator {
+  // Package-private so tests can exercise emitters with focused protocol schema fragments.
+  static class Generator {
 
     private final Map<String, Object> schema;
     private final Map<String, Map<String, Object>> types = new LinkedHashMap<>();

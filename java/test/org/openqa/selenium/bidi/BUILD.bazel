@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
 
 java_test_suite(
     name = "small-tests",
@@ -18,12 +18,32 @@ java_test_suite(
     ] + JUNIT5_DEPS,
 )
 
+java_library(
+    name = "generator-test-schema",
+    testonly = True,
+    resources = ["//common/bidi:schema.json"],
+)
+
+java_test_suite(
+    name = "generator-tests",
+    size = "small",
+    srcs = ["BiDiGeneratorTest.java"],
+    deps = [
+        ":generator-test-schema",
+        "//java/src/org/openqa/selenium/bidi:bidi-generator",
+        "//java/src/org/openqa/selenium/json",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = glob(
         ["*Test.java"],
         exclude = [
+            "BiDiGeneratorTest.java",
             "ConnectionTest.java",
             "ConverterFunctionsTest.java",
         ],
