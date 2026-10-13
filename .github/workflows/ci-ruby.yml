@@ -72,6 +72,9 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
         include:
           # Edge has no linux-arm64 build
           - os: ubuntu-24.04-arm

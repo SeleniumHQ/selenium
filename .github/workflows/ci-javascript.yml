@@ -62,6 +62,9 @@ jobs:
       matrix:
         os: [macos, windows]
         tag_filters: ['unit,os-sensitive,se-manager']
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: ${{ matrix.os }}
       needs-display: true
