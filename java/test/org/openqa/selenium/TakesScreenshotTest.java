@@ -221,36 +221,14 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(FIREFOX)
-  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws IOException {
+  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
+    byte[] pageScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
     driver.switchTo().frame(driver.findElement(By.id("iframe2")));
+    byte[] frameScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors =
-        scanActualColors(screenshot, /* stepX in pixels */ 5, /* stepY in pixels */ 5);
-
-    Set<String> expectedColors = new HashSet<>();
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0x0F0F0F,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0xDFDFDF,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-
-    // expectation is that screenshot at page with Iframes after switching to iframe
-    // will be taken for full page
-    compareColors(expectedColors, actualColors);
+    assertThat(frameScreenshot).isEqualTo(pageScreenshot);
   }
 
   /**
