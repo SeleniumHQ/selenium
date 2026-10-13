@@ -43,7 +43,7 @@ jobs:
         ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_tag_filters=os-sensitive
+        --test_tag_filters=unit,os-sensitive
         //java/...
 
   browser-tests-macos:
@@ -69,5 +69,5 @@ jobs:
         ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_tag_filters=os-sensitive
+        --test_tag_filters=unit,os-sensitive
         //java/...

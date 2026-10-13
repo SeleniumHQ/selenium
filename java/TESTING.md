@@ -49,6 +49,9 @@ bazel test //java/... --test_tag_filters=chrome   # chrome tests only
 bazel test //java/... --test_tag_filters=remote-browser  # all browser tests that run on grid
 bazel test //java/... --test_tag_filters=-safari  # no safari tests (use `-` to exclude a tag)
 
+# What GitHub Actions runs on every pull request, on macOS and Windows
+bazel test //java/... --test_tag_filters=unit,os-sensitive
+
 # Additional Arguments
 bazel test //java/... --flaky_test_attempts=3 # Rerun failed tests up to 3 times
 bazel test //java/... --test_output=all # displays all test output at end of run
