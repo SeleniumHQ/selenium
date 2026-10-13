@@ -193,6 +193,8 @@ maven.install(
     name = "maven",
     artifacts = [
         "com.beust:jcommander:1.82",
+        "com.fasterxml.jackson.core:jackson-core",
+        "com.fasterxml.jackson.core:jackson-databind",
         "org.checkerframework:checker-qual:4.3.0",
         "com.github.javaparser:javaparser-core:3.28.2",
         "com.github.spotbugs:spotbugs:4.10.4",
@@ -261,6 +263,7 @@ maven.install(
         "uk.org.webcompere:system-stubs-core:2.1.8",
     ],
     boms = [
+        "com.fasterxml.jackson:jackson-bom:2.22.3",
         "io.opentelemetry:opentelemetry-bom:1.66.0",
         "io.netty:netty-bom:4.2.18.Final",
         "org.junit:junit-bom:6.1.3",

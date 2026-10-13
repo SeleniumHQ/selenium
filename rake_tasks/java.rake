@@ -513,6 +513,7 @@ task :update do
     end
     if artifact.start_with?('io.fabric8:') && Gem::Version.new(version) >= Gem::Version.new('8')
       # fabric8 8.0 requires Java 17; stay on 7.x until Selenium's Java minimum reaches 17.
+      # Lifting this also removes the Jackson override on //java/src/org/openqa/selenium/grid/node/kubernetes.
       version = maven_stable_release(artifact, below: '8')
       next if version.nil?
     end
