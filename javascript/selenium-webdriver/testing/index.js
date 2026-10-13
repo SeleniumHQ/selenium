@@ -361,6 +361,14 @@ class Environment {
       builder.setFirefoxOptions(options)
     }
 
+    if (browser.name === Browser.CHROME && !builder.getChromeOptions()) {
+      builder.setChromeOptions(new chrome.Options())
+    } else if (browser.name === Browser.EDGE && !builder.getEdgeOptions()) {
+      builder.setEdgeOptions(new edge.Options())
+    } else if (browser.name === Browser.FIREFOX && !builder.getFirefoxOptions()) {
+      builder.setFirefoxOptions(new firefox.Options())
+    }
+
     builder.disableEnvironmentOverrides()
 
     const realBuild = builder.build

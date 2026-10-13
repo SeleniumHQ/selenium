@@ -20,46 +20,30 @@ permissions:
   contents: read
 
 jobs:
-  browser-tests-windows:
+  browser-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: windows
+        os: [windows, macos]
     with:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
       needs-display: true
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
-        bazel test --flaky_test_attempts 2
+        [ -s bazel-targets-java.txt ] || echo //java/... > bazel-targets-java.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --build_tests_only
+        --keep_going
+        --flaky_test_attempts 2
+        --local_test_jobs 1
+        --skip_incompatible_explicit_targets
+        --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
-
-  browser-tests-macos:
-    name: Browser Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      needs-display: true
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
+        --test_tag_filters=unit,os-sensitive
+        --target_pattern_file=bazel-targets-java.txt

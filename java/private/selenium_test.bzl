@@ -85,10 +85,11 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
     jvm_flags = kwargs["jvm_flags"] if "jvm_flags" in kwargs else []
     tags = kwargs["tags"] if "tags" in kwargs else []
 
-    remote = False
-    if "selenium-remote" in tags:
-        tags.remove("selenium-remote")
-        remote = True
+    remote = "selenium-remote" in tags
+
+    # These belong only to the stable local target of each browser family.
+    stable_local_tags = [t for t in tags if t in ["os-sensitive"]]
+    tags = [t for t in tags if t != "selenium-remote" and t not in stable_local_tags]
 
     stripped_args = dict(**kwargs)
     stripped_args.pop("data", None)
@@ -103,6 +104,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
             fail("Unrecognized browser: " + browser)
 
         test = name if browser == default_browser else "%s-%s" % (name, browser)
+        local_tags = stable_local_tags if browser == browser.split("-")[0] else []
 
         junit5_test(
             name = test,
@@ -110,7 +112,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
             size = size,
             jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
             # Only allow linting on the default test
-            tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
+            tags = BROWSERS[browser]["tags"] + tags + local_tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
             env_inherit = inherited_env,
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],

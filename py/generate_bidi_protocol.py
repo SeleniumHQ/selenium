@@ -109,6 +109,17 @@ def safe_name(name: str) -> str:
     return f"{name}_" if keyword.iskeyword(name) or name in _RESERVED_FIELDS else name
 
 
+def vendor_field_name(namespace: str, wire: str) -> str:
+    """The Python name for a vendor field: ``moz``, ``moz:allowPrivateBrowsing`` -> ``moz_allow_private_browsing``.
+
+    A vendor wire key carries its namespace as a prefix separated by a colon, which is not
+    valid in an identifier. Keeping the namespace as a word prefix leaves the field as
+    obviously browser-specific in the signature as it is on the wire.
+    """
+    local = wire.split(":", 1)[1] if ":" in wire else wire
+    return f"{namespace}_{camel_to_snake(local)}"
+
+
 def enum_member(value: Any) -> str:
     token = camel_to_snake(str(value))
     token = re.sub(r"\A-(?=\d)", "neg", token)
@@ -273,7 +284,32 @@ class Schema:
         self.commands: list = raw["commands"]
         self.events: list = raw["events"]
         self._domain_links: dict = raw.get("domains", {})
+        self._apply_vendor(raw.get("vendor") or {})
         self._promote_command_params_records()
+
+    def _apply_vendor(self, vendor: dict) -> None:
+        """Fold the schema's vendor overlays into the types they extend.
+
+        The projector keeps browser-specific fields out of the shared types and gathers them
+        under ``vendor``, so the neutral schema stays neutral. A binding that wants them has
+        to fold them back in. Doing it here rather than at emission means a vendor field is
+        an ordinary optional field from that point on: it lands in its record, in its
+        command's signature, and in the serializer's type checks with no special casing.
+
+        The wire key stays fully qualified; only the Python name is namespaced.
+        """
+        for namespace, overlay in sorted(vendor.items()):
+            for target, extension in sorted(overlay.get("extends", {}).items()):
+                type_ = self.types.get(target)
+                if type_ is None or type_.get("kind") != "record":
+                    raise ValueError(f"vendor {namespace!r} extends {target!r}, which is not a record in this schema")
+                declared = {f["wire"] for f in type_["fields"]}
+                for field_ in extension.get("fields", []):
+                    # A vendor overlay may only add to a type, never redefine part of it;
+                    # silently winning here would change the neutral protocol.
+                    if field_["wire"] in declared:
+                        raise ValueError(f"vendor {namespace!r} redeclares {field_['wire']!r} on {target!r}")
+                    type_["fields"].append({**field_, "name": vendor_field_name(namespace, field_["wire"])})
 
     def _promote_command_params_records(self) -> None:
         for cmd in self.commands:

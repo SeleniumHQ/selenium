@@ -164,8 +164,9 @@ task :version, [:version] do |_task, arguments|
   text = File.read(file).gsub(old_version, new_version)
   File.open(file, 'w') { |f| f.puts text }
 
-  Rake::Task['rb:pin'].reenable
-  Rake::Task['rb:pin'].invoke
+  lock = 'rb/Gemfile.lock'
+  text = File.read(lock).sub(/^(    selenium-webdriver \()#{Regexp.escape(old_version)}(\))$/, "\\1#{new_version}\\2")
+  File.write(lock, text)
 end
 
 desc 'Format Ruby code with rubocop (safe auto-correct only)'

@@ -151,7 +151,6 @@ jobs:
       name: Publish ${{ matrix.language }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
-      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release rbe
@@ -280,10 +279,9 @@ jobs:
   reset-version:
     name: Generate Nightly Versions
     needs: [parse-tag, check-authorization]
-    uses: ./.github/workflows/bazel.yml
+    uses: ./.github/workflows/upload-changes.yml
     with:
-      name: Reset Versions
-      use-cache: false
+      name: Reset versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 

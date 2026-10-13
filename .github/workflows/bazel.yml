@@ -247,9 +247,15 @@ jobs:
           {
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
+      - name: Retry transient download failure
+        id: retry-transient
+        if: steps.run-bazel.outcome == 'failure'
+        continue-on-error: true
+        shell: bash
+        run: ./scripts/github-actions/retry-transient-download.sh '${{ inputs.run }}'
       - name: Rerun failures with debug
         id: rerun-failures
-        if: steps.run-bazel.outcome == 'failure'
+        if: steps.run-bazel.outcome == 'failure' && (steps.retry-transient.outputs.retried != 'true' || steps.retry-transient.outcome == 'failure')
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed logs
@@ -260,7 +266,7 @@ jobs:
         if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
       - name: Parse flaky results
@@ -276,7 +282,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 60
           path: build/failures/results.jsonl
       - name: Start SSH session

@@ -68,6 +68,11 @@ java_selenium_test_suite(
     env_inherit = [
         "DISPLAY",
     ],
+    extra_tags = {
+        "PositionAndSizeTest.java": ["os-sensitive"],
+        "TakesScreenshotTest.java": ["os-sensitive"],
+        "WindowTest.java": ["os-sensitive"],
+    },
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,

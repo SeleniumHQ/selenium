@@ -73,6 +73,10 @@ jobs:
       - name: "Build release binary"
         run: cargo build --target i686-pc-windows-msvc --release
         working-directory: rust
+      # The Bazel suite only runs the x86_64 build, so this is the one place the published binary executes.
+      - name: "Run the Grid tests against the 32-bit binary"
+        run: cargo test --target i686-pc-windows-msvc --release --test grid_tests
+        working-directory: rust
       - name: "Rename binary"
         run: mv rust/target/i686-pc-windows-msvc/release/selenium-manager.exe selenium-manager-windows.exe
       - name: "Upload release binary"
@@ -413,7 +417,6 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Needs Investigation
-          SLACK_MESSAGE: "Unable to update the Selenium Manager pin on trunk: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          SLACK_MESSAGE: "Needs investigation: unable to update the Selenium Manager pin on trunk. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

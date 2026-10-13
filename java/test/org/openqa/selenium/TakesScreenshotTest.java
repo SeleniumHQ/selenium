@@ -24,7 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -106,6 +106,9 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotOfCurrentViewport() throws IOException {
     driver.get(appServer.whereIs("screen/screen.html"));
 
@@ -145,6 +148,9 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotAtFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
@@ -182,6 +188,9 @@ class TakesScreenshotTest extends JupiterTestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(EDGE)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotAtIFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -210,69 +219,26 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(value = CHROME, gitHubActions = true)
-  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws IOException {
+  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
+    byte[] pageScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
     driver.switchTo().frame(driver.findElement(By.id("frame2")));
+    byte[] frameScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors =
-        scanActualColors(screenshot, /* stepX in pixels */ 5, /* stepY in pixels */ 5);
-
-    Set<String> expectedColors = new HashSet<>();
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0x0F0F0F,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0xDFDFDF,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-
-    // expectation is that screenshot at page with frames after switching to a frame
-    // will be taken for full page
-    compareColors(expectedColors, actualColors);
+    assertThat(frameScreenshot).isEqualTo(pageScreenshot);
   }
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(FIREFOX)
-  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws IOException {
+  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
+    byte[] pageScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
     driver.switchTo().frame(driver.findElement(By.id("iframe2")));
+    byte[] frameScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
 
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors =
-        scanActualColors(screenshot, /* stepX in pixels */ 5, /* stepY in pixels */ 5);
-
-    Set<String> expectedColors = new HashSet<>();
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0x0F0F0F,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-    expectedColors.addAll(
-        generateExpectedColors(
-            /* initial color */ 0xDFDFDF,
-            /* color step*/ 1000,
-            /* grid X size */ 6,
-            /* grid Y size */ 6));
-
-    // expectation is that screenshot at page with Iframes after switching to iframe
-    // will be taken for full page
-    compareColors(expectedColors, actualColors);
+    assertThat(frameScreenshot).isEqualTo(pageScreenshot);
   }
 
   /**
