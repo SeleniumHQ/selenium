@@ -9,10 +9,8 @@
     "com.github.ben-manes.caffeine:caffeine": -1341471880,
     "com.github.javaparser:javaparser-core": -677443473,
     "com.github.spotbugs:spotbugs": -455007267,
-    "com.github.stephenc.jcip:jcip-annotations": -1909337358,
     "com.google.auto.service:auto-service": -1729498094,
     "com.google.auto.service:auto-service-annotations": -843120535,
-    "com.google.auto:auto-common": -832702775,
     "com.google.closure-stylesheets:closure-stylesheets": -626365944,
     "com.google.code.findbugs:jsr305": 495355163,
     "com.google.code.gson:gson": 2063056812,
@@ -32,16 +30,13 @@
     "io.fabric8:kubernetes-client-api": 276482022,
     "io.fabric8:kubernetes-model-batch": 1464487264,
     "io.fabric8:kubernetes-model-core": -1457255717,
-    "io.grpc:grpc-context": -1662214157,
     "io.lettuce:lettuce-core": 1755338116,
     "io.netty:netty-all": 41228384,
     "io.netty:netty-bom": -290366652,
     "io.netty:netty-buffer": 74326261,
     "io.netty:netty-codec-http": -920101484,
-    "io.netty:netty-codec-http2": 590712764,
     "io.netty:netty-common": 1498958496,
     "io.netty:netty-handler": 1278819283,
-    "io.netty:netty-handler-proxy": -183560396,
     "io.netty:netty-transport": 320927026,
     "io.opentelemetry:opentelemetry-api": 237530819,
     "io.opentelemetry:opentelemetry-bom": 596348298,
@@ -51,16 +46,12 @@
     "io.opentelemetry:opentelemetry-sdk-common": -1695848327,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": 2007780383,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -62380802,
-    "io.opentelemetry:opentelemetry-sdk-testing": -32635354,
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
-    "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
     "net.bytebuddy:byte-buddy": 1292203425,
     "net.java.dev.javacc:javacc": 520686333,
-    "org.apache.logging.log4j:log4j-core": 260343140,
     "org.assertj:assertj-core": -1145412507,
     "org.bouncycastle:bcpkix-jdk18on": 826697430,
-    "org.checkerframework:checker-qual": 816493191,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 801759887,
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
@@ -74,7 +65,6 @@
     "org.junit.jupiter:junit-jupiter-engine": -1886863302,
     "org.junit.jupiter:junit-jupiter-params": 1082310006,
     "org.junit.platform:junit-platform-commons": -1412868620,
-    "org.junit.platform:junit-platform-engine": -1644395090,
     "org.junit.platform:junit-platform-launcher": -354104948,
     "org.junit.platform:junit-platform-reporting": 1896713402,
     "org.junit:junit-bom": 934130879,
@@ -131,12 +121,12 @@
     "com.github.spotbugs:spotbugs:jar:sources": 961059440,
     "com.github.stephenc.jcip:jcip-annotations": 2084352561,
     "com.github.stephenc.jcip:jcip-annotations:jar:sources": 888192437,
-    "com.google.auto.service:auto-service": 1131686288,
+    "com.google.auto.service:auto-service": 113384607,
     "com.google.auto.service:auto-service-annotations": 262983930,
     "com.google.auto.service:auto-service-annotations:jar:sources": -1392999316,
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
-    "com.google.auto:auto-common": 886871146,
-    "com.google.auto:auto-common:jar:sources": -2100626169,
+    "com.google.auto:auto-common": 1373794017,
+    "com.google.auto:auto-common:jar:sources": -542679945,
     "com.google.closure-stylesheets:closure-stylesheets": -131194020,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
@@ -173,7 +163,7 @@
     "com.graphql-java:graphql-java:jar:sources": 250541727,
     "com.graphql-java:java-dataloader": -1517887665,
     "com.graphql-java:java-dataloader:jar:sources": -1676833358,
-    "com.uber.nullaway:nullaway": -1504369909,
+    "com.uber.nullaway:nullaway": -93486471,
     "com.uber.nullaway:nullaway:jar:sources": 192362682,
     "commons-codec:commons-codec": 1545666683,
     "commons-codec:commons-codec:jar:sources": -1502704019,
@@ -235,10 +225,6 @@
     "io.fabric8:kubernetes-model-storageclass:jar:sources": 432103442,
     "io.fabric8:zjsonpatch": 2034342092,
     "io.fabric8:zjsonpatch:jar:sources": -146843037,
-    "io.grpc:grpc-api": 967311031,
-    "io.grpc:grpc-api:jar:sources": -523077795,
-    "io.grpc:grpc-context": 961874018,
-    "io.grpc:grpc-context:jar:sources": -467830681,
     "io.lettuce:lettuce-core": 1160396175,
     "io.lettuce:lettuce-core:jar:sources": -291572534,
     "io.netty:netty-buffer": -428929156,
@@ -298,8 +284,6 @@
     "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": 404508097,
     "io.opentelemetry:opentelemetry-sdk-metrics": -1621561107,
     "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": 845564702,
-    "io.opentelemetry:opentelemetry-sdk-testing": 856883662,
-    "io.opentelemetry:opentelemetry-sdk-testing:jar:sources": 1502575827,
     "io.opentelemetry:opentelemetry-sdk-trace": -1093198087,
     "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": -129802891,
     "io.opentelemetry:opentelemetry-sdk:jar:sources": 74150561,
@@ -359,9 +343,9 @@
     "org.bouncycastle:bcutil-jdk18on:jar:sources": 1897597974,
     "org.checkerframework:checker-compat-qual": -1467856161,
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
-    "org.checkerframework:checker-qual": 1931569551,
-    "org.checkerframework:checker-qual:jar:sources": 417901823,
-    "org.checkerframework:dataflow-nullaway": 793496345,
+    "org.checkerframework:checker-qual": 414066769,
+    "org.checkerframework:checker-qual:jar:sources": 1695950529,
+    "org.checkerframework:dataflow-nullaway": 1855118375,
     "org.checkerframework:dataflow-nullaway:jar:sources": -1205948234,
     "org.commonmark:commonmark": 1007679894,
     "org.commonmark:commonmark-ext-gfm-tables": 906481356,
@@ -613,10 +597,10 @@
     },
     "com.google.auto:auto-common": {
       "shasums": {
-        "jar": "f50b1ce8a41fad31a8a819c052f8ffa362ea0a3dbe9ef8f7c7dc9a36d4738a59",
-        "sources": "173f0a89b59e20a3219074a13d1656d7e207391438459521d11b0adcb814769e"
+        "jar": "f43f29fe2a6ebaf04b2598cdeec32a4e346d49a9404e990f5fc19c19f3a28d0e",
+        "sources": "6802fc6e48f84cacadab9418bc8eba732f4c6a4189fc8569b1f619cb88112b25"
       },
-      "version": "1.2.2"
+      "version": "1.2.1"
     },
     "com.google.closure-stylesheets:closure-stylesheets": {
       "shasums": {
@@ -966,20 +950,6 @@
       },
       "version": "7.9.0"
     },
-    "io.grpc:grpc-api": {
-      "shasums": {
-        "jar": "a2a57594571a4392751609bf4c63cf838ba7dcdbc8e5fd07983c313cb1565ac8",
-        "sources": "4680ddc804a9c2355c619512268826032cccd4c3aa9e2ac40d44859049ae1663"
-      },
-      "version": "1.84.0"
-    },
-    "io.grpc:grpc-context": {
-      "shasums": {
-        "jar": "e6f6e5db0d704e34d03f013cceb6be326c9ed3916346378ca1587ed41f943080",
-        "sources": "47e01c9537bd88be397079bfa2e5d3a0b9e58c5e29dad8c100e7a95ac02a16ba"
-      },
-      "version": "1.84.0"
-    },
     "io.lettuce:lettuce-core": {
       "shasums": {
         "jar": "5b9b9f80bf04f20b1eb30b0f7f63dfd15024f4843d5a595a70e6cd5bfbfe791e",
@@ -1190,13 +1160,6 @@
       },
       "version": "1.66.0"
     },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "shasums": {
-        "jar": "2f7d5f34df7d3db2e1dff9ce9763d6314ea9397615102a9d2ade93eed8e32cff",
-        "sources": "806950ed5520ca9aa53d536c5574aacb3e533765f19a1103f154606580e7c5ac"
-      },
-      "version": "1.66.0"
-    },
     "io.opentelemetry:opentelemetry-sdk-trace": {
       "shasums": {
         "jar": "579c96897d9112b626fbf325efc116c2d4f046aec1bd72e9909ec0f5431a2040",
@@ -1402,10 +1365,10 @@
     },
     "org.checkerframework:checker-qual": {
       "shasums": {
-        "jar": "29800d1035563042aa272085393aa455a6994f63d43f0d617026f60aa4f9e980",
-        "sources": "776d084184e849a33d6342a20e816ce5cffd105567b5da20881e30761484fe3b"
+        "jar": "f868f731f6e37db3e1c2140d06016477989959a2d13fc5bed9c46760cffd5ba0",
+        "sources": "e5eabf475945670430b9a939fc4d82859316f510e13a2e1cd18004a69878863e"
       },
-      "version": "4.3.0"
+      "version": "4.2.3"
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
@@ -2024,9 +1987,6 @@
     "io.fabric8:zjsonpatch": [
       "com.fasterxml.jackson.core:jackson-databind"
     ],
-    "io.grpc:grpc-context": [
-      "io.grpc:grpc-api"
-    ],
     "io.lettuce:lettuce-core": [
       "io.netty:netty-common",
       "io.netty:netty-handler",
@@ -2170,10 +2130,6 @@
     "io.opentelemetry:opentelemetry-sdk-metrics": [
       "io.opentelemetry:opentelemetry-api",
       "io.opentelemetry:opentelemetry-sdk-common"
-    ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry:opentelemetry-api",
-      "io.opentelemetry:opentelemetry-sdk"
     ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
       "io.opentelemetry:opentelemetry-api",
@@ -3224,9 +3180,6 @@
       "io.fabric8.zjsonpatch",
       "io.fabric8.zjsonpatch.internal.collections4"
     ],
-    "io.grpc:grpc-api": [
-      "io.grpc"
-    ],
     "io.lettuce:lettuce-core": [
       "io.lettuce.authx",
       "io.lettuce.core",
@@ -3484,17 +3437,6 @@
       "io.opentelemetry.sdk.metrics.internal.export",
       "io.opentelemetry.sdk.metrics.internal.state",
       "io.opentelemetry.sdk.metrics.internal.view"
-    ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry.sdk.testing.assertj",
-      "io.opentelemetry.sdk.testing.context",
-      "io.opentelemetry.sdk.testing.exporter",
-      "io.opentelemetry.sdk.testing.junit4",
-      "io.opentelemetry.sdk.testing.junit5",
-      "io.opentelemetry.sdk.testing.logs",
-      "io.opentelemetry.sdk.testing.metrics",
-      "io.opentelemetry.sdk.testing.time",
-      "io.opentelemetry.sdk.testing.trace"
     ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
       "io.opentelemetry.sdk.trace",
@@ -4372,7 +4314,6 @@
       "org.checkerframework.checker.initialization.qual",
       "org.checkerframework.checker.interning.qual",
       "org.checkerframework.checker.lock.qual",
-      "org.checkerframework.checker.modifiability.qual",
       "org.checkerframework.checker.mustcall.qual",
       "org.checkerframework.checker.nonempty.qual",
       "org.checkerframework.checker.nullness.qual",
@@ -5640,10 +5581,6 @@
       "io.fabric8:kubernetes-model-storageclass:jar:sources",
       "io.fabric8:zjsonpatch",
       "io.fabric8:zjsonpatch:jar:sources",
-      "io.grpc:grpc-api",
-      "io.grpc:grpc-api:jar:sources",
-      "io.grpc:grpc-context",
-      "io.grpc:grpc-context:jar:sources",
       "io.lettuce:lettuce-core",
       "io.lettuce:lettuce-core:jar:sources",
       "io.netty:netty-buffer",
@@ -5703,8 +5640,6 @@
       "io.opentelemetry:opentelemetry-sdk-logs:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-metrics",
       "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources",
-      "io.opentelemetry:opentelemetry-sdk-testing",
-      "io.opentelemetry:opentelemetry-sdk-testing:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-trace",
       "io.opentelemetry:opentelemetry-sdk-trace:jar:sources",
       "io.opentelemetry:opentelemetry-sdk:jar:sources",
@@ -6400,11 +6335,6 @@
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider": [
         "io.opentelemetry.sdk.autoconfigure.EnvironmentResourceProvider"
-      ]
-    },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "io.opentelemetry.context.ContextStorageProvider": [
-        "io.opentelemetry.sdk.testing.context.SettableContextStorageProvider"
       ]
     },
     "io.projectreactor:reactor-core": {
