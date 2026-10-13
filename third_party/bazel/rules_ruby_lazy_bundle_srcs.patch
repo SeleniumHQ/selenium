@@ -213,7 +213,7 @@ index 121b0740..38f89828 100644
  def _rb_bundle_install_impl(ctx):
      toolchain = ctx.toolchains["@rules_ruby//ruby:toolchain_type"]
      if ctx.attr.ruby != None:
-@@ -55,6 +122,25 @@ def _rb_bundle_install_impl(ctx):
+@@ -55,6 +122,26 @@ def _rb_bundle_install_impl(ctx):
      binstubs = ctx.actions.declare_directory(BINSTUBS_LOCATION)
      bundle_path = ctx.actions.declare_directory("vendor/bundle")
  
@@ -229,7 +229,8 @@ index 121b0740..38f89828 100644
 +        gemfile_lock = _normalize_lock(ctx, toolchain, gemfile, srcs)
 +        relative_dir = "../" * len(gemfile.dirname.split("/"))
 +        cache_path = [gem.dirname for gem in ctx.files.gems if gem.basename.endswith(".gem")][0]
-+        cache_env["BUNDLE_CACHE_PATH"] = _normalize_path(ctx, relative_dir + cache_path)
++        # Kept with forward slashes: Bundler globs this path, and Ruby globs treat backslashes as escapes.
++        cache_env["BUNDLE_CACHE_PATH"] = relative_dir + cache_path
 +    else:
 +        gemfile = ctx.file.gemfile
 +        gemfile_lock = ctx.file.gemfile_lock
@@ -239,7 +240,7 @@ index 121b0740..38f89828 100644
      jar_files = ctx.files.jars if ctx.attr.jars else []
  
      attr_env = {
-@@ -93,18 +179,14 @@ def _rb_bundle_install_impl(ctx):
+@@ -93,18 +180,14 @@ def _rb_bundle_install_impl(ctx):
          path = attr_env.get("PATH", "$PATH")
          env.update({"PATH": toolchain.ruby.dirname + ":" + path})
  
@@ -260,7 +261,7 @@ index 121b0740..38f89828 100644
          "BUNDLE_IGNORE_CONFIG": "1",
          "BUNDLE_PATH": _normalize_path(ctx, "".join([relative_dir, bundle_path.path])),
          "BUNDLE_SHEBANG": _normalize_path(ctx, toolchain.ruby.short_path),
-@@ -142,7 +224,7 @@ def _rb_bundle_install_impl(ctx):
+@@ -142,7 +225,7 @@ def _rb_bundle_install_impl(ctx):
  
      ctx.actions.run(
          executable = script,
@@ -269,7 +270,7 @@ index 121b0740..38f89828 100644
          outputs = [binstubs, bundle_path],
          mnemonic = "BundleInstall",
          progress_message = "Running bundle install (%{label})",
-@@ -151,11 +233,11 @@ def _rb_bundle_install_impl(ctx):
+@@ -151,11 +234,11 @@ def _rb_bundle_install_impl(ctx):
      )
  
      files = [
@@ -284,7 +285,7 @@ index 121b0740..38f89828 100644
  
      return [
          DefaultInfo(
-@@ -169,7 +251,7 @@ def _rb_bundle_install_impl(ctx):
+@@ -169,7 +252,7 @@ def _rb_bundle_install_impl(ctx):
          OutputGroupInfo(gems = depset([bundle_path])),
          RubyFilesInfo(
              binary = None,
@@ -293,7 +294,7 @@ index 121b0740..38f89828 100644
              transitive_deps = depset(),
              transitive_data = depset(),
              bundle_env = {},
-@@ -177,7 +259,7 @@ def _rb_bundle_install_impl(ctx):
+@@ -177,7 +260,7 @@ def _rb_bundle_install_impl(ctx):
          BundlerInfo(
              bin = binstubs,
              env = bundler_env,
@@ -302,7 +303,7 @@ index 121b0740..38f89828 100644
              jars_home_strip_suffix = jars_home_strip_suffix,
              path = bundle_path,
          ),
-@@ -189,12 +271,17 @@ rb_bundle_install = rule(
+@@ -189,12 +272,17 @@ rb_bundle_install = rule(
          "gemfile": attr.label(
              allow_single_file = ["Gemfile"],
              mandatory = True,
@@ -322,7 +323,7 @@ index 121b0740..38f89828 100644
          ),
          "gems": attr.label_list(
              allow_files = [".gem"],
-@@ -210,7 +297,9 @@ rb_bundle_install = rule(
+@@ -210,7 +298,9 @@ rb_bundle_install = rule(
          ),
          "srcs": attr.label_list(
              allow_files = True,
@@ -333,7 +334,7 @@ index 121b0740..38f89828 100644
          ),
          "env": attr.string_dict(
              doc = "Environment variables to use during installation. Values support " +
-@@ -244,6 +333,10 @@ rb_bundle_install = rule(
+@@ -244,6 +334,10 @@ rb_bundle_install = rule(
              allow_single_file = True,
              default = "@rules_ruby//ruby/private/bundle_install:bundle_install.sh.tpl",
          ),
