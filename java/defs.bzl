@@ -7,6 +7,7 @@ load(
     _java_import = "java_import",
 )
 load("@rules_jvm_external//:defs.bzl", _artifact = "artifact", _javadoc = "javadoc", _maven_bom = "maven_bom")
+load("//java/private:bytecode_version_test.bzl", _bytecode_version_test = "bytecode_version_test")
 load("//java/private:dist_zip.bzl", _java_dist_zip = "java_dist_zip")
 load("//java/private:java_binary.bzl", _java_binary = "java_binary")
 load("//java/private:java_test_suite.bzl", _java_test_suite = "java_test_suite")
@@ -30,6 +31,7 @@ BIDI_BROWSERS = [
 ]
 
 artifact = _artifact
+bytecode_version_test = _bytecode_version_test
 java_binary = _java_binary
 java_dist_zip = _java_dist_zip
 java_export = _java_export
