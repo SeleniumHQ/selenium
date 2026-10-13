@@ -266,7 +266,7 @@ jobs:
         if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
       - name: Parse flaky results
@@ -282,7 +282,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 60
           path: build/failures/results.jsonl
       - name: Start SSH session

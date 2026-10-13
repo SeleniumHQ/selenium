@@ -25,14 +25,25 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.function.Consumer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
 class WindowTest extends JupiterTestBase {
+
+  // The driver is shared, so undo any fullscreen or screen-sized window an earlier test left behind
+  @BeforeEach
+  void resetWindow() {
+    if (!TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
+      driver.manage().window().setPosition(new Point(50, 50));
+      changeSizeTo(new Dimension(600, 500));
+    }
+  }
 
   @Test
   void testGetsTheSizeOfTheCurrentWindow() {
@@ -116,12 +127,12 @@ class WindowTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
+  @NoDriverAfterTest
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::maximize);
   }
 
@@ -129,14 +140,13 @@ class WindowTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
+  @NoDriverAfterTest
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 324));
-
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::maximize);
   }
@@ -145,20 +155,20 @@ class WindowTest extends JupiterTestBase {
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
+  @NoDriverAfterTest
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 400));
-
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::maximize);
   }
 
   @Test
   @Ignore(gitHubActions = true)
+  @NoDriverAfterTest
   public void canMinimizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -174,6 +184,7 @@ class WindowTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
+  @NoDriverAfterTest
   public void canFullscreenTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -191,6 +202,7 @@ class WindowTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
+  @NoDriverAfterTest
   public void canFullscreenTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -207,6 +219,7 @@ class WindowTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
+  @NoDriverAfterTest
   public void canFullscreenTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
