@@ -135,6 +135,11 @@
       "allowedVersions": "!/-jdk\\d/"
     },
     {
+      "description": "fabric8 8.0 requires Java 17 and Selenium supports Java 11+; stay on 7.x until the Java minimum reaches 17.",
+      "matchPackageNames": ["/^io\\.fabric8:/"],
+      "allowedVersions": "<8"
+    },
+    {
       "description": "Maven Central indexes non-stable date-based graphql-java artifacts (e.g. 6-digit date prefixes or 0.0.0- prereleases) that sort as 'latest'. https://github.com/graphql-java/graphql-java/discussions/3187",
       "matchPackageNames": ["com.graphql-java:graphql-java"],
       "allowedVersions": "!/^(\\d{6}-|0\\.0\\.0-)/"
