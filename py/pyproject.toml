@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.52.0.202610091837"
+dynamic = ["version"]
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -45,6 +45,9 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [tool.setuptools]
 zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "selenium._version.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["selenium*"]

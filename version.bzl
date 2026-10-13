@@ -4,4 +4,5 @@
 VERSIONS = {
     "dotnet": "4.52.0-nightly",
     "java": "4.52.0-SNAPSHOT",
+    "python": "4.52.0.dev0",
 }
