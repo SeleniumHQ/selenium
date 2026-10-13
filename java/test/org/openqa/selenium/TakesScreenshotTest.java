@@ -24,6 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -105,6 +106,9 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotOfCurrentViewport() throws IOException {
     driver.get(appServer.whereIs("screen/screen.html"));
 
@@ -144,6 +148,9 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotAtFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
@@ -181,6 +188,9 @@ class TakesScreenshotTest extends JupiterTestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(EDGE)
+  @Ignore(
+      value = SAFARI,
+      reason = "Safari applies the display color profile, so colors do not match exactly")
   public void testShouldCaptureScreenshotAtIFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
