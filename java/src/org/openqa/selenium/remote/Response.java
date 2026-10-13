@@ -25,7 +25,8 @@ public class Response {
 
   private volatile @Nullable Object value;
   private volatile @Nullable String sessionId;
-  @Deprecated private volatile @Nullable Integer status;
+  @Deprecated(forRemoval = true)
+  private volatile @Nullable Integer status;
   private volatile @Nullable String state;
 
   public Response() {}
@@ -39,7 +40,7 @@ public class Response {
    *     W3C state) instead. Removal is tracked by <a
    *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public @Nullable Integer getStatus() {
     return status;
   }
@@ -49,7 +50,7 @@ public class Response {
    *     (the W3C state) instead. Removal is tracked by <a
    *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setStatus(@Nullable Integer status) {
     this.status = status;
   }
