@@ -57,6 +57,42 @@ ATOMS = [
         "aliases": [],
     },
     {
+        "name": "find-element",
+        "export": "findElement",
+        "global": "bot.locators.typescript.findElement",
+        "aliases": [],
+    },
+    {
+        "name": "active-element",
+        "export": "activeElement",
+        "global": "bot.frame.typescript.activeElement",
+        "aliases": [],
+    },
+    {
+        "name": "default-content",
+        "export": "defaultContent",
+        "global": "bot.frame.typescript.defaultContent",
+        "aliases": [],
+    },
+    {
+        "name": "frame-by-id-or-name",
+        "export": "frameByIdOrName",
+        "global": "bot.frame.typescript.frameByIdOrName",
+        "aliases": [],
+    },
+    {
+        "name": "frame-by-index",
+        "export": "frameByIndex",
+        "global": "bot.frame.typescript.frameByIndex",
+        "aliases": [],
+    },
+    {
+        "name": "get-frame-window",
+        "export": "getFrameWindow",
+        "global": "bot.frame.typescript.getFrameWindow",
+        "aliases": [],
+    },
+    {
         "name": "is-displayed",
         "export": "isDisplayed",
         "global": "bot.dom.typescript.isShown",

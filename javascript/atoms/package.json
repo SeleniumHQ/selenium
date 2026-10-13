@@ -19,6 +19,30 @@
       "types": "./dist/typescript/find-elements.d.ts",
       "default": "./dist/typescript/find-elements.js"
     },
+    "./find-element": {
+      "types": "./dist/typescript/find-element.d.ts",
+      "default": "./dist/typescript/find-element.js"
+    },
+    "./active-element": {
+      "types": "./dist/typescript/active-element.d.ts",
+      "default": "./dist/typescript/active-element.js"
+    },
+    "./default-content": {
+      "types": "./dist/typescript/default-content.d.ts",
+      "default": "./dist/typescript/default-content.js"
+    },
+    "./frame-by-id-or-name": {
+      "types": "./dist/typescript/frame-by-id-or-name.d.ts",
+      "default": "./dist/typescript/frame-by-id-or-name.js"
+    },
+    "./frame-by-index": {
+      "types": "./dist/typescript/frame-by-index.d.ts",
+      "default": "./dist/typescript/frame-by-index.js"
+    },
+    "./get-frame-window": {
+      "types": "./dist/typescript/get-frame-window.d.ts",
+      "default": "./dist/typescript/get-frame-window.js"
+    },
     "./is-displayed": {
       "types": "./dist/typescript/is-displayed.d.ts",
       "default": "./dist/typescript/is-displayed.js"
@@ -132,6 +156,12 @@
     "*": {
       "get-attribute": ["./dist/typescript/get-attribute.d.ts"],
       "find-elements": ["./dist/typescript/find-elements.d.ts"],
+      "find-element": ["./dist/typescript/find-element.d.ts"],
+      "active-element": ["./dist/typescript/active-element.d.ts"],
+      "default-content": ["./dist/typescript/default-content.d.ts"],
+      "frame-by-id-or-name": ["./dist/typescript/frame-by-id-or-name.d.ts"],
+      "frame-by-index": ["./dist/typescript/frame-by-index.d.ts"],
+      "get-frame-window": ["./dist/typescript/get-frame-window.d.ts"],
       "is-displayed": ["./dist/typescript/is-displayed.d.ts"],
       "is-enabled": ["./dist/typescript/is-enabled.d.ts"],
       "is-selected": ["./dist/typescript/is-selected.d.ts"],
