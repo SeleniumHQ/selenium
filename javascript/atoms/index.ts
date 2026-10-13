@@ -20,6 +20,12 @@
 // written here is what consumers resolve against.
 export { default as getAttribute } from './typescript/get-attribute.js'
 export { default as findElements } from './typescript/find-elements.js'
+export { default as findElement } from './typescript/find-element.js'
+export { default as activeElement } from './typescript/active-element.js'
+export { default as defaultContent } from './typescript/default-content.js'
+export { default as frameByIdOrName } from './typescript/frame-by-id-or-name.js'
+export { default as frameByIndex } from './typescript/frame-by-index.js'
+export { default as getFrameWindow } from './typescript/get-frame-window.js'
 export { default as isDisplayed } from './typescript/is-displayed.js'
 export { default as isEnabled } from './typescript/is-enabled.js'
 export { default as isSelected } from './typescript/is-selected.js'
