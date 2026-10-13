@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.Objects.requireNonNull;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.BiConsumer;
@@ -32,13 +30,13 @@ class MapCoercer<T, I extends T> extends TypeCoercer<T> {
   private final Class<T> stereotype;
   private final JsonTypeCoercer coercer;
   private final Supplier<I> supplier;
-  private final Function<I, BiConsumer<Object, @Nullable Object>> consumerFactory;
+  private final Function<I, BiConsumer<@Nullable Object, @Nullable Object>> consumerFactory;
 
   public MapCoercer(
       Class<T> stereotype,
       JsonTypeCoercer coercer,
       Supplier<I> supplier,
-      Function<I, BiConsumer<Object, @Nullable Object>> consumerFactory) {
+      Function<I, BiConsumer<@Nullable Object, @Nullable Object>> consumerFactory) {
     this.stereotype = stereotype;
     this.coercer = coercer;
     this.supplier = supplier;
@@ -69,19 +67,19 @@ class MapCoercer<T, I extends T> extends TypeCoercer<T> {
     return (jsonInput, setting) -> {
       jsonInput.beginObject();
       I toReturn = supplier.get();
-      BiConsumer<Object, @Nullable Object> consumer = consumerFactory.apply(toReturn);
+      BiConsumer<@Nullable Object, @Nullable Object> consumer = consumerFactory.apply(toReturn);
       // JSON should always have a string key, so we can take the fastpath
       boolean stringKey = String.class.equals(keyType);
 
       while (jsonInput.hasNext()) {
-        Object key;
+        @Nullable Object key;
 
         if (stringKey) {
           key = jsonInput.nextName();
         } else {
-          key = requireNonNull(coercer.coerce(jsonInput, keyType, setting));
+          key = coercer.coerce(jsonInput, keyType, setting);
         }
-        Object value = coercer.coerce(jsonInput, valueType, setting);
+        @Nullable Object value = coercer.coerce(jsonInput, valueType, setting);
 
         consumer.accept(key, value);
       }
