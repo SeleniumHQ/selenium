@@ -73,6 +73,10 @@ jobs:
       - name: "Build release binary"
         run: cargo build --target i686-pc-windows-msvc --release
         working-directory: rust
+      # The Bazel suite only runs the x86_64 build, so this is the one place the published binary executes.
+      - name: "Run the Grid tests against the 32-bit binary"
+        run: cargo test --target i686-pc-windows-msvc --release --test grid_tests
+        working-directory: rust
       - name: "Rename binary"
         run: mv rust/target/i686-pc-windows-msvc/release/selenium-manager.exe selenium-manager-windows.exe
       - name: "Upload release binary"
