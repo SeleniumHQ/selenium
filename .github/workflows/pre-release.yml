@@ -21,19 +21,11 @@ jobs:
     name: Generate Rust Version
     needs: [parse-tag, verify-cdp]
     if: github.event.repository.fork == false && needs.parse-tag.outputs.language == 'all'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v6
-      - name: Update Rust version
-        run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
-      - name: Save git diff
-        run: git diff > changes.patch
-      - name: Upload artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: rust-version
-          path: changes.patch
+    uses: ./.github/workflows/upload-changes.yml
+    with:
+      name: Update Rust version
+      run: ./go rust:version ${{ needs.parse-tag.outputs.version }}
+      artifact-name: rust-version
 
   push-rust-version:
     name: Push Rust Version
@@ -132,19 +124,11 @@ jobs:
   update-versions:
     name: Bump Versions
     needs: [parse-tag, restrict-trunk]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v6
-      - name: Bump versions
-        run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
-      - name: Save git diff
-        run: git diff > changes.patch
-      - name: Upload artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: patch-versions
-          path: changes.patch
+    uses: ./.github/workflows/upload-changes.yml
+    with:
+      name: Bump versions
+      run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
+      artifact-name: patch-versions
 
   commit-versions:
     name: Commit Versions
@@ -163,36 +147,33 @@ jobs:
   update-changelogs:
     name: Generate Changelogs
     needs: [parse-tag, commit-versions]
-    uses: ./.github/workflows/bazel.yml
+    uses: ./.github/workflows/upload-changes.yml
     with:
       name: Update changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go ${{ needs.parse-tag.outputs.language }}:changelogs
       artifact-name: patch-changelogs
-      use-cache: false
 
   update-rust-changelogs:
     name: Update Rust Changelogs
     needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
-    uses: ./.github/workflows/bazel.yml
+    uses: ./.github/workflows/upload-changes.yml
     with:
       name: Update Rust Changelogs
       ref: staging/release-${{ needs.parse-tag.outputs.tag }}
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go rust:changelogs
       artifact-name: patch-rust-changelogs
-      use-cache: false
 
   update-authors:
     name: Update Authors
     needs: [parse-tag, commit-versions]
     if: needs.parse-tag.outputs.language == 'all'
-    uses: ./.github/workflows/bazel.yml
+    uses: ./.github/workflows/upload-changes.yml
     with:
       name: Update Authors
       run: ./scripts/github-actions/deepen-fetch-to-tag.sh ${{ needs.parse-tag.outputs.tag }} && ./go authors
       artifact-name: patch-authors
-      use-cache: false
 
   update-manager:
     name: Update Selenium Manager Binaries
