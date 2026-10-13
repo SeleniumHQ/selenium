@@ -29,6 +29,12 @@ root = if ENV['BUILD_WORKSPACE_DIRECTORY']
 
 Dir.chdir(root)
 
+# The gemspecs require version.rb, which Bazel only generates as a build output
+if ENV["SE_VERSION"]
+  version_file = "lib/selenium/webdriver/version.rb"
+  File.write(version_file, File.read("#{version_file}.tpl").sub("{VERSION}", ENV["SE_VERSION"]))
+end
+
 ENV["BUNDLE_GEMFILE"] ||= File.join(root, "Gemfile")
 ENV["BUNDLE_PATH"] ||= File.join(root, ".bundle")
 ENV["BUNDLE_DISABLE_SHARED_GEMS"] ||= "1"

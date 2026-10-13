@@ -189,7 +189,6 @@ end
 
 desc 'Reconcile Gemfile.lock and sync gem checksums to MODULE.bazel (use force to re-download all)'
 task :pin, [:force] do |_task, arguments|
-  write_ruby_version_file
   Bazel.execute('run', [], '//rb:bundle-lock')
 
   gemfile_lock = 'rb/Gemfile.lock'

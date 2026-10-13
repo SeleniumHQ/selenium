@@ -6,6 +6,7 @@ load(
     "rb_gem_push",
 )
 load("//common:defs.bzl", "copy_file")
+load("//rb:version.bzl", "SE_VERSION")
 
 package(default_visibility = ["//:__subpackages__"])
 
@@ -195,6 +196,7 @@ rb_binary(
     data = [
         "Gemfile",
     ],
+    env = {"SE_VERSION": SE_VERSION},
     deps = [
         "//rb/support:bundle",
     ],
@@ -209,6 +211,7 @@ rb_binary(
     data = [
         "Gemfile",
     ],
+    env = {"SE_VERSION": SE_VERSION},
     deps = [
         "//rb/support:bundle",
     ],
