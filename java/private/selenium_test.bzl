@@ -7,7 +7,7 @@ load(
     "firefox_beta_data",
     "firefox_data",
 )
-load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_EXEC_PROPERTIES")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load(
     "//java:browsers.bzl",
     "chrome_beta_pinned_jvm_flags",
@@ -82,13 +82,6 @@ BROWSERS = {
 
 DEFAULT_BROWSERS = [b for b in BROWSERS.keys() if b != "ie"]
 
-# Java reads SE_MANAGER_PATH literally and cannot rewrite its own environment to resolve the shared
-# rlocationpath, so it gets the rootpath, which is relative to the test's working directory.
-_SE_MANAGER_TEST_ENV = select({
-    "//common:manager_stub": {"SE_MANAGER_PATH": "$(rootpath //rust:selenium-manager)"},
-    "//conditions:default": {},
-})
-
 def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS, **kwargs):
     if len(browsers) == 0:
         fail("At least one browser must be specified.")
@@ -131,7 +124,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
             # Only allow linting on the default test
             tags = BROWSERS[browser]["tags"] + tags + local_tags + ([] if test == name else ["no-lint"]),
             data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data,
-            env = _SE_MANAGER_TEST_ENV if se_manager else {},
+            env = SE_MANAGER_TEST_ENV if se_manager else {},
             env_inherit = inherited_env,
             exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if se_manager else {},
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],
