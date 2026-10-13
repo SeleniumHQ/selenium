@@ -65,7 +65,8 @@ single_version_override(
 )
 
 # Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
-# Generated bundle srcs let @bundle install a generated version.rb, so a version bump leaves Ruby tests cached
+# Carries bazel-contrib/rules_ruby#421 (generated_srcs, so a version bump leaves Ruby tests cached); drop in the release that includes it
+# If rules_ruby#421 is rejected or the patch stops applying, remove it by reverting #18164 and setting rb/lib/selenium/webdriver/version.rb to the version.bzl value
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
