@@ -81,6 +81,9 @@ java_selenium_test_suite(
     size = "large",
     srcs = LARGE_TESTS,
     browsers = SINGLE_BROWSER,
+    extra_tags = {
+        "RemoteWebDriverDownloadTest.java": ["os-sensitive"],
+    },
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,
