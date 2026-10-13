@@ -1,3 +1,10 @@
+headless_jvm_flags = select({
+    "@selenium//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
+})
+
 chromedriver_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
@@ -18,7 +25,7 @@ chromedriver_beta_jvm_flags = select({
     "//conditions:default": [],
 })
 
-chrome_jvm_flags = select({
+chrome_pinned_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux64/chrome)",
     ],
@@ -27,14 +34,11 @@ chrome_jvm_flags = select({
     ],
     "@selenium//common:use_local_chromedriver": [],
     "//conditions:default": [],
-}) + select({
-    "@selenium//common:use_headless_browser": [
-        "-Dwebdriver.headless=true",
-    ],
-    "//conditions:default": [],
 }) + chromedriver_jvm_flags
 
-chrome_beta_jvm_flags = select({
+chrome_jvm_flags = chrome_pinned_jvm_flags + headless_jvm_flags
+
+chrome_beta_pinned_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "-Dwebdriver.chrome.binary=$(location @linux_beta_chrome//:chrome-linux64/chrome)",
     ],
@@ -43,12 +47,9 @@ chrome_beta_jvm_flags = select({
     ],
     "@selenium//common:use_local_chromedriver": [],
     "//conditions:default": [],
-}) + select({
-    "@selenium//common:use_headless_browser": [
-        "-Dwebdriver.headless=true",
-    ],
-    "//conditions:default": [],
 }) + chromedriver_beta_jvm_flags
+
+chrome_beta_jvm_flags = chrome_beta_pinned_jvm_flags + headless_jvm_flags
 
 edgedriver_jvm_flags = select({
     "@selenium//common:use_pinned_linux_edge": [
@@ -60,7 +61,7 @@ edgedriver_jvm_flags = select({
     "//conditions:default": [],
 })
 
-edge_jvm_flags = select({
+edge_pinned_jvm_flags = select({
     "@selenium//common:use_pinned_linux_edge": [
         "-Dwebdriver.edge.binary=$(location @linux_edge//:opt/microsoft/msedge/microsoft-edge)",
     ],
@@ -69,12 +70,9 @@ edge_jvm_flags = select({
     ],
     "@selenium//common:use_local_msedgedriver": [],
     "//conditions:default": [],
-}) + select({
-    "@selenium//common:use_headless_browser": [
-        "-Dwebdriver.headless=true",
-    ],
-    "//conditions:default": [],
 }) + edgedriver_jvm_flags
+
+edge_jvm_flags = edge_pinned_jvm_flags + headless_jvm_flags
 
 geckodriver_jvm_flags = select({
     "@selenium//common:use_pinned_linux_firefox": [
@@ -86,7 +84,7 @@ geckodriver_jvm_flags = select({
     "//conditions:default": [],
 })
 
-firefox_jvm_flags = select({
+firefox_pinned_jvm_flags = select({
     "@selenium//common:use_pinned_linux_firefox": [
         "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
     ],
@@ -95,14 +93,11 @@ firefox_jvm_flags = select({
     ],
     "@selenium//common:use_local_geckodriver": [],
     "//conditions:default": [],
-}) + select({
-    "@selenium//common:use_headless_browser": [
-        "-Dwebdriver.headless=true",
-    ],
-    "//conditions:default": [],
 }) + geckodriver_jvm_flags
 
-firefox_beta_jvm_flags = select({
+firefox_jvm_flags = firefox_pinned_jvm_flags + headless_jvm_flags
+
+firefox_beta_pinned_jvm_flags = select({
     "@selenium//common:use_pinned_linux_firefox": [
         "-Dwebdriver.firefox.bin=$(location @linux_beta_firefox//:firefox/firefox)",
     ],
@@ -111,9 +106,6 @@ firefox_beta_jvm_flags = select({
     ],
     "@selenium//common:use_local_geckodriver": [],
     "//conditions:default": [],
-}) + select({
-    "@selenium//common:use_headless_browser": [
-        "-Dwebdriver.headless=true",
-    ],
-    "//conditions:default": [],
 }) + geckodriver_jvm_flags
+
+firefox_beta_jvm_flags = firefox_beta_pinned_jvm_flags + headless_jvm_flags
