@@ -279,12 +279,19 @@ jobs:
   reset-version:
     name: Generate Nightly Versions
     needs: [parse-tag, check-authorization]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Reset Versions
-      use-cache: false
-      run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
-      artifact-name: version-reset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Reset versions
+        run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
+      - name: Save git diff
+        run: git diff > changes.patch
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: version-reset
+          path: changes.patch
 
   # A rerun builds from trunk HEAD, so the nightly versions must not land there until every publish has succeeded.
   update-version:

@@ -132,12 +132,19 @@ jobs:
   update-versions:
     name: Bump Versions
     needs: [parse-tag, restrict-trunk]
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Bump versions
-      run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
-      artifact-name: patch-versions
-      use-cache: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Bump versions
+        run: ./go ${{ needs.parse-tag.outputs.language }}:version ${{ needs.parse-tag.outputs.version }}${{ needs.parse-tag.outputs.language == 'all' && format(' && ./go rust:version {0}', needs.parse-tag.outputs.version) || '' }}
+      - name: Save git diff
+        run: git diff > changes.patch
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: patch-versions
+          path: changes.patch
 
   commit-versions:
     name: Commit Versions
