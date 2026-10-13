@@ -24,7 +24,9 @@ using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium.Tests.Interactions;
 
+// :hover behavior affected by other session's windows in a shared display
 [TestFixture]
+[NonParallelizable]
 public class CombinedInputActionsTests : DriverTestFixture
 {
     [SetUp]

@@ -14,20 +14,22 @@
 # A target is tracked per operating system, since the same label passing on Linux
 # and flaking on Windows is one flaky test, not two halves of one.
 #
-# The rate is measured over WINDOW_DAYS rather than the week being reported on,
-# because a week is too few samples to divide by. Recency is kept separately: a
-# target is only reported if it flaked within RECENT_DAYS, so one that was fixed
-# drops out immediately even though its flakes are still inside the rate window.
+# The table covers WINDOW_DAYS so a manual run lists everything known to flake.
 #
-# Runs per target are too few for a percentage threshold to mean anything more
-# than a count, so what gets reported is decided by MIN_FLAKES alone.
+# A flake that passed on the next attempt is the normal background noise of
+# browser tests, and runs per target are too few for a rate to mean much. So a
+# test is flagged only when it needed the debug rerun in the last day, meaning
+# every retry failed, and it also flaked at least once in the HISTORY_DAYS
+# before. A fixed test stops needing the rerun, so it stops being flagged
+# without anything to reset. Browser variants of a test count as one test.
 
 set -euo pipefail
 
 WINDOW_DAYS=21
 RECENT_DAYS=7
-MIN_FLAKES=2
+HISTORY_DAYS=14
 FAILING_RUNS=2
+BROWSER_SUFFIX='-(chrome|firefox|edge|safari)(-beta|-preview)?(-remote|-bidi)?(-alerts)?$'
 REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must be set}"
 
 WORK=$(mktemp -d)
@@ -39,6 +41,8 @@ days_ago() {
 
 window_start=$(days_ago "$WINDOW_DAYS" %Y-%m-%dT%H:%M:%SZ)
 recent_start=$(days_ago "$RECENT_DAYS" %Y-%m-%dT%H:%M:%SZ)
+last_day_start=$(days_ago 1 %Y-%m-%dT%H:%M:%SZ)
+history_start=$(days_ago "$((HISTORY_DAYS + 1))" %Y-%m-%dT%H:%M:%SZ)
 
 # A run that merged its per-job results is represented by that one file; any
 # other run falls back to the artifacts its jobs uploaded. That covers a workflow
@@ -78,8 +82,19 @@ if [ "$downloaded" -lt "$available" ]; then
 fi
 echo "Read $downloaded of $available result files"
 
-jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson minFlakes "$MIN_FLAKES" '
-  map(select(.timestamp >= $window))
+jq -s --arg lastDay "$last_day_start" --arg history "$history_start" --arg suffix "$BROWSER_SUFFIX" '
+  map(select(.timestamp >= $history and (.status | endswith("-recovered")))
+      | . + {test: (.target | sub($suffix; ""))})
+  | group_by([.test, .os])
+  | map(select(any(.[]; .status == "rerun-recovered" and .timestamp >= $lastDay)
+               and any(.[]; .timestamp < $lastDay))
+        | {test: .[0].test, os: .[0].os, flakes: length,
+           targets: (map(.target) | unique)})
+' "$WORK/all.jsonl" > "$WORK/flagged.json"
+
+jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flagged "$WORK/flagged.json" '
+  [$flagged[0][] | .os as $os | .targets[] | "\(.)|\($os)"] as $flaggedTargets
+  | map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
       [.[] | select(.status | endswith("-recovered")) | .timestamp] as $flakes
@@ -88,18 +103,15 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson minFla
           os: .[0].os,
           ran: length,
           flaked: ($flakes | length),
+          reruns: ([.[] | select(.status == "rerun-recovered")] | length),
           failed: ([.[] | select(.status == "failed")] | length),
           last: ($flakes | max),
           # Every flake it has is recent, so it started this week.
           new: (($flakes | min // "9999") >= $recent)
         }
-      | . + {
-          rate: (.flaked * 100 / .ran),
-          # Still happening, so worth someone looking at it now.
-          reported: (.flaked >= $minFlakes and .last >= $recent)
-        })
+      | . + {rate: (.flaked * 100 / .ran), flagged: ("\(.target)|\(.os)" | IN($flaggedTargets[]))})
   | map(select(.flaked > 0))
-  | sort_by((.reported | not), -.rate, .target)
+  | sort_by((.flagged | not), -.rate, .target)
 ' "$WORK/all.jsonl" > "$WORK/report.json"
 
 # The latest run must be recent so a target dropped from the schedule while
@@ -136,29 +148,39 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failin
   echo "## Flaky tests"
   echo
   echo "Every execution counts as one sample, taken from $downloaded scheduled runs over the last $WINDOW_DAYS days."
-  echo "Reported to Slack when a target flaked at least $MIN_FLAKES times, at least once within the last $RECENT_DAYS days."
+  echo "Flagged when the test needed the debug rerun to pass in the last day and also flaked in the $HISTORY_DAYS days before, counting browser variants together."
   echo "Runs that never went green are counted under failed, not as flakes."
   echo
-  echo "| target | os | flaked | failed | of runs | rate | reported | new | last flaked |"
-  echo "|---|---|---|---|---|---|---|---|---|"
-  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .reported then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.last) |"' "$WORK/report.json"
+  echo "| target | os | flaked | needed rerun | failed | of runs | rate | flagged | new | last flaked |"
+  echo "|---|---|---|---|---|---|---|---|---|---|"
+  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.reruns) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .flagged then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.last) |"' "$WORK/report.json"
 } > "$WORK/report.md"
 
 # Every flaky target, whatever the thresholds say. The thresholds only decide
-# whether Slack hears about it, so a manual run is a full list of what is known
-# to be flaky — the thing to check a suspicious PR failure against.
+# what Slack hears about, so a manual run is a full list of what is known to be
+# flaky — the thing to check a suspicious PR failure against.
 cat "$WORK/report.md"
 cat "$WORK/report.md" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
 
 failing=$(jq 'length' "$WORK/failing.json")
-flaky=$(jq '[.[] | select(.reported)] | length' "$WORK/report.json")
+flagged=$(jq 'length' "$WORK/flagged.json")
+flagged_names=$(jq -r 'map("\(.test | sub("^//"; "")) (\(.os))") | join(", ")' "$WORK/flagged.json")
 
-if [ "$failing" -eq 0 ] && [ "$flaky" -eq 0 ]; then
-  echo "Nothing to report: no target failed its last $FAILING_RUNS runs or flaked at least $MIN_FLAKES times with one in the last $RECENT_DAYS days."
+# A target that fails every attempt is broken, not flaky, so it leads.
+if [ "$failing" -gt 0 ]; then
+  color=failure
+  message="needs investigation, $failing targets failed every one of their last $FAILING_RUNS runs"
+  [ "$flagged" -eq 0 ] || message="$message; recurring flakes in $flagged_names"
+elif [ "$flagged" -gt 0 ]; then
+  color=warning
+  message="recurring flakes that needed the debug rerun in $flagged_names"
+else
+  echo "Nothing to report: no target failed its last $FAILING_RUNS runs and no recurring flake needed the debug rerun."
   exit 0
 fi
 
+echo "$message"
 {
-  echo "notify=true"
-  echo "message=$failing failing, $flaky flaky targets"
+  echo "color=$color"
+  echo "message=$message"
 } >> "${GITHUB_OUTPUT:-/dev/null}"
