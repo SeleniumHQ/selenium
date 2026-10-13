@@ -127,6 +127,7 @@ GTAGS
 /rb/.idea
 rb/bin/
 rb/lib/selenium/devtools/v1*
+rb/lib/selenium/webdriver/version.rb
 rb/.gem_rbs_collection/
 .sonar/
 third_party/py/googlestorage/client_secrets.json

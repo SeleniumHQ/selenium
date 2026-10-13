@@ -76,6 +76,7 @@ rake spec               # Run all integration tests in Chrome
 ## Local Development Setup
 
 Before running tests, navigate to the `rb/` directory and install the required dependencies. A recent Bundler (2.4 or newer) is recommended.
+Bazel generates `lib/selenium/webdriver/version.rb` from the root `version.bzl`, so run `./go rb:local_dev` from the parent `selenium` directory first to write the copy Bundler needs.
 
 ```shell
 cd rb

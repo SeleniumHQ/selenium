@@ -4,9 +4,13 @@ require 'digest'
 require 'net/http'
 
 def ruby_version
-  File.foreach('rb/lib/selenium/webdriver/version.rb') do |line|
-    return line.split('=').last.strip.tr("'", '') if line.include?('VERSION')
-  end
+  SeleniumRake.version('ruby')
+end
+
+# Bazel generates version.rb; Bundler outside of Bazel needs a copy in the source tree
+def write_ruby_version_file
+  template = File.read('rb/lib/selenium/webdriver/version.rb.tpl')
+  File.write('rb/lib/selenium/webdriver/version.rb', template.sub('{VERSION}', ruby_version))
 end
 
 def devtools_version
@@ -54,6 +58,7 @@ end
 
 desc 'Update generated Ruby files for local development'
 task :local_dev do
+  write_ruby_version_file
   Bazel.execute('build', [], '@bundle//:bundle')
   Rake::Task['rb:build'].invoke
   Rake::Task['grid'].invoke
@@ -89,8 +94,8 @@ task :release do |_task, arguments|
     puts 'Updating Ruby version to nightly...'
     Rake::Task['rb:version'].invoke('nightly')
 
-    puts 'Bumping Ruby nightly version...'
-    Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
+    # Each nightly publish needs its own version; the committed one has no date
+    SeleniumRake.write_version('ruby', "#{ruby_version}.#{Time.now.strftime('%Y%m%d')}")
 
     puts 'Releasing nightly WebDriver gem...'
     publish_gem('//rb:selenium-webdriver-release-nightly', config)
@@ -159,10 +164,7 @@ task :version, [:version] do |_task, arguments|
   old_version = ruby_version
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '.nightly')
   puts "Updating Ruby from #{old_version} to #{new_version}"
-
-  file = 'rb/lib/selenium/webdriver/version.rb'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('ruby', new_version)
 
   lock = 'rb/Gemfile.lock'
   text = File.read(lock).sub(/^(    selenium-webdriver \()#{Regexp.escape(old_version)}(\))$/, "\\1#{new_version}\\2")
