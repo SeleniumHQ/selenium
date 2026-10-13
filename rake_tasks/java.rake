@@ -511,6 +511,12 @@ task :update do
       version = maven_stable_release(artifact)
       next if version.nil?
     end
+    if artifact.start_with?('io.fabric8:') && Gem::Version.new(version) >= Gem::Version.new('8')
+      # fabric8 8.0 requires Java 17; stay on 7.x until Selenium's Java minimum reaches 17.
+      # Lifting this also removes the Jackson override on //java/src/org/openqa/selenium/grid/node/kubernetes.
+      version = maven_stable_release(artifact, below: '8')
+      next if version.nil?
+    end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
   File.write(file_path, content)
@@ -519,7 +525,7 @@ task :update do
   Rake::Task['java:pin'].invoke
 end
 
-def maven_stable_release(artifact)
+def maven_stable_release(artifact, below: nil)
   require 'rexml/document'
   group_id, artifact_id = artifact.split(':', 2)
   group_path = group_id.tr('.', '/')
@@ -530,6 +536,7 @@ def maven_stable_release(artifact)
   doc = REXML::Document.new(xml)
   versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
   stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
+  stable.select! { |v| Gem::Version.new(v) < Gem::Version.new(below) } if below
   stable.max_by { |v| Gem::Version.new(v) }
 rescue StandardError => e
   puts "WARNING — Failed to fetch stable release for #{artifact}: #{e.message}"
