@@ -15,26 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { getAttribute, getProperty } from './core/attribute.js'
-import { isEditable } from './core/editable.js'
-import { isElement } from './core/element.js'
-
-// http://www.w3.org/TR/html401/interact/scripts.html#adef-onfocus
-const FOCUSABLE_FORM_FIELDS = ['A', 'AREA', 'BUTTON', 'INPUT', 'LABEL', 'SELECT', 'TEXTAREA']
-
 // An element can take focus if it is a form field, carries a non-negative
 // tabindex, or is editable.
-function isFocusable(element: Element): boolean {
-  if (FOCUSABLE_FORM_FIELDS.some((tagName) => isElement(element, tagName))) {
-    return true
-  }
-  // The attribute has to be present for tabindex to count — the tabIndex
-  // property reports a default for several tags that were never marked up
-  // with one.
-  if (getAttribute(element, 'tabindex') != null && Number(getProperty(element, 'tabIndex')) >= 0) {
-    return true
-  }
-  return isEditable(element)
-}
-
-export default isFocusable
+export { isFocusable as default } from './core/focusable.js'
