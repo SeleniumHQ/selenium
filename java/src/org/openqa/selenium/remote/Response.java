@@ -25,34 +25,12 @@ public class Response {
 
   private volatile @Nullable Object value;
   private volatile @Nullable String sessionId;
-  @Deprecated(forRemoval = true)
-  private volatile @Nullable Integer status;
   private volatile @Nullable String state;
 
   public Response() {}
 
   public Response(SessionId sessionId) {
     this.sessionId = String.valueOf(sessionId);
-  }
-
-  /**
-   * @deprecated The integer status is a JSON Wire Protocol artifact; use {@link #getState()} (the
-   *     W3C state) instead. Removal is tracked by <a
-   *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
-   */
-  @Deprecated(forRemoval = true)
-  public @Nullable Integer getStatus() {
-    return status;
-  }
-
-  /**
-   * @deprecated The integer status is a JSON Wire Protocol artifact; use {@link #setState(String)}
-   *     (the W3C state) instead. Removal is tracked by <a
-   *     href="https://github.com/SeleniumHQ/selenium/issues/17638">#17638</a>.
-   */
-  @Deprecated(forRemoval = true)
-  public void setStatus(@Nullable Integer status) {
-    this.status = status;
   }
 
   public @Nullable String getState() {
@@ -82,8 +60,7 @@ public class Response {
   @Override
   public String toString() {
     return String.format(
-        "(Response: SessionID: %s, Status: %s, State: %s, Value: %s)",
-        getSessionId(), getStatus(), getState(), getValue());
+        "(Response: SessionID: %s, State: %s, Value: %s)", getSessionId(), getState(), getValue());
   }
 
   @Override
@@ -95,13 +72,12 @@ public class Response {
     Response that = (Response) o;
     return Objects.equals(value, that.value)
         && Objects.equals(sessionId, that.sessionId)
-        && Objects.equals(status, that.status)
         && Objects.equals(state, that.state);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value, sessionId, status, state);
+    return Objects.hash(value, sessionId, state);
   }
 
   private static Response fromJson(Map<String, Object> json) {
