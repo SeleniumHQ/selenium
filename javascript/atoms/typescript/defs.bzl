@@ -254,6 +254,30 @@ ATOMS = [
         "global": "bot.storage.typescript.clearSessionStorage",
         "aliases": [],
     },
+    {
+        "name": "execute-script",
+        "export": "executeScript",
+        "global": "bot.inject.typescript.executeScript",
+        "aliases": [],
+    },
+    {
+        "name": "execute-async-script",
+        "export": "executeAsyncScript",
+        "global": "bot.inject.typescript.executeAsyncScript",
+        "aliases": [],
+    },
+    {
+        "name": "get-element-from-cache",
+        "export": "getElementFromCache",
+        "global": "bot.inject.typescript.getElementFromCache",
+        "aliases": [],
+    },
+    {
+        "name": "find-element-fragment",
+        "export": "findElementFragment",
+        "global": "bot.inject.typescript.findElementFragment",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
