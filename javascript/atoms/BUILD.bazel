@@ -64,6 +64,25 @@ ATOM_SRCS = glob([
     for atom in ATOMS
 ]
 
+# ── test-only bundles ────────────────────────────────────────────────────────
+
+# Shared modules that no atom reaches yet still need a QUnit page. Each entry
+# under typescript/testing/ default-exports what its page drives. These are not
+# in ATOMS, so they are never published and never reach a binding.
+TEST_BUNDLES = {
+    "events": "bot.events.typescript",
+}
+
+[
+    typescript_atom(
+        name = "testing/%s" % bundle,
+        srcs = ATOM_SRCS + ["typescript/testing/%s.ts" % bundle],
+        global_name = global_name,
+        visibility = ["//visibility:private"],
+    )
+    for bundle, global_name in TEST_BUNDLES.items()
+]
+
 # ── @selenium/atoms npm package ──────────────────────────────────────────────
 
 # esbuild only strips types, so this is also what type-checks the atoms: it is
@@ -515,5 +534,5 @@ closure_test_suite(
     data = [
         ":atoms",
         ":deps",
-    ],
+    ] + [":testing/%s-global" % bundle for bundle in TEST_BUNDLES],
 )
