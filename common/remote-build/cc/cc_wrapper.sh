@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright 2015 The Bazel Authors. All rights reserved.
 #
@@ -18,8 +18,44 @@
 #
 set -eu
 
+OUTPUT=
+
+parse_option() {
+    opt=$1
+    if [ "$OUTPUT" = "1" ]; then
+        OUTPUT=$opt
+    elif [ "$opt" = "-o" ]; then
+        # output is coming
+        OUTPUT=1
+    fi
+}
+
+# parse the option list
+for i in "$@"; do
+    case $i in
+        @*)
+            file=${i#@}
+            if [ -r "$file" ]; then
+                while IFS= read -r opt; do
+                    parse_option "$opt"
+                done < "$file" || exit 1
+            fi
+            ;;
+        *)
+            parse_option "$i"
+            ;;
+    esac
+done
+
 # Set-up the environment
 
 
 # Call the C++ compiler
 /usr/bin/gcc "$@"
+
+# Generate an empty file if header processing succeeded.
+case $OUTPUT in
+    *.h.processed)
+        : > "$OUTPUT"
+        ;;
+esac

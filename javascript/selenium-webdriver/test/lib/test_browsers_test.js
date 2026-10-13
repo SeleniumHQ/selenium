@@ -39,7 +39,7 @@ const BROWSER_NAMES = {
 
 function testFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const file = path.join(dir, entry.name)
+    const file = path.posix.join(dir, entry.name)
     if (entry.isDirectory()) return testFiles(file)
     return entry.name.endsWith('_test.js') ? [file] : []
   })

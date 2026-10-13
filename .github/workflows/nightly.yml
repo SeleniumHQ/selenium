@@ -72,7 +72,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly ${{ matrix.language }} Release
-      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
       run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly rbe', matrix.language) || 'echo skipping' }}
       artifact-name: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-name || '' }}
       artifact-path: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-path || '' }}

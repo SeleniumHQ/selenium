@@ -4,7 +4,7 @@ set -eufo pipefail
 set -x
 
 # Everything the publish jobs build; rbe-ci so nothing is downloaded here. On release-preparation
-# PRs this replaces ci-build.sh's release-artifact build, so the gems are here too (under JRuby).
+# PRs this replaces ci-build.sh's release-artifact build, so the gems are here too.
 # Takes a language or a release-preparation branch; a language suffix means only that language is published.
 language="${1:-all}"
 language="${language##*-}"

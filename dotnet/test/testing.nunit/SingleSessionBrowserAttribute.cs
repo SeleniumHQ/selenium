@@ -24,7 +24,8 @@ using OpenQA.Selenium.Testing.NUnit.Environment;
 namespace OpenQA.Selenium.Testing.NUnit;
 
 /// <summary>
-/// Runs the whole assembly sequentially when the active browser supports only one session at a time.
+/// Runs the whole assembly sequentially when the active browser supports only one session at a time,
+/// or under remote build execution, where Bazel already runs test classes in parallel and each action has a single display.
 /// </summary>
 /// <remarks>
 /// An explicit NumberOfTestWorkers run setting takes precedence over this attribute.
@@ -36,7 +37,7 @@ public sealed class SingleSessionBrowserAttribute(params Browser[] browsers) : N
 
     public void ApplyToTest(Test test)
     {
-        if (Browsers.Contains(EnvironmentManager.Instance.Browser))
+        if (Browsers.Contains(EnvironmentManager.Instance.Browser) || System.Environment.GetEnvironmentVariable("REMOTE_BUILD") == "1")
         {
             // Zero workers makes NUnit use the sequential dispatcher, ignoring [Parallelizable].
             test.Properties.Set(PropertyNames.LevelOfParallelism, 0);
