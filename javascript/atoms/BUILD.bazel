@@ -71,6 +71,7 @@ ATOM_SRCS = glob([
 # in ATOMS, so they are never published and never reach a binding.
 TEST_BUNDLES = {
     "events": "bot.events.typescript",
+    "keyboard": "bot.keyboard.typescript",
 }
 
 [
