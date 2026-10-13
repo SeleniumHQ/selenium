@@ -218,7 +218,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = host if host else DEFAULT_HOST_IP
+        host = host or DEFAULT_HOST_IP
         while True:
             try:
                 self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)
