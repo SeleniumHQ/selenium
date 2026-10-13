@@ -53,3 +53,7 @@ export { default as getSessionStorageSize } from './typescript/get-session-stora
 export { default as setSessionStorageItem } from './typescript/set-session-storage-item.js'
 export { default as removeSessionStorageItem } from './typescript/remove-session-storage-item.js'
 export { default as clearSessionStorage } from './typescript/clear-session-storage.js'
+export { default as executeScript } from './typescript/execute-script.js'
+export { default as executeAsyncScript } from './typescript/execute-async-script.js'
+export { default as getElementFromCache } from './typescript/get-element-from-cache.js'
+export { default as findElementFragment } from './typescript/find-element-fragment.js'

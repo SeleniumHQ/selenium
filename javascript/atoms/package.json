@@ -150,6 +150,22 @@
     "./clear-session-storage": {
       "types": "./dist/typescript/clear-session-storage.d.ts",
       "default": "./dist/typescript/clear-session-storage.js"
+    },
+    "./execute-script": {
+      "types": "./dist/typescript/execute-script.d.ts",
+      "default": "./dist/typescript/execute-script.js"
+    },
+    "./execute-async-script": {
+      "types": "./dist/typescript/execute-async-script.d.ts",
+      "default": "./dist/typescript/execute-async-script.js"
+    },
+    "./get-element-from-cache": {
+      "types": "./dist/typescript/get-element-from-cache.d.ts",
+      "default": "./dist/typescript/get-element-from-cache.js"
+    },
+    "./find-element-fragment": {
+      "types": "./dist/typescript/find-element-fragment.d.ts",
+      "default": "./dist/typescript/find-element-fragment.js"
     }
   },
   "typesVersions": {
@@ -188,7 +204,11 @@
       "get-session-storage-size": ["./dist/typescript/get-session-storage-size.d.ts"],
       "set-session-storage-item": ["./dist/typescript/set-session-storage-item.d.ts"],
       "remove-session-storage-item": ["./dist/typescript/remove-session-storage-item.d.ts"],
-      "clear-session-storage": ["./dist/typescript/clear-session-storage.d.ts"]
+      "clear-session-storage": ["./dist/typescript/clear-session-storage.d.ts"],
+      "execute-script": ["./dist/typescript/execute-script.d.ts"],
+      "execute-async-script": ["./dist/typescript/execute-async-script.d.ts"],
+      "get-element-from-cache": ["./dist/typescript/get-element-from-cache.d.ts"],
+      "find-element-fragment": ["./dist/typescript/find-element-fragment.d.ts"]
     }
   },
   "engines": {
