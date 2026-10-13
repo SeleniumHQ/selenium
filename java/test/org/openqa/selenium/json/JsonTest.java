@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -168,6 +169,7 @@ class JsonTest {
   }
 
   @Test
+  @NullUnmarked
   void toTypeReturnsNullForTopLevelJsonNull() {
     String text = new Json().toType("null", String.class);
 

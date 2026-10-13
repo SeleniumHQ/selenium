@@ -386,7 +386,7 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
     String raw = redis.get(requestKey(reqId));
     long removed = redis.lrem(QUEUE_KEY, reqId.toString());
     if (removed > 0 && raw != null) {
-      return Optional.of(JSON.toType(raw, SessionRequest.class));
+      return Optional.ofNullable(JSON.toType(raw, SessionRequest.class));
     }
     return Optional.empty();
   }

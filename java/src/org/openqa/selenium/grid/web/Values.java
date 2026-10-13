@@ -59,7 +59,8 @@ public class Values {
       // error. We shall assume that a non-200 http status code indicates that something is
       // wrong.
       if (response.getStatus() != 200) {
-        throw ERRORS.decode(JSON.toType(string(response), MAP_TYPE));
+        throw ERRORS.decode(
+            Require.nonNull("Error response body", JSON.toType(string(response), MAP_TYPE)));
       }
 
       if (Void.class.equals(typeOfT) && input.peek() == END) {

@@ -157,6 +157,7 @@ public class Json {
    * @param <T> result type (as specified by [typeOfT])
    * @throws JsonException if an I/O exception is encountered
    */
+  @Nullable
   public <T> T toType(String source, Type typeOfT) {
     return toType(source, typeOfT, PropertySetting.BY_NAME);
   }
@@ -171,6 +172,7 @@ public class Json {
    * @param <T> result type (as specified by [typeOfT])
    * @throws JsonException if an I/O exception is encountered
    */
+  @Nullable
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
     try (StringReader reader = new StringReader(source)) {
       return toType(reader, typeOfT, setter);
@@ -191,6 +193,7 @@ public class Json {
    * @param <T> result type (as specified by [typeOfT])
    * @throws JsonException if an I/O exception is encountered
    */
+  @Nullable
   public <T> T toType(Reader source, Type typeOfT) {
     return toType(source, typeOfT, PropertySetting.BY_NAME);
   }
@@ -206,6 +209,7 @@ public class Json {
    * @param <T> result type (as specified by [typeOfT])
    * @throws JsonException if an I/O exception is encountered
    */
+  @Nullable
   public <T> T toType(Reader source, Type typeOfT, PropertySetting setter) {
     Require.nonNull("Mechanism for setting properties", setter);
 

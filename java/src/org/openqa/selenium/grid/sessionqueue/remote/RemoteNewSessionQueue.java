@@ -136,7 +136,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
       if (rawValue == null || rawValue.trim().isEmpty()) {
         return Optional.empty();
       }
-      return Optional.of(JSON.toType(rawValue, SessionRequest.class));
+      return Optional.ofNullable(JSON.toType(rawValue, SessionRequest.class));
     }
 
     return Optional.empty();

@@ -284,7 +284,9 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     String content = string(encodedCommand);
     if (!content.isEmpty()) {
       Map<String, Object> tmp = json.toType(content, MAP_TYPE);
-      parameters.putAll(tmp);
+      if (tmp != null) {
+        parameters.putAll(tmp);
+      }
     }
 
     SessionId sessionId = null;

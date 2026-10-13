@@ -74,7 +74,13 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     String contentType = encodedResponse.getHeader(HttpHeader.ContentType, "");
     String content = encodedResponse.contentAsString().trim();
     try {
-      return reconstructValue(json.toType(content, Response.class));
+      Response converted = json.toType(content, Response.class);
+      if (converted == null) {
+        // The content was valid JSON but decoded to nothing (e.g. a literal `null` body).
+        // Treat this the same as an empty body rather than propagating a raw NPE.
+        return new Response();
+      }
+      return reconstructValue(converted);
     } catch (JsonException e) {
       if (contentType.startsWith("application/json")) {
         throw new IllegalArgumentException("Cannot decode response content: " + content, e);

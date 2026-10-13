@@ -250,7 +250,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
                   : JSON.toType(rawCapabilities, Capabilities.class);
 
           String rawStart = sessions.getString(SESSION_START_COL);
-          start = JSON.toType(rawStart, Instant.class);
+          start = rawStart == null ? Instant.EPOCH : JSON.toType(rawStart, Instant.class);
         }
         CAPABILITIES_EVENT.accept(attributeMap, caps);
 

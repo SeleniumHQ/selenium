@@ -37,7 +37,8 @@ public class JsonConfig implements Config {
 
   JsonConfig(Reader reader) {
     try {
-      delegate = new MapConfig(JSON.toType(Require.nonNull("JSON source", reader), MAP_TYPE));
+      Require.nonNull("JSON source", reader);
+      delegate = new MapConfig(JSON.toType(reader, MAP_TYPE));
     } catch (JsonException e) {
       throw new ConfigException("Unable to parse input", e);
     }
