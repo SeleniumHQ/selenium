@@ -31,7 +31,7 @@ bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 # See below for actual version used
 bazel_dep(name = "rules_java", version = "9.6.1")
-bazel_dep(name = "rules_jvm_external", version = "7.1")
+bazel_dep(name = "rules_jvm_external", version = "7.2")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.4")
 bazel_dep(name = "rules_oci", version = "2.3.0")
