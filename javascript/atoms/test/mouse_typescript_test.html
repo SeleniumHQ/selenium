@@ -128,6 +128,28 @@
       assert.strictEqual(seen.click.button, 0);
     });
 
+    // Recorded from real WebDriver input in Chrome and Firefox (2026-10-14):
+    // pointer events where no button changed report -1; the compatibility
+    // mouse events report 0 throughout.
+    QUnit.test('button is -1 on pointer events that change no button', function(assert) {
+      var seen = {};
+      var types = ['pointerover', 'pointerenter', 'pointermove', 'pointerdown', 'pointerup', 'pointerout',
+          'pointerleave', 'mouseover', 'mouseenter', 'mousemove', 'mousedown', 'mouseup', 'mouseout',
+          'mouseleave', 'click'];
+      types.forEach(function(type) {
+        on(document, type, function(e) { if (e.target.id === 'a') seen[type] = e.button; });
+      });
+      mouse.move($('a'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      mouse.move($('b'));
+      assert.deepEqual(seen, {
+        pointerover: -1, pointerenter: -1, pointermove: -1, pointerdown: 0, pointerup: 0,
+        pointerout: -1, pointerleave: -1,
+        mouseover: 0, mouseenter: 0, mousemove: 0, mousedown: 0, mouseup: 0, click: 0,
+        mouseout: 0, mouseleave: 0});
+    });
+
     QUnit.test('the default position is the centre of the element', function(assert) {
       var x;
       on($('a'), 'mousemove', function(e) { x = e.clientX; });

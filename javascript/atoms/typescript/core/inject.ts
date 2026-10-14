@@ -292,24 +292,29 @@ export function executeAsyncScript(
     return
   }
 
-  const compiled = recompileFunction(fn, win)
-  const unwrappedArgs = unwrapValue(args, win.document) as unknown[]
-  unwrappedArgs.push((value: unknown) => sendResponse(SUCCESS, value))
-
   win.addEventListener('unload', onunload, true)
 
   const startTime = Date.now()
+  // Compiling and unwrapping sit inside the try, as they do in executeScript,
+  // so a syntax error or a stale element argument reaches onDone with its own
+  // status. bot.inject threw those out of the atom instead.
   try {
+    const compiled = recompileFunction(fn, win)
+    const unwrappedArgs = unwrapValue(args, win.document) as unknown[]
+    unwrappedArgs.push((value: unknown) => sendResponse(SUCCESS, value))
     compiled.apply(win, unwrappedArgs)
 
     // Armed after the call, so a script that calls back from a zero-length
-    // timer is not beaten to it by its own timeout.
-    timeoutId = win.setTimeout(() => {
-      sendResponse(
-        SCRIPT_TIMEOUT,
-        Error('Timed out waiting for asynchronous script result after ' + (Date.now() - startTime) + ' ms'),
-      )
-    }, Math.max(0, timeout))
+    // timer is not beaten to it by its own timeout -- and not at all if it
+    // already called back, or the timer would outlive the call for nothing.
+    if (!responseSent) {
+      timeoutId = win.setTimeout(() => {
+        sendResponse(
+          SCRIPT_TIMEOUT,
+          Error('Timed out waiting for asynchronous script result after ' + (Date.now() - startTime) + ' ms'),
+        )
+      }, Math.max(0, timeout))
+    }
   } catch (ex) {
     const code = (ex as { code?: unknown }).code
     sendResponse(typeof code == 'string' ? code : UNKNOWN_ERROR, ex)

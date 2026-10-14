@@ -313,6 +313,36 @@
       });
     });
 
+    // Nothing is left to time out, so no timer should outlive the call.
+    QUnit.test('a synchronous callback arms no timeout', function(assert) {
+      var realSetTimeout = window.setTimeout;
+      var armed = 0;
+      window.setTimeout = function() { armed++; return realSetTimeout.apply(window, arguments); };
+      var result;
+      try {
+        executeAsyncScript('arguments[0](1)', [], 60000, function(r) { result = r; });
+      } finally {
+        window.setTimeout = realSetTimeout;
+      }
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(armed, 0);
+    });
+
+    // As executeScript does; bot.inject threw both out of the atom instead.
+    QUnit.test('a syntax error reaches the callback', function(assert) {
+      var result;
+      executeAsyncScript('this is not javascript', [], 0, function(r) { result = r; });
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'unknown error');
+    });
+
+    QUnit.test('a stale element argument reaches the callback', function(assert) {
+      var result;
+      executeAsyncScript('arguments[1](1)', [{ELEMENT: ':wdc:999999999'}], 0, function(r) { result = r; });
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'stale element reference');
+    });
+
     QUnit.test('ShouldBeAbleToExecuteAsyncFunc', function(assert) {
       var done = assert.async();
       executeAsyncScript(function(callback) { callback(1); }, [], 0, function(result) {

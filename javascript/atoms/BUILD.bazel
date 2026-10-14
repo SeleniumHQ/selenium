@@ -64,6 +64,22 @@ ATOM_SRCS = glob([
     for atom in ATOMS
 ]
 
+# Node consumers run each atom's body when they load it: selenium-webdriver's
+# lib/http.js require()s its atoms at import time, and npm consumers import the
+# barrel. An atom that touches a DOM global while loading breaks both.
+js_test(
+    name = "atoms-load-in-node",
+    data = [
+        "package.json",
+        ":atoms-npm-compiled",
+    ] + [":typescript/%s.generated.js" % atom["name"] for atom in ATOMS],
+    entry_point = "typescript/load-in-node.mjs",
+    fixed_args = ["javascript/atoms/dist/index.js"] + [
+        "$(rootpath :typescript/%s.generated.js)" % atom["name"]
+        for atom in ATOMS
+    ],
+)
+
 # ── test-only bundles ────────────────────────────────────────────────────────
 
 # Shared modules that no atom reaches yet still need a QUnit page. Each entry

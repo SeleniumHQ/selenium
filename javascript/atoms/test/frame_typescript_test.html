@@ -77,6 +77,19 @@
         window.frames[1].frames[1]);
     });
 
+    // bot.frame compared ids loosely, so a number still found its frame.
+    QUnit.test('finds an iframe whose id is given as a number', function (assert) {
+      var parent = window.frames[1];
+      var iframe = parent.document.createElement('iframe');
+      iframe.id = '7';
+      parent.document.body.appendChild(iframe);
+      try {
+        assert.strictEqual(frameByIdOrName(7, parent), iframe.contentWindow);
+      } finally {
+        iframe.remove();
+      }
+    });
+
     QUnit.test('does not find a parent iframe from within a child', function (assert) {
       var innermost = window.frames[1].frames[1].frames[0];
       assert.strictEqual(frameByIdOrName('iframename2', innermost), null, 'by name');
