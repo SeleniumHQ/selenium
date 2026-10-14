@@ -19,7 +19,7 @@
     "com.google.googlejavaformat:google-java-format": -1055777895,
     "com.google.guava:guava": 671676083,
     "com.google.j2objc:j2objc-annotations": 2003271689,
-    "com.google.javascript:closure-compiler": -648553916,
+    "com.google.javascript:closure-compiler": 720270735,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
     "com.google.protobuf:protobuf-java": 130636446,
@@ -148,11 +148,11 @@
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
-    "com.google.javascript:closure-compiler": 495067644,
+    "com.google.javascript:closure-compiler": -757781731,
     "com.google.javascript:closure-compiler-externs": -1499626471,
     "com.google.javascript:closure-compiler-unshaded": -1612747063,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
-    "com.google.javascript:closure-compiler:jar:sources": 466877765,
+    "com.google.javascript:closure-compiler:jar:sources": 16484246,
     "com.google.jimfs:jimfs": -1815255605,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
@@ -680,10 +680,10 @@
     },
     "com.google.javascript:closure-compiler": {
       "shasums": {
-        "jar": "8d3ec05cb9e12df784a2f3f68132985226e3ae79d616b0917e7b381b44c384cc",
-        "sources": "691b1b07cc75ab82b7869538e6fa8f138e381179903ce1d9ca889de652f414eb"
+        "jar": "bafea6cadc931e84f5488cc61d65a1d130defe2a571f521405f70807ef54adec",
+        "sources": "692f4391ddf342fe895466672486844ee7f1e29b5c3e440f5925d6033680c08a"
       },
-      "version": "v20260330"
+      "version": "v20260913"
     },
     "com.google.javascript:closure-compiler-externs": {
       "shasums": {

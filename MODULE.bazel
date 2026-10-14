@@ -2,41 +2,30 @@ module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
-bazel_dep(name = "aspect_rules_esbuild", version = "0.26.0")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.27.1")
 bazel_dep(name = "aspect_rules_jest", version = "0.26.0")
-bazel_dep(name = "aspect_rules_js", version = "3.1.2")
-bazel_dep(name = "aspect_rules_ts", version = "3.8.9")
-bazel_dep(name = "bazel_features", version = "1.50.0")
-bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
-bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.8.19")
-bazel_dep(name = "package_metadata", version = "0.0.10")
+bazel_dep(name = "aspect_rules_js", version = "3.5.1")
+bazel_dep(name = "aspect_rules_ts", version = "3.10.1")
+bazel_dep(name = "bazel_features", version = "1.52.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "buildifier_prebuilt", version = "10.1.0")
+bazel_dep(name = "contrib_rules_jvm", version = "0.34.0")
+bazel_dep(name = "llvm", version = "0.8.24")
+bazel_dep(name = "package_metadata", version = "0.0.13")
 bazel_dep(name = "platforms", version = "1.1.0")
+bazel_dep(name = "protobuf", version = "36.2")
 
-# If you update this, also update the prebuilt version of `protoc` we use below
-bazel_dep(name = "protobuf", version = "33.5")
+bazel_dep(name = "rules_cc", version = "0.2.26", dev_dependency = True)
 
-bazel_dep(name = "rules_cc", version = "0.2.22", dev_dependency = True)
-
-# rules_rs pulls protobuf for optional prost support. Keep Selenium on the
-# explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
-single_version_override(
-    module_name = "protobuf",
-    version = "33.5",
-)
-
-bazel_dep(name = "rules_closure", version = "0.16.0")
-bazel_dep(name = "rules_dotnet", version = "0.21.5")
-
-# See below for actual version used
-bazel_dep(name = "rules_java", version = "9.6.1")
+bazel_dep(name = "rules_closure", version = "0.17.0")
+bazel_dep(name = "rules_dotnet", version = "0.22.2")
+bazel_dep(name = "rules_java", version = "9.9.0")
 bazel_dep(name = "rules_jvm_external", version = "7.2")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
-bazel_dep(name = "rules_nodejs", version = "6.7.4")
+bazel_dep(name = "rules_nodejs", version = "6.7.6")
 bazel_dep(name = "rules_oci", version = "2.3.0")
-bazel_dep(name = "rules_pkg", version = "1.2.0")
-bazel_dep(name = "rules_python", version = "2.4.1")
+bazel_dep(name = "rules_pkg", version = "1.3.0")
+bazel_dep(name = "rules_python", version = "2.4.2")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.29.0")
 bazel_dep(name = "rules_rs", version = "0.1.0")
@@ -51,9 +40,9 @@ single_version_override(
 )
 
 # Build the `*-sys` C sources with the LLVM cc toolchain so they cross-compile to musl.
-bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
-bazel_dep(name = "xz", version = "5.4.5.bcr.8")
-bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
+bazel_dep(name = "bzip2", version = "1.0.8.bcr.4")
+bazel_dep(name = "xz", version = "5.4.5.bcr.9")
+bazel_dep(name = "zstd", version = "1.5.7.bcr.3")
 
 # Adds `transitive` and `third_party_prefixes` to `javadoc` for the merged client/grid javadoc jars; no upstream equivalent
 single_version_override(
