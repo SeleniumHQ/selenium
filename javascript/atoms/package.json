@@ -166,6 +166,22 @@
     "./find-element-fragment": {
       "types": "./dist/typescript/find-element-fragment.d.ts",
       "default": "./dist/typescript/find-element-fragment.js"
+    },
+    "./click": {
+      "types": "./dist/typescript/click.d.ts",
+      "default": "./dist/typescript/click.js"
+    },
+    "./type": {
+      "types": "./dist/typescript/type.d.ts",
+      "default": "./dist/typescript/type.js"
+    },
+    "./clear": {
+      "types": "./dist/typescript/clear.d.ts",
+      "default": "./dist/typescript/clear.js"
+    },
+    "./submit": {
+      "types": "./dist/typescript/submit.d.ts",
+      "default": "./dist/typescript/submit.js"
     }
   },
   "typesVersions": {
@@ -208,7 +224,11 @@
       "execute-script": ["./dist/typescript/execute-script.d.ts"],
       "execute-async-script": ["./dist/typescript/execute-async-script.d.ts"],
       "get-element-from-cache": ["./dist/typescript/get-element-from-cache.d.ts"],
-      "find-element-fragment": ["./dist/typescript/find-element-fragment.d.ts"]
+      "find-element-fragment": ["./dist/typescript/find-element-fragment.d.ts"],
+      "click": ["./dist/typescript/click.d.ts"],
+      "type": ["./dist/typescript/type.d.ts"],
+      "clear": ["./dist/typescript/clear.d.ts"],
+      "submit": ["./dist/typescript/submit.d.ts"]
     }
   },
   "engines": {

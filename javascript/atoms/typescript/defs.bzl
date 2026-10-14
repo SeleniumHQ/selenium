@@ -278,6 +278,30 @@ ATOMS = [
         "global": "bot.inject.typescript.findElementFragment",
         "aliases": [],
     },
+    {
+        "name": "click",
+        "export": "click",
+        "global": "bot.action.typescript.click",
+        "aliases": [],
+    },
+    {
+        "name": "type",
+        "export": "type",
+        "global": "bot.action.typescript.type",
+        "aliases": [],
+    },
+    {
+        "name": "clear",
+        "export": "clear",
+        "global": "bot.action.typescript.clear",
+        "aliases": [],
+    },
+    {
+        "name": "submit",
+        "export": "submit",
+        "global": "bot.action.typescript.submit",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
