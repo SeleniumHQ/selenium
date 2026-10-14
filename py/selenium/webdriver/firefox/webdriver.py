@@ -48,8 +48,8 @@ class WebDriver(LocalWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
         """
-        self.service = service if service else Service()
-        self.options = options if options else Options()
+        self.service = service or Service()
+        self.options = options or Options()
 
         finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():

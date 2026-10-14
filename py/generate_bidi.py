@@ -316,7 +316,7 @@ class CddlCommand:
                 body += '            "downloadBehavior": download_behavior,\n'
                 # Add remaining parameters that weren't part of the transform
                 for cddl_param_name in self.params:
-                    if cddl_param_name not in ["downloadBehavior"]:
+                    if cddl_param_name != "downloadBehavior":
                         snake_name = self._camel_to_snake(cddl_param_name)
                         body += f'            "{cddl_param_name}": {snake_name},\n'
         else:

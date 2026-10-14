@@ -27,6 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows, macos]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: Browser Tests (chrome, ${{ matrix.os }})
       os: ${{ matrix.os }}
@@ -45,5 +48,5 @@ jobs:
         ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_tag_filters=unit,os-sensitive
+        --test_tag_filters=unit,os-sensitive,se-manager
         --target_pattern_file=bazel-targets-java.txt

@@ -46,6 +46,11 @@ build:rbe --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/cre
 build:rbe --local_resources=cpu='HOST_CPUS*10'
 build:rbe --local_resources=memory='HOST_RAM*4.0'
 
+# Enable content defined chunking, which should make us handle storage
+# in a smarter way
+build:rbe --experimental_remote_cache_chunking
+build:rbe --experimental_output_paths=strip
+
 # A small hint that we're running our tests remotely
 test:rbe --test_env=REMOTE_BUILD=1
 

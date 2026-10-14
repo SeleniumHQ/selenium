@@ -2,41 +2,30 @@ module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
-bazel_dep(name = "aspect_rules_esbuild", version = "0.26.0")
+bazel_dep(name = "aspect_rules_esbuild", version = "0.27.1")
 bazel_dep(name = "aspect_rules_jest", version = "0.26.0")
-bazel_dep(name = "aspect_rules_js", version = "3.1.2")
-bazel_dep(name = "aspect_rules_ts", version = "3.8.9")
-bazel_dep(name = "bazel_features", version = "1.50.0")
-bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.2")
-bazel_dep(name = "contrib_rules_jvm", version = "0.33.0")
-bazel_dep(name = "llvm", version = "0.8.19")
-bazel_dep(name = "package_metadata", version = "0.0.10")
+bazel_dep(name = "aspect_rules_js", version = "3.5.1")
+bazel_dep(name = "aspect_rules_ts", version = "3.10.1")
+bazel_dep(name = "bazel_features", version = "1.52.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "buildifier_prebuilt", version = "10.1.0")
+bazel_dep(name = "contrib_rules_jvm", version = "0.34.0")
+bazel_dep(name = "llvm", version = "0.8.24")
+bazel_dep(name = "package_metadata", version = "0.0.13")
 bazel_dep(name = "platforms", version = "1.1.0")
+bazel_dep(name = "protobuf", version = "36.2")
 
-# If you update this, also update the prebuilt version of `protoc` we use below
-bazel_dep(name = "protobuf", version = "33.5")
+bazel_dep(name = "rules_cc", version = "0.2.26", dev_dependency = True)
 
-bazel_dep(name = "rules_cc", version = "0.2.22", dev_dependency = True)
-
-# rules_rs pulls protobuf for optional prost support. Keep Selenium on the
-# explicitly pinned protobuf version above so it stays paired with prebuilt protoc.
-single_version_override(
-    module_name = "protobuf",
-    version = "33.5",
-)
-
-bazel_dep(name = "rules_closure", version = "0.16.0")
-bazel_dep(name = "rules_dotnet", version = "0.21.5")
-
-# See below for actual version used
-bazel_dep(name = "rules_java", version = "9.6.1")
+bazel_dep(name = "rules_closure", version = "0.17.0")
+bazel_dep(name = "rules_dotnet", version = "0.22.2")
+bazel_dep(name = "rules_java", version = "9.9.0")
 bazel_dep(name = "rules_jvm_external", version = "7.2")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
-bazel_dep(name = "rules_nodejs", version = "6.7.4")
+bazel_dep(name = "rules_nodejs", version = "6.7.6")
 bazel_dep(name = "rules_oci", version = "2.3.0")
-bazel_dep(name = "rules_pkg", version = "1.2.0")
-bazel_dep(name = "rules_python", version = "2.4.1")
+bazel_dep(name = "rules_pkg", version = "1.3.0")
+bazel_dep(name = "rules_python", version = "2.4.2")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.29.0")
 bazel_dep(name = "rules_rs", version = "0.1.0")
@@ -51,9 +40,9 @@ single_version_override(
 )
 
 # Build the `*-sys` C sources with the LLVM cc toolchain so they cross-compile to musl.
-bazel_dep(name = "bzip2", version = "1.0.8.bcr.3")
-bazel_dep(name = "xz", version = "5.4.5.bcr.8")
-bazel_dep(name = "zstd", version = "1.5.7.bcr.1")
+bazel_dep(name = "bzip2", version = "1.0.8.bcr.4")
+bazel_dep(name = "xz", version = "5.4.5.bcr.9")
+bazel_dep(name = "zstd", version = "1.5.7.bcr.3")
 
 # Adds `transitive` and `third_party_prefixes` to `javadoc` for the merged client/grid javadoc jars; no upstream equivalent
 single_version_override(
@@ -65,11 +54,14 @@ single_version_override(
 )
 
 # Carries bazel-contrib/rules_ruby#409 (rb_gem_push omits the interpreter from runfiles); drop in the next release
+# Carries bazel-contrib/rules_ruby#421 (generated_srcs, so a version bump leaves Ruby tests cached); drop in the release that includes it
+# If rules_ruby#421 is rejected or the patch stops applying, remove it by reverting #18164 and setting rb/lib/selenium/webdriver/version.rb to the version.bzl value
 single_version_override(
     module_name = "rules_ruby",
     patch_strip = 1,
     patches = [
         "//third_party/bazel:rules_ruby_gem_push_runfiles.patch",
+        "//third_party/bazel:rules_ruby_lazy_bundle_srcs.patch",
     ],
 )
 
@@ -195,15 +187,11 @@ maven.install(
         "com.beust:jcommander:1.82",
         "com.fasterxml.jackson.core:jackson-core",
         "com.fasterxml.jackson.core:jackson-databind",
-        "org.checkerframework:checker-qual:4.3.0",
         "com.github.javaparser:javaparser-core:3.28.2",
         "com.github.spotbugs:spotbugs:4.10.4",
-        "com.github.stephenc.jcip:jcip-annotations:1.0-1",
-        "com.google.code.findbugs:jsr305:3.0.2",
         "com.google.code.gson:gson:2.14.0",
         "com.google.guava:guava:33.7.2-jre",
         "com.github.ben-manes.caffeine:caffeine:3.3.0",
-        "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:1.37.0",
@@ -212,7 +200,6 @@ maven.install(
         "com.graphql-java:graphql-java:26.1",
         "com.uber.nullaway:nullaway:0.14.2",
         "dev.failsafe:failsafe:3.3.2",
-        "io.grpc:grpc-context:1.84.0",
         "io.fabric8:kubernetes-client:7.9.0",
         "io.fabric8:kubernetes-client-api:7.9.0",
         "io.fabric8:kubernetes-model-batch:7.9.0",
@@ -220,10 +207,8 @@ maven.install(
         "io.lettuce:lettuce-core:7.8.0.RELEASE",
         "io.netty:netty-buffer",
         "io.netty:netty-codec-http",
-        "io.netty:netty-codec-http2",
         "io.netty:netty-common",
         "io.netty:netty-handler",
-        "io.netty:netty-handler-proxy",
         "io.netty:netty-transport",
         "io.opentelemetry:opentelemetry-api",
         "io.opentelemetry:opentelemetry-context",
@@ -232,13 +217,10 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-common",
         "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure",
         "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi",
-        "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
         "org.testcontainers:testcontainers:2.0.5",
-        "javax.inject:javax.inject:1",
         "net.bytebuddy:byte-buddy:1.18.14",
         "org.htmlunit:htmlunit-core-js:5.5.0",
-        "org.apache.logging.log4j:log4j-core:2.26.1",
         "org.assertj:assertj-core:3.27.7",
         "org.bouncycastle:bcpkix-jdk18on:1.86",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
@@ -247,15 +229,14 @@ maven.install(
         "org.jetbrains:annotations:26.1.0",
         "org.jspecify:jspecify:1.0.1",
         "org.junit.jupiter:junit-jupiter-api",
-        "org.junit.jupiter:junit-jupiter-engine",
+        "org.junit.jupiter:junit-jupiter-engine",  # Used through contrib_rules_jvm's JUNIT5_DEPS
         "org.junit.jupiter:junit-jupiter-params",
-        "org.junit.platform:junit-platform-launcher",
-        "org.junit.platform:junit-platform-reporting",
+        "org.junit.platform:junit-platform-launcher",  # Used through contrib_rules_jvm's JUNIT5_DEPS
+        "org.junit.platform:junit-platform-reporting",  # Used through contrib_rules_jvm's JUNIT5_DEPS
         "org.junit.platform:junit-platform-commons",
-        "org.junit.platform:junit-platform-engine",
         "org.mockito:mockito-core:5.24.0",
         "org.redisson:redisson:4.8.0",
-        "org.slf4j:slf4j-api:2.0.20",
+        "org.slf4j:slf4j-api:2.0.20",  # Match slf4j-jdk14 until no other dependency pulls an older slf4j-api
         "org.slf4j:slf4j-jdk14:2.0.20",
         "org.tomlj:tomlj:2.2.0",
         "org.zeromq:jeromq:0.6.0",
@@ -305,7 +286,6 @@ ruby.bundle_fetch(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
-        "//:rb/lib/selenium/webdriver/version.rb",
         "//:rb/selenium-devtools.gemspec",
         "//:rb/selenium-webdriver.gemspec",
     ],
@@ -385,6 +365,7 @@ ruby.bundle_fetch(
     },
     gemfile = "//:rb/Gemfile",
     gemfile_lock = "//:rb/Gemfile.lock",
+    generated_srcs = ["//rb/lib/selenium/webdriver:version.rb"],
     jar_checksums = {
         "org.snakeyaml:snakeyaml-engine:2.10": "c99d9fd66c7c251d881a9cd95089b7c8044c29a1b02983d7036981bd4354ec37",
     },

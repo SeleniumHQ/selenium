@@ -7,13 +7,15 @@ load(
     "firefox_beta_data",
     "firefox_data",
 )
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load(
     "//java:browsers.bzl",
-    "chrome_beta_jvm_flags",
-    "chrome_jvm_flags",
-    "edge_jvm_flags",
-    "firefox_beta_jvm_flags",
-    "firefox_jvm_flags",
+    "chrome_beta_pinned_jvm_flags",
+    "chrome_pinned_jvm_flags",
+    "edge_pinned_jvm_flags",
+    "firefox_beta_pinned_jvm_flags",
+    "firefox_pinned_jvm_flags",
+    "headless_jvm_flags",
 )
 load(":junit5_test.bzl", "junit5_test")
 
@@ -22,35 +24,40 @@ DEFAULT_BROWSER = "firefox"
 BROWSERS = {
     "chrome": {
         "deps": ["//java/src/org/openqa/selenium/chrome"],
-        "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
+        "jvm_flags": ["-Dselenium.browser=chrome"] + headless_jvm_flags,
+        "pinned_jvm_flags": chrome_pinned_jvm_flags,
         "data": chrome_data,
         "tags": COMMON_TAGS + ["chrome"],
         "target_compatible_with": [],
     },
     "chrome-beta": {
         "deps": ["//java/src/org/openqa/selenium/chrome"],
-        "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_beta_jvm_flags,
+        "jvm_flags": ["-Dselenium.browser=chrome"] + headless_jvm_flags,
+        "pinned_jvm_flags": chrome_beta_pinned_jvm_flags,
         "data": chrome_beta_data,
         "tags": COMMON_TAGS + ["chrome", "chrome-beta"],
         "target_compatible_with": [],
     },
     "edge": {
         "deps": ["//java/src/org/openqa/selenium/edge"],
-        "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
+        "jvm_flags": ["-Dselenium.browser=edge"] + headless_jvm_flags,
+        "pinned_jvm_flags": edge_pinned_jvm_flags,
         "data": edge_data,
         "tags": COMMON_TAGS + ["edge"],
         "target_compatible_with": [],
     },
     "firefox": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
-        "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
+        "jvm_flags": ["-Dselenium.browser=ff"] + headless_jvm_flags,
+        "pinned_jvm_flags": firefox_pinned_jvm_flags,
         "data": firefox_data,
         "tags": COMMON_TAGS + ["firefox"],
         "target_compatible_with": [],
     },
     "firefox-beta": {
         "deps": ["//java/src/org/openqa/selenium/firefox"],
-        "jvm_flags": ["-Dselenium.browser=ff"] + firefox_beta_jvm_flags,
+        "jvm_flags": ["-Dselenium.browser=ff"] + headless_jvm_flags,
+        "pinned_jvm_flags": firefox_beta_pinned_jvm_flags,
         "data": firefox_beta_data,
         "tags": COMMON_TAGS + ["firefox", "firefox-beta"],
         "target_compatible_with": [],
@@ -58,6 +65,7 @@ BROWSERS = {
     "ie": {
         "deps": ["//java/src/org/openqa/selenium/ie"],
         "jvm_flags": ["-Dselenium.browser=ie"],
+        "pinned_jvm_flags": [],
         "data": [],
         "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
         "target_compatible_with": ["@platforms//os:windows"],
@@ -65,6 +73,7 @@ BROWSERS = {
     "safari": {
         "deps": ["//java/src/org/openqa/selenium/safari"],
         "jvm_flags": ["-Dselenium.browser=safari"],
+        "pinned_jvm_flags": [],
         "data": [],
         "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
         "target_compatible_with": ["@platforms//os:macos"],
@@ -88,7 +97,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
     remote = "selenium-remote" in tags
 
     # These belong only to the stable local target of each browser family.
-    stable_local_tags = [t for t in tags if t in ["os-sensitive"]]
+    stable_local_tags = [t for t in tags if t in ["os-sensitive", "se-manager"]]
     tags = [t for t in tags if t != "selenium-remote" and t not in stable_local_tags]
 
     stripped_args = dict(**kwargs)
@@ -105,16 +114,19 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
 
         test = name if browser == default_browser else "%s-%s" % (name, browser)
         local_tags = stable_local_tags if browser == browser.split("-")[0] else []
+        se_manager = "se-manager" in local_tags
 
         junit5_test(
             name = test,
             test_class = test_class,
             size = size,
-            jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
+            jvm_flags = BROWSERS[browser]["jvm_flags"] + ([] if se_manager else BROWSERS[browser]["pinned_jvm_flags"]) + jvm_flags,
             # Only allow linting on the default test
             tags = BROWSERS[browser]["tags"] + tags + local_tags + ([] if test == name else ["no-lint"]),
-            data = BROWSERS[browser]["data"] + data,
+            data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data,
+            env = SE_MANAGER_TEST_ENV if se_manager else {},
             env_inherit = inherited_env,
+            exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if se_manager else {},
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],
             **stripped_args
         )
@@ -130,7 +142,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
                 name = "%s-remote" % test,
                 test_class = test_class,
                 size = size,
-                jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags + [
+                jvm_flags = BROWSERS[browser]["jvm_flags"] + BROWSERS[browser]["pinned_jvm_flags"] + jvm_flags + [
                     "-Dselenium.browser.remote=true",
                     "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server)",
                 ],

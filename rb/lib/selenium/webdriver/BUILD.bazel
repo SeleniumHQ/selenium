@@ -1,9 +1,11 @@
+load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load(
     "@rules_ruby//ruby:defs.bzl",
     "rb_binary",
     "rb_library",
     "rb_test",
 )
+load("//rb:version.bzl", "SE_VERSION", "UNSTAMPED_VERSION")
 
 package(default_visibility = ["//rb:__subpackages__"])
 
@@ -106,9 +108,20 @@ rb_library(
     ]),
 )
 
+expand_template(
+    name = "version-rb",
+    out = "version.rb",
+    substitutions = select({
+        "//common:stamp": {"{VERSION}": SE_VERSION},
+        "//conditions:default": {"{VERSION}": UNSTAMPED_VERSION},
+    }),
+    template = "version.rb.tpl",
+    visibility = ["//visibility:public"],
+)
+
 rb_library(
     name = "version",
-    srcs = ["version.rb"],
+    srcs = [":version-rb"],
 )
 
 rb_library(

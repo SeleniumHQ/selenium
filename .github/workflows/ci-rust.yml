@@ -14,11 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: macos
-          - os: ubuntu
-          - os: ubuntu-24.04-arm
-          - os: windows
+        os: [macos, ubuntu, ubuntu-24.04-arm, windows]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
