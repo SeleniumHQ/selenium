@@ -26,6 +26,10 @@ export const NO_SUCH_WINDOW = 'no such window'
 export const STALE_ELEMENT_REFERENCE = 'stale element reference'
 export const JAVASCRIPT_ERROR = 'javascript error'
 export const SCRIPT_TIMEOUT = 'script timeout'
+// W3C's code for both of Closure's ELEMENT_NOT_VISIBLE (click on a hidden
+// element) and its INVALID_ELEMENT_STATE for typing into one.
+export const ELEMENT_NOT_INTERACTABLE = 'element not interactable'
+export const INVALID_ELEMENT_STATE = 'invalid element state'
 // bot.Error.State.UNKNOWN_ERROR, which bot.ErrorCode.UNKNOWN_ERROR (13) mapped
 // onto. The storage atoms raise it when web storage is unavailable.
 export const UNKNOWN_ERROR = 'unknown error'
