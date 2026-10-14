@@ -162,7 +162,7 @@ select = [
     "PIE",
     "PLE",
     "PLR0133",
-    "PYI041",
+    "PYI",
     "PT",
     "RUF",
     "SIM102",
@@ -200,6 +200,8 @@ extend-ignore = [
 "py/test/**" = ["B018"]
 # Same pattern, in a driver-liveness probe rather than a test assertion.
 "py/conftest.py" = ["B018"]
+# The generated lazy-import stubs keep a docstring explaining why they exist.
+"**/__init__.pyi" = ["PYI021"]
 
 [tool.ruff.format]
 docstring-code-format = true
