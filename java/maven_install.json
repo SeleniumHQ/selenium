@@ -6,7 +6,7 @@
     "com.fasterxml.jackson.core:jackson-core": 1977162006,
     "com.fasterxml.jackson.core:jackson-databind": 1925127134,
     "com.fasterxml.jackson:jackson-bom": -317666199,
-    "com.github.ben-manes.caffeine:caffeine": -1341471880,
+    "com.github.ben-manes.caffeine:caffeine": 1146040953,
     "com.github.javaparser:javaparser-core": -677443473,
     "com.github.spotbugs:spotbugs": -455007267,
     "com.google.auto.service:auto-service": -1729498094,
@@ -105,8 +105,8 @@
     "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 105704024,
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": 601174067,
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": 1497146494,
-    "com.github.ben-manes.caffeine:caffeine": -55193720,
-    "com.github.ben-manes.caffeine:caffeine:jar:sources": -1083399443,
+    "com.github.ben-manes.caffeine:caffeine": -1626319201,
+    "com.github.ben-manes.caffeine:caffeine:jar:sources": -1862682179,
     "com.github.docker-java:docker-java-api": -297364417,
     "com.github.docker-java:docker-java-api:jar:sources": -964631834,
     "com.github.docker-java:docker-java-transport": -1526601578,
@@ -527,10 +527,10 @@
     },
     "com.github.ben-manes.caffeine:caffeine": {
       "shasums": {
-        "jar": "5d015adc655191c8f9a152c4cc871170a04d28040ed281d0e74ade87d6ae8aff",
-        "sources": "b3d73b6460ac46bbeda72372579356d2f47d6bda3d6fb94239fc1e24a1e07879"
+        "jar": "1f916d052a3f8c0c10951f343f043f176ff2d3c2f9e380e15f0be673c5e67c48",
+        "sources": "b1c9e864d31e0faf8fdc9a7b846a4c931969fd7dec64d141286e5ee84ff514b1"
       },
-      "version": "3.3.0"
+      "version": "3.3.1"
     },
     "com.github.docker-java:docker-java-api": {
       "shasums": {

@@ -10,11 +10,7 @@ importers:
 
   .: {}
 
-  javascript/atoms:
-    devDependencies:
-      google-closure-deps:
-        specifier: ^20230802.0.0
-        version: 20230802.0.0
+  javascript/atoms: {}
 
   javascript/grid-ui:
     dependencies:
@@ -2297,10 +2293,6 @@ packages:
 
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
-  google-closure-deps@20230802.0.0:
-    resolution: {integrity: sha512-5xhXO8xgxdXYZMsc8ZRzmnCm4prm0TcD33tcNr8l3OjSBovFO9MpgtrZxH/ZVnZMny6oOBmdeNqcO3afCYY9Lw==}
-    hasBin: true
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -6779,11 +6771,6 @@ snapshots:
       slash: 3.0.0
 
   globrex@0.1.2: {}
-
-  google-closure-deps@20230802.0.0:
-    dependencies:
-      minimatch: 3.1.5
-      yargs: 16.2.2
 
   gopd@1.2.0: {}
 
