@@ -73,7 +73,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanAddAndGetCookie()
     {
         driver.Url = Urls.WhereIs("animals");
@@ -107,7 +107,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanGetAllCookies()
     {
         driver.Url = Urls.WhereIs("animals");
@@ -142,7 +142,7 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanDeleteCookieWithName()
     {
         driver.Url = Urls.WhereIs("animals");

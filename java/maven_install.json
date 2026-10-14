@@ -3,42 +3,40 @@
   "__INPUT_ARTIFACTS_HASH": {
     "args4j:args4j": 1223353088,
     "com.beust:jcommander": -1790778431,
+    "com.fasterxml.jackson.core:jackson-core": 1977162006,
+    "com.fasterxml.jackson.core:jackson-databind": 1925127134,
+    "com.fasterxml.jackson:jackson-bom": -317666199,
     "com.github.ben-manes.caffeine:caffeine": -1341471880,
     "com.github.javaparser:javaparser-core": -677443473,
     "com.github.spotbugs:spotbugs": -455007267,
-    "com.github.stephenc.jcip:jcip-annotations": -1909337358,
     "com.google.auto.service:auto-service": -1729498094,
     "com.google.auto.service:auto-service-annotations": -843120535,
-    "com.google.auto:auto-common": -832702775,
     "com.google.closure-stylesheets:closure-stylesheets": -626365944,
     "com.google.code.findbugs:jsr305": 495355163,
     "com.google.code.gson:gson": 2063056812,
     "com.google.dagger:dagger-producers": 1903545965,
     "com.google.errorprone:error_prone_annotations": -1035138750,
-    "com.google.googlejavaformat:google-java-format": -1066280999,
-    "com.google.guava:guava": 965079090,
+    "com.google.googlejavaformat:google-java-format": -1055777895,
+    "com.google.guava:guava": 671676083,
     "com.google.j2objc:j2objc-annotations": 2003271689,
-    "com.google.javascript:closure-compiler": -648553916,
+    "com.google.javascript:closure-compiler": 720270735,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
     "com.google.protobuf:protobuf-java": 130636446,
     "com.graphql-java:graphql-java": -795537954,
-    "com.uber.nullaway:nullaway": -1896630319,
+    "com.uber.nullaway:nullaway": 590882514,
     "dev.failsafe:failsafe": -1314791755,
     "io.fabric8:kubernetes-client": -1899964461,
     "io.fabric8:kubernetes-client-api": 276482022,
     "io.fabric8:kubernetes-model-batch": 1464487264,
     "io.fabric8:kubernetes-model-core": -1457255717,
-    "io.grpc:grpc-context": -1662214157,
-    "io.lettuce:lettuce-core": -1695157309,
+    "io.lettuce:lettuce-core": 1755338116,
     "io.netty:netty-all": 41228384,
     "io.netty:netty-bom": -290366652,
     "io.netty:netty-buffer": 74326261,
     "io.netty:netty-codec-http": -920101484,
-    "io.netty:netty-codec-http2": 590712764,
     "io.netty:netty-common": 1498958496,
     "io.netty:netty-handler": 1278819283,
-    "io.netty:netty-handler-proxy": -183560396,
     "io.netty:netty-transport": 320927026,
     "io.opentelemetry:opentelemetry-api": 237530819,
     "io.opentelemetry:opentelemetry-bom": 596348298,
@@ -48,41 +46,37 @@
     "io.opentelemetry:opentelemetry-sdk-common": -1695848327,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": 2007780383,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -62380802,
-    "io.opentelemetry:opentelemetry-sdk-testing": -32635354,
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
-    "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
     "net.bytebuddy:byte-buddy": 1292203425,
     "net.java.dev.javacc:javacc": 520686333,
-    "org.apache.logging.log4j:log4j-core": 260343140,
     "org.assertj:assertj-core": -1145412507,
     "org.bouncycastle:bcpkix-jdk18on": 826697430,
-    "org.checkerframework:checker-qual": 1486048457,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 801759887,
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
     "org.hsqldb:hsqldb": 1426553323,
     "org.htmlunit:htmlunit-core-js": -1376292898,
     "org.jboss.marshalling:jboss-marshalling": -970194822,
+    "org.jetbrains:annotations": 989775437,
     "org.jsoup:jsoup": -1040080959,
     "org.jspecify:jspecify": 2105307712,
     "org.junit.jupiter:junit-jupiter-api": 194920406,
     "org.junit.jupiter:junit-jupiter-engine": -1886863302,
     "org.junit.jupiter:junit-jupiter-params": 1082310006,
     "org.junit.platform:junit-platform-commons": -1412868620,
-    "org.junit.platform:junit-platform-engine": -1644395090,
     "org.junit.platform:junit-platform-launcher": -354104948,
     "org.junit.platform:junit-platform-reporting": 1896713402,
     "org.junit:junit-bom": 934130879,
-    "org.mockito:mockito-core": 1330163800,
-    "org.redisson:redisson": 1434298889,
+    "org.mockito:mockito-core": -466787559,
+    "org.redisson:redisson": -362652470,
     "org.seleniumhq.selenium:selenium-api": 1359790425,
     "org.seleniumhq.selenium:selenium-remote-driver": -1144232444,
     "org.seleniumhq.selenium:selenium-support": 204710084,
-    "org.slf4j:slf4j-api": 482349805,
-    "org.slf4j:slf4j-jdk14": -2147195341,
+    "org.slf4j:slf4j-api": -626942717,
+    "org.slf4j:slf4j-jdk14": 1038479433,
     "org.testcontainers:testcontainers": -1851951707,
-    "org.tomlj:tomlj": -1795154114,
+    "org.tomlj:tomlj": -291605762,
     "org.zeromq:jeromq": -1244249324,
     "repositories": -1949687017,
     "uk.org.webcompere:system-stubs-core": -1875111381,
@@ -95,71 +89,71 @@
     "cglib:cglib-nodep:jar:sources": 193544996,
     "com.beust:jcommander": -2120169146,
     "com.beust:jcommander:jar:sources": -171511633,
-    "com.esotericsoftware:kryo": -482617235,
-    "com.esotericsoftware:kryo:jar:sources": -803891280,
+    "com.esotericsoftware:kryo": -693368450,
+    "com.esotericsoftware:kryo:jar:sources": 1494540957,
     "com.esotericsoftware:minlog": -2001219566,
     "com.esotericsoftware:minlog:jar:sources": 272312478,
     "com.esotericsoftware:reflectasm": 2111544468,
     "com.esotericsoftware:reflectasm:jar:sources": -1791654347,
-    "com.fasterxml.jackson.core:jackson-annotations": 1145483352,
-    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": -1434301790,
-    "com.fasterxml.jackson.core:jackson-core": -723233903,
-    "com.fasterxml.jackson.core:jackson-core:jar:sources": -407005088,
-    "com.fasterxml.jackson.core:jackson-databind": 1247838595,
-    "com.fasterxml.jackson.core:jackson-databind:jar:sources": -1029900496,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": 364553944,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": -629166421,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": 546831499,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": 10763351,
+    "com.fasterxml.jackson.core:jackson-annotations": -1012223496,
+    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": -164405597,
+    "com.fasterxml.jackson.core:jackson-core": -1694245069,
+    "com.fasterxml.jackson.core:jackson-core:jar:sources": -82765921,
+    "com.fasterxml.jackson.core:jackson-databind": -395059028,
+    "com.fasterxml.jackson.core:jackson-databind:jar:sources": 1735053938,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": 1406964618,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 105704024,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": 601174067,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": 1497146494,
     "com.github.ben-manes.caffeine:caffeine": -55193720,
     "com.github.ben-manes.caffeine:caffeine:jar:sources": -1083399443,
-    "com.github.docker-java:docker-java-api": 570384384,
+    "com.github.docker-java:docker-java-api": -297364417,
     "com.github.docker-java:docker-java-api:jar:sources": -964631834,
     "com.github.docker-java:docker-java-transport": -1526601578,
-    "com.github.docker-java:docker-java-transport-zerodep": 708947445,
+    "com.github.docker-java:docker-java-transport-zerodep": -347166331,
     "com.github.docker-java:docker-java-transport-zerodep:jar:sources": -767880782,
     "com.github.docker-java:docker-java-transport:jar:sources": -1920988041,
     "com.github.javaparser:javaparser-core": 561213315,
     "com.github.javaparser:javaparser-core:jar:sources": -1181310143,
-    "com.github.spotbugs:spotbugs": 507879501,
+    "com.github.spotbugs:spotbugs": -548234275,
     "com.github.spotbugs:spotbugs-annotations": -851079713,
     "com.github.spotbugs:spotbugs-annotations:jar:sources": 113380347,
     "com.github.spotbugs:spotbugs:jar:sources": 961059440,
     "com.github.stephenc.jcip:jcip-annotations": 2084352561,
     "com.github.stephenc.jcip:jcip-annotations:jar:sources": 888192437,
-    "com.google.auto.service:auto-service": -149967898,
+    "com.google.auto.service:auto-service": 113384607,
     "com.google.auto.service:auto-service-annotations": 262983930,
     "com.google.auto.service:auto-service-annotations:jar:sources": -1392999316,
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
-    "com.google.auto:auto-common": 201522989,
-    "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": -10835452,
+    "com.google.auto:auto-common": 1373794017,
+    "com.google.auto:auto-common:jar:sources": -542679945,
+    "com.google.closure-stylesheets:closure-stylesheets": -131194020,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
     "com.google.code.gson:gson": -1465758993,
     "com.google.code.gson:gson:jar:sources": 935710753,
     "com.google.dagger:dagger": -1865829880,
-    "com.google.dagger:dagger-producers": -359556085,
+    "com.google.dagger:dagger-producers": 1719063702,
     "com.google.dagger:dagger-producers:jar:sources": -143178918,
     "com.google.dagger:dagger:jar:sources": 1572301086,
     "com.google.errorprone:error_prone_annotations": 967586345,
     "com.google.errorprone:error_prone_annotations:jar:sources": -1304692732,
-    "com.google.googlejavaformat:google-java-format": -1584481917,
-    "com.google.googlejavaformat:google-java-format:jar:sources": 198234778,
+    "com.google.googlejavaformat:google-java-format": -527349687,
+    "com.google.googlejavaformat:google-java-format:jar:sources": 2122047025,
     "com.google.guava:failureaccess": 1715931538,
     "com.google.guava:failureaccess:jar:sources": 1303858893,
-    "com.google.guava:guava": 344735750,
-    "com.google.guava:guava:jar:sources": 1172872680,
+    "com.google.guava:guava": 1592080138,
+    "com.google.guava:guava:jar:sources": 852714858,
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
-    "com.google.javascript:closure-compiler": 495067644,
+    "com.google.javascript:closure-compiler": -757781731,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": 993911008,
+    "com.google.javascript:closure-compiler-unshaded": -1612747063,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
-    "com.google.javascript:closure-compiler:jar:sources": 466877765,
-    "com.google.jimfs:jimfs": -1963852372,
+    "com.google.javascript:closure-compiler:jar:sources": 16484246,
+    "com.google.jimfs:jimfs": -1815255605,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
@@ -169,8 +163,8 @@
     "com.graphql-java:graphql-java:jar:sources": 250541727,
     "com.graphql-java:java-dataloader": -1517887665,
     "com.graphql-java:java-dataloader:jar:sources": -1676833358,
-    "com.uber.nullaway:nullaway": -1098487473,
-    "com.uber.nullaway:nullaway:jar:sources": 1337349372,
+    "com.uber.nullaway:nullaway": -93486471,
+    "com.uber.nullaway:nullaway:jar:sources": 192362682,
     "commons-codec:commons-codec": 1545666683,
     "commons-codec:commons-codec:jar:sources": -1502704019,
     "commons-io:commons-io": 1539755249,
@@ -179,64 +173,60 @@
     "dev.failsafe:failsafe:jar:sources": 890605467,
     "eu.neilalexander:jnacl": 1766068575,
     "eu.neilalexander:jnacl:jar:sources": 1104083541,
-    "io.fabric8:kubernetes-client": -1247000207,
-    "io.fabric8:kubernetes-client-api": -1390212985,
+    "io.fabric8:kubernetes-client": -1463081257,
+    "io.fabric8:kubernetes-client-api": 501762732,
     "io.fabric8:kubernetes-client-api:jar:sources": -1952409227,
     "io.fabric8:kubernetes-client:jar:sources": -1358891590,
-    "io.fabric8:kubernetes-httpclient-vertx": 251242916,
+    "io.fabric8:kubernetes-httpclient-vertx": -1319372010,
     "io.fabric8:kubernetes-httpclient-vertx:jar:sources": -976854021,
-    "io.fabric8:kubernetes-model-admissionregistration": -2091783473,
+    "io.fabric8:kubernetes-model-admissionregistration": -971848501,
     "io.fabric8:kubernetes-model-admissionregistration:jar:sources": 1845927261,
-    "io.fabric8:kubernetes-model-apiextensions": -332851130,
+    "io.fabric8:kubernetes-model-apiextensions": 2015446580,
     "io.fabric8:kubernetes-model-apiextensions:jar:sources": 768564408,
-    "io.fabric8:kubernetes-model-apps": 1465927231,
+    "io.fabric8:kubernetes-model-apps": 1943000923,
     "io.fabric8:kubernetes-model-apps:jar:sources": -1592116314,
-    "io.fabric8:kubernetes-model-autoscaling": 1416241076,
+    "io.fabric8:kubernetes-model-autoscaling": 402730118,
     "io.fabric8:kubernetes-model-autoscaling:jar:sources": -472797554,
-    "io.fabric8:kubernetes-model-batch": -449301865,
+    "io.fabric8:kubernetes-model-batch": 408565584,
     "io.fabric8:kubernetes-model-batch:jar:sources": -199258382,
-    "io.fabric8:kubernetes-model-certificates": 229222203,
+    "io.fabric8:kubernetes-model-certificates": -2035116577,
     "io.fabric8:kubernetes-model-certificates:jar:sources": -364514188,
-    "io.fabric8:kubernetes-model-common": -1930678130,
+    "io.fabric8:kubernetes-model-common": -632088629,
     "io.fabric8:kubernetes-model-common:jar:sources": -834616731,
-    "io.fabric8:kubernetes-model-coordination": -1293606355,
+    "io.fabric8:kubernetes-model-coordination": -1998161619,
     "io.fabric8:kubernetes-model-coordination:jar:sources": -421839506,
-    "io.fabric8:kubernetes-model-core": 1682947750,
+    "io.fabric8:kubernetes-model-core": 2065761285,
     "io.fabric8:kubernetes-model-core:jar:sources": 430104958,
-    "io.fabric8:kubernetes-model-discovery": 839633636,
+    "io.fabric8:kubernetes-model-discovery": -292231338,
     "io.fabric8:kubernetes-model-discovery:jar:sources": -1231353278,
-    "io.fabric8:kubernetes-model-events": -248012398,
+    "io.fabric8:kubernetes-model-events": 350479976,
     "io.fabric8:kubernetes-model-events:jar:sources": -1804736328,
-    "io.fabric8:kubernetes-model-extensions": 1576677560,
+    "io.fabric8:kubernetes-model-extensions": 1081293826,
     "io.fabric8:kubernetes-model-extensions:jar:sources": -722003870,
-    "io.fabric8:kubernetes-model-flowcontrol": 637020648,
+    "io.fabric8:kubernetes-model-flowcontrol": 2016700626,
     "io.fabric8:kubernetes-model-flowcontrol:jar:sources": 1301734564,
-    "io.fabric8:kubernetes-model-gatewayapi": 1395735665,
+    "io.fabric8:kubernetes-model-gatewayapi": -232937623,
     "io.fabric8:kubernetes-model-gatewayapi:jar:sources": -1021586357,
-    "io.fabric8:kubernetes-model-metrics": 2128523840,
+    "io.fabric8:kubernetes-model-metrics": 1008659322,
     "io.fabric8:kubernetes-model-metrics:jar:sources": 214989635,
-    "io.fabric8:kubernetes-model-networking": 550951264,
+    "io.fabric8:kubernetes-model-networking": -651450278,
     "io.fabric8:kubernetes-model-networking:jar:sources": 1150461925,
-    "io.fabric8:kubernetes-model-node": -827620248,
+    "io.fabric8:kubernetes-model-node": -437494190,
     "io.fabric8:kubernetes-model-node:jar:sources": -317453306,
-    "io.fabric8:kubernetes-model-policy": 1447313171,
+    "io.fabric8:kubernetes-model-policy": 1365965063,
     "io.fabric8:kubernetes-model-policy:jar:sources": 888653901,
-    "io.fabric8:kubernetes-model-rbac": -1933231679,
+    "io.fabric8:kubernetes-model-rbac": -351710183,
     "io.fabric8:kubernetes-model-rbac:jar:sources": 2112069764,
-    "io.fabric8:kubernetes-model-resource": -35183193,
+    "io.fabric8:kubernetes-model-resource": -1641749261,
     "io.fabric8:kubernetes-model-resource:jar:sources": -17530136,
-    "io.fabric8:kubernetes-model-scheduling": 1835092615,
+    "io.fabric8:kubernetes-model-scheduling": 502225939,
     "io.fabric8:kubernetes-model-scheduling:jar:sources": -1201846855,
-    "io.fabric8:kubernetes-model-storageclass": 1610664204,
+    "io.fabric8:kubernetes-model-storageclass": 2134879790,
     "io.fabric8:kubernetes-model-storageclass:jar:sources": 432103442,
-    "io.fabric8:zjsonpatch": 974050464,
+    "io.fabric8:zjsonpatch": 2034342092,
     "io.fabric8:zjsonpatch:jar:sources": -146843037,
-    "io.grpc:grpc-api": 967311031,
-    "io.grpc:grpc-api:jar:sources": -523077795,
-    "io.grpc:grpc-context": 961874018,
-    "io.grpc:grpc-context:jar:sources": -467830681,
-    "io.lettuce:lettuce-core": 2017702833,
-    "io.lettuce:lettuce-core:jar:sources": -1131248474,
+    "io.lettuce:lettuce-core": 1160396175,
+    "io.lettuce:lettuce-core:jar:sources": -291572534,
     "io.netty:netty-buffer": -428929156,
     "io.netty:netty-buffer:jar:sources": -109209354,
     "io.netty:netty-codec": 1467480029,
@@ -294,22 +284,20 @@
     "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": 404508097,
     "io.opentelemetry:opentelemetry-sdk-metrics": -1621561107,
     "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": 845564702,
-    "io.opentelemetry:opentelemetry-sdk-testing": 856883662,
-    "io.opentelemetry:opentelemetry-sdk-testing:jar:sources": 1502575827,
     "io.opentelemetry:opentelemetry-sdk-trace": -1093198087,
     "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": -129802891,
     "io.opentelemetry:opentelemetry-sdk:jar:sources": 74150561,
-    "io.projectreactor:reactor-core": -2024052294,
-    "io.projectreactor:reactor-core:jar:sources": 144494895,
+    "io.projectreactor:reactor-core": -2143467537,
+    "io.projectreactor:reactor-core:jar:sources": 1595441070,
     "io.reactivex.rxjava3:rxjava": -320548188,
     "io.reactivex.rxjava3:rxjava:jar:sources": 1421703233,
-    "io.vertx:vertx-auth-common": 1900193379,
+    "io.vertx:vertx-auth-common": -181369114,
     "io.vertx:vertx-auth-common:jar:sources": 2025604333,
-    "io.vertx:vertx-core": 173137221,
+    "io.vertx:vertx-core": 1317823331,
     "io.vertx:vertx-core:jar:sources": 532555024,
-    "io.vertx:vertx-web-client": -720755854,
+    "io.vertx:vertx-web-client": 1324552117,
     "io.vertx:vertx-web-client:jar:sources": 1364295691,
-    "io.vertx:vertx-web-common": -1917002936,
+    "io.vertx:vertx-web-common": 1744629409,
     "io.vertx:vertx-web-common:jar:sources": 470223455,
     "javax.cache:cache-api": -340959387,
     "javax.cache:cache-api:jar:sources": -414663888,
@@ -329,8 +317,6 @@
     "net.java.dev.jna:jna:jar:sources": -1131590933,
     "net.sf.saxon:Saxon-HE": 1404898280,
     "net.sf.saxon:Saxon-HE:jar:sources": 37033699,
-    "org.antlr:antlr4-runtime": 460090011,
-    "org.antlr:antlr4-runtime:jar:sources": 298890060,
     "org.apache.bcel:bcel": 1163931257,
     "org.apache.bcel:bcel:jar:sources": 565934275,
     "org.apache.commons:commons-compress": 537892485,
@@ -359,12 +345,12 @@
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
     "org.checkerframework:checker-qual": 414066769,
     "org.checkerframework:checker-qual:jar:sources": 1695950529,
-    "org.checkerframework:dataflow-nullaway": -2078762299,
-    "org.checkerframework:dataflow-nullaway:jar:sources": 993803352,
-    "org.commonmark:commonmark": 1195553091,
-    "org.commonmark:commonmark-ext-gfm-tables": -558121472,
-    "org.commonmark:commonmark-ext-gfm-tables:jar:sources": 1593227191,
-    "org.commonmark:commonmark:jar:sources": 141052253,
+    "org.checkerframework:dataflow-nullaway": 1855118375,
+    "org.checkerframework:dataflow-nullaway:jar:sources": -1205948234,
+    "org.commonmark:commonmark": 1007679894,
+    "org.commonmark:commonmark-ext-gfm-tables": 906481356,
+    "org.commonmark:commonmark-ext-gfm-tables:jar:sources": 1402309037,
+    "org.commonmark:commonmark:jar:sources": 134511725,
     "org.dom4j:dom4j": -355280329,
     "org.dom4j:dom4j:jar:sources": 1794439119,
     "org.easymock:easymock": 1823521609,
@@ -377,8 +363,8 @@
     "org.htmlunit:htmlunit-core-js:jar:sources": 1035397071,
     "org.jboss.marshalling:jboss-marshalling": 1584464300,
     "org.jboss.marshalling:jboss-marshalling:jar:sources": -444808379,
-    "org.jetbrains:annotations": -845966580,
-    "org.jetbrains:annotations:jar:sources": 582621361,
+    "org.jetbrains:annotations": -1687668980,
+    "org.jetbrains:annotations:jar:sources": 381604573,
     "org.jodd:jodd-util": 270788956,
     "org.jodd:jodd-util:jar:sources": 1012711698,
     "org.jsoup:jsoup": -1583305582,
@@ -399,8 +385,8 @@
     "org.junit.platform:junit-platform-launcher:jar:sources": 1409824250,
     "org.junit.platform:junit-platform-reporting": 1588112906,
     "org.junit.platform:junit-platform-reporting:jar:sources": 1717223596,
-    "org.mockito:mockito-core": 288122249,
-    "org.mockito:mockito-core:jar:sources": 1900207417,
+    "org.mockito:mockito-core": 1700750689,
+    "org.mockito:mockito-core:jar:sources": 1799409451,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
     "org.opentest4j.reporting:open-test-reporting-tooling-spi": -1725000643,
@@ -419,9 +405,9 @@
     "org.ow2.asm:asm:jar:sources": 1372783843,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": 692121117,
-    "org.redisson:redisson:jar:sources": -620546522,
-    "org.rnorth.duct-tape:duct-tape": -1059401544,
+    "org.redisson:redisson": -630806419,
+    "org.redisson:redisson:jar:sources": 1741527651,
+    "org.rnorth.duct-tape:duct-tape": 133152594,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
     "org.seleniumhq.selenium:selenium-api": 849837103,
     "org.seleniumhq.selenium:selenium-api:jar:sources": -2123713838,
@@ -433,20 +419,20 @@
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
     "org.seleniumhq.selenium:selenium-os": -2127888353,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -1863727630,
+    "org.seleniumhq.selenium:selenium-remote-driver": -1510588403,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": -1860964190,
+    "org.seleniumhq.selenium:selenium-support": -1484706361,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
-    "org.slf4j:slf4j-api": 1965957737,
-    "org.slf4j:slf4j-api:jar:sources": 170272608,
-    "org.slf4j:slf4j-jdk14": -1101758592,
-    "org.slf4j:slf4j-jdk14:jar:sources": -88979629,
+    "org.slf4j:slf4j-api": -736053657,
+    "org.slf4j:slf4j-api:jar:sources": -72528589,
+    "org.slf4j:slf4j-jdk14": -278434875,
+    "org.slf4j:slf4j-jdk14:jar:sources": 243667848,
     "org.snakeyaml:snakeyaml-engine": -1273354013,
     "org.snakeyaml:snakeyaml-engine:jar:sources": -1787221586,
-    "org.testcontainers:testcontainers": 1841368846,
+    "org.testcontainers:testcontainers": -932664350,
     "org.testcontainers:testcontainers:jar:sources": 375219890,
-    "org.tomlj:tomlj": 368479402,
-    "org.tomlj:tomlj:jar:sources": -1376370879,
+    "org.tomlj:tomlj": -1200743285,
+    "org.tomlj:tomlj:jar:sources": 352072068,
     "org.xmlresolver:xmlresolver": -2072175398,
     "org.xmlresolver:xmlresolver:jar:data": 792867476,
     "org.xmlresolver:xmlresolver:jar:sources": 294380453,
@@ -454,7 +440,7 @@
     "org.yaml:snakeyaml:jar:sources": -665563845,
     "org.zeromq:jeromq": 1328093465,
     "org.zeromq:jeromq:jar:sources": -1982898923,
-    "redis.clients.authentication:redis-authx-core": 1767866892,
+    "redis.clients.authentication:redis-authx-core": 711753116,
     "redis.clients.authentication:redis-authx-core:jar:sources": -376828222,
     "uk.org.webcompere:system-stubs-core": 1621716641,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
@@ -485,10 +471,10 @@
     },
     "com.esotericsoftware:kryo": {
       "shasums": {
-        "jar": "4e8b1d2f4977187af8a51a957329722dc1cdc56a7c94fbb5a791e82897629cff",
-        "sources": "acd9090539befa5421466ea1001dd808927af3f7d0ff12340ff518c15a9c5f4e"
+        "jar": "b0c62617e99fa85ea98c602d0844d6800ffa224cb1e3f597358b009a5e83d619",
+        "sources": "0c8bbb3778469612edbe8f036224d0621c41fa6c3323d04ce057fe066e71f77c"
       },
-      "version": "5.6.2"
+      "version": "5.7.0"
     },
     "com.esotericsoftware:minlog": {
       "shasums": {
@@ -506,38 +492,38 @@
     },
     "com.fasterxml.jackson.core:jackson-annotations": {
       "shasums": {
-        "jar": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b",
-        "sources": "71fe6323d91b16d5d1007fd1e1533fa06bb369abde74f68a42a68c0f8f061a8b"
+        "jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0",
+        "sources": "f5375c756ee3c585808f9937eb087d074743fd3f05f6aeff9b183cf19230c9f7"
       },
-      "version": "2.21"
+      "version": "2.22"
     },
     "com.fasterxml.jackson.core:jackson-core": {
       "shasums": {
-        "jar": "4b40a06396f239f8de2da57419adde6e94e5edc18a2171d471ea05eeed4e5c2d",
-        "sources": "90ccada55626ce4f00a81bde235af0a942ec2bc4c701fcc86a93af1be9b3e08d"
+        "jar": "8a501126a385b25841915d839508f8a66e2a0dbc8a6709d055ef3b3e852b094c",
+        "sources": "547caff8197f49beccdcbab1b0178e1aba628aa3c4269302b0067f529101e0e4"
       },
-      "version": "2.21.4"
+      "version": "2.22.3"
     },
     "com.fasterxml.jackson.core:jackson-databind": {
       "shasums": {
-        "jar": "3888e9e69ab66fbacaacc9aea0e9ffbf15368288e4aca468b024dba11c09fbf9",
-        "sources": "23188e78e912c9866367bf038fb7f729e79f1c2724174ca66e0a00915de70e61"
+        "jar": "556db5439e206114346043f68d200497dc96a0bca62a360a81784092ebd0e0a9",
+        "sources": "e6237bfb27df92e14edb4555ebb7b32f325b66d956e213644b720b65cb273fbb"
       },
-      "version": "2.21.4"
+      "version": "2.22.3"
     },
     "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": {
       "shasums": {
-        "jar": "055eb4c008ab12f0cb63e93a6454463d032fde0fca85943d69f8dc7469489e4b",
-        "sources": "164cef68956eb2797e421dd6cf74bfd648581965a8df2389c260bb363d1f3baa"
+        "jar": "2bcbc3b9abaefbeba11409b9e30ec35ed7071a61a47c8c2a9c688e40e45b90f9",
+        "sources": "a94b2659689f3efc84d9f8359d73b206cd1d2a9081ce3278a3604fe9b0b97c9e"
       },
-      "version": "2.21.4"
+      "version": "2.22.3"
     },
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": {
       "shasums": {
-        "jar": "d1ac4b98b70304e56448423589fde5e775b100889643ad1ead62cc7811633684",
-        "sources": "884a8812af289bb56f38f09a4b3b7b73b4a16dbc184ae735fbe6c4aa1089161f"
+        "jar": "ec7052ee48c9d873bb8148338a643f02cf89c01d035dd219411473030d6d2b22",
+        "sources": "cd447a774b1201caebad8e556374e9cbb7235e2aca776878a367cc5187660d8e"
       },
-      "version": "2.21.4"
+      "version": "2.22.3"
     },
     "com.github.ben-manes.caffeine:caffeine": {
       "shasums": {
@@ -611,10 +597,10 @@
     },
     "com.google.auto:auto-common": {
       "shasums": {
-        "jar": "f50b1ce8a41fad31a8a819c052f8ffa362ea0a3dbe9ef8f7c7dc9a36d4738a59",
-        "sources": "173f0a89b59e20a3219074a13d1656d7e207391438459521d11b0adcb814769e"
+        "jar": "f43f29fe2a6ebaf04b2598cdeec32a4e346d49a9404e990f5fc19c19f3a28d0e",
+        "sources": "6802fc6e48f84cacadab9418bc8eba732f4c6a4189fc8569b1f619cb88112b25"
       },
-      "version": "1.2.2"
+      "version": "1.2.1"
     },
     "com.google.closure-stylesheets:closure-stylesheets": {
       "shasums": {
@@ -660,10 +646,10 @@
     },
     "com.google.googlejavaformat:google-java-format": {
       "shasums": {
-        "jar": "57f9b550a662dcbbdf344073e3f5812b837a0e6e430548d8a0a3c9090cada65d",
-        "sources": "b20f9812c27ed700df6d3c43e835efaa1cea129017ce7e7645b52292b66ac8e0"
+        "jar": "49874ad1d6b1006d2f8660482135609eb124888e0046c3dbfefc706a0387c700",
+        "sources": "80fe8e64fde9ed05dc265ca10c489fba5ee5572da7271705fa8b32945e486325"
       },
-      "version": "1.36.1"
+      "version": "1.37.0"
     },
     "com.google.guava:failureaccess": {
       "shasums": {
@@ -674,10 +660,10 @@
     },
     "com.google.guava:guava": {
       "shasums": {
-        "jar": "796d8e28ac64e83a47c4c5935a8fecc4682650a04bbdead738ef0f5a3a0e6c46",
-        "sources": "9d60f1613f9252d1f1bc89847466915cfe711af33b0847b885c9184a8602d166"
+        "jar": "b530942257fb935f8b2cfaa5f8eb5bd59c555fd8e8d01b8ce98912e077ea606c",
+        "sources": "ab6a8934d352629e6d87087a79808b827b64ed18cff6c6b551be99cd8e03244c"
       },
-      "version": "33.7.1-jre"
+      "version": "33.7.2-jre"
     },
     "com.google.guava:listenablefuture": {
       "shasums": {
@@ -694,10 +680,10 @@
     },
     "com.google.javascript:closure-compiler": {
       "shasums": {
-        "jar": "8d3ec05cb9e12df784a2f3f68132985226e3ae79d616b0917e7b381b44c384cc",
-        "sources": "691b1b07cc75ab82b7869538e6fa8f138e381179903ce1d9ca889de652f414eb"
+        "jar": "bafea6cadc931e84f5488cc61d65a1d130defe2a571f521405f70807ef54adec",
+        "sources": "692f4391ddf342fe895466672486844ee7f1e29b5c3e440f5925d6033680c08a"
       },
-      "version": "v20260330"
+      "version": "v20260913"
     },
     "com.google.javascript:closure-compiler-externs": {
       "shasums": {
@@ -749,10 +735,10 @@
     },
     "com.uber.nullaway:nullaway": {
       "shasums": {
-        "jar": "a74a5fb5a047537a4bdc362f9c1821279d7122d9d36aa2e6a72b79832fab7e4d",
-        "sources": "5e74a6e95878b7c8195eb2d8ba75a823b10d3329bbfb9f75b75c61f22c928386"
+        "jar": "eb02eb2da5ee30bcac4621a259a84153b20690078dc47ef920589b8371f456ed",
+        "sources": "33364b77d956541686ac2b421e0659c379bc5cd7541dbe86317db50987cad5eb"
       },
-      "version": "0.14.1"
+      "version": "0.14.2"
     },
     "commons-codec:commons-codec": {
       "shasums": {
@@ -964,26 +950,12 @@
       },
       "version": "7.9.0"
     },
-    "io.grpc:grpc-api": {
-      "shasums": {
-        "jar": "a2a57594571a4392751609bf4c63cf838ba7dcdbc8e5fd07983c313cb1565ac8",
-        "sources": "4680ddc804a9c2355c619512268826032cccd4c3aa9e2ac40d44859049ae1663"
-      },
-      "version": "1.84.0"
-    },
-    "io.grpc:grpc-context": {
-      "shasums": {
-        "jar": "e6f6e5db0d704e34d03f013cceb6be326c9ed3916346378ca1587ed41f943080",
-        "sources": "47e01c9537bd88be397079bfa2e5d3a0b9e58c5e29dad8c100e7a95ac02a16ba"
-      },
-      "version": "1.84.0"
-    },
     "io.lettuce:lettuce-core": {
       "shasums": {
-        "jar": "e03b6007cd88af59bf53edee4d38308d33b1ef0d4c4746998cf9855aec3f422a",
-        "sources": "5e2c6547e434712a0bfbfc91ce05dc04bb70f3c60ce9fc119ed63006d6f2ae8c"
+        "jar": "5b9b9f80bf04f20b1eb30b0f7f63dfd15024f4843d5a595a70e6cd5bfbfe791e",
+        "sources": "01287a5fe1db2e5837891873e27343d0ddd94e8f9038a3aa7d8c37ca5a6d905a"
       },
-      "version": "7.7.0.RELEASE"
+      "version": "7.8.0.RELEASE"
     },
     "io.netty:netty-buffer": {
       "shasums": {
@@ -1188,13 +1160,6 @@
       },
       "version": "1.66.0"
     },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "shasums": {
-        "jar": "2f7d5f34df7d3db2e1dff9ce9763d6314ea9397615102a9d2ade93eed8e32cff",
-        "sources": "806950ed5520ca9aa53d536c5574aacb3e533765f19a1103f154606580e7c5ac"
-      },
-      "version": "1.66.0"
-    },
     "io.opentelemetry:opentelemetry-sdk-trace": {
       "shasums": {
         "jar": "579c96897d9112b626fbf325efc116c2d4f046aec1bd72e9909ec0f5431a2040",
@@ -1204,10 +1169,10 @@
     },
     "io.projectreactor:reactor-core": {
       "shasums": {
-        "jar": "44f055fbd033b6c976c53fb2e04b59027e79fb2312c37d2eaa54c77ea1ea80fe",
-        "sources": "fee913ed4e41d79ce1cf7db4526d23e848719083b65a4041dea590f91b1ef2f6"
+        "jar": "9a5f1bfc5ad0416a410ff63beaa279cc30c2da3ae9b111a678c83c99298a1551",
+        "sources": "7547e61d9ebe6ffa34df02dc8f97d663edd69f91b58d295d7f008e1dddb30657"
       },
-      "version": "3.6.6"
+      "version": "3.8.7"
     },
     "io.reactivex.rxjava3:rxjava": {
       "shasums": {
@@ -1306,13 +1271,6 @@
         "sources": "967e316e399138d286941641826c5100d8d8400171d426a446fd36ca943b626b"
       },
       "version": "12.10"
-    },
-    "org.antlr:antlr4-runtime": {
-      "shasums": {
-        "jar": "dd3e8a13a2d669bf84fb8d834de35ce4875f27157698d206241ec8488aadcaf7",
-        "sources": "4100b1df2f38152d8502e89195b94654d9aa22f5b6c47aca7b6a7f3194b5fbb0"
-      },
-      "version": "4.13.2"
     },
     "org.apache.bcel:bcel": {
       "shasums": {
@@ -1414,24 +1372,24 @@
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
-        "jar": "7642e30918ba238076ef795e93620e7029b47635021cee3cc04737ad933b2a4f",
-        "sources": "a3c73b9366889e5b4a4f7b7b0c5574da970e0b2c811dfcdbbfe689d76524d316"
+        "jar": "0524cc55673ac10f08d74ca659f7a12c9ce74fba1120a61950c5011b843fb25e",
+        "sources": "e469812d1c3afbc9afe2baae5fe2f37a384c3337c2cb4673968e51ee4b008d05"
       },
-      "version": "4.2.2"
+      "version": "4.2.3"
     },
     "org.commonmark:commonmark": {
       "shasums": {
-        "jar": "f8b28e00f97c568329ee1b2496cfec5c3ef8664b565ea09cf8988894183b956d",
-        "sources": "c1296ec293232548329d9051e5fc49b1ecec1a3440db7d3ce36f193feb972757"
+        "jar": "4c9b0fa481e36d7176f38e572c134656424cf9601bc190855d0f89478df901c6",
+        "sources": "cfcd4db6b4502fd995ab681bdf8500c968fc6ee9c56380cf6ebdb11852c484bc"
       },
-      "version": "0.28.0"
+      "version": "0.29.0"
     },
     "org.commonmark:commonmark-ext-gfm-tables": {
       "shasums": {
-        "jar": "80439c7c4809daa6c35ccb260f48f8b71cda30e8cc923dbd68bb3be049359ecb",
-        "sources": "e1fd6175ae9eff2ec0317309f421a8ee1a3090b61030746d824381beb6a61fdd"
+        "jar": "f263d284c0795b0ddd6071d4fa969f67d460644c20828e51957ad5aec0d75612",
+        "sources": "4e08e7742edd4785abdba2e7a81ef668d186ebeb1d7d53c47fc89f4565bf3133"
       },
-      "version": "0.28.0"
+      "version": "0.29.0"
     },
     "org.dom4j:dom4j": {
       "shasums": {
@@ -1477,10 +1435,10 @@
     },
     "org.jetbrains:annotations": {
       "shasums": {
-        "jar": "195fb0da046d55bb042e91543484cf1da68b02bb7afbfe031f229e45ac84b3f2",
-        "sources": "b2c0d02e0a32c56d359e99634e7d769f9b1a8cd6e25061995abad1c1baf86f56"
+        "jar": "ebc7aec252ed0c7d2d04c039d7f00e69f7b86b1f493c741d67b3ef31b986b054",
+        "sources": "736d7e0e4bd95570ec8856cacffa3c34eb78ad8e45ca78c5df610d7347963b53"
       },
-      "version": "17.0.0"
+      "version": "26.1.0"
     },
     "org.jodd:jodd-util": {
       "shasums": {
@@ -1554,10 +1512,10 @@
     },
     "org.mockito:mockito-core": {
       "shasums": {
-        "jar": "ae295bebd5d11fab97ab297815dc7617188b86003cbce3dfd5c0d5c3a6cc4a0c",
-        "sources": "38f869a12a1168ca8dc2a4acd090d8129a7f81afc8f1fc61582701894755fefd"
+        "jar": "97a1f835ad84075255aa37809e4379eff541273c02c6201cbad49bd5950932cd",
+        "sources": "6941ad79b3a92ba2dbd8a00570b0e2dcaf15529de4452c789454f11660f03bf7"
       },
-      "version": "5.23.0"
+      "version": "5.24.0"
     },
     "org.objenesis:objenesis": {
       "shasums": {
@@ -1624,10 +1582,10 @@
     },
     "org.redisson:redisson": {
       "shasums": {
-        "jar": "1b0bc132adbc8063d33cfad952c835c31dc2ab6f8c9cef26a08d7d5eeb1eb799",
-        "sources": "438e8ba2352d2f4c51cbaeb7303a93ecb4f5d95310948233cff4a81f71c80986"
+        "jar": "cbaf6850dfd49f245c4d7232d0cf8acb5057e9a465251b5f1c0890096284d3b0",
+        "sources": "dafb57dfa0f684a89d6a7f6f5ea2a1d897f0b641d1e0b415a0ea210fd50692e1"
       },
-      "version": "4.7.0"
+      "version": "4.8.0"
     },
     "org.rnorth.duct-tape:duct-tape": {
       "shasums": {
@@ -1687,17 +1645,17 @@
     },
     "org.slf4j:slf4j-api": {
       "shasums": {
-        "jar": "e91ff6d720609e7a194ffe758c3ed5c84e798617ae07b0a0f6a4fe229741b4bb",
-        "sources": "5653861a44b3865dd6a2d42c0a7c953568c06c4e36a9b172328d0341e9aaab41"
+        "jar": "7e1446499b359675d8aabe6af2de86b85e72ae8a2a932c0b40d0e5ba57097439",
+        "sources": "565e509928d095e20c5d93ca5e3a528e98fc7410c3ca4e84b05ccfadf21b40ba"
       },
-      "version": "2.0.19"
+      "version": "2.0.20"
     },
     "org.slf4j:slf4j-jdk14": {
       "shasums": {
-        "jar": "36bfc3585d19456821e27be56c98d376b355b9fc6e305eb7a105a9b389b8144d",
-        "sources": "5604f342f4b45e137cb6ef5cecb01ad7792f5a968a029b8e116067f41df66cc6"
+        "jar": "f02f2e6015daea6bac93ab68dfa1af0c6601b33f5a2bd934275626c55a0332c7",
+        "sources": "42012e594c9224cea93d91fa53dff43381ffb1cc256bf89e98f421f628590a3f"
       },
-      "version": "2.0.19"
+      "version": "2.0.20"
     },
     "org.snakeyaml:snakeyaml-engine": {
       "shasums": {
@@ -1715,10 +1673,10 @@
     },
     "org.tomlj:tomlj": {
       "shasums": {
-        "jar": "aed7cdcd8c7d980fcc481bef6d402145fccc4d4f871c125d767b0523dc05055d",
-        "sources": "a44abc66b0d53f50a76946bdd397d6044b216a19d4aefaf7df8ae28f59d47c64"
+        "jar": "e1fc98734f3b4285b4f87d1f1f473300c83791f2fb406feb86bca67e371896e7",
+        "sources": "17836075d456c38cc8a5ec8c1ddb2f90e2dbcd9814bdaa82cd987a64284e3150"
       },
-      "version": "1.3.0"
+      "version": "2.2.0"
     },
     "org.xmlresolver:xmlresolver": {
       "shasums": {
@@ -1765,15 +1723,13 @@
     }
   },
   "conflict_resolution": {
-    "com.fasterxml.jackson.core:jackson-annotations:2.20": "com.fasterxml.jackson.core:jackson-annotations:2.21",
-    "com.fasterxml.jackson.core:jackson-core:2.21.5": "com.fasterxml.jackson.core:jackson-core:2.21.4",
     "com.google.guava:failureaccess:1.0.1": "com.google.guava:failureaccess:1.0.3",
     "commons-io:commons-io:2.20.0": "commons-io:commons-io:2.21.0",
-    "io.projectreactor:reactor-core:3.8.5": "io.projectreactor:reactor-core:3.6.6",
+    "io.projectreactor:reactor-core:3.8.5": "io.projectreactor:reactor-core:3.8.7",
     "net.bytebuddy:byte-buddy-agent:1.17.4": "net.bytebuddy:byte-buddy-agent:1.17.7",
     "org.apache.commons:commons-lang3:3.18.0": "org.apache.commons:commons-lang3:3.20.0",
     "org.objenesis:objenesis:1.2": "org.objenesis:objenesis:3.3",
-    "org.objenesis:objenesis:3.4": "org.objenesis:objenesis:3.3",
+    "org.objenesis:objenesis:3.6": "org.objenesis:objenesis:3.3",
     "org.reactivestreams:reactive-streams:1.0.4": "org.reactivestreams:reactive-streams:1.0.3",
     "org.yaml:snakeyaml:2.5": "org.yaml:snakeyaml:2.6"
   },
@@ -2031,9 +1987,6 @@
     "io.fabric8:zjsonpatch": [
       "com.fasterxml.jackson.core:jackson-databind"
     ],
-    "io.grpc:grpc-context": [
-      "io.grpc:grpc-api"
-    ],
     "io.lettuce:lettuce-core": [
       "io.netty:netty-common",
       "io.netty:netty-handler",
@@ -2178,15 +2131,12 @@
       "io.opentelemetry:opentelemetry-api",
       "io.opentelemetry:opentelemetry-sdk-common"
     ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry:opentelemetry-api",
-      "io.opentelemetry:opentelemetry-sdk"
-    ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
       "io.opentelemetry:opentelemetry-api",
       "io.opentelemetry:opentelemetry-sdk-common"
     ],
     "io.projectreactor:reactor-core": [
+      "org.jspecify:jspecify",
       "org.reactivestreams:reactive-streams"
     ],
     "io.reactivex.rxjava3:rxjava": [
@@ -2400,10 +2350,6 @@
       "org.rnorth.duct-tape:duct-tape",
       "org.slf4j:slf4j-api"
     ],
-    "org.tomlj:tomlj": [
-      "org.antlr:antlr4-runtime",
-      "org.checkerframework:checker-qual"
-    ],
     "org.zeromq:jeromq": [
       "eu.neilalexander:jnacl"
     ],
@@ -2467,9 +2413,7 @@
       "com.fasterxml.jackson.core.exc",
       "com.fasterxml.jackson.core.filter",
       "com.fasterxml.jackson.core.format",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_4",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_4.bte",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_4.chr",
+      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_22_3",
       "com.fasterxml.jackson.core.io",
       "com.fasterxml.jackson.core.io.schubfach",
       "com.fasterxml.jackson.core.json",
@@ -3236,9 +3180,6 @@
       "io.fabric8.zjsonpatch",
       "io.fabric8.zjsonpatch.internal.collections4"
     ],
-    "io.grpc:grpc-api": [
-      "io.grpc"
-    ],
     "io.lettuce:lettuce-core": [
       "io.lettuce.authx",
       "io.lettuce.core",
@@ -3497,28 +3438,13 @@
       "io.opentelemetry.sdk.metrics.internal.state",
       "io.opentelemetry.sdk.metrics.internal.view"
     ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry.sdk.testing.assertj",
-      "io.opentelemetry.sdk.testing.context",
-      "io.opentelemetry.sdk.testing.exporter",
-      "io.opentelemetry.sdk.testing.junit4",
-      "io.opentelemetry.sdk.testing.junit5",
-      "io.opentelemetry.sdk.testing.logs",
-      "io.opentelemetry.sdk.testing.metrics",
-      "io.opentelemetry.sdk.testing.time",
-      "io.opentelemetry.sdk.testing.trace"
-    ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
       "io.opentelemetry.sdk.trace",
       "io.opentelemetry.sdk.trace.data",
       "io.opentelemetry.sdk.trace.export",
       "io.opentelemetry.sdk.trace.internal",
-      "io.opentelemetry.sdk.trace.internal.shaded.jctools.counters",
-      "io.opentelemetry.sdk.trace.internal.shaded.jctools.maps",
       "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues",
       "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic",
-      "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.unpadded",
-      "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.unpadded",
       "io.opentelemetry.sdk.trace.internal.shaded.jctools.util",
       "io.opentelemetry.sdk.trace.samplers"
     ],
@@ -3533,6 +3459,7 @@
       "reactor.util.concurrent",
       "reactor.util.context",
       "reactor.util.function",
+      "reactor.util.repeat",
       "reactor.util.retry"
     ],
     "io.reactivex.rxjava3:rxjava": [
@@ -3857,15 +3784,6 @@
       "net.sf.saxon.xpath",
       "net.sf.saxon.z"
     ],
-    "org.antlr:antlr4-runtime": [
-      "org.antlr.v4.runtime",
-      "org.antlr.v4.runtime.atn",
-      "org.antlr.v4.runtime.dfa",
-      "org.antlr.v4.runtime.misc",
-      "org.antlr.v4.runtime.tree",
-      "org.antlr.v4.runtime.tree.pattern",
-      "org.antlr.v4.runtime.tree.xpath"
-    ],
     "org.apache.bcel:bcel": [
       "org.apache.bcel",
       "org.apache.bcel.classfile",
@@ -3904,7 +3822,6 @@
       "org.apache.commons.compress.compressors.xz",
       "org.apache.commons.compress.compressors.z",
       "org.apache.commons.compress.compressors.zstandard",
-      "org.apache.commons.compress.harmony",
       "org.apache.commons.compress.harmony.archive.internal.nls",
       "org.apache.commons.compress.harmony.pack200",
       "org.apache.commons.compress.harmony.unpack200",
@@ -4664,7 +4581,6 @@
       "org.junit.platform.launcher.tagexpression"
     ],
     "org.junit.platform:junit-platform-reporting": [
-      "org.junit.platform.reporting",
       "org.junit.platform.reporting.legacy",
       "org.junit.platform.reporting.legacy.xml",
       "org.junit.platform.reporting.open.xml",
@@ -4790,6 +4706,7 @@
       "org.redisson.api.bloomfilter",
       "org.redisson.api.bucket",
       "org.redisson.api.condition",
+      "org.redisson.api.countmin",
       "org.redisson.api.cuckoofilter",
       "org.redisson.api.executor",
       "org.redisson.api.fanout",
@@ -4815,6 +4732,8 @@
       "org.redisson.api.stream",
       "org.redisson.api.tdigest",
       "org.redisson.api.topk",
+      "org.redisson.api.ts",
+      "org.redisson.api.tsnative",
       "org.redisson.api.vector",
       "org.redisson.cache",
       "org.redisson.client",
@@ -5421,7 +5340,14 @@
     ],
     "org.tomlj:tomlj": [
       "org.tomlj",
-      "org.tomlj.internal"
+      "org.tomlj.internal",
+      "org.tomlj.internal.antlr.v4.runtime",
+      "org.tomlj.internal.antlr.v4.runtime.atn",
+      "org.tomlj.internal.antlr.v4.runtime.dfa",
+      "org.tomlj.internal.antlr.v4.runtime.misc",
+      "org.tomlj.internal.antlr.v4.runtime.tree",
+      "org.tomlj.internal.antlr.v4.runtime.tree.pattern",
+      "org.tomlj.internal.antlr.v4.runtime.tree.xpath"
     ],
     "org.xmlresolver:xmlresolver": [
       "org.xmlresolver",
@@ -5655,10 +5581,6 @@
       "io.fabric8:kubernetes-model-storageclass:jar:sources",
       "io.fabric8:zjsonpatch",
       "io.fabric8:zjsonpatch:jar:sources",
-      "io.grpc:grpc-api",
-      "io.grpc:grpc-api:jar:sources",
-      "io.grpc:grpc-context",
-      "io.grpc:grpc-context:jar:sources",
       "io.lettuce:lettuce-core",
       "io.lettuce:lettuce-core:jar:sources",
       "io.netty:netty-buffer",
@@ -5718,8 +5640,6 @@
       "io.opentelemetry:opentelemetry-sdk-logs:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-metrics",
       "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources",
-      "io.opentelemetry:opentelemetry-sdk-testing",
-      "io.opentelemetry:opentelemetry-sdk-testing:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-trace",
       "io.opentelemetry:opentelemetry-sdk-trace:jar:sources",
       "io.opentelemetry:opentelemetry-sdk:jar:sources",
@@ -5753,8 +5673,6 @@
       "net.java.dev.jna:jna:jar:sources",
       "net.sf.saxon:Saxon-HE",
       "net.sf.saxon:Saxon-HE:jar:sources",
-      "org.antlr:antlr4-runtime",
-      "org.antlr:antlr4-runtime:jar:sources",
       "org.apache.bcel:bcel",
       "org.apache.bcel:bcel:jar:sources",
       "org.apache.commons:commons-compress",
@@ -5930,6 +5848,7 @@
     },
     "com.uber.nullaway:nullaway": {
       "com.google.errorprone.bugpatterns.BugChecker": [
+        "com.uber.nullaway.JSpecifyUnrecognizedAnnotationLocation",
         "com.uber.nullaway.NullAway",
         "com.uber.nullaway.RequireExplicitNullMarking"
       ]
@@ -6416,11 +6335,6 @@
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider": [
         "io.opentelemetry.sdk.autoconfigure.EnvironmentResourceProvider"
-      ]
-    },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "io.opentelemetry.context.ContextStorageProvider": [
-        "io.opentelemetry.sdk.testing.context.SettableContextStorageProvider"
       ]
     },
     "io.projectreactor:reactor-core": {

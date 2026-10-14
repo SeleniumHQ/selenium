@@ -150,7 +150,7 @@ public abstract class By {
   protected JavascriptExecutor getJavascriptExecutor(SearchContext context) {
     WebDriver driver = getWebDriver(context);
 
-    if (!(context instanceof JavascriptExecutor)) {
+    if (!(driver instanceof JavascriptExecutor)) {
       throw new IllegalArgumentException(
           "Context does not provide a mechanism to execute JS: " + context);
     }

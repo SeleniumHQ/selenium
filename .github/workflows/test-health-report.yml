@@ -1,0 +1,38 @@
+name: Scheduled - Test Health Report
+
+on:
+  schedule:
+    # After the scheduled CI finishes, around 05:40 UTC.
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  report:
+    name: Test Health Report
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+      - name: Build report
+        id: report
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/github-actions/test-health-report.sh
+      - name: Slack Notification
+        if: github.event_name == 'schedule' && steps.report.outputs.color != ''
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ${{ steps.report.outputs.color == 'failure' && ':rotating_light:' || ':warning:' }}
+          SLACK_COLOR: ${{ steps.report.outputs.color }}
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          # MSG_MINIMAL drops SLACK_TITLE, so the message has to name itself.
+          SLACK_MESSAGE: "Test health: ${{ steps.report.outputs.message }}. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View report>"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

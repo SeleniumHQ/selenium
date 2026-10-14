@@ -1,3 +1,12 @@
+0.4.51
+======
+* Degrade to empty metadata when the cache cannot be read (#18101)
+* configure the Chrome sandbox after unpacking a Chrome for Testing build on Windows (#18139)
+
+0.4.50
+======
+* Show a proper error message if we can't open metdata_path (#18087)
+
 0.4.49
 ======
 * fix Windows architecture detection under WOW64 (#17987)

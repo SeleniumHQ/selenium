@@ -19,14 +19,9 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.devtools.build.runfiles.Runfiles;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.firefox.GeckoDriverService;
@@ -168,26 +164,14 @@ class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() {
-    try {
-      Runfiles.Preloaded runfiles = Runfiles.preload();
-      String location =
-          runfiles.unmapped().rlocation("_main/java/src/org/openqa/selenium/grid/selenium_server");
-      System.err.println("Location found is: " + location);
-      Path path = Paths.get(location);
-      if (Files.exists(path)) {
-        return location;
-      }
-    } catch (IOException e) {
-      LOG.log(Level.SEVERE, "Failed to build server", e);
-      // Fall through
+    String server =
+        InProject.resolveRunfilesPath(System.getProperty("selenium.browser.remote.path"));
+    if (server == null) {
+      throw new AssertionError(
+          "Please set the sys property selenium.browser.remote.path to point to the out-of-process"
+              + " selenium server");
     }
-
-    if (System.getProperty("selenium.browser.remote.path") != null) {
-      return System.getProperty("selenium.browser.remote.path");
-    }
-    throw new AssertionError(
-        "Please set the sys property selenium.browser.remote.path to point to the out-of-process"
-            + " selenium server");
+    return server;
   }
 
   public URL getWebDriverUrl() {

@@ -33,12 +33,14 @@ module Selenium
         expect { Platform.assert_executable(driver_finder.driver_path) }.not_to raise_error
       end
 
-      it 'resolves an executable browser path' do
+      it 'resolves an executable browser path',
+         skip_if: {pinned: true, reason: 'pinned runs supply the browser through options'} do
         expect { Platform.assert_executable(driver_finder.browser_path) }.not_to raise_error
       end
 
       it 'downloads the driver into the Selenium cache',
-         pending_if: {browser: :safari, reason: 'driver ships with OS'} do
+         pending_if: {browser: :safari, reason: 'driver ships with OS'},
+         skip_if: {pinned: true, reason: 'pinned runs do not use Selenium Manager'} do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_SKIP_DRIVER_IN_PATH' => ENV.fetch('SE_SKIP_DRIVER_IN_PATH', nil)}
@@ -54,7 +56,8 @@ module Selenium
       it 'downloads the browser into the Selenium cache',
          pending_if: [{browser: :safari, reason: 'browser ships with OS'},
                       {browser: :edge, platform: :windows,
-                       reason: 'Edge MSI installer always writes to system path'}] do
+                       reason: 'Edge MSI installer always writes to system path'}],
+         skip_if: {pinned: true, reason: 'pinned runs do not use Selenium Manager'} do
         Dir.mktmpdir('se-cache') do |cache_dir|
           originals = {'SE_CACHE_PATH' => ENV.fetch('SE_CACHE_PATH', nil),
                        'SE_FORCE_BROWSER_DOWNLOAD' => ENV.fetch('SE_FORCE_BROWSER_DOWNLOAD', nil)}
@@ -68,6 +71,7 @@ module Selenium
       end
 
       it 'resolves the browser to its system install location',
+         skip_if: {pinned: true, reason: 'pinned runs do not use Selenium Manager'},
          skip_unless: [{browser: :safari},
                        {browser: :edge, platform: :windows}] do
         Dir.mktmpdir('se-cache') do |cache_dir|

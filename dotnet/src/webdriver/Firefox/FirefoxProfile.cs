@@ -19,7 +19,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
-using System.Text.Json;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox;
@@ -62,7 +61,7 @@ public class FirefoxProfile
     {
         this.sourceProfileDir = profileDirectory;
         this.deleteSource = deleteSourceOnClean;
-        this.profilePreferences = this.ReadDefaultPreferences();
+        this.profilePreferences = CreateDefaultPreferences();
         this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
     }
 
@@ -264,14 +263,16 @@ public class FirefoxProfile
         this.profilePreferences.WriteToFile(userPrefs);
     }
 
-    private Preferences ReadDefaultPreferences()
+    private static Preferences CreateDefaultPreferences()
     {
-        using JsonDocument defaultPreferences = JsonDocument.Parse(ResourceUtilities.WebDriverPrefsJson);
+        Preferences preferences = new Preferences();
+        preferences.SetPreference("browser.newtabpage.enabled", false);
+        preferences.SetPreference("browser.startup.homepage", "about:blank");
+        preferences.SetPreference("browser.usedOnWindows10.introURL", "about:blank");
+        preferences.SetPreference("network.captive-portal-service.enabled", false);
+        preferences.SetPreference("security.csp.enable", false);
 
-        JsonElement immutableDefaultPreferences = defaultPreferences.RootElement.GetProperty("frozen");
-        JsonElement editableDefaultPreferences = defaultPreferences.RootElement.GetProperty("mutable");
-
-        return new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
+        return preferences;
     }
 
     /// <summary>

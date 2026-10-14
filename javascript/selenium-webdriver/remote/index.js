@@ -471,6 +471,8 @@ class SeleniumServer extends DriverService {
       throw Error('Port must be >= 0: ' + options.port)
     }
 
+    const java = options.java || getJavaPath()
+
     let port = options.port || portprober.findFreePort()
     let args = Promise.all([port, options.jvmArgs || [], options.args || []]).then((resolved) => {
       let port = resolved[0]
@@ -479,10 +481,8 @@ class SeleniumServer extends DriverService {
 
       const fullArgsList = jvmArgs.concat('-jar', jar, '-port', port).concat(args)
 
-      return formatSpawnArgs(jar, fullArgsList)
+      return formatSpawnArgs(jar, fullArgsList, java)
     })
-
-    const java = getJavaPath()
 
     super(java, {
       loopback: options.loopback,
@@ -535,6 +535,15 @@ SeleniumServer.Options = class {
      * @type {(!Array<string>|!IThenable<!Array<string>>|undefined)}
      */
     this.jvmArgs
+
+    /**
+     * Path to the java executable that runs the server. Defaults to
+     * `$JAVA_HOME/bin/java` when `JAVA_HOME` is set, otherwise `java` on the
+     * `PATH`.
+     *
+     * @type {(string|undefined)}
+     */
+    this.java
 
     /**
      * The environment variables that should be visible to the server

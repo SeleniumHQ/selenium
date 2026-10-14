@@ -10,7 +10,9 @@ from pathlib import Path
 import urllib3
 from packaging.version import parse
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 
@@ -188,7 +190,7 @@ def update_dotnet(chrome_milestone):
     for file in files:
         replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
-    files = [root_dir / "dotnet/test/webdriver/Infrastructure/DriverConfigs/StableChannelChromeDriver.cs"]
+    files = [root_dir / "dotnet/test/testing.nunit/DriverConfigs/StableChannelChromeDriver.cs"]
     dir_path = root_dir / "dotnet/test/webdriver/DevTools"
     files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
     for file in files:

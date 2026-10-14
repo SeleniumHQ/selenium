@@ -19,10 +19,12 @@ package org.openqa.selenium.bidi;
 
 import java.util.Map;
 import java.util.function.Function;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
 @Beta
+@ApiStatus.Internal
 public class Event<X> {
 
   private final String method;

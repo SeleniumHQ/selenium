@@ -27,16 +27,18 @@ javascript/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/selenium-webdriver/lib/atoms/mutation-listener.js
 javascript/safari-driver/node_modules/
 javascript/webdriver/devtools/types/
-.idea/bazelVersionCache.xml
-.idea/GitLink.xml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/dictionaries/
-.idea/runConfigurations.xml
-.idea/scopes/
-.idea/shelf
-.idea/sonarlint/
-.idea/qaplug_profiles.xml
+/.idea/*
+!/.idea/.name
+!/.idea/compiler.xml
+!/.idea/copyright/
+!/.idea/encodings.xml
+!/.idea/externalDependencies.xml
+!/.idea/git_toolbox_prj.xml
+!/.idea/google-java-format.xml
+!/.idea/jsLibraryMappings.xml
+!/.idea/libraries/
+!/.idea/misc.xml
+!/.idea/modules.xml
 out
 cpp/IEDriver/sizzle.h
 third_party/gecko-*
@@ -77,11 +79,12 @@ py/selenium/webdriver/common/_bidi/*
 !py/selenium/webdriver/common/_bidi/domain.py
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
-py/selenium/webdriver/common/linux/
+py/selenium/webdriver/common/bidi-mutation-listener.js
+py/selenium/webdriver/common/linux-arm64/
+py/selenium/webdriver/common/linux-x86_64/
 py/selenium/webdriver/common/macos/
 py/selenium/webdriver/common/mutation-listener.js
 py/selenium/webdriver/common/windows/
-py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js
@@ -124,12 +127,9 @@ GTAGS
 /rb/.idea
 rb/bin/
 rb/lib/selenium/devtools/v1*
+rb/lib/selenium/webdriver/version.rb
 rb/.gem_rbs_collection/
 .sonar/
-.idea/sonarIssues.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/misc.xml
 third_party/py/googlestorage/client_secrets.json
 .venv
 venv
@@ -151,6 +151,8 @@ exec.log
 # Engflow
 *.crt
 *.key
+!/common/certificates/localhost.crt
+!/common/certificates/localhost.key
 javascript/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin

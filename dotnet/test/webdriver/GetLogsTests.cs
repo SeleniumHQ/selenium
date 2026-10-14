@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Chrome;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -95,13 +94,7 @@ public class GetLogsTests : DriverTestFixture
 
     private void CreateWebDriverWithLogging(string logType, LogLevel logLevel)
     {
-        if (TestUtilities.IsChrome(Driver))
-        {
-            ChromeOptions options = new ChromeOptions();
-            options.SetLoggingPreference(logType, logLevel);
-            localDriver = new ChromeDriver(options);
-        }
-
+        localDriver = CreateDriverInstance(configureOptions: options => options.SetLoggingPreference(logType, logLevel));
         localDriver.Url = Urls.SimpleTestPage;
     }
 

@@ -41,7 +41,7 @@ interface Coordinate {
   y: number;
 }
 
-(function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
+function isShownElement(elem: Element, optIgnoreOpacity?: boolean): boolean {
   // Guards against form children that shadow tagName (e.g. <form><input name="tagName">).
   var tagNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'tagName');
 
@@ -510,4 +510,6 @@ interface Coordinate {
   }
 
   return isShownInternal(elem, !!optIgnoreOpacity, displayed);
-})
+}
+
+export default isShownElement;

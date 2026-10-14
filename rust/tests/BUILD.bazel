@@ -1,4 +1,5 @@
 load("@crates//:defs.bzl", "aliases", "all_crate_deps")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load("//rust:defs.bzl", "rust_test_suite", "rustfmt_config")
 
 rustfmt_config(
@@ -18,6 +19,7 @@ rust_test_suite(
         "//rust:selenium-manager",
     ],
     edition = "2024",
+    exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES,
     rustc_env = {
         "CARGO_BIN_EXE_selenium-manager": "rust/selenium-manager",
     },

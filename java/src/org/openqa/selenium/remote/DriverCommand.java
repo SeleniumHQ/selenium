@@ -255,14 +255,30 @@ public interface DriverCommand {
     return new CommandPayload(FIND_ELEMENTS, Map.of("using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, String value) {
+  static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, Object value) {
     return new CommandPayload(
         FIND_CHILD_ELEMENT, Map.of("id", id, "using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, String value) {
+  /**
+   * @deprecated Use {@link #FIND_CHILD_ELEMENT(String, String, Object)} instead.
+   */
+  @Deprecated(since = "4.50", forRemoval = true)
+  static CommandPayload FIND_CHILD_ELEMENT(String id, String strategy, String value) {
+    return FIND_CHILD_ELEMENT(id, strategy, (Object) value);
+  }
+
+  static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, Object value) {
     return new CommandPayload(
         FIND_CHILD_ELEMENTS, Map.of("id", id, "using", strategy, "value", value));
+  }
+
+  /**
+   * @deprecated Use {@link #FIND_CHILD_ELEMENTS(String, String, Object)} instead.
+   */
+  @Deprecated(since = "4.50", forRemoval = true)
+  static CommandPayload FIND_CHILD_ELEMENTS(String id, String strategy, String value) {
+    return FIND_CHILD_ELEMENTS(id, strategy, (Object) value);
   }
 
   static CommandPayload GET_ELEMENT_SHADOW_ROOT(String id) {
@@ -271,7 +287,7 @@ public interface DriverCommand {
   }
 
   static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(
-      String shadowId, String strategy, String value) {
+      String shadowId, String strategy, Object value) {
     Require.nonNull("Shadow root ID", shadowId);
     Require.nonNull("Element finding strategy", strategy);
     Require.nonNull("Value for finding strategy", value);
@@ -280,14 +296,32 @@ public interface DriverCommand {
         Map.of("shadowId", shadowId, "using", strategy, "value", value));
   }
 
-  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(
+  /**
+   * @deprecated Use {@link #FIND_ELEMENT_FROM_SHADOW_ROOT(String, String, Object)} instead.
+   */
+  @Deprecated(since = "4.50", forRemoval = true)
+  static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(
       String shadowId, String strategy, String value) {
+    return FIND_ELEMENT_FROM_SHADOW_ROOT(shadowId, strategy, (Object) value);
+  }
+
+  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(
+      String shadowId, String strategy, Object value) {
     Require.nonNull("Shadow root ID", shadowId);
     Require.nonNull("Element finding strategy", strategy);
     Require.nonNull("Value for finding strategy", value);
     return new CommandPayload(
         FIND_ELEMENTS_FROM_SHADOW_ROOT,
         Map.of("shadowId", shadowId, "using", strategy, "value", value));
+  }
+
+  /**
+   * @deprecated Use {@link #FIND_ELEMENTS_FROM_SHADOW_ROOT(String, String, Object)} instead.
+   */
+  @Deprecated(since = "4.50", forRemoval = true)
+  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(
+      String shadowId, String strategy, String value) {
+    return FIND_ELEMENTS_FROM_SHADOW_ROOT(shadowId, strategy, (Object) value);
   }
 
   static CommandPayload CLEAR_ELEMENT(String id) {

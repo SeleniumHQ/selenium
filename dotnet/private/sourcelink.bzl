@@ -88,6 +88,7 @@ def _compile_action(ctx, tfm):
         is_language_specific_analyzer = ctx.attr.is_language_specific_analyzer,
         analyzer_configs = ctx.files.analyzer_configs,
         compiler_options = ctx.attr.compiler_options + [pathmap, "/sourcelink:" + sourcelink_json.path],
+        interceptors_namespaces = ctx.attr.interceptors_namespaces,
         is_windows = is_windows,
     )
 

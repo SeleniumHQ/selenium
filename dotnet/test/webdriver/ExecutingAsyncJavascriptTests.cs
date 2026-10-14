@@ -147,7 +147,7 @@ public class ExecutingAsyncJavascriptTests : DriverTestFixture
         Assert.That(resultsList[0], Is.InstanceOf<IWebElement>());
         Assert.That(resultsList[1], Is.InstanceOf<IWebElement>());
         Assert.That(((IWebElement)resultsList[0]).TagName.ToLower(), Is.EqualTo("body"));
-        Assert.That(((IWebElement)resultsList[0]), Is.EqualTo((IWebElement)resultsList[1]));
+        Assert.That((IWebElement)resultsList[0], Is.EqualTo((IWebElement)resultsList[1]));
     }
 
     [Test]

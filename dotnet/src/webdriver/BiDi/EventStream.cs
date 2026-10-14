@@ -17,9 +17,11 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Internal.Telemetry;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -31,7 +33,7 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
     private readonly Func<CancellationToken, ValueTask> _unsubscribe;
     private int _disposed;
 
-    private readonly Channel<TEventArgs> _channel = Channel.CreateUnbounded<TEventArgs>(
+    private readonly Channel<(string Method, TEventArgs Args)> _channel = Channel.CreateUnbounded<(string Method, TEventArgs Args)>(
         new UnboundedChannelOptions { SingleReader = false, SingleWriter = true });
 
     private readonly Func<TEventArgs, bool>? _filter;
@@ -42,7 +44,7 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
         _filter = filter;
     }
 
-    void ISubscriptionSink.Deliver(EventArgs args)
+    void ISubscriptionSink.Deliver(string method, EventArgs args)
     {
         if (args is not TEventArgs typed)
         {
@@ -51,7 +53,7 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
 
         if (_filter is { } f && !f(typed)) return;
 
-        _channel.Writer.TryWrite(typed);
+        _channel.Writer.TryWrite((method, typed));
     }
 
     void ISubscriptionSink.Complete(Exception? error)
@@ -67,7 +69,10 @@ internal sealed class EventStream<TEventArgs> : IEventStream<TEventArgs>, ISubsc
         {
             while (_channel.Reader.TryRead(out var item))
             {
-                yield return item;
+                // Spans the consumer's own processing of this item: Dispose() only runs once they resume past this yield.
+                using var activity = SeleniumActivitySource.Instance.StartActivity(item.Method, ActivityKind.Consumer);
+
+                yield return item.Args;
             }
         }
     }

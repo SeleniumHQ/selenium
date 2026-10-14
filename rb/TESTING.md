@@ -53,6 +53,16 @@ A browser tag (e.g. `firefox`) matches every variant of that browser (local, rem
 bazel test //rb/spec/integration/selenium/webdriver:driver-chrome
 ```
 
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
+
 ### Using Rake
 
 The `rb/Rakefile` provides shortcuts for common tasks:
@@ -66,6 +76,7 @@ rake spec               # Run all integration tests in Chrome
 ## Local Development Setup
 
 Before running tests, navigate to the `rb/` directory and install the required dependencies. A recent Bundler (2.4 or newer) is recommended.
+Bazel generates `lib/selenium/webdriver/version.rb` from the root `version.bzl`, so run `./go rb:local_dev` from the parent `selenium` directory first to write the copy Bundler needs.
 
 ```shell
 cd rb

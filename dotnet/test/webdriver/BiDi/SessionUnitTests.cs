@@ -145,6 +145,22 @@ class SessionUnitTests
     }
 
     [Test]
+    public async Task ContextCommandPreservesAdditionalData()
+    {
+        var context = new Selenium.BiDi.BrowsingContext.BrowsingContext(_bidi, "ctx-1");
+
+        await context.GetTreeAsync(new()
+        {
+            AdditionalData = new JsonObject { ["foo"] = "bar" },
+            AdditionalMessageData = """{"trace":"enabled"}"""
+        }).WithResponse(_transport, """{"contexts":[]}""");
+
+        using var doc = JsonDocument.Parse(_transport.SentMessages[0]);
+        Assert.That(doc.RootElement.GetProperty("params").GetProperty("foo").GetString(), Is.EqualTo("bar"));
+        Assert.That(doc.RootElement.GetProperty("trace").GetString(), Is.EqualTo("enabled"));
+    }
+
+    [Test]
     public void CommandAdditionalDataMustBeJsonObject()
     {
         Assert.That(

@@ -92,7 +92,7 @@ public sealed class RelativeBy : By
         filterParameters["root"] = GetSerializableObject(this.root);
         filterParameters["filters"] = this.filters;
         parameters["relative"] = filterParameters;
-        object? rawElements = js.ExecuteScript(wrappedAtom, parameters);
+        object? rawElements = js.ExecuteScript(wrappedAtom, parameters, GetSearchRoot(context));
 
         if (rawElements is ReadOnlyCollection<IWebElement> elements)
         {
@@ -383,6 +383,18 @@ public sealed class RelativeBy : By
         }
 
         throw new WebDriverException("Serializable locator must be a By, an IWebElement, or a wrapped element using IWrapsElement");
+    }
+
+    private static object? GetSearchRoot(ISearchContext context)
+    {
+        // The atom searches from the document when its root is null. A context that cannot be sent
+        // to the browser as a script argument keeps that document-wide behavior.
+        if (context is IWebDriver)
+        {
+            return null;
+        }
+
+        return context is IWebDriverObjectReference || context is IWrapsElement ? context : null;
     }
 
     private static IJavaScriptExecutor GetExecutor(ISearchContext context)

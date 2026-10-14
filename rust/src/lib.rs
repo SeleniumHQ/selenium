@@ -63,7 +63,6 @@ pub mod files;
 pub mod firefox;
 pub mod grid;
 pub mod iexplorer;
-pub mod jre;
 pub mod lock;
 pub mod logger;
 pub mod metadata;
@@ -234,6 +233,8 @@ pub trait SeleniumManager {
         Ok(())
     }
 
+    fn configure_browser_in_cache(&self, _browser_path_in_cache: &Path) {}
+
     fn download_browser(
         &mut self,
         original_browser_version: &str,
@@ -392,6 +393,7 @@ pub trait SeleniumManager {
             None,
             browser_label_for_download,
         )?;
+        self.configure_browser_in_cache(&browser_path_in_cache);
         lock.release();
 
         if browser_binary_path.exists() {

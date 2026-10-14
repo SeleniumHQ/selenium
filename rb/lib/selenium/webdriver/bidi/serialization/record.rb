@@ -30,7 +30,7 @@ module Selenium
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
           Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
-                                :scalar, :const)
+                                :scalar, :const, :map)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -61,7 +61,7 @@ module Selenium
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true), primitive: meta[:primitive],
-                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET))
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET), map: meta[:map])
           end
           private_class_method :field
 
@@ -127,6 +127,7 @@ module Selenium
               validate_const(field, value)
               check_outbound_shape(field, value)
               check_outbound_primitive(field, value) unless field.list
+              check_outbound_map(field, value) if field.map
               validate_ref(field, value) if field.ref
               Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
             end
@@ -210,6 +211,13 @@ module Selenium
               raise ::ArgumentError, "#{name}##{field.name} expected #{field.primitive}, got #{value.inspect}"
             end
 
+            # Outbound mirror of check_map: a map-typed arg must be a Hash whose values are the
+            # declared primitive, so a caller mistake is a local ArgumentError.
+            def check_outbound_map(field, value)
+              mismatch = map_mismatch(field, value)
+              raise ::ArgumentError, "#{name}##{field.name}#{mismatch}" if mismatch
+            end
+
             def fixed?(field)
               !UNSET.equal?(field.fixed)
             end
@@ -236,6 +244,7 @@ module Selenium
 
               if field.ref.nil?
                 return raw if field.list
+                return check_map(field, raw) if field.map
 
                 check_primitive(field, raw)
                 # A whole number is exact in both types, so the declared type is held with nothing lost.
@@ -283,6 +292,30 @@ module Selenium
               return if check.nil? || check.call(raw)
 
               raise Error::SerializationError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
+            end
+
+            # A `map` field (`{*text => <primitive>}`, e.g. script.NodeProperties.attributes) must arrive
+            # as an object whose every value matches the declared primitive. Keys are JSON object keys,
+            # so they are strings by construction. The Hash passes through unchanged once validated.
+            def check_map(field, raw)
+              mismatch = map_mismatch(field, raw)
+              raise Error::SerializationError, "#{name}##{field.name}#{mismatch}" if mismatch
+
+              raw
+            end
+
+            # The suffix of the error a map value earns, or nil when it conforms — shared by the inbound
+            # (SerializationError) and outbound (ArgumentError) checks so the two cannot drift apart. An
+            # unrecognized value primitive (none in PRIMITIVE_CHECKS) checks only the shape, matching the
+            # lenient default elsewhere.
+            def map_mismatch(field, value)
+              return " expected a map, got #{value.inspect}" unless value.is_a?(::Hash)
+
+              check = PRIMITIVE_CHECKS[field.map]
+              return if check.nil?
+
+              entry = value.find { |_, v| !check.call(v) }
+              "[#{entry[0].inspect}] expected #{field.map}, got #{entry[1].inspect}" if entry
             end
 
             def enum_hash(field)

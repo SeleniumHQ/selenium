@@ -97,8 +97,11 @@ module Selenium
           args << @options.binary.gsub('\\', '\\\\\\')
         end
         if @options.proxy
-          args << '--proxy'
-          args << (@options.proxy.ssl || @options.proxy.http)
+          proxy = @options.proxy.ssl || @options.proxy.http
+          if proxy
+            args << '--proxy'
+            args << proxy
+          end
         end
         args
       end

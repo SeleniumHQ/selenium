@@ -78,6 +78,8 @@ module Selenium
 
             def check_outbound_primitive: (untyped field, untyped value) -> void
 
+            def check_outbound_map: (untyped field, untyped value) -> void
+
             def fixed?: (untyped field) -> bool
 
             def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped
@@ -89,6 +91,10 @@ module Selenium
             def check_shape: (untyped field, untyped raw) -> void
 
             def check_primitive: (untyped field, untyped raw) -> void
+
+            def check_map: (untyped field, untyped raw) -> untyped
+
+            def map_mismatch: (untyped field, untyped value) -> String?
 
             def enum_hash: (untyped field) -> untyped
 

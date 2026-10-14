@@ -80,7 +80,7 @@ public class WebElementTests : DriverTestFixture
 
         IWebElement twoblocks = Driver.FindElement(By.Id("twoblocks"));
         Assert.That(twoblocks.Text, Is.EqualTo("Some text" +
-            System.Environment.NewLine +
+            Environment.NewLine +
             "Some more text"));
 
     }
@@ -161,7 +161,7 @@ public class WebElementTests : DriverTestFixture
     [Test]
     public void ShouldGetAttributesFromElement()
     {
-        Driver.Url = (Urls.JavascriptPage);
+        Driver.Url = Urls.JavascriptPage;
 
         IWebElement dynamo = Driver.FindElement(By.Id("dynamo"));
         IWebElement mousedown = Driver.FindElement(By.Id("mousedown"));

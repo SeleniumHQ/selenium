@@ -47,7 +47,9 @@ public sealed record ContextSetCookieOptions : CommandOptions
 {
     internal static SetCookieOptions WithContext(ContextSetCookieOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        Partition = new ContextPartitionDescriptor(context)
+        Partition = new ContextPartitionDescriptor(context),
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

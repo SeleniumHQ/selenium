@@ -384,15 +384,48 @@ describe('serialization/record', function () {
       assert.strictEqual(parsed.inner.value, 'x')
     })
 
-    it('keeps the caller-provided value outbound, not a newly constructed instance', function () {
+    it('assigns the constructed nested record instance outbound too, not the raw object', function () {
       const rawInner = { value: 'x' }
       const built = new OuterRecord({ inner: rawInner })
-      assert.strictEqual(built.inner, rawInner) // same reference — outbound behavior preserved
-      assert.ok(!(built.inner instanceof InnerRecord))
+      assert.ok(built.inner instanceof InnerRecord)
+      assert.notStrictEqual(built.inner, rawInner) // a fresh, validated instance — not the caller's own object
+      assert.strictEqual(built.inner.value, 'x')
     })
 
-    it('still validates a nested ref outbound even though the raw value is kept', function () {
+    it('still validates a nested ref outbound', function () {
       assert.throws(() => new OuterRecord({ inner: { value: 42 } }), ValidationError)
+    })
+  })
+
+  describe('outbound field names vs wire keys', function () {
+    // Mirrors a real mismatch in the schema (emulation.MediaFeatures.prefersColorScheme
+    // <-> wire key 'prefers-color-scheme') — the JS-facing name a caller actually types,
+    // matching the generated TS interface, differs from the spec's own wire key.
+    const MediaFeature = defineRecord('test.record.MediaFeature', [
+      { name: 'prefersColorScheme', wire: 'prefers-color-scheme', required: true, type: { primitive: 'string' } },
+    ])
+    const SetMediaFeaturesParameters = defineRecord('test.record.SetMediaFeaturesParameters', [
+      { name: 'features', wire: 'features', required: true, type: { ref: 'test.record.MediaFeature' } },
+    ])
+
+    it('reads outbound data by JS-facing field name, not the wire key', function () {
+      const built = new MediaFeature({ prefersColorScheme: 'dark' })
+      assert.strictEqual(built.prefersColorScheme, 'dark')
+    })
+
+    it('rejects data keyed by the wire name instead of the JS-facing name outbound', function () {
+      assert.throws(() => new MediaFeature({ 'prefers-color-scheme': 'dark' }), ValidationError)
+    })
+
+    it('serializes an outbound instance using the declared wire key, not the JS-facing name', function () {
+      const built = new MediaFeature({ prefersColorScheme: 'dark' })
+      assert.deepStrictEqual(JSON.parse(JSON.stringify(built)), { 'prefers-color-scheme': 'dark' })
+    })
+
+    it('cascades wire-key conversion into a nested record outbound too', function () {
+      const built = new SetMediaFeaturesParameters({ features: { prefersColorScheme: 'dark' } })
+      assert.ok(built.features instanceof MediaFeature)
+      assert.deepStrictEqual(JSON.parse(JSON.stringify(built)), { features: { 'prefers-color-scheme': 'dark' } })
     })
   })
 
@@ -406,6 +439,58 @@ describe('serialization/record', function () {
     it('freezes a validated list parsed inbound too', function () {
       const parsed = AddInterceptParameters.fromWire({ phases: ['beforeRequestSent'] })
       assert.ok(Object.isFrozen(parsed.phases))
+    })
+  })
+
+  describe('named enum values: numeric and boolean', function () {
+    // Real schema fixture: emulation.MediaFeaturesGrid — CSS's `grid` media feature
+    // is spec'd as the integer 0 or 1, not a string (see enum.d.ts/enum.js/record.d.ts,
+    // widened from `T extends string` to `T extends string | number | boolean`).
+    defineEnum('test.record.MediaFeaturesGrid', [0, 1])
+    const SetMediaFeaturesGridParameters = defineRecord('test.record.SetMediaFeaturesGridParameters', [
+      { name: 'grid', wire: 'grid', required: true, type: { ref: 'test.record.MediaFeaturesGrid' } },
+    ])
+
+    it('accepts a value in a numeric enum outbound', function () {
+      const built = new SetMediaFeaturesGridParameters({ grid: 1 })
+      assert.strictEqual(built.grid, 1)
+    })
+
+    it('rejects a value outside a numeric enum outbound', function () {
+      assert.throws(() => new SetMediaFeaturesGridParameters({ grid: 2 }), ValidationError)
+    })
+
+    it('accepts a value in a numeric enum inbound', function () {
+      const parsed = SetMediaFeaturesGridParameters.fromWire({ grid: 0 })
+      assert.strictEqual(parsed.grid, 0)
+    })
+
+    it('rejects a value outside a numeric enum inbound', function () {
+      assert.throws(() => SetMediaFeaturesGridParameters.fromWire({ grid: 7 }), ValidationError)
+    })
+
+    // No real schema type is boolean-valued today, but project_bidi_schema.mjs's
+    // literalPrimitive() explicitly recognizes a boolean-literal choice the same way
+    // it recognizes a numeric one — this exercises that the runtime path (Set.has(),
+    // Array.includes() — type-agnostic either way) actually holds for booleans too,
+    // not just that the .d.ts widening compiles (verified separately, see PR notes).
+    defineEnum('test.record.BoolChoice', [true, false])
+    const BoolChoiceParameters = defineRecord('test.record.BoolChoiceParameters', [
+      { name: 'choice', wire: 'choice', required: true, type: { ref: 'test.record.BoolChoice' } },
+    ])
+
+    it('accepts a value in a boolean enum outbound', function () {
+      const built = new BoolChoiceParameters({ choice: true })
+      assert.strictEqual(built.choice, true)
+    })
+
+    it('rejects a non-boolean value against a boolean enum outbound', function () {
+      assert.throws(() => new BoolChoiceParameters({ choice: 'true' }), ValidationError)
+    })
+
+    it('accepts a value in a boolean enum inbound', function () {
+      const parsed = BoolChoiceParameters.fromWire({ choice: false })
+      assert.strictEqual(parsed.choice, false)
     })
   })
 })

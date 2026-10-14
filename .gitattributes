@@ -16,3 +16,6 @@
 *.slnx    text merge=union eol=crlf
 
 *.docx   diff=astextplain
+
+# Any line-ending conversion invalidates the Mozilla signature, so Firefox rejects the add-on as corrupt.
+common/extensions/webextensions-selenium-example-signed/** -text
