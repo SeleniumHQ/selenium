@@ -191,7 +191,7 @@ maven.install(
         "com.github.spotbugs:spotbugs:4.10.4",
         "com.google.code.gson:gson:2.14.0",
         "com.google.guava:guava:33.7.2-jre",
-        "com.github.ben-manes.caffeine:caffeine:3.3.0",
+        "com.github.ben-manes.caffeine:caffeine:3.3.1",
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:1.37.0",
