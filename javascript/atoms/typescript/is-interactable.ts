@@ -15,18 +15,5 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { isEnabled } from './core/enabled.js'
-import isShown from './core/shown.js'
-import { getEffectiveStyle } from './core/style.js'
-
-// Opacity is ignored deliberately: a fully transparent control still takes
-// clicks, so it is interactable even though it is not displayed.
-function isInteractable(element: Element): boolean {
-  return (
-    isShown(element, /* optIgnoreOpacity= */ true) &&
-    isEnabled(element) &&
-    getEffectiveStyle(element, 'pointer-events') !== 'none'
-  )
-}
-
-export default isInteractable
+// Shown (ignoring opacity), enabled, and not pointer-events: none.
+export { isInteractable as default } from './core/interactable.js'
