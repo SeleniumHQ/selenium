@@ -1003,8 +1003,7 @@ def _emit_domain_class(mod: ModuleIR) -> str:
         # command methods below carry their own leading blank, so only EVENTS needs one here.
         lines.append("")
         lines.append("    EVENTS = {")
-        for e in mod.events:
-            lines.append(f"        {lit(e.name)}: {lit(e.wire)},")
+        lines.extend(f"        {lit(e.name)}: {lit(e.wire)}," for e in mod.events)
         lines.append("    }")
         lines.append("    EVENT_TYPES = {")
         for e in mod.events:
@@ -1087,12 +1086,9 @@ def _imports(mod: ModuleIR) -> list[str]:
 
 def render_module(mod: ModuleIR) -> str:
     blocks: list[str] = [_HEADER, "\n".join(_imports(mod))]
-    for e in mod.enums:
-        blocks.append(_emit_enum(e))
-    for r in mod.records:
-        blocks.append(_emit_record(r))
-    for u in mod.unions:
-        blocks.append(_emit_union(u))
+    blocks.extend(_emit_enum(e) for e in mod.enums)
+    blocks.extend(_emit_record(r) for r in mod.records)
+    blocks.extend(_emit_union(u) for u in mod.unions)
     blocks.append(_emit_domain_class(mod))
     return "\n\n\n".join(blocks) + "\n"
 
