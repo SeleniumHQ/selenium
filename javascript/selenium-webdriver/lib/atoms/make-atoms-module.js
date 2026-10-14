@@ -43,11 +43,19 @@ const GENERATED_NOTE = commentLines(
     .trim(),
 )
 
+// lib/http.js sends an atom to the browser by stringifying the exported
+// function. The input is an expression whose value is a function that closes
+// over the bundle's helpers, so exporting that value directly would serialise
+// the bare function and leave every helper undefined in the browser. Wrapping
+// the whole expression keeps the bundle inside the function's own source, and
+// also means nothing in the bundle runs when Node loads this module.
 fs.writeFileSync(
   process.argv[3],
   `${LICENSE_HEADER}
 
 ${GENERATED_NOTE}
-module.exports = ${buffer.toString('utf8').trim()};
+module.exports = function () {
+  return (${buffer.toString('utf8').trim()}).apply(null, arguments)
+};
 `,
 )
