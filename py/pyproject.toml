@@ -155,17 +155,19 @@ select = [
     "EXE",
     "F",
     "FLY",
+    "FURB",
+    "G201",
     "I",
+    "PERF102",
     "PIE",
     "PLE",
+    "PLR0133",
+    "PYI041",
     "PT",
     "RUF",
     "TID252",
     "UP",
     "W",
-    "FURB",
-    "PERF102",
-    "PLR0133",
 ]
 fixable = ["ALL"]
 extend-ignore = [
