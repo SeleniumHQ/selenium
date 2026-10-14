@@ -14,7 +14,9 @@ bazel_dep(name = "llvm", version = "0.8.24")
 bazel_dep(name = "package_metadata", version = "0.0.13")
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "protobuf", version = "36.2")
+
 bazel_dep(name = "rules_cc", version = "0.2.26", dev_dependency = True)
+
 bazel_dep(name = "rules_closure", version = "0.17.0")
 bazel_dep(name = "rules_dotnet", version = "0.22.2")
 bazel_dep(name = "rules_java", version = "9.9.0")
