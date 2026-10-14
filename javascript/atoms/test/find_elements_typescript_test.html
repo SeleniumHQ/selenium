@@ -79,6 +79,16 @@ under the License.
     assert.equal(elements.length, 0);
   });
 
+  QUnit.test('finds elements by id with newline in value', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'my\nid');
+    fixture.appendChild(el);
+    var elements = findElements({'id': 'my\nid'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0], el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds elements by class name', function(assert) {
     var elements = findElements({'class name': 'myclass'}, fixture);
     assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'span1'].sort());
@@ -134,6 +144,21 @@ under the License.
     assert.equal(elements[0].getAttribute('id'), 'link2');
   });
 
+  QUnit.test('finds elements by link text with non-breaking spaces', function(assert) {
+    var a = document.createElement('a');
+    a.innerHTML = 'Hello&nbsp;World';
+    a.setAttribute('id', 'nbsp-link');
+    fixture.appendChild(a);
+    var elements = findElements({'link text': 'Hello World'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'nbsp-link');
+
+    var partialElements = findElements({'partial link text': 'lo Wo'}, fixture);
+    assert.equal(partialElements.length, 1);
+    assert.equal(partialElements[0].getAttribute('id'), 'nbsp-link');
+    fixture.removeChild(a);
+  });
+
   QUnit.test('finds elements by name attribute', function(assert) {
     var elements = findElements({'name': 'myinput'}, fixture);
     assert.equal(elements.length, 1);
@@ -159,6 +184,17 @@ under the License.
     var elements = findElements({'name': 'my\\input'}, fixture);
     assert.equal(elements.length, 1);
     assert.equal(elements[0].getAttribute('id'), 'backslash-name-input');
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds elements by name with newline in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my\ninput');
+    el.setAttribute('id', 'newline-name-input');
+    fixture.appendChild(el);
+    var elements = findElements({'name': 'my\ninput'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'newline-name-input');
     fixture.removeChild(el);
   });
 
@@ -194,6 +230,9 @@ under the License.
     assert.equal(elements.length, 0);
   });
 
+  // Relative-locator anchor when a root is supplied:
+  // resolveAnchor deliberately checks the supplied root before falling back to document,
+  // pinning that an anchor inside the scoped container takes precedence over an anchor outside.
   QUnit.test('resolves a locator anchor inside the supplied root', function(assert) {
     var scope = document.getElementById('dup-scope');
     var elements = findElements({

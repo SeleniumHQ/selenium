@@ -32,6 +32,9 @@ function findElements(target: Record<string, unknown>, root?: Document | Element
   }
 
   function cssEscapeId(s: string): string {
+    if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+      return CSS.escape(s)
+    }
     return s.replace(/[\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]()]/g, (c) => '\\' + c)
   }
 
@@ -62,30 +65,50 @@ function findElements(target: Record<string, unknown>, root?: Document | Element
     if (!target) {
       return []
     }
-    if (!/^\d/.test(target)) {
+    if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+      try {
+        return Array.from(root.querySelectorAll('#' + CSS.escape(target)))
+      } catch (_e) {
+        // Fall back to attribute comparison
+      }
+    } else if (!/^\d/.test(target)) {
       try {
         return Array.from(root.querySelectorAll('#' + cssEscapeId(target)))
       } catch (_e) {
-        return []
+        // Fall back to attribute comparison
       }
     }
-    return Array.from(root.querySelectorAll('*')).filter(el => el.getAttribute('id') === target)
+    const candidates = 'getElementsByTagName' in root
+      ? Array.from(root.getElementsByTagName('*'))
+      : Array.from(root.querySelectorAll('*'))
+    return candidates.filter(el => el.getAttribute('id') === target)
   }
 
   function getLinkText(el: Element): string {
-    const text = (el as HTMLElement).innerText !== undefined ? (el as HTMLElement).innerText : el.textContent || ''
-    return text.replace(/^[\s]+|[\s]+$/g, '')
+    const raw = (el as HTMLElement).innerText !== undefined ? (el as HTMLElement).innerText : el.textContent || ''
+    return raw.replace(/\u00a0/g, ' ').replace(/^[\s]+|[\s]+$/g, '')
   }
 
   function linkTextMany(target: string, root: Root, partial: boolean): Element[] {
+    const normalizedTarget = target.replace(/\u00a0/g, ' ')
     return Array.from(root.querySelectorAll('a')).filter(el => {
       const text = getLinkText(el)
-      return partial ? text.indexOf(target) !== -1 : text === target
+      return partial ? text.indexOf(normalizedTarget) !== -1 : text === normalizedTarget
     })
   }
 
   function nameMany(target: string, root: Root): Element[] {
-    return Array.from(root.querySelectorAll('[name="' + target.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]'))
+    if (!/[\r\n\0]/.test(target) && typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+      try {
+        return Array.from(root.querySelectorAll(`[name="${CSS.escape(target)}"]`))
+      } catch (_e) {
+        // Fall back to attribute comparison
+      }
+    }
+    const candidates = 'getElementsByTagName' in root
+      ? Array.from(root.getElementsByTagName('*'))
+      : Array.from(root.querySelectorAll('*'))
+    return candidates.filter(el => el.getAttribute('name') === target)
   }
 
   function tagNameMany(target: string, root: Root): Element[] {
@@ -198,8 +221,10 @@ function findElements(target: Record<string, unknown>, root?: Document | Element
       return resolveAnchor((selector as () => unknown)())
     }
     if (selector && typeof selector === 'object') {
-      // Prefer an anchor inside the root, since a document search cannot see into a shadow root,
-      // but an anchor is only a reference point and may live anywhere on the page.
+      // Prefer an anchor inside the root before falling back to the document.
+      // Unlike Closure (which searched document first), searching the caller's root
+      // first allows resolving anchors inside a ShadowRoot (which are invisible to
+      // document.querySelector), while still allowing anchors outside the root to be found.
       let found = root ? findElements(selector as LocatorTarget, root) : []
       if (!found.length) {
         found = findElements(selector as LocatorTarget)
