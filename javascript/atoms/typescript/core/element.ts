@@ -28,9 +28,17 @@
 import { getProperty } from './attribute.js'
 
 // Guards against form children that shadow tagName (e.g. <form><input name="tagName">).
-// Element.prototype's descriptor never changes, so this is a module constant
-// rather than something to recompute per call.
-const tagNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'tagName');
+// Element.prototype's descriptor never changes, so it is read once -- but on
+// first use, not at module load: Node consumers load the atoms where there is
+// no Element at all (see load-in-node.mjs).
+let tagNameDescriptor: PropertyDescriptor | undefined | null = null;
+
+function getTagNameDescriptor(): PropertyDescriptor | undefined {
+  if (tagNameDescriptor === null) {
+    tagNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'tagName');
+  }
+  return tagNameDescriptor;
+}
 
 function toUpperCaseTag(tagName?: string): string | undefined {
   return tagName ? tagName.toUpperCase() : undefined;
@@ -43,8 +51,9 @@ export function isElement(node: unknown, tagName?: string): node is Element {
     return false;
   }
   var asElement = node as Element;
-  var rawTagName = tagNameDescriptor && typeof tagNameDescriptor.get === 'function'
-    ? tagNameDescriptor.get.call(asElement)
+  var descriptor = getTagNameDescriptor();
+  var rawTagName = descriptor && typeof descriptor.get === 'function'
+    ? descriptor.get.call(asElement)
     : asElement.tagName;
   var upperTagName = typeof rawTagName === 'string' ? rawTagName.toUpperCase() : '';
   var normalizedTagName = toUpperCaseTag(tagName);

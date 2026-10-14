@@ -46,6 +46,11 @@ import { isInteractable } from './interactable.js'
 // - Links are not followed by hand. Firefox already follows a dispatched
 //   click, so bot.Mouse navigated there twice.
 // - Only the primary button; nothing reaches double, middle or right clicks.
+// What a pointer event reports in `button` when no button changed: move, over,
+// out, enter and leave. The compatibility mouse events report 0 instead, as
+// Chrome and Firefox do for real input.
+const NO_BUTTON = -1
+
 export class Mouse {
   private element: Element | null = null
   private clientX = 0
@@ -68,7 +73,7 @@ export class Mouse {
       this.transition(from, element, interactable)
       this.element = element
     }
-    this.fire(element, EventType.POINTERMOVE, { detail: 0 }, interactable)
+    this.fire(element, EventType.POINTERMOVE, { button: NO_BUTTON, detail: 0 }, interactable)
     this.fire(element, EventType.MOUSEMOVE, { detail: 0 }, interactable)
   }
 
@@ -134,20 +139,22 @@ export class Mouse {
     const left = source ? chain(source, common) : []
     const entered = chain(to, common).reverse()
 
-    const pairs: Array<[EventFactory<PointerArgs>, EventFactory<PointerArgs>, EventFactory<PointerArgs>, EventFactory<PointerArgs>]> = [
-      [EventType.POINTEROUT, EventType.POINTERLEAVE, EventType.POINTEROVER, EventType.POINTERENTER],
-      [EventType.MOUSEOUT, EventType.MOUSELEAVE, EventType.MOUSEOVER, EventType.MOUSEENTER],
+    const pairs: Array<
+      [EventFactory<PointerArgs>, EventFactory<PointerArgs>, EventFactory<PointerArgs>, EventFactory<PointerArgs>, number]
+    > = [
+      [EventType.POINTEROUT, EventType.POINTERLEAVE, EventType.POINTEROVER, EventType.POINTERENTER, NO_BUTTON],
+      [EventType.MOUSEOUT, EventType.MOUSELEAVE, EventType.MOUSEOVER, EventType.MOUSEENTER, 0],
     ]
-    for (const [out, leave, over, enter] of pairs) {
+    for (const [out, leave, over, enter, button] of pairs) {
       if (source) {
-        this.fire(source, out, { relatedTarget: to }, true)
+        this.fire(source, out, { relatedTarget: to, button }, true)
         for (const element of left) {
-          this.fire(element, leave, { relatedTarget: to }, true)
+          this.fire(element, leave, { relatedTarget: to, button }, true)
         }
       }
-      this.fire(to, over, { relatedTarget: source }, interactable)
+      this.fire(to, over, { relatedTarget: source, button }, interactable)
       for (const element of entered) {
-        this.fire(element, enter, { relatedTarget: source }, interactable)
+        this.fire(element, enter, { relatedTarget: source, button }, interactable)
       }
     }
   }

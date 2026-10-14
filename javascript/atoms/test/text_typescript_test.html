@@ -36,7 +36,7 @@
     }
 
     function assertEndsWith(assert, expected, actual) {
-      assert.ok(actual.lastIndexOf(expected) === actual.length - expected.length,
+      assert.ok(actual.endsWith(expected),
         'Expected [' + actual + '] to end with [' + expected + ']');
     }
 

@@ -87,7 +87,9 @@ export function findFrameByNameOrId(nameOrId: string | number, optRoot?: Window)
     }
   }
 
-  const elements = findElements({ id: nameOrId }, domWindow.document)
+  // bot.locators.id compared with ==, so a numeric id matched; the id locator
+  // here compares strings exactly.
+  const elements = findElements({ id: String(nameOrId) }, domWindow.document)
   for (let i = 0; i < elements.length; i++) {
     const frameElement = elements[i]
     if (frameElement && isFrame(frameElement)) {
