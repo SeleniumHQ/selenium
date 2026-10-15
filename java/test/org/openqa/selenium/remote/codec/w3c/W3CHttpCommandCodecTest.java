@@ -68,6 +68,33 @@ class W3CHttpCommandCodecTest {
   }
 
   @Test
+  void ensureNameContainingApostropheIsEscapedInCssAttribute() {
+    Map<String, Object> params = encodeFindElement("name", "O'Brien");
+
+    assertThat(params)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='O\\'Brien']");
+  }
+
+  @Test
+  void ensureNameContainingBackslashIsEscapedInCssAttribute() {
+    Map<String, Object> params = encodeFindElement("name", "a\\b");
+
+    assertThat(params)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='a\\\\b']");
+  }
+
+  @Test
+  void ensureNameContainingPercentStaysLiteralInCssAttribute() {
+    Map<String, Object> params = encodeFindElement("name", "50%off");
+
+    assertThat(params)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='50%off']");
+  }
+
+  @Test
   void childFindElementKeepsRelativeLocatorValueAsJsonObject() {
     assertFindKeepsRelativeValue(
         DriverCommand.FIND_CHILD_ELEMENT("scope", "relative", relativeLocatorValue()));

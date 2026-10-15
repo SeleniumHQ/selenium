@@ -190,8 +190,10 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
             case "id":
               return amendLocatorToCssSelector(parameters, "#" + cssEscape(stringValue));
 
-            case "name":
-              return amendLocatorToCssSelector(parameters, "*[name='" + stringValue + "']");
+            case "name": {
+              String escapedName = stringValue.replace("\\", "\\\\").replace("'", "\\'");
+              return amendLocatorToCssSelector(parameters, "*[name='" + escapedName + "']");
+            }
 
             default:
               // Do nothing
