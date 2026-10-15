@@ -17,6 +17,7 @@
 package org.openqa.selenium.bidi.generator;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,12 +34,21 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 import org.openqa.selenium.bidi.BiDiGenerator;
 
 /**
  * Builds a small schema from type nodes and runs {@link BiDiGenerator} on it through the same entry
  * point the build uses (a schema file in, a srcjar out). JSON is written with single quotes for
- * readability and converted before parsing.
+ * readability and converted before parsing. Every run's output is compiled, so an assertion on the
+ * emitted text cannot pass for code that references a type the fixture never defined.
  *
  * <p>The commands and events added by {@link #sends} and {@link #receives} are synthetic: they only
  * make a type reachable in that direction, which decides how the generator emits it.
@@ -118,7 +129,9 @@ final class Schema {
       Path srcjar = dir.resolve("out.srcjar");
       try {
         BiDiGenerator.main(new String[] {schemaFile.toString(), srcjar.toString()});
-        return new Generated(readSources(srcjar));
+        Map<String, String> sources = readSources(srcjar);
+        assertCompiles(sources);
+        return new Generated(sources);
       } finally {
         Files.deleteIfExists(srcjar);
         Files.deleteIfExists(schemaFile);
@@ -126,6 +139,39 @@ final class Schema {
       }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
+    }
+  }
+
+  private static void assertCompiles(Map<String, String> sources) throws IOException {
+    JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+    assertThat(javac).as("the test JVM must provide a Java compiler").isNotNull();
+    List<JavaFileObject> units =
+        sources.entrySet().stream()
+            .map(e -> new Source(e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
+    DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+    Path classes = Files.createTempDirectory("bidi-generated-classes");
+    try (StandardJavaFileManager files = javac.getStandardFileManager(diagnostics, null, UTF_8)) {
+      files.setLocation(StandardLocation.CLASS_OUTPUT, List.of(classes.toFile()));
+      boolean compiled =
+          javac
+              .getTask(
+                  null,
+                  files,
+                  diagnostics,
+                  List.of("-classpath", System.getProperty("java.class.path"), "-proc:none"),
+                  null,
+                  units)
+              .call();
+      assertThat(compiled)
+          .as("generated sources must compile: %s", diagnostics.getDiagnostics())
+          .isTrue();
+    } finally {
+      try (Stream<Path> walk = Files.walk(classes)) {
+        for (Path p : walk.sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {
+          Files.delete(p);
+        }
+      }
     }
   }
 
@@ -144,5 +190,19 @@ final class Schema {
       }
     }
     return sources;
+  }
+
+  private static final class Source extends SimpleJavaFileObject {
+    private final String code;
+
+    Source(String path, String code) {
+      super(java.net.URI.create("string:///" + path), Kind.SOURCE);
+      this.code = code;
+    }
+
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) {
+      return code;
+    }
   }
 }

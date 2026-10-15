@@ -53,6 +53,14 @@ class CollectionGenerationTest {
                     + "{'value': 'none', 'ref': 'input.NoneSourceActions'},"
                     + "{'value': 'key', 'ref': 'input.KeySourceActions'}]}}")
             .type("browsingContext.BrowsingContext", STRING_ALIAS)
+            .type(
+                "input.NoneSourceActions",
+                "{'kind': 'record', 'fields': [{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'const': 'none'}}]}")
+            .type(
+                "input.KeySourceActions",
+                "{'kind': 'record', 'fields': [{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'const': 'key'}}]}")
             .generate();
 
     assertThat(out.type("input.PerformActionsParameters"))

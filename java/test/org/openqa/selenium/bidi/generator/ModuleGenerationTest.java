@@ -22,6 +22,7 @@ import static org.openqa.selenium.bidi.generator.Fragments.CLIENT_WINDOW_INFO;
 import static org.openqa.selenium.bidi.generator.Fragments.CLOSE_PARAMETERS;
 import static org.openqa.selenium.bidi.generator.Fragments.GET_CLIENT_WINDOWS_RESULT;
 import static org.openqa.selenium.bidi.generator.Fragments.STRING_ALIAS;
+import static org.openqa.selenium.bidi.generator.Fragments.WINDOW_REALM_INFO;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,7 @@ class ModuleGenerationTest {
                     + " 'type', 'variants': [{'value': 'window', 'ref':"
                     + " 'script.WindowRealmInfo'}]}}")
             .type("script.Realm", STRING_ALIAS)
+            .type("script.WindowRealmInfo", WINDOW_REALM_INFO)
             .generate();
 
     assertThat(out.module("browsingContext"))
@@ -106,6 +108,10 @@ class ModuleGenerationTest {
                 "{'kind': 'union', 'variants': ['script.EvaluateResultSuccess'], 'selector':"
                     + " {'by': 'type', 'variants': [{'value': 'success', 'ref':"
                     + " 'script.EvaluateResultSuccess'}]}}")
+            .type(
+                "script.EvaluateResultSuccess",
+                "{'kind': 'record', 'fields': [{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'const': 'success'}}]}")
             .generate();
 
     assertThat(out.module("script"))

@@ -24,7 +24,7 @@ import static org.openqa.selenium.bidi.generator.Fragments.WINDOW_REALM_INFO;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-/** Union emission: discriminated, structural, correlated and scalar unions. */
+/** Union emission: discriminated, structural and scalar unions. */
 @Tag("UnitTests")
 class UnionGenerationTest {
 
@@ -42,6 +42,13 @@ class UnionGenerationTest {
                     + " [{'value': 'window', 'ref': 'script.WindowRealmInfo'},{'value':"
                     + " 'dedicated-worker', 'ref': 'script.DedicatedWorkerRealmInfo'}]}}")
             .type("script.WindowRealmInfo", WINDOW_REALM_INFO)
+            .type(
+                "script.DedicatedWorkerRealmInfo",
+                "{'kind': 'record', 'fields': ["
+                    + "{'name': 'realm', 'wire': 'realm', 'required': true,"
+                    + " 'type': {'ref': 'script.Realm'}},"
+                    + "{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'const': 'dedicated-worker'}}]}")
             .type("script.Realm", STRING_ALIAS)
             .type("browsingContext.BrowsingContext", STRING_ALIAS)
             .generate();
@@ -56,11 +63,16 @@ class UnionGenerationTest {
                 + ".apply(map);")
         .contains("if (\"dedicated-worker\".equals(discriminator))")
         .contains(
+            "return (RealmInfo)(Object) ConverterFunctions.fromMap(DedicatedWorkerRealmInfo.class)"
+                + ".apply(map);")
+        .contains(
             "throw new BiDiException(\"Unknown RealmInfo discriminator '\" + discriminator +"
                 + " \"'\");")
         .contains("private static RealmInfo fromJson(Map<String, Object> map) {");
     assertThat(out.type("script.WindowRealmInfo"))
         .contains("public class WindowRealmInfo implements RealmInfo {");
+    assertThat(out.type("script.DedicatedWorkerRealmInfo"))
+        .contains("public class DedicatedWorkerRealmInfo implements RealmInfo {");
   }
 
   @Test
@@ -108,6 +120,14 @@ class UnionGenerationTest {
                     + " 'selector': {'by': 'type', 'variants': ["
                     + "{'value': 'console', 'ref': 'log.ConsoleLogEntry'}],"
                     + " 'default': 'log.GenericLogEntry'}}")
+            .type(
+                "log.ConsoleLogEntry",
+                "{'kind': 'record', 'fields': [{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'const': 'console'}}]}")
+            .type(
+                "log.GenericLogEntry",
+                "{'kind': 'record', 'fields': [{'name': 'type', 'wire': 'type', 'required': true,"
+                    + " 'type': {'primitive': 'string'}}]}")
             .generate();
 
     assertThat(out.type("log.Entry"))
@@ -132,6 +152,18 @@ class UnionGenerationTest {
                     + " 'bluetooth.HandleRequestDevicePromptParameters_AcceptParameters'},"
                     + " {'value': false, 'ref':"
                     + " 'bluetooth.HandleRequestDevicePromptParameters_CancelParameters'}]}}")
+            .type(
+                "bluetooth.HandleRequestDevicePromptParameters_AcceptParameters",
+                "{'kind': 'record', 'fields': [{'name': 'accept', 'wire': 'accept', 'required':"
+                    + " true, 'type': {'const': true}}], 'synthetic': true, 'owner':"
+                    + " 'bluetooth.HandleRequestDevicePromptParameters', 'label':"
+                    + " 'AcceptParameters'}")
+            .type(
+                "bluetooth.HandleRequestDevicePromptParameters_CancelParameters",
+                "{'kind': 'record', 'fields': [{'name': 'accept', 'wire': 'accept', 'required':"
+                    + " true, 'type': {'const': false}}], 'synthetic': true, 'owner':"
+                    + " 'bluetooth.HandleRequestDevicePromptParameters', 'label':"
+                    + " 'CancelParameters'}")
             .generate();
 
     assertThat(out.type("bluetooth.HandleRequestDevicePromptParameters"))
@@ -179,20 +211,6 @@ class UnionGenerationTest {
     assertThat(out.type("script.ContextTarget"))
         .contains("public class ContextTarget implements Target {")
         .contains("@Override\n  public Map<String, Object> toMap() {");
-  }
-
-  @Test
-  void correlatedUnionIsNotGenerated() {
-    Generated out =
-        new Schema()
-            .receives("BrowserResult")
-            .type(
-                "BrowserResult",
-                "{'kind': 'union', 'variants': ['browser.CloseResult'],"
-                    + " 'selector': {'correlated': true}}")
-            .generate();
-
-    assertThat(out.has("BrowserResult")).isFalse();
   }
 
   @Test
