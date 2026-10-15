@@ -79,7 +79,9 @@ py/selenium/webdriver/common/_bidi/*
 !py/selenium/webdriver/common/_bidi/domain.py
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
-py/selenium/webdriver/common/linux/
+py/selenium/webdriver/common/bidi-mutation-listener.js
+py/selenium/webdriver/common/linux-arm64/
+py/selenium/webdriver/common/linux-x86_64/
 py/selenium/webdriver/common/macos/
 py/selenium/webdriver/common/mutation-listener.js
 py/selenium/webdriver/common/windows/
