@@ -17,11 +17,12 @@
 
 import os
 import platform
+import shlex
 import stat
 import sys
 
 import pytest
-from selenium_manager import _module_name, binary_path
+from selenium_manager import _module_name, binary_path, main
 
 
 def test_linux_dispatches_on_architecture():
@@ -143,3 +144,37 @@ def test_se_manager_path_binary_mode_is_left_alone(tmp_path, monkeypatch):
 
     assert binary_path() == str(binary)
     assert stat.S_IMODE(binary.stat().st_mode) == 0o644
+
+
+def _run_main_recording_avoid_stats(tmp_path, monkeypatch):
+    record = tmp_path / "avoid-stats.txt"
+    binary = tmp_path / "selenium-manager"
+    binary.write_text(f'#!/bin/sh\nprintf "%s" "${{SE_AVOID_STATS-unset}}" > {shlex.quote(str(record))}\n')
+    binary.chmod(0o755)
+    monkeypatch.setenv("SE_MANAGER_PATH", str(binary))
+    monkeypatch.setattr(sys, "argv", ["selenium-manager"])
+
+    with pytest.raises(SystemExit) as exit_info:
+        main()
+    assert exit_info.value.code == 0
+    return record.read_text()
+
+
+@pytest.mark.skipif(os.name == "nt", reason="the stand-in binary is a shell script")
+def test_launcher_opts_out_of_usage_stats_by_default(tmp_path, monkeypatch):
+    # Installing the standalone package is not consent to usage stats, so the
+    # launcher asks the manager to skip them unless the user says otherwise.
+    monkeypatch.delenv("SE_AVOID_STATS", raising=False)
+    assert _run_main_recording_avoid_stats(tmp_path, monkeypatch) == "true"
+
+
+@pytest.mark.skipif(os.name == "nt", reason="the stand-in binary is a shell script")
+def test_launcher_respects_an_explicit_usage_stats_choice(tmp_path, monkeypatch):
+    monkeypatch.setenv("SE_AVOID_STATS", "false")
+    assert _run_main_recording_avoid_stats(tmp_path, monkeypatch) == "false"
+
+
+@pytest.mark.skipif(os.name == "nt", reason="the stand-in binary is a shell script")
+def test_empty_usage_stats_choice_is_treated_as_unset(tmp_path, monkeypatch):
+    monkeypatch.setenv("SE_AVOID_STATS", "")
+    assert _run_main_recording_avoid_stats(tmp_path, monkeypatch) == "true"

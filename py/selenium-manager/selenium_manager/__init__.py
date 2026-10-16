@@ -100,4 +100,9 @@ def _ensure_executable(binary: str) -> None:
 
 def main() -> None:
     binary = binary_path()
-    sys.exit(subprocess.run([binary, *sys.argv[1:]]).returncode)
+    # Installing the standalone package is not consent to usage stats, so they
+    # are opt-in here: SE_AVOID_STATS=false (or se-config.toml) turns them on.
+    env = {**os.environ}
+    if not env.get("SE_AVOID_STATS"):
+        env["SE_AVOID_STATS"] = "true"
+    sys.exit(subprocess.run([binary, *sys.argv[1:]], env=env).returncode)
