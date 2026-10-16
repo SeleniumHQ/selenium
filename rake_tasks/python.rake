@@ -9,23 +9,21 @@ def python_version
 end
 
 def manager_python_version
-  File.foreach('py/selenium-manager/BUILD.bazel') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SM_VERSION')
+  File.foreach('py/selenium-manager/version.bzl') do |line|
+    return line.split('=').last.strip.tr('"', '') if line.start_with?('SM_VERSION')
   end
 end
 
 unless defined?(MANAGER_PYTHON_FILES)
+  # The BUILD files read SM_VERSION from version.bzl, so only the manifests the
+  # packaging backends parse need rewriting alongside it.
   MANAGER_PYTHON_FILES = %w[
+    py/selenium-manager/version.bzl
     py/selenium-manager/pyproject.toml
-    py/selenium-manager/BUILD.bazel
     py/selenium-manager-linux-x86-64/pyproject.toml
-    py/selenium-manager-linux-x86-64/BUILD.bazel
     py/selenium-manager-linux-aarch64/pyproject.toml
-    py/selenium-manager-linux-aarch64/BUILD.bazel
     py/selenium-manager-macos/pyproject.toml
-    py/selenium-manager-macos/BUILD.bazel
     py/selenium-manager-windows/pyproject.toml
-    py/selenium-manager-windows/BUILD.bazel
   ].freeze
 end
 

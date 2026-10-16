@@ -1,6 +1,5 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
-
-SM_VERSION = "4.45.0"
+load(":version.bzl", "SM_VERSION")
 
 genrule(
     name = "license",
@@ -15,7 +14,9 @@ genrule(
 npm_package(
     name = "selenium-manager",
     srcs = [
+        "README.md",
         "bin/selenium-manager.js",
+        "index.js",
         "package.json",
         ":license",
     ],
