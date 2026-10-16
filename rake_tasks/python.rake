@@ -215,10 +215,13 @@ task :version_manager, [:new_version] do |_task, arguments|
   end
 end
 
-desc 'Build and release selenium-manager Python packages to PyPI'
+desc 'Release selenium-manager Python packages to PyPI (use dry-run to build without uploading)'
 task :release_manager do |_task, arguments|
-  nightly = arguments.to_a.include?('nightly')
-  Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
+  args = arguments.to_a
+  nightly = args.include?('nightly')
+  dry_run = args.include?('dry-run')
+  config = args.include?('rbe') ? 'rbe_release' : 'release'
+  Rake::Task['py:check_credentials'].invoke(*args) unless dry_run
 
   if nightly
     # Reuse the binding's nightly version rather than stamping a new one, so a
@@ -231,10 +234,17 @@ task :release_manager do |_task, arguments|
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
-  MANAGER_PYTHON_WHEEL_TARGETS.each do |target|
-    puts "Building: #{target}"
-    Bazel.execute('build', ['--config=release'], target)
+  if dry_run
+    MANAGER_PYTHON_WHEEL_TARGETS.each do |target|
+      puts "Dry-run: #{target}"
+      Bazel.execute('build', ["--config=#{config}"], target)
+    end
+    next
   end
+
+  command = nightly ? '//py:selenium-manager-release-nightly' : '//py:selenium-manager-release'
+  puts "Running selenium-manager Python release command: #{command}"
+  Bazel.execute('run', ["--config=#{config}"], command)
 end
 
 desc 'Format Python code with ruff'
