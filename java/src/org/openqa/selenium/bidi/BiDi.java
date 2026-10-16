@@ -144,10 +144,10 @@ public class BiDi implements Closeable {
     Require.nonNull("Event to listen for", event);
 
     // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
-    // first place
+    // first place. Local callbacks are removed before unsubscribing so events that arrive during
+    // the unsubscribe round trip are not delivered to a listener the caller has already cleared.
     if (connection.isEventSubscribed(event)) {
-      send(new Command<>("session.unsubscribe", Map.of("events", List.of(event.getMethod()))));
-      connection.clearListener(event);
+      unsubscribe(connection.detachListeners(event), Map.of("events", List.of(event.getMethod())));
     }
   }
 
@@ -157,8 +157,19 @@ public class BiDi implements Closeable {
     // The browser throws an error if we try to unsubscribe a subscription id that was not
     // subscribed in the first place
     if (connection.isSubscribed(id)) {
-      send(new Command<>("session.unsubscribe", Map.of("subscriptions", List.of(id))));
-      connection.removeListener(id);
+      unsubscribe(connection.detachListeners(id), Map.of("subscriptions", List.of(id)));
+    }
+  }
+
+  private void unsubscribe(
+      Map<Event<?>, Map<String, Consumer<?>>> detached, Map<String, Object> params) {
+    try {
+      send(new Command<>("session.unsubscribe", params));
+    } catch (RuntimeException e) {
+      // The remote end still has the subscription, so keep delivering its events and let the
+      // caller retry
+      connection.restoreListeners(detached);
+      throw e;
     }
   }
 

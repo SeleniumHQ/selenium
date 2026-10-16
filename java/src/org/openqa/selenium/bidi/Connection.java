@@ -220,6 +220,56 @@ public class Connection implements Closeable {
     }
   }
 
+  /**
+   * Removes the callbacks for an event and returns them so they can be put back with {@link
+   * #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(Event<?> event) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<String, Consumer<?>> removed = eventCallbacks.remove(event);
+      return removed == null ? Map.of() : Map.of(event, removed);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Removes the callback registered under a subscription id and returns it, keyed by event, so it
+   * can be put back with {@link #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(String id) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<Event<?>, Map<String, Consumer<?>>> removed = new HashMap<>();
+      eventCallbacks.forEach(
+          (event, handlers) -> {
+            Consumer<?> handler = handlers.remove(id);
+            if (handler != null) {
+              removed.put(event, Map.of(id, handler));
+            }
+          });
+      eventCallbacks.values().removeIf(Map::isEmpty);
+      return removed;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  void restoreListeners(Map<Event<?>, Map<String, Consumer<?>>> detached) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      detached.forEach(
+          (event, handlers) ->
+              eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).putAll(handlers));
+    } finally {
+      lock.unlock();
+    }
+  }
+
   public boolean isSubscribed(String id) {
     Lock lock = callbacksLock.readLock();
     lock.lock();
