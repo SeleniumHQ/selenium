@@ -887,4 +887,11 @@ class NodeOptionsTest {
       };
     }
   }
+
+  @Test
+  void nullStereotypeThrowsConfigExceptionNamingTheSource() {
+    assertThatThrownBy(() -> NodeOptions.parseStereotype("null", "driver factory com.example.Foo"))
+        .isInstanceOf(ConfigException.class)
+        .hasMessageContaining("driver factory com.example.Foo");
+  }
 }
