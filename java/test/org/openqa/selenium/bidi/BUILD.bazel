@@ -5,6 +5,7 @@ java_test_suite(
     name = "small-tests",
     size = "small",
     srcs = [
+        "BiDiUnsubscribeTest.java",
         "ConnectionTest.java",
         "ConverterFunctionsTest.java",
     ],
@@ -24,6 +25,7 @@ java_selenium_test_suite(
     srcs = glob(
         ["*Test.java"],
         exclude = [
+            "BiDiUnsubscribeTest.java",
             "ConnectionTest.java",
             "ConverterFunctionsTest.java",
         ],
