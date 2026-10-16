@@ -141,4 +141,75 @@ module BiDiGenerate
       expect(field.rbs).to eq('untyped')
     end
   end
+
+  describe 'Schema with a vendor extension' do
+    def scope_field(required: false)
+      {'name' => 'moz:scope', 'wire' => 'moz:scope', 'required' => required,
+       'type' => {'enum' => %w[chrome content], 'primitive' => 'string'}}
+    end
+
+    def record(fields, outbound: true, extensible: false)
+      {'kind' => 'record', 'outbound' => outbound, 'inbound' => !outbound, 'extensible' => extensible,
+       'fields' => fields.map { |name, type| {'name' => name, 'wire' => name, 'required' => false, 'type' => type} }}
+    end
+
+    def schema(extra_types = {})
+      types = {
+        'x.Info' => record({'id' => {'primitive' => 'string'}}, outbound: false),
+        'x.GetParameters' => record({'depth' => {'primitive' => 'integer'}}),
+        'x.Request' => record({'name' => {'primitive' => 'string'}}, extensible: true)
+      }.merge(extra_types)
+      command = {'domain' => 'x', 'name' => 'get', 'method' => 'x.get',
+                 'params' => {'ref' => 'x.GetParameters'}, 'result' => {'ref' => 'x.Info'}}
+      extends = {'x.Info' => {'fields' => [scope_field(required: true)]},
+                 'x.GetParameters' => {'fields' => [scope_field]},
+                 'x.Request' => {'fields' => [{'name' => 'moz:opts', 'wire' => 'moz:opts', 'required' => false,
+                                               'type' => {'ref' => 'x.RequestMozOpts'}}]}}
+      vendor_types = {'x.RequestMozOpts' => record({'debug' => {'primitive' => 'boolean'}})}
+      BiDiGenerate::Schema.new('types' => types, 'commands' => [command], 'events' => [], 'domains' => {'x' => {}},
+                               'vendor' => {'moz' => {'extends' => extends, 'types' => vendor_types}})
+    end
+
+    def shared(name) = schema.types_for('x').find { |t| t.schema_name == name }
+
+    it 'adds a vendor field to a received type as an optional typed field, keeping the type closed' do
+      info = shared('x.Info')
+
+      expect(info.extensible).to be(false)
+      expect(info.fields.last.spec_entry)
+        .to eq("moz_scope: {wire_key: 'moz:scope', required: false, enum: 'X::MOZ_SCOPE'}")
+    end
+
+    it 'emits the hoisted vendor enum in the extended type domain' do
+      expect(schema.enums_for('x').map(&:constant_name)).to include('MOZ_SCOPE')
+    end
+
+    it 'gives the vendor variant its own closed params record, leaving the shared one untouched' do
+      vendor = schema.vendor_modules_for('x').first
+      record = vendor.types.first
+
+      expect(record.extensible).to be(false)
+      expect(record.fields.map(&:ruby_name)).to eq(%w[depth scope])
+      expect(vendor.commands.first.params_class).to eq(record.ruby_name)
+      expect(shared('x.GetParameters').fields.map(&:ruby_name)).to eq(%w[depth])
+    end
+
+    it 'types a vendor field on a spec-extensible type, keeping the type extensible' do
+      request = shared('x.Request')
+
+      expect(request.extensible).to be(true)
+      expect(request.fields.last.spec_entry)
+        .to eq("moz_opts: {wire_key: 'moz:opts', required: false, ref: 'X::RequestMozOpts'}")
+    end
+
+    it 'emits the vendor types a folded vendor field references' do
+      expect(schema.types_for('x').map(&:schema_name)).to include('x.RequestMozOpts')
+    end
+
+    it 'raises when a hoisted vendor enum conflicts with an existing type' do
+      conflicting = {'x.MozScope' => {'kind' => 'enum', 'values' => %w[other], 'primitive' => 'string'}}
+
+      expect { schema(conflicting) }.to raise_error(/vendor enum x.MozScope conflicts/)
+    end
+  end
 end

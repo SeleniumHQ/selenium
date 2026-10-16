@@ -32,8 +32,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
           InstallParameters = Serialization::Record.define(
-            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
-            extensible: true
+            extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'}
           )
 
           # @api private
@@ -145,13 +144,22 @@ module Selenium
           class Moz < WebExtension
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+            # @see https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters
+            InstallParameters = Serialization::Record.define(
+              extension_data: {wire_key: 'extensionData', ref: 'WebExtension::ExtensionData'},
+              allow_private_browsing: {wire_key: 'moz:allowPrivateBrowsing', required: false, primitive: 'boolean'},
+              permanent: {wire_key: 'moz:permanent', required: false, primitive: 'boolean'}
+            )
+
+            # @api private
+            # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             # @see https://w3c.github.io/webdriver-bidi/#command-webExtension-install
             def install(extension_data:, allow_private_browsing: Serialization::UNSET, permanent: Serialization::UNSET)
-              extensions = {
-                'moz:allowPrivateBrowsing' => allow_private_browsing,
-                'moz:permanent' => permanent
-              }.reject { |_, value| Serialization::UNSET.equal?(value) }
-              params = InstallParameters.new(extension_data: extension_data, extensions: extensions)
+              params = InstallParameters.new(
+                extension_data: extension_data,
+                allow_private_browsing: allow_private_browsing,
+                permanent: permanent
+              )
               execute(cmd: 'webExtension.install', params: params, result: WebExtension::InstallResult)
             end
 
