@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 import platform
+import stat
 import sys
 
 import pytest
@@ -102,3 +104,42 @@ def test_platform_package_supplies_the_path(tmp_path, monkeypatch):
         assert binary_path() == "/wheels/bin/selenium-manager"
     finally:
         sys.modules.pop(module_name, None)
+
+
+def _install_platform_package(tmp_path, monkeypatch, binary):
+    module_name = _module_name(sys.platform, platform.machine())
+    package = tmp_path / module_name
+    package.mkdir()
+    (package / "__init__.py").write_text(f"def binary_path():\n    return {str(binary)!r}\n")
+
+    monkeypatch.delenv("SE_MANAGER_PATH", raising=False)
+    monkeypatch.syspath_prepend(str(tmp_path))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+    return module_name
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Windows has no execute bit")
+def test_packaged_binary_is_made_executable_for_path_callers(tmp_path, monkeypatch):
+    # Callers that run binary_path() themselves never go through main(), so the
+    # repair for installers that drop the execute bit has to happen here.
+    binary = tmp_path / "selenium-manager"
+    binary.write_text("")
+    binary.chmod(0o644)
+    module_name = _install_platform_package(tmp_path, monkeypatch, binary)
+
+    try:
+        assert binary_path() == str(binary)
+    finally:
+        sys.modules.pop(module_name, None)
+    assert binary.stat().st_mode & stat.S_IXUSR
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Windows has no execute bit")
+def test_se_manager_path_binary_mode_is_left_alone(tmp_path, monkeypatch):
+    binary = tmp_path / "selenium-manager"
+    binary.write_text("")
+    binary.chmod(0o644)
+    monkeypatch.setenv("SE_MANAGER_PATH", str(binary))
+
+    assert binary_path() == str(binary)
+    assert stat.S_IMODE(binary.stat().st_mode) == 0o644

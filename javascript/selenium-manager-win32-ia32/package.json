@@ -1,6 +1,6 @@
 {
   "name": "@selenium/manager-win32-ia32",
-  "version": "4.50.0-nightly202609091537",
+  "version": "4.52.0-nightly202610091837",
   "description": "Selenium Manager ia32 binary for Windows (runs on ia32, x64 and arm64)",
   "license": "Apache-2.0",
   "os": ["win32"],

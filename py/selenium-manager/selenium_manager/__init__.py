@@ -78,17 +78,26 @@ def binary_path() -> str:
         pkg_name = module_name.replace("_", "-")
         raise SystemExit(f"Platform package {pkg_name} is not installed.\nRun: pip install {pkg_name}") from exc
 
-    return platform_module.binary_path()
+    binary = platform_module.binary_path()
+    _ensure_executable(binary)
+    return binary
+
+
+def _ensure_executable(binary: str) -> None:
+    # Wheels do not carry the executable bit through every installer, so restore
+    # it here rather than in main(): library callers run the path themselves.
+    if os.name == "nt":
+        return
+    try:
+        mode = os.stat(binary).st_mode
+        if not mode & stat.S_IXUSR:
+            os.chmod(binary, mode | 0o755)
+    except OSError:
+        # A read-only site-packages can't be repaired from here; running the
+        # binary then fails with an error that names the path.
+        pass
 
 
 def main() -> None:
     binary = binary_path()
-
-    # Wheels do not carry the executable bit through every installer, so restore
-    # it on first run. An SE_MANAGER_PATH binary is left alone once it is usable.
-    if os.name != "nt":
-        mode = os.stat(binary).st_mode
-        if not mode & stat.S_IXUSR:
-            os.chmod(binary, mode | 0o755)
-
     sys.exit(subprocess.run([binary, *sys.argv[1:]]).returncode)
