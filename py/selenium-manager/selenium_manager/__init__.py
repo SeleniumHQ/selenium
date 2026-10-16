@@ -34,11 +34,13 @@ __all__ = ["binary_path", "main"]
 
 _PLATFORM_MODULES = {
     "darwin": "selenium_manager_macos",
-    "win32": "selenium_manager_windows",
+    "win32": "selenium_manager_windows_x86",
 }
 
-# Linux is the only platform where we ship a package per architecture: the macOS
-# binary is universal and the Windows one is i686, which runs on x64 and arm64 too.
+# The architecture in a package name is the binary's, not the machine's. Linux is
+# the only platform that needs a package per machine architecture: the macOS
+# binary is universal, and the Windows i686 build runs on x64 and arm64 too, so
+# every Windows machine resolves to the one `_x86` module.
 _LINUX_MODULES = {
     "x86_64": "selenium_manager_linux_x86_64",
     "aarch64": "selenium_manager_linux_aarch64",

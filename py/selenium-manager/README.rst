@@ -37,11 +37,13 @@ Platform                      Package
 Linux x86-64                  ``selenium-manager-linux-x86-64``
 Linux aarch64                 ``selenium-manager-linux-aarch64``
 macOS (Intel and Apple Si)    ``selenium-manager-macos``
-Windows (x86, x64, arm64)     ``selenium-manager-windows``
+Windows (x86, x64, arm64)     ``selenium-manager-windows-x86``
 ============================  =====================================
 
-macOS and Windows are one package each: the macOS binary is universal, and the
-Windows binary is i686, which Windows runs on x64 and arm64 as well.
+The architecture in a package name is the binary's, not the machine's, which is
+why one package answers every Windows platform: that binary is i686, and Windows
+runs it on x64 and arm64 as well. macOS needs no suffix because its binary is
+universal.
 
 Using it from Python
 ====================

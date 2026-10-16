@@ -3,10 +3,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "selenium-manager-windows"
+name = "selenium-manager-windows-x86"
 version = "4.50.0.202609091537"
 license = "Apache-2.0"
-description = "Selenium Manager binary for Windows (ia32 + x64 + arm64)"
+description = "Selenium Manager binary for Windows (i686, runs on x86, x64 and arm64)"
 readme = "README.rst"
 requires-python = ">=3.9"
 classifiers = [
@@ -19,8 +19,8 @@ classifiers = [
 
 [project.urls]
 homepage = "https://www.selenium.dev"
-source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-windows"
+source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-windows-x86"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [tool.setuptools.package-data]
-selenium_manager_windows = ["bin/selenium-manager.exe"]
+selenium_manager_windows_x86 = ["bin/selenium-manager.exe"]

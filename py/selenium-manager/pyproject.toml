@@ -28,7 +28,7 @@ dependencies = [
     "selenium-manager-linux-x86-64==4.50.0.202609091537; sys_platform=='linux' and platform_machine=='x86_64'",
     "selenium-manager-linux-aarch64==4.50.0.202609091537; sys_platform=='linux' and platform_machine=='aarch64'",
     "selenium-manager-macos==4.50.0.202609091537; sys_platform=='darwin'",
-    "selenium-manager-windows==4.50.0.202609091537; sys_platform=='win32'",
+    "selenium-manager-windows-x86==4.50.0.202609091537; sys_platform=='win32'",
 ]
 
 # The only console script across the five distributions; the platform packages

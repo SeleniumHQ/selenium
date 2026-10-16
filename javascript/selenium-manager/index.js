@@ -29,15 +29,17 @@ const path = require('node:path')
 const fs = require('node:fs')
 const { platform, arch } = require('node:process')
 
-// Linux is the only platform with a package per architecture: the macOS binary is
-// universal and the Windows one is ia32, which runs on x64 and arm64 as well. Keys
-// are matched as `${platform}-${arch}` first, then `${platform}`.
+// The architecture in a package name is the binary's, not the machine's. Linux is
+// the only platform that needs a package per machine architecture: the macOS binary
+// is universal, and the Windows ia32 build runs on x64 and arm64 too, so every
+// Windows arch resolves to the one `-ia32` package. Keys are matched as
+// `${platform}-${arch}` first, then `${platform}`.
 const PLATFORM_PACKAGES = {
   'linux-x64': '@selenium/manager-linux-x64',
   'linux-arm64': '@selenium/manager-linux-arm64',
   darwin: '@selenium/manager-darwin',
-  win32: '@selenium/manager-win32',
-  cygwin: '@selenium/manager-win32',
+  win32: '@selenium/manager-win32-ia32',
+  cygwin: '@selenium/manager-win32-ia32',
 }
 
 /**

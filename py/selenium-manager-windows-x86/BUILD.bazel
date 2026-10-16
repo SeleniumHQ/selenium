@@ -4,10 +4,12 @@ load("@rules_python//python:packaging.bzl", "py_wheel")
 load("//common:defs.bzl", "copy_file")
 load("//py/selenium-manager:version.bzl", "SM_VERSION")
 
-# The binary is 32-bit i686, which Windows runs on x64 via WOW64 and on arm64
-# via emulation. pip matches on the wheel tag rather than the binary, though, so
-# a `win32`-only wheel would be invisible to the 64-bit interpreters that nearly
-# everyone runs; ship the same file under every tag it works on.
+# The arch in the name is the binary's, not the machine's: this is the i686
+# build, which Windows runs on x64 via WOW64 and on arm64 via emulation. pip
+# matches on the wheel tag rather than the binary, though, so a `win32`-only
+# wheel would be invisible to the 64-bit interpreters that nearly everyone runs;
+# ship the same file under every tag it works on. A native x64 or arm64 build
+# would arrive as its own package rather than displace the contents of this one.
 WHEEL_PLATFORM_TAGS = {
     "win32": "win32",
     "win-amd64": "win_amd64",
@@ -17,12 +19,12 @@ WHEEL_PLATFORM_TAGS = {
 copy_file(
     name = "manager-binary",
     src = "//common/manager:selenium-manager-windows",
-    out = "selenium_manager_windows/bin/selenium-manager.exe",
+    out = "selenium_manager_windows_x86/bin/selenium-manager.exe",
 )
 
 py_library(
     name = "lib",
-    srcs = ["selenium_manager_windows/__init__.py"],
+    srcs = ["selenium_manager_windows_x86/__init__.py"],
     data = [":manager-binary"],
     imports = ["."],
 )
@@ -42,18 +44,18 @@ select_file(
 copy_file(
     name = "license-wheel",
     src = ":global-license",
-    out = "selenium_manager_windows-%s.dist-info/LICENSE" % SM_VERSION,
+    out = "selenium_manager_windows_x86-%s.dist-info/LICENSE" % SM_VERSION,
 )
 
 copy_file(
     name = "notice-wheel",
     src = ":global-notice",
-    out = "selenium_manager_windows-%s.dist-info/NOTICE" % SM_VERSION,
+    out = "selenium_manager_windows_x86-%s.dist-info/NOTICE" % SM_VERSION,
 )
 
 [
     py_wheel(
-        name = "selenium-manager-windows-wheel-" + suffix,
+        name = "selenium-manager-windows-x86-wheel-" + suffix,
         abi = "none",
         classifiers = [
             "Development Status :: 5 - Production/Stable",
@@ -64,18 +66,18 @@ copy_file(
         ],
         description_content_type = "text/x-rst",
         description_file = "README.rst",
-        distribution = "selenium_manager_windows",
+        distribution = "selenium_manager_windows_x86",
         homepage = "https://www.selenium.dev",
         license = "Apache-2.0",
         platform = tag,
         project_urls = {
-            "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-windows",
+            "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-windows-x86",
             "Issues": "https://github.com/SeleniumHQ/selenium/issues",
         },
         python_requires = ">=3.9",
         python_tag = "py3",
-        strip_path_prefixes = ["py/selenium-manager-windows/"],
-        summary = "Selenium Manager binary for Windows (ia32 + x64 + arm64)",
+        strip_path_prefixes = ["py/selenium-manager-windows-x86/"],
+        summary = "Selenium Manager binary for Windows (i686, runs on x86, x64 and arm64)",
         tags = ["release-artifact"],
         version = SM_VERSION,
         visibility = ["//visibility:public"],
@@ -94,7 +96,7 @@ copy_file(
 filegroup(
     name = "wheels",
     srcs = [
-        "selenium-manager-windows-wheel-" + suffix
+        "selenium-manager-windows-x86-wheel-" + suffix
         for suffix in WHEEL_PLATFORM_TAGS
     ],
     visibility = ["//visibility:public"],
