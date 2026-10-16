@@ -15,12 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
+"""Selenium Manager binary for Windows. Launched by the `selenium-manager` package."""
+
 import importlib.resources
-import subprocess
-import sys
+
+__all__ = ["binary_path"]
 
 
-def main() -> None:
-    with importlib.resources.as_file(importlib.resources.files(__package__) / "bin" / "selenium-manager.exe") as binary:
-        result = subprocess.run([str(binary)] + sys.argv[1:])
-    sys.exit(result.returncode)
+def binary_path() -> str:
+    """Return the absolute path of the bundled binary.
+
+    Wheels are installed unzipped, so the packaged resource is always a real file
+    on disk and the caller can exec it without staging a copy first.
+    """
+    return str(importlib.resources.files(__package__) / "bin" / "selenium-manager.exe")

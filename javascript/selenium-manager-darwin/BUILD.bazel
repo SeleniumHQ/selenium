@@ -1,7 +1,6 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("//common:defs.bzl", "copy_file")
-
-SM_VERSION = "4.45.0"
+load("//javascript/selenium-manager:version.bzl", "SM_VERSION")
 
 copy_file(
     name = "manager-binary",
