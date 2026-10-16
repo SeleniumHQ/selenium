@@ -164,17 +164,14 @@ task :release_manager do |_task, arguments|
   dry_run = args.delete('dry-run')
   config = args.delete('rbe') ? 'rbe_release' : 'release'
 
-  Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
-
+  # Nightlies go to GitHub Packages, which only accepts the @seleniumhq scope;
+  # the manager is only ever published as @selenium/manager, so it skips them.
   if nightly
-    puts 'Updating @selenium/manager version to nightly...'
-    old_version = manager_npm_version
-    nightly_suffix = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
-    base = old_version.split('-').first
-    new_version = "#{base}#{nightly_suffix}"
-    Rake::Task['node:version_manager'].invoke(new_version)
-    setup_github_npm_auth unless dry_run
+    puts '@selenium/manager is published only in releases — skipping nightly.'
+    next
   end
+
+  Rake::Task['node:check_credentials'].invoke unless dry_run
 
   targets = [
     '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',

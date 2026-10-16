@@ -47,8 +47,15 @@ try {
   process.exit(1)
 }
 
+// Installing the standalone package is not consent to usage stats, so they are
+// opt-in here: SE_AVOID_STATS=false (or se-config.toml) turns them on.
+const env = { ...process.env }
+if (!env.SE_AVOID_STATS) {
+  env.SE_AVOID_STATS = 'true'
+}
+
 try {
-  execFileSync(binary, process.argv.slice(2), { stdio: 'inherit' })
+  execFileSync(binary, process.argv.slice(2), { stdio: 'inherit', env })
 } catch (err) {
   process.exit(err.status ?? 1)
 }

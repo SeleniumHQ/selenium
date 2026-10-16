@@ -58,6 +58,17 @@ want to run it themselves::
 Setting ``SE_MANAGER_PATH`` overrides the resolved path, the same way it does in
 every Selenium binding.
 
+Usage statistics
+================
+
+Selenium Manager can report anonymous usage statistics. When it is launched
+through this package (``selenium-manager``, ``python -m selenium_manager`` or
+``uvx selenium-manager``) they are opt-in: the launcher sets
+``SE_AVOID_STATS=true`` unless you have set it yourself. Set
+``SE_AVOID_STATS=false``, or ``avoid-stats = false`` in ``se-config.toml``, to
+send them. Callers that run ``binary_path()`` themselves make that choice
+through the same variable.
+
 Links
 =====
 
