@@ -23,7 +23,7 @@ unless defined?(MANAGER_PYTHON_FILES)
     py/selenium-manager-linux-x86-64/pyproject.toml
     py/selenium-manager-linux-aarch64/pyproject.toml
     py/selenium-manager-macos/pyproject.toml
-    py/selenium-manager-windows/pyproject.toml
+    py/selenium-manager-windows-x86/pyproject.toml
   ].freeze
 end
 
@@ -34,7 +34,7 @@ unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
     //py/selenium-manager-linux-x86-64:wheels
     //py/selenium-manager-linux-aarch64:wheels
     //py/selenium-manager-macos:wheels
-    //py/selenium-manager-windows:wheels
+    //py/selenium-manager-windows-x86:wheels
     //py/selenium-manager:wheels
   ].freeze
 end

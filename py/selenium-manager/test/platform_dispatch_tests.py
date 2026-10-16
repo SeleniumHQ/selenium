@@ -34,7 +34,9 @@ def test_macos_is_universal(machine):
 
 @pytest.mark.parametrize("machine", ["x86", "AMD64", "ARM64"])
 def test_windows_binary_covers_every_architecture(machine):
-    assert _module_name("win32", machine) == "selenium_manager_windows"
+    # The `_x86` suffix names the i686 binary in the package, not the machine it
+    # is dispatched to; Windows runs it on x64 and arm64 as well.
+    assert _module_name("win32", machine) == "selenium_manager_windows_x86"
 
 
 def test_unsupported_linux_architecture_lists_the_supported_ones():
@@ -58,7 +60,7 @@ def test_module_names_match_their_distribution_names():
         "selenium_manager_linux_x86_64": "selenium-manager-linux-x86-64",
         "selenium_manager_linux_aarch64": "selenium-manager-linux-aarch64",
         "selenium_manager_macos": "selenium-manager-macos",
-        "selenium_manager_windows": "selenium-manager-windows",
+        "selenium_manager_windows_x86": "selenium-manager-windows-x86",
     }
     for module_name, distribution in expected.items():
         assert module_name.replace("_", "-") == distribution

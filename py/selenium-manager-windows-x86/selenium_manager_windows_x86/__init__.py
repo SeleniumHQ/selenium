@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Selenium Manager binary for Windows. Launched by the `selenium-manager` package."""
+"""Selenium Manager i686 binary for Windows. Launched by the `selenium-manager` package."""
 
 import importlib.resources
 
