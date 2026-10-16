@@ -23,4 +23,8 @@ source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-
 issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [tool.setuptools.package-data]
-selenium_manager_linux_x86_64 = ["bin/selenium-manager"]
+selenium_manager_linux_x86_64 = [
+    "bin/selenium-manager",
+    "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
+    "bin/selenium-manager.cdx.json",
+]
