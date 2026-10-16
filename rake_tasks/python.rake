@@ -208,7 +208,10 @@ task :release_manager do |_task, arguments|
   if nightly
     # Reuse the binding's nightly version rather than stamping a new one, so a
     # manager built in a later minute still matches the selenium wheel beside it.
-    puts 'Updating selenium-manager version to the selenium nightly version...'
+    # A stable checkout has no nightly version yet, so stamp the binding first;
+    # py:version passes the same version on to the manager packages.
+    Rake::Task['py:version'].invoke('nightly') unless python_version.split('.').length > 3
+    puts "Updating selenium-manager version to the selenium nightly version #{python_version}..."
     Rake::Task['py:version_manager'].invoke(python_version)
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
