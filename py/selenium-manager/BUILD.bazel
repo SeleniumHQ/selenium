@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
 load("@rules_python//python:packaging.bzl", "py_wheel")
 
 SM_VERSION = "4.45.0"
@@ -10,6 +10,14 @@ py_library(
         "selenium_manager/__main__.py",
     ],
     imports = ["."],
+)
+
+py_test(
+    name = "platform-dispatch-test",
+    size = "small",
+    srcs = ["test/test_platform_dispatch.py"],
+    main = "test/test_platform_dispatch.py",
+    deps = [":lib"],
 )
 
 py_wheel(
@@ -44,6 +52,7 @@ py_wheel(
     python_tag = "py3",
     requires = [
         "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
+        "selenium-manager-linux-aarch64==4.45.0; sys_platform=='linux' and platform_machine=='aarch64'",
         "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
         "selenium-manager-windows==4.45.0; sys_platform=='win32'",
     ],
@@ -53,4 +62,10 @@ py_wheel(
     version = SM_VERSION,
     visibility = ["//visibility:public"],
     deps = [":lib"],
+)
+
+filegroup(
+    name = "wheels",
+    srcs = [":selenium-manager-wheel"],
+    visibility = ["//visibility:public"],
 )

@@ -1,0 +1,71 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:packaging.bzl", "py_wheel")
+load("//common:defs.bzl", "copy_file")
+
+SM_VERSION = "4.45.0"
+
+# PyPI rejects the bare `linux_aarch64` tag. The binary is statically linked
+# against musl and so runs unmodified on glibc hosts too, which means the same
+# file is valid under both tag families; ship it once per family.
+WHEEL_PLATFORM_TAGS = {
+    "manylinux": "manylinux_2_17_aarch64",
+    "musllinux": "musllinux_1_2_aarch64",
+}
+
+copy_file(
+    name = "manager-binary",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "selenium_manager_linux_aarch64/bin/selenium-manager",
+)
+
+py_library(
+    name = "lib",
+    srcs = ["selenium_manager_linux_aarch64/__init__.py"],
+    data = [":manager-binary"],
+    imports = ["."],
+)
+
+[
+    py_wheel(
+        name = "selenium-manager-linux-aarch64-wheel-" + suffix,
+        abi = "none",
+        classifiers = [
+            "Operating System :: POSIX :: Linux",
+            "Programming Language :: Python",
+            "Topic :: Software Development :: Testing",
+        ],
+        description_content_type = "text/plain",
+        distribution = "selenium_manager_linux_aarch64",
+        entry_points = {
+            "console_scripts": {
+                "selenium-manager": "selenium_manager_linux_aarch64:main",
+            },
+        },
+        homepage = "https://www.selenium.dev",
+        license = "Apache-2.0",
+        platform = tag,
+        python_requires = ">=3.9",
+        python_tag = "py3",
+        strip_path_prefixes = ["py/selenium-manager-linux-aarch64/"],
+        summary = "Selenium Manager binary for Linux aarch64",
+        tags = ["release-artifact"],
+        version = SM_VERSION,
+        visibility = ["//visibility:public"],
+        deps = [
+            ":lib",
+            # py_wheel packages each dep's DefaultInfo files; py_library keeps data
+            # in runfiles, so the binary has to be named here to reach the wheel.
+            ":manager-binary",
+        ],
+    )
+    for suffix, tag in WHEEL_PLATFORM_TAGS.items()
+]
+
+filegroup(
+    name = "wheels",
+    srcs = [
+        "selenium-manager-linux-aarch64-wheel-" + suffix
+        for suffix in WHEEL_PLATFORM_TAGS
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -4,6 +4,16 @@ load("//common:defs.bzl", "copy_file")
 
 SM_VERSION = "4.45.0"
 
+# The binary is 32-bit i686, which Windows runs on x64 via WOW64 and on arm64
+# via emulation. pip matches on the wheel tag rather than the binary, though, so
+# a `win32`-only wheel would be invisible to the 64-bit interpreters that nearly
+# everyone runs; ship the same file under every tag it works on.
+WHEEL_PLATFORM_TAGS = {
+    "win32": "win32",
+    "win-amd64": "win_amd64",
+    "win-arm64": "win_arm64",
+}
+
 copy_file(
     name = "manager-binary",
     src = "//common/manager:selenium-manager-windows",
@@ -17,30 +27,47 @@ py_library(
     imports = ["."],
 )
 
-py_wheel(
-    name = "selenium-manager-windows-wheel",
-    abi = "none",
-    classifiers = [
-        "Operating System :: Microsoft :: Windows",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Testing",
-    ],
-    description_content_type = "text/plain",
-    distribution = "selenium_manager_windows",
-    entry_points = {
-        "console_scripts": {
-            "selenium-manager": "selenium_manager_windows:main",
+[
+    py_wheel(
+        name = "selenium-manager-windows-wheel-" + suffix,
+        abi = "none",
+        classifiers = [
+            "Operating System :: Microsoft :: Windows",
+            "Programming Language :: Python",
+            "Topic :: Software Development :: Testing",
+        ],
+        description_content_type = "text/plain",
+        distribution = "selenium_manager_windows",
+        entry_points = {
+            "console_scripts": {
+                "selenium-manager": "selenium_manager_windows:main",
+            },
         },
-    },
-    homepage = "https://www.selenium.dev",
-    license = "Apache-2.0",
-    platform = "win32",
-    python_requires = ">=3.9",
-    python_tag = "py3",
-    strip_path_prefixes = ["py/selenium-manager-windows/"],
-    summary = "Selenium Manager binary for Windows (ia32 + x64)",
-    tags = ["release-artifact"],
-    version = SM_VERSION,
+        homepage = "https://www.selenium.dev",
+        license = "Apache-2.0",
+        platform = tag,
+        python_requires = ">=3.9",
+        python_tag = "py3",
+        strip_path_prefixes = ["py/selenium-manager-windows/"],
+        summary = "Selenium Manager binary for Windows (ia32 + x64 + arm64)",
+        tags = ["release-artifact"],
+        version = SM_VERSION,
+        visibility = ["//visibility:public"],
+        deps = [
+            ":lib",
+            # py_wheel packages each dep's DefaultInfo files; py_library keeps data
+            # in runfiles, so the binary has to be named here to reach the wheel.
+            ":manager-binary",
+        ],
+    )
+    for suffix, tag in WHEEL_PLATFORM_TAGS.items()
+]
+
+filegroup(
+    name = "wheels",
+    srcs = [
+        "selenium-manager-windows-wheel-" + suffix
+        for suffix in WHEEL_PLATFORM_TAGS
+    ],
     visibility = ["//visibility:public"],
-    deps = [":lib"],
 )

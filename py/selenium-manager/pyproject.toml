@@ -27,6 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
+    "selenium-manager-linux-aarch64==4.45.0; sys_platform=='linux' and platform_machine=='aarch64'",
     "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
     "selenium-manager-windows==4.45.0; sys_platform=='win32'",
 ]
