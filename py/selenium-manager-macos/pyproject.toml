@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "selenium-manager-macos"
+version = "4.45.0"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+description = "Selenium Manager binary for macOS (universal binary, x86-64 + aarch64)"
+requires-python = ">=3.9"
+classifiers = [
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.urls]
+homepage = "https://www.selenium.dev"
+source = "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-macos"
+issues = "https://github.com/SeleniumHQ/selenium/issues"
+
+[project.scripts]
+selenium-manager = "selenium_manager_macos:main"
+
+[tool.setuptools.package-data]
+selenium_manager_macos = ["bin/selenium-manager"]
