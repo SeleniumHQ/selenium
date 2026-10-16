@@ -19,16 +19,216 @@
       "types": "./dist/typescript/find-elements.d.ts",
       "default": "./dist/typescript/find-elements.js"
     },
+    "./find-element": {
+      "types": "./dist/typescript/find-element.d.ts",
+      "default": "./dist/typescript/find-element.js"
+    },
+    "./active-element": {
+      "types": "./dist/typescript/active-element.d.ts",
+      "default": "./dist/typescript/active-element.js"
+    },
+    "./default-content": {
+      "types": "./dist/typescript/default-content.d.ts",
+      "default": "./dist/typescript/default-content.js"
+    },
+    "./frame-by-id-or-name": {
+      "types": "./dist/typescript/frame-by-id-or-name.d.ts",
+      "default": "./dist/typescript/frame-by-id-or-name.js"
+    },
+    "./frame-by-index": {
+      "types": "./dist/typescript/frame-by-index.d.ts",
+      "default": "./dist/typescript/frame-by-index.js"
+    },
+    "./get-frame-window": {
+      "types": "./dist/typescript/get-frame-window.d.ts",
+      "default": "./dist/typescript/get-frame-window.js"
+    },
     "./is-displayed": {
       "types": "./dist/typescript/is-displayed.d.ts",
       "default": "./dist/typescript/is-displayed.js"
+    },
+    "./is-enabled": {
+      "types": "./dist/typescript/is-enabled.d.ts",
+      "default": "./dist/typescript/is-enabled.js"
+    },
+    "./is-selected": {
+      "types": "./dist/typescript/is-selected.d.ts",
+      "default": "./dist/typescript/is-selected.js"
+    },
+    "./is-editable": {
+      "types": "./dist/typescript/is-editable.d.ts",
+      "default": "./dist/typescript/is-editable.js"
+    },
+    "./is-focusable": {
+      "types": "./dist/typescript/is-focusable.d.ts",
+      "default": "./dist/typescript/is-focusable.js"
+    },
+    "./is-interactable": {
+      "types": "./dist/typescript/is-interactable.d.ts",
+      "default": "./dist/typescript/is-interactable.js"
+    },
+    "./get-attribute-value": {
+      "types": "./dist/typescript/get-attribute-value.d.ts",
+      "default": "./dist/typescript/get-attribute-value.js"
+    },
+    "./get-size": {
+      "types": "./dist/typescript/get-size.d.ts",
+      "default": "./dist/typescript/get-size.js"
+    },
+    "./get-location": {
+      "types": "./dist/typescript/get-location.d.ts",
+      "default": "./dist/typescript/get-location.js"
+    },
+    "./get-effective-style": {
+      "types": "./dist/typescript/get-effective-style.d.ts",
+      "default": "./dist/typescript/get-effective-style.js"
+    },
+    "./get-value-of-css-property": {
+      "types": "./dist/typescript/get-effective-style.d.ts",
+      "default": "./dist/typescript/get-effective-style.js"
+    },
+    "./get-top-left-coordinates": {
+      "types": "./dist/typescript/get-top-left-coordinates.d.ts",
+      "default": "./dist/typescript/get-top-left-coordinates.js"
+    },
+    "./get-text": {
+      "types": "./dist/typescript/get-text.d.ts",
+      "default": "./dist/typescript/get-text.js"
+    },
+    "./get-local-storage-item": {
+      "types": "./dist/typescript/get-local-storage-item.d.ts",
+      "default": "./dist/typescript/get-local-storage-item.js"
+    },
+    "./get-local-storage-key": {
+      "types": "./dist/typescript/get-local-storage-key.d.ts",
+      "default": "./dist/typescript/get-local-storage-key.js"
+    },
+    "./get-local-storage-keys": {
+      "types": "./dist/typescript/get-local-storage-keys.d.ts",
+      "default": "./dist/typescript/get-local-storage-keys.js"
+    },
+    "./get-local-storage-size": {
+      "types": "./dist/typescript/get-local-storage-size.d.ts",
+      "default": "./dist/typescript/get-local-storage-size.js"
+    },
+    "./set-local-storage-item": {
+      "types": "./dist/typescript/set-local-storage-item.d.ts",
+      "default": "./dist/typescript/set-local-storage-item.js"
+    },
+    "./remove-local-storage-item": {
+      "types": "./dist/typescript/remove-local-storage-item.d.ts",
+      "default": "./dist/typescript/remove-local-storage-item.js"
+    },
+    "./clear-local-storage": {
+      "types": "./dist/typescript/clear-local-storage.d.ts",
+      "default": "./dist/typescript/clear-local-storage.js"
+    },
+    "./get-session-storage-item": {
+      "types": "./dist/typescript/get-session-storage-item.d.ts",
+      "default": "./dist/typescript/get-session-storage-item.js"
+    },
+    "./get-session-storage-key": {
+      "types": "./dist/typescript/get-session-storage-key.d.ts",
+      "default": "./dist/typescript/get-session-storage-key.js"
+    },
+    "./get-session-storage-keys": {
+      "types": "./dist/typescript/get-session-storage-keys.d.ts",
+      "default": "./dist/typescript/get-session-storage-keys.js"
+    },
+    "./get-session-storage-size": {
+      "types": "./dist/typescript/get-session-storage-size.d.ts",
+      "default": "./dist/typescript/get-session-storage-size.js"
+    },
+    "./set-session-storage-item": {
+      "types": "./dist/typescript/set-session-storage-item.d.ts",
+      "default": "./dist/typescript/set-session-storage-item.js"
+    },
+    "./remove-session-storage-item": {
+      "types": "./dist/typescript/remove-session-storage-item.d.ts",
+      "default": "./dist/typescript/remove-session-storage-item.js"
+    },
+    "./clear-session-storage": {
+      "types": "./dist/typescript/clear-session-storage.d.ts",
+      "default": "./dist/typescript/clear-session-storage.js"
+    },
+    "./execute-script": {
+      "types": "./dist/typescript/execute-script.d.ts",
+      "default": "./dist/typescript/execute-script.js"
+    },
+    "./execute-async-script": {
+      "types": "./dist/typescript/execute-async-script.d.ts",
+      "default": "./dist/typescript/execute-async-script.js"
+    },
+    "./get-element-from-cache": {
+      "types": "./dist/typescript/get-element-from-cache.d.ts",
+      "default": "./dist/typescript/get-element-from-cache.js"
+    },
+    "./find-element-fragment": {
+      "types": "./dist/typescript/find-element-fragment.d.ts",
+      "default": "./dist/typescript/find-element-fragment.js"
+    },
+    "./click": {
+      "types": "./dist/typescript/click.d.ts",
+      "default": "./dist/typescript/click.js"
+    },
+    "./type": {
+      "types": "./dist/typescript/type.d.ts",
+      "default": "./dist/typescript/type.js"
+    },
+    "./clear": {
+      "types": "./dist/typescript/clear.d.ts",
+      "default": "./dist/typescript/clear.js"
+    },
+    "./submit": {
+      "types": "./dist/typescript/submit.d.ts",
+      "default": "./dist/typescript/submit.js"
     }
   },
   "typesVersions": {
     "*": {
       "get-attribute": ["./dist/typescript/get-attribute.d.ts"],
       "find-elements": ["./dist/typescript/find-elements.d.ts"],
-      "is-displayed": ["./dist/typescript/is-displayed.d.ts"]
+      "find-element": ["./dist/typescript/find-element.d.ts"],
+      "active-element": ["./dist/typescript/active-element.d.ts"],
+      "default-content": ["./dist/typescript/default-content.d.ts"],
+      "frame-by-id-or-name": ["./dist/typescript/frame-by-id-or-name.d.ts"],
+      "frame-by-index": ["./dist/typescript/frame-by-index.d.ts"],
+      "get-frame-window": ["./dist/typescript/get-frame-window.d.ts"],
+      "is-displayed": ["./dist/typescript/is-displayed.d.ts"],
+      "is-enabled": ["./dist/typescript/is-enabled.d.ts"],
+      "is-selected": ["./dist/typescript/is-selected.d.ts"],
+      "is-editable": ["./dist/typescript/is-editable.d.ts"],
+      "is-focusable": ["./dist/typescript/is-focusable.d.ts"],
+      "is-interactable": ["./dist/typescript/is-interactable.d.ts"],
+      "get-attribute-value": ["./dist/typescript/get-attribute-value.d.ts"],
+      "get-size": ["./dist/typescript/get-size.d.ts"],
+      "get-location": ["./dist/typescript/get-location.d.ts"],
+      "get-effective-style": ["./dist/typescript/get-effective-style.d.ts"],
+      "get-value-of-css-property": ["./dist/typescript/get-effective-style.d.ts"],
+      "get-top-left-coordinates": ["./dist/typescript/get-top-left-coordinates.d.ts"],
+      "get-text": ["./dist/typescript/get-text.d.ts"],
+      "get-local-storage-item": ["./dist/typescript/get-local-storage-item.d.ts"],
+      "get-local-storage-key": ["./dist/typescript/get-local-storage-key.d.ts"],
+      "get-local-storage-keys": ["./dist/typescript/get-local-storage-keys.d.ts"],
+      "get-local-storage-size": ["./dist/typescript/get-local-storage-size.d.ts"],
+      "set-local-storage-item": ["./dist/typescript/set-local-storage-item.d.ts"],
+      "remove-local-storage-item": ["./dist/typescript/remove-local-storage-item.d.ts"],
+      "clear-local-storage": ["./dist/typescript/clear-local-storage.d.ts"],
+      "get-session-storage-item": ["./dist/typescript/get-session-storage-item.d.ts"],
+      "get-session-storage-key": ["./dist/typescript/get-session-storage-key.d.ts"],
+      "get-session-storage-keys": ["./dist/typescript/get-session-storage-keys.d.ts"],
+      "get-session-storage-size": ["./dist/typescript/get-session-storage-size.d.ts"],
+      "set-session-storage-item": ["./dist/typescript/set-session-storage-item.d.ts"],
+      "remove-session-storage-item": ["./dist/typescript/remove-session-storage-item.d.ts"],
+      "clear-session-storage": ["./dist/typescript/clear-session-storage.d.ts"],
+      "execute-script": ["./dist/typescript/execute-script.d.ts"],
+      "execute-async-script": ["./dist/typescript/execute-async-script.d.ts"],
+      "get-element-from-cache": ["./dist/typescript/get-element-from-cache.d.ts"],
+      "find-element-fragment": ["./dist/typescript/find-element-fragment.d.ts"],
+      "click": ["./dist/typescript/click.d.ts"],
+      "type": ["./dist/typescript/type.d.ts"],
+      "clear": ["./dist/typescript/clear.d.ts"],
+      "submit": ["./dist/typescript/submit.d.ts"]
     }
   },
   "engines": {

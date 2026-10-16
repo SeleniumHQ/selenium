@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>frame_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/default-content-global.js"></script>
+  <script src="../typescript/active-element-global.js"></script>
+  <script src="../typescript/get-frame-window-global.js"></script>
+  <script src="../typescript/frame-by-id-or-name-global.js"></script>
+  <script src="../typescript/frame-by-index-global.js"></script>
+  <script type="text/javascript">
+    // Assertions ported from frame_test.html, which is the behaviour spec for
+    // these atoms. That page is a <frameset> document and the frame layout
+    // below mirrors it exactly, so the ported cases mean the same thing here:
+    // frame 0 is name="firstName" id="first", frame 1 is id="second"
+    // name="secondName" holding two iframes, frame 2 is id="embedded" holding
+    // a further frameset.
+    //
+    // The parentFrame and getFrameIndex cases from that page are not ported --
+    // neither function is one of the atoms being migrated.
+    var ts = window.bot.frame.typescript;
+    var frameByIdOrName = ts.frameByIdOrName;
+    var frameByIndex = ts.frameByIndex;
+    var getFrameWindow = ts.getFrameWindow;
+    var defaultContent = ts.defaultContent;
+    var activeElement = ts.activeElement;
+
+    QUnit.test('finds a frame by name', function (assert) {
+      assert.strictEqual(frameByIdOrName('firstName'), window.frames[0]);
+    });
+
+    QUnit.test('finds a frame by id', function (assert) {
+      assert.strictEqual(frameByIdOrName('second'), window.frames[1]);
+    });
+
+    QUnit.test('returns null when no frame matches', function (assert) {
+      assert.strictEqual(frameByIdOrName('notThere'), null);
+    });
+
+    // Shallow by design: the search sees this window's own frames only.
+    QUnit.test('does not find a nested frame from the top window', function (assert) {
+      assert.strictEqual(frameByIdOrName('first.withadot'), null, 'by name');
+      assert.strictEqual(frameByIdOrName('embed1.withadot'), null, 'by id');
+      assert.strictEqual(frameByIdOrName('iframename1'), null, 'nested iframe by name');
+      assert.strictEqual(frameByIdOrName('iframe1'), null, 'nested iframe by id');
+    });
+
+    QUnit.test('finds a nested frame when searching under its own parent', function (assert) {
+      var embedded = getFrameWindow(document.getElementById('embedded'));
+      assert.strictEqual(frameByIdOrName('secondName', embedded), window.frames[2].frames[1]);
+    });
+
+    QUnit.test('finds a nested frame by id under its own parent', function (assert) {
+      var embedded = window.frames[2];
+      assert.strictEqual(frameByIdOrName('second', embedded), embedded.frames[1]);
+    });
+
+    // The walk never goes upwards, so a parent is invisible from a child.
+    QUnit.test('does not find a parent frame', function (assert) {
+      var embedded = window.frames[2];
+      assert.strictEqual(frameByIdOrName('firstName', embedded), null, 'by name');
+      assert.strictEqual(frameByIdOrName('first', embedded), null, 'by id');
+    });
+
+    QUnit.test('finds an iframe by name', function (assert) {
+      assert.strictEqual(frameByIdOrName('iframename1', window.frames[1]),
+        window.frames[1].frames[0]);
+    });
+
+    QUnit.test('finds an iframe by id', function (assert) {
+      assert.strictEqual(frameByIdOrName('iframe2', window.frames[1]),
+        window.frames[1].frames[1]);
+    });
+
+    // bot.frame compared ids loosely, so a number still found its frame.
+    QUnit.test('finds an iframe whose id is given as a number', function (assert) {
+      var parent = window.frames[1];
+      var iframe = parent.document.createElement('iframe');
+      iframe.id = '7';
+      parent.document.body.appendChild(iframe);
+      try {
+        assert.strictEqual(frameByIdOrName(7, parent), iframe.contentWindow);
+      } finally {
+        iframe.remove();
+      }
+    });
+
+    QUnit.test('does not find a parent iframe from within a child', function (assert) {
+      var innermost = window.frames[1].frames[1].frames[0];
+      assert.strictEqual(frameByIdOrName('iframename2', innermost), null, 'by name');
+      assert.strictEqual(frameByIdOrName('iframe2', innermost), null, 'by id');
+    });
+
+    QUnit.test('finds a frame by index', function (assert) {
+      assert.strictEqual(frameByIndex(1), window.frames[1]);
+      assert.strictEqual(frameByIndex(1, window.frames[2]), window.frames[2].frames[1]);
+    });
+
+    QUnit.test('returns null for an index past the end', function (assert) {
+      assert.strictEqual(frameByIndex(4), null);
+    });
+
+    QUnit.test('gets the window of a frame element', function (assert) {
+      assert.strictEqual(getFrameWindow(document.getElementById('second')), window.frames[1]);
+    });
+
+    QUnit.test('gets the window of an iframe element', function (assert) {
+      var iframe = window.frames[1].document.getElementById('iframe1');
+      assert.strictEqual(getFrameWindow(iframe), window.frames[1].frames[0]);
+    });
+
+    // Being handed a non-frame is the one way a caller finds out it picked the
+    // wrong element, so it raises rather than returning null.
+    QUnit.test('raises no such frame for a non-frame element', function (assert) {
+      var notAFrame = window.frames[1].document.getElementById('bou');
+      assert.ok(notAFrame, 'precondition: found the input');
+      assert.throws(function () {
+        getFrameWindow(notAFrame);
+      }, /frame or an iframe/);
+    });
+
+    QUnit.test('default content is the top window', function (assert) {
+      assert.strictEqual(defaultContent(), window.top);
+      assert.strictEqual(defaultContent(window.frames[1]), window.top,
+        'still the top window when asked from inside a frame');
+    });
+
+    QUnit.test('active element reports the focused element', function (assert) {
+      var frameWin = window.frames[1];
+      var input = frameWin.document.getElementById('bou');
+      input.focus();
+      assert.strictEqual(activeElement(frameWin), input);
+    });
+
+    QUnit.test('active element falls back when nothing is focused', function (assert) {
+      var frameWin = window.frames[1];
+      frameWin.document.getElementById('bou').blur();
+      var active = activeElement(frameWin);
+      assert.ok(active, 'always answers with an element');
+      assert.strictEqual(active, frameWin.document.activeElement || frameWin.document.body);
+    });
+  </script>
+</head>
+
+<frameset rows="*,*,*">
+  <frame name="firstName" id="first" style="display:none;">
+    <html>
+
+    <head>
+      <title>first frame</title>
+    </head>
+
+    <body>
+      <div name="right" id="bou" class="dogs">yup</div>
+    </body>
+
+    </html>
+  </frame>
+  <frame id="second" name="secondName" src="testdata/nested_iframes.html">
+  </frame>
+  <frame id="embedded" src="testdata/nested_frames.html">
+  </frame>
+</frameset>
+
+</html>

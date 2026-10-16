@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>interactable_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/is-interactable-global.js"></script>
+  <script type="text/javascript">
+    // Ported from bot.dom.isInteractable: shown (ignoring opacity), enabled,
+    // and not opted out of pointer events.
+    var isInteractable = window.bot.dom.typescript.isInteractable;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    QUnit.test('a visible enabled control is interactable', function (assert) {
+      assert.strictEqual(isInteractable(byId('plain-button')), true);
+    });
+
+    QUnit.test('a hidden control is not interactable', function (assert) {
+      assert.strictEqual(isInteractable(byId('display-none-button')), false, 'display:none');
+      assert.strictEqual(isInteractable(byId('visibility-hidden-button')), false, 'visibility:hidden');
+      assert.strictEqual(isInteractable(byId('inside-hidden-parent')), false, 'hidden ancestor');
+    });
+
+    QUnit.test('a disabled control is not interactable', function (assert) {
+      assert.strictEqual(isInteractable(byId('disabled-button')), false);
+    });
+
+    QUnit.test('pointer-events none makes an element uninteractable', function (assert) {
+      assert.strictEqual(isInteractable(byId('no-pointer-events-button')), false);
+    });
+
+    QUnit.test('opacity is ignored', function (assert) {
+      // A fully transparent control still takes clicks, so it is interactable
+      // even though is_displayed would call it hidden.
+      assert.strictEqual(isInteractable(byId('transparent-button')), true);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <button type="button" id="plain-button">plain</button>
+  <button type="button" id="display-none-button" style="display:none;">none</button>
+  <button type="button" id="visibility-hidden-button" style="visibility:hidden;">hidden</button>
+  <div style="display:none;">
+    <button type="button" id="inside-hidden-parent">nested</button>
+  </div>
+  <button type="button" id="disabled-button" disabled>disabled</button>
+  <button type="button" id="no-pointer-events-button" style="pointer-events:none;">no pointer</button>
+  <button type="button" id="transparent-button" style="opacity:0;">transparent</button>
+</body>
+
+</html>
