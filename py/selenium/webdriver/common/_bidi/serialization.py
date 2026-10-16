@@ -39,7 +39,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from importlib import import_module
-from typing import Any
+from typing import Any, final
 
 from selenium.common.exceptions import WebDriverException
 
@@ -64,6 +64,7 @@ def _summarize(owner: str, kind: str, keys: list[str], suffix: str) -> str:
     return f"{owner}: {kind} {shown} ({suffix})"
 
 
+@final
 class UnsetType:
     """Type of the :data:`UNSET` sentinel (an omitted optional, not ``None``)."""
 
