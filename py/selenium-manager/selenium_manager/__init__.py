@@ -52,12 +52,12 @@ def _module_name(sys_platform: str, machine: str) -> str:
         module_name = _LINUX_MODULES.get(machine)
         if module_name is None:
             supported = ", ".join(_LINUX_MODULES)
-            raise SystemExit(f"Unsupported Linux architecture: {machine}. Supported: {supported}")
+            raise RuntimeError(f"Unsupported Linux architecture: {machine}. Supported: {supported}")
         return module_name
 
     module_name = _PLATFORM_MODULES.get(sys_platform)
     if module_name is None:
-        raise SystemExit(f"Unsupported platform: {sys_platform}. Supported: linux, darwin, win32")
+        raise RuntimeError(f"Unsupported platform: {sys_platform}. Supported: linux, darwin, win32")
     return module_name
 
 
@@ -66,6 +66,9 @@ def binary_path() -> str:
 
     `SE_MANAGER_PATH` wins when set, matching how every binding already lets
     users point at a manager they built or vendored themselves.
+
+    Raises RuntimeError, not SystemExit, when the platform is unsupported or its
+    package is missing, so a binding can catch it and fall back.
     """
     override = os.environ.get("SE_MANAGER_PATH")
     if override:
@@ -76,7 +79,7 @@ def binary_path() -> str:
         platform_module = importlib.import_module(module_name)
     except ImportError as exc:
         pkg_name = module_name.replace("_", "-")
-        raise SystemExit(f"Platform package {pkg_name} is not installed.\nRun: pip install {pkg_name}") from exc
+        raise RuntimeError(f"Platform package {pkg_name} is not installed.\nRun: pip install {pkg_name}") from exc
 
     binary = platform_module.binary_path()
     _ensure_executable(binary)
@@ -99,7 +102,10 @@ def _ensure_executable(binary: str) -> None:
 
 
 def main() -> None:
-    binary = binary_path()
+    try:
+        binary = binary_path()
+    except RuntimeError as exc:
+        sys.exit(str(exc))
     # Installing the standalone package is not consent to usage stats, so they
     # are opt-in here: SE_AVOID_STATS=false (or se-config.toml) turns them on.
     env = {**os.environ}
