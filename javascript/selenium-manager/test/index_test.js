@@ -56,12 +56,18 @@ function installPackage(modules, name, binary) {
 }
 
 function binaryPath(fx, platform, arch, env = {}) {
+  // Inherit the environment: under Bazel, process.execPath is a launcher that
+  // needs the JS_BINARY__* variables to find the real node.
+  const childEnv = { ...process.env, NODE_PATH: fx.modules, FAKE_PLATFORM: platform, FAKE_ARCH: arch, ...env }
+  if (!('SE_MANAGER_PATH' in env)) {
+    delete childEnv.SE_MANAGER_PATH
+  }
   const result = spawnSync(
     process.execPath,
     ['-r', fx.shim, '-e', `process.stdout.write(require(${JSON.stringify(INDEX)}).binaryPath())`],
     {
       encoding: 'utf8',
-      env: { PATH: process.env.PATH, NODE_PATH: fx.modules, FAKE_PLATFORM: platform, FAKE_ARCH: arch, ...env },
+      env: childEnv,
     },
   )
   return { path: result.stdout, error: result.stderr, status: result.status }
