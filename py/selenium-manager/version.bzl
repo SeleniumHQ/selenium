@@ -4,7 +4,7 @@
 # Kept in lockstep with the `selenium` wheel so `selenium-manager==<x>` always
 # names the manager that shipped alongside `selenium==<x>`; `rake py:version`
 # bumps both together.
-SM_VERSION = "4.50.0.202609091537"
+SM_VERSION = "4.52.0.202610091837"
 
 # The meta package pins the exact build of its platform package, so the pins are
 # derived from SM_VERSION here rather than restated in the BUILD file where they
