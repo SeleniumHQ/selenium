@@ -93,10 +93,9 @@ def test_lookup_failure_is_catchable_by_library_callers(monkeypatch):
     # A binding falls back to its vendored manager by catching Exception, so a
     # failed lookup must not be a SystemExit that ends the caller's process.
     monkeypatch.delenv("SE_MANAGER_PATH", raising=False)
-    try:
+    with pytest.raises(Exception) as excinfo:
         binary_path()
-    except Exception:
-        pass
+    assert isinstance(excinfo.value, RuntimeError)
 
 
 def test_launcher_exits_with_the_lookup_error(monkeypatch):
