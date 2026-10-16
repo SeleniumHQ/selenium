@@ -1,0 +1,56 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:packaging.bzl", "py_wheel")
+
+SM_VERSION = "4.45.0"
+
+py_library(
+    name = "lib",
+    srcs = [
+        "selenium_manager/__init__.py",
+        "selenium_manager/__main__.py",
+    ],
+    imports = ["."],
+)
+
+py_wheel(
+    name = "selenium-manager-wheel",
+    abi = "none",
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+    ],
+    description_content_type = "text/x-rst",
+    distribution = "selenium_manager",
+    entry_points = {
+        "console_scripts": {
+            "selenium-manager": "selenium_manager:main",
+        },
+    },
+    homepage = "https://www.selenium.dev",
+    license = "Apache-2.0",
+    platform = "any",
+    python_requires = ">=3.9",
+    python_tag = "py3",
+    requires = [
+        "selenium-manager-linux-x86-64==4.45.0; sys_platform=='linux' and platform_machine=='x86_64'",
+        "selenium-manager-macos==4.45.0; sys_platform=='darwin'",
+        "selenium-manager-windows==4.45.0; sys_platform=='win32'",
+    ],
+    strip_path_prefixes = ["py/selenium-manager/"],
+    summary = "Selenium Manager — browser and driver manager for the Selenium ecosystem",
+    tags = ["release-artifact"],
+    version = SM_VERSION,
+    visibility = ["//visibility:public"],
+    deps = [":lib"],
+)
