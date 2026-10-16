@@ -8,6 +8,18 @@ copy_file(
     out = "bin/selenium-manager",
 )
 
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
 genrule(
     name = "license",
     srcs = ["//:license"],
@@ -24,6 +36,8 @@ npm_package(
         "package.json",
         ":license",
         ":manager-binary",
+        ":manager-notice",
+        ":manager-sbom",
     ],
     package = "@selenium/manager-darwin",
     publishable = True,

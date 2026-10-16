@@ -10,10 +10,26 @@ copy_file(
     out = "selenium_manager_macos/bin/selenium-manager",
 )
 
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "selenium_manager_macos/bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "selenium_manager_macos/bin/selenium-manager.cdx.json",
+)
+
 py_library(
     name = "lib",
     srcs = ["selenium_manager_macos/__init__.py"],
-    data = [":manager-binary"],
+    data = [
+        ":manager-binary",
+        ":manager-notice",
+        ":manager-sbom",
+    ],
     imports = ["."],
 )
 
@@ -74,6 +90,8 @@ py_wheel(
         # py_wheel packages each dep's DefaultInfo files; py_library keeps data
         # in runfiles, so the binary has to be named here to reach the wheel.
         ":manager-binary",
+        ":manager-notice",
+        ":manager-sbom",
         ":notice-wheel",
     ],
 )
