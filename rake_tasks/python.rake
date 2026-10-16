@@ -221,12 +221,10 @@ task :release_manager do |_task, arguments|
   Rake::Task['py:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
-    puts 'Updating selenium-manager version to nightly...'
-    old_version = manager_python_version
-    nightly_suffix = ".#{Time.now.strftime('%Y%m%d%H%M')}"
-    base = old_version.split('.')[0..2].join('.')
-    new_version = "#{base}#{nightly_suffix}"
-    Rake::Task['py:version_manager'].invoke(new_version)
+    # Reuse the binding's nightly version rather than stamping a new one, so a
+    # manager built in a later minute still matches the selenium wheel beside it.
+    puts 'Updating selenium-manager version to the selenium nightly version...'
+    Rake::Task['py:version_manager'].invoke(python_version)
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 

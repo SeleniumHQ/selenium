@@ -43,7 +43,7 @@ def test_windows_binary_covers_every_architecture(machine):
 
 
 def test_unsupported_linux_architecture_lists_the_supported_ones():
-    with pytest.raises(SystemExit) as excinfo:
+    with pytest.raises(RuntimeError) as excinfo:
         _module_name("linux", "riscv64")
     message = str(excinfo.value)
     assert "riscv64" in message
@@ -52,7 +52,7 @@ def test_unsupported_linux_architecture_lists_the_supported_ones():
 
 
 def test_unsupported_platform():
-    with pytest.raises(SystemExit, match="freebsd14"):
+    with pytest.raises(RuntimeError, match="freebsd14"):
         _module_name("freebsd14", "x86_64")
 
 
@@ -77,7 +77,7 @@ def test_se_manager_path_overrides_the_platform_package(monkeypatch):
 def test_empty_se_manager_path_is_ignored(monkeypatch):
     # An unset variable and one exported as empty should behave the same.
     monkeypatch.setenv("SE_MANAGER_PATH", "")
-    with pytest.raises(SystemExit):
+    with pytest.raises(RuntimeError):
         binary_path()
 
 
@@ -85,8 +85,25 @@ def test_missing_platform_package_names_the_package_to_install(monkeypatch):
     # No platform package is a dependency of this test, so the import failure
     # here is the real one a user hits after a partial install.
     monkeypatch.delenv("SE_MANAGER_PATH", raising=False)
-    with pytest.raises(SystemExit, match="pip install selenium-manager-"):
+    with pytest.raises(RuntimeError, match="pip install selenium-manager-"):
         binary_path()
+
+
+def test_lookup_failure_is_catchable_by_library_callers(monkeypatch):
+    # A binding falls back to its vendored manager by catching Exception, so a
+    # failed lookup must not be a SystemExit that ends the caller's process.
+    monkeypatch.delenv("SE_MANAGER_PATH", raising=False)
+    try:
+        binary_path()
+    except Exception:
+        pass
+
+
+def test_launcher_exits_with_the_lookup_error(monkeypatch):
+    monkeypatch.delenv("SE_MANAGER_PATH", raising=False)
+    monkeypatch.setattr(sys, "argv", ["selenium-manager"])
+    with pytest.raises(SystemExit, match="pip install selenium-manager-"):
+        main()
 
 
 def test_platform_package_supplies_the_path(tmp_path, monkeypatch):
