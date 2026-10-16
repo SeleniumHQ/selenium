@@ -99,16 +99,6 @@ class ErrorHandlerTest {
   }
 
   @Test
-  void testStateTakesPrecedenceOverConflictingStatus() {
-    Response response = new Response();
-    response.setState("no such element");
-    response.setStatus(ErrorCodes.NO_SUCH_WINDOW);
-
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> handler.throwIfResponseFailed(response, 123));
-  }
-
-  @Test
   void testFallsBackToWebDriverExceptionWhenErrorCodesReturnsNoType() {
     ErrorCodes codes =
         new ErrorCodes() {
@@ -513,7 +503,6 @@ class ErrorHandlerTest {
 
   private Response createResponse(int status, Object value) {
     Response response = new Response();
-    response.setStatus(status);
     response.setState(new ErrorCodes().toState(status));
     response.setValue(value);
     return response;

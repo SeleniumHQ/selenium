@@ -27,7 +27,6 @@ import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 
 import com.google.common.net.MediaType;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodec;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
@@ -67,7 +65,6 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   private static final Logger LOG = Logger.getLogger(W3CHttpResponseCodec.class.getName());
 
   private final ErrorCodec errorCodec = ErrorCodec.createDefault();
-  private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
   private final Function<Object, Object> elementConverter = new JsonToWebElementConverter(null);
 
@@ -95,12 +92,10 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       String content = encodedResponse.contentAsString().trim();
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setState("unknown command");
-        response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
       } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()
           || HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
         response.setState("unknown error");
-        response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
         Map<String, Object> org = json.toType(content, MAP_TYPE);
@@ -125,7 +120,6 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
         }
 
         response.setState(error);
-        response.setStatus(errorCodes.toStatus(error, Optional.of(encodedResponse.getStatus())));
 
         // For now, we'll inelegantly special case unhandled alerts.
         if ("unexpected alert open".equals(error)
@@ -147,7 +141,6 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     }
 
     response.setState("success");
-    response.setStatus(ErrorCodes.SUCCESS);
 
     if (contentType.startsWith(MediaType.OCTET_STREAM.toString())) {
       response.setValue(encodedResponse.getContent());
