@@ -153,6 +153,7 @@ task :release_manager do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
   dry_run = args.delete('dry-run')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
 
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
 
@@ -166,9 +167,6 @@ task :release_manager do |_task, arguments|
     setup_github_npm_auth unless dry_run
   end
 
-  bazel_args = ['--config=release']
-  bazel_args += ['--', '--dry-run=true'] if dry_run
-
   targets = [
     '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
     '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
@@ -179,7 +177,7 @@ task :release_manager do |_task, arguments|
 
   targets.each do |target|
     puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
-    Bazel.execute('run', bazel_args, target)
+    publish_npm_package(target, config, dry_run)
   end
 end
 
