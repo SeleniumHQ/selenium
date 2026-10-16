@@ -1,3 +1,4 @@
+load("@aspect_rules_js//js:defs.bzl", "js_test")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load(":version.bzl", "SM_VERSION")
 
@@ -25,4 +26,11 @@ npm_package(
     tags = ["release-artifact"],
     version = SM_VERSION,
     visibility = ["//visibility:public"],
+)
+
+js_test(
+    name = "unit",
+    size = "small",
+    data = ["index.js"],
+    entry_point = "test/index_test.js",
 )
