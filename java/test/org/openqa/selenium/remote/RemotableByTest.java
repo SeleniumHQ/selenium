@@ -205,8 +205,7 @@ class RemotableByTest {
 
   private Response createError(Exception e) {
     Response res = new Response();
-    res.setStatus(errorCodes.toStatusCode(e));
-    res.setState(errorCodes.toState(res.getStatus()));
+    res.setState(errorCodes.toState(errorCodes.toStatusCode(e)));
     res.setValue(ErrorCodec.createDefault().encode(e));
     return res;
   }
