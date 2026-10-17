@@ -33,12 +33,12 @@ class JdkHttpClientTest extends HttpClientTestBase {
 
   @Test
   void maskUrlCredentials_hidesUserInfoInUrl() {
-    assertThat(maskUrlCredentials("http://user:pass@my.grid.com:4444/wd/hub"))
-        .isEqualTo("http://***@my.grid.com:4444/wd/hub");
-    assertThat(maskUrlCredentials("https://vi:se@myshop.com/wd/hub?email=foo@bar.ee"))
-        .isEqualTo("https://***@myshop.com/wd/hub?email=foo@bar.ee");
-    assertThat(maskUrlCredentials("https://0:@myshop.com/wd/hub"))
-        .isEqualTo("https://***@myshop.com/wd/hub");
+    assertThat(maskUrlCredentials("http://user:pass@my.grid.test:4444/wd/hub"))
+        .isEqualTo("http://***@my.grid.test:4444/wd/hub");
+    assertThat(maskUrlCredentials("https://vi:se@myshop.test/wd/hub?email=foo@bar.test"))
+        .isEqualTo("https://***@myshop.test/wd/hub?email=foo@bar.test");
+    assertThat(maskUrlCredentials("https://0:@myshop.test/wd/hub"))
+        .isEqualTo("https://***@myshop.test/wd/hub");
   }
 
   @Test

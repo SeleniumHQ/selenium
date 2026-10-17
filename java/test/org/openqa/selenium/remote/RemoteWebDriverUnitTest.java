@@ -102,18 +102,18 @@ class RemoteWebDriverUnitTest {
   void canHandleGetCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
-    fixture.driver.get("http://some.host.com");
+    fixture.driver.get("http://some.host.test");
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.GET, Map.of("url", "http://some.host.com")));
+        new CommandPayload(DriverCommand.GET, Map.of("url", "http://some.host.test")));
   }
 
   @Test
   void canHandleGetCurrentUrlCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(echoCapabilities, valueResponder("http://some.host.com"));
+        new WebDriverFixture(echoCapabilities, valueResponder("http://some.host.test"));
 
-    assertThat(fixture.driver.getCurrentUrl()).isEqualTo("http://some.host.com");
+    assertThat(fixture.driver.getCurrentUrl()).isEqualTo("http://some.host.test");
 
     fixture.verifyCommands(new CommandPayload(DriverCommand.GET_CURRENT_URL, emptyMap()));
   }
@@ -477,10 +477,10 @@ class RemoteWebDriverUnitTest {
   void canHandleNavigateToCommand() throws IOException {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
-    fixture.driver.navigate().to(new URL("http://www.test.com/"));
+    fixture.driver.navigate().to(new URL("http://www.example.test/"));
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.GET, Map.of("url", "http://www.test.com/")));
+        new CommandPayload(DriverCommand.GET, Map.of("url", "http://www.example.test/")));
   }
 
   @Test
@@ -725,7 +725,7 @@ class RemoteWebDriverUnitTest {
   void canHandleGeneralExceptionInNonDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
       final Map<String, String> parameters =
-          sequencedMapOf("url", "https://user:password@somedomain.com", "token", "12345Secret");
+          sequencedMapOf("url", "https://user:password@somedomain.test", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(false);
       WebDriverFixture fixture =
@@ -751,7 +751,7 @@ class RemoteWebDriverUnitTest {
   void canHandleGeneralExceptionInDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
       final Map<String, String> parameters =
-          Map.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
+          Map.of("url", "https://user:password@somedomain.test", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(true);
       WebDriverFixture fixture =

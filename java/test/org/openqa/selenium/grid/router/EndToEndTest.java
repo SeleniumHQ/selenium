@@ -173,7 +173,7 @@ class EndToEndTest {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "se:type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
+    driver.get("http://www.example.com");
 
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
@@ -190,7 +190,7 @@ class EndToEndTest {
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "se:type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
     try {
-      driver.get("https://www.google.com");
+      driver.get("https://www.example.com");
 
       // The node is still open. Now try to create a second session. It will be added to the queue.
       // A retry will be attempted and once request times out, it should fail.
@@ -212,7 +212,7 @@ class EndToEndTest {
     // And now we can open another browser (because the previous one has been closed).
     RemoteWebDriver newWebDriver = new RemoteWebDriver(server.getUrl(), caps);
     try {
-      newWebDriver.get("https://www.google.com");
+      newWebDriver.get("https://www.example.com");
     } finally {
       newWebDriver.quit();
     }
