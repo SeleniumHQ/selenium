@@ -121,7 +121,7 @@ class LocalNewSessionQueueTest {
                   tracer,
                   new DefaultSlotMatcher(),
                   Duration.ofSeconds(1),
-                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
+                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 3),
                   Duration.ofSeconds(1),
                   REGISTRATION_SECRET,
                   5);
@@ -135,7 +135,7 @@ class LocalNewSessionQueueTest {
                   tracer,
                   new DefaultSlotMatcher(),
                   Duration.ofSeconds(1),
-                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
+                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 3),
                   Duration.ofSeconds(1),
                   REGISTRATION_SECRET,
                   5);
@@ -221,7 +221,7 @@ class LocalNewSessionQueueTest {
             () -> {
               waitUntilAddedToQueue(sessionRequest);
               try {
-                Thread.sleep(5500); // simulate session long to create
+                Thread.sleep(3500); // simulate session long to create
               } catch (InterruptedException ignore) {
               }
               Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
@@ -325,7 +325,7 @@ class LocalNewSessionQueueTest {
               Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
 
               try {
-                Thread.sleep(4000); // simulate session waiting in queue
+                Thread.sleep(2000); // simulate session waiting in queue
               } catch (InterruptedException ignore) {
               }
 
@@ -378,7 +378,7 @@ class LocalNewSessionQueueTest {
               Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
 
               try {
-                Thread.sleep(5500); // simulate session waiting in queue
+                Thread.sleep(3500); // simulate session waiting in queue
               } catch (InterruptedException ignore) {
               }
 
