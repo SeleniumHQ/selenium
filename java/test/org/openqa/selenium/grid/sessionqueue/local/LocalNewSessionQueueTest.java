@@ -68,7 +68,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -121,7 +120,7 @@ class LocalNewSessionQueueTest {
                   tracer,
                   new DefaultSlotMatcher(),
                   Duration.ofSeconds(1),
-                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 3),
+                  Duration.ofSeconds(3),
                   Duration.ofSeconds(1),
                   REGISTRATION_SECRET,
                   5);
@@ -135,7 +134,7 @@ class LocalNewSessionQueueTest {
                   tracer,
                   new DefaultSlotMatcher(),
                   Duration.ofSeconds(1),
-                  Duration.ofSeconds(Debug.isDebugging() ? 9999 : 3),
+                  Duration.ofSeconds(3),
                   Duration.ofSeconds(1),
                   REGISTRATION_SECRET,
                   5);
