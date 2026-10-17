@@ -115,7 +115,7 @@ module Selenium
         stub_request(:get, status_url).to_return(body: {value: {ready: false}}.to_json)
 
         expect {
-          described_class.new(jar, port: port).start
+          described_class.new(jar, port: port, timeout: 0).start
         }.to raise_error(Selenium::Server::Error)
       end
     end
