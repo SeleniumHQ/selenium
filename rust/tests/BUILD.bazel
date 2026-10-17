@@ -8,7 +8,7 @@ rustfmt_config(
 
 rust_test_suite(
     name = "integration",
-    size = "small",
+    size = "large",
     srcs = glob(["**/*_tests.rs"]),
     aliases = aliases(),
     compile_data = [
