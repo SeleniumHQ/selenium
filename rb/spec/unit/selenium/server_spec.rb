@@ -23,9 +23,9 @@ require 'selenium/server'
 module Selenium
   describe Server do
     let(:mock_process) { instance_double(WebDriver::ChildProcess).as_null_object }
-    let(:mock_poller) { instance_double(WebDriver::SocketPoller, connected?: true, closed?: true) }
     let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
-    let(:port) { WebDriver::PortProber.above(4444) }
+    let(:port) { 4321 }
+    let(:jar) { 'selenium_server_deploy.jar' }
     let(:example_json) do
       [{url: "#{repo}/41272273",
         assets: {
@@ -39,91 +39,85 @@ module Selenium
         }}].to_json
     end
 
+    before { allow(File).to receive(:exist?).with(jar).and_return(true) }
+
     it 'raises an error if the jar file does not exist' do
       expect {
         described_class.new('doesnt-exist.jar')
       }.to raise_error(Errno::ENOENT)
     end
 
-    it 'uses the given jar file and port' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234')
-        .and_return(mock_process)
+    describe '#start' do
+      let(:status_url) { "http://127.0.0.1:#{port}/status" }
 
-      server = described_class.new('selenium_server_deploy.jar', port: 1234, background: true)
-      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
+      before do
+        allow(WebDriver::ChildProcess).to receive(:build).and_return(mock_process)
+        allow(WebDriver::SocketPoller).to receive(:new)
+          .and_return(instance_double(WebDriver::SocketPoller, connected?: true))
+        stub_request(:get, status_url).to_return(body: {value: {ready: true}}.to_json)
+      end
 
-      server.start
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
-      expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234')
-    end
+      it 'uses the given jar file and port' do
+        described_class.new(jar, port: port).start
 
-    it 'waits for the server process by default' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
-        .and_return(mock_process)
+        expect(WebDriver::ChildProcess).to have_received(:build)
+          .with('java', '-jar', jar, 'standalone', '--port', port.to_s)
+      end
 
-      server = described_class.new('selenium_server_deploy.jar', port: port)
-      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
-      allow(mock_process).to receive(:wait)
+      it 'waits for the server process by default' do
+        described_class.new(jar, port: port).start
 
-      server.start
+        expect(mock_process).to have_received(:wait)
+      end
 
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
-      expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
-      expect(mock_process).to have_received(:wait)
-    end
+      it 'does not wait for the server process when running in the background' do
+        described_class.new(jar, port: port, background: true).start
 
-    it 'adds additional args' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s, 'foo', 'bar')
-        .and_return(mock_process)
+        expect(mock_process).not_to have_received(:wait)
+      end
 
-      server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
-      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
+      it 'adds additional args' do
+        server = described_class.new(jar, port: port)
+        server << %w[foo bar]
+        server.start
 
-      server << %w[foo bar]
+        expect(WebDriver::ChildProcess).to have_received(:build)
+          .with('java', '-jar', jar, 'standalone', '--port', port.to_s, 'foo', 'bar')
+      end
 
-      server.start
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
-      expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone',
-              '--port', port.to_s, 'foo', 'bar')
-    end
+      it 'adds additional JAVA options args' do
+        server = described_class.new(jar, port: port)
+        server << %w[foo bar]
+        server << '-Dwebdriver.chrome.driver=/bin/chromedriver'
+        server.start
 
-    it 'adds additional JAVA options args' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java',
-              '-Dwebdriver.chrome.driver=/bin/chromedriver',
-              '-jar', 'selenium_server_deploy.jar',
-              'standalone',
-              '--port', port.to_s,
-              'foo',
-              'bar')
-        .and_return(mock_process)
+        expect(WebDriver::ChildProcess).to have_received(:build)
+          .with('java',
+                '-Dwebdriver.chrome.driver=/bin/chromedriver',
+                '-jar', jar,
+                'standalone',
+                '--port', port.to_s,
+                'foo',
+                'bar')
+      end
 
-      server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
-      allow(server).to receive_messages(socket: mock_poller, status_ok?: true)
+      it 'polls until the server reports it is ready' do
+        stub_request(:get, status_url)
+          .to_return(body: {value: {ready: false}}.to_json)
+          .then.to_return(body: {value: {ready: true}}.to_json)
 
-      server << %w[foo bar]
-      server << '-Dwebdriver.chrome.driver=/bin/chromedriver'
+        described_class.new(jar, port: port).start
 
-      server.start
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
-      expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java',
-              '-Dwebdriver.chrome.driver=/bin/chromedriver',
-              '-jar', 'selenium_server_deploy.jar',
-              'standalone',
-              '--port', port.to_s,
-              'foo',
-              'bar')
+        expect(a_request(:get, status_url)).to have_been_made.twice
+      end
+
+      it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
+        stub_request(:get, status_url).to_return(body: {value: {ready: false}}.to_json)
+
+        expect {
+          described_class.new(jar, port: port).start
+        }.to raise_error(Selenium::Server::Error)
+      end
     end
 
     it 'downloads the specified version from the selenium site' do
@@ -138,29 +132,22 @@ module Selenium
       stub_request(:get, 'https://github-releases.githubusercontent.com/something')
         .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
-      begin
-        actual_download_file_name = described_class.download(required_version)
-        expect(actual_download_file_name).to eq(expected_download_file_name)
-        expect(File).to exist(expected_download_file_name)
-      ensure
-        FileUtils.rm_rf expected_download_file_name
+      Dir.mktmpdir do |dir|
+        Dir.chdir(dir) do
+          actual_download_file_name = described_class.download(required_version)
+          expect(actual_download_file_name).to eq(expected_download_file_name)
+          expect(File).to exist(expected_download_file_name)
+        end
       end
     end
 
-    it 'gets a server instance and downloads the specified version' do
-      required_version = '10.4.0'
-      expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
-      expected_options = {port: 5555}
-      fake_server = Object.new
+    it 'gets a server instance for the specified version' do
+      allow(File).to receive(:exist?).with('selenium-server-10.4.0.jar').and_return(true)
 
-      allow(described_class).to receive(:download).with(required_version).and_return(expected_download_file_name)
-      allow(described_class).to receive(:new).with(expected_download_file_name,
-                                                   expected_options).and_return(fake_server)
+      server = described_class.get('10.4.0', port: port)
 
-      server = described_class.get required_version, expected_options
-      expect(server).to eq(fake_server)
-      expect(described_class).to have_received(:download).with(required_version)
-      expect(described_class).to have_received(:new).with(expected_download_file_name, expected_options)
+      expect(server).to be_a(described_class)
+      expect(server.port).to eq(port)
     end
 
     it 'automatically repairs http_proxy settings that do not start with http://' do
@@ -176,11 +163,9 @@ module Selenium
     it 'only downloads a jar if it is not present in the current directory' do
       required_version = '10.2.0'
       expected_download_file_name = "selenium-server-#{required_version}.jar"
+      allow(File).to receive(:exist?).with(expected_download_file_name).and_return(true)
 
-      allow(File).to receive(:exist?).with(expected_download_file_name).and_return true
-
-      described_class.download required_version
-      expect(File).to have_received(:exist?).with(expected_download_file_name)
+      expect(described_class.download(required_version)).to eq(expected_download_file_name)
     end
 
     it 'knows what the latest version available is' do
@@ -191,25 +176,8 @@ module Selenium
       expect(described_class.latest).to eq(expected_latest)
     end
 
-    it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
-        .and_return(mock_process)
-
-      poller = instance_double(WebDriver::SocketPoller)
-      allow(poller).to receive(:connected?).and_return(false)
-
-      server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
-      allow(server).to receive(:socket).and_return(poller)
-
-      expect { server.start }.to raise_error(Selenium::Server::Error)
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
-    end
-
     it 'sets options after instantiation' do
-      allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
-      server = described_class.new('selenium_server_deploy.jar', port: port)
+      server = described_class.new(jar, port: port)
       expect(server.port).to eq(port)
       expect(server.timeout).to eq(30)
       expect(server.background).to be false
@@ -226,7 +194,6 @@ module Selenium
         expect(server.background).to be_truthy
         expect(server.log).to eq('/tmp/server.log')
       end
-      expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
     end
   end
 end # Selenium
