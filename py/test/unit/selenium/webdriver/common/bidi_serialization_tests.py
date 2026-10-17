@@ -190,6 +190,15 @@ class StringMap(Record):
     )
 
 
+@register("test.Attributes")
+@dataclass(frozen=True)
+class Attributes(Record):
+    # Mirrors script.NodeProperties.attributes: a field-less synthetic map record
+    # (CDDL `{*text => text}`) generates a string-keyed `dict[str, str]` with a `map`
+    # descriptor for runtime validation, rather than being dropped to `Any` (#18106).
+    values: dict[str, str] | UnsetType = field(default=UNSET, metadata=meta("values", map="str"))
+
+
 @register("test.NestedUnion")
 class NestedUnion(Union):
     # An arm that is itself a union (ObjectOnly), plus a direct record arm (Circle): a value can be
@@ -677,6 +686,53 @@ def test_a_map_entry_value_is_object_only():
 def test_a_malformed_map_entry_raises():
     with pytest.raises(BiDiSerializationError, match=r"expected a \[key, value\] pair"):
         StringMap.from_json({"value": [["k"]]})
+
+
+# --- string-keyed primitive map fields (field-less synthetic map record, #18106) ---
+
+
+def test_a_string_keyed_map_round_trips():
+    assert Attributes.from_json({"values": {"id": "main", "class": "a b"}}).values == {
+        "id": "main",
+        "class": "a b",
+    }
+
+
+def test_a_missing_optional_string_keyed_map_is_unset():
+    assert Attributes.from_json({}).values is UNSET
+
+
+def test_inbound_string_keyed_map_rejects_a_scalar():
+    with pytest.raises(BiDiSerializationError, match=r"Attributes.values: expected a map, got str 'oops'"):
+        Attributes.from_json({"values": "oops"})
+
+
+def test_inbound_string_keyed_map_rejects_a_list():
+    with pytest.raises(BiDiSerializationError, match=r"Attributes.values: expected a map, got list"):
+        Attributes.from_json({"values": ["id", "main"]})
+
+
+def test_inbound_string_keyed_map_rejects_a_wrong_typed_value():
+    with pytest.raises(BiDiSerializationError, match=r"Attributes.values: \['id'\] expected str, got int 1"):
+        Attributes.from_json({"values": {"id": 1}})
+
+
+def test_as_json_serializes_a_valid_string_keyed_map():
+    assert Attributes(values={"id": "main"}).as_json() == {"values": {"id": "main"}}
+
+
+def test_as_json_omits_an_unset_string_keyed_map():
+    assert Attributes().as_json() == {}
+
+
+def test_as_json_rejects_a_non_dict_string_keyed_map():
+    with pytest.raises(BiDiSerializationError, match=r"Attributes.values: expected a map, got str 'oops'"):
+        Attributes(values="oops").as_json()
+
+
+def test_as_json_rejects_a_wrong_typed_value_in_a_string_keyed_map():
+    with pytest.raises(BiDiSerializationError, match=r"Attributes.values: \['id'\] expected str, got int 1"):
+        Attributes(values={"id": 1}).as_json()
 
 
 # --- union dispatch: outbound (build) ---
