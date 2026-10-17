@@ -390,7 +390,7 @@ module Selenium
               enum: 'BrowsingContext::PRINT_PARAMETERS_ORIENTATION'
             },
             page: {wire_key: 'page', required: false, ref: 'BrowsingContext::PrintPageParameters'},
-            page_ranges: {wire_key: 'pageRanges', required: false, list: true},
+            page_ranges: {wire_key: 'pageRanges', required: false, list: true, primitive: %w[integer string]},
             scale: {wire_key: 'scale', required: false, primitive: 'number'},
             shrink_to_fit: {wire_key: 'shrinkToFit', required: false, primitive: 'boolean'}
           )
@@ -432,8 +432,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextsetbypasscspparameters
           SetBypassCSPParameters = Serialization::Record.define(
             bypass: {wire_key: 'bypass', nullable: true, const: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -443,7 +443,7 @@ module Selenium
             context: {wire_key: 'context', required: false, primitive: 'string'},
             viewport: {wire_key: 'viewport', required: false, nullable: true, ref: 'BrowsingContext::Viewport'},
             device_pixel_ratio: {wire_key: 'devicePixelRatio', required: false, nullable: true, primitive: 'number'},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private

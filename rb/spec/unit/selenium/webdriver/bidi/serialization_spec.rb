@@ -690,6 +690,106 @@ module Selenium
               expect { klass.from_json('scrollbarType' => 'banana') }
                 .to raise_error(Error::SerializationError, /received an unknown value/)
             end
+
+            it 'raises on an inbound null element in a list-valued enum' do
+              expect { Network::AddInterceptParameters.from_json('phases' => ['beforeRequestSent', nil]) }
+                .to raise_error(Error::SerializationError, /phases received an unknown value: nil/)
+            end
+          end
+
+          describe 'primitive list elements' do
+            it 'round-trips a list of strings' do
+              params = Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: %w[c1 c2])
+
+              expect(Session::SubscribeParameters.from_json(params.as_json))
+                .to have_attributes(events: %w[log.entryAdded], contexts: %w[c1 c2])
+            end
+
+            it 'rejects a wrong-typed element at construction' do
+              expect { Session::SubscribeParameters.new(events: ['log.entryAdded', 1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { Session::SubscribeParameters.new(events: [nil]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a wrong-typed element of an alias-typed list (browsingContext.BrowsingContext)' do
+              expect { Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: [:c1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#contexts\[0\] expected string, got :c1/)
+            end
+
+            it 'raises on an inbound wrong-typed element' do
+              expect { Session::SubscribeParameters.from_json('events' => ['log.entryAdded', 1]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { Session::SubscribeParameters.from_json('events' => [nil]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a fractional element of an integer list in both directions' do
+              expect { Bluetooth::SimulateDescriptorResponseParameters.new(**descriptor_response(data: [1.5])) }
+                .to raise_error(ArgumentError, /data\[0\] expected integer, got 1.5/)
+              expect { Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [1.5])) }
+                .to raise_error(Error::SerializationError, /data\[0\] expected integer, got 1.5/)
+            end
+
+            it 'accepts a whole-valued float element of an integer list and holds it as an Integer' do
+              parsed = Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [5.0, 6]))
+
+              expect(parsed.data).to eq([5, 6])
+              expect(parsed.data).to all(be_an(::Integer))
+            end
+
+            def descriptor_response(data:)
+              {context: 'c', address: 'a', service_uuid: 's', characteristic_uuid: 'ch', descriptor_uuid: 'd',
+               type: :read, code: 0, data: data}
+            end
+
+            def descriptor_wire(data:)
+              {'context' => 'c', 'address' => 'a', 'serviceUuid' => 's', 'characteristicUuid' => 'ch',
+               'descriptorUuid' => 'd', 'type' => 'read', 'code' => 0, 'data' => data}
+            end
+          end
+
+          # browsingContext.PrintParameters.pageRanges is a list of `js-uint / text`.
+          describe 'scalar-union list elements' do
+            it 'round-trips integer and string elements' do
+              params = BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, '3-5'])
+
+              expect(params.as_json).to include('pageRanges' => [1, '3-5'])
+              expect(BrowsingContext::PrintParameters.from_json(params.as_json).page_ranges).to eq([1, '3-5'])
+            end
+
+            it 'rejects an element outside the union at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, true]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected integer or string, got true/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [nil]) }
+                .to raise_error(ArgumentError, /page_ranges\[0\] expected integer or string, got nil/)
+            end
+
+            it 'raises on an inbound element outside the union' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [{}]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[0\] expected integer or string, got \{\}/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => ['1', nil]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[1\] expected integer or string, got nil/)
+            end
+
+            it 'holds an inbound whole-valued float element as an Integer' do
+              parsed = BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [5.0, '7'])
+
+              expect(parsed.page_ranges).to eq([5, '7'])
+              expect(parsed.page_ranges.first).to be_an(::Integer)
+            end
           end
 
           describe 'inbound shape validation' do

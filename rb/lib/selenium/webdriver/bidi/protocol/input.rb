@@ -289,7 +289,7 @@ module Selenium
           SetFilesParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             element: {wire_key: 'element', ref: 'Script::SharedReference'},
-            files: {wire_key: 'files', list: true}
+            files: {wire_key: 'files', list: true, primitive: 'string'}
           )
 
           # @api private

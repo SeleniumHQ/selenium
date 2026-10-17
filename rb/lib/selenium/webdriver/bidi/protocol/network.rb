@@ -107,7 +107,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true}
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -299,8 +299,8 @@ module Selenium
             data_types: {wire_key: 'dataTypes', list: true, enum: 'Network::DATA_TYPE'},
             max_encoded_data_size: {wire_key: 'maxEncodedDataSize', primitive: 'integer'},
             collector_type: {wire_key: 'collectorType', required: false, enum: 'Network::COLLECTOR_TYPE'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -313,7 +313,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkaddinterceptparameters
           AddInterceptParameters = Serialization::Record.define(
             phases: {wire_key: 'phases', list: true, enum: 'Network::INTERCEPT_PHASE'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
             url_patterns: {wire_key: 'urlPatterns', required: false, ref: 'Network::UrlPattern', list: true}
           )
 
@@ -435,7 +435,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networksetcachebehaviorparameters
           SetCacheBehaviorParameters = Serialization::Record.define(
             cache_behavior: {wire_key: 'cacheBehavior', enum: 'Network::SET_CACHE_BEHAVIOR_PARAMETERS_CACHE_BEHAVIOR'},
-            contexts: {wire_key: 'contexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -443,8 +443,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networksetextraheadersparameters
           SetExtraHeadersParameters = Serialization::Record.define(
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -458,7 +458,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true},
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
           )
 
@@ -473,7 +473,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true},
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             initiator: {wire_key: 'initiator', required: false, ref: 'Network::Initiator'}
           )
 
@@ -488,7 +488,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true},
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             error_text: {wire_key: 'errorText', primitive: 'string'}
           )
 
@@ -503,7 +503,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true},
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
           )
 
@@ -518,7 +518,7 @@ module Selenium
             request: {wire_key: 'request', ref: 'Network::RequestData'},
             timestamp: {wire_key: 'timestamp', primitive: 'integer'},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
-            intercepts: {wire_key: 'intercepts', required: false, list: true},
+            intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
           )
 

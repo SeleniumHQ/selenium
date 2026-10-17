@@ -197,8 +197,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetforcedcolorsmodethemeoverrideparameters
           SetForcedColorsModeThemeOverrideParameters = Serialization::Record.define(
             theme: {wire_key: 'theme', nullable: true, enum: 'Emulation::FORCED_COLORS_MODE_THEME'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -214,16 +214,16 @@ module Selenium
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Coordinates = Serialization::Record.define(
-              contexts: {wire_key: 'contexts', required: false, list: true},
-              user_contexts: {wire_key: 'userContexts', required: false, list: true},
+              contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+              user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'},
               coordinates: {wire_key: 'coordinates', nullable: true, ref: 'Emulation::GeolocationCoordinates'}
             )
 
             # @api private
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Error = Serialization::Record.define(
-              contexts: {wire_key: 'contexts', required: false, list: true},
-              user_contexts: {wire_key: 'userContexts', required: false, list: true},
+              contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+              user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'},
               error: {wire_key: 'error', ref: 'Emulation::GeolocationPositionError'}
             )
           end
@@ -251,8 +251,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetlocaleoverrideparameters
           SetLocaleOverrideParameters = Serialization::Record.define(
             locale: {wire_key: 'locale', nullable: true, primitive: 'string'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -260,8 +260,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetmediafeaturesoverrideparameters
           SetMediaFeaturesOverrideParameters = Serialization::Record.define(
             features: {wire_key: 'features', nullable: true, ref: 'Emulation::MediaFeatures'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -413,8 +413,8 @@ module Selenium
               nullable: true,
               ref: 'Emulation::NetworkConditionsOffline'
             },
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -435,8 +435,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscreensettingsoverrideparameters
           SetScreenSettingsOverrideParameters = Serialization::Record.define(
             screen_area: {wire_key: 'screenArea', nullable: true, ref: 'Emulation::ScreenArea'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -452,8 +452,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscreenorientationoverrideparameters
           SetScreenOrientationOverrideParameters = Serialization::Record.define(
             screen_orientation: {wire_key: 'screenOrientation', nullable: true, ref: 'Emulation::ScreenOrientation'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -461,8 +461,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetuseragentoverrideparameters
           SetUserAgentOverrideParameters = Serialization::Record.define(
             user_agent: {wire_key: 'userAgent', nullable: true, primitive: 'string'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -470,8 +470,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetviewportmetaoverrideparameters
           SetViewportMetaOverrideParameters = Serialization::Record.define(
             viewport_meta: {wire_key: 'viewportMeta', nullable: true, const: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -479,8 +479,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsetscriptingenabledparameters
           SetScriptingEnabledParameters = Serialization::Record.define(
             enabled: {wire_key: 'enabled', nullable: true, const: false},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -492,8 +492,8 @@ module Selenium
               nullable: true,
               enum: 'Emulation::SET_SCROLLBAR_TYPE_OVERRIDE_PARAMETERS_SCROLLBAR_TYPE'
             },
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -501,8 +501,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettextlayoutmodeoverrideparameters
           SetTextLayoutModeOverrideParameters = Serialization::Record.define(
             text_layout_mode: {wire_key: 'textLayoutMode', nullable: true, enum: 'Emulation::TEXT_LAYOUT_MODE'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -510,8 +510,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettimezoneoverrideparameters
           SetTimezoneOverrideParameters = Serialization::Record.define(
             timezone: {wire_key: 'timezone', nullable: true, primitive: 'string'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -519,8 +519,8 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettouchoverrideparameters
           SetTouchOverrideParameters = Serialization::Record.define(
             max_touch_points: {wire_key: 'maxTouchPoints', nullable: true, primitive: 'integer'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           def geolocation_coordinates(**) = GeolocationCoordinates.new(**)

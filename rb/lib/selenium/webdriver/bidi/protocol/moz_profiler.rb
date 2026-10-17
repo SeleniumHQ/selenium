@@ -53,8 +53,8 @@ module Selenium
               active_context: {wire_key: 'activeContext', required: false, primitive: 'string'},
               entries: {wire_key: 'entries', primitive: 'integer'},
               interval: {wire_key: 'interval', primitive: 'integer'},
-              features: {wire_key: 'features', list: true},
-              threads: {wire_key: 'threads', list: true}
+              features: {wire_key: 'features', list: true, primitive: 'string'},
+              threads: {wire_key: 'threads', list: true, primitive: 'string'}
             )
           end
 
