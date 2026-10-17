@@ -108,6 +108,18 @@ module Selenium
 
                 expect(browser.get_user_contexts.user_contexts.map(&:user_context)).not_to include(user_context)
               end
+
+              it 'throws an error when removing the default user context' do
+                expect {
+                  browser.remove_user_context(user_context: 'default')
+                }.to raise_error(Error::WebDriverError, /user context cannot be removed/)
+              end
+
+              it 'throws an error when removing a non-existent user context' do
+                expect {
+                  browser.remove_user_context(user_context: 'fake_context')
+                }.to raise_error(Error::WebDriverError)
+              end
             end
 
             describe '#set_client_window_state' do
