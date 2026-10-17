@@ -264,9 +264,7 @@ class WebElement(BaseWebElement):
                 for keys_to_send in "".join(map(str, value)).split("\n")
             ]
             if None not in local_files:
-                remote_files = []
-                for file in local_files:
-                    remote_files.append(self._upload(file))
+                remote_files = [self._upload(file) for file in local_files]
                 value = tuple("\n".join(remote_files))
 
         self._execute(

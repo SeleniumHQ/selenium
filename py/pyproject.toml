@@ -158,11 +158,11 @@ select = [
     "FURB",
     "G201",
     "I",
-    "PERF102",
+    "PERF",
     "PIE",
     "PLE",
     "PLR0133",
-    "PYI041",
+    "PYI",
     "PT",
     "RUF",
     "SIM102",
@@ -183,6 +183,7 @@ extend-ignore = [
     "D105", # Missing docstring in magic method
     "D107", # Missing docstring in `__init__`
     "D212", # Multi-line docstring summary should start at the first line
+    "PERF203", # `try`-`except` within a loop incurs performance overhead
     "PT011", # Use of `pytest.raises({exception})` is too broad
     "PT012", # `pytest.raises()` block should contain a single simple statement
     "RUF005", # Uses of the + operator to concatenate collections
@@ -199,6 +200,8 @@ extend-ignore = [
 "py/test/**" = ["B018"]
 # Same pattern, in a driver-liveness probe rather than a test assertion.
 "py/conftest.py" = ["B018"]
+# The generated lazy-import stubs keep a docstring explaining why they exist.
+"**/__init__.pyi" = ["PYI021"]
 
 [tool.ruff.format]
 docstring-code-format = true

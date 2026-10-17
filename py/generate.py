@@ -931,10 +931,7 @@ def parse(json_path, output_path):
     version = schema["version"]
     assert (version["major"], version["minor"]) == ("1", "3")
     current_version = f"{version['major']}.{version['minor']}"
-    domains = []
-    for domain in schema["domains"]:
-        domains.append(CdpDomain.from_json(domain))
-    return domains
+    return [CdpDomain.from_json(domain) for domain in schema["domains"]]
 
 
 def generate_init(init_path, domains):
