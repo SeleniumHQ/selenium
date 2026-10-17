@@ -91,7 +91,7 @@ jobs:
         --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
         ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
