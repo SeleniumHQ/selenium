@@ -503,3 +503,32 @@ def test_extra_headers_compose_with_request_handlers(driver, pages):
     finally:
         driver.network.remove_request_handler(handler_id)
         driver.network.clear_extra_headers()
+
+
+def test_extra_header_is_sent_with_classic_navigation(driver, pages):
+    # driver.get() rather than _navigate(): extra headers used to pause every
+    # request, which hangs classic navigation in Chrome and drops the headers
+    # the browser sends on its own.
+    driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
+    try:
+        driver.get(pages.url("echo_headers"))
+        assert "x-selenium-extra" in driver.page_source, "Extra header not sent"
+        assert "accept:" in driver.page_source.lower(), "Accept header dropped"
+    finally:
+        driver.network.clear_extra_headers()
+
+
+def test_extra_headers_survive_a_handler_that_rewrites_headers(driver, pages):
+    def rewrite(request: Request):
+        request.set_headers({**request.headers, "x-selenium-handler": "handler-value"})
+
+    driver.network.add_extra_header("x-selenium-extra", "extra-header-value")
+    handler_id = driver.network.add_request_handler(rewrite)
+    try:
+        _navigate(driver, pages.url("echo_headers"))
+        source = driver.page_source
+        assert "x-selenium-extra" in source, "Extra header not sent"
+        assert "x-selenium-handler" in source, "Header set by the handler not sent"
+    finally:
+        driver.network.remove_request_handler(handler_id)
+        driver.network.clear_extra_headers()

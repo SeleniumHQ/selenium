@@ -948,95 +948,62 @@ def test_clear_request_handlers_preserves_authentication_handlers():
     assert len(conn.commands_named("network.continueWithAuth")) == 1
 
 
-def test_add_extra_header_injects_into_continued_requests():
+def test_add_extra_header_sets_them_on_the_browser():
     conn = FakeConnection()
     network = Network(conn)
 
     network.add_extra_header("x-test", "value")
-    dispatch_event(conn, make_before_request_event())
 
-    intercept_params = conn.commands_named("network.addIntercept")[0]["params"]
-    assert intercept_params == {"phases": ["beforeRequestSent"]}
-    continues = conn.commands_named("network.continueRequest")
-    assert len(continues) == 1
-    assert continues[0]["params"]["headers"] == [
-        {"name": "accept", "value": {"type": "string", "value": "*/*"}},
-        {"name": "x-test", "value": {"type": "string", "value": "value"}},
-    ]
+    # The browser adds the headers itself, so nothing is intercepted.
+    assert conn.commands_named("network.addIntercept") == []
+    sets = conn.commands_named("network.setExtraHeaders")
+    assert len(sets) == 1
+    assert sets[0]["params"]["headers"] == [{"name": "x-test", "value": {"type": "string", "value": "value"}}]
 
 
-def test_extra_header_replaces_existing_header_case_insensitively():
+def test_extra_header_name_is_lowercased():
     conn = FakeConnection()
     network = Network(conn)
 
     network.add_extra_header("Accept", "application/json")
-    dispatch_event(conn, make_before_request_event())
 
-    continues = conn.commands_named("network.continueRequest")
-    assert len(continues) == 1
-    assert continues[0]["params"]["headers"] == [
+    sets = conn.commands_named("network.setExtraHeaders")
+    assert sets[-1]["params"]["headers"] == [
         {"name": "accept", "value": {"type": "string", "value": "application/json"}}
     ]
 
 
-def test_extra_headers_compose_with_request_handlers_in_one_continue():
+def test_extra_headers_leave_request_handler_continues_alone():
     conn = FakeConnection()
     network = Network(conn)
 
     network.add_extra_header("x-test", "value")
     network.add_request_handler(lambda request: request.set_method("POST"))
-    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
+    dispatch_event(conn, make_before_request_event())
 
     continues = conn.commands_named("network.continueRequest")
     assert len(continues) == 1
     assert continues[0]["params"]["method"] == "POST"
-    assert {"name": "x-test", "value": {"type": "string", "value": "value"}} in continues[0]["params"]["headers"]
+    headers = continues[0]["params"].get("headers", [])
+    assert all(header["name"] != "x-test" for header in headers), "extra header rewritten into the continue"
 
 
-def test_extra_headers_not_applied_to_failed_requests():
+def test_remove_extra_header_sets_the_remaining_headers():
     conn = FakeConnection()
     network = Network(conn)
 
-    network.add_extra_header("x-test", "value")
-    network.add_request_handler(lambda request: request.fail())
-    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
+    network.add_extra_header("x-one", "1")
+    network.add_extra_header("x-two", "2")
+    network.remove_extra_header("X-One")
 
-    assert conn.commands_named("network.continueRequest") == []
-    assert len(conn.commands_named("network.failRequest")) == 1
-
-
-def test_extra_headers_not_applied_to_stubbed_responses():
-    conn = FakeConnection()
-    network = Network(conn)
-
-    network.add_extra_header("x-test", "value")
-    network.add_request_handler(lambda request: request.provide_response(204, {"x-stub": "true"}))
-    dispatch_event(conn, make_before_request_event(intercepts=("intercept-1", "intercept-2")))
-
-    assert conn.commands_named("network.continueRequest") == []
-    provides = conn.commands_named("network.provideResponse")
-    assert len(provides) == 1
-    assert provides[0]["params"]["headers"] == [{"name": "x-stub", "value": {"type": "string", "value": "true"}}]
-
-
-def test_remove_extra_header_stops_injection_and_removes_intercept():
-    conn = FakeConnection()
-    network = Network(conn)
-
-    network.add_extra_header("x-test", "value")
-    network.remove_extra_header("X-Test")
-
-    assert conn.commands_named("network.removeIntercept") == [
-        {"method": "network.removeIntercept", "params": {"intercept": "intercept-1"}}
-    ]
-    assert conn.commands_named("session.unsubscribe") == [
-        {"method": "session.unsubscribe", "params": {"subscriptions": ["subscription-1"]}}
-    ]
+    sets = conn.commands_named("network.setExtraHeaders")
+    assert sets[-1]["params"]["headers"] == [{"name": "x-two", "value": {"type": "string", "value": "2"}}]
+    assert conn.commands_named("network.removeIntercept") == []
     with pytest.raises(ValueError, match=r"Extra header .* not found"):
-        network.remove_extra_header("x-test")
+        network.remove_extra_header("x-one")
 
 
-def test_clear_extra_headers_removes_intercept():
+def test_clear_extra_headers_sets_an_empty_list():
     conn = FakeConnection()
     network = Network(conn)
 
@@ -1044,8 +1011,8 @@ def test_clear_extra_headers_removes_intercept():
     network.add_extra_header("x-two", "2")
     network.clear_extra_headers()
 
-    removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
-    assert removed == {"intercept-1"}
+    sets = conn.commands_named("network.setExtraHeaders")
+    assert sets[-1]["params"]["headers"] == []
     assert network.intercepts == []
 
 
@@ -1057,16 +1024,12 @@ def test_clear_request_handlers_preserves_extra_headers():
     network.add_request_handler(lambda request: None)
     network.clear_request_handlers()
 
-    # The user handler's intercept is removed; the extra-headers one stays.
+    # The handler's intercept is removed; the headers stay set on the browser.
     removed = {c["params"]["intercept"] for c in conn.commands_named("network.removeIntercept")}
-    assert removed == {"intercept-2"}
-
-    # The registry resubscribed after the event-handler sweep and still
-    # merges the extra headers into continued requests.
-    dispatch_event_to(conn, make_before_request_event(), "network.beforeRequestSent")
-    continues = conn.commands_named("network.continueRequest")
-    assert len(continues) == 1
-    assert {"name": "x-test", "value": {"type": "string", "value": "value"}} in continues[0]["params"]["headers"]
+    assert removed == {"intercept-1"}
+    sets = conn.commands_named("network.setExtraHeaders")
+    assert len(sets) == 1
+    assert sets[0]["params"]["headers"] == [{"name": "x-test", "value": {"type": "string", "value": "value"}}]
 
 
 def test_glob_to_regex_matching():

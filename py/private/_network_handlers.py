@@ -53,10 +53,9 @@ continued with action ``default`` so the browser's own behavior (usually the
 authentication prompt) applies.
 
 Extra headers registered through :meth:`RequestHandlerRegistry.set_extra_header`
-are merged into every subsequent request.  BiDi has no dedicated command for
-this, so the registry pauses each request at ``beforeRequestSent`` with a
-match-everything intercept and merges the headers while reconciling — the same
-single continue cycle that applies user handler mutations.
+are sent with every subsequent request.  The registry keeps the store and
+pushes it to the browser with ``network.setExtraHeaders``, so requests are not
+paused and the headers the browser would send on its own are kept.
 
 This mirrors the reconciliation rules in the cross-binding BiDi API design and
 means purely observational handlers never stall the page.
@@ -768,12 +767,9 @@ class _BaseHandlerRegistry:
 class RequestHandlerRegistry(_BaseHandlerRegistry):
     """Dispatches ``network.beforeRequestSent`` events to request handlers.
 
-    Also owns the extra-headers store: BiDi has no dedicated set-extra-headers
-    command, so while any extra header is set every request is paused by a
-    dedicated match-everything intercept and continued with the merged
-    headers during reconciliation.  Sharing the registry's subscription and
-    reconciliation means a request paused by both the extra-headers intercept
-    and user handlers is still continued exactly once.
+    Also owns the extra-headers store, which is pushed to the browser with
+    ``network.setExtraHeaders``.  The browser adds the headers to the requests
+    it sends, so nothing is paused and classic navigation keeps working.
     """
 
     _phase = "beforeRequestSent"
@@ -785,65 +781,31 @@ class RequestHandlerRegistry(_BaseHandlerRegistry):
         super().__init__(network)
         # Header names are case-insensitive per HTTP, so keys are lowercased.
         self.extra_headers: dict[str, Any] = {}
-        self._extra_headers_intercept: str | None = None
 
     def _wrap(self, params):
         return Request(self._network._conn, params, deferred=True)
 
     def set_extra_header(self, name: str, value: str) -> None:
-        """Record a header to merge into every subsequent request."""
+        """Record a header for the browser to send with every request."""
         self.extra_headers[name.lower()] = value
-        if self._extra_headers_intercept is None:
-            result = self._network._add_intercept(phases=[self._phase])
-            self._extra_headers_intercept = result.get("intercept") if result else None
-        if self._subscription_callback_id is None:
-            self._subscription_callback_id = self._network.add_event_handler(self._event_name, self._on_event)
+        self._push_extra_headers()
         logger.debug("Added extra header %s", name.lower())
 
     def remove_extra_header(self, name: str) -> None:
-        """Stop merging a header by (case-insensitive) name."""
+        """Stop sending a header by (case-insensitive) name."""
         if self.extra_headers.pop(name.lower(), None) is None:
             raise ValueError(f"Extra header '{name}' not found")
-        if not self.extra_headers:
-            self._drop_extra_headers_intercept()
+        self._push_extra_headers()
         logger.debug("Removed extra header %s", name.lower())
 
     def clear_extra_headers(self) -> None:
-        """Stop merging all extra headers."""
+        """Stop sending all extra headers."""
         self.extra_headers.clear()
-        self._drop_extra_headers_intercept()
+        self._push_extra_headers()
 
-    def _drop_extra_headers_intercept(self) -> None:
-        if self._extra_headers_intercept:
-            self._network._remove_intercept(self._extra_headers_intercept)
-            self._extra_headers_intercept = None
-        if not self._keep_subscription() and self._subscription_callback_id is not None:
-            self._network.remove_event_handler(self._event_name, self._subscription_callback_id)
-            self._subscription_callback_id = None
-
-    def intercept_ids(self) -> set:
-        ids = super().intercept_ids()
-        if self._extra_headers_intercept:
-            ids.add(self._extra_headers_intercept)
-        return ids
-
-    def _keep_subscription(self) -> bool:
-        return bool(self._handlers or self.extra_headers)
-
-    def _before_resolve(self, request) -> None:
-        """Merge extra headers into requests about to be continued.
-
-        Failed and stubbed requests never reach the wire and manually
-        continued requests have already been sent, so only the
-        plain-continue path is merged.
-        """
-        if not self.extra_headers:
-            return
-        if request._handled or request._failed or request._stub is not None:
-            return
-        merged = {name: value for name, value in request.headers.items() if name.lower() not in self.extra_headers}
-        merged.update(self.extra_headers)
-        request.set_headers(merged)
+    def _push_extra_headers(self) -> None:
+        """Replace the browser's extra headers with the current store."""
+        self._network.set_extra_headers(headers=dict_to_headers(self.extra_headers))
 
 
 class ResponseHandlerRegistry(_BaseHandlerRegistry):
