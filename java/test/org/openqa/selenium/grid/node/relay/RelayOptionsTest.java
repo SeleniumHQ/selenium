@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.relay;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringReader;
 import java.time.Duration;
@@ -176,5 +177,30 @@ class RelayOptionsTest {
             () ->
                 new RelayOptions(config)
                     .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
+  }
+
+  @Test
+  void nullStereotypeThrowsConfigExceptionNamingTheSource() {
+    assertThatThrownBy(() -> RelayOptions.parseStereotype("null", "relay config 1"))
+        .isInstanceOf(ConfigException.class)
+        .hasMessageContaining("relay config 1");
+  }
+
+  @Test
+  void nullStereotypeInConfigsThrowsConfigException() {
+    String[] rawConfig =
+        new String[] {
+          "[relay]", "host = '127.0.0.1'", "port = '9999'", "configs = ['1', 'null']",
+        };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    Tracer tracer = DefaultTestTracer.createTracer();
+    HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
+    assertThatExceptionOfType(ConfigException.class)
+        .isThrownBy(
+            () ->
+                new RelayOptions(config)
+                    .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)))
+        .withMessageContaining("relay config 1");
   }
 }
