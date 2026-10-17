@@ -98,6 +98,7 @@ class _Wire:
     primitive: str | None = None
     scalar: str | list[str] | None = None
     fixed: Any = UNSET
+    map: str | None = None
 
 
 _META_KEY = "bidi"
@@ -114,6 +115,7 @@ def meta(
     primitive: str | None = None,
     scalar: str | list[str] | None = None,
     fixed: Any = UNSET,
+    map: str | None = None,
 ) -> dict:
     """Dataclass field metadata carrying one field's BiDi wire facts.
 
@@ -124,6 +126,10 @@ def meta(
     ``scalar`` marks a map field (a ``[key, value]`` list whose value type is an
     object-only union): the union's string keys pass through when they match this
     primitive, rather than being rejected as non-objects.
+
+    ``map`` marks a string-keyed map field (a field-less synthetic record standing in
+    for a CDDL ``{*text => <primitive>}``, e.g. ``script.NodeProperties.attributes``):
+    the value must be a ``dict`` whose entries match this primitive.
     """
     descriptor = _Wire(
         wire=name,
@@ -135,6 +141,7 @@ def meta(
         primitive=primitive,
         scalar=scalar,
         fixed=fixed,
+        map=map,
     )
     return {_META_KEY: descriptor}
 
@@ -398,6 +405,24 @@ _PRIMITIVE_CHECKS = {
 }
 
 
+def _map_mismatch(primitive: str, value: Any) -> str | None:
+    """The suffix of the error a map value earns, or None when it conforms.
+
+    Shared by the inbound and outbound checks so the two cannot drift apart. An
+    unrecognized value primitive (none in `_PRIMITIVE_CHECKS`) checks only the shape,
+    matching the lenient default elsewhere.
+    """
+    if not isinstance(value, dict):
+        return f"expected a map, got {type(value).__name__} {value!r}"
+    check = _PRIMITIVE_CHECKS.get(primitive)
+    if check is None:
+        return None
+    for k, v in value.items():
+        if not check(v):
+            return f"[{k!r}] expected {primitive}, got {type(v).__name__} {v!r}"
+    return None
+
+
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     if w.fixed is not UNSET:
         # A nullable constant (a non-nullable one is baked and never read): the wire value must be
@@ -425,6 +450,11 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected an object, got {got} {raw!r}")
         return klass.from_json(raw)  # type: ignore[attr-defined]
+    if w.map is not None:
+        mismatch = _map_mismatch(w.map, raw)
+        if mismatch:
+            raise BiDiSerializationError(f"{cls.__name__}.{name}: {mismatch}")
+        return raw
     if w.primitive is not None and raw is not None:
         check = _PRIMITIVE_CHECKS.get(w.primitive)
         if check and not check(raw):
@@ -503,6 +533,11 @@ def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> No
         return  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:
         _validate_ref_value(owner, name, resolve(w.ref), value)
+        return
+    if w.map is not None:
+        mismatch = _map_mismatch(w.map, value)
+        if mismatch:
+            raise BiDiSerializationError(f"{owner}.{name}: {mismatch}")
         return
     if w.primitive is not None:
         check = _PRIMITIVE_CHECKS.get(w.primitive)
