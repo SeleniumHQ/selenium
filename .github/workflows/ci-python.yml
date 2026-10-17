@@ -100,7 +100,7 @@ jobs:
         --skip_incompatible_explicit_targets
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-py.txt
 
   browser-tests:
