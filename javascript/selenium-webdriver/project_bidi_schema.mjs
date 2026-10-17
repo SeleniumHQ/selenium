@@ -33,6 +33,9 @@
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
+ *               A numeric `primitive`, or a `ref` to an alias of one, may carry `min` / `max`, with
+ *               `exclusiveMin` / `exclusiveMax: true` for an exclusive bound. On a `ref` they narrow
+ *               the alias's own bounds, so a value must satisfy both.
  *
  * `specHref` (present only when known) is the URL of the element's definition in the
  * live spec — a binding can render it as a doc-comment link. It is carried on each
@@ -185,12 +188,47 @@ function projectRef(type) {
   return node
 }
 
+const BOUND_OPERATORS = {
+  ge: { side: 'min', exclusive: false },
+  gt: { side: 'min', exclusive: true },
+  le: { side: 'max', exclusive: false },
+  lt: { side: 'max', exclusive: true },
+}
+const BOUND_KEYS = ['min', 'max', 'exclusiveMin', 'exclusiveMax']
+
+// Only a numeric literal is carried; a named constant (`0..max-len`) is not resolved, so the
+// caller fails closed instead of silently dropping the bound.
+const boundValue = (b) => (typeof b?.Value === 'number' ? b.Value : undefined)
+
+// The tighter bound wins: `(0..10) .ge 5` raises the minimum, `(0..10) .ge -1` leaves it.
+function narrow(node, { side, exclusive }, value) {
+  const flag = side === 'min' ? 'exclusiveMin' : 'exclusiveMax'
+  const current = node[side]
+  if (current !== undefined && (side === 'min' ? current > value : current < value)) return node
+  if (current === value && node[flag]) return node
+  const narrowed = { ...node, [side]: value }
+  if (exclusive) narrowed[flag] = true
+  else delete narrowed[flag]
+  return narrowed
+}
+
+// The parser hangs a control operator on a type entry, a field, or a definition. A numeric one
+// bounds the projected node; any other (`.default` …) does not change the type.
+function withOperator(node, operator) {
+  const bound = BOUND_OPERATORS[operator?.Type]
+  if (!bound) return node
+  const value = boundValue(operator.Value)
+  return value === undefined ? { primitive: 'unknown' } : narrow(node, bound, value)
+}
+
 function projectEntry(e) {
   if (typeof e === 'string') return { primitive: PRIMITIVES[e] ?? e }
   if (!e || typeof e !== 'object') return { primitive: 'unknown' }
-  // A control operator (`.ge` / `.default` / `.le` …) wraps the real type as
-  // `{ Type: <innerType>, Operator: {...} }`; the constraint does not change the
-  // type, so project the inner type.
+  if (e.Operator) {
+    const { Operator, ...inner } = e
+    return withOperator(projectEntry(inner), Operator)
+  }
+  // A parenthesized type, or an operator's operand, is `{ Type: <innerType> }`: project the inner type.
   if (e.Type && typeof e.Type === 'object') return projectEntry(e.Type)
   if (e.Type === 'literal') return { const: e.Value }
   if (e.Type === 'group' && e.Value) return e.Value in PRELUDE ? { primitive: PRELUDE[e.Value] } : { ref: e.Value }
@@ -208,12 +246,18 @@ function projectEntry(e) {
   if (e.Type === 'array') return { list: projectRef(e.Values?.[0]?.Type) }
   if (e.Type === 'map') return { map: projectRef(e.ValueType ?? e.Values?.[0]?.Type), extensible: true }
   if (e.Type === 'range') {
+    const min = boundValue(e.Value?.Min)
+    const max = boundValue(e.Value?.Max)
+    if (min === undefined || max === undefined) return { primitive: 'unknown' }
     // A bound written as a float (`1.0`) parses to an integer `Value` carrying an `IsFloat`
     // marker; consult it so `(0.0..1.0)` is a number range, not — as its integral bounds alone
     // would read — an integer one. A bound with no marker falls back to its value's integralness.
-    const intBound = (b) => b && !b.IsFloat && Number.isInteger(b.Value)
-    const intRange = intBound(e.Value?.Min) && intBound(e.Value?.Max)
-    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
+    const intBound = (b) => !b.IsFloat && Number.isInteger(b.Value)
+    const intRange = intBound(e.Value.Min) && intBound(e.Value.Max) // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
+    const node = { primitive: intRange ? 'integer' : 'number', min, max }
+    // The parser's `Inclusive: false` is the `...` form, which excludes only the upper bound.
+    if (e.Value.Inclusive === false) node.exclusiveMax = true
+    return node
   }
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }
@@ -238,7 +282,7 @@ function projectField(prop) {
     name: vendor ? prop.Name : fieldName(prop.Name),
     wire: prop.Name,
     required: (prop.Occurrence?.n ?? 1) >= 1,
-    type: projectRef(prop.Type),
+    type: withOperator(projectRef(prop.Type), prop.Operator),
   }
   // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
   // extractVendor can route it out of the shared schema; stripped there before it ships.
@@ -281,7 +325,7 @@ function projectType(def) {
     // ref (e.g. script.LocalValue's date/regexp arms): projectRef resolves those to
     // refs, so promote the all-ref result to a first-class union (it gets a selector)
     // rather than leaving it an alias-to-union the bindings would have to re-detect.
-    const projected = projectRef(def.PropertyType)
+    const projected = withOperator(projectRef(def.PropertyType), def.Operator)
     if (projected.union?.every((m) => m.ref) && !projected.nullable)
       return { kind: 'union', variants: projected.union.map((m) => m.ref) }
     return { kind: 'alias', type: projected }
@@ -857,10 +901,21 @@ export function checkSchema(source) {
             : node.union
               ? node.union.some(hasEmptyInlineRecord)
               : false
+  const isNumeric = (node, seen = new Set()) => {
+    if (node.primitive !== undefined) return node.primitive === 'integer' || node.primitive === 'number'
+    if (node.ref === undefined || seen.has(node.ref)) return false
+    seen.add(node.ref)
+    const target = allTypes[node.ref]
+    return target?.kind === 'alias' && isNumeric(target.type, seen)
+  }
+  const nestedTypes = (node) => [node.list, node.map, ...(node.union ?? []), ...(node.record ?? []).map((f) => f.type)]
+  const hasMisplacedBound = (node) =>
+    !!node && ((BOUND_KEYS.some((k) => k in node) && !isNumeric(node)) || nestedTypes(node).some(hasMisplacedBound))
   const report = (where, node) => {
     for (const r of refsInType(node)) if (!has(r)) errors.push(`${where}: unresolved type ${r}`)
     if (hasUnknown(node)) errors.push(`${where}: projected to an unknown primitive (unhandled CDDL type)`)
     if (hasEmptyInlineRecord(node)) errors.push(`${where}: projected an empty inline record (dropped type reference)`)
+    if (hasMisplacedBound(node)) errors.push(`${where}: carries a numeric bound on a non-numeric type`)
   }
 
   for (const c of [...schema.commands, ...schema.events]) {
