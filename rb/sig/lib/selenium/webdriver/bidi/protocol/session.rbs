@@ -25,6 +25,8 @@ module Selenium
         class Session < ::Selenium::WebDriver::BiDi::Protocol::Domain
           USER_PROMPT_HANDLER_TYPE: Hash[Symbol, String]
 
+          CAPABILITY_REQUEST_FIREFOX_OPTIONS_LEVEL: Hash[Symbol, String]
+
           type proxy_configuration = ::Selenium::WebDriver::BiDi::Protocol::Session::AutodetectProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::DirectProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::ManualProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::PacProxyConfiguration | ::Selenium::WebDriver::BiDi::Protocol::Session::SystemProxyConfiguration
           type unsubscribe_parameters = ::Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByAttributesRequest | ::Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByIDRequest
 
@@ -41,8 +43,9 @@ module Selenium
             attr_reader platform_name: untyped
             attr_reader proxy: untyped
             attr_reader unhandled_prompt_behavior: untyped
+            attr_reader moz_firefox_options: untyped
             attr_reader extensions: Hash[String, untyped]
-            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> instance
+            def self.new: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?moz_firefox_options: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions, ?extensions: Hash[String, untyped]) -> instance
           end
 
           class CapabilityResponse < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -161,8 +164,27 @@ module Selenium
           class UnsubscribeParameters < ::Selenium::WebDriver::BiDi::Serialization::Union
           end
 
+          class CapabilityRequestFirefoxOptions < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader android_package: untyped
+            attr_reader android_activity: untyped
+            attr_reader android_device_serial: untyped
+            attr_reader android_intent_arguments: untyped
+            attr_reader args: untyped
+            attr_reader binary: untyped
+            attr_reader env: untyped
+            attr_reader log: untyped
+            attr_reader prefs: untyped
+            attr_reader profile: untyped
+            def self.new: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: Hash[String, String | bool | Integer], ?profile: String) -> instance
+
+            class Log < ::Selenium::WebDriver::BiDi::Serialization::Record
+              attr_reader level: untyped
+              def self.new: (?level: Symbol) -> instance
+            end
+          end
+
           def capabilities_request: (?always_match: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest, ?first_match: Array[::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest]) -> CapabilitiesRequest
-          def capability_request: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?extensions: Hash[String, untyped]) -> CapabilityRequest
+          def capability_request: (?accept_insecure_certs: bool, ?browser_name: String, ?browser_version: String, ?platform_name: String, ?proxy: ::Selenium::WebDriver::BiDi::Protocol::Session::proxy_configuration, ?unhandled_prompt_behavior: ::Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler, ?moz_firefox_options: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions, ?extensions: Hash[String, untyped]) -> CapabilityRequest
           def proxy_configuration: () -> singleton(ProxyConfiguration)
           def autodetect_proxy_configuration: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> AutodetectProxyConfiguration
           def direct_proxy_configuration: (?proxy_type: String, ?extensions: Hash[String, untyped]) -> DirectProxyConfiguration
@@ -172,6 +194,8 @@ module Selenium
           def user_prompt_handler: (?alert: Symbol, ?before_unload: Symbol, ?confirm: Symbol, ?default: Symbol, ?file: Symbol, ?prompt: Symbol) -> UserPromptHandler
           def unsubscribe_by_id_request: (subscriptions: Array[String]) -> UnsubscribeByIDRequest
           def unsubscribe_by_attributes_request: (events: Array[String]) -> UnsubscribeByAttributesRequest
+          def capability_request_firefox_options: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: Hash[String, String | bool | Integer], ?profile: String) -> CapabilityRequestFirefoxOptions
+          def capability_request_firefox_options_log: (?level: Symbol) -> CapabilityRequestFirefoxOptions::Log
           def end_: () -> untyped
           def new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult
           def status: () -> ::Selenium::WebDriver::BiDi::Protocol::Session::StatusResult
