@@ -295,7 +295,7 @@ module Selenium
             end
 
             # A `map` field (`{*text => <primitive>}`, e.g. script.NodeProperties.attributes) must arrive
-            # as an object whose every value matches the declared primitive. Keys are JSON object keys,
+            # as an object whose every value matches a declared primitive. Keys are JSON object keys,
             # so they are strings by construction. The Hash passes through unchanged once validated.
             def check_map(field, raw)
               mismatch = map_mismatch(field, raw)
@@ -311,11 +311,11 @@ module Selenium
             def map_mismatch(field, value)
               return " expected a map, got #{value.inspect}" unless value.is_a?(::Hash)
 
-              check = PRIMITIVE_CHECKS[field.map]
-              return if check.nil?
+              checks = Array(field.map).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
+              return if checks.empty?
 
-              entry = value.find { |_, v| !check.call(v) }
-              "[#{entry[0].inspect}] expected #{field.map}, got #{entry[1].inspect}" if entry
+              entry = value.find { |_, v| checks.none? { |check| check.call(v) } }
+              "[#{entry[0].inspect}] expected #{Array(field.map).join(' or ')}, got #{entry[1].inspect}" if entry
             end
 
             def enum_hash(field)

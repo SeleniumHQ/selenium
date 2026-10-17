@@ -257,7 +257,7 @@ module Selenium
             binary: {wire_key: 'binary', required: false, primitive: 'string'},
             env: {wire_key: 'env', required: false, map: 'string'},
             log: {wire_key: 'log', required: false, ref: 'Session::CapabilityRequestFirefoxOptions::Log'},
-            prefs: {wire_key: 'prefs', required: false},
+            prefs: {wire_key: 'prefs', required: false, map: %w[string boolean integer]},
             profile: {wire_key: 'profile', required: false, primitive: 'string'}
           )
 

@@ -405,6 +405,22 @@ module Selenium
                 .to raise_error(ArgumentError, /must be one of/)
             end
 
+            it 'accepts each prefs value type the vendor schema declares' do
+              prefs = {'a' => 'text', 'b' => true, 'c' => 1}
+
+              expect(Session::CapabilityRequestFirefoxOptions.new(prefs: prefs).as_json).to eq('prefs' => prefs)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => 1.5}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected string or boolean or integer, got 1.5/)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => []}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected string or boolean or integer/)
+            end
+
             it 'rejects moz:firefoxOptions passed through the extensions map' do
               request = Session::CapabilityRequest.new(extensions: {'moz:firefoxOptions' => {}})
 

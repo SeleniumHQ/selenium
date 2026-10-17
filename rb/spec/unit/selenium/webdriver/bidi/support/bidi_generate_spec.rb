@@ -111,7 +111,8 @@ module BiDiGenerate
         'x.OwnerAttributes' => synthetic_map(value_type),
         'x.Value' => {'kind' => 'record', 'outbound' => false, 'inbound' => true,
                       'fields' => [{'name' => 'v', 'wire' => 'v', 'required' => true,
-                                    'type' => {'primitive' => 'string'}}]}
+                                    'type' => {'primitive' => 'string'}}]},
+        'x.Int' => {'kind' => 'alias', 'type' => {'primitive' => 'integer'}}
       }
       BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
     end
@@ -132,6 +133,20 @@ module BiDiGenerate
 
     it 'does not emit the synthetic map record as a class' do
       expect(schema('primitive' => 'string').types_for('x').map(&:schema_name)).not_to include('x.OwnerAttributes')
+    end
+
+    it 'carries a map whose values are a union of primitives as the list of them' do
+      field = attributes_field('union' => [{'primitive' => 'string'}, {'primitive' => 'boolean'}, {'ref' => 'x.Int'}])
+
+      expect(field.spec_entry)
+        .to eq("attributes: {wire_key: 'attributes', required: false, map: %w[string boolean integer]}")
+      expect(field.rbs).to eq('Hash[String, String | bool | Integer]')
+    end
+
+    it 'leaves a map whose union includes a non-primitive opaque' do
+      field = attributes_field('union' => [{'primitive' => 'string'}, {'ref' => 'x.Value'}])
+
+      expect(field.spec_entry).to eq("attributes: {wire_key: 'attributes', required: false}")
     end
 
     it 'leaves a ref-valued map opaque' do

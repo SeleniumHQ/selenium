@@ -336,7 +336,7 @@ module BiDiGenerate
     end
 
     # The facts describing the value's type and shape: what the runtime reads it as and checks
-    # it against. `map_of` is the value primitive of a string-keyed map (`{*text => text}`).
+    # it against. `map_of` is the value primitive(s) of a string-keyed map (`{*text => text}`).
     def type_facts
       facts = []
       facts << "ref: '#{ref}'" if ref
@@ -344,7 +344,7 @@ module BiDiGenerate
       facts << "scalar: #{scalar_literal}" if scalar
       facts << "enum: '#{enum}'" if enum
       facts << "primitive: '#{primitive}'" if primitive
-      facts << "map: '#{map_of}'" if map_of
+      facts << "map: #{map_literal}" if map_of
       facts
     end
 
@@ -352,6 +352,11 @@ module BiDiGenerate
     # union position: a single primitive string, or an array when the union's scalar arms differ.
     def scalar_literal
       scalar.is_a?(::Array) ? "[#{scalar.map { |s| "'#{s}'" }.join(', ')}]" : "'#{scalar}'"
+    end
+
+    # The `map` value primitive(s): a single primitive string, or an array when the values allow several.
+    def map_literal
+      map_of.is_a?(::Array) ? BiDiGenerate.word_array(map_of) : "'#{map_of}'"
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -991,13 +996,22 @@ module BiDiGenerate
     # A field-less record is either a genuinely empty one (EmptyParams, Extensible — opaque)
     # or the projector's stand-in for an inline map (`{*text => text}` is hoisted to a record
     # with no fields and the value type under `map`, e.g. script.NodePropertiesAttributes).
-    # A primitive-valued map becomes a `map` descriptor the runtime checks and a typed Hash;
-    # a ref- or union-valued one (the Mozilla vendor types) stays opaque for now.
+    # A map whose values are a primitive, or a union of primitives (Firefox `prefs`), becomes a
+    # `map` descriptor the runtime checks and a typed Hash; a ref-valued one stays opaque for now.
     def map_record(type)
-      primitive = type.dig('map', 'primitive')
-      return OPAQUE unless primitive && CHECKABLE_PRIMITIVES.include?(primitive)
+      primitives = map_value_primitives(type['map'])
+      return OPAQUE unless primitives
 
-      {ref: nil, list: false, map: primitive, rbs: "Hash[String, #{PRIMITIVE_RBS.fetch(primitive)}]"}
+      rbs = primitives.map { |primitive| PRIMITIVE_RBS.fetch(primitive) }.join(' | ')
+      {ref: nil, list: false, map: primitives.one? ? primitives.first : primitives, rbs: "Hash[String, #{rbs}]"}
+    end
+
+    # Each arm's checkable primitive, following aliases (js-int is an integer); nil if any arm has none.
+    def map_value_primitives(node)
+      return unless node
+
+      primitives = (node['union'] || [node]).map { |arm| leaf_primitive(arm) }
+      primitives.uniq if primitives.all?
     end
 
     # A named structured type's serialization ref (nil for a dotless/global type, never

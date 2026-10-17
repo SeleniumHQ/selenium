@@ -175,7 +175,7 @@ module Selenium
             attr_reader log: untyped
             attr_reader prefs: untyped
             attr_reader profile: untyped
-            def self.new: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: untyped, ?profile: String) -> instance
+            def self.new: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: Hash[String, String | bool | Integer], ?profile: String) -> instance
 
             class Log < ::Selenium::WebDriver::BiDi::Serialization::Record
               attr_reader level: untyped
@@ -194,7 +194,7 @@ module Selenium
           def user_prompt_handler: (?alert: Symbol, ?before_unload: Symbol, ?confirm: Symbol, ?default: Symbol, ?file: Symbol, ?prompt: Symbol) -> UserPromptHandler
           def unsubscribe_by_id_request: (subscriptions: Array[String]) -> UnsubscribeByIDRequest
           def unsubscribe_by_attributes_request: (events: Array[String]) -> UnsubscribeByAttributesRequest
-          def capability_request_firefox_options: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: untyped, ?profile: String) -> CapabilityRequestFirefoxOptions
+          def capability_request_firefox_options: (?android_package: String, ?android_activity: String, ?android_device_serial: String, ?android_intent_arguments: Array[String], ?args: Array[String], ?binary: String, ?env: Hash[String, String], ?log: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions::Log, ?prefs: Hash[String, String | bool | Integer], ?profile: String) -> CapabilityRequestFirefoxOptions
           def capability_request_firefox_options_log: (?level: Symbol) -> CapabilityRequestFirefoxOptions::Log
           def end_: () -> untyped
           def new: (capabilities: ::Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest) -> ::Selenium::WebDriver::BiDi::Protocol::Session::NewResult
