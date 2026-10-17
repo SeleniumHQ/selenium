@@ -112,13 +112,13 @@ module Selenium
               it 'throws an error when removing the default user context' do
                 expect {
                   browser.remove_user_context(user_context: 'default')
-                }.to raise_error(Error::WebDriverError, /user context cannot be removed/)
+                }.to raise_error(Error::InvalidArgumentError)
               end
 
               it 'throws an error when removing a non-existent user context' do
                 expect {
                   browser.remove_user_context(user_context: 'fake_context')
-                }.to raise_error(Error::WebDriverError)
+                }.to raise_error(Error::NoSuchUserContextError)
               end
             end
 

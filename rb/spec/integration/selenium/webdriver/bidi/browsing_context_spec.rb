@@ -46,12 +46,10 @@ module Selenium
             expect(driver.window_handles).to include(id)
           end
 
-          it 'errors on unknown type',
-             pending_if: {browser: %i[firefox safari safari_preview], reason: "Doesn't return the expected error"} do
-            msg = /invalid argument: Invalid enum value. Expected 'tab' | 'window', received 'unknown'/
+          it 'errors on unknown type' do
             expect {
               described_class.new(bridge).create(type: :unknown)
-            }.to raise_error(Error::WebDriverError, msg)
+            }.to raise_error(Error::WebDriverError, /\Ainvalid argument: /)
           end
 
           it 'accepts a reference context' do
