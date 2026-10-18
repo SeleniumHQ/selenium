@@ -17,9 +17,6 @@ java_test_suite(
         "--release",
         TOOLS_JAVA_VERSION,
     ],
-    tags = [
-        "no-sandbox",
-    ],
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",

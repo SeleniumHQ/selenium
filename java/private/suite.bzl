@@ -61,7 +61,6 @@ def _generate_test_suite(
         )
         deps = deps + [":%s-support" % name]
 
-    additional_tags = [] if size == "small" else ["no-sandbox"]
     suite_targets = []
     pkg = package_name()
     for test in test_srcs:
@@ -76,7 +75,7 @@ def _generate_test_suite(
             size = size,
             srcs = [test],
             deps = deps,
-            tags = tags + additional_tags + extra_tags.get(test, []),
+            tags = tags + extra_tags.get(test, []),
             **kwargs
         )
 
