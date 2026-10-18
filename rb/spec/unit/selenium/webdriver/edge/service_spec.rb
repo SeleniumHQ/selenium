@@ -66,19 +66,19 @@ module Selenium
           end
 
           it 'uses sets log path to stdout' do
-            service = described_class.chrome(log: :stdout)
+            service = described_class.new(log: :stdout)
 
             expect(service.log).to eq $stdout
           end
 
           it 'uses sets log path to stderr' do
-            service = described_class.chrome(log: :stderr)
+            service = described_class.new(log: :stderr)
 
             expect(service.log).to eq $stderr
           end
 
           it 'setting log output as a file converts to argument' do
-            service = described_class.chrome(log: '/path/to/log.txt')
+            service = described_class.new(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
             expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
@@ -154,13 +154,6 @@ module Selenium
 
             driver.new(service: service)
             expect(ServiceManager).to have_received(:new).once.with(service)
-          end
-
-          it 'setting log output as a file converts to argument' do
-            service = described_class.chrome(log: '/path/to/log.txt')
-
-            expect(service.log).to be_nil
-            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
         end
       end
