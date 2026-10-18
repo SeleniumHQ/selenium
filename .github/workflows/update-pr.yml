@@ -1,0 +1,69 @@
+name: Shared - Update Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      run:
+        description: Command that updates the source tree; its "output" is appended to the title
+        required: true
+        type: string
+      branch:
+        description: Pull request branch
+        required: true
+        type: string
+      title:
+        description: Pull request title
+        required: true
+        type: string
+      body:
+        description: Pull request body, used when the pull request is created
+        required: true
+        type: string
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
+
+jobs:
+  update:
+    name: Update
+    permissions:
+      contents: read
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Update
+      run: git fetch --no-tags --depth=1 origin ${{ inputs.branch }} && git checkout -q FETCH_HEAD || true; ${{ inputs.run }}
+      artifact-name: pr-changes
+
+  publish:
+    name: Publish
+    if: github.event.repository.fork == false
+    needs: update
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Download patch
+        uses: actions/download-artifact@v8
+        with:
+          pattern: pr-changes
+          merge-multiple: true
+      - name: Commit and open or retitle the pull request
+        if: hashFiles('changes.patch') != ''
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ inputs.branch }}
+          TITLE: ${{ inputs.title }}${{ needs.update.outputs.output && format(' {0}', needs.update.outputs.output) || '' }}
+          BODY: ${{ inputs.body }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BRANCH" && git checkout -q FETCH_HEAD || true
+          git apply --index changes.patch
+          git -c user.name="Selenium CI Bot" -c user.email="selenium-ci@users.noreply.github.com" commit -qm "$TITLE"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" HEAD:refs/heads/"$BRANCH"
+          gh pr edit "$BRANCH" --title "$TITLE" || gh pr create --base trunk --head "$BRANCH" --title "$TITLE" --body "$BODY" --label C-build
