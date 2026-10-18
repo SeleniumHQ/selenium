@@ -1,10 +1,7 @@
 COMMON_TAGS = [
     "browser-test",
-    # We have to use no-sandbox at the moment because Firefox crashes
-    # when run under sandbox: https://bugzilla.mozilla.org/show_bug.cgi?id=1382498.
-    # For Chromium-based browser, we can just pass `--no-sandbox` flag.
+    # Sandboxes don't nest on macOS, so browsers can't sandbox their own processes inside Bazel's.
     "no-sandbox",
-    "requires-network",
     "resources:browser:1",
 ]
 

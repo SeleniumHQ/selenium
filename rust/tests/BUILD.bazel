@@ -29,7 +29,6 @@ rust_test_suite(
     ),
     tags = [
         "no-sandbox",
-        "requires-network",
     ],
     deps = [
         "//rust:selenium_manager",
