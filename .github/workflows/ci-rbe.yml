@@ -54,7 +54,7 @@ jobs:
   # Warm stamped build cache prior to release
   prepare-release:
     name: Prepare Release
-    if: github.event.repository.fork == false && startsWith(github.head_ref, 'release-preparation-')
+    if: github.event.repository.fork == false && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.head_ref, 'release-preparation-')
     uses: ./.github/workflows/bazel.yml
     with:
       name: Prepare Release
