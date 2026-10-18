@@ -125,7 +125,7 @@ module Selenium
         it 'activates a browser context',
            pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
           browsing_context = described_class.new(bridge)
-          browsing_context.create
+          browsing_context.create(type: :tab)
 
           expect(driver.execute_script('return document.hasFocus();')).to be_falsey
           browsing_context.activate
