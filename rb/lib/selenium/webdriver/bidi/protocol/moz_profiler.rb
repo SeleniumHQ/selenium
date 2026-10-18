@@ -51,8 +51,8 @@ module Selenium
             # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
             Options = Serialization::Record.define(
               active_context: {wire_key: 'activeContext', required: false, primitive: 'string'},
-              entries: {wire_key: 'entries', primitive: 'integer'},
-              interval: {wire_key: 'interval', primitive: 'integer'},
+              entries: {wire_key: 'entries', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+              interval: {wire_key: 'interval', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
               features: {wire_key: 'features', list: true, primitive: 'string'},
               threads: {wire_key: 'threads', list: true, primitive: 'string'}
             )

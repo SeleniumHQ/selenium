@@ -103,9 +103,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'}
           )
@@ -149,11 +149,11 @@ module Selenium
             value: {wire_key: 'value', ref: 'Network::BytesValue'},
             domain: {wire_key: 'domain', primitive: 'string'},
             path: {wire_key: 'path', primitive: 'string'},
-            size: {wire_key: 'size', primitive: 'integer'},
+            size: {wire_key: 'size', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             http_only: {wire_key: 'httpOnly', primitive: 'boolean'},
             secure: {wire_key: 'secure', primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             extensible: true
           )
 
@@ -196,8 +196,20 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-network-Initiator
           Initiator = Serialization::Record.define(
-            column_number: {wire_key: 'columnNumber', required: false, primitive: 'integer'},
-            line_number: {wire_key: 'lineNumber', required: false, primitive: 'integer'},
+            column_number: {
+              wire_key: 'columnNumber',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            line_number: {
+              wire_key: 'lineNumber',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             request: {wire_key: 'request', required: false, primitive: 'string'},
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             type: {wire_key: 'type', required: false, enum: 'Network::INITIATOR_TYPE'}
@@ -212,8 +224,8 @@ module Selenium
             method_: {wire_key: 'method', primitive: 'string'},
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
             cookies: {wire_key: 'cookies', ref: 'Network::Cookie', list: true},
-            headers_size: {wire_key: 'headersSize', primitive: 'integer'},
-            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer'},
+            headers_size: {wire_key: 'headersSize', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             destination: {wire_key: 'destination', primitive: 'string'},
             initiator_type: {wire_key: 'initiatorType', nullable: true, primitive: 'string'},
             timings: {wire_key: 'timings', ref: 'Network::FetchTimingInfo'}
@@ -222,7 +234,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-network-ResponseContent
-          ResponseContent = Serialization::Record.define(size: {wire_key: 'size', primitive: 'integer'})
+          ResponseContent = Serialization::Record.define(
+            size: {wire_key: 'size', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -230,14 +244,20 @@ module Selenium
           ResponseData = Serialization::Record.define(
             url: {wire_key: 'url', primitive: 'string'},
             protocol: {wire_key: 'protocol', primitive: 'string'},
-            status: {wire_key: 'status', primitive: 'integer'},
+            status: {wire_key: 'status', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             status_text: {wire_key: 'statusText', primitive: 'string'},
             from_cache: {wire_key: 'fromCache', primitive: 'boolean'},
             headers: {wire_key: 'headers', ref: 'Network::Header', list: true},
             mime_type: {wire_key: 'mimeType', primitive: 'string'},
-            bytes_received: {wire_key: 'bytesReceived', primitive: 'integer'},
-            headers_size: {wire_key: 'headersSize', nullable: true, primitive: 'integer'},
-            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer'},
+            bytes_received: {wire_key: 'bytesReceived', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            headers_size: {
+              wire_key: 'headersSize',
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            body_size: {wire_key: 'bodySize', nullable: true, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             content: {wire_key: 'content', ref: 'Network::ResponseContent'},
             auth_challenges: {wire_key: 'authChallenges', required: false, ref: 'Network::AuthChallenge', list: true}
           )
@@ -251,7 +271,13 @@ module Selenium
             domain: {wire_key: 'domain', required: false, primitive: 'string'},
             http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
             expiry: {wire_key: 'expiry', required: false, primitive: 'string'},
-            max_age: {wire_key: 'maxAge', required: false, primitive: 'integer'},
+            max_age: {
+              wire_key: 'maxAge',
+              required: false,
+              primitive: 'integer',
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
             path: {wire_key: 'path', required: false, primitive: 'string'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
             secure: {wire_key: 'secure', required: false, primitive: 'boolean'}
@@ -297,7 +323,12 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-networkadddatacollectorparameters
           AddDataCollectorParameters = Serialization::Record.define(
             data_types: {wire_key: 'dataTypes', list: true, enum: 'Network::DATA_TYPE'},
-            max_encoded_data_size: {wire_key: 'maxEncodedDataSize', primitive: 'integer'},
+            max_encoded_data_size: {
+              wire_key: 'maxEncodedDataSize',
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             collector_type: {wire_key: 'collectorType', required: false, enum: 'Network::COLLECTOR_TYPE'},
             contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
             user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
@@ -343,7 +374,13 @@ module Selenium
             credentials: {wire_key: 'credentials', required: false, ref: 'Network::AuthCredentials'},
             headers: {wire_key: 'headers', required: false, ref: 'Network::Header', list: true},
             reason_phrase: {wire_key: 'reasonPhrase', required: false, primitive: 'string'},
-            status_code: {wire_key: 'statusCode', required: false, primitive: 'integer'}
+            status_code: {
+              wire_key: 'statusCode',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            }
           )
 
           # @api private
@@ -413,7 +450,13 @@ module Selenium
             cookies: {wire_key: 'cookies', required: false, ref: 'Network::SetCookieHeader', list: true},
             headers: {wire_key: 'headers', required: false, ref: 'Network::Header', list: true},
             reason_phrase: {wire_key: 'reasonPhrase', required: false, primitive: 'string'},
-            status_code: {wire_key: 'statusCode', required: false, primitive: 'integer'}
+            status_code: {
+              wire_key: 'statusCode',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            }
           )
 
           # @api private
@@ -454,9 +497,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
@@ -469,9 +512,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             initiator: {wire_key: 'initiator', required: false, ref: 'Network::Initiator'}
@@ -484,9 +527,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             error_text: {wire_key: 'errorText', primitive: 'string'}
@@ -499,9 +542,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}
@@ -514,9 +557,9 @@ module Selenium
             context: {wire_key: 'context', nullable: true, primitive: 'string'},
             is_blocked: {wire_key: 'isBlocked', primitive: 'boolean'},
             navigation: {wire_key: 'navigation', nullable: true, primitive: 'string'},
-            redirect_count: {wire_key: 'redirectCount', primitive: 'integer'},
+            redirect_count: {wire_key: 'redirectCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             request: {wire_key: 'request', ref: 'Network::RequestData'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             user_context: {wire_key: 'userContext', required: false, nullable: true, primitive: 'string'},
             intercepts: {wire_key: 'intercepts', required: false, list: true, primitive: 'string'},
             response: {wire_key: 'response', ref: 'Network::ResponseData'}

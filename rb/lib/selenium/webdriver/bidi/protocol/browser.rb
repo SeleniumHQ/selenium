@@ -47,11 +47,11 @@ module Selenium
           ClientWindowInfo = Serialization::Record.define(
             active: {wire_key: 'active', primitive: 'boolean'},
             client_window: {wire_key: 'clientWindow', primitive: 'string'},
-            height: {wire_key: 'height', primitive: 'integer'},
+            height: {wire_key: 'height', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             state: {wire_key: 'state', enum: 'Browser::CLIENT_WINDOW_INFO_STATE'},
-            width: {wire_key: 'width', primitive: 'integer'},
-            x: {wire_key: 'x', primitive: 'integer'},
-            y: {wire_key: 'y', primitive: 'integer'}
+            width: {wire_key: 'width', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            x: {wire_key: 'x', primitive: 'integer', min: -9_007_199_254_740_991, max: 9_007_199_254_740_991},
+            y: {wire_key: 'y', primitive: 'integer', min: -9_007_199_254_740_991, max: 9_007_199_254_740_991}
           )
 
           # @api private
@@ -116,10 +116,22 @@ module Selenium
             ClientWindowRectState = Serialization::Record.define(
               state: {fixed: 'normal'},
               client_window: {wire_key: 'clientWindow', primitive: 'string'},
-              width: {wire_key: 'width', required: false, primitive: 'integer'},
-              height: {wire_key: 'height', required: false, primitive: 'integer'},
-              x: {wire_key: 'x', required: false, primitive: 'integer'},
-              y: {wire_key: 'y', required: false, primitive: 'integer'}
+              width: {wire_key: 'width', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+              height: {wire_key: 'height', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+              x: {
+                wire_key: 'x',
+                required: false,
+                primitive: 'integer',
+                min: -9_007_199_254_740_991,
+                max: 9_007_199_254_740_991
+              },
+              y: {
+                wire_key: 'y',
+                required: false,
+                primitive: 'integer',
+                min: -9_007_199_254_740_991,
+                max: 9_007_199_254_740_991
+              }
             )
 
             def self.normal(**) = Browser::SetClientWindowStateParameters::ClientWindowRectState.new(**)

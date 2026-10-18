@@ -232,13 +232,27 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationgeolocationcoordinates
           GeolocationCoordinates = Serialization::Record.define(
-            latitude: {wire_key: 'latitude', primitive: 'number'},
-            longitude: {wire_key: 'longitude', primitive: 'number'},
-            accuracy: {wire_key: 'accuracy', required: false, primitive: 'number'},
+            latitude: {wire_key: 'latitude', primitive: 'number', min: -90, max: 90},
+            longitude: {wire_key: 'longitude', primitive: 'number', min: -180, max: 180},
+            accuracy: {wire_key: 'accuracy', required: false, primitive: 'number', min: 0},
             altitude: {wire_key: 'altitude', required: false, nullable: true, primitive: 'number'},
-            altitude_accuracy: {wire_key: 'altitudeAccuracy', required: false, nullable: true, primitive: 'number'},
-            heading: {wire_key: 'heading', required: false, nullable: true, primitive: 'number'},
-            speed: {wire_key: 'speed', required: false, nullable: true, primitive: 'number'}
+            altitude_accuracy: {
+              wire_key: 'altitudeAccuracy',
+              required: false,
+              nullable: true,
+              primitive: 'number',
+              min: 0
+            },
+            heading: {
+              wire_key: 'heading',
+              required: false,
+              nullable: true,
+              primitive: 'number',
+              min: 0,
+              max: 360,
+              exclusive_max: true
+            },
+            speed: {wire_key: 'speed', required: false, nullable: true, primitive: 'number', min: 0}
           )
 
           # @api private
@@ -280,14 +294,28 @@ module Selenium
               nullable: true,
               enum: 'Emulation::MEDIA_FEATURES_ANY_POINTER'
             },
-            color: {wire_key: 'color', required: false, nullable: true, primitive: 'integer'},
+            color: {
+              wire_key: 'color',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             color_gamut: {
               wire_key: 'color-gamut',
               required: false,
               nullable: true,
               enum: 'Emulation::MEDIA_FEATURES_COLOR_GAMUT'
             },
-            color_index: {wire_key: 'color-index', required: false, nullable: true, primitive: 'integer'},
+            color_index: {
+              wire_key: 'color-index',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             display_mode: {
               wire_key: 'display-mode',
               required: false,
@@ -317,7 +345,9 @@ module Selenium
               wire_key: 'horizontal-viewport-segments',
               required: false,
               nullable: true,
-              primitive: 'integer'
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
             },
             hover: {wire_key: 'hover', required: false, nullable: true, enum: 'Emulation::MEDIA_FEATURES_HOVER'},
             inverted_colors: {
@@ -326,7 +356,14 @@ module Selenium
               nullable: true,
               enum: 'Emulation::MEDIA_FEATURES_INVERTED_COLORS'
             },
-            monochrome: {wire_key: 'monochrome', required: false, nullable: true, primitive: 'integer'},
+            monochrome: {
+              wire_key: 'monochrome',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             nav_controls: {
               wire_key: 'nav-controls',
               required: false,
@@ -388,7 +425,9 @@ module Selenium
               wire_key: 'vertical-viewport-segments',
               required: false,
               nullable: true,
-              primitive: 'integer'
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
             },
             video_color_gamut: {
               wire_key: 'video-color-gamut',
@@ -426,8 +465,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationscreenarea
           ScreenArea = Serialization::Record.define(
-            width: {wire_key: 'width', primitive: 'integer'},
-            height: {wire_key: 'height', primitive: 'integer'}
+            width: {wire_key: 'width', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            height: {wire_key: 'height', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private
@@ -518,7 +557,13 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettouchoverrideparameters
           SetTouchOverrideParameters = Serialization::Record.define(
-            max_touch_points: {wire_key: 'maxTouchPoints', nullable: true, primitive: 'integer'},
+            max_touch_points: {
+              wire_key: 'maxTouchPoints',
+              nullable: true,
+              primitive: 'integer',
+              min: 1,
+              max: 9_007_199_254_740_991
+            },
             contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
             user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
