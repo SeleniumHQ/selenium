@@ -523,7 +523,7 @@ class LocalNewSessionQueueTest {
 
     new Thread(
             () -> {
-              while (count.get() <= 2) {
+              while (count.get() < 2) {
                 waitUntilAddedToQueue(sessionRequest);
 
                 count.incrementAndGet();
