@@ -59,6 +59,22 @@ module BiDiGenerate
     end
   end
 
+  describe 'FieldIR#spec_entry' do
+    let(:field) { BiDiGenerate::FieldIR.new(ruby_name: 'n', wire_key: 'n', required: false, bounds: {}) }
+
+    it 'stays on one line when it fits with its separating comma' do
+      expect(field.spec_entry(84, trailing: 1)).to eq("n: {wire_key: 'n', required: false}")
+    end
+
+    it 'wraps when its separating comma would pass the line limit' do
+      expect(field.spec_entry(85, trailing: 1)).to start_with("n: {\n")
+    end
+
+    it 'stays on one line at the line limit when no comma follows it' do
+      expect(field.spec_entry(85)).to eq("n: {wire_key: 'n', required: false}")
+    end
+  end
+
   describe '.check_accessor_collisions!' do
     def accessor(name)
       BiDiGenerate::Accessor.new(method_name: name, type_name: 'T', union: false)
@@ -154,6 +170,76 @@ module BiDiGenerate
 
       expect(field.spec_entry).to eq("attributes: {wire_key: 'attributes', required: false}")
       expect(field.rbs).to eq('untyped')
+    end
+  end
+
+  describe 'Schema#types_for with numeric bounds' do
+    def alias_of(type) = {'kind' => 'alias', 'type' => type}
+
+    def prefs_map(*arms)
+      {'kind' => 'record', 'fields' => [], 'map' => {'union' => arms}, 'synthetic' => true,
+       'owner' => 'x.Owner', 'label' => 'Prefs', 'outbound' => true, 'inbound' => false}
+    end
+
+    def spec_entry(type)
+      owner = {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+               'fields' => [{'name' => 'n', 'wire' => 'n', 'required' => true, 'type' => type}]}
+      types = {
+        'x.Owner' => owner,
+        'x.Uint' => alias_of('primitive' => 'integer', 'min' => 0, 'max' => 9_007_199_254_740_991),
+        'x.Percent' => alias_of('ref' => 'x.Uint', 'max' => 100),
+        'x.Fraction' => alias_of('primitive' => 'number', 'max' => 1, 'exclusiveMax' => true),
+        'x.OwnerPrefs' => prefs_map({'primitive' => 'string'}, {'ref' => 'x.Uint'}),
+        'x.OwnerMixed' => prefs_map({'ref' => 'x.Uint'}, {'primitive' => 'number'})
+      }
+      schema = BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
+      schema.types_for('x').find { |t| t.schema_name == 'x.Owner' }.fields.first.spec_entry
+    end
+
+    it "carries a primitive field's own bounds" do
+      expect(spec_entry('primitive' => 'number', 'min' => 0, 'exclusiveMin' => true))
+        .to eq("n: {wire_key: 'n', primitive: 'number', min: 0, exclusive_min: true}")
+    end
+
+    it 'carries the bounds of the alias a field names' do
+      expect(spec_entry('ref' => 'x.Uint'))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}")
+    end
+
+    it "narrows the alias's bounds with the field's own" do
+      expect(spec_entry('ref' => 'x.Uint', 'min' => 1))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 1, max: 9_007_199_254_740_991}")
+    end
+
+    it 'keeps the tighter bound along an alias chain' do
+      expect(spec_entry('ref' => 'x.Percent', 'min' => -5, 'max' => 50))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 50}")
+    end
+
+    it 'treats an exclusive bound as tighter than an inclusive one at the same value' do
+      expect(spec_entry('ref' => 'x.Fraction', 'max' => 1))
+        .to eq("n: {wire_key: 'n', primitive: 'number', max: 1, exclusive_max: true}")
+      expect(spec_entry('ref' => 'x.Percent', 'max' => 100, 'exclusiveMax' => true))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 100, exclusive_max: true}")
+    end
+
+    it "carries the bounds of a list's elements" do
+      expect(spec_entry('list' => {'ref' => 'x.Percent'}))
+        .to eq("n: {wire_key: 'n', list: true, primitive: 'integer', min: 0, max: 100}")
+    end
+
+    it "carries the bounds of a scalar union's numeric arm" do
+      expect(spec_entry('list' => {'union' => [{'ref' => 'x.Percent'}, {'primitive' => 'string'}]}))
+        .to eq("n: {wire_key: 'n', list: true, primitive: %w[integer string], min: 0, max: 100}")
+    end
+
+    it "carries the bounds of a map's numeric value arm" do
+      expect(spec_entry('ref' => 'x.OwnerPrefs'))
+        .to eq("n: {wire_key: 'n', map: %w[string integer], min: 0, max: 9_007_199_254_740_991}")
+    end
+
+    it 'fails generation when the numeric arms of a map carry different bounds' do
+      expect { spec_entry('ref' => 'x.OwnerMixed') }.to raise_error(/different bounds/)
     end
   end
 

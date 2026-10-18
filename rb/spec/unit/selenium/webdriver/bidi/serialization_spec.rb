@@ -539,6 +539,75 @@ module Selenium
             end
           end
 
+          describe 'numeric bounds' do
+            def locate_nodes(max_node_count)
+              locator = BrowsingContext::CssLocator.new(value: 'p')
+              BrowsingContext::LocateNodesParameters.new(context: 'c', locator: locator, max_node_count: max_node_count)
+            end
+
+            def response_wire(status)
+              {'url' => 'https://example.com', 'protocol' => 'http/1.1', 'status' => status, 'statusText' => 'OK',
+               'fromCache' => false, 'headers' => [], 'mimeType' => 'text/html', 'bytesReceived' => 0,
+               'headersSize' => nil, 'bodySize' => nil, 'content' => {'size' => 0}}
+            end
+
+            it 'rejects a value below an inclusive minimum before sending' do
+              expect { locate_nodes(0) }
+                .to raise_error(ArgumentError, /LocateNodesParameters#max_node_count expected >= 1, got 0/)
+            end
+
+            it 'accepts a value at an inclusive minimum' do
+              expect(locate_nodes(1).max_node_count).to eq(1)
+            end
+
+            it 'rejects a value at an exclusive minimum' do
+              expect { BrowsingContext::SetViewportParameters.new(device_pixel_ratio: 0) }
+                .to raise_error(ArgumentError, /SetViewportParameters#device_pixel_ratio expected > 0, got 0/)
+            end
+
+            it 'rejects a value at an exclusive maximum' do
+              expect { Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 360) }
+                .to raise_error(ArgumentError, /GeolocationCoordinates#heading expected < 360, got 360/)
+            end
+
+            it 'accepts a value just under an exclusive maximum' do
+              expect(Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 359.9).heading)
+                .to eq(359.9)
+            end
+
+            it 'holds a field to the range of the alias it names' do
+              expect { Emulation::ScreenArea.new(width: 2**53, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected <= 9007199254740991, got 9007199254740992/)
+            end
+
+            it 'rejects a value outside the range of the alias it names on receipt' do
+              expect { Network::ResponseData.from_json(response_wire(-1)) }
+                .to raise_error(Error::SerializationError, /ResponseData#status expected >= 0, got -1/)
+            end
+
+            it 'rejects a value outside a field-declared range on receipt' do
+              wire = {'proxyType' => 'manual', 'socksProxy' => 'localhost:1080', 'socksVersion' => 256}
+
+              expect { Session::ManualProxyConfiguration.from_json(wire) }
+                .to raise_error(Error::SerializationError, /ManualProxyConfiguration#socks_version expected <= 255/)
+            end
+
+            it 'holds an integer map value to the range of its arm before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => -(2**53)}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected >= -9007199254740991, got -9007199254740992/)
+            end
+
+            it 'holds an integer map value to the range of its arm on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => 2**53}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected <= 9007199254740991/)
+            end
+
+            it 'holds an integer list element to the range of its arm before sending' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: ['1-3', -1]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected >= 0, got -1/)
+            end
+          end
+
           describe 'outbound ref validation' do
             # A record-typed ref: the value must be an instance of that exact record. A different
             # record (even a sibling reference type) is a caller error caught before the wire.

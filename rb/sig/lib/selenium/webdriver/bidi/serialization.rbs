@@ -96,7 +96,13 @@ module Selenium
 
             def primitive_mismatch: (untyped field, untyped value) -> String?
 
-            def element_mismatch: (String | Array[String] primitives, untyped value) -> String?
+            def element_mismatch: (untyped field, String | Array[String] primitives, untyped value) -> String?
+
+            def bound_mismatch: (untyped field, untyped value) -> String?
+
+            def violated_min: (untyped field, untyped value) -> String?
+
+            def violated_max: (untyped field, untyped value) -> String?
 
             def check_map: (untyped field, untyped raw) -> untyped
 

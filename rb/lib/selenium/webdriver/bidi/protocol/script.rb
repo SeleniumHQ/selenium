@@ -129,9 +129,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-ExceptionDetails
           ExceptionDetails = Serialization::Record.define(
-            column_number: {wire_key: 'columnNumber', primitive: 'integer'},
+            column_number: {wire_key: 'columnNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             exception: {wire_key: 'exception', ref: 'Script::RemoteValue'},
-            line_number: {wire_key: 'lineNumber', primitive: 'integer'},
+            line_number: {wire_key: 'lineNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', ref: 'Script::StackTrace'},
             text: {wire_key: 'text', primitive: 'string'}
           )
@@ -737,8 +737,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnodeproperties
           NodeProperties = Serialization::Record.define(
-            node_type: {wire_key: 'nodeType', primitive: 'integer'},
-            child_node_count: {wire_key: 'childNodeCount', primitive: 'integer'},
+            node_type: {wire_key: 'nodeType', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            child_node_count: {wire_key: 'childNodeCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             attributes: {wire_key: 'attributes', required: false, map: 'string'},
             children: {wire_key: 'children', required: false, ref: 'Script::NodeRemoteValue', list: true},
             local_name: {wire_key: 'localName', required: false, primitive: 'string'},
@@ -767,8 +767,22 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-SerializationOptions
           SerializationOptions = Serialization::Record.define(
-            max_dom_depth: {wire_key: 'maxDomDepth', required: false, nullable: true, primitive: 'integer'},
-            max_object_depth: {wire_key: 'maxObjectDepth', required: false, nullable: true, primitive: 'integer'},
+            max_dom_depth: {
+              wire_key: 'maxDomDepth',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            max_object_depth: {
+              wire_key: 'maxObjectDepth',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             include_shadow_tree: {
               wire_key: 'includeShadowTree',
               required: false,
@@ -780,9 +794,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-StackFrame
           StackFrame = Serialization::Record.define(
-            column_number: {wire_key: 'columnNumber', primitive: 'integer'},
+            column_number: {wire_key: 'columnNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             function_name: {wire_key: 'functionName', primitive: 'string'},
-            line_number: {wire_key: 'lineNumber', primitive: 'integer'},
+            line_number: {wire_key: 'lineNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             url: {wire_key: 'url', primitive: 'string'}
           )
 

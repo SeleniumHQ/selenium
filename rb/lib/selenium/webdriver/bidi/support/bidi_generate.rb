@@ -86,12 +86,22 @@ module BiDiGenerate
     value.is_a?(String) ? "'#{value}'" : value.to_s
   end
 
+  # Source literal for a bound (a number, or an exclusive flag's `true`), grouping a long integer's
+  # digits as RuboCop's NumericLiterals expects.
+  def self.numeric_literal(value)
+    return value.to_s unless value.is_a?(Integer) && value.abs >= 10_000
+
+    grouped = value.abs.to_s.reverse.scan(/\d{1,3}/).join('_').reverse
+    value.negative? ? "-#{grouped}" : grouped
+  end
+
   # Renders `prefix(args)` on one line, or one argument per line when it would exceed
   # LINE_LIMIT at the given indent. open/close default to parentheses (pass {} for a
-  # hash literal) so emitted calls and literals stay within RuboCop's length limit.
-  def self.wrap_call(prefix, args, indent, open: '(', close: ')')
+  # hash literal) so emitted calls and literals stay within RuboCop's length limit. trailing
+  # counts what the caller appends to the last line (an entry's separating comma).
+  def self.wrap_call(prefix, args, indent, open: '(', close: ')', trailing: 0)
     one_line = "#{prefix}#{open}#{args.join(', ')}#{close}"
-    return one_line if args.empty? || indent + one_line.length <= LINE_LIMIT
+    return one_line if args.empty? || indent + one_line.length + trailing <= LINE_LIMIT
 
     pad = ' ' * (indent + 2)
     "#{prefix}#{open}\n#{pad}#{args.join(",\n#{pad}")}\n#{' ' * indent}#{close}"
@@ -312,16 +322,16 @@ module BiDiGenerate
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
   FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
-                       :map_of, :rbs, keyword_init: true) do
+                       :map_of, :bounds, :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
-    def spec_entry(indent = 0)
+    def spec_entry(indent = 0, trailing: 0)
       meta = value_facts
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
-      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
+      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}', trailing: trailing)
     end
 
     # The JSON facts beyond the field's name, in the order Record.define reads them. A
@@ -346,7 +356,12 @@ module BiDiGenerate
       facts << "enum: '#{enum}'" if enum
       facts << "primitive: #{primitive_literal(primitive)}" if primitive
       facts << "map: #{primitive_literal(map_of)}" if map_of
-      facts
+      facts + bound_facts
+    end
+
+    # The numeric bounds every value the field carries is held to (for a list or map, each numeric one).
+    def bound_facts
+      bounds.map { |key, value| "#{BiDiGenerate.camel_to_snake(key)}: #{BiDiGenerate.numeric_literal(value)}" }
     end
 
     # A single primitive string, or an array when a value may match several: a union of scalars
@@ -383,7 +398,8 @@ module BiDiGenerate
     def define_entries(entry_indent)
       entries = []
       entries << discriminator_entry if discriminator
-      entries.concat(fields.map { |f| f.spec_entry(entry_indent) })
+      last = fields.last unless extensible
+      entries.concat(fields.map { |f| f.spec_entry(entry_indent, trailing: f.equal?(last) ? 0 : 1) })
       entries << 'extensible: true' if extensible
       entries
     end
@@ -922,7 +938,7 @@ module BiDiGenerate
     # Frozen because it is shared across callers.
     OPAQUE = {ref: nil, list: false, rbs: 'untyped'}.freeze
 
-    # Projects a schema type node to {ref:, list:, nullable:, primitive:, rbs:}. Deriving the
+    # Projects a schema type node to {ref:, list:, nullable:, primitive:, bounds:, rbs:}. Deriving the
     # serialization facts and the RBS signature from one walk keeps them from drifting
     # apart when the schema shape changes.
     def resolve(node)
@@ -932,14 +948,21 @@ module BiDiGenerate
         return list.merge(nullable: nullable, rbs: nilable(list[:rbs], nullable))
       end
       if node.key?('ref')
-        named = resolve_named(node['ref'])
+        named = narrowed(resolve_named(node['ref']), node)
         return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
-                map: named[:map], primitive: named[:primitive], rbs: nilable(named[:rbs], nullable)}
+                map: named[:map], primitive: named[:primitive], bounds: named[:bounds],
+                rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
       {ref: nil, list: false, nullable: nullable, primitive: checkable_primitive(node),
-       rbs: nilable(scalar_rbs(node), nullable)}
+       bounds: node.slice(*BOUND_KEYS), rbs: nilable(scalar_rbs(node), nullable)}
+    end
+
+    # A ref's own bounds narrow those of the alias it names (`js-uint .ge 1` is 1..2**53-1).
+    def narrowed(named, node)
+      own = node.slice(*BOUND_KEYS)
+      own.empty? ? named : named.merge(bounds: narrow_bounds(named[:bounds] || {}, own))
     end
 
     # A list's facts describe its element, so `primitive` (like `ref`) is the element's. A nested
@@ -949,8 +972,9 @@ module BiDiGenerate
       # Record checks every element as non-null, so a nullable one would reject valid wire data.
       raise "nullable list element #{element_node.inspect} is not supported by Record" if element[:nullable]
 
-      primitive = element[:primitive] unless element[:list]
-      {ref: element[:ref], list: true, scalar: element[:scalar], primitive: primitive, rbs: "Array[#{element[:rbs]}]"}
+      primitive, bounds = element.values_at(:primitive, :bounds) unless element[:list]
+      {ref: element[:ref], list: true, scalar: element[:scalar], primitive: primitive, bounds: bounds,
+       rbs: "Array[#{element[:rbs]}]"}
     end
 
     # Reached through alias chains too (resolve_named), so js-uint is checked as an integer.
@@ -967,7 +991,7 @@ module BiDiGenerate
     # enum) stays opaque.
     def resolve_union(node, nullable)
       primitives = union_primitives(node['union'])
-      return scalar_union(primitives, nullable) if primitives
+      return scalar_union(primitives, nullable).merge(bounds: union_bounds(node['union'])) if primitives
 
       refs = node['union'].select { |arm| arm.key?('ref') }
       opaque = {ref: nil, list: false, nullable: nullable, rbs: nilable('untyped', nullable)}
@@ -986,6 +1010,16 @@ module BiDiGenerate
         resolved[:primitive] unless arm.key?('const') || resolved[:list] || resolved[:nullable]
       end
       primitives.flatten.uniq unless primitives.include?(nil)
+    end
+
+    # The runtime holds every numeric value a field carries to one set of bounds, so numeric arms
+    # that disagree (`js-uint / float`) would be checked wrongly; fail generation instead.
+    def union_bounds(arms)
+      numeric = arms.map { |arm| resolve(arm) }.select { |arm| NUMERIC_PRIMITIVES.include?(arm[:primitive]) }
+      bounds = numeric.map { |arm| arm[:bounds] || {} }.uniq
+      raise "numeric union arms #{arms} have different bounds: #{bounds}" if bounds.size > 1
+
+      bounds.first
     end
 
     def scalar_union(primitives, nullable)
@@ -1036,7 +1070,8 @@ module BiDiGenerate
       return OPAQUE unless primitives
 
       rbs = primitives.map { |primitive| PRIMITIVE_RBS.fetch(primitive) }.join(' | ')
-      {ref: nil, list: false, map: primitives.one? ? primitives.first : primitives, rbs: "Hash[String, #{rbs}]"}
+      {ref: nil, list: false, map: primitives.one? ? primitives.first : primitives,
+       bounds: union_bounds(type['map']['union'] || [type['map']]), rbs: "Hash[String, #{rbs}]"}
     end
 
     # Each arm's checkable primitive, following aliases (js-int is an integer); nil if any arm has none.
@@ -1069,10 +1104,11 @@ module BiDiGenerate
 
     def resolve_named_alias(name, inner, seen)
       return named_union(name) if inner.key?('union')
-      return resolve_named(inner['ref'], seen) if inner.key?('ref')
+      return narrowed(resolve_named(inner['ref'], seen), inner) if inner.key?('ref')
       return resolve_list(inner['list']) if inner.key?('list')
 
-      {ref: nil, list: false, primitive: checkable_primitive(inner), rbs: scalar_rbs(inner)}
+      {ref: nil, list: false, primitive: checkable_primitive(inner), bounds: inner.slice(*BOUND_KEYS),
+       rbs: scalar_rbs(inner)}
     end
 
     def nilable(type, flag)
@@ -1126,7 +1162,8 @@ module BiDiGenerate
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
                   primitive: resolved[:primitive], scalar: resolved[:scalar],
-                  const: leaf_const(field['type']), map_of: resolved[:map], rbs: resolved[:rbs])
+                  const: leaf_const(field['type']), map_of: resolved[:map], bounds: resolved[:bounds] || {},
+                  rbs: resolved[:rbs])
     end
 
     # The literal value of a const field, following alias chains, so the runtime can reject a
@@ -1143,6 +1180,26 @@ module BiDiGenerate
 
       seen[name] = true
       leaf_const(type['type'], seen)
+    end
+
+    # A value must satisfy both, so each side keeps the tighter bound, and at an equal value the exclusive one.
+    def narrow_bounds(bounds, narrowing)
+      result = bounds.dup
+      {'min' => 'exclusiveMin', 'max' => 'exclusiveMax'}.each do |side, flag|
+        next unless narrowing.key?(side) && tighter_bound?(side, flag, narrowing, bounds)
+
+        result[side] = narrowing[side]
+        result.delete(flag)
+        result[flag] = true if narrowing[flag]
+      end
+      result.slice(*BOUND_KEYS)
+    end
+
+    def tighter_bound?(side, flag, candidate, current)
+      return true unless current.key?(side)
+      return candidate[flag] && !current[flag] if candidate[side] == current[side]
+
+      side == 'min' ? candidate[side] > current[side] : candidate[side] < current[side]
     end
 
     def union_class(name)
@@ -1255,6 +1312,10 @@ module BiDiGenerate
     # const, or opaque value) gets no descriptor and is left unchecked — lenient, so a missed
     # check fails open rather than a wrong strict default rejecting valid data.
     CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
+    NUMERIC_PRIMITIVES = %w[number integer].freeze
+
+    # The schema's numeric bound keys, in the order the field facts render them.
+    BOUND_KEYS = %w[min max exclusiveMin exclusiveMax].freeze
 
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.

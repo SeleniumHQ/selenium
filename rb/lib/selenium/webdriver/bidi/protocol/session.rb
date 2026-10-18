@@ -146,7 +146,7 @@ module Selenium
             http_proxy: {wire_key: 'httpProxy', required: false, primitive: 'string'},
             ssl_proxy: {wire_key: 'sslProxy', required: false, primitive: 'string'},
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'},
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255},
             no_proxy: {wire_key: 'noProxy', required: false, list: true, primitive: 'string'},
             extensible: true
           )
@@ -156,7 +156,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsocksproxyconfiguration
           SocksProxyConfiguration = Serialization::Record.define(
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'}
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255}
           )
 
           # @api private
@@ -266,7 +266,13 @@ module Selenium
             binary: {wire_key: 'binary', required: false, primitive: 'string'},
             env: {wire_key: 'env', required: false, map: 'string'},
             log: {wire_key: 'log', required: false, ref: 'Session::CapabilityRequestFirefoxOptions::Log'},
-            prefs: {wire_key: 'prefs', required: false, map: %w[string boolean integer]},
+            prefs: {
+              wire_key: 'prefs',
+              required: false,
+              map: %w[string boolean integer],
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
             profile: {wire_key: 'profile', required: false, primitive: 'string'}
           )
 

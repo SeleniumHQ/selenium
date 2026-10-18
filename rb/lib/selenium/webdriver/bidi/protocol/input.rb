@@ -179,7 +179,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpauseaction
           PauseAction = Serialization::Record.define(
             type: {fixed: 'pause'},
-            duration: {wire_key: 'duration', required: false, primitive: 'integer'}
+            duration: {wire_key: 'duration', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private
@@ -203,7 +203,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerupaction
           PointerUpAction = Serialization::Record.define(
             type: {fixed: 'pointerUp'},
-            button: {wire_key: 'button', primitive: 'integer'}
+            button: {wire_key: 'button', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private
@@ -211,14 +211,32 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointerdownaction
           PointerDownAction = Serialization::Record.define(
             type: {fixed: 'pointerDown'},
-            button: {wire_key: 'button', primitive: 'integer'},
-            width: {wire_key: 'width', required: false, primitive: 'integer'},
-            height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
-            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
+            button: {wire_key: 'button', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            width: {wire_key: 'width', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            height: {wire_key: 'height', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number', min: 0, max: 1},
+            tangential_pressure: {
+              wire_key: 'tangentialPressure',
+              required: false,
+              primitive: 'number',
+              min: -1,
+              max: 1
+            },
+            twist: {wire_key: 'twist', required: false, primitive: 'integer', min: 0, max: 359},
+            altitude_angle: {
+              wire_key: 'altitudeAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 1.5707963267948966
+            },
+            azimuth_angle: {
+              wire_key: 'azimuthAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 6.283185307179586
+            }
           )
 
           # @api private
@@ -228,15 +246,33 @@ module Selenium
             type: {fixed: 'pointerMove'},
             x: {wire_key: 'x', primitive: 'number'},
             y: {wire_key: 'y', primitive: 'number'},
-            duration: {wire_key: 'duration', required: false, primitive: 'integer'},
+            duration: {wire_key: 'duration', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'},
-            width: {wire_key: 'width', required: false, primitive: 'integer'},
-            height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
-            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
+            width: {wire_key: 'width', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            height: {wire_key: 'height', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number', min: 0, max: 1},
+            tangential_pressure: {
+              wire_key: 'tangentialPressure',
+              required: false,
+              primitive: 'number',
+              min: -1,
+              max: 1
+            },
+            twist: {wire_key: 'twist', required: false, primitive: 'integer', min: 0, max: 359},
+            altitude_angle: {
+              wire_key: 'altitudeAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 1.5707963267948966
+            },
+            azimuth_angle: {
+              wire_key: 'azimuthAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 6.283185307179586
+            }
           )
 
           # @api private
@@ -244,11 +280,21 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputwheelscrollaction
           WheelScrollAction = Serialization::Record.define(
             type: {fixed: 'scroll'},
-            x: {wire_key: 'x', primitive: 'integer'},
-            y: {wire_key: 'y', primitive: 'integer'},
-            delta_x: {wire_key: 'deltaX', primitive: 'integer'},
-            delta_y: {wire_key: 'deltaY', primitive: 'integer'},
-            duration: {wire_key: 'duration', required: false, primitive: 'integer'},
+            x: {wire_key: 'x', primitive: 'integer', min: -9_007_199_254_740_991, max: 9_007_199_254_740_991},
+            y: {wire_key: 'y', primitive: 'integer', min: -9_007_199_254_740_991, max: 9_007_199_254_740_991},
+            delta_x: {
+              wire_key: 'deltaX',
+              primitive: 'integer',
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
+            delta_y: {
+              wire_key: 'deltaY',
+              primitive: 'integer',
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
+            duration: {wire_key: 'duration', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             origin: {wire_key: 'origin', required: false, ref: 'Input::Origin'}
           )
 
@@ -256,13 +302,31 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-inputpointercommonproperties
           PointerCommonProperties = Serialization::Record.define(
-            width: {wire_key: 'width', required: false, primitive: 'integer'},
-            height: {wire_key: 'height', required: false, primitive: 'integer'},
-            pressure: {wire_key: 'pressure', required: false, primitive: 'number'},
-            tangential_pressure: {wire_key: 'tangentialPressure', required: false, primitive: 'number'},
-            twist: {wire_key: 'twist', required: false, primitive: 'integer'},
-            altitude_angle: {wire_key: 'altitudeAngle', required: false, primitive: 'number'},
-            azimuth_angle: {wire_key: 'azimuthAngle', required: false, primitive: 'number'}
+            width: {wire_key: 'width', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            height: {wire_key: 'height', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            pressure: {wire_key: 'pressure', required: false, primitive: 'number', min: 0, max: 1},
+            tangential_pressure: {
+              wire_key: 'tangentialPressure',
+              required: false,
+              primitive: 'number',
+              min: -1,
+              max: 1
+            },
+            twist: {wire_key: 'twist', required: false, primitive: 'integer', min: 0, max: 359},
+            altitude_angle: {
+              wire_key: 'altitudeAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 1.5707963267948966
+            },
+            azimuth_angle: {
+              wire_key: 'azimuthAngle',
+              required: false,
+              primitive: 'number',
+              min: 0,
+              max: 6.283185307179586
+            }
           )
 
           # @api private
