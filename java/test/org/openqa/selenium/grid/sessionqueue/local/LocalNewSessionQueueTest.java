@@ -51,6 +51,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -302,7 +303,7 @@ class LocalNewSessionQueueTest {
   @ParameterizedTest
   @MethodSource("data")
   void shouldBeAbleToAddToQueueWithTimeoutDoNotCreateSessionAfterTimeout(
-      Supplier<TestData> supplier) {
+      Supplier<TestData> supplier) throws InterruptedException {
     setup(supplier);
 
     SessionRequest sessionRequestWithTimeout =
@@ -315,8 +316,11 @@ class LocalNewSessionQueueTest {
             Map.of());
 
     AtomicBoolean isPresent = new AtomicBoolean(false);
+    AtomicBoolean wasHandedOut = new AtomicBoolean(false);
+    CountDownLatch timedOut = new CountDownLatch(1);
 
-    new Thread(
+    Thread distributor =
+        new Thread(
             () -> {
               waitUntilAddedToQueue(sessionRequestWithTimeout);
               isPresent.set(true);
@@ -331,26 +335,32 @@ class LocalNewSessionQueueTest {
               // remove request from queue
               Map<Capabilities, Long> stereotypes = new HashMap<>();
               stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
-              queue.getNextAvailable(stereotypes);
+              wasHandedOut.set(!queue.getNextAvailable(stereotypes).isEmpty());
               try {
-                Thread.sleep(2000); // wait to go past the request session timeout
+                timedOut.await(); // wait to go past the request session timeout
               } catch (InterruptedException ignore) {
               }
 
               // LocalDistributor could not distribute the session, add it back to queue
               // it should not be re-added to queue and send back error on session creation
               queue.retryAddToQueue(sessionRequestWithTimeout);
-            })
-        .start();
+            });
+    distributor.start();
 
     LocalDateTime start = LocalDateTime.now();
     HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
+    timedOut.countDown();
+    distributor.join();
 
     // check we do not wait more than necessary
     assertThat(LocalDateTime.now().minusSeconds(10).isBefore(start)).isTrue();
 
     assertThat(isPresent.get()).isTrue();
+    assertThat(wasHandedOut.get()).isTrue();
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+    assertThat(queue.getQueueContents())
+        .noneMatch(
+            request -> request.getRequestId().equals(sessionRequestWithTimeout.getRequestId()));
   }
 
   @ParameterizedTest
@@ -670,6 +680,39 @@ class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(request);
 
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+  }
+
+  @Test
+  @Timeout(5)
+  void shouldNotRequeueARequestThatTimedOutWhileBeingDistributed() {
+    // An hour-long check interval keeps the timeout sweep from expiring the request first.
+    localQueue =
+        new LocalNewSessionQueue(
+            DefaultTestTracer.createTracer(),
+            new DefaultSlotMatcher(),
+            Duration.ofHours(1),
+            Duration.ofSeconds(3),
+            Duration.ofSeconds(1),
+            REGISTRATION_SECRET,
+            5);
+    queue = localQueue;
+
+    SessionRequest request =
+        new SessionRequest(
+            new RequestId(randomUUID()), LONG_AGO, Set.of(W3C), Set.of(CAPS), Map.of(), Map.of());
+    localQueue.injectIntoQueue(request);
+    assertThat(queue.remove(request.getRequestId())).isPresent();
+
+    queue.retryAddToQueue(request);
+
+    assertThat(queue.getQueueContents()).isEmpty();
+
+    SessionId sessionId = new SessionId("123");
+    Session session =
+        new Session(sessionId, URI.create("https://example.com"), CAPS, CAPS, Instant.now());
+    CreateSessionResponse sessionResponse =
+        new CreateSessionResponse(session, "{}".getBytes(UTF_8));
+    assertThat(queue.complete(request.getRequestId(), Either.right(sessionResponse))).isFalse();
   }
 
   @ParameterizedTest
