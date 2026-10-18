@@ -227,4 +227,54 @@ module BiDiGenerate
       expect { schema(conflicting) }.to raise_error(/vendor enum x.MozScope conflicts/)
     end
   end
+
+  describe 'Schema#types_for with a list field' do
+    def items_field(type)
+      types = {
+        'x.Owner' => {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+                      'fields' => [{'name' => 'items', 'wire' => 'items', 'required' => true, 'type' => type}]},
+        'x.Id' => {'kind' => 'alias', 'type' => {'primitive' => 'string'}},
+        'x.Uint' => {'kind' => 'alias', 'type' => {'primitive' => 'integer'}},
+        'x.Kind' => {'kind' => 'enum', 'values' => %w[a b], 'primitive' => 'string'},
+        'x.Value' => {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+                      'fields' => [{'name' => 'v', 'wire' => 'v', 'required' => true,
+                                    'type' => {'primitive' => 'string'}}]}
+      }
+      schema = BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
+      schema.types_for('x').find { |t| t.schema_name == 'x.Owner' }.fields.first
+    end
+
+    it 'carries the element primitive of a primitive list' do
+      expect(items_field('list' => {'primitive' => 'string'}).spec_entry)
+        .to eq("items: {wire_key: 'items', list: true, primitive: 'string'}")
+    end
+
+    it 'resolves an alias element to its primitive' do
+      expect(items_field('list' => {'ref' => 'x.Id'}).spec_entry)
+        .to eq("items: {wire_key: 'items', list: true, primitive: 'string'}")
+    end
+
+    it 'carries every allowed primitive of a scalar-union element' do
+      field = items_field('list' => {'union' => [{'ref' => 'x.Uint'}, {'primitive' => 'string'}]})
+
+      expect(field.spec_entry).to eq("items: {wire_key: 'items', list: true, primitive: %w[integer string]}")
+      expect(field.rbs).to eq('Array[Integer | String]')
+    end
+
+    it 'leaves a union element with a non-scalar arm opaque' do
+      field = items_field('list' => {'union' => [{'primitive' => 'number'}, {'ref' => 'x.Kind'}]})
+
+      expect(field.spec_entry).to eq("items: {wire_key: 'items', list: true}")
+    end
+
+    it 'leaves a list of refs typed by its ref alone' do
+      expect(items_field('list' => {'ref' => 'x.Value'}).spec_entry)
+        .to eq("items: {wire_key: 'items', ref: 'X::Value', list: true}")
+    end
+
+    it 'fails generation for a nullable element, which the runtime would reject' do
+      expect { items_field('list' => {'primitive' => 'string', 'nullable' => true}) }
+        .to raise_error(/nullable list element/)
+    end
+  end
 end

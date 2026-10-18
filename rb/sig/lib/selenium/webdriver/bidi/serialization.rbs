@@ -86,11 +86,17 @@ module Selenium
 
             def read: (untyped field, untyped raw) -> untyped
 
+            def hold_integer: (untyped field, untyped value) -> untyped
+
             def read_ref: (untyped field, untyped raw) -> untyped
 
             def check_shape: (untyped field, untyped raw) -> void
 
             def check_primitive: (untyped field, untyped raw) -> void
+
+            def primitive_mismatch: (untyped field, untyped value) -> String?
+
+            def element_mismatch: (String | Array[String] primitives, untyped value) -> String?
 
             def check_map: (untyped field, untyped raw) -> untyped
 

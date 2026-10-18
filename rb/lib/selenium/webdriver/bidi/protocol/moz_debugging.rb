@@ -49,7 +49,9 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ListScriptsResult = Serialization::Record.define(scripts: {wire_key: 'scripts', list: true})
+          ListScriptsResult = Serialization::Record.define(
+            scripts: {wire_key: 'scripts', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -89,9 +91,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetDebuggerEnabledParameters = Serialization::Record.define(
-            contexts: {wire_key: 'contexts', required: false, list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
             enabled: {wire_key: 'enabled', nullable: true, primitive: 'boolean'},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private

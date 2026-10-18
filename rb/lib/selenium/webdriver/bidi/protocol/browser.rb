@@ -130,7 +130,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-browsersetdownloadbehaviorparameters
           SetDownloadBehaviorParameters = Serialization::Record.define(
             download_behavior: {wire_key: 'downloadBehavior', nullable: true, ref: 'Browser::DownloadBehavior'},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private

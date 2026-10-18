@@ -376,7 +376,7 @@ module Selenium
             type: {fixed: 'dedicated-worker'},
             realm: {wire_key: 'realm', primitive: 'string'},
             origin: {wire_key: 'origin', primitive: 'string'},
-            owners: {wire_key: 'owners', list: true}
+            owners: {wire_key: 'owners', list: true, primitive: 'string'}
           )
 
           # @api private
@@ -832,8 +832,8 @@ module Selenium
           AddPreloadScriptParameters = Serialization::Record.define(
             function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
             arguments: {wire_key: 'arguments', required: false, ref: 'Script::ChannelValue', list: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'},
             sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
           )
 
@@ -846,7 +846,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdisownparameters
           DisownParameters = Serialization::Record.define(
-            handles: {wire_key: 'handles', list: true},
+            handles: {wire_key: 'handles', list: true, primitive: 'string'},
             target: {wire_key: 'target', ref: 'Script::Target'}
           )
 

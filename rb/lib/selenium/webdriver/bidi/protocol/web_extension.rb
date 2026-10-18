@@ -113,7 +113,7 @@ module Selenium
             uuid: {wire_key: 'uuid', primitive: 'string'},
             base_url: {wire_key: 'baseURL', primitive: 'string'},
             extension_url: {wire_key: 'extensionURL', primitive: 'string'},
-            background_scripts: {wire_key: 'backgroundScripts', list: true}
+            background_scripts: {wire_key: 'backgroundScripts', list: true, primitive: 'string'}
           )
 
           def extension_data = ExtensionData
