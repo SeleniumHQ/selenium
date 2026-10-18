@@ -28,7 +28,7 @@ jobs:
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
   wait-for-unlock:
     name: Wait for Trunk Unlock
-    if: ${{ !startsWith(github.head_ref, 'release-preparation-') }}
+    if: ${{ !(startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-latest
     steps:
       - env:
@@ -50,7 +50,7 @@ jobs:
         run: |
           if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
             mode=none
-          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" = "true" ]; then
+          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository }}" = "true" ]; then
             mode=all
           else
             mode=check
