@@ -326,12 +326,12 @@ module BiDiGenerate
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
-    def spec_entry(indent = 0)
+    def spec_entry(indent = 0, trailing: 0)
       meta = value_facts
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
-      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}', trailing: 1)
+      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}', trailing: trailing)
     end
 
     # The JSON facts beyond the field's name, in the order Record.define reads them. A
@@ -398,7 +398,8 @@ module BiDiGenerate
     def define_entries(entry_indent)
       entries = []
       entries << discriminator_entry if discriminator
-      entries.concat(fields.map { |f| f.spec_entry(entry_indent) })
+      last = fields.last unless extensible
+      entries.concat(fields.map { |f| f.spec_entry(entry_indent, trailing: f.equal?(last) ? 0 : 1) })
       entries << 'extensible: true' if extensible
       entries
     end

@@ -63,11 +63,15 @@ module BiDiGenerate
     let(:field) { BiDiGenerate::FieldIR.new(ruby_name: 'n', wire_key: 'n', required: false, bounds: {}) }
 
     it 'stays on one line when it fits with its separating comma' do
-      expect(field.spec_entry(84)).to eq("n: {wire_key: 'n', required: false}")
+      expect(field.spec_entry(84, trailing: 1)).to eq("n: {wire_key: 'n', required: false}")
     end
 
     it 'wraps when its separating comma would pass the line limit' do
-      expect(field.spec_entry(85)).to start_with("n: {\n")
+      expect(field.spec_entry(85, trailing: 1)).to start_with("n: {\n")
+    end
+
+    it 'stays on one line at the line limit when no comma follows it' do
+      expect(field.spec_entry(85)).to eq("n: {wire_key: 'n', required: false}")
     end
   end
 

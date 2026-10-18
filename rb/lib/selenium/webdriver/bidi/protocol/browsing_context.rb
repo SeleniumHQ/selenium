@@ -188,13 +188,7 @@ module Selenium
               required: false,
               enum: 'BrowsingContext::INNER_TEXT_LOCATOR_MATCH_TYPE'
             },
-            max_depth: {
-              wire_key: 'maxDepth',
-              required: false,
-              primitive: 'integer',
-              min: 0,
-              max: 9_007_199_254_740_991
-            }
+            max_depth: {wire_key: 'maxDepth', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private
