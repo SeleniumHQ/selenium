@@ -127,7 +127,7 @@ jobs:
         --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true

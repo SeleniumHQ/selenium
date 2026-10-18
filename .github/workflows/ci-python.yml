@@ -71,7 +71,7 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: bazel test --local_test_jobs 1 //py:unit
+      run: bazel test //py:unit
 
   smoke:
     name: ${{ matrix.os }}-smoke
@@ -124,7 +124,7 @@ jobs:
         bazel test
         --keep_going
         --flaky_test_attempts 3
-        --local_test_jobs 1
+        --local_resources=browser=1
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe
