@@ -48,6 +48,11 @@ module Selenium
             landscape_secondary: 'landscape-secondary'
           }.freeze
 
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationtextlayoutmode
+          TEXT_LAYOUT_MODE = {
+            mobile: 'mobile'
+          }.freeze
+
           MEDIA_FEATURES_ANY_HOVER = {
             none: 'none',
             hover: 'hover'
@@ -493,6 +498,15 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettextlayoutmodeoverrideparameters
+          SetTextLayoutModeOverrideParameters = Serialization::Record.define(
+            text_layout_mode: {wire_key: 'textLayoutMode', nullable: true, enum: 'Emulation::TEXT_LAYOUT_MODE'},
+            contexts: {wire_key: 'contexts', required: false, list: true},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-emulationsettimezoneoverrideparameters
           SetTimezoneOverrideParameters = Serialization::Record.define(
             timezone: {wire_key: 'timezone', nullable: true, primitive: 'string'},
@@ -654,6 +668,23 @@ module Selenium
               user_contexts: user_contexts
             )
             execute(cmd: 'emulation.setScrollbarTypeOverride', params: params)
+          end
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#command-emulation-setTextLayoutModeOverride
+          def set_text_layout_mode_override(
+            text_layout_mode:,
+            contexts: Serialization::UNSET,
+            user_contexts: Serialization::UNSET
+          )
+            Serialization.validate!('textLayoutMode', text_layout_mode, Emulation::TEXT_LAYOUT_MODE)
+            params = SetTextLayoutModeOverrideParameters.new(
+              text_layout_mode: text_layout_mode,
+              contexts: contexts,
+              user_contexts: user_contexts
+            )
+            execute(cmd: 'emulation.setTextLayoutModeOverride', params: params)
           end
 
           # @api private

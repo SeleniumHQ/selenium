@@ -22,6 +22,10 @@
             "integration_id": 15368
           },
           {
+            "context": "Prepare Release / Prepare Release",
+            "integration_id": 15368
+          },
+          {
             "context": "CI Success",
             "integration_id": 15368
           },

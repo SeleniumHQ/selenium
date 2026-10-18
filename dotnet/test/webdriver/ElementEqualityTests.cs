@@ -27,7 +27,7 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void SameElementLookedUpDifferentWaysShouldBeEqual()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
 
         IWebElement body = Driver.FindElement(By.TagName("body"));
         IWebElement xbody = Driver.FindElement(By.XPath("//body"));
@@ -38,7 +38,7 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void DifferentElementsShouldNotBeEqual()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
 
         ReadOnlyCollection<IWebElement> ps = Driver.FindElements(By.TagName("p"));
 
@@ -48,7 +48,7 @@ public class ElementEqualityTests : DriverTestFixture
     [Test]
     public void SameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         IWebElement body = Driver.FindElement(By.TagName("body"));
         IWebElement xbody = Driver.FindElement(By.XPath("//body"));
 
@@ -57,7 +57,7 @@ public class ElementEqualityTests : DriverTestFixture
 
     public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         ReadOnlyCollection<IWebElement> body = Driver.FindElements(By.TagName("body"));
         ReadOnlyCollection<IWebElement> xbody = Driver.FindElements(By.XPath("//body"));
 

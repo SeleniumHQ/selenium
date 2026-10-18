@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.remote;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class TracedCommandExecutor implements CommandExecutor {
+public class TracedCommandExecutor implements CommandExecutor, Closeable {
 
   private final CommandExecutor delegate;
   private final Tracer tracer;
@@ -49,6 +50,13 @@ public class TracedCommandExecutor implements CommandExecutor {
         }
       }
       return delegate.execute(command);
+    }
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (delegate instanceof Closeable) {
+      ((Closeable) delegate).close();
     }
   }
 }

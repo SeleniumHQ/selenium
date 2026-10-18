@@ -20,13 +20,16 @@ package org.openqa.selenium.remote.codec.w3c;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandPayload;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -62,6 +65,49 @@ class W3CHttpCommandCodecTest {
         .containsEntry("using", "css selector")
         .containsEntry("value", ".٥foo");
     assertThat(arabicIndicFive.get("value")).isNotEqualTo(asciiFive.get("value"));
+  }
+
+  @Test
+  void childFindElementKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_CHILD_ELEMENT("scope", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void childFindElementsKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_CHILD_ELEMENTS("scope", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void shadowFindElementKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT("shadow", "relative", relativeLocatorValue()));
+  }
+
+  @Test
+  void shadowFindElementsKeepsRelativeLocatorValueAsJsonObject() {
+    assertFindKeepsRelativeValue(
+        DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT("shadow", "relative", relativeLocatorValue()));
+  }
+
+  private Map<String, Object> relativeLocatorValue() {
+    RemoteWebElement anchor = new RemoteWebElement();
+    anchor.setId("anchor");
+    return Map.of(
+        "root",
+        Map.of("tag name", "p"),
+        "filters",
+        List.of(Map.of("kind", "below", "args", List.of(anchor))));
+  }
+
+  private void assertFindKeepsRelativeValue(CommandPayload payload) {
+    HttpRequest request = codec.encode(new Command(sessionId, payload));
+    String body = request.contentAsString();
+
+    assertThat(body).doesNotContain("filters=[");
+    Map<String, Object> params = json.toType(body, MAP_TYPE);
+    assertThat(params.get("value")).isInstanceOf(Map.class);
   }
 
   private Map<String, Object> encodeFindElement(String strategy, Object value) {

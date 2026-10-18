@@ -290,9 +290,10 @@ module Selenium
               captured
             end
 
-            it 'composes typed moz: options into the extensible params under their exact wire keys' do
+            it 'serializes typed moz: options under their exact wire keys' do
               params = moz_install(allow_private_browsing: true, permanent: false)
 
+              expect(params).to be_a(WebExtension::Moz::InstallParameters)
               expect(params.as_json).to eq(
                 'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
                 'moz:allowPrivateBrowsing' => true,
@@ -315,11 +316,123 @@ module Selenium
               expect(shared).to eq([:extension_data])
             end
 
-            # #1140 makes InstallParameters extensible, so a not-yet-typed vendor key still rides along.
-            it 'passes an unknown vendor key through the extensions bag' do
-              params = WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1})
+            it 'rejects a moz: option of the wrong type before sending' do
+              expect { moz_install(permanent: 'yes') }.to raise_error(ArgumentError, /permanent/)
+            end
 
-              expect(params.as_json).to include('moz:future' => 1)
+            it 'keeps the shared params closed to undeclared fields' do
+              expect { WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1}) }
+                .to raise_error(ArgumentError, /extensions/)
+            end
+          end
+
+          describe 'browsingContext Firefox (moz:) vendor extension' do
+            def moz_get_tree(**kwargs)
+              captured = nil
+              connection = Object.new
+              connection.define_singleton_method(:send_cmd) { |**| {} }
+              domain = BrowsingContext::Moz.new(connection)
+              domain.define_singleton_method(:execute) { |params:, **| captured = params }
+              domain.get_tree(**kwargs)
+              captured
+            end
+
+            def info_wire(**extra)
+              {'children' => nil, 'clientWindow' => 'w', 'context' => 'c', 'originalOpener' => nil,
+               'url' => 'about:blank', 'userContext' => 'default'}.merge(extra)
+            end
+
+            it 'serializes moz:scope from the vendor get_tree' do
+              params = moz_get_tree(max_depth: 0, scope: :chrome)
+
+              expect(params).to be_a(BrowsingContext::Moz::GetTreeParameters)
+              expect(params.as_json).to eq('maxDepth' => 0, 'moz:scope' => 'chrome')
+            end
+
+            it 'rejects a moz:scope outside its allowed values before sending' do
+              expect { moz_get_tree(scope: :bogus) }.to raise_error(ArgumentError, /moz:scope must be one of/)
+            end
+
+            it 'keeps the shared params closed to undeclared fields' do
+              expect { BrowsingContext::GetTreeParameters.new(extensions: {'moz:scope' => 'chrome'}) }
+                .to raise_error(ArgumentError, /extensions/)
+            end
+
+            it 'reads moz:name and moz:scope into typed fields on Info' do
+              parsed = nil
+              wire = info_wire('moz:name' => 'tab', 'moz:scope' => 'content')
+              expect { parsed = BrowsingContext::Info.from_json(wire) }.not_to have_warning(:bidi_undeclared_property)
+
+              expect(parsed.moz_name).to eq('tab')
+              expect(parsed.moz_scope).to eq(:content)
+            end
+
+            it 'rejects a moz:scope value outside its allowed set on Info' do
+              expect { BrowsingContext::Info.from_json(info_wire('moz:scope' => 'bogus')) }
+                .to raise_error(Error::SerializationError, /unknown value/)
+            end
+
+            it 'warns on and drops an undeclared field on Info' do
+              parsed = nil
+              expect { parsed = BrowsingContext::Info.from_json(info_wire('x-vendor' => 'v')) }
+                .to have_warning(:bidi_undeclared_property)
+
+              expect(parsed).not_to respond_to(:extensions)
+            end
+          end
+
+          describe 'session.CapabilityRequest Firefox (moz:) vendor capability' do
+            it 'serializes typed moz:firefoxOptions under its wire key' do
+              log = Session::CapabilityRequestFirefoxOptions::Log.new(level: :trace)
+              options = Session::CapabilityRequestFirefoxOptions.new(args: ['-headless'], log: log,
+                                                                     prefs: {'remote.active-protocols' => 1})
+              request = Session::CapabilityRequest.new(browser_name: 'firefox', moz_firefox_options: options)
+
+              expect(request.as_json).to eq(
+                'browserName' => 'firefox',
+                'moz:firefoxOptions' => {'args' => ['-headless'], 'log' => {'level' => 'trace'},
+                                         'prefs' => {'remote.active-protocols' => 1}}
+              )
+            end
+
+            it 'rejects a Firefox option the vendor schema does not declare' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(bogus: true) }
+                .to raise_error(ArgumentError, /bogus/)
+            end
+
+            it 'rejects a log level outside its allowed values' do
+              expect { Session::CapabilityRequestFirefoxOptions::Log.new(level: :loud) }
+                .to raise_error(ArgumentError, /must be one of/)
+            end
+
+            it 'accepts each prefs value type the vendor schema declares' do
+              prefs = {'a' => 'text', 'b' => true, 'c' => 1}
+
+              expect(Session::CapabilityRequestFirefoxOptions.new(prefs: prefs).as_json).to eq('prefs' => prefs)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => 1.5}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected string or boolean or integer, got 1.5/)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => []}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected string or boolean or integer/)
+            end
+
+            it 'rejects moz:firefoxOptions passed through the extensions map' do
+              request = Session::CapabilityRequest.new(extensions: {'moz:firefoxOptions' => {}})
+
+              expect { request.as_json }
+                .to raise_error(ArgumentError, /extensions shadow declared fields: moz:firefoxOptions/)
+            end
+
+            it "still carries another vendor's capabilities in the extensions map" do
+              request = Session::CapabilityRequest.new(browser_name: 'chrome',
+                                                       extensions: {'goog:chromeOptions' => {'args' => []}})
+
+              expect(request.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {'args' => []})
             end
           end
 
@@ -655,6 +768,44 @@ module Selenium
               parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
 
               expect(parsed.name).to be_nil
+            end
+          end
+
+          # script.NodeProperties.attributes is `{*text => text}`: a string-keyed map of strings,
+          # carried as a `map:` descriptor rather than an opaque pass-through.
+          describe 'primitive-valued map fields' do
+            def node_properties(attributes)
+              Script::NodeProperties.from_json('nodeType' => 1, 'childNodeCount' => 0, 'attributes' => attributes)
+            end
+
+            it 'reads a conforming map as a Hash' do
+              expect(node_properties('id' => 'main', 'class' => 'a b').attributes)
+                .to eq('id' => 'main', 'class' => 'a b')
+            end
+
+            it 'raises when the map arrives as a scalar' do
+              expect { node_properties('oops') }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'raises when the map arrives as a list' do
+              expect { node_properties(%w[id main]) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map/)
+            end
+
+            it 'raises when a map value is not the declared primitive' do
+              expect { node_properties('id' => 1) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes\["id"\] expected string, got 1/)
+            end
+
+            it 'rejects a non-map at construction, mirroring the inbound check' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: 'oops') }
+                .to raise_error(ArgumentError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'rejects a wrong-typed map value at construction' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: {'id' => 1}) }
+                .to raise_error(ArgumentError, /NodeProperties#attributes\["id"\] expected string, got 1/)
             end
           end
         end

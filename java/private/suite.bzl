@@ -37,7 +37,12 @@ def _generate_test_suite(
         deps,
         tags,
         test_identifiers,
+        extra_tags = {},
         **kwargs):
+    unknown = [src for src in extra_tags if src not in srcs]
+    if unknown:
+        fail("extra_tags keys not in srcs of %s: %s" % (name, unknown))
+
     lib_srcs = [src for src in srcs if not _matches(test_identifiers, src)]
     test_srcs = [src for src in srcs if _matches(test_identifiers, src)]
 
@@ -71,7 +76,7 @@ def _generate_test_suite(
             size = size,
             srcs = [test],
             deps = deps,
-            tags = tags + additional_tags,
+            tags = tags + additional_tags + extra_tags.get(test, []),
             **kwargs
         )
 
@@ -135,6 +140,7 @@ def java_selenium_test_suite(
         deps = None,
         jvm_flags = [],
         tags = [],
+        extra_tags = {},
         **kwargs):
     args = {}
     args.update(kwargs)
@@ -148,5 +154,6 @@ def java_selenium_test_suite(
         deps = deps,
         tags = tags,
         test_identifiers = test_identifiers,
+        extra_tags = extra_tags,
         **args
     )

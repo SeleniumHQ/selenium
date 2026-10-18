@@ -1,4 +1,4 @@
-name: Commit Changes
+name: Shared - Commit Changes
 
 on:
   workflow_call:

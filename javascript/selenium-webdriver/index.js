@@ -40,6 +40,7 @@ const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
+const webExtension = require('./lib/web_extension')
 const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingContextInspector = require('./bidi/browsingContextInspector')
@@ -541,6 +542,14 @@ class Builder {
   }
 
   /**
+   * @return {edge.Options} the Edge specific options currently configured
+   *     for this builder.
+   */
+  getEdgeOptions() {
+    return this.edgeOptions_
+  }
+
+  /**
    * Sets the {@link edge.ServiceBuilder} to use to manage the
    * MicrosoftEdgeDriver child process when creating sessions locally.
    *
@@ -799,6 +808,7 @@ exports.WebDriver = webdriver.WebDriver
 exports.WebElement = webdriver.WebElement
 exports.WebElementCondition = webdriver.WebElementCondition
 exports.WebElementPromise = webdriver.WebElementPromise
+exports.WebExtension = webExtension.WebExtension
 exports.error = error
 exports.logging = logging
 exports.promise = promise

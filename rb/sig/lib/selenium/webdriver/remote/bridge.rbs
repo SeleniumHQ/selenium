@@ -52,7 +52,13 @@ module Selenium
 
         def bidi: -> BiDi
 
+        def bidi?: () -> bool
+
         def connection: -> untyped
+
+        def install_web_extension: (String path) -> WebExtension
+
+        def uninstall_web_extension: (String id) -> void
 
         def cancel_fedcm_dialog: -> nil
 
@@ -251,6 +257,10 @@ module Selenium
         def user_verified: (untyped verified, untyped authenticator_id) -> untyped
 
         private
+
+        def web_extension: () -> WebDriver::BiDi::Protocol::WebExtension
+
+        def encode_extension: (String path) -> String
 
         def execute: (untyped command, ?::Hash[untyped, untyped] opts, ?untyped? command_hash) -> String
 

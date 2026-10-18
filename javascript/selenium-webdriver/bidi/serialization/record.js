@@ -20,14 +20,14 @@ const { register, resolve } = require('./registry')
 class ValidationError extends Error {}
 
 // Validates a *present* value against a resolved type node, and returns the value to
-// assign for it — usually the same value, but for a nested ref-to-record/union parsed
-// inbound (fromWire()/build() results, not the raw wire object) and for list/map/inline
-// record values (a fresh, deeply-frozen copy, so validity can't be corrupted after the
-// fact by mutating an array or object a caller still holds a reference to).
-// Outbound nested refs deliberately keep the caller's own value instead of the
-// newly-constructed instance — the nested `new referenced.RecordClass(value)` /
-// `referenced.build(value)` call below exists only to validate, matching the
-// constructor's existing outbound behavior of trusting the caller's own object shape.
+// assign for it — usually the same value, but for a nested ref-to-record/union (the
+// freshly constructed/parsed instance — fromWire()/build() inbound, `new RecordClass(value)`/
+// build() outbound, not the caller's raw value) and for list/map/inline record values (a
+// fresh, deeply-frozen copy, so validity can't be corrupted after the fact by mutating an
+// array or object a caller still holds a reference to). Outbound needs the constructed
+// instance, symmetric with inbound, so a typed parent's toJSON() cascades into a nested
+// record's own toJSON() — converting *its* fields to their declared wire names too, not
+// just the parent's own fields — when the whole instance is serialized for the wire.
 // `direction` only affects how a nested ref-to-record/union is itself validated/parsed.
 function validateValue(typeNode, value, path, direction) {
   if (value === null) {
@@ -125,23 +125,24 @@ function validateValue(typeNode, value, path, direction) {
         throw new ValidationError(`${path}: expected an object, got ${typeof value}`)
       }
       // Recurse through the same-direction path so a nested field gets the same
-      // tolerance (inbound) or strictness (outbound) as its parent. Inbound returns
-      // the parsed instance itself, so a typed parent record ends up with a typed
-      // nested value instead of the raw wire object; outbound only validates this
-      // way (the caller's own value is what gets kept, see the note above).
+      // tolerance (inbound) or strictness (outbound) as its parent, and — both
+      // directions alike — ends up holding the typed instance, not the raw value:
+      // inbound so a typed parent record has a typed nested value instead of the
+      // raw wire object; outbound so the parent's own toJSON() cascades into this
+      // nested instance's toJSON() too, converting its fields to their wire names.
       if (direction === 'inbound') {
         return referenced.RecordClass.fromWire(value)
       }
-      new referenced.RecordClass(value)
-      return value
+      return new referenced.RecordClass(value)
     }
 
     if (referenced.kind === 'union') {
+      // build()/fromWire() already return the resolved variant's own instance —
+      // same reasoning as the record branch above applies to it symmetrically.
       if (direction === 'inbound') {
         return referenced.fromWire(value)
       }
-      referenced.build(value)
-      return value
+      return referenced.build(value)
     }
 
     if (referenced.kind === 'alias') {
@@ -220,33 +221,37 @@ function defineRecord(name, fields, options = {}) {
 
   class Record {
     // Outbound: strict. Any value that doesn't match its declared shape is an error here.
+    // Reads `data` by JS-facing field name (field.name), not the wire key (field.wire) —
+    // a caller builds params using the same property names the generated TS interface
+    // declares (e.g. `prefersColorScheme`), never the raw spec key (`prefers-color-scheme`);
+    // toJSON() below is what maps back to field.wire for the actual wire send.
     constructor(data) {
       if (typeof data !== 'object' || data === null || Array.isArray(data)) {
         throw new ValidationError(`${name}: expected an object`)
       }
 
       for (const field of fields) {
-        if (!Object.hasOwn(data, field.wire)) {
+        if (!Object.hasOwn(data, field.name)) {
           if (field.required) {
-            throw new ValidationError(`${name}.${field.wire}: required field is missing`)
+            throw new ValidationError(`${name}.${field.name}: required field is missing`)
           }
           continue
         }
-        const value = data[field.wire]
-        this[field.name] = validateValue(field.type, value, `${name}.${field.wire}`, 'outbound')
+        const value = data[field.name]
+        this[field.name] = validateValue(field.type, value, `${name}.${field.name}`, 'outbound')
       }
 
-      for (const wireKey of Object.keys(data)) {
-        if (byWire.has(wireKey)) continue
+      for (const key of Object.keys(data)) {
+        if (byName.has(key)) continue
         if (!extensible) {
-          throw new ValidationError(`${name}: unknown property "${wireKey}"`)
+          throw new ValidationError(`${name}: unknown property "${key}"`)
         }
-        // Object.defineProperty, not `this[wireKey] = ...`: wireKey is caller-supplied
-        // and a literal "__proto__" key assigned via bracket notation hijacks this
-        // instance's actual prototype instead of becoming a field (CWE-1321).
-        // defineProperty always creates a genuine own data property, regardless of name.
-        Object.defineProperty(this, wireKey, {
-          value: data[wireKey], // vendor extras reach the wire on an extensible type
+        // Object.defineProperty, not `this[key] = ...`: key is caller-supplied and a
+        // literal "__proto__" key assigned via bracket notation hijacks this instance's
+        // actual prototype instead of becoming a field (CWE-1321). defineProperty always
+        // creates a genuine own data property, regardless of name.
+        Object.defineProperty(this, key, {
+          value: data[key], // vendor extras have no separate wire name — this key is both
           enumerable: true,
           writable: true,
           configurable: true,

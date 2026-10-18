@@ -30,6 +30,7 @@ import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -72,6 +73,7 @@ public class SetUserAgentOverrideTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetUserAgentOverrideWithUserContexts() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();

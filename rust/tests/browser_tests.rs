@@ -46,9 +46,10 @@ fn browser_version_test(
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
-    // Chrome is not published for Linux arm64 below 153, and Edge not at all
+    // Not published for Linux arm64: Chrome below 153, Edge at all, geckodriver below 0.32 (all cases here)
     if is_linux_arm64()
         && (browser.eq("edge")
+            || browser.eq("firefox")
             || (browser.eq("chrome") && browser_version.parse::<i32>().unwrap_or_default() < 153))
     {
         return;
@@ -246,8 +247,8 @@ fn invalid_browser_path_test() {
 }
 
 #[cfg(unix)]
-fn create_fake_browser(version: &str) -> std::path::PathBuf {
-    let tmp = std::env::temp_dir().join(format!("fake-chrome-{}", version.replace('.', "-")));
+fn create_fake_browser(dir: &Path, version: &str) -> std::path::PathBuf {
+    let tmp = dir.join("fake-chrome");
     let script = format!("#!/bin/sh\necho 'Google Chrome {}'\n", version);
     std::fs::write(&tmp, script).expect("Unable to write fake browser script");
     std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o755))
@@ -258,7 +259,8 @@ fn create_fake_browser(version: &str) -> std::path::PathBuf {
 #[test]
 #[cfg(unix)]
 fn browser_path_version_mismatch_test() {
-    let fake_browser = create_fake_browser("131.0.6778.264");
+    let tmp_dir = tempfile::tempdir().unwrap();
+    let fake_browser = create_fake_browser(tmp_dir.path(), "131.0.6778.264");
     let mut cmd = get_selenium_manager();
     let stdout = cmd
         .args([
@@ -289,7 +291,8 @@ fn browser_path_version_mismatch_test() {
 #[test]
 #[cfg(unix)]
 fn browser_path_major_version_mismatch_test() {
-    let fake_browser = create_fake_browser("131.0.6778.264");
+    let tmp_dir = tempfile::tempdir().unwrap();
+    let fake_browser = create_fake_browser(tmp_dir.path(), "131.0.6778.264");
     let mut cmd = get_selenium_manager();
     let stdout = cmd
         .args([

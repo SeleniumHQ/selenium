@@ -5,6 +5,7 @@ COMMON_TAGS = [
     # For Chromium-based browser, we can just pass `--no-sandbox` flag.
     "no-sandbox",
     "requires-network",
+    "resources:browser:1",
 ]
 
 chromedriver_data = select({

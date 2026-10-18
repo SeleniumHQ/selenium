@@ -4,34 +4,27 @@ build:rbe --bes_backend=grpcs://gypsum.cluster.engflow.com
 build:rbe --remote_executor=grpcs://gypsum.cluster.engflow.com
 build:rbe --remote_cache=grpcs://gypsum.cluster.engflow.com
 
-# The number of cores available
-build:rbe -j 50
+# The cluster's executor count; a lone run can use the whole pool
+build:rbe -j 100
 
 # Always pin the browser when running remotely
 build:rbe --//common:pin_browsers
 
 build:rbe --define=EXECUTOR=remote
-build:rbe --experimental_inmemory_dotd_files
-build:rbe --experimental_inmemory_jdeps_files
 build:rbe --remote_timeout=3600
 build:rbe --spawn_strategy=remote,local
-#build:rbe --nolegacy_important_outputs
-build:rbe --incompatible_strict_action_env=true
 
-build:rbe --crosstool_top=//common/remote-build/cc:toolchain
 build:rbe --extra_execution_platforms=//common/remote-build:platform
 build:rbe --extra_toolchains=//common/remote-build:cc-toolchain
 build:rbe --host_platform=//common/remote-build:platform
 build:rbe --platforms=//common/remote-build:platform
 
-# The Docker images are running Linux
+# Define output directory by remote worker architecture so hosts of any architecture share the cache
 build:rbe --cpu=k8
 build:rbe --host_cpu=k8
 
 build:rbe --disk_cache=
 
-build:rbe --incompatible_enable_cc_toolchain_resolution
-build:rbe --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 test:rbe --test_env=DISPLAY=:99.0
 test:rbe --test_tag_filters=-skip-rbe
 
@@ -47,11 +40,16 @@ test:rbe --test_env=SE_CACHE_PATH=
 # Make sure we sniff credentials properly
 build:rbe --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
 
-# The remote build machines are pretty small, and 50 threads may leave them
+# The remote build machines are pretty small, and 100 threads may leave them
 # thrashing, but our dev machines are a lot larger. Scale the workload so we
 # make reasonable usage of everything, everywhere, all at once.
 build:rbe --local_resources=cpu='HOST_CPUS*10'
 build:rbe --local_resources=memory='HOST_RAM*4.0'
+
+# Enable content defined chunking, which should make us handle storage
+# in a smarter way
+build:rbe --experimental_remote_cache_chunking
+build:rbe --experimental_output_paths=strip
 
 # A small hint that we're running our tests remotely
 test:rbe --test_env=REMOTE_BUILD=1
@@ -64,6 +62,7 @@ build:rbe-ci --config=rbe
 build:rbe-ci --curses=no --color=yes --show_timestamps --show_progress_rate_limit=5
 build:rbe-ci --bes_upload_mode=wait_for_upload_complete
 build:rbe-ci --remote_download_minimal
+test:rbe-ci --manager=stub
 
 # Configuration changes suggested by EngFlow
 build:rbe --grpc_keepalive_time=30s

@@ -67,10 +67,9 @@ def extract_traceback_frames(tb):
     """Extract frames from a traceback object."""
     frames = []
     while tb:
-        if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno"):
+        if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno") and Path(tb.tb_frame.f_code.co_filename).exists():
             # Skip frames without source files
-            if Path(tb.tb_frame.f_code.co_filename).exists():
-                frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
+            frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
         tb = getattr(tb, "tb_next", None)
     return frames
 
@@ -251,6 +250,27 @@ def _pinned_grid_args(config):
     ]
 
 
+# Maps the test driver name to the env var its Service consults before invoking Selenium Manager.
+_DRIVER_PATH_ENV_KEYS = {
+    "chrome": "SE_CHROMEDRIVER",
+    "edge": "SE_EDGEDRIVER",
+    "firefox": "SE_GECKODRIVER",
+    "ie": "SE_IEDRIVER",
+    "safari": "SE_SAFARIDRIVER",
+}
+
+
+def pytest_configure(config):
+    """Export the pinned driver for services built without a path, and resolve a runfiles SE_MANAGER_PATH."""
+    executable = config.option.executable
+    driver = next((d for d in config.option.drivers or [] if d.lower() in _DRIVER_PATH_ENV_KEYS), None)
+    if driver and executable:
+        os.environ[_DRIVER_PATH_ENV_KEYS[driver.lower()]] = _resolve_bazel_path(executable).strip("'")
+    manager = os.environ.get("SE_MANAGER_PATH")
+    if manager and not Path(manager).exists() and Runfiles is not None:
+        os.environ["SE_MANAGER_PATH"] = Runfiles.Create().Rlocation(manager)
+
+
 def get_extensions_location():
     """Locate the test extensions directory.
 
@@ -414,6 +434,8 @@ class Driver:
 
         if cls_name.lower() in ("chrome", "edge"):
             self._options.add_argument("--disable-dev-shm-usage")
+            if self.exe_platform == "Linux":
+                self._options.add_argument("--no-sandbox")
 
         if self.is_remote:
             self._options.enable_downloads = True
@@ -496,6 +518,12 @@ def _skip_unless_remote(request, is_remote):
         pytest.skip("Remote tests require the --remote flag")
 
 
+def _skip_if_remote(is_remote):
+    """Skip fixtures that build a local driver when ``--remote`` is set."""
+    if is_remote:
+        pytest.skip("This fixture builds a local driver and is not applicable with --remote")
+
+
 def _apply_xfail_markers(request, driver_class, is_remote):
     """Honor the ``xfail_<driver>`` / ``xfail_remote`` markers for the driver under test.
 
@@ -546,9 +574,8 @@ def driver(request, server):
     _skip_unless_remote(request, selenium_driver.is_remote)
 
     # skip tests for drivers that don't support BiDi when --bidi is enabled
-    if selenium_driver.bidi:
-        if driver_class.lower() not in selenium_driver.supported_bidi_drivers:
-            pytest.skip(f"{driver_class} does not support BiDi")
+    if selenium_driver.bidi and driver_class.lower() not in selenium_driver.supported_bidi_drivers:
+        pytest.skip(f"{driver_class} does not support BiDi")
 
     _apply_xfail_markers(request, driver_class, selenium_driver.is_remote)
 
@@ -577,15 +604,14 @@ def driver(request, server):
 
     yield selenium_driver.driver
 
-    if request.node.get_closest_marker("no_driver_after_test"):
-        if selenium_driver is not None:
-            try:
-                selenium_driver.stop_driver()
-            except WebDriverException:
-                pass
-            except Exception:
-                raise
-            selenium_driver = None
+    if request.node.get_closest_marker("no_driver_after_test") and selenium_driver is not None:
+        try:
+            selenium_driver.stop_driver()
+        except WebDriverException:
+            pass
+        except Exception:
+            raise
+        selenium_driver = None
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -610,8 +636,8 @@ def pytest_exception_interact(node, call, report):
 @pytest.fixture
 def pages(driver, webserver):
     class Pages:
-        def url(self, name, localhost=False):
-            return webserver.where_is(name, localhost)
+        def url(self, name, localhost=False, secure=False):
+            return webserver.where_is(name, localhost, secure)
 
         def load(self, name):
             driver.get(self.url(name))
@@ -699,11 +725,14 @@ def driver_executable(request):
 
 @pytest.fixture
 def clean_driver(request):
-    _supported_drivers = SupportedDrivers()
-    try:
-        driver_class = getattr(_supported_drivers, request.config.option.drivers[0].lower())
-    except (AttributeError, TypeError):
+    _skip_if_remote(request.config.getoption("remote"))
+    if not request.config.option.drivers:
         raise Exception("This test requires a --driver to be specified.")
+    driver_name = request.config.option.drivers[0].lower()
+    try:
+        driver_class = getattr(SupportedDrivers(), driver_name)
+    except AttributeError:
+        raise Exception(f"This test requires a supported --driver, got: {driver_name}") from None
     driver_reference = getattr(webdriver, driver_class)
 
     _apply_xfail_markers(request, driver_class, request.config.getoption("remote"))
@@ -732,7 +761,7 @@ def firefox_options(request):
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
-        raise Exception("This test requires a --driver to be specified")
+        raise Exception("This test requires a --driver to be specified") from None
 
     # skip if not Firefox
     if driver_class != "firefox":
@@ -750,7 +779,7 @@ def chromium_options(request):
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
-        raise Exception("This test requires a --driver to be specified")
+        raise Exception("This test requires a --driver to be specified") from None
 
     # skip if not Chrome or Edge
     if driver_class not in ("chrome", "edge"):

@@ -145,6 +145,7 @@ suite(
         })
 
         await driver.get(Pages.emptyPage)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
 
         assert.equal(onResponseCompleted[0].request.method, 'GET')
         assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
@@ -203,6 +204,7 @@ suite(
 
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
         assert.equal(onResponseCompleted[0].request.method, 'GET')
         assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
         assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
@@ -211,6 +213,7 @@ suite(
         // Checking mime type for 'plain' text
         onResponseCompleted = []
         await driver.get(Pages.emptyText)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
         assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })

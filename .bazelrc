@@ -17,8 +17,13 @@ common --legacy_external_runfiles
 startup --windows_enable_symlinks
 build --enable_runfiles
 
+# For Python, use a venv site-packages layout on to avoid MAX_PATH failures
+# when loading native extensions.
+build:windows --@rules_python//python/config_settings:venvs_site_packages=yes
+
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
+build --flag_alias=manager=//common:manager
 
 # Set the default java toolchain.
 # When bumping these, also update java_runtime in //common/remote-build/java to match.
@@ -89,7 +94,6 @@ common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUIL
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 common --incompatible_enable_proto_toolchain_resolution
-build --incompatible_enable_cc_toolchain_resolution
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
@@ -149,12 +153,22 @@ test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 
 test --test_timeout=1800
 
+# Browser tests claim one `browser` each, and Bazel fails tests that claim an undeclared resource.
+# CI lowers this to 1 so browser tests run one at a time while unit tests use the other CPUs.
+test --local_resources=browser=HOST_CPUS
+
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"
 
 
+# @llvm defaults to 14.0.
+build --macos_minimum_os=11.0
+
 build:release --stamp
 build:release --compilation_mode=opt
+# Match [profile.release] in rust/Cargo.toml, which Bazel doesn't read.
+build:release --@rules_rust//rust/settings:lto=fat
+build:release --@rules_rust//rust/settings:extra_rustc_flags=-Copt-level=z,-Ccodegen-units=1,-Cpanic=abort,-Cstrip=symbols
 
 # As regular `release` but all the build work happens on the RBE
 build:rbe_release --config=release

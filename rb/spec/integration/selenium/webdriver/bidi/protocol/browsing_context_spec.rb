@@ -39,6 +39,15 @@ module Selenium
             Script.new(driver).evaluate(expression: expression, target: script_target(context), await_promise: false)
           end
 
+          describe '.new' do
+            it 'errors when bidi not enabled' do
+              reset_driver!(web_socket_url: false) do |driver|
+                msg = /BiDi must be enabled by setting #web_socket_url to true in options class/
+                expect { described_class.new(driver) }.to raise_error(WebDriver::Error::WebDriverError, msg)
+              end
+            end
+          end
+
           describe '#activate' do
             it 'activates an existing browsing context' do
               context = browsing_context.create(type: :tab, background: true).context
@@ -46,12 +55,19 @@ module Selenium
               expect(browsing_context.activate(context: context)).to be_empty
               expect(driver.window_handles).to include(context)
             end
+
+            it 'moves focus to the activated context',
+               pending_if: {browser_family: :safari, reason: 'Safari does not focus the activated context'} do
+              window = driver.window_handle
+              browsing_context.create(type: :tab)
+
+              expect(driver.execute_script('return document.hasFocus();')).to be_falsey
+              browsing_context.activate(context: window)
+              expect(driver.execute_script('return document.hasFocus();')).to be_truthy
+            end
           end
 
-          describe '#capture_screenshot',
-                   pending_if: {browser_family: :safari,
-                                exception: {class: Error::UnknownCommandError},
-                                reason: 'Safari does not implement browsingContext.captureScreenshot'} do
+          describe '#capture_screenshot' do
             it 'returns base64 PNG screenshot data' do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
 
@@ -72,6 +88,25 @@ module Selenium
               )
 
               expect(result.data).to start_with('iVBOR')
+            end
+
+            it 'limits the screenshot to the requested image size',
+               pending_if: [{browser_family: :chromium,
+                             reason: 'Chromium ignores the captureScreenshot imageSize parameter'},
+                            {browser: :firefox, version: 'stable',
+                             reason: 'Firefox 156 ignores the captureScreenshot imageSize; works in 158'},
+                            {browser_family: :safari,
+                             reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
+              browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
+
+              result = browsing_context.capture_screenshot(
+                context: driver.window_handle,
+                image_size: BrowsingContext::ImageSize.new(max_width: 50, max_height: 40)
+              )
+
+              width, height = result.data.unpack1('m')[16, 8].unpack('N2')
+              expect(width).to be <= 50
+              expect(height).to be <= 40
             end
           end
 
@@ -105,6 +140,41 @@ module Selenium
 
               expect(result.context).to be_a(String)
               expect(driver.window_handles).to include(result.context)
+            end
+
+            it 'accepts a reference context' do
+              id = driver.window_handle
+              result = browsing_context.create(type: :tab, reference_context: id).context
+
+              expect(driver.window_handles).to include(id, result)
+            end
+
+            it 'rejects an unknown type before sending it' do
+              expect {
+                browsing_context.create(type: :unknown)
+              }.to raise_error(ArgumentError, /type must be one of/)
+            end
+
+            it 'emits a context created event',
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
+                            reason: 'Safari session.subscribe result fails strict deserialization'} do
+              event_name = 'browsingContext.contextCreated'
+              connection = driver.send(:bridge).connection
+              session = Session.new(driver)
+              events = []
+              callback = connection.add_callback(event_name) { |params| events << params }
+              session.subscribe(events: [event_name])
+
+              context = browsing_context.create(type: :tab).context
+              event = wait.until { events.find { |params| params['context'] == context } }
+              created = BrowsingContext::EVENT_TYPES[event_name].from_json(event)
+
+              expect(created).to be_a(BrowsingContext::ContextCreatedParameters)
+              expect(created.user_context).to eq('default')
+              expect(created.parent).to be_nil
+            ensure
+              session&.unsubscribe(events: [event_name])
+              connection.remove_callback(event_name, callback) if callback
             end
 
             it 'accepts reference, background, and user context parameters',
@@ -344,6 +414,16 @@ module Selenium
               )
             end
 
+            it 'resizes the window seen by the page' do
+              browsing_context.set_viewport(
+                context: driver.window_handle,
+                viewport: BrowsingContext::Viewport.new(width: 800, height: 600),
+                device_pixel_ratio: 2.0
+              )
+
+              expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
+            end
+
             it 'clears the viewport override' do
               browsing_context.set_viewport(
                 context: driver.window_handle,
@@ -361,22 +441,43 @@ module Selenium
                                  reason: 'Chromium returns unsupported operation for browsingContext.startScreencast'},
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Safari does not implement browsingContext.startScreencast'},
-                                {browser: :firefox, platform: :linux, version: 'stable',
-                                 exception: {class: Error::UnknownError, message: /startScreencast/},
-                                 reason: 'startScreencast on Linux fails with NS_ERROR_FAILURE; fixed in 156'}] do
-            it 'starts and stops a screencast' do
+                                 reason: 'Safari does not implement browsingContext.startScreencast'}] do
+            # Firefox 156 ignores destinationFolder and records into the user's Downloads folder
+            def record_screencast(directory, **)
+              directory = WebDriver::Platform.windows_path(directory) if WebDriver::Platform.windows?
               result = browsing_context.start_screencast(
                 context: driver.window_handle,
-                mime_type: 'video/webm',
-                video: BrowsingContext::MediaTrackConstraints.new(width: 320, height: 240, frame_rate: 5),
-                audio: false
+                destination_folder: directory,
+                **
               )
+              stopped = browsing_context.stop_screencast(screencast: result.screencast)
+              [result, stopped]
+            ensure
+              FileUtils.rm_f(stopped.path) if stopped
+            end
 
-              expect(result.screencast).to be_a(String)
-              expect(browsing_context.stop_screencast(screencast: result.screencast)).to be_a(
-                BrowsingContext::StopScreencastResult
-              )
+            it 'starts and stops a screencast' do
+              Dir.mktmpdir('selenium-bidi-screencast') do |directory|
+                result, stopped = record_screencast(
+                  directory,
+                  mime_type: 'video/webm',
+                  video: BrowsingContext::MediaTrackConstraints.new(width: 320, height: 240, frame_rate: 5),
+                  audio: false
+                )
+
+                expect(result.screencast).to be_a(String)
+                expect(stopped).to be_a(BrowsingContext::StopScreencastResult)
+              end
+            end
+
+            it 'saves the screencast in the destination folder',
+               pending_if: {browser: :firefox, version: 'stable',
+                            reason: 'Firefox 156 ignores the startScreencast destinationFolder; works in 158'} do
+              Dir.mktmpdir('selenium-bidi-screencast') do |directory|
+                _result, stopped = record_screencast(directory)
+
+                expect(File.realpath(File.dirname(stopped.path))).to eq(File.realpath(directory))
+              end
             end
           end
 

@@ -21,10 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,16 +33,11 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
 
 @Tag("UnitTests")
 class FirefoxProfileTest {
-  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
-  private static final String EXT_RESOURCE_PATH =
-      "java/test/org/openqa/selenium/firefox/webextensions-selenium-example.xpi";
-
   private FirefoxProfile profile;
 
   @BeforeEach
@@ -131,32 +124,6 @@ class FirefoxProfileTest {
   void shouldAllowSettingFrozenPreferences() throws Exception {
     profile.setPreference("network.http.phishy-userpass-length", 1024);
     assertPreferenceValueEquals("network.http.phishy-userpass-length", 1024);
-  }
-
-  @Test
-  void shouldInstallWebExtensionFromZip() {
-    profile.addExtension(InProject.locate(EXT_PATH).toFile());
-    File profileDir = profile.layoutOnDisk();
-    File extensionFile = new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
-    assertThat(extensionFile).exists().isFile();
-  }
-
-  @Test
-  void shouldInstallWebExtensionFromDirectory() throws IOException {
-    File extension = InProject.locate(EXT_PATH).toFile();
-    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
-    profile.addExtension(unzippedExtension);
-    File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@0.1");
-    assertThat(extensionDir).exists();
-  }
-
-  @Test
-  void shouldInstallExtensionUsingClasspath() {
-    profile.addExtension(FirefoxProfileTest.class, EXT_RESOURCE_PATH);
-    File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@0.1.xpi");
-    assertThat(extensionDir).exists();
   }
 
   @Test
@@ -256,6 +223,6 @@ class FirefoxProfileTest {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
     FileReader reader = new FileReader(userPrefs);
-    return new Preferences(new StringReader("{\"mutable\": {}, \"frozen\": {}}"), reader);
+    return new Preferences(reader);
   }
 }

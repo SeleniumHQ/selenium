@@ -48,8 +48,10 @@ module BiDiGenerate
   RUBY_RESERVED = %w[begin end rescue ensure raise return yield if unless while until for do
                      case when then class module def].freeze
 
+  # A vendor namespace separator (`moz:debugging`) reads as a word boundary.
   def self.camel_to_snake(str)
     str
+      .tr(':', '_')
       .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
       .gsub(/([a-z\d])([A-Z])/, '\1_\2')
       .downcase
@@ -70,6 +72,11 @@ module BiDiGenerate
   def self.type_ruby_path(type_name)
     domain = type_name.split('.', 2).first
     "#{snake_to_class_name(camel_to_snake(domain))}::#{type_class_name(type_name)}"
+  end
+
+  # Source literal for a list of wire keys, in the form RuboCop expects at each size.
+  def self.word_array(words)
+    words.size > 1 ? "%w[#{words.join(' ')}]" : "[#{words.map { |w| "'#{w}'" }.join(', ')}]"
   end
 
   # Source literal for a discriminator/const value (string, boolean, or number).
@@ -100,15 +107,17 @@ module BiDiGenerate
   RESERVED_FIELD_NAMES = (RUBY_RESERVED + %w[method hash class send dup clone freeze inspect
                                              to_h to_s members with deconstruct deconstruct_keys
                                              object_id tap itself then display
-                                             extensible extensions]).freeze
+                                             extensible]).freeze
 
   # Append underscore to a field name that would shadow a core method; the wire
   # name is unaffected, only the Ruby reader is renamed.
-  def self.safe_field_name(name)
+  def self.safe_field_name(name, extensible: true)
     # A vendor-prefixed wire name carries a colon (moz:allowPrivateBrowsing); swap it
     # for an underscore so the Ruby reader is a legal identifier. The wire key is kept.
     name = name.tr(':', '_')
-    RESERVED_FIELD_NAMES.include?(name) ? "#{name}_" : name
+    # Only an extensible record holds its undeclared fields in an `extensions` member.
+    reserved = RESERVED_FIELD_NAMES.include?(name) || (extensible && name == 'extensions')
+    reserved ? "#{name}_" : name
   end
 
   # SCREAMING_SNAKE constant name for an enum, matching the EVENTS map style
@@ -226,80 +235,52 @@ module BiDiGenerate
       args << "result: #{result_ref}" if result_ref
       BiDiGenerate.wrap_call('execute', args, indent)
     end
-  end
 
-  # A browser-specific extension to a command, kept out of the shared class so a
-  # non-matching browser never sees it. shared_params are the base command's own
-  # (required) params, forwarded verbatim; vendor_params are the typed extra fields,
-  # composed into the extensible params record's passthrough bag under their exact
-  # wire keys. params_class/result_ref/wire_name mirror the base command.
-  VendorCommand = Struct.new(:method_name, :wire_name, :result_ref, :params_class,
-                             :shared_params, :vendor_params, :spec_href, keyword_init: true) do
-    def def_header(indent)
-      BiDiGenerate.wrap_call("def #{method_name}", shared_params.map(&:sig_part) + vendor_params.map(&:sig_part),
-                             indent)
-    end
-
-    # The full `def … end` method block, fully indented from `indent`. Optional vendor
-    # fields are placed into the passthrough bag only when set (UNSET stays omitted), so
-    # they serialize exactly like a field on the extensible record.
+    # The full `def … end` block, shared by the module template and a vendor variant that adds
+    # the command (VendorModule#render), so both render a command identically.
     def render_lines(indent)
+      pad = ' ' * indent
       body = ' ' * (indent + 2)
-      [*doc_lines(' ' * indent), "#{' ' * indent}#{def_header(indent)}", *extensions_lines(body, indent),
-       params_line(body, indent), execute_line(body, indent), "#{' ' * indent}end"]
-    end
-
-    def doc_lines(pad)
       lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
       lines << "#{pad}# @see #{spec_href}" if spec_href
-      lines
-    end
-
-    # The extensible passthrough bag, carrying each set vendor field under its exact wire key.
-    def extensions_lines(body, indent)
-      inner = ' ' * (indent + 4)
-      entries = vendor_params.map { |p| "#{inner}'#{p.wire_name}' => #{p.ruby_name}" }.join(",\n")
-      ["#{body}extensions = {", entries, "#{body}}.reject { |_, value| Serialization::UNSET.equal?(value) }"]
-    end
-
-    def params_line(body, indent)
-      kwargs = shared_params.map { |p| "#{p.ruby_name}: #{p.ruby_name}" } + ['extensions: extensions']
-      "#{body}#{BiDiGenerate.wrap_call("params = #{params_class}.new", kwargs, indent + 2)}"
-    end
-
-    def execute_line(body, indent)
-      args = ["cmd: '#{wire_name}'", 'params: params']
-      args << "result: #{result_ref}" if result_ref
-      "#{body}#{BiDiGenerate.wrap_call('execute', args, indent + 2)}"
-    end
-
-    def rbs_signature
-      params = (shared_params.map(&:rbs_part) + vendor_params.map(&:rbs_part)).join(', ')
-      ret = result_ref ? "::Selenium::WebDriver::BiDi::Protocol::#{result_ref}" : 'untyped'
-      "(#{params}) -> #{ret}"
+      lines << "#{pad}#{def_header(indent)}"
+      lines.concat(enum_checks(indent + 2).map { |check| "#{body}#{check}" })
+      assignment = params_assignment(indent + 2)
+      lines << "#{body}#{assignment}" if assignment
+      lines + ["#{body}#{execute_call(indent + 2)}", "#{pad}end"]
     end
   end
 
-  # A namespaced group of browser-specific command extensions (e.g. Firefox's `moz:`
-  # fields), emitted as a subclass of the domain that overrides the extended commands.
+  # A namespaced group of browser-specific commands (e.g. Firefox's), emitted as a subclass of
+  # the domain: it overrides the commands a vendor extends with `moz:` fields and adds the
+  # commands a vendor defines in the domain (`webExtension.moz:listExtensions`).
   # A subclass (rather than a runtime-mixed module) keeps the vendor signatures statically
   # visible to type checkers, and is constructed directly (`<Name>.new(source)`) for a
-  # matching session — no factory or runtime mix-in.
-  VendorModule = Struct.new(:name, :namespace, :parent, :commands, keyword_init: true) do
+  # matching session — no factory or runtime mix-in. types are the variant's own params
+  # records, which shadow the shared ones so its overriding commands build them by bare name.
+  VendorModule = Struct.new(:name, :namespace, :parent, :types, :commands, keyword_init: true) do
     def render(indent)
       pad = ' ' * indent
       lines = [
         "#{pad}# @api private",
-        "#{pad}# #{namespace}: vendor variant of #{parent}, overriding commands with browser-specific params.",
+        "#{pad}# #{namespace}: vendor variant of #{parent}, with browser-specific commands and params.",
         "#{pad}# Construct #{name}.new(source) for a matching session; other sessions use #{parent}.",
         "#{pad}class #{name} < #{parent}"
       ]
+      types.each { |type| lines.concat(type_lines(type, indent + 2)) << '' }
       commands.each_with_index do |cmd, index|
         lines << '' unless index.zero?
         lines.concat(cmd.render_lines(indent + 2))
       end
       lines << "#{pad}end"
       lines.join("\n")
+    end
+
+    def type_lines(type, indent)
+      pad = ' ' * indent
+      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
+      lines << "#{pad}# @see #{type.spec_href}" if type.spec_href
+      lines << "#{pad}#{type.define_assignment(type.ruby_name, indent)}"
     end
   end
 
@@ -331,7 +312,7 @@ module BiDiGenerate
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
   FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
-                       :rbs, keyword_init: true) do
+                       :map_of, :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
@@ -351,11 +332,19 @@ module BiDiGenerate
       facts << 'required: false' unless required
       facts << 'nullable: true' if nullable
       facts << "const: #{BiDiGenerate.ruby_literal(const)}" unless const.nil?
+      facts + type_facts
+    end
+
+    # The facts describing the value's type and shape: what the runtime reads it as and checks
+    # it against. `map_of` is the value primitive(s) of a string-keyed map (`{*text => text}`).
+    def type_facts
+      facts = []
       facts << "ref: '#{ref}'" if ref
       facts << 'list: true' if list
       facts << "scalar: #{scalar_literal}" if scalar
       facts << "enum: '#{enum}'" if enum
       facts << "primitive: '#{primitive}'" if primitive
+      facts << "map: #{map_literal}" if map_of
       facts
     end
 
@@ -363,6 +352,11 @@ module BiDiGenerate
     # union position: a single primitive string, or an array when the union's scalar arms differ.
     def scalar_literal
       scalar.is_a?(::Array) ? "[#{scalar.map { |s| "'#{s}'" }.join(', ')}]" : "'#{scalar}'"
+    end
+
+    # The `map` value primitive(s): a single primitive string, or an array when the values allow several.
+    def map_literal
+      map_of.is_a?(::Array) ? BiDiGenerate.word_array(map_of) : "'#{map_of}'"
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -543,13 +537,93 @@ module BiDiGenerate
                       :vendor_modules, :spec_href, keyword_init: true)
 
   class Schema
+    # Vendor content (schema `vendor.<namespace>`) is folded in beside the spec's: a vendor
+    # module's commands and events become a domain of their own, and its types resolve like
+    # spec types and are emitted in that module (see owned_types).
     def initialize(schema)
-      @types = schema['types']
-      @commands = schema['commands']
-      @events = schema['events']
-      @domains = schema['domains'] || {}
       @vendor = schema['vendor'] || {}
+      @vendor_types = @vendor.values.map { |section| section['types'] || {} }.reduce({}, :merge)
+      @types = schema['types'].merge(@vendor_types)
+      @commands = schema['commands'] + vendor_messages('commands').select { |c| vendor_domain?(c['domain']) }
+      @events = schema['events'] + vendor_events
+      @domains = schema['domains'] || {}
       promote_command_params_records!
+      @vendor_params = fold_vendor_extensions!
+    end
+
+    # A vendor module's domain keeps its wire prefix (`moz:debugging`); a spec domain has none.
+    def vendor_domain?(domain) = domain.include?(':')
+
+    # A vendor's fields on a spec type are declared fields (ADR 17786), so they are typed and never ride
+    # the extensions map. Fields on a spec command's params go to a record of the vendor variant's own (see
+    # vendor_modules_for), returned per namespace; fields on any other type join it as optional fields.
+    def fold_vendor_extensions!
+      @vendor_field_refs = []
+      @vendor.to_h do |namespace, section|
+        params = {}
+        (section['extends'] || {}).each do |type_name, entry|
+          fields = vendor_extension_fields(namespace, type_name, entry)
+          if params_command(type_name)
+            params[type_name] = fields
+          else
+            optional = fields.map { |field| field.merge('required' => false) }
+            @types[type_name] = @types[type_name].merge('fields' => @types[type_name]['fields'] + optional)
+          end
+        end
+        [namespace, params]
+      end
+    end
+
+    # Also records the vendor types the fields reference, so vendor_types_reached emits them.
+    def vendor_extension_fields(namespace, type_name, entry)
+      type = @types[type_name] || raise("vendor #{namespace} extends unknown type #{type_name}")
+      raise "vendor #{namespace} extends #{type_name}, which is not a record" unless type['kind'] == 'record'
+
+      fields = entry['fields'].map { |field| hoist_vendor_enum(type_name, field) }
+      @vendor_field_refs.concat(fields.flat_map { |field| refs_in_type(field['type']) })
+      fields
+    end
+
+    # The projector leaves a vendor field's enum inline (`moz:scope`), so name it after the field in the
+    # extended type's domain (`browsingContext.MozScope`) to emit and validate it like a spec enum.
+    def hoist_vendor_enum(type_name, field)
+      values = field['type']['enum']
+      return field unless values
+
+      domain = type_name.split('.', 2).first
+      name = "#{domain}.#{BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(field['name']))}"
+      enum = {'kind' => 'enum', 'values' => values, 'primitive' => field['type']['primitive']}
+      raise "vendor enum #{name} conflicts with an existing type" if @types.key?(name) && @types[name] != enum
+
+      @types[name] = enum
+      field.merge('type' => field['type'].slice('nullable').merge('ref' => name))
+    end
+
+    # The spec command that sends a type as its params, or nil.
+    def params_command(type_name)
+      @commands.find { |c| c.dig('params', 'ref') == type_name && !vendor_domain?(c['domain']) }
+    end
+
+    def vendor_messages(kind)
+      @vendor.values.flat_map { |section| section[kind] || [] }
+    end
+
+    # A vendor event in a spec domain would need the same vendor-variant routing as a command;
+    # none exists yet, so fail generation rather than leak it into the shared class.
+    def vendor_events
+      events = vendor_messages('events')
+      stray = events.reject { |e| vendor_domain?(e['domain']) }
+      raise "vendor event #{stray.first['method']} in spec domain #{stray.first['domain']} is unsupported" if stray.any?
+
+      events
+    end
+
+    # The commands a vendor defines in a spec domain (`webExtension.moz:listExtensions`). They are
+    # emitted on that domain's vendor variant, never on the shared class (see vendor_modules_for).
+    def vendor_added_commands(domain, namespace)
+      return [] if vendor_domain?(domain)
+
+      (@vendor.dig(namespace, 'commands') || []).select { |c| c['domain'] == domain }
     end
 
     # The domain's `#module-<domain>` spec link, or nil when the schema has none.
@@ -620,57 +694,61 @@ module BiDiGenerate
       ruby_path(name).sub(/\A#{Regexp.escape(prefix)}/, '')
     end
 
-    # The vendor modules a domain carries, one per namespace (`moz` → module `Moz`). The
-    # schema's `vendor` section names, per namespace, which shared type each vendor extends;
-    # we map that type back to the command that sends it, so the vendor method mirrors the
+    # The vendor modules a domain carries, one per namespace (`moz` → module `Moz`). Each
+    # command whose params a vendor extends is overridden there with a closed params record of
+    # the variant's own (the shared fields plus the vendor's), so the vendor method mirrors the
     # base command's wire method and result while adding the typed vendor fields. Empty for
     # any domain (or schema) with no vendor extensions, so non-vendor output is unaffected.
     def vendor_modules_for(domain)
       parent = BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(domain))
-      groups = Hash.new { |h, k| h[k] = [] }
-      @vendor.each do |namespace, spec|
-        (spec['extends'] || {}).each do |type_name, entry|
-          cmd = @commands.find { |c| c.dig('params', 'ref') == type_name }
-          next unless cmd && cmd['domain'] == domain
-
-          groups[namespace] << build_vendor_command(cmd, type_name, entry, namespace)
+      @vendor_params.filter_map do |namespace, extended|
+        overrides = extended.filter_map do |type_name, fields|
+          cmd = params_command(type_name)
+          build_vendor_override(cmd, type_name, fields, namespace) if cmd['domain'] == domain
         end
-      end
-      groups.map do |namespace, commands|
+        added = vendor_added_commands(domain, namespace).map { |cmd| build_added_command(cmd, namespace, domain) }
+        next if overrides.empty? && added.empty?
+
         VendorModule.new(name: BiDiGenerate.snake_to_class_name(namespace), namespace: namespace, parent: parent,
-                         commands: commands)
+                         types: overrides.map(&:first), commands: overrides.map(&:last) + added)
       end
     end
 
-    def build_vendor_command(cmd, type_name, entry, namespace)
-      shared = record_params(@types[type_name]['fields'])
-      taken = shared.map(&:ruby_name)
-      VendorCommand.new(
-        method_name: BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(cmd['name'])),
-        wire_name: cmd['method'],
-        result_ref: cmd['result'] && structured_ref(cmd['result']['ref']),
-        params_class: BiDiGenerate.type_class_name(type_name),
-        shared_params: shared,
-        vendor_params: entry['fields'].map { |field| vendor_param(field, namespace, taken) },
-        spec_href: cmd['specHref']
-      )
+    # The vendor variant already scopes the command, so its name drops the namespace (`moz:listExtensions`
+    # → list_extensions); a name that would silently override a spec command fails generation instead.
+    def build_added_command(cmd, namespace, domain)
+      command = BiDiGenerate.build_command(self, cmd.merge('name' => cmd['name'].delete_prefix("#{namespace}:")))
+      spec_names = commands_for(domain).map do |c|
+        BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(c['name']))
+      end
+      if spec_names.include?(command.method_name)
+        raise "vendor command #{cmd['method']} would override spec command #{domain}.#{command.method_name}"
+      end
+
+      command
+    end
+
+    # The vendor variant's params record and the command that builds it, as [record, command].
+    def build_vendor_override(cmd, type_name, fields, namespace)
+      shared = @types[type_name]['fields']
+      taken = shared.map { |field| field_name(field, false) }
+      type = @types[type_name].merge('fields' => shared + fields.map { |f| vendor_field(f, namespace, taken) })
+      record = record_class(type_name, type)
+      command = Command.new(wire_name: cmd['method'],
+                            method_name: BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(cmd['name'])),
+                            params: record_params(type['fields'], false),
+                            result_ref: cmd['result'] && structured_ref(cmd['result']['ref']),
+                            params_class: record.ruby_name, union_params: false, spec_href: cmd['specHref'])
+      [record, command]
     end
 
     # A vendor field's ruby name drops its namespace prefix (`moz:permanent` → permanent): the
     # module already scopes it, so re-encoding the namespace in every identifier is redundant. The
     # wire key is untouched. Falls back to the prefixed name only if stripping would collide with a
-    # shared param on the same command.
-    def vendor_param(field, namespace, taken)
-      stripped = field['name'].sub(/\A#{Regexp.escape(namespace)}:/, '')
-      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(stripped))
-      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name'])) if taken.include?(ruby_name)
-      Param.new(
-        ruby_name: ruby_name,
-        wire_name: field['wire'],
-        required: field['required'],
-        enum: enum_const(field['type']),
-        rbs: rbs_type(field['type'])
-      )
+    # shared field on the same record.
+    def vendor_field(field, namespace, taken)
+      stripped = field.merge('name' => field['name'].delete_prefix("#{namespace}:"))
+      taken.include?(field_name(stripped, false)) ? field : stripped
     end
 
     def type_kind(ref)
@@ -692,21 +770,60 @@ module BiDiGenerate
       return nil unless type
 
       case type['kind']
-      when 'record' then record_params(type['fields'])
+      when 'record' then record_params(type['fields'], extensible_record?(params_ref['ref']))
       when 'union' then union_params(type, params_ref['ref'])
       end
     end
 
     # Enum types declared under "<domain>." become nested constant modules.
     def enums_for(domain)
-      @types.filter_map do |name, type|
+      owned_types(domain).filter_map do |name, type|
         next unless type['kind'] == 'enum'
-        next unless name.start_with?("#{domain}.")
 
         pairs = type['values'].map { |v| [BiDiGenerate.enum_key(v), v] }
-        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.sub("#{domain}.", '')), pairs: pairs,
+        Enum.new(constant_name: BiDiGenerate.screaming_snake(name.split('.', 2).last), pairs: pairs,
                  primitive: type['primitive'], spec_href: type['specHref'])
       end
+    end
+
+    # The types a domain's module declares. A spec domain's are the "<domain>." types the spec
+    # defines; a vendor's helper types under that prefix are not emitted until a generated
+    # command needs them. A vendor module (`moz:debugging`) owns the vendor types its commands
+    # and events name (Mozilla prefixes them `mozDebugging.`), read off their params and result refs.
+    def owned_types(domain)
+      vendor = vendor_domain?(domain)
+      prefixes = type_prefixes(domain).map { |prefix| "#{prefix}." }
+      added = vendor ? Set.new : vendor_types_reached(domain)
+      @types.select do |name, _|
+        next false unless prefixes.any? { |p| name.start_with?(p) }
+
+        @vendor_types.key?(name) ? vendor || added.include?(name) : !vendor
+      end
+    end
+
+    # The vendor types a vendor-added command in this spec domain reaches through its params and
+    # result, or a vendor field folded onto a spec type references, so they are emitted in the
+    # domain's module beside what uses them.
+    def vendor_types_reached(domain)
+      commands = @vendor.keys.flat_map { |namespace| vendor_added_commands(domain, namespace) }
+      pending = commands.flat_map { |c| [c.dig('params', 'ref'), c.dig('result', 'ref')] }.compact + @vendor_field_refs
+      reached = Set.new
+      until pending.empty?
+        name = pending.pop
+        next if reached.include?(name) || !@vendor_types.key?(name)
+
+        reached << name
+        pending.concat(plain_refs(@types[name]) + (@types[name]['variants'] || []))
+      end
+      reached
+    end
+
+    def type_prefixes(domain)
+      return [domain] unless vendor_domain?(domain)
+
+      messages = commands_for(domain) + events_for(domain)
+      refs = messages.flat_map { |m| [m.dig('params', 'ref'), m.dig('result', 'ref')] }
+      refs.compact.select { |ref| ref.include?('.') }.map { |ref| ref.split('.', 2).first }.uniq
     end
 
     # The protocol-root ErrorCode enum's wire values (e.g. "no such frame"), in schema order.
@@ -721,10 +838,7 @@ module BiDiGenerate
     # Command/event message envelopes (the `{method, params}` wire wrapper) are
     # skipped — Transport forms that envelope, so nothing references them.
     def types_for(domain)
-      prefix = "#{domain}."
-      @types.filter_map do |name, type|
-        next unless name.start_with?(prefix)
-
+      owned_types(domain).filter_map do |name, type|
         case type['kind']
         when 'record' then record_class(name, type) unless type['fields'].empty? || suppressed_record?(type)
         when 'union' then union_class(name)
@@ -825,7 +939,7 @@ module BiDiGenerate
       if node.key?('ref')
         named = resolve_named(node['ref'])
         return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
-                rbs: nilable(named[:rbs], nullable)}
+                map: named[:map], rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
@@ -871,12 +985,33 @@ module BiDiGenerate
       return OPAQUE unless type
 
       case type['kind']
-      when 'record' then type['fields'].empty? ? OPAQUE : named_type(name)
+      when 'record' then type['fields'].empty? ? map_record(type) : named_type(name)
       when 'union' then named_union(name)
       when 'enum' then {ref: nil, list: false, rbs: 'Symbol'}
       when 'alias' then resolve_named_alias(name, type['type'], seen)
       else OPAQUE
       end
+    end
+
+    # A field-less record is either a genuinely empty one (EmptyParams, Extensible — opaque)
+    # or the projector's stand-in for an inline map (`{*text => text}` is hoisted to a record
+    # with no fields and the value type under `map`, e.g. script.NodePropertiesAttributes).
+    # A map whose values are a primitive, or a union of primitives (Firefox `prefs`), becomes a
+    # `map` descriptor the runtime checks and a typed Hash; a ref-valued one stays opaque for now.
+    def map_record(type)
+      primitives = map_value_primitives(type['map'])
+      return OPAQUE unless primitives
+
+      rbs = primitives.map { |primitive| PRIMITIVE_RBS.fetch(primitive) }.join(' | ')
+      {ref: nil, list: false, map: primitives.one? ? primitives.first : primitives, rbs: "Hash[String, #{rbs}]"}
+    end
+
+    # Each arm's checkable primitive, following aliases (js-int is an integer); nil if any arm has none.
+    def map_value_primitives(node)
+      return unless node
+
+      primitives = (node['union'] || [node]).map { |arm| leaf_primitive(arm) }
+      primitives.uniq if primitives.all?
     end
 
     # A named structured type's serialization ref (nil for a dotless/global type, never
@@ -926,19 +1061,28 @@ module BiDiGenerate
     end
 
     def record_class(name, type)
+      extensible = extensible_record?(name)
       const = type['fields'].find { |f| baked_discriminator?(f) }
-      discriminator = const && {ruby_name: BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(const['name'])),
+      discriminator = const && {ruby_name: field_name(const, extensible),
                                 wire: const['wire'], value: const['type']['const'],
                                 rbs: rbs_const(const['type']['const'])}
-      fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f) }
+      fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f, extensible) }
       # Every extensible type gets the extensions store: an undeclared wire key is preserved
       # and echoed back on any type the spec marks extensible, whether or not it is re-sendable.
       # Extensibility alone is the signal; send-reachability does not enter into it.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
-                    discriminator: discriminator, extensible: type['extensible'] ? true : false,
+                    discriminator: discriminator, extensible: extensible,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
                     owner: type['owner'], label: type['label'], spec_href: type['specHref'],
                     **directionality(name))
+    end
+
+    def extensible_record?(name)
+      @types.dig(name, 'extensible') ? true : false
+    end
+
+    def field_name(field, extensible)
+      BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name']), extensible: extensible)
     end
 
     # A const field is a baked discriminator tag, unless it is also nullable: the spec's
@@ -949,14 +1093,14 @@ module BiDiGenerate
       field['type'].key?('const') && !field['type']['nullable']
     end
 
-    def field_ir(field)
+    def field_ir(field, extensible)
       resolved = resolve(field['type'])
-      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name']))
+      ruby_name = field_name(field, extensible)
       FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
                   primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
-                  const: leaf_const(field['type']), rbs: resolved[:rbs])
+                  const: leaf_const(field['type']), map_of: resolved[:map], rbs: resolved[:rbs])
     end
 
     # The literal value of a const field, following alias chains, so the runtime can reject a
@@ -1074,10 +1218,10 @@ module BiDiGenerate
                      scalar_values: spec['type']['scalarValues'], **directionality(name))
     end
 
-    def record_params(fields)
+    def record_params(fields, extensible)
       fields.map do |field|
         Param.new(
-          ruby_name: BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name'])),
+          ruby_name: field_name(field, extensible),
           wire_name: field['wire'],
           required: field['required'],
           enum: enum_const(field['type']),
@@ -1146,7 +1290,7 @@ module BiDiGenerate
 
       selector = type['selector']
       guard_union_dispatch_keys_simple!(selector, ref)
-      params = merged_params(variants.map { |v| v['fields'] })
+      params = merged_params(variants.map { |v| v['fields'] }, type['variants'].any? { |v| extensible_record?(v) })
       annotate_discriminator_enum!(params, selector)
       params
     end
@@ -1180,12 +1324,12 @@ module BiDiGenerate
 
     # Merge variant field lists into one flat param superset. A field is required only
     # when every variant declares it required; variant-specific fields become optional.
-    def merged_params(variant_fields)
+    def merged_params(variant_fields, extensible)
       all_fields = variant_fields.flatten
       all_fields.map { |f| f['wire'] }.uniq.map do |wire|
         field = all_fields.find { |f| f['wire'] == wire }
         required = variant_fields.all? { |fields| fields.any? { |f| f['wire'] == wire && f['required'] } }
-        Param.new(ruby_name: BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name'])),
+        Param.new(ruby_name: field_name(field, extensible),
                   wire_name: wire, required: required, rbs: rbs_type(field['type']))
       end
     end

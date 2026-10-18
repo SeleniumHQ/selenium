@@ -13,9 +13,10 @@ git show HEAD:common/repositories.bzl > "$old"
 
 bazel run //scripts:pinned_browsers
 
-# Sorted-unique major versions of one family in a repositories.bzl; $1 = file, $2 = ERE matching
-# "<download-url marker><major digits>".
-majors_for() { grep -oE "$2" "$1" | grep -oE '[0-9]+$' | sort -un; }
+# Stable major version of one family in a repositories.bzl; $1 = file, $2 = ERE matching
+# "<download-url marker><major digits>". Stable is the lowest pinned major (beta runs ahead), so a
+# beta-only bump never counts.
+stable_major_for() { grep -oE "$2" "$1" | grep -oE '[0-9]+$' | sort -un | head -n1; }
 
 # Only Chrome and Firefox majors warrant the full matrix: they ship ~monthly and are the likeliest
 # to break the bindings. Edge tracks Chromium; driver-only and build/patch bumps do not count. Each
@@ -25,10 +26,9 @@ declare -A families=(
   [firefox]='(firefox/releases/|Firefox%20)[0-9]+'
 )
 
-# New stable Chrome is the lowest pinned major (beta runs ahead). Tolerate a no-match (|| true) so a
-# marker/format change in repositories.bzl fails with a clear message, not a bare pipefail exit.
-chrome_majors=$(majors_for common/repositories.bzl "${families[chrome]}") || true
-chrome=${chrome_majors%%$'\n'*}
+# Tolerate a no-match (|| true) so a marker/format change in repositories.bzl fails with a clear
+# message, not a bare pipefail exit.
+chrome=$(stable_major_for common/repositories.bzl "${families[chrome]}") || true
 if [ -z "$chrome" ]; then
   echo "::error::Could not parse a stable Chrome major from common/repositories.bzl (pattern: ${families[chrome]})" >&2
   exit 1
@@ -55,7 +55,7 @@ fi
 
 major=false
 for pattern in "${families[@]}"; do
-  if [ "$(majors_for "$old" "$pattern")" != "$(majors_for common/repositories.bzl "$pattern")" ]; then
+  if [ "$(stable_major_for "$old" "$pattern")" != "$(stable_major_for common/repositories.bzl "$pattern")" ]; then
     major=true
     break
   fi

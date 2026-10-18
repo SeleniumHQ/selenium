@@ -28,8 +28,6 @@ module Selenium
 
         @additional_prefs: untyped
 
-        @extensions: untyped
-
         @log_file: untyped
 
         include ProfileHelper
@@ -44,10 +42,6 @@ module Selenium
 
         attr_reader log_file: untyped
 
-        attr_writer secure_ssl: untyped
-
-        attr_writer load_no_focus_lib: untyped
-
         def self.ini: () -> untyped
 
         def self.from_name: (untyped name) -> untyped
@@ -60,11 +54,7 @@ module Selenium
 
         def []=: (untyped key, untyped value) -> untyped
 
-        def port=: (untyped port) -> untyped
-
         def log_file=: (untyped file) -> untyped
-
-        def add_extension: (untyped path, ?untyped name) -> untyped
 
         def proxy=: (untyped proxy) -> untyped
 
@@ -74,15 +64,11 @@ module Selenium
 
         def set_manual_proxy_preference: (untyped key, untyped value) -> untyped?
 
-        def install_extensions: (untyped directory) -> untyped
-
         def read_model_prefs: () -> (Hash[untyped, untyped] | untyped)
 
         def delete_extensions_cache: (untyped directory) -> untyped
 
         def delete_lock_files: (untyped directory) -> untyped
-
-        def extension_name_for: (untyped path) -> untyped
 
         def update_user_prefs_in: (untyped directory) -> untyped
 

@@ -90,6 +90,15 @@ module Selenium
 <%- mod.vendor_modules.each do |vendor_module| -%>
 
           class <%= vendor_module.name %> < ::Selenium::WebDriver::BiDi::Protocol::<%= mod.ruby_class %>
+<%- vendor_module.types.each do |type| -%>
+            class <%= type.ruby_name %> < ::Selenium::WebDriver::BiDi::Serialization::Record
+<%- type.rbs_readers.each do |reader| -%>
+              attr_reader <%= reader %>
+<%- end -%>
+              def self.new: (<%= type.rbs_new_args %>) -> instance
+            end
+
+<%- end -%>
 <%- vendor_module.commands.each do |cmd| -%>
             def <%= cmd.method_name %>: <%= cmd.rbs_signature %>
 <%- end -%>

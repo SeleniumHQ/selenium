@@ -32,6 +32,10 @@ module Selenium
 
         def uninstall_addon: (untyped id) -> untyped
 
+        def install_web_extension: (String path, ?allow_private_browsing: bool?, ?permanent: bool?) -> Selenium::WebDriver::WebExtension
+
+        def uninstall_web_extension: (String extension_id) -> void
+
         def full_screenshot: () -> untyped
 
         def context=: (untyped context) -> untyped
