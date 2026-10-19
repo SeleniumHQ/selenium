@@ -202,6 +202,48 @@ class BiDiUnsubscribeTest {
     assertThat(connection.isEventSubscribed(REALM_CREATED)).isFalse();
   }
 
+  @Test
+  void handlerForOneConnectionWaitsForAChangeInProgressOnAnother() throws Exception {
+    Connection handling = connect((id, socketListener) -> socketListener.onText(success(id)));
+    WebSocket.Listener handlingSocket = listener;
+    AtomicReference<Thread> handler = new AtomicReference<>();
+    CountDownLatch unsubscribing = new CountDownLatch(1);
+    Connection changing =
+        connect(
+            (id, socketListener) -> {
+              unsubscribing.countDown();
+              awaitBlocked(awaitSet(handler));
+              socketListener.onText(success(id));
+            });
+    changing.addListener("sub-2", REALM_CREATED, event -> {});
+    BiDi otherSession = new BiDi(changing, Duration.ofSeconds(5));
+    CountDownLatch handlerFinished = new CountDownLatch(1);
+    AtomicReference<Throwable> handlerFailure = new AtomicReference<>();
+    handling.addListener(
+        "sub-1",
+        REALM_CREATED,
+        event -> {
+          try {
+            assertThat(unsubscribing.await(5, TimeUnit.SECONDS)).isTrue();
+            handler.set(Thread.currentThread());
+            otherSession.clearListener(REALM_DESTROYED);
+          } catch (Throwable e) {
+            handlerFailure.set(e);
+          } finally {
+            handlerFinished.countDown();
+          }
+        });
+    Thread clearing = new Thread(() -> otherSession.clearListener(REALM_CREATED));
+    clearing.start();
+
+    handlingSocket.onText(REALM_CREATED_FRAME);
+
+    assertThat(handlerFinished.await(5, TimeUnit.SECONDS)).isTrue();
+    assertThat(handlerFailure.get()).isNull();
+    clearing.join(5000);
+    assertThat(changing.isEventSubscribed(REALM_CREATED)).isFalse();
+  }
+
   // A clear, remove or close that overlaps a rejected unsubscribe must not be undone when the
   // rejected call puts its callbacks back
   private void assertCallDuringRejectedUnsubscribeIsHonoured(Consumer<BiDi> overlappingCall)

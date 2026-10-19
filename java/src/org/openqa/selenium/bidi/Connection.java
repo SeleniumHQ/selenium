@@ -69,10 +69,10 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private static final ThreadLocal<Boolean> DISPATCHING_EVENTS =
-      ThreadLocal.withInitial(() -> false);
   private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
+  // Per connection, because a callback for one session holds only that connection's callbacks
+  private final ThreadLocal<Boolean> dispatchingEvents = ThreadLocal.withInitial(() -> false);
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<String, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
@@ -274,7 +274,7 @@ public class Connection implements Closeable {
 
   /** Whether the current thread is running event callbacks, and so holds them against changes. */
   boolean isDispatchingEventsOnCurrentThread() {
-    return DISPATCHING_EVENTS.get();
+    return dispatchingEvents.get();
   }
 
   public boolean isSubscribed(String id) {
@@ -401,8 +401,8 @@ public class Connection implements Closeable {
     if (!lock.tryLock()) {
       lock.lock();
     }
-    boolean wasDispatching = DISPATCHING_EVENTS.get();
-    DISPATCHING_EVENTS.set(true);
+    boolean wasDispatching = dispatchingEvents.get();
+    dispatchingEvents.set(true);
     try {
       eventCallbacks.entrySet().stream()
           .filter(
@@ -437,7 +437,10 @@ public class Connection implements Closeable {
                 }
               });
     } finally {
-      DISPATCHING_EVENTS.set(wasDispatching);
+      // Removed rather than reset so pooled threads keep no entry for closed connections
+      if (!wasDispatching) {
+        dispatchingEvents.remove();
+      }
       lock.unlock();
     }
   }
