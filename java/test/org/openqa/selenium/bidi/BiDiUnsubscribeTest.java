@@ -44,6 +44,8 @@ class BiDiUnsubscribeTest {
   private static final Json JSON = new Json();
   private static final Event<Object> REALM_CREATED =
       new Event<>("script.realmCreated", params -> params);
+  private static final Event<Object> REALM_DESTROYED =
+      new Event<>("script.realmDestroyed", params -> params);
   private static final String REALM_CREATED_FRAME =
       "{\"type\": \"event\", \"method\": \"script.realmCreated\", \"params\": {\"realm\": \"r1\"}}";
 
@@ -129,7 +131,7 @@ class BiDiUnsubscribeTest {
               } else if ("session.unsubscribe".equals(frame.get("method"))) {
                 unsubscribing.set(true);
                 adding.set(
-                    startAndGiveTimeToRun(() -> bidi.get().addListener(REALM_CREATED, e -> {})));
+                    startAndAwaitBlocked(() -> bidi.get().addListener(REALM_CREATED, e -> {})));
                 unsubscribing.set(false);
                 socketListener.onText(success(id));
               }
@@ -142,6 +144,62 @@ class BiDiUnsubscribeTest {
 
     assertThat(subscribedDuringUnsubscribe).isFalse();
     assertThat(connection.isSubscribed("sub-2")).isTrue();
+  }
+
+  @Test
+  void handlerCanClearAnUnsubscribedEventWhenNoOtherChangeIsInProgress() throws Exception {
+    Connection connection = connect((id, socketListener) -> socketListener.onText(success(id)));
+    BiDi bidi = new BiDi(connection, Duration.ofSeconds(5));
+    CountDownLatch cleared = new CountDownLatch(1);
+    connection.addListener(
+        "sub-1",
+        REALM_CREATED,
+        event -> {
+          bidi.clearListener(REALM_DESTROYED);
+          cleared.countDown();
+        });
+
+    listener.onText(REALM_CREATED_FRAME);
+
+    assertThat(cleared.await(5, TimeUnit.SECONDS)).isTrue();
+  }
+
+  @Test
+  void handlerChangingSubscriptionsDuringAConcurrentClearFailsInsteadOfDeadlocking()
+      throws Exception {
+    Connection connection = connect((id, socketListener) -> socketListener.onText(success(id)));
+    BiDi bidi = new BiDi(connection, Duration.ofSeconds(5));
+    CountDownLatch handlerRunning = new CountDownLatch(1);
+    CountDownLatch handlerFinished = new CountDownLatch(1);
+    AtomicReference<Thread> clearing = new AtomicReference<>();
+    AtomicReference<Throwable> handlerFailure = new AtomicReference<>();
+    connection.addListener(
+        "sub-1",
+        REALM_CREATED,
+        event -> {
+          handlerRunning.countDown();
+          // The concurrent clear now holds the subscription lock and waits for this handler to
+          // release the callbacks it is being run from
+          awaitBlocked(awaitSet(clearing));
+          try {
+            bidi.clearListener(REALM_DESTROYED);
+          } catch (RuntimeException e) {
+            handlerFailure.set(e);
+          } finally {
+            handlerFinished.countDown();
+          }
+        });
+
+    listener.onText(REALM_CREATED_FRAME);
+    assertThat(handlerRunning.await(5, TimeUnit.SECONDS)).isTrue();
+    Thread thread = new Thread(() -> bidi.clearListener(REALM_CREATED));
+    thread.start();
+    clearing.set(thread);
+
+    assertThat(handlerFinished.await(5, TimeUnit.SECONDS)).isTrue();
+    assertThat(handlerFailure.get()).isInstanceOf(BiDiException.class);
+    thread.join(5000);
+    assertThat(connection.isEventSubscribed(REALM_CREATED)).isFalse();
   }
 
   // A clear, remove or close that overlaps a rejected unsubscribe must not be undone when the
@@ -158,7 +216,7 @@ class BiDiUnsubscribeTest {
                 socketListener.onText(success(id));
                 return;
               }
-              overlapping.set(startAndGiveTimeToRun(() -> overlappingCall.accept(bidi.get())));
+              overlapping.set(startAndAwaitBlocked(() -> overlappingCall.accept(bidi.get())));
               socketListener.onText(error(id));
             });
     connection.addListener("sub-1", REALM_CREATED, event -> {});
@@ -218,17 +276,38 @@ class BiDiUnsubscribeTest {
     }
   }
 
-  // Runs a call that should be held back by the in-flight unsubscribe, giving it time to wrongly
-  // finish first
-  private static Thread startAndGiveTimeToRun(Runnable call) {
+  // Runs a call that should be held back by the in-flight unsubscribe, returning once it is
+  // waiting, or once it has wrongly finished first
+  private static Thread startAndAwaitBlocked(Runnable call) {
     Thread thread = new Thread(call);
     thread.start();
-    try {
-      thread.join(500);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    awaitBlocked(thread);
     return thread;
+  }
+
+  private static void awaitBlocked(Thread thread) {
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+    while (System.nanoTime() < deadline) {
+      Thread.State state = thread.getState();
+      if (state == Thread.State.WAITING
+          || state == Thread.State.BLOCKED
+          || state == Thread.State.TERMINATED) {
+        return;
+      }
+      Thread.onSpinWait();
+    }
+    throw new AssertionError(thread + " neither blocked nor finished: " + thread.getState());
+  }
+
+  private static <T> T awaitSet(AtomicReference<T> reference) {
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+    while (reference.get() == null) {
+      if (System.nanoTime() > deadline) {
+        throw new AssertionError("Timed out waiting for a value");
+      }
+      Thread.onSpinWait();
+    }
+    return reference.get();
   }
 
   private static String subscribed(long id, String subscription) {

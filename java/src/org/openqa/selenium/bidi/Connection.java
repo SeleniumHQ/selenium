@@ -69,6 +69,8 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
+  private static final ThreadLocal<Boolean> DISPATCHING_EVENTS =
+      ThreadLocal.withInitial(() -> false);
   private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
@@ -270,6 +272,11 @@ public class Connection implements Closeable {
     }
   }
 
+  /** Whether the current thread is running event callbacks, and so holds them against changes. */
+  boolean isDispatchingEventsOnCurrentThread() {
+    return DISPATCHING_EVENTS.get();
+  }
+
   public boolean isSubscribed(String id) {
     Lock lock = callbacksLock.readLock();
     lock.lock();
@@ -394,6 +401,8 @@ public class Connection implements Closeable {
     if (!lock.tryLock()) {
       lock.lock();
     }
+    boolean wasDispatching = DISPATCHING_EVENTS.get();
+    DISPATCHING_EVENTS.set(true);
     try {
       eventCallbacks.entrySet().stream()
           .filter(
@@ -428,6 +437,7 @@ public class Connection implements Closeable {
                 }
               });
     } finally {
+      DISPATCHING_EVENTS.set(wasDispatching);
       lock.unlock();
     }
   }

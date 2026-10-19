@@ -199,7 +199,17 @@ public class BiDi implements Closeable {
   }
 
   private <T> T whileHoldingSubscriptionLock(Supplier<T> change) {
-    subscriptionLock.lock();
+    if (connection.isDispatchingEventsOnCurrentThread()) {
+      // The change holding the lock cannot finish until this event handler returns and releases
+      // the callbacks, so waiting for it here would never end
+      if (!subscriptionLock.tryLock()) {
+        throw new BiDiException(
+            "Cannot change BiDi subscriptions from an event handler while another subscription"
+                + " change is in progress");
+      }
+    } else {
+      subscriptionLock.lock();
+    }
     try {
       return change.get();
     } finally {
