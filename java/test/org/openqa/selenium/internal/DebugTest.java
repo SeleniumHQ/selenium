@@ -22,9 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.ErrorManager;
 import java.util.logging.Filter;
@@ -54,32 +60,71 @@ class DebugTest {
   private String oldDebugProperty;
   private String oldVerboseProperty;
   private Level oldLoggerLevel;
+  private boolean oldUseParentHandlers;
+  private List<Handler> handlersBefore;
 
   @SystemStub private EnvironmentVariables environment;
 
   @BeforeEach
-  void storeSystemProperties() {
+  void storeLoggingState() {
     oldDebugProperty = System.getProperty("selenium.debug");
     oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
-    oldLoggerLevel = seleniumLogger().getLevel();
     System.clearProperty("selenium.debug");
     System.clearProperty("selenium.webdriver.verbose");
+    environment.set("SE_DEBUG", "false");
+    Debug.resetForTesting();
+    oldLoggerLevel = seleniumLogger().getLevel();
+    oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
+    handlersBefore = List.of(seleniumLogger().getHandlers());
   }
 
   @AfterEach
-  void restoreSystemProperties() {
-    if (oldDebugProperty != null) {
-      System.setProperty("selenium.debug", oldDebugProperty);
-    } else {
-      System.clearProperty("selenium.debug");
-    }
-    if (oldVerboseProperty != null) {
-      System.setProperty("selenium.webdriver.verbose", oldVerboseProperty);
-    } else {
-      System.clearProperty("selenium.webdriver.verbose");
-    }
-    Debug.configureLogger();
+  void restoreLoggingState() {
+    restoreProperty("selenium.debug", oldDebugProperty);
+    restoreProperty("selenium.webdriver.verbose", oldVerboseProperty);
+    Debug.resetForTesting();
     seleniumLogger().setLevel(oldLoggerLevel);
+    seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
+  }
+
+  private static void restoreProperty(String name, String value) {
+    if (value != null) {
+      System.setProperty(name, value);
+    } else {
+      System.clearProperty(name);
+    }
+  }
+
+  /** Returns the handlers added to the Selenium logger since the test started. */
+  private List<Handler> addedHandlers() {
+    List<Handler> added = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+    added.removeAll(handlersBefore);
+    return added;
+  }
+
+  /**
+   * Runs {@code configure}, then logs {@code message} at {@code level}, and returns what was
+   * written to stderr. Both run while stderr is captured, because {@link ConsoleHandler} binds
+   * {@code System.err} when it is created.
+   */
+  private static String captureStderr(Runnable configure, Level level, String message) {
+    PrintStream originalErr = System.err;
+    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+    try {
+      System.setErr(new PrintStream(capturedErr, true, StandardCharsets.UTF_8));
+      configure.run();
+      seleniumLogger().log(level, message);
+      for (Handler handler : seleniumLogger().getHandlers()) {
+        handler.flush();
+      }
+    } finally {
+      System.setErr(originalErr);
+    }
+    return capturedErr.toString(StandardCharsets.UTF_8);
+  }
+
+  private static String logAndCaptureStderr(Level level, String message) {
+    return captureStderr(Debug::configureLogger, level, message);
   }
 
   @Test
@@ -92,11 +137,55 @@ class DebugTest {
   }
 
   @Test
+  void isDebuggingHonoursTheLegacyVerboseProperty() {
+    System.setProperty("selenium.webdriver.verbose", "true");
+
+    assertThat(Debug.isDebugging()).isTrue();
+  }
+
+  @Test
+  void isDebuggingIgnoresValuesOtherThanTrue() {
+    System.setProperty("selenium.debug", "yes");
+    System.setProperty("selenium.webdriver.verbose", "1");
+
+    assertThat(Debug.isDebugging()).isFalse();
+  }
+
+  @Test
+  void isDebugAllReflectsTheSeDebugEnvironmentVariable() {
+    assertThat(Debug.isDebugAll()).isFalse();
+
+    environment.set("SE_DEBUG", "true");
+
+    assertThat(Debug.isDebugAll()).isTrue();
+  }
+
+  @Test
   @SuppressWarnings({"deprecation", "removal"})
   void getDebugLogLevelHonoursTheLegacyVerboseProperty() {
     System.setProperty("selenium.webdriver.verbose", "true");
 
     assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.INFO);
+  }
+
+  @Test
+  @SuppressWarnings({"deprecation", "removal"})
+  void getDebugLogLevelStillReportsInfoWhileDeprecated() {
+    System.setProperty("selenium.debug", "true");
+    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.INFO);
+
+    System.clearProperty("selenium.debug");
+    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.FINE);
+  }
+
+  @Test
+  void configureLoggerDoesNothingWhenDebuggingIsOff() {
+    Level levelBefore = seleniumLogger().getLevel();
+
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(levelBefore);
+    assertThat(addedHandlers()).isEmpty();
   }
 
   @Test
@@ -106,58 +195,106 @@ class DebugTest {
     Debug.configureLogger();
 
     assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    assertThat(addedHandlers()).singleElement().extracting(Handler::getLevel).isEqualTo(Level.FINE);
   }
 
   @Test
-  void configureLoggerDoesNotClobberALevelChangedWhileDebuggingWasOn() {
-    System.setProperty("selenium.debug", "true");
+  void configureLoggerHonoursTheLegacyVerboseProperty() {
+    System.setProperty("selenium.webdriver.verbose", "true");
+
     Debug.configureLogger();
+
     assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
-
-    // Something other than Debug changes the level while debugging is still on -- e.g. the user's
-    // own logging config.
-    seleniumLogger().setLevel(Level.WARNING);
-
-    System.clearProperty("selenium.debug");
-    Debug.configureLogger();
-
-    // The externally-set WARNING must survive. Debug must not clobber it with the level that was
-    // ambient before IT turned debugging on -- that snapshot is stale the moment anything else
-    // changes the level in between.
-    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.WARNING);
+    assertThat(addedHandlers()).hasSize(1);
   }
 
   @Test
-  void configureLoggerRestoresPreDebugLevelAndRemovesHandlerWhenTurnedOff() {
-    Level preDebugLevel = seleniumLogger().getLevel();
-    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+  void seDebugConfiguresAFineHandler() {
+    environment.set("SE_DEBUG", "true");
+
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+    assertThat(addedHandlers()).singleElement().extracting(Handler::getLevel).isEqualTo(Level.FINE);
+  }
+
+  @Test
+  void configureLoggerPicksUpAPropertySetAfterAnEarlierCall() {
+    Debug.configureLogger();
+    assertThat(addedHandlers()).isEmpty();
 
     System.setProperty("selenium.debug", "true");
     Debug.configureLogger();
 
-    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
-    handlersWhileDebugging.removeAll(handlersBeforeDebug);
-    assertThat(handlersWhileDebugging).hasSize(1);
-    Handler installedHandler = handlersWhileDebugging.get(0);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    assertThat(addedHandlers()).hasSize(1);
+  }
 
-    // No external override happens in between -- this is the plain turn-on/turn-off round trip.
+  @Test
+  void debugLoggingStaysOnAfterThePropertyIsCleared() {
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+    List<Handler> handlersWhileDebugging = addedHandlers();
+
     System.clearProperty("selenium.debug");
     Debug.configureLogger();
 
-    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
-    assertThat(seleniumLogger().getHandlers()).doesNotContain(installedHandler);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    assertThat(addedHandlers()).isEqualTo(handlersWhileDebugging).hasSize(1);
+  }
+
+  @Test
+  void debugLoggingStaysOnAfterSeDebugIsCleared() {
+    environment.set("SE_DEBUG", "true");
+    Debug.configureLogger();
+
+    environment.set("SE_DEBUG", "false");
+    seleniumLogger().setLevel(Level.INFO);
+    Debug.configureLogger();
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    assertThat(addedHandlers()).hasSize(1);
   }
 
   @Test
   void configureLoggerIsIdempotent() {
-    int before = seleniumLogger().getHandlers().length;
     System.setProperty("selenium.debug", "true");
 
     for (int i = 0; i < 5; i++) {
       Debug.configureLogger();
     }
 
-    assertThat(seleniumLogger().getHandlers().length - before).isEqualTo(1);
+    assertThat(addedHandlers()).hasSize(1);
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+  }
+
+  @Test
+  void concurrentConfigureLoggerCallsInstallExactlyOneHandler() throws Exception {
+    System.setProperty("selenium.debug", "true");
+
+    int threads = 16;
+    ExecutorService pool = Executors.newFixedThreadPool(threads);
+    CountDownLatch start = new CountDownLatch(1);
+    try {
+      List<Future<?>> calls = new ArrayList<>();
+      for (int i = 0; i < threads; i++) {
+        calls.add(
+            pool.submit(
+                () -> {
+                  start.await();
+                  Debug.configureLogger();
+                  return null;
+                }));
+      }
+      start.countDown();
+      for (Future<?> call : calls) {
+        call.get(10, TimeUnit.SECONDS);
+      }
+    } finally {
+      pool.shutdownNow();
+    }
+
+    assertThat(addedHandlers()).hasSize(1);
   }
 
   @Test
@@ -175,15 +312,8 @@ class DebugTest {
     try {
       System.setProperty("selenium.debug", "true");
       Debug.configureLogger();
-      assertThat(seleniumLogger().getHandlers()).contains(userHandler);
-      assertThat(userHandler.getLevel()).isEqualTo(Level.WARNING);
-      assertThat(userHandler.getFilter()).isSameAs(userFilter);
-      assertThat(userHandler.getFormatter()).isSameAs(userFormatter);
-      assertThat(userHandler.getEncoding()).isEqualTo("UTF-8");
-      assertThat(userHandler.getErrorManager()).isSameAs(userErrorManager);
-
-      System.clearProperty("selenium.debug");
       Debug.configureLogger();
+
       assertThat(seleniumLogger().getHandlers()).contains(userHandler);
       assertThat(userHandler.getLevel()).isEqualTo(Level.WARNING);
       assertThat(userHandler.getFilter()).isSameAs(userFilter);
@@ -193,170 +323,6 @@ class DebugTest {
     } finally {
       seleniumLogger().removeHandler(userHandler);
     }
-  }
-
-  @Test
-  void infoRecordsAreNotDuplicatedWhenDebuggingIsEnabled() {
-    List<LogRecord> userHandlerRecords = new ArrayList<>();
-    Handler userHandler =
-        new Handler() {
-          @Override
-          public void publish(LogRecord record) {
-            userHandlerRecords.add(record);
-          }
-
-          @Override
-          public void flush() {}
-
-          @Override
-          public void close() {}
-        };
-    // Simulates a handler the caller already has attached directly to this logger (e.g. their
-    // own handler at INFO) that already prints INFO-and-above records on its own.
-    userHandler.setLevel(Level.INFO);
-    seleniumLogger().addHandler(userHandler);
-
-    boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
-    // Isolate this check to handlers attached directly to org.openqa.selenium. Propagation to the
-    // JVM's own root logger handler is a separate, legitimate print channel this test isn't
-    // about, and it would otherwise be indistinguishable from a real duplicate here.
-    seleniumLogger().setUseParentHandlers(false);
-
-    PrintStream originalErr = System.err;
-    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
-    String marker = "duplicate-check-" + UUID.randomUUID();
-    try {
-      System.setErr(new PrintStream(capturedErr));
-      System.setProperty("selenium.debug", "true");
-      Debug.configureLogger();
-
-      seleniumLogger().log(Level.INFO, marker);
-      for (Handler handler : seleniumLogger().getHandlers()) {
-        handler.flush();
-      }
-    } finally {
-      System.setErr(originalErr);
-      seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
-      seleniumLogger().removeHandler(userHandler);
-    }
-
-    // The caller's own handler must still see the record: Selenium never suppresses records for
-    // handlers it doesn't own.
-    assertThat(userHandlerRecords).extracting(LogRecord::getMessage).containsExactly(marker);
-    // Selenium's own handler must not ALSO print it to stderr -- otherwise the exact same line
-    // the caller's handler just printed would appear a second time, straight from Selenium's own
-    // console handler.
-    assertThat(capturedErr.toString()).doesNotContain(marker);
-  }
-
-  @Test
-  void fineRecordsReachTheSeleniumOwnedHandler() {
-    boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
-    PrintStream originalErr = System.err;
-    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
-    String marker = "fine-check-" + UUID.randomUUID();
-    try {
-      seleniumLogger().setUseParentHandlers(false);
-      System.setErr(new PrintStream(capturedErr));
-      System.setProperty("selenium.debug", "true");
-      Debug.configureLogger();
-
-      seleniumLogger().log(Level.FINE, marker);
-      for (Handler handler : seleniumLogger().getHandlers()) {
-        handler.flush();
-      }
-    } finally {
-      System.setErr(originalErr);
-      seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
-    }
-
-    assertThat(capturedErr.toString()).containsOnlyOnce(marker);
-  }
-
-  @Test
-  void seleniumOwnedHandlerRepairsToAMoreVerboseLevel() {
-    environment.set("SE_DEBUG", "false");
-    System.clearProperty("selenium.debug");
-    Debug.configureLogger();
-    List<Handler> oldHandlers = List.of(seleniumLogger().getHandlers());
-    oldHandlers.forEach(seleniumLogger()::removeHandler);
-    boolean oldUseParentHandlers = seleniumLogger().getUseParentHandlers();
-    PrintStream originalErr = System.err;
-    ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
-    String marker = "finer-check-" + UUID.randomUUID();
-    try {
-      seleniumLogger().setUseParentHandlers(false);
-      System.setErr(new PrintStream(capturedErr));
-      System.setProperty("selenium.debug", "true");
-      Debug.configureLogger();
-
-      seleniumLogger().setLevel(Level.FINER);
-      Debug.configureLogger();
-
-      seleniumLogger().log(Level.FINER, marker);
-      for (Handler handler : seleniumLogger().getHandlers()) {
-        handler.flush();
-      }
-    } finally {
-      System.clearProperty("selenium.debug");
-      Debug.configureLogger();
-      oldHandlers.forEach(seleniumLogger()::addHandler);
-      System.setErr(originalErr);
-      seleniumLogger().setUseParentHandlers(oldUseParentHandlers);
-    }
-
-    assertThat(capturedErr.toString()).containsOnlyOnce(marker);
-  }
-
-  @Test
-  void configureLoggerDoesNotRestoreALevelItNeverChanged() {
-    seleniumLogger().setLevel(Level.FINER);
-    System.setProperty("selenium.debug", "true");
-    Debug.configureLogger(); // debug on, level untouched (already more verbose than FINE)
-
-    // Something else deliberately drops verbosity to FINE while debugging is on.
-    seleniumLogger().setLevel(Level.FINE);
-
-    System.clearProperty("selenium.debug");
-    Debug.configureLogger();
-
-    // Debug never changed the level (it was already more verbose when debug turned on), so
-    // turning debug off must not "restore" a pre-debug snapshot it never took either.
-    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
-  }
-
-  @Test
-  @SuppressWarnings({"deprecation", "removal"})
-  void getDebugLogLevelStillReportsInfoWhileDeprecated() {
-    System.setProperty("selenium.debug", "true");
-    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.INFO);
-
-    System.clearProperty("selenium.debug");
-    assertThat(Debug.getDebugLogLevel()).isEqualTo(Level.FINE);
-  }
-
-  @Test
-  void configureLoggerRepairRestoresHandlerAndFineLoggabilityWithoutReplacingSnapshot() {
-    Level preDebugLevel = seleniumLogger().getLevel();
-    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
-
-    System.setProperty("selenium.debug", "true");
-    Debug.configureLogger();
-
-    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
-    handlersWhileDebugging.removeAll(handlersBeforeDebug);
-    seleniumLogger().removeHandler(handlersWhileDebugging.get(0));
-    seleniumLogger().setLevel(Level.INFO);
-
-    Debug.configureLogger();
-
-    assertThat(Debug.isHandlerCurrentlyInstalled()).isTrue();
-    assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
-
-    System.clearProperty("selenium.debug");
-    Debug.configureLogger();
-
-    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
   }
 
   @Test
@@ -373,26 +339,55 @@ class DebugTest {
   }
 
   @Test
-  void seDebugConfiguresFineHandlerAndRestoresLoggerLevel() {
-    environment.set("SE_DEBUG", "false");
-    Debug.configureLogger();
-    Level preDebugLevel = seleniumLogger().getLevel();
-    List<Handler> handlersBeforeDebug = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
+  void fineRecordsReachTheSeleniumOwnedHandler() {
+    seleniumLogger().setUseParentHandlers(false);
+    System.setProperty("selenium.debug", "true");
+    String marker = "fine-check-" + UUID.randomUUID();
 
-    environment.set("SE_DEBUG", "true");
-    Debug.configureLogger();
+    assertThat(logAndCaptureStderr(Level.FINE, marker)).containsOnlyOnce(marker);
+  }
 
-    List<Handler> handlersWhileDebugging = new ArrayList<>(List.of(seleniumLogger().getHandlers()));
-    handlersWhileDebugging.removeAll(handlersBeforeDebug);
-    assertThat(handlersWhileDebugging)
-        .singleElement()
-        .extracting(Handler::getLevel)
-        .isEqualTo(Level.FINE);
+  @Test
+  void infoRecordsAreNotDuplicatedWhenDebuggingIsEnabled() {
+    List<LogRecord> userHandlerRecords = new ArrayList<>();
+    Handler userHandler = recordingHandler(userHandlerRecords, Level.INFO);
+    seleniumLogger().addHandler(userHandler);
+    // Only look at handlers attached directly to org.openqa.selenium; the root logger's console
+    // handler is a separate, legitimate print channel.
+    seleniumLogger().setUseParentHandlers(false);
+    System.setProperty("selenium.debug", "true");
+    String marker = "duplicate-check-" + UUID.randomUUID();
+    String stderr;
+    try {
+      stderr = logAndCaptureStderr(Level.INFO, marker);
+    } finally {
+      seleniumLogger().removeHandler(userHandler);
+    }
 
-    environment.set("SE_DEBUG", "false");
-    Debug.configureLogger();
+    // The user's handler still gets the record; Selenium's handler does not print it again.
+    assertThat(userHandlerRecords).extracting(LogRecord::getMessage).containsExactly(marker);
+    assertThat(stderr).doesNotContain(marker);
+  }
 
-    assertThat(seleniumLogger().getLevel()).isEqualTo(preDebugLevel);
+  @Test
+  void fineRecordsAlsoReachAUserHandlerThatAcceptsFine() {
+    // Documented in configureLogger(): a user FINE handler sees FINE records in addition to the
+    // copy that Selenium's own handler prints.
+    List<LogRecord> userHandlerRecords = new ArrayList<>();
+    Handler userHandler = recordingHandler(userHandlerRecords, Level.FINE);
+    seleniumLogger().addHandler(userHandler);
+    seleniumLogger().setUseParentHandlers(false);
+    System.setProperty("selenium.debug", "true");
+    String marker = "user-fine-check-" + UUID.randomUUID();
+    String stderr;
+    try {
+      stderr = logAndCaptureStderr(Level.FINE, marker);
+    } finally {
+      seleniumLogger().removeHandler(userHandler);
+    }
+
+    assertThat(userHandlerRecords).extracting(LogRecord::getMessage).containsExactly(marker);
+    assertThat(stderr).containsOnlyOnce(marker);
   }
 
   @Test
@@ -405,9 +400,9 @@ class DebugTest {
 
       assertThat(seleniumLogger().getLevel()).isEqualTo(level);
       assertThat(seleniumLogger().isLoggable(level)).isTrue();
+      assertThat(addedHandlers()).singleElement().extracting(Handler::getLevel).isEqualTo(level);
 
-      System.clearProperty("selenium.debug");
-      Debug.configureLogger();
+      Debug.resetForTesting();
     }
   }
 
@@ -426,8 +421,7 @@ class DebugTest {
         assertThat(seleniumLogger().getLevel()).isNull();
         assertThat(seleniumLogger().isLoggable(level)).isTrue();
 
-        System.clearProperty("selenium.debug");
-        Debug.configureLogger();
+        Debug.resetForTesting();
       }
     } finally {
       parentLogger.setLevel(oldParentLevel);
@@ -435,29 +429,55 @@ class DebugTest {
   }
 
   @Test
-  void configureLoggerRestoresMoreVerboseLevelAfterLateRepair() {
-    Logger parentLogger = Logger.getLogger("org.openqa");
-    Level oldParentLevel = parentLogger.getLevel();
-    parentLogger.setLevel(Level.FINER);
-    try {
-      for (boolean inherited : List.of(false, true)) {
-        seleniumLogger().setLevel(inherited ? null : Level.FINER);
-        System.setProperty("selenium.debug", "true");
-        Debug.configureLogger();
+  void configureLoggerRepairsAnExternallyRemovedHandlerAndLevel() {
+    System.setProperty("selenium.debug", "true");
+    Debug.configureLogger();
+    Handler original = addedHandlers().get(0);
 
-        seleniumLogger().setLevel(Level.INFO);
-        Debug.configureLogger();
+    seleniumLogger().removeHandler(original);
+    seleniumLogger().setLevel(Level.INFO);
+    Debug.configureLogger();
 
-        assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+    assertThat(addedHandlers()).singleElement().isNotSameAs(original);
+    assertThat(seleniumLogger().isLoggable(Level.FINE)).isTrue();
+  }
 
-        System.clearProperty("selenium.debug");
-        Debug.configureLogger();
+  @Test
+  void seleniumOwnedHandlerFollowsTheLoggerToAMoreVerboseLevel() {
+    seleniumLogger().setUseParentHandlers(false);
+    System.setProperty("selenium.debug", "true");
+    String marker = "finer-check-" + UUID.randomUUID();
 
-        assertThat(seleniumLogger().getLevel()).isEqualTo(inherited ? null : Level.FINER);
-        assertThat(seleniumLogger().isLoggable(Level.FINER)).isTrue();
-      }
-    } finally {
-      parentLogger.setLevel(oldParentLevel);
-    }
+    String stderr =
+        captureStderr(
+            () -> {
+              Debug.configureLogger();
+              seleniumLogger().setLevel(Level.FINER);
+              Debug.configureLogger();
+            },
+            Level.FINER,
+            marker);
+
+    assertThat(stderr).containsOnlyOnce(marker);
+  }
+
+  private static Handler recordingHandler(List<LogRecord> records, Level level) {
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            if (isLoggable(record)) {
+              records.add(record);
+            }
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    handler.setLevel(level);
+    return handler;
   }
 }

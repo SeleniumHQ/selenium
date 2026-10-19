@@ -20,47 +20,77 @@ package org.openqa.selenium.internal;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 
-/** Used to provide information about whether Selenium is running under debug mode. */
+/**
+ * Decides whether Selenium's Java bindings run in debug mode and exposes Selenium's diagnostic log
+ * records when they do.
+ *
+ * <p>Debug mode is a convenience for troubleshooting. It is switched on by either of these:
+ *
+ * <ul>
+ *   <li>the {@code selenium.debug} system property, or the legacy {@code
+ *       selenium.webdriver.verbose} property, which only affect the Java bindings' {@code
+ *       java.util.logging} output; or
+ *   <li>the {@code SE_DEBUG} environment variable, the broader switch also used by Selenium Grid,
+ *       the other language bindings and the driver services.
+ * </ul>
+ *
+ * <p>Users who need fine-grained control should configure {@code java.util.logging} or an SLF4J
+ * bridge themselves instead.
+ */
 public class Debug {
 
   private static final AtomicBoolean DEBUG_WARNING_LOGGED = new AtomicBoolean(false);
   private static final Logger SELENIUM_LOGGER = Logger.getLogger("org.openqa.selenium");
+  private static final Object LOCK = new Object();
+  // Kept separate so either switch can move to a more verbose level without changing the other.
+  private static final Level SE_DEBUG_LEVEL = Level.FINE;
+  private static final Level DEBUG_PROPERTY_LEVEL = Level.FINE;
 
-  private static boolean loggerConfigured = false;
+  private static @Nullable Level enabledLevel;
   private static @Nullable Handler installedHandler;
-  private static @Nullable Level previousLevel;
-  private static @Nullable Level levelSetByDebug;
 
   private Debug() {
     // Utility class
   }
 
-  /** Returns whether either Selenium debug system property is currently enabled. */
+  /**
+   * Returns whether the {@code selenium.debug} or {@code selenium.webdriver.verbose} system
+   * property is currently set to {@code true}.
+   *
+   * <p>The properties are read on every call, so a value set after Selenium's classes are loaded is
+   * honoured.
+   *
+   * @return {@code true} if either debug system property is currently enabled
+   */
   public static boolean isDebugging() {
     return Boolean.getBoolean("selenium.debug") || Boolean.getBoolean("selenium.webdriver.verbose");
   }
 
   /**
-   * Returns the legacy level selected by the current debug system properties.
+   * Returns the level that legacy call sites use for their diagnostic messages.
    *
-   * @deprecated Log at a fixed severity and use {@link #configureLogger()} to expose debug output.
+   * @return {@link Level#INFO} while {@link #isDebugging()} is {@code true}, {@link Level#FINE}
+   *     otherwise
+   * @deprecated Log diagnostics at a fixed level such as {@link Level#FINE}. {@link
+   *     #configureLogger()} makes those records visible when debugging is enabled.
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {
     return isDebugging() ? Level.INFO : Level.FINE;
   }
 
-  static synchronized boolean isHandlerCurrentlyInstalled() {
-    return installedHandler != null
-        && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(installedHandler);
-  }
-
+  /**
+   * Returns whether the {@code SE_DEBUG} environment variable is set to {@code true}.
+   *
+   * <p>The first time this returns {@code true}, a warning is printed to {@code System.err}.
+   *
+   * @return {@code true} if {@code SE_DEBUG} is enabled
+   */
   public static boolean isDebugAll() {
     boolean everything = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
     if (everything && DEBUG_WARNING_LOGGED.compareAndSet(false, true)) {
@@ -70,6 +100,84 @@ public class Debug {
       System.err.println(warn);
     }
     return everything;
+  }
+
+  /**
+   * Shows Selenium's diagnostic log records on the console if debugging is enabled.
+   *
+   * <p>The switches are read on every call. Once one of them has been seen, debug logging stays on
+   * for the life of the JVM, even if the switch is turned off again later. While debugging is on,
+   * each call makes sure that:
+   *
+   * <ul>
+   *   <li>the {@code org.openqa.selenium} logger lets {@link Level#FINE} records through. A level
+   *       that is already more verbose, set on the logger or inherited from a parent, is left as it
+   *       is; and
+   *   <li>one Selenium-owned console handler, which prints records below {@link Level#INFO} to
+   *       {@code System.err}, is attached to that logger. It is re-attached if something removed
+   *       it.
+   * </ul>
+   *
+   * <p>Handlers added by the user, and the root logger, are never changed. Because Selenium's
+   * handler prints every record below {@code INFO}, a user who has also attached a handler that
+   * accepts {@code FINE} records will see those records twice.
+   *
+   * <p>Calling this method when debugging is disabled does nothing. It is safe to call repeatedly
+   * and from several threads.
+   *
+   * <pre>{@code
+   * System.setProperty("selenium.debug", "true");
+   * Debug.configureLogger(); // FINE records from org.openqa.selenium now reach System.err
+   * }</pre>
+   */
+  public static void configureLogger() {
+    synchronized (LOCK) {
+      Level requested = requestedLevel();
+      if (requested != null
+          && (enabledLevel == null || requested.intValue() < enabledLevel.intValue())) {
+        enabledLevel = requested;
+      }
+      if (enabledLevel != null) {
+        enable(enabledLevel);
+      }
+    }
+  }
+
+  /** Returns the level asked for by the debug switches, or {@code null} when none is enabled. */
+  private static @Nullable Level requestedLevel() {
+    // SE_DEBUG is checked first because it is the broader switch.
+    if (isDebugAll()) {
+      return SE_DEBUG_LEVEL;
+    }
+    if (isDebugging()) {
+      return DEBUG_PROPERTY_LEVEL;
+    }
+    return null;
+  }
+
+  private static void enable(Level minimum) {
+    Level level = effectiveLevel(SELENIUM_LOGGER);
+    if (level.intValue() > minimum.intValue()) {
+      SELENIUM_LOGGER.setLevel(minimum);
+      level = minimum;
+    }
+
+    Handler handler = installedHandler;
+    if (handler == null || !isAttached(handler)) {
+      if (handler != null) {
+        handler.close();
+      }
+      handler = new ConsoleHandler();
+      // Leave INFO and above to the existing handlers so those records are not printed twice.
+      handler.setFilter(record -> record.getLevel().intValue() < Level.INFO.intValue());
+      SELENIUM_LOGGER.addHandler(handler);
+      installedHandler = handler;
+    }
+    handler.setLevel(level);
+  }
+
+  private static boolean isAttached(Handler handler) {
+    return Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(handler);
   }
 
   private static Level effectiveLevel(Logger logger) {
@@ -82,66 +190,16 @@ public class Debug {
     return Level.INFO;
   }
 
-  /**
-   * Applies the current Selenium debug switches to the {@code org.openqa.selenium} logger. Selenium
-   * owns the added handler and restores only logger state that it changed. Repeated calls also
-   * repair an externally removed handler or a less-verbose logger level.
-   */
-  public static synchronized void configureLogger() {
-    boolean shouldDebug = isDebugAll() || isDebugging();
-    Handler currentHandler = installedHandler;
-    boolean handlerInstalled =
-        currentHandler != null
-            && Arrays.asList(SELENIUM_LOGGER.getHandlers()).contains(currentHandler);
-    Level currentEffectiveLevel = effectiveLevel(SELENIUM_LOGGER);
-    if (shouldDebug == loggerConfigured
-        && (!shouldDebug
-            || (handlerInstalled
-                && currentHandler != null
-                && currentEffectiveLevel.intValue() <= Level.FINE.intValue()
-                && currentHandler.getLevel().intValue() <= currentEffectiveLevel.intValue()))) {
-      return;
-    }
-
-    if (shouldDebug) {
-      if (!loggerConfigured) {
-        previousLevel = SELENIUM_LOGGER.getLevel();
-        levelSetByDebug = null;
-      }
-
-      if (currentEffectiveLevel.intValue() > Level.FINE.intValue()) {
-        SELENIUM_LOGGER.setLevel(Level.FINE);
-        levelSetByDebug = Level.FINE;
-        currentEffectiveLevel = Level.FINE;
-      }
-
-      if (handlerInstalled && currentHandler != null) {
-        currentHandler.setLevel(currentEffectiveLevel);
-      } else {
-        if (currentHandler != null) {
-          SELENIUM_LOGGER.removeHandler(currentHandler);
-          currentHandler.close();
-        }
-        Handler handler = new ConsoleHandler();
-        handler.setLevel(currentEffectiveLevel);
-        Filter belowInfo = record -> record.getLevel().intValue() < Level.INFO.intValue();
-        handler.setFilter(belowInfo);
-        SELENIUM_LOGGER.addHandler(handler);
-        installedHandler = handler;
-      }
-    } else {
-      if (currentHandler != null) {
-        SELENIUM_LOGGER.removeHandler(currentHandler);
-        currentHandler.close();
+  /** Detaches Selenium's handler and switches debug logging off again. Only for tests. */
+  static void resetForTesting() {
+    synchronized (LOCK) {
+      Handler handler = installedHandler;
+      if (handler != null) {
+        SELENIUM_LOGGER.removeHandler(handler);
+        handler.close();
         installedHandler = null;
       }
-      if (levelSetByDebug != null && levelSetByDebug.equals(SELENIUM_LOGGER.getLevel())) {
-        SELENIUM_LOGGER.setLevel(previousLevel);
-      }
-      previousLevel = null;
-      levelSetByDebug = null;
+      enabledLevel = null;
     }
-
-    loggerConfigured = shouldDebug;
   }
 }
