@@ -120,7 +120,10 @@ public class Debug {
    *
    * <p>Handlers added by the user, and the root logger, are never changed. Because Selenium's
    * handler prints every record below {@code INFO}, a user who has also attached a handler that
-   * accepts {@code FINE} records will see those records twice.
+   * accepts {@code FINE} records will see those records twice. Records at {@code INFO} and above
+   * are left to the handlers that already print them, such as the root logger's console handler, so
+   * a user who turns off {@code useParentHandlers} on {@code org.openqa.selenium} must attach their
+   * own handler to see them.
    *
    * <p>Calling this method when debugging is disabled does nothing. It is safe to call repeatedly
    * and from several threads.
