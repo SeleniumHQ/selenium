@@ -1,7 +1,7 @@
-# NNNN. Accessibility tree snapshots ship as a script-based Selenium module before a BiDi command exists
+# 18205. Accessibility tree snapshots ship as a script-based Selenium module before a BiDi command exists
 
 - Status: Proposed
-- Discussion: <!-- link to this record's PR -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/18205
 
 ## Context
 
