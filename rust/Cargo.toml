@@ -2,6 +2,7 @@
 name = "selenium-manager"
 version = "0.4.52-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2024"
+rust-version = "1.89"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
 homepage = "https://www.selenium.dev/"
