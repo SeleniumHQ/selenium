@@ -197,7 +197,7 @@ pub trait SeleniumManager {
             &driver_path_in_cache,
             Some(driver_name_with_extension.clone()),
         )?;
-        if !lock.exists() && driver_path_in_cache.exists() {
+        if driver_path_in_cache.exists() {
             self.get_logger().debug(format!(
                 "Driver already in cache: {}",
                 driver_path_in_cache.display()
@@ -353,9 +353,8 @@ pub trait SeleniumManager {
 
         let browser_path_in_cache = self.get_browser_path_in_cache()?;
         let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
-        // If lock file was deleted, another process held it and released (deleting the file).
-        // Check if that process already downloaded the browser.
-        if !lock.exists() && browser_binary_path.exists() {
+        // Another process may have downloaded the browser while this one waited for the lock
+        if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} now available at {}",
                 self.get_browser_name(),
@@ -1872,6 +1871,21 @@ mod tests {
         let escaped = manager.get_escaped_path(folder.to_string_lossy().to_string());
 
         assert_eq!(escaped, manager.canonicalize_path(folder));
+    }
+
+    #[test]
+    fn download_driver_returns_cached_jar_without_downloading() {
+        let tmp = tempfile::tempdir().unwrap();
+        let mut manager = crate::grid::GridManager::new("4.51.0".to_string()).unwrap();
+        manager.get_config_mut().cache_path = tmp.path().to_string_lossy().to_string();
+        let jar = manager.get_driver_path_in_cache().unwrap();
+        std::fs::create_dir_all(jar.parent().unwrap()).unwrap();
+        std::fs::write(&jar, b"cached").unwrap();
+
+        manager.download_driver().unwrap();
+
+        assert_eq!(std::fs::read(&jar).unwrap(), b"cached");
+        assert!(!jar.parent().unwrap().join("sm.lock").exists());
     }
 
     #[test]
