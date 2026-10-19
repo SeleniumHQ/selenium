@@ -213,7 +213,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
     let header = find_bytes(&file_bytes, SEVEN_ZIP_HEADER);
     let index_7z = header.ok_or(anyhow!("Incorrect SFX (self extracting exe) file"))?;
     let file_reader = Cursor::new(&file_bytes[index_7z..]);
-    sevenz_rust::decompress(file_reader, zip_parent).unwrap();
+    sevenz_rust2::decompress(file_reader, zip_parent).unwrap();
 
     let zip_parent_str = path_to_string(zip_parent);
     let core_str = format!(r"{}\core", zip_parent_str);

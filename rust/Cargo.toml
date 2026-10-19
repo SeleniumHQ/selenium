@@ -2,7 +2,7 @@
 name = "selenium-manager"
 version = "0.4.52-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.93"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
 homepage = "https://www.selenium.dev/"
@@ -36,7 +36,7 @@ infer = "0.22.0"
 exitcode = "1.1.2"
 toml = "1.1.8"
 bzip2 = "0.6.1"
-sevenz-rust = "0.6.1"
+sevenz-rust2 = "0.24.1"
 xz2 = "0.1.7"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
