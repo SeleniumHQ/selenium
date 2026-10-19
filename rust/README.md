@@ -9,6 +9,8 @@ Selenium Manager has been implemented as a CLI (Command-Line Interface) tool usi
 curl https://sh.rustup.rs -sSf | sh
 ```
 
+The minimum supported Rust version is 1.89.
+
 Alternatively, you can build it using [Bazel](https://bazel.build) by executing `bazel build //rust:selenium-manager` from the top-level directory of the Selenium repo (the same one where the `WORKSPACE` file is).
 
 ## Usage
