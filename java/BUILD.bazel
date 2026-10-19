@@ -38,6 +38,7 @@ java_library(
     exported_plugins = [
         ":auto-service-plugin",
     ],
+    tags = ["maven:compile_only"],
     visibility = [
         "//java:__subpackages__",
     ],
