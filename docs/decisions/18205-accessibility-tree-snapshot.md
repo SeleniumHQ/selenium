@@ -57,21 +57,29 @@ BiDi, ahead of any spec work:
    keeps page scripts from interfering with the implementation.
 2. The command takes a browsing context, or a node within one, as its root and returns a
    structured JSON tree. Each node carries `role`, `name`, `description`, `states`, and
-   `children`, plus a shared reference so it can be passed back to other commands. The exact
-   schema is settled in the implementing PR.
-3. The client stitches iframes together: it runs the script in each child context's realm and
+   `children`. The exact schema is settled in the implementing PR.
+3. Every node backed by a DOM node carries that node as a BiDi `SharedReference`, produced by
+   ordinary `script.callFunction` result serialization with `maxDomDepth: 0`. Bindings surface
+   it as their normal element type, so a snapshot node can be clicked, typed into, or used as
+   the root of a further snapshot without a second lookup. Shared ids are scoped to the
+   document, not the realm, so references created in the sandbox are valid everywhere else.
+   Nodes with no DOM node of their own (CSS-generated content, and any node the walk
+   synthesizes) carry no reference; text leaves reference their `Text` node. The tree follows
+   accessibility parentage, so with `aria-owns` a node's tree parent and its DOM parent can
+   differ; the reference still identifies the DOM node.
+4. The client stitches iframes together: it runs the script in each child context's realm and
    attaches the result under the owning `iframe` node. This includes cross-origin frames, which
    in-page script cannot reach.
-4. Any text serialization, including a Playwright-style YAML rendering, happens on the client
+5. Any text serialization, including a Playwright-style YAML rendering, happens on the client
    and is not part of the data model.
-5. Output is labelled as *computed*, not as the browser's accessibility tree. Known divergences
+6. Output is labelled as *computed*, not as the browser's accessibility tree. Known divergences
    from each engine's native tree are documented and kept current.
-6. Selenium takes no dependency on WebdriverIO's implementation, and does not ask WebdriverIO
+7. Selenium takes no dependency on WebdriverIO's implementation, and does not ask WebdriverIO
    to depend on Selenium's. `@wdio/snapshot` is used as a point of comparison: we run both
    against the same test pages and record where Selenium's output is more or less accurate
    against each engine's native tree. Where it is cheap, we offer to align node shapes so that
    either project's serializers can read both trees, but no release is blocked on that.
-7. The implementation, usage data and divergence list are contributed to
+8. The implementation, usage data and divergence list are contributed to
    w3c/webdriver-bidi#443 as input to a BiDi accessibility module with a native tree command,
    rather than opening a separate proposal. We expect to ask the Chrome DevTools team to
    co-sponsor, given CDP's existing tree. Neither their interest nor any timeline has been
@@ -94,6 +102,12 @@ BiDi, ahead of any spec work:
   serializer can match their text output. If Playwright changes its format we will have to
   follow it or explain the difference. Without a shared schema, Selenium's and WebdriverIO's
   trees may also differ, and users moving between the two will see it.
+- **Node references.** Acting on a snapshot node needs no re-query by role and name, which
+  sidesteps the name-divergence problem above and is something Playwright's text format can
+  only approximate with page-global ref strings. References share the lifetime of the
+  document: after navigation they fail with `no such node`, and callers take a new snapshot.
+  Each reference adds serialization overhead per node, so the implementing PR should measure
+  large trees and, if needed, add an option to omit references.
 - **Maintenance.** We own an accname and role implementation, the tree walk, and their test
   corpus until a native command exists. accname and html-aam keep changing, and keeping up with
   them is the largest ongoing cost in this design. In return we can fix divergences directly,
@@ -107,7 +121,10 @@ BiDi, ahead of any spec work:
   being deleted.
 - **What the module has to produce for #443.** A concrete node schema, a list of divergences
   from each engine's native tree with test cases, and evidence of which node types, states and
-  scoping options people actually use. The 2024 discussion stalled on the lack of an agreed tree
+  scoping options people actually use, including how often node references are used for
+  follow-up commands. If they are, a native command should return a `SharedReference` for each
+  DOM-backed node; CDP's tree already carries a DOM node id per node, which suggests this is
+  feasible at least in Chromium. The 2024 discussion stalled on the lack of an agreed tree
   shape, so a concrete schema, plus a comparison of two independent script implementations
   against native trees, is the most useful thing we can bring.
   Without that evidence the module is just an alternative to the spec, not input to it.
