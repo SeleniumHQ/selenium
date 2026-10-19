@@ -94,6 +94,22 @@ under the License.
     assert.strictEqual(el, null);
   });
 
+  QUnit.test('finds element by id with newline in value', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'my\nid');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'id': 'my\nid'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds element by id containing a NUL character', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'nul\u0000id');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'id': 'nul\u0000id'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('returns null (not a throw) when id is absent', function(assert) {
     // findElement must return null for a no-match, never throw.
     var el = findElement({'id': 'this-does-not-exist'});
@@ -161,6 +177,14 @@ under the License.
     assert.strictEqual(el, null);
   });
 
+  QUnit.test('finds element by name with newline in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my\ninput');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'name': 'my\ninput'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds element scoped to a root element', function(assert) {
     var outer = document.getElementById('outer');
     var el = findElement({'name': 'myinput'}, outer);
@@ -210,6 +234,15 @@ under the License.
   QUnit.test('returns null when link text matches nothing', function(assert) {
     var el = findElement({'link text': 'No such link'}, fixture);
     assert.strictEqual(el, null);
+  });
+
+  QUnit.test('finds element by link text with non-breaking spaces', function(assert) {
+    var a = document.createElement('a');
+    a.innerHTML = 'Hello&nbsp;World';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'Hello World'}, fixture), a);
+    assert.strictEqual(findElement({'partial link text': 'lo Wo'}, fixture), a);
+    fixture.removeChild(a);
   });
 
   // ── partial link text ────────────────────────────────────────────────────────

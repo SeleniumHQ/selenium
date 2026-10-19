@@ -36,6 +36,72 @@ function cssEscapeId(s: string): string {
   return s.replace(/[\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]()]/g, (c) => '\\' + c)
 }
 
+function hasCssEscape(): boolean {
+  return typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
+}
+
+// Builds a CSS selector matching an exact id, or returns null when the value
+// cannot be expressed as one and the caller must scan attributes instead.
+// CSS.escape handles newlines, whitespace and leading digits; without it, the
+// legacy escaping cannot handle a leading digit. A NUL can never be matched by
+// a selector, because CSS replaces it with U+FFFD.
+function idSelector(target: string): string | null {
+  if (target.indexOf('\0') !== -1) {
+    return null
+  }
+  if (hasCssEscape()) {
+    return '#' + CSS.escape(target)
+  }
+  return /^\d/.test(target) ? null : '#' + cssEscapeId(target)
+}
+
+// Builds a CSS selector matching an exact name attribute, or returns null when
+// the caller must scan attributes instead. Without CSS.escape, a line break
+// cannot be written inside a quoted CSS string.
+function nameSelector(target: string): string | null {
+  if (target.indexOf('\0') !== -1) {
+    return null
+  }
+  if (hasCssEscape()) {
+    return '[name="' + CSS.escape(target) + '"]'
+  }
+  if (/[\r\n\f]/.test(target)) {
+    return null
+  }
+  return '[name="' + target.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]'
+}
+
+// Runs a selector built by idSelector or nameSelector, falling back to an
+// exact attribute comparison when there is no selector or it is rejected.
+// locators/name.js:34-41 – Closure compared getAttribute(name) directly.
+function attributeMany(selector: string | null, attr: string, target: string, root: Root): Element[] {
+  if (selector !== null) {
+    try {
+      return Array.from(root.querySelectorAll(selector))
+    } catch (_e) {
+      // Fall through to the attribute scan.
+    }
+  }
+  return Array.from(root.querySelectorAll('*')).filter(el => el.getAttribute(attr) === target)
+}
+
+function attributeSingle(selector: string | null, attr: string, target: string, root: Root): Element | null {
+  if (selector !== null) {
+    try {
+      return root.querySelector(selector) ?? null
+    } catch (_e) {
+      // Fall through to the attribute scan.
+    }
+  }
+  return Array.from(root.querySelectorAll('*')).find(el => el.getAttribute(attr) === target) ?? null
+}
+
+// Maps non-breaking spaces to ordinary spaces, as bot.dom.getVisibleText did,
+// so a link rendered as "A&nbsp;B" matches "A B".
+function normalizeLinkText(s: string): string {
+  return s.replace(/\u00a0/g, ' ')
+}
+
 // Reads the visible text of a link element, trimming surrounding whitespace.
 // locators/link_text.js:51-58 – getVisibleText + trim pattern.
 // We use innerText where available (respects CSS visibility) and fall back to
@@ -44,7 +110,7 @@ function getLinkText(el: Element): string {
   const text = (el as HTMLElement).innerText !== undefined
     ? (el as HTMLElement).innerText
     : el.textContent || ''
-  return text.replace(/^[\s]+|[\s]+$/g, '')
+  return normalizeLinkText(text).replace(/^[\s]+|[\s]+$/g, '')
 }
 
 // ── many (multi-element) implementations ──────────────────────────────────────
@@ -78,19 +144,11 @@ function idMany(target: string, root: Root): Element[] {
   if (!target) {
     return []
   }
-  // IDs starting with a digit are valid HTML but invalid as a CSS id selector;
-  // fall back to an attribute scan in that case.
-  if (!/^\d/.test(target)) {
-    try {
-      return Array.from(root.querySelectorAll('#' + cssEscapeId(target)))
-    } catch (_e) {
-      return []
-    }
-  }
-  return Array.from(root.querySelectorAll('*')).filter(el => el.getAttribute('id') === target)
+  return attributeMany(idSelector(target), 'id', target, root)
 }
 
 function linkTextMany(target: string, root: Root, partial: boolean): Element[] {
+  target = normalizeLinkText(target)
   return Array.from(root.querySelectorAll('a')).filter(el => {
     const text = getLinkText(el)
     return partial ? text.indexOf(target) !== -1 : text === target
@@ -98,8 +156,7 @@ function linkTextMany(target: string, root: Root, partial: boolean): Element[] {
 }
 
 function nameMany(target: string, root: Root): Element[] {
-  const escaped = target.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  return Array.from(root.querySelectorAll('[name="' + escaped + '"]'))
+  return attributeMany(nameSelector(target), 'name', target, root)
 }
 
 function tagNameMany(target: string, root: Root): Element[] {
@@ -278,21 +335,12 @@ function idSingle(target: string, root: Root): Element | null {
   // and root itself is never included (querySelector only looks at descendants).
   // Dropped: the IE name/id confusion branch that needed getAttribute('id')
   // re-validation — IE is no longer supported.
-  if (!/^\d/.test(target)) {
-    try {
-      return root.querySelector('#' + cssEscapeId(target)) ?? null
-    } catch (_e) {
-      return null
-    }
-  }
-  // IDs starting with a digit cannot be used in a CSS id selector; scan root's
-  // descendants manually, same as idMany's fallback.
-  const all = Array.from(root.querySelectorAll('*'))
-  return all.find(el => el.getAttribute('id') === target) ?? null
+  return attributeSingle(idSelector(target), 'id', target, root)
 }
 
 function linkTextSingle(target: string, root: Root, partial: boolean): Element | null {
   // locators/link_text.js:40-61 – single_ iterates anchors and returns first match.
+  target = normalizeLinkText(target)
   const anchors = Array.from(root.querySelectorAll('a'))
   const found = anchors.find(el => {
     const text = getLinkText(el)
@@ -303,8 +351,7 @@ function linkTextSingle(target: string, root: Root, partial: boolean): Element |
 
 function nameSingle(target: string, root: Root): Element | null {
   // locators/name.js:34-41 – scans elements and returns the first name match.
-  const escaped = target.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  return root.querySelector('[name="' + escaped + '"]') ?? null
+  return attributeSingle(nameSelector(target), 'name', target, root)
 }
 
 function tagNameSingle(target: string, root: Root): Element | null {
@@ -399,8 +446,11 @@ function resolveAnchor(selector: unknown, outerRoot: Root | undefined): Element 
     return resolveAnchor((selector as () => unknown)(), outerRoot)
   }
   if (selector && typeof selector === 'object') {
-    // Prefer an anchor inside outerRoot (important when the root is a shadow
-    // root, which a plain document search cannot reach).
+    // Prefer an anchor inside outerRoot before falling back to the document.
+    // Closure searched the document first; searching the root first is
+    // deliberate, because a document search cannot reach into a shadow root.
+    // When a locator matches anchors both inside and outside the root, the
+    // inner one wins (pinned in find_elements_typescript_test.html).
     let found = outerRoot ? findElements(selector as LocatorTarget, outerRoot) : []
     if (!found.length) {
       found = findElements(selector as LocatorTarget)

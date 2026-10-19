@@ -89,6 +89,16 @@ under the License.
     fixture.removeChild(el);
   });
 
+  QUnit.test('finds elements by id containing a NUL character', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'nul\u0000id');
+    fixture.appendChild(el);
+    var elements = findElements({'id': 'nul\u0000id'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0], el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds elements by class name', function(assert) {
     var elements = findElements({'class name': 'myclass'}, fixture);
     assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'span1'].sort());
