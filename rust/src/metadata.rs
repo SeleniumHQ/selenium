@@ -258,17 +258,21 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger, cache_path: Option<Path
     if let Some(cache) = cache_path {
         let metadata_path = get_metadata_path(cache.clone());
         log.trace(format!("Writing metadata to {}", metadata_path.display()));
-        fs::write(
-            metadata_path,
-            serde_json::to_string_pretty(metadata).unwrap(),
-        )
-        .unwrap_or_else(|err| {
-            log.warn(format!(
-                "Metadata cannot be written in cache ({}): {}",
-                cache.display(),
-                err
-            ));
-        });
+        // Several Selenium Manager processes may share one cache (e.g. parallel test
+        // workers), and writing the file in place lets them read it truncated or half
+        // written. Renaming a complete sibling file into place is atomic, so readers see
+        // either the previous or the new content.
+        let tmp_path = metadata_path.with_extension(format!("json.{}.tmp", std::process::id()));
+        fs::write(&tmp_path, serde_json::to_string_pretty(metadata).unwrap())
+            .and_then(|_| fs::rename(&tmp_path, &metadata_path))
+            .unwrap_or_else(|err| {
+                fs::remove_file(&tmp_path).ok();
+                log.warn(format!(
+                    "Metadata cannot be written in cache ({}): {}",
+                    cache.display(),
+                    err
+                ));
+            });
     }
 }
 
