@@ -24,6 +24,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -38,6 +40,11 @@ public class BiDi implements Closeable {
 
   private final Duration timeout;
   private final Connection connection;
+  // Subscription ids for listeners registered against specific browsing context(s), keyed by
+  // event, so clearListener(Set<String>, Event) can unsubscribe only those instead of every
+  // listener for the event (which would also drop unrelated subscriptions, global or scoped to
+  // other contexts).
+  private final Map<Event<?>, List<String>> contextListenerIds = new ConcurrentHashMap<>();
 
   /**
    * @deprecated Use constructor with timeout parameter: {@link #BiDi(Connection, Duration)}
@@ -103,6 +110,9 @@ public class BiDi implements Closeable {
         subscribe(
             Map.of("contexts", List.of(browsingContextId), "events", List.of(event.getMethod())));
     connection.addListener(subscriptionId, event, handler);
+    contextListenerIds
+        .computeIfAbsent(event, key -> new CopyOnWriteArrayList<>())
+        .add(subscriptionId);
     return subscriptionId;
   }
 
@@ -115,6 +125,9 @@ public class BiDi implements Closeable {
     String subscriptionId =
         subscribe(Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod())));
     connection.addListener(subscriptionId, event, handler);
+    contextListenerIds
+        .computeIfAbsent(event, key -> new CopyOnWriteArrayList<>())
+        .add(subscriptionId);
     return subscriptionId;
   }
 
@@ -133,11 +146,29 @@ public class BiDi implements Closeable {
 
   public <X> void clearListener(Set<String> browsingContextIds, Event<X> event) {
     Require.nonEmpty("List of browsing context ids", browsingContextIds);
-    // This is not the correct implementation, everything needs to be tired to subscription id.
-    // This is currently used by hand-written BiDi code, soon to be replaced by generated BiDi code.
-    // After that this method will be removed.
-    // This is just to avoid changes to hand-written classes meanwhile.
-    this.clearListener(event);
+    Require.nonNull("Event to listen for", event);
+
+    // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
+    // first place
+    if (!connection.isEventSubscribed(event)) {
+      return;
+    }
+
+    List<String> subscriptionIds = contextListenerIds.remove(event);
+    if (subscriptionIds != null && !subscriptionIds.isEmpty()) {
+      // Subscription was context-specific: unsubscribe only those subscriptions, leaving any
+      // other listener registered for this event (global, or scoped to a different context)
+      // untouched.
+      send(
+          new Command<>(
+              "session.unsubscribe",
+              Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod()))));
+      subscriptionIds.forEach(connection::removeListener);
+    } else {
+      // Subscription was global: context-specific unsubscription is invalid per the BiDi
+      // protocol, so fall back to a global unsubscription.
+      this.clearListener(event);
+    }
   }
 
   public <X> void clearListener(Event<X> event) {
