@@ -13,35 +13,35 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver res
 """
 
 [dependencies]
-clap = { version = "4.6.1", features = ["derive", "cargo"] }
-log = "0.4.29"
-env_logger = "0.11.10"
-regex = "1.12.3"
-tokio = { version = "1.52.3", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+clap = { version = "4.6.7", features = ["derive", "cargo"] }
+log = "0.4.34"
+env_logger = "0.11.11"
+regex = "1.13.1"
+tokio = { version = "1.53.3", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.27.0"
-reqwest = { version = "0.13.3", default-features = false, features = ["rustls-no-provider"] }
+reqwest = { version = "0.13.5", default-features = false, features = ["rustls-no-provider"] }
 # Pin the ring crypto backend so aws-lc-sys (and its C build requirements) are
 # never compiled. The ring provider must be installed at process startup; see
 # main.rs. rustls-platform-verifier (pulled in by reqwest) is crypto-agnostic
 # and works with whichever provider is installed as the process default.
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
-zip = { version = "8", default-features = false, features = ["deflate"] }
+zip = { version = "9.0.5", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
-flate2 = "1.1.9"
-tar = "0.4.44"
-infer = "0.19.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+flate2 = "1.1.10"
+tar = "0.4.46"
+infer = "0.22.0"
 exitcode = "1.1.2"
-toml = "1.0"
+toml = "1.1.8"
 bzip2 = "0.6.1"
 sevenz-rust = "0.6.1"
 xz2 = "0.1.7"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
-anyhow = { version = "1.0.102", default-features = false, features = ["backtrace", "std"] }
+anyhow = { version = "1.0.104", default-features = false, features = ["backtrace", "std"] }
 apple-flat-package = "0.20.0"
-which = "8.0.2"
+which = "8.0.6"
 fs2 = "0.4.3"
 fs_extra = "1.3.0"
 
@@ -53,8 +53,8 @@ avoid_stats = []
 
 [dev-dependencies]
 assert_cmd = "2.2.2"
-is_executable = "1.0.5"
-rstest = { version = "0.26.1", default-features = false }
+is_executable = "1.0.6"
+rstest = { version = "0.28.0", default-features = false }
 
 [profile.release]
 opt-level = 'z'     # Optimize for size
