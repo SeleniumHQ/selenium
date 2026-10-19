@@ -516,7 +516,7 @@ pub fn unzip(
             }
             None => continue,
         };
-        if file.name().ends_with('/') {
+        if file.name()?.ends_with('/') {
             log.trace(format!("File extracted to {}", tmp_path.display()));
             fs::create_dir_all(&tmp_path)?;
         } else {
