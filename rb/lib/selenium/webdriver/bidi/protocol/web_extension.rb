@@ -98,7 +98,7 @@ module Selenium
             id: {wire_key: 'id', primitive: 'string'},
             name: {wire_key: 'name', primitive: 'string'},
             version: {wire_key: 'version', primitive: 'string'},
-            manifest_version: {wire_key: 'manifestVersion', primitive: 'integer'},
+            manifest_version: {wire_key: 'manifestVersion', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             is_active: {wire_key: 'isActive', primitive: 'boolean'},
             is_system: {wire_key: 'isSystem', primitive: 'boolean'},
             hidden: {wire_key: 'hidden', primitive: 'boolean'},
@@ -113,7 +113,7 @@ module Selenium
             uuid: {wire_key: 'uuid', primitive: 'string'},
             base_url: {wire_key: 'baseURL', primitive: 'string'},
             extension_url: {wire_key: 'extensionURL', primitive: 'string'},
-            background_scripts: {wire_key: 'backgroundScripts', list: true}
+            background_scripts: {wire_key: 'backgroundScripts', list: true, primitive: 'string'}
           )
 
           def extension_data = ExtensionData

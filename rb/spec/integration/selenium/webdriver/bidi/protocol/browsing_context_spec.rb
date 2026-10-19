@@ -93,8 +93,6 @@ module Selenium
             it 'limits the screenshot to the requested image size',
                pending_if: [{browser_family: :chromium,
                              reason: 'Chromium ignores the captureScreenshot imageSize parameter'},
-                            {browser: :firefox, version: 'stable',
-                             reason: 'Firefox 156 ignores the captureScreenshot imageSize; works in 158'},
                             {browser_family: :safari,
                              reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
               browsing_context.navigate(context: driver.window_handle, url: url_for('blank.html'), wait: :complete)
@@ -442,7 +440,6 @@ module Selenium
                                 {browser_family: :safari,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Safari does not implement browsingContext.startScreencast'}] do
-            # Firefox 156 ignores destinationFolder and records into the user's Downloads folder
             def record_screencast(directory, **)
               directory = WebDriver::Platform.windows_path(directory) if WebDriver::Platform.windows?
               result = browsing_context.start_screencast(
@@ -470,9 +467,7 @@ module Selenium
               end
             end
 
-            it 'saves the screencast in the destination folder',
-               pending_if: {browser: :firefox, version: 'stable',
-                            reason: 'Firefox 156 ignores the startScreencast destinationFolder; works in 158'} do
+            it 'saves the screencast in the destination folder' do
               Dir.mktmpdir('selenium-bidi-screencast') do |directory|
                 _result, stopped = record_screencast(directory)
 

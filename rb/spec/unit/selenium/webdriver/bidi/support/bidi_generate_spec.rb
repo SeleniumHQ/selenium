@@ -59,6 +59,22 @@ module BiDiGenerate
     end
   end
 
+  describe 'FieldIR#spec_entry' do
+    let(:field) { BiDiGenerate::FieldIR.new(ruby_name: 'n', wire_key: 'n', required: false, bounds: {}) }
+
+    it 'stays on one line when it fits with its separating comma' do
+      expect(field.spec_entry(84, trailing: 1)).to eq("n: {wire_key: 'n', required: false}")
+    end
+
+    it 'wraps when its separating comma would pass the line limit' do
+      expect(field.spec_entry(85, trailing: 1)).to start_with("n: {\n")
+    end
+
+    it 'stays on one line at the line limit when no comma follows it' do
+      expect(field.spec_entry(85)).to eq("n: {wire_key: 'n', required: false}")
+    end
+  end
+
   describe '.check_accessor_collisions!' do
     def accessor(name)
       BiDiGenerate::Accessor.new(method_name: name, type_name: 'T', union: false)
@@ -157,6 +173,76 @@ module BiDiGenerate
     end
   end
 
+  describe 'Schema#types_for with numeric bounds' do
+    def alias_of(type) = {'kind' => 'alias', 'type' => type}
+
+    def prefs_map(*arms)
+      {'kind' => 'record', 'fields' => [], 'map' => {'union' => arms}, 'synthetic' => true,
+       'owner' => 'x.Owner', 'label' => 'Prefs', 'outbound' => true, 'inbound' => false}
+    end
+
+    def spec_entry(type)
+      owner = {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+               'fields' => [{'name' => 'n', 'wire' => 'n', 'required' => true, 'type' => type}]}
+      types = {
+        'x.Owner' => owner,
+        'x.Uint' => alias_of('primitive' => 'integer', 'min' => 0, 'max' => 9_007_199_254_740_991),
+        'x.Percent' => alias_of('ref' => 'x.Uint', 'max' => 100),
+        'x.Fraction' => alias_of('primitive' => 'number', 'max' => 1, 'exclusiveMax' => true),
+        'x.OwnerPrefs' => prefs_map({'primitive' => 'string'}, {'ref' => 'x.Uint'}),
+        'x.OwnerMixed' => prefs_map({'ref' => 'x.Uint'}, {'primitive' => 'number'})
+      }
+      schema = BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
+      schema.types_for('x').find { |t| t.schema_name == 'x.Owner' }.fields.first.spec_entry
+    end
+
+    it "carries a primitive field's own bounds" do
+      expect(spec_entry('primitive' => 'number', 'min' => 0, 'exclusiveMin' => true))
+        .to eq("n: {wire_key: 'n', primitive: 'number', min: 0, exclusive_min: true}")
+    end
+
+    it 'carries the bounds of the alias a field names' do
+      expect(spec_entry('ref' => 'x.Uint'))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}")
+    end
+
+    it "narrows the alias's bounds with the field's own" do
+      expect(spec_entry('ref' => 'x.Uint', 'min' => 1))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 1, max: 9_007_199_254_740_991}")
+    end
+
+    it 'keeps the tighter bound along an alias chain' do
+      expect(spec_entry('ref' => 'x.Percent', 'min' => -5, 'max' => 50))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 50}")
+    end
+
+    it 'treats an exclusive bound as tighter than an inclusive one at the same value' do
+      expect(spec_entry('ref' => 'x.Fraction', 'max' => 1))
+        .to eq("n: {wire_key: 'n', primitive: 'number', max: 1, exclusive_max: true}")
+      expect(spec_entry('ref' => 'x.Percent', 'max' => 100, 'exclusiveMax' => true))
+        .to eq("n: {wire_key: 'n', primitive: 'integer', min: 0, max: 100, exclusive_max: true}")
+    end
+
+    it "carries the bounds of a list's elements" do
+      expect(spec_entry('list' => {'ref' => 'x.Percent'}))
+        .to eq("n: {wire_key: 'n', list: true, primitive: 'integer', min: 0, max: 100}")
+    end
+
+    it "carries the bounds of a scalar union's numeric arm" do
+      expect(spec_entry('list' => {'union' => [{'ref' => 'x.Percent'}, {'primitive' => 'string'}]}))
+        .to eq("n: {wire_key: 'n', list: true, primitive: %w[integer string], min: 0, max: 100}")
+    end
+
+    it "carries the bounds of a map's numeric value arm" do
+      expect(spec_entry('ref' => 'x.OwnerPrefs'))
+        .to eq("n: {wire_key: 'n', map: %w[string integer], min: 0, max: 9_007_199_254_740_991}")
+    end
+
+    it 'fails generation when the numeric arms of a map carry different bounds' do
+      expect { spec_entry('ref' => 'x.OwnerMixed') }.to raise_error(/different bounds/)
+    end
+  end
+
   describe 'Schema with a vendor extension' do
     def scope_field(required: false)
       {'name' => 'moz:scope', 'wire' => 'moz:scope', 'required' => required,
@@ -225,6 +311,56 @@ module BiDiGenerate
       conflicting = {'x.MozScope' => {'kind' => 'enum', 'values' => %w[other], 'primitive' => 'string'}}
 
       expect { schema(conflicting) }.to raise_error(/vendor enum x.MozScope conflicts/)
+    end
+  end
+
+  describe 'Schema#types_for with a list field' do
+    def items_field(type)
+      types = {
+        'x.Owner' => {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+                      'fields' => [{'name' => 'items', 'wire' => 'items', 'required' => true, 'type' => type}]},
+        'x.Id' => {'kind' => 'alias', 'type' => {'primitive' => 'string'}},
+        'x.Uint' => {'kind' => 'alias', 'type' => {'primitive' => 'integer'}},
+        'x.Kind' => {'kind' => 'enum', 'values' => %w[a b], 'primitive' => 'string'},
+        'x.Value' => {'kind' => 'record', 'outbound' => true, 'inbound' => true,
+                      'fields' => [{'name' => 'v', 'wire' => 'v', 'required' => true,
+                                    'type' => {'primitive' => 'string'}}]}
+      }
+      schema = BiDiGenerate::Schema.new('types' => types, 'commands' => [], 'events' => [], 'domains' => {'x' => {}})
+      schema.types_for('x').find { |t| t.schema_name == 'x.Owner' }.fields.first
+    end
+
+    it 'carries the element primitive of a primitive list' do
+      expect(items_field('list' => {'primitive' => 'string'}).spec_entry)
+        .to eq("items: {wire_key: 'items', list: true, primitive: 'string'}")
+    end
+
+    it 'resolves an alias element to its primitive' do
+      expect(items_field('list' => {'ref' => 'x.Id'}).spec_entry)
+        .to eq("items: {wire_key: 'items', list: true, primitive: 'string'}")
+    end
+
+    it 'carries every allowed primitive of a scalar-union element' do
+      field = items_field('list' => {'union' => [{'ref' => 'x.Uint'}, {'primitive' => 'string'}]})
+
+      expect(field.spec_entry).to eq("items: {wire_key: 'items', list: true, primitive: %w[integer string]}")
+      expect(field.rbs).to eq('Array[Integer | String]')
+    end
+
+    it 'leaves a union element with a non-scalar arm opaque' do
+      field = items_field('list' => {'union' => [{'primitive' => 'number'}, {'ref' => 'x.Kind'}]})
+
+      expect(field.spec_entry).to eq("items: {wire_key: 'items', list: true}")
+    end
+
+    it 'leaves a list of refs typed by its ref alone' do
+      expect(items_field('list' => {'ref' => 'x.Value'}).spec_entry)
+        .to eq("items: {wire_key: 'items', ref: 'X::Value', list: true}")
+    end
+
+    it 'fails generation for a nullable element, which the runtime would reject' do
+      expect { items_field('list' => {'primitive' => 'string', 'nullable' => true}) }
+        .to raise_error(/nullable list element/)
     end
   end
 end

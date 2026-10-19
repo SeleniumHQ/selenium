@@ -146,8 +146,8 @@ module Selenium
             http_proxy: {wire_key: 'httpProxy', required: false, primitive: 'string'},
             ssl_proxy: {wire_key: 'sslProxy', required: false, primitive: 'string'},
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'},
-            no_proxy: {wire_key: 'noProxy', required: false, list: true},
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255},
+            no_proxy: {wire_key: 'noProxy', required: false, list: true, primitive: 'string'},
             extensible: true
           )
 
@@ -156,7 +156,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsocksproxyconfiguration
           SocksProxyConfiguration = Serialization::Record.define(
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'}
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255}
           )
 
           # @api private
@@ -192,20 +192,24 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscribeparameters
           SubscribeParameters = Serialization::Record.define(
-            events: {wire_key: 'events', list: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            events: {wire_key: 'events', list: true, primitive: 'string'},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByIDRequest
-          UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {wire_key: 'subscriptions', list: true})
+          UnsubscribeByIDRequest = Serialization::Record.define(
+            subscriptions: {wire_key: 'subscriptions', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByAttributesRequest
-          UnsubscribeByAttributesRequest = Serialization::Record.define(events: {wire_key: 'events', list: true})
+          UnsubscribeByAttributesRequest = Serialization::Record.define(
+            events: {wire_key: 'events', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -252,12 +256,23 @@ module Selenium
             android_package: {wire_key: 'androidPackage', required: false, primitive: 'string'},
             android_activity: {wire_key: 'androidActivity', required: false, primitive: 'string'},
             android_device_serial: {wire_key: 'androidDeviceSerial', required: false, primitive: 'string'},
-            android_intent_arguments: {wire_key: 'androidIntentArguments', required: false, list: true},
-            args: {wire_key: 'args', required: false, list: true},
+            android_intent_arguments: {
+              wire_key: 'androidIntentArguments',
+              required: false,
+              list: true,
+              primitive: 'string'
+            },
+            args: {wire_key: 'args', required: false, list: true, primitive: 'string'},
             binary: {wire_key: 'binary', required: false, primitive: 'string'},
             env: {wire_key: 'env', required: false, map: 'string'},
             log: {wire_key: 'log', required: false, ref: 'Session::CapabilityRequestFirefoxOptions::Log'},
-            prefs: {wire_key: 'prefs', required: false, map: %w[string boolean integer]},
+            prefs: {
+              wire_key: 'prefs',
+              required: false,
+              map: %w[string boolean integer],
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
             profile: {wire_key: 'profile', required: false, primitive: 'string'}
           )
 

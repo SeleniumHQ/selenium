@@ -539,6 +539,75 @@ module Selenium
             end
           end
 
+          describe 'numeric bounds' do
+            def locate_nodes(max_node_count)
+              locator = BrowsingContext::CssLocator.new(value: 'p')
+              BrowsingContext::LocateNodesParameters.new(context: 'c', locator: locator, max_node_count: max_node_count)
+            end
+
+            def response_wire(status)
+              {'url' => 'https://example.com', 'protocol' => 'http/1.1', 'status' => status, 'statusText' => 'OK',
+               'fromCache' => false, 'headers' => [], 'mimeType' => 'text/html', 'bytesReceived' => 0,
+               'headersSize' => nil, 'bodySize' => nil, 'content' => {'size' => 0}}
+            end
+
+            it 'rejects a value below an inclusive minimum before sending' do
+              expect { locate_nodes(0) }
+                .to raise_error(ArgumentError, /LocateNodesParameters#max_node_count expected >= 1, got 0/)
+            end
+
+            it 'accepts a value at an inclusive minimum' do
+              expect(locate_nodes(1).max_node_count).to eq(1)
+            end
+
+            it 'rejects a value at an exclusive minimum' do
+              expect { BrowsingContext::SetViewportParameters.new(device_pixel_ratio: 0) }
+                .to raise_error(ArgumentError, /SetViewportParameters#device_pixel_ratio expected > 0, got 0/)
+            end
+
+            it 'rejects a value at an exclusive maximum' do
+              expect { Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 360) }
+                .to raise_error(ArgumentError, /GeolocationCoordinates#heading expected < 360, got 360/)
+            end
+
+            it 'accepts a value just under an exclusive maximum' do
+              expect(Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 359.9).heading)
+                .to eq(359.9)
+            end
+
+            it 'holds a field to the range of the alias it names' do
+              expect { Emulation::ScreenArea.new(width: 2**53, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected <= 9007199254740991, got 9007199254740992/)
+            end
+
+            it 'rejects a value outside the range of the alias it names on receipt' do
+              expect { Network::ResponseData.from_json(response_wire(-1)) }
+                .to raise_error(Error::SerializationError, /ResponseData#status expected >= 0, got -1/)
+            end
+
+            it 'rejects a value outside a field-declared range on receipt' do
+              wire = {'proxyType' => 'manual', 'socksProxy' => 'localhost:1080', 'socksVersion' => 256}
+
+              expect { Session::ManualProxyConfiguration.from_json(wire) }
+                .to raise_error(Error::SerializationError, /ManualProxyConfiguration#socks_version expected <= 255/)
+            end
+
+            it 'holds an integer map value to the range of its arm before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => -(2**53)}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected >= -9007199254740991, got -9007199254740992/)
+            end
+
+            it 'holds an integer map value to the range of its arm on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => 2**53}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected <= 9007199254740991/)
+            end
+
+            it 'holds an integer list element to the range of its arm before sending' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: ['1-3', -1]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected >= 0, got -1/)
+            end
+          end
+
           describe 'outbound ref validation' do
             # A record-typed ref: the value must be an instance of that exact record. A different
             # record (even a sibling reference type) is a caller error caught before the wire.
@@ -689,6 +758,106 @@ module Selenium
               expect { klass.new(scrollbar_type: :banana) }.to raise_error(ArgumentError, /must be one of/)
               expect { klass.from_json('scrollbarType' => 'banana') }
                 .to raise_error(Error::SerializationError, /received an unknown value/)
+            end
+
+            it 'raises on an inbound null element in a list-valued enum' do
+              expect { Network::AddInterceptParameters.from_json('phases' => ['beforeRequestSent', nil]) }
+                .to raise_error(Error::SerializationError, /phases received an unknown value: nil/)
+            end
+          end
+
+          describe 'primitive list elements' do
+            it 'round-trips a list of strings' do
+              params = Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: %w[c1 c2])
+
+              expect(Session::SubscribeParameters.from_json(params.as_json))
+                .to have_attributes(events: %w[log.entryAdded], contexts: %w[c1 c2])
+            end
+
+            it 'rejects a wrong-typed element at construction' do
+              expect { Session::SubscribeParameters.new(events: ['log.entryAdded', 1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { Session::SubscribeParameters.new(events: [nil]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a wrong-typed element of an alias-typed list (browsingContext.BrowsingContext)' do
+              expect { Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: [:c1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#contexts\[0\] expected string, got :c1/)
+            end
+
+            it 'raises on an inbound wrong-typed element' do
+              expect { Session::SubscribeParameters.from_json('events' => ['log.entryAdded', 1]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { Session::SubscribeParameters.from_json('events' => [nil]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a fractional element of an integer list in both directions' do
+              expect { Bluetooth::SimulateDescriptorResponseParameters.new(**descriptor_response(data: [1.5])) }
+                .to raise_error(ArgumentError, /data\[0\] expected integer, got 1.5/)
+              expect { Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [1.5])) }
+                .to raise_error(Error::SerializationError, /data\[0\] expected integer, got 1.5/)
+            end
+
+            it 'accepts a whole-valued float element of an integer list and holds it as an Integer' do
+              parsed = Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [5.0, 6]))
+
+              expect(parsed.data).to eq([5, 6])
+              expect(parsed.data).to all(be_an(::Integer))
+            end
+
+            def descriptor_response(data:)
+              {context: 'c', address: 'a', service_uuid: 's', characteristic_uuid: 'ch', descriptor_uuid: 'd',
+               type: :read, code: 0, data: data}
+            end
+
+            def descriptor_wire(data:)
+              {'context' => 'c', 'address' => 'a', 'serviceUuid' => 's', 'characteristicUuid' => 'ch',
+               'descriptorUuid' => 'd', 'type' => 'read', 'code' => 0, 'data' => data}
+            end
+          end
+
+          # browsingContext.PrintParameters.pageRanges is a list of `js-uint / text`.
+          describe 'scalar-union list elements' do
+            it 'round-trips integer and string elements' do
+              params = BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, '3-5'])
+
+              expect(params.as_json).to include('pageRanges' => [1, '3-5'])
+              expect(BrowsingContext::PrintParameters.from_json(params.as_json).page_ranges).to eq([1, '3-5'])
+            end
+
+            it 'rejects an element outside the union at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, true]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected integer or string, got true/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [nil]) }
+                .to raise_error(ArgumentError, /page_ranges\[0\] expected integer or string, got nil/)
+            end
+
+            it 'raises on an inbound element outside the union' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [{}]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[0\] expected integer or string, got \{\}/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => ['1', nil]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[1\] expected integer or string, got nil/)
+            end
+
+            it 'holds an inbound whole-valued float element as an Integer' do
+              parsed = BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [5.0, '7'])
+
+              expect(parsed.page_ranges).to eq([5, '7'])
+              expect(parsed.page_ranges.first).to be_an(::Integer)
             end
           end
 

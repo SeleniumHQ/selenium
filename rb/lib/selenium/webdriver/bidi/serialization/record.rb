@@ -30,7 +30,7 @@ module Selenium
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
           Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
-                                :scalar, :const, :map)
+                                :scalar, :const, :map, :min, :max, :exclusive_min, :exclusive_max)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -61,7 +61,9 @@ module Selenium
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true), primitive: meta[:primitive],
-                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET), map: meta[:map])
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET), map: meta[:map],
+                      min: meta[:min], max: meta[:max], exclusive_min: meta[:exclusive_min] || false,
+                      exclusive_max: meta[:exclusive_max] || false)
           end
           private_class_method :field
 
@@ -121,12 +123,12 @@ module Selenium
             end
 
             # Checks a field that carries an actual value (neither omitted nor nil): a nullable-const
-            # field against its literal, list/scalar shape, primitive type (lists excepted, as inbound
-            # does), ref type, and enum membership (resolved lazily so a cross-domain enum need not load first).
+            # field against its literal, list/scalar shape, primitive type (per element for a list), ref
+            # type, and enum membership (resolved lazily so a cross-domain enum need not load first).
             def validate_present(field, value)
               validate_const(field, value)
               check_outbound_shape(field, value)
-              check_outbound_primitive(field, value) unless field.list
+              check_outbound_primitive(field, value)
               check_outbound_map(field, value) if field.map
               validate_ref(field, value) if field.ref
               Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
@@ -201,14 +203,12 @@ module Selenium
             end
 
             # Outbound mirror of check_primitive: a primitive-typed arg (`string`/`integer`/…) must be
-            # the matching Ruby type, so a caller mistake (a string width, a float count) is a local
-            # ArgumentError here rather than a rejection the browser reports a round-trip later. A field
-            # with no primitive descriptor (enum, ref, opaque) passes; lists are skipped, as inbound does.
+            # the matching Ruby type within its declared bounds, so a caller mistake (a string width, a
+            # zero count) is a local ArgumentError here rather than a rejection the browser reports a
+            # round-trip later. A field with no primitive descriptor (enum, ref, opaque) passes.
             def check_outbound_primitive(field, value)
-              check = PRIMITIVE_CHECKS[field.primitive]
-              return if check.nil? || check.call(value)
-
-              raise ::ArgumentError, "#{name}##{field.name} expected #{field.primitive}, got #{value.inspect}"
+              mismatch = primitive_mismatch(field, value)
+              raise ::ArgumentError, "#{name}##{field.name}#{mismatch}" if mismatch
             end
 
             # Outbound mirror of check_map: a map-typed arg must be a Hash whose values are the
@@ -243,15 +243,18 @@ module Selenium
               return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
 
               if field.ref.nil?
-                return raw if field.list
                 return check_map(field, raw) if field.map
 
                 check_primitive(field, raw)
-                # A whole number is exact in both types, so the declared type is held with nothing lost.
-                return field.primitive == 'integer' && raw.is_a?(::Float) ? raw.to_i : raw
+                return field.list ? raw.map { |element| hold_integer(field, element) } : hold_integer(field, raw)
               end
 
               read_ref(field, raw)
+            end
+
+            # A whole number is exact in both types, so the declared type is held with nothing lost.
+            def hold_integer(field, value)
+              WHOLE_FLOAT.call(value) && Array(field.primitive).include?('integer') ? value.to_i : value
             end
 
             # Reads a ref-typed value into its class. A `scalar` position is an inline union with
@@ -288,10 +291,49 @@ module Selenium
             }.freeze
 
             def check_primitive(field, raw)
-              check = PRIMITIVE_CHECKS[field.primitive]
-              return if check.nil? || check.call(raw)
+              mismatch = primitive_mismatch(field, raw)
+              raise Error::SerializationError, "#{name}##{field.name}#{mismatch}" if mismatch
+            end
 
-              raise Error::SerializationError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
+            # The suffix of the error a primitive-typed value earns, or nil when it conforms — shared by
+            # both directions like map_mismatch. A list checks each element, so a nil element mismatches.
+            def primitive_mismatch(field, value)
+              return if field.primitive.nil?
+              return element_mismatch(field, field.primitive, value) unless field.list
+
+              value.each_with_index do |element, index|
+                mismatch = element_mismatch(field, field.primitive, element)
+                return "[#{index}]#{mismatch}" if mismatch
+              end
+              nil
+            end
+
+            # The field's bounds hold every numeric value it carries: the scalar, each list element, each map value.
+            def element_mismatch(field, primitives, value)
+              checks = Array(primitives).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
+              return bound_mismatch(field, value) if checks.empty? || checks.any? { |check| check.call(value) }
+
+              " expected #{Array(primitives).join(' or ')}, got #{value.inspect}"
+            end
+
+            def bound_mismatch(field, value)
+              return unless value.is_a?(::Numeric)
+
+              bound = violated_min(field, value) || violated_max(field, value)
+              " expected #{bound}, got #{value.inspect}" if bound
+            end
+
+            # Each is written as the in-bounds test, so NaN (in no range) fails rather than slipping past both sides.
+            def violated_min(field, value)
+              return if field.min.nil? || (field.exclusive_min ? value > field.min : value >= field.min)
+
+              "#{field.exclusive_min ? '>' : '>='} #{field.min}"
+            end
+
+            def violated_max(field, value)
+              return if field.max.nil? || (field.exclusive_max ? value < field.max : value <= field.max)
+
+              "#{field.exclusive_max ? '<' : '<='} #{field.max}"
             end
 
             # A `map` field (`{*text => <primitive>}`, e.g. script.NodeProperties.attributes) must arrive
@@ -311,11 +353,11 @@ module Selenium
             def map_mismatch(field, value)
               return " expected a map, got #{value.inspect}" unless value.is_a?(::Hash)
 
-              checks = Array(field.map).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
-              return if checks.empty?
-
-              entry = value.find { |_, v| checks.none? { |check| check.call(v) } }
-              "[#{entry[0].inspect}] expected #{Array(field.map).join(' or ')}, got #{entry[1].inspect}" if entry
+              value.each do |key, entry|
+                mismatch = element_mismatch(field, field.map, entry)
+                return "[#{key.inspect}]#{mismatch}" if mismatch
+              end
+              nil
             end
 
             def enum_hash(field)

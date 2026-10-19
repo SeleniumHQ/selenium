@@ -262,7 +262,7 @@ module Selenium
             attr_reader page_ranges: untyped
             attr_reader scale: untyped
             attr_reader shrink_to_fit: untyped
-            def self.new: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[untyped], ?scale: Numeric, ?shrink_to_fit: bool) -> instance
+            def self.new: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[Integer | String], ?scale: Numeric, ?shrink_to_fit: bool) -> instance
           end
 
           class PrintMarginParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
@@ -455,7 +455,7 @@ module Selenium
           def handle_user_prompt: (context: String, ?accept: bool, ?user_text: String) -> untyped
           def locate_nodes: (context: String, locator: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::locator, ?max_node_count: Integer, ?serialization_options: ::Selenium::WebDriver::BiDi::Protocol::Script::SerializationOptions, ?start_nodes: Array[::Selenium::WebDriver::BiDi::Protocol::Script::SharedReference]) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::LocateNodesResult
           def navigate: (context: String, url: String, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
-          def print: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[untyped], ?scale: Numeric, ?shrink_to_fit: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult
+          def print: (context: String, ?background: bool, ?margin: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintMarginParameters, ?orientation: Symbol, ?page: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintPageParameters, ?page_ranges: Array[Integer | String], ?scale: Numeric, ?shrink_to_fit: bool) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::PrintResult
           def reload: (context: String, ?ignore_cache: bool, ?wait: Symbol) -> ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::NavigateResult
           def set_bypass_csp: (bypass: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_viewport: (?context: String, ?viewport: ::Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Viewport?, ?device_pixel_ratio: Numeric?, ?user_contexts: Array[String]) -> untyped
