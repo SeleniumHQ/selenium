@@ -42,7 +42,6 @@ debpkg = "0.6.0"
 anyhow = { version = "1.0.104", default-features = false, features = ["backtrace", "std"] }
 apple-flat-package = "0.20.0"
 which = "8.0.6"
-fs2 = "0.4.3"
 fs_extra = "1.3.0"
 
 [target.'cfg(windows)'.dependencies]

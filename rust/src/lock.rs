@@ -22,7 +22,6 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 
 use crate::files::{create_parent_path_if_not_exists, create_path_if_not_exists};
-use fs2::FileExt;
 use std::fs;
 
 thread_local!(static LOCK_PATH: RefCell<Option<PathBuf>> = const { RefCell::new(None) });
@@ -52,7 +51,7 @@ impl Lock {
         let file = File::create(&path)?;
 
         log.debug(format!("Acquiring lock: {}", path.display()));
-        file.lock_exclusive().unwrap_or_default();
+        file.lock().unwrap_or_default();
         set_lock_path(Some(path.to_path_buf()));
 
         Ok(Self {
@@ -63,7 +62,7 @@ impl Lock {
 
     pub fn release(&mut self) {
         if let Some(file) = self.file.take() {
-            FileExt::unlock(&file).unwrap_or_default();
+            file.unlock().unwrap_or_default();
             fs::remove_file(&self.path).unwrap_or_default();
         }
         set_lock_path(None);
