@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
@@ -57,7 +59,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.internal.Debug;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -77,12 +79,14 @@ class RemoteWebDriverInitializationTest {
   private String oldDebugProperty;
   private String oldVerboseProperty;
   private Level oldLoggerLevel;
+  private List<Handler> oldHandlers;
 
   @BeforeEach
   void storeDebugState() {
     oldDebugProperty = System.getProperty("selenium.debug");
     oldVerboseProperty = System.getProperty("selenium.webdriver.verbose");
     oldLoggerLevel = seleniumLogger().getLevel();
+    oldHandlers = List.of(seleniumLogger().getHandlers());
     System.clearProperty("selenium.debug");
     System.clearProperty("selenium.webdriver.verbose");
   }
@@ -99,7 +103,12 @@ class RemoteWebDriverInitializationTest {
     } else {
       System.clearProperty("selenium.webdriver.verbose");
     }
-    Debug.configureLogger();
+    // Debug logging is one-way, so undo its effects on the logger directly.
+    for (Handler handler : seleniumLogger().getHandlers()) {
+      if (!oldHandlers.contains(handler)) {
+        seleniumLogger().removeHandler(handler);
+      }
+    }
     seleniumLogger().setLevel(oldLoggerLevel);
   }
 
@@ -107,13 +116,16 @@ class RemoteWebDriverInitializationTest {
   void constructingASecondDriverPicksUpADebugPropertyChangedAfterTheFirst() {
     CommandExecutor inMemoryExecutor = command -> echoCapabilities.apply(command);
 
+    seleniumLogger().setLevel(Level.INFO);
+
     new RemoteWebDriver(inMemoryExecutor, new ImmutableCapabilities());
+    assertThat(seleniumLogger().getLevel()).isEqualTo(Level.INFO);
 
     System.setProperty("selenium.debug", "true");
-
     new RemoteWebDriver(inMemoryExecutor, new ImmutableCapabilities());
 
     assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    assertThat(seleniumLogger().getHandlers()).hasSize(oldHandlers.size() + 1);
   }
 
   @Test
@@ -133,6 +145,17 @@ class RemoteWebDriverInitializationTest {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
         .withMessage("Command executor must be set");
+  }
+
+  @Test
+  void constructorShouldThrowIfCapabilitiesAreNull() {
+    CommandExecutor executor = mock(CommandExecutor.class);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new RemoteWebDriver(executor, null))
+        .withMessage("Capabilities must be set");
+
+    verifyNoInteractions(executor);
   }
 
   @Test

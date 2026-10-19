@@ -230,6 +230,20 @@ public class RemoteWebDriver
     this(executor, capabilities, DEFAULT_CLIENT_FACTORY, clientConfig);
   }
 
+  /**
+   * Creates a driver and starts a new session through the given executor.
+   *
+   * <p>Before the session starts, the current Selenium debug switches ({@code selenium.debug},
+   * {@code selenium.webdriver.verbose} and {@code SE_DEBUG}) are applied to Selenium's logger, so a
+   * switch set after this class was loaded still takes effect for this driver.
+   *
+   * @param executor the executor that sends commands to the remote end
+   * @param capabilities the capabilities requested for the new session
+   * @param clientFactory the factory used to create HTTP clients for this driver
+   * @param clientConfig the HTTP client configuration used by this driver
+   * @throws IllegalArgumentException if any argument is {@code null}
+   * @throws SessionNotCreatedException if the remote end cannot start a session
+   */
   // ignore WEBDRIVER_REMOTE_ENABLE_TRACING here, to allow extended external control
   public RemoteWebDriver(
       CommandExecutor executor,
@@ -239,8 +253,8 @@ public class RemoteWebDriver
     this.clientFactory = Require.nonNull("Client factory", clientFactory);
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
+    this.capabilities = Require.nonNull("Capabilities", capabilities);
     Debug.configureLogger();
-    this.capabilities = requireNonNullElseGet(capabilities, () -> new ImmutableCapabilities());
 
     try {
       startSession(capabilities);
