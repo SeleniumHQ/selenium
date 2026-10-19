@@ -23,7 +23,11 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
@@ -94,15 +98,95 @@ class BiDiUnsubscribeTest {
     assertThat(connection.isSubscribed("sub-1")).isTrue();
   }
 
+  @Test
+  void clearDuringARejectedUnsubscribeStillUnsubscribes() throws Exception {
+    assertCallDuringRejectedUnsubscribeIsHonoured(bidi -> bidi.clearListener(REALM_CREATED));
+  }
+
+  @Test
+  void removeDuringARejectedUnsubscribeStillUnsubscribes() throws Exception {
+    assertCallDuringRejectedUnsubscribeIsHonoured(bidi -> bidi.removeListener("sub-1"));
+  }
+
+  @Test
+  void closeDuringARejectedUnsubscribeStillClearsListeners() throws Exception {
+    assertCallDuringRejectedUnsubscribeIsHonoured(BiDi::close);
+  }
+
+  @Test
+  void addListenerDoesNotSubscribeWhileAnUnsubscribeIsInFlight() throws Exception {
+    AtomicBoolean unsubscribing = new AtomicBoolean();
+    AtomicBoolean subscribedDuringUnsubscribe = new AtomicBoolean();
+    AtomicReference<BiDi> bidi = new AtomicReference<>();
+    AtomicReference<Thread> adding = new AtomicReference<>();
+    Connection connection =
+        connectHandling(
+            (frame, socketListener) -> {
+              long id = ((Number) frame.get("id")).longValue();
+              if ("session.subscribe".equals(frame.get("method"))) {
+                subscribedDuringUnsubscribe.compareAndSet(false, unsubscribing.get());
+                socketListener.onText(subscribed(id, "sub-2"));
+              } else if ("session.unsubscribe".equals(frame.get("method"))) {
+                unsubscribing.set(true);
+                adding.set(
+                    startAndGiveTimeToRun(() -> bidi.get().addListener(REALM_CREATED, e -> {})));
+                unsubscribing.set(false);
+                socketListener.onText(success(id));
+              }
+            });
+    connection.addListener("sub-1", REALM_CREATED, event -> {});
+    bidi.set(new BiDi(connection, Duration.ofSeconds(5)));
+
+    bidi.get().clearListener(REALM_CREATED);
+    adding.get().join(5000);
+
+    assertThat(subscribedDuringUnsubscribe).isFalse();
+    assertThat(connection.isSubscribed("sub-2")).isTrue();
+  }
+
+  // A clear, remove or close that overlaps a rejected unsubscribe must not be undone when the
+  // rejected call puts its callbacks back
+  private void assertCallDuringRejectedUnsubscribeIsHonoured(Consumer<BiDi> overlappingCall)
+      throws InterruptedException {
+    AtomicInteger unsubscribes = new AtomicInteger();
+    AtomicReference<BiDi> bidi = new AtomicReference<>();
+    AtomicReference<Thread> overlapping = new AtomicReference<>();
+    Connection connection =
+        connect(
+            (id, socketListener) -> {
+              if (unsubscribes.getAndIncrement() > 0) {
+                socketListener.onText(success(id));
+                return;
+              }
+              overlapping.set(startAndGiveTimeToRun(() -> overlappingCall.accept(bidi.get())));
+              socketListener.onText(error(id));
+            });
+    connection.addListener("sub-1", REALM_CREATED, event -> {});
+    bidi.set(new BiDi(connection, Duration.ofSeconds(5)));
+
+    assertThatThrownBy(() -> bidi.get().clearListener(REALM_CREATED));
+    overlapping.get().join(5000);
+
+    assertThat(connection.isEventSubscribed(REALM_CREATED)).isFalse();
+    assertThat(connection.isSubscribed("sub-1")).isFalse();
+  }
+
   private Connection connect(BiConsumer<Long, WebSocket.Listener> onUnsubscribe) {
+    return connectHandling(
+        (frame, socketListener) -> {
+          if ("session.unsubscribe".equals(frame.get("method"))) {
+            onUnsubscribe.accept(((Number) frame.get("id")).longValue(), socketListener);
+          }
+        });
+  }
+
+  private Connection connectHandling(
+      BiConsumer<Map<String, Object>, WebSocket.Listener> onCommand) {
     WebSocket socket =
         new WebSocket() {
           @Override
           public WebSocket send(Message message) {
-            Map<String, Object> frame = JSON.toType(((TextMessage) message).text(), Json.MAP_TYPE);
-            if ("session.unsubscribe".equals(frame.get("method"))) {
-              onUnsubscribe.accept(((Number) frame.get("id")).longValue(), listener);
-            }
+            onCommand.accept(JSON.toType(((TextMessage) message).text(), Json.MAP_TYPE), listener);
             return this;
           }
 
@@ -132,6 +216,27 @@ class BiDiUnsubscribeTest {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
+  }
+
+  // Runs a call that should be held back by the in-flight unsubscribe, giving it time to wrongly
+  // finish first
+  private static Thread startAndGiveTimeToRun(Runnable call) {
+    Thread thread = new Thread(call);
+    thread.start();
+    try {
+      thread.join(500);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+    return thread;
+  }
+
+  private static String subscribed(long id, String subscription) {
+    return "{\"type\": \"success\", \"id\": "
+        + id
+        + ", \"result\": {\"subscription\": \""
+        + subscription
+        + "\"}}";
   }
 
   private static String success(long id) {
