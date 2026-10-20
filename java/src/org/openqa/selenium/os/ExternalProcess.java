@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
@@ -41,6 +42,12 @@ import org.openqa.selenium.io.MultiOutputStream;
 
 public class ExternalProcess {
   private static final Logger LOG = Logger.getLogger(ExternalProcess.class.getName());
+
+  /**
+   * How long the forwarded output may stay silent after the process exited before {@link
+   * #waitFor(Duration)} and {@link #shutdown(Duration)} stop waiting for the end of the stream.
+   */
+  private static final long OUTPUT_QUIET_PERIOD_MS = 500;
 
   public static class Builder {
 
@@ -205,11 +212,14 @@ public class ExternalProcess {
           buffer = new ByteArrayOutputStream();
         }
 
+        AtomicLong forwarded = new AtomicLong();
         Thread worker =
             new Thread(
                 () -> {
                   // copyOutputTo might be system.out or system.err, do not to close
-                  OutputStream output = new MultiOutputStream(buffer, copyOutputTo);
+                  OutputStream output =
+                      new CountingOutputStream(
+                          new MultiOutputStream(buffer, copyOutputTo), forwarded);
                   // closing the InputStream does somehow disturb the process, do not to close
                   InputStream input = process.getInputStream();
                   // use the CircularOutputStream as mandatory, we know it will never raise a
@@ -229,7 +239,7 @@ public class ExternalProcess {
         worker.setDaemon(true);
         worker.start();
 
-        return new ExternalProcess(process, buffer, worker);
+        return new ExternalProcess(process, buffer, worker, forwarded);
       } catch (Throwable t) {
         // ensure we do not leak a process in case of failures
         try {
@@ -249,11 +259,19 @@ public class ExternalProcess {
   private final Process process;
   private final OutputStream outputStream;
   private final Thread worker;
+  // the number of bytes the worker has forwarded, null when the worker was not started by Builder
+  private final @Nullable AtomicLong forwarded;
 
   public ExternalProcess(Process process, OutputStream outputStream, Thread worker) {
+    this(process, outputStream, worker, null);
+  }
+
+  private ExternalProcess(
+      Process process, OutputStream outputStream, Thread worker, @Nullable AtomicLong forwarded) {
     this.process = process;
     this.outputStream = outputStream;
     this.worker = worker;
+    this.forwarded = forwarded;
   }
 
   /**
@@ -292,21 +310,7 @@ public class ExternalProcess {
     boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
 
     if (exited) {
-      try {
-        // the worker might not stop even when process.destroyForcibly is called
-        worker.join(8000);
-      } catch (InterruptedException ex) {
-        Thread.interrupted();
-      } finally {
-        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
-        worker.interrupt();
-        try {
-          // now we might be able to join
-          worker.join(2000);
-        } catch (InterruptedException ex) {
-          Thread.interrupted();
-        }
-      }
+      awaitWorker();
     }
 
     return exited;
@@ -355,14 +359,41 @@ public class ExternalProcess {
         Thread.interrupted();
       }
     } finally {
-      try {
-        // the worker might not stop even when process.destroyForcibly is called
+      awaitWorker();
+    }
+  }
+
+  /**
+   * Waits for the worker to forward the output of the exited process.
+   *
+   * <p>The worker reads until the end of the stream. A child of the process that inherited its
+   * stdout or stderr, e.g. a browser started by a driver, keeps the stream open after the process
+   * itself exited. So the end of the stream may not arrive for a long time, while all output the
+   * process wrote has already been forwarded. Stop waiting once the output was silent for {@link
+   * #OUTPUT_QUIET_PERIOD_MS}, but keep waiting as long as output still arrives.
+   */
+  private void awaitWorker() {
+    AtomicLong counter = forwarded;
+    boolean quiet = false;
+    try {
+      // the worker might not stop even when process.destroyForcibly is called
+      if (counter == null) {
         worker.join(8000);
-      } catch (InterruptedException ex) {
-        Thread.interrupted();
-      } finally {
-        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
-        worker.interrupt();
+      } else {
+        quiet = joinUntilQuiet(counter, 8000);
+      }
+    } catch (InterruptedException ex) {
+      Thread.interrupted();
+    } finally {
+      // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
+      worker.interrupt();
+      if (quiet) {
+        LOG.log(
+            Level.FINE,
+            "the output of process "
+                + process.pid()
+                + " is still open, but silent; stopped waiting for its end");
+      } else {
         try {
           // now we might be able to join
           worker.join(2000);
@@ -370,6 +401,68 @@ public class ExternalProcess {
           Thread.interrupted();
         }
       }
+    }
+  }
+
+  /**
+   * Joins the worker until it stopped, the timeout elapsed, or no output was forwarded for {@link
+   * #OUTPUT_QUIET_PERIOD_MS}.
+   *
+   * @return true when the worker is still running, but did not forward any output in the last
+   *     {@link #OUTPUT_QUIET_PERIOD_MS}
+   */
+  private boolean joinUntilQuiet(AtomicLong counter, long timeoutMs) throws InterruptedException {
+    long deadline = System.nanoTime() + MILLISECONDS.toNanos(timeoutMs);
+    long last = -1;
+
+    while (worker.isAlive()) {
+      long count = counter.get();
+      if (count == last) {
+        return true;
+      }
+      last = count;
+
+      long remaining = TimeUnit.NANOSECONDS.toMillis(deadline - System.nanoTime());
+      if (remaining <= 0) {
+        return false;
+      }
+      worker.join(Math.min(remaining, OUTPUT_QUIET_PERIOD_MS));
+    }
+
+    return false;
+  }
+
+  /** Counts the bytes written through it, so a waiting thread can see the output is flowing. */
+  private static class CountingOutputStream extends OutputStream {
+
+    private final OutputStream delegate;
+    private final AtomicLong count;
+
+    private CountingOutputStream(OutputStream delegate, AtomicLong count) {
+      this.delegate = delegate;
+      this.count = count;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      delegate.write(b);
+      count.incrementAndGet();
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      delegate.write(b, off, len);
+      count.addAndGet(len);
+    }
+
+    @Override
+    public void flush() throws IOException {
+      delegate.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+      delegate.close();
     }
   }
 }

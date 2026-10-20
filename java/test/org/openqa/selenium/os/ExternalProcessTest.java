@@ -23,7 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.time.Duration;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 
@@ -111,6 +114,44 @@ class ExternalProcessTest {
 
     assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
     assertThat(process.exitValue()).isNotEqualTo(0);
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void waitForReturnsWhenAChildKeepsTheOutputOpen() throws InterruptedException {
+    // the child inherits stdout and outlives the process, like a browser started by a driver
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", "echo parent; sleep 12 & sleep 1"))
+            .start();
+
+    long start = System.nanoTime();
+    assertThat(process.waitFor(Duration.ofSeconds(20))).isTrue();
+    Duration waited = Duration.ofNanos(System.nanoTime() - start);
+
+    assertThat(waited).isLessThan(Duration.ofSeconds(5));
+    assertThat(process.getOutput()).contains("parent");
+  }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  void shutdownReturnsWhenAChildKeepsTheOutputOpen() throws InterruptedException {
+    ExternalProcess process =
+        ExternalProcess.builder()
+            .command("/bin/sh", List.of("-c", "echo parent; sleep 12 & sleep 30"))
+            .start();
+    // wait until the worker is reading, the stall only happens when it is blocked in a read
+    long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
+    while (!process.getOutput().contains("parent") && System.nanoTime() < deadline) {
+      Thread.sleep(10);
+    }
+
+    long start = System.nanoTime();
+    process.shutdown();
+    Duration waited = Duration.ofNanos(System.nanoTime() - start);
+
+    assertThat(process.isAlive()).isFalse();
+    assertThat(waited).isLessThan(Duration.ofSeconds(5));
   }
 
   private static String findExecutable(String relativePath) {
