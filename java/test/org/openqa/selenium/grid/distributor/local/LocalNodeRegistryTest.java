@@ -241,6 +241,33 @@ class LocalNodeRegistryTest {
     assertThat(sessionIdsInModel()).isEmpty();
   }
 
+  @Test
+  void healthCheckShouldKeepSlotsReservedForSessionsStillStarting() {
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+    URI uri = URI.create("http://example:4444");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "chrome");
+    SlotId slotId = new SlotId(nodeId, UUID.randomUUID());
+
+    // The Node lists a slot as empty until the session in it has been created.
+    NodeStatus idle = statusWith(nodeId, uri, new Slot(slotId, stereotype, Instant.EPOCH, null));
+    Node node =
+        new TestNode(
+            tracer,
+            nodeId,
+            uri,
+            registrationSecret,
+            () -> new HealthCheck.Result(UP, "ok", idle),
+            idle);
+
+    registry.add(node);
+    assertThat(registry.getModel().reserve(slotId)).isTrue();
+
+    registry.runHealthChecks();
+
+    assertThat(sessionIdsInModel()).containsExactly(new SessionId("reserved"));
+    assertThat(registry.getModel().reserve(slotId)).isFalse();
+  }
+
   private NodeStatus statusWith(NodeId nodeId, URI uri, Slot slot) {
     return new NodeStatus(
         nodeId,

@@ -172,11 +172,12 @@ public class LocalGridModel extends GridModel {
 
           // if the node was marked as "down", keep it down until a health check passes:
           // just because the node can hit the event bus doesn't mean it's reachable
+          NodeStatus reported = keepReservations(node, status);
           if (node.getAvailability() == DOWN) {
-            nodes.add(rewrite(status, DOWN));
+            nodes.add(rewrite(reported, DOWN));
           } else {
             // Otherwise, trust what it tells us.
-            nodes.add(status);
+            nodes.add(reported);
           }
 
           nodePurgeTimes.put(status.getNodeId(), Instant.now());
@@ -387,6 +388,42 @@ public class LocalGridModel extends GridModel {
     } finally {
       readLock.unlock();
     }
+  }
+
+  /**
+   * A Node only reports a session once it has been created, so a slot the Distributor has reserved
+   * for a session that is still starting shows up as empty. Keep those reservations: they are
+   * cleared by {@link #setSession} or {@link #release}, and dropping one here would let the slot be
+   * handed out twice.
+   */
+  private NodeStatus keepReservations(NodeStatus current, NodeStatus reported) {
+    Map<SlotId, Slot> reserved = new HashMap<>();
+    for (Slot slot : current.getSlots()) {
+      Session session = slot.getSession();
+      if (session != null && RESERVED.equals(session.getId())) {
+        reserved.put(slot.getId(), slot);
+      }
+    }
+    if (reserved.isEmpty()) {
+      return reported;
+    }
+
+    Set<Slot> slots = new HashSet<>();
+    for (Slot slot : reported.getSlots()) {
+      Slot kept = reserved.get(slot.getId());
+      slots.add(kept != null && slot.getSession() == null ? kept : slot);
+    }
+
+    return new NodeStatus(
+        reported.getNodeId(),
+        reported.getExternalUri(),
+        reported.getMaxSessionCount(),
+        slots,
+        reported.getAvailability(),
+        reported.getHeartbeatPeriod(),
+        reported.getSessionTimeout(),
+        reported.getVersion(),
+        reported.getOsInfo());
   }
 
   private NodeStatus rewrite(NodeStatus status, Availability availability) {
