@@ -87,6 +87,18 @@ class RemoteWebDriverInitializationTest {
   }
 
   @Test
+  void constructorShouldThrowIfCapabilitiesAreNull() {
+    CommandExecutor executor =
+        command -> {
+          throw new AssertionError("Executor must not be called: " + command);
+        };
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new RemoteWebDriver(executor, null))
+        .withMessage("Capabilities must be set");
+  }
+
+  @Test
   void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(exceptionResponder);
 

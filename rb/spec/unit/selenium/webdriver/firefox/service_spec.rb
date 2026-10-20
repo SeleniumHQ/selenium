@@ -162,16 +162,13 @@ module Selenium
 
         context 'when initializing driver' do
           let(:driver) { Firefox::Driver }
-          let(:service) do
-            instance_double(described_class, launch: service_manager, executable_path: nil, 'executable_path=': nil,
-                                             class: described_class)
-          end
-          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
+          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com', start: nil) }
           let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
           let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
           before do
             allow(Remote::Bridge).to receive(:new).and_return(bridge)
+            allow(ServiceManager).to receive(:new).and_return(service_manager)
             allow(bridge).to receive(:browser).and_return(:firefox)
           end
 
@@ -183,20 +180,19 @@ module Selenium
 
           it 'is created when :url is not provided' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new).and_return(service)
 
             driver.new
 
-            expect(described_class).to have_received(:new).with(no_args)
+            expect(ServiceManager).to have_received(:new).once.with(an_instance_of(described_class))
           end
 
           it 'accepts :service without creating a new instance' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new)
+            service = described_class.new
 
             driver.new(service: service)
 
-            expect(described_class).not_to have_received(:new)
+            expect(ServiceManager).to have_received(:new).once.with(service)
           end
         end
       end

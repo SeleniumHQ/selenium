@@ -1032,7 +1032,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
         deps = [
@@ -1055,7 +1055,6 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = [
-            "no-sandbox",
             "os-sensitive",
         ] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1090,7 +1089,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-%s" % (browser, feature),
         deps = [
@@ -1150,7 +1149,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-bidi" % browser,
         deps = [
@@ -1185,7 +1184,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1231,7 +1230,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1266,7 +1265,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1302,7 +1301,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1338,7 +1337,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],

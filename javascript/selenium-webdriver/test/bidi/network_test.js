@@ -58,7 +58,10 @@ suite(
       it('can request cookies', async function () {
         let beforeRequestEvent = null
         await network.beforeRequestSent(function (event) {
-          beforeRequestEvent = event
+          // Ignore unrelated requests such as favicon.ico, which can arrive after the page request
+          if (event.request.url.includes('emptyText')) {
+            beforeRequestEvent = event
+          }
         })
 
         await driver.get(Pages.emptyText)

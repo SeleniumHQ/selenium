@@ -22,7 +22,6 @@ use std::fs::File;
 use std::path::{Path, PathBuf};
 
 use crate::files::{create_parent_path_if_not_exists, create_path_if_not_exists};
-use fs2::FileExt;
 use std::fs;
 
 thread_local!(static LOCK_PATH: RefCell<Option<PathBuf>> = const { RefCell::new(None) });
@@ -52,7 +51,7 @@ impl Lock {
         let file = File::create(&path)?;
 
         log.debug(format!("Acquiring lock: {}", path.display()));
-        file.lock_exclusive().unwrap_or_default();
+        file.lock().unwrap_or_default();
         set_lock_path(Some(path.to_path_buf()));
 
         Ok(Self {
@@ -63,7 +62,7 @@ impl Lock {
 
     pub fn release(&mut self) {
         if let Some(file) = self.file.take() {
-            FileExt::unlock(&file).unwrap_or_default();
+            file.unlock().unwrap_or_default();
             fs::remove_file(&self.path).unwrap_or_default();
         }
         set_lock_path(None);
@@ -104,7 +103,7 @@ mod tests {
     use crate::logger::Logger;
     use std::fs;
     use std::path::PathBuf;
-    use std::time::{SystemTime, UNIX_EPOCH};
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
     fn create_test_dir(prefix: &str) -> PathBuf {
         let unique = SystemTime::now()
@@ -146,6 +145,39 @@ mod tests {
         }
 
         assert!(!lock_path.exists());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn acquire_blocks_until_lock_is_released() {
+        let root = create_test_dir("lock_blocked");
+        let logger = Logger::new();
+        let mut lock = Lock::acquire(&logger, &root, None).unwrap();
+
+        let (ready_tx, ready_rx) = std::sync::mpsc::channel();
+        let (acquired_tx, acquired_rx) = std::sync::mpsc::channel();
+        let root_clone = root.clone();
+        let handle = std::thread::spawn(move || {
+            let logger = Logger::new();
+            ready_tx.send(()).unwrap();
+            let _competing = Lock::acquire(&logger, &root_clone, None).unwrap();
+            acquired_tx.send(()).unwrap();
+        });
+
+        ready_rx.recv().unwrap();
+        assert!(
+            acquired_rx
+                .recv_timeout(Duration::from_millis(200))
+                .is_err(),
+            "competing acquisition must remain blocked while the lock is held"
+        );
+
+        lock.release();
+        acquired_rx
+            .recv_timeout(Duration::from_secs(5))
+            .expect("competing acquisition must succeed after the lock is released");
+        handle.join().unwrap();
+
         fs::remove_dir_all(root).unwrap();
     }
 }

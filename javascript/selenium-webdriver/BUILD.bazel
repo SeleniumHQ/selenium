@@ -7,6 +7,7 @@ load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin =
 load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "bin")
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+load("//common:browsers.bzl", "COMMON_TAGS")
 load("//common:defs.bzl", "copy_file")
 load("//common:webref_cddl.bzl", "BIDI_DFNS_FILES", "BIDI_EXTENSION_CDDL_FILES", "BIDI_VENDOR_CDDL_FILES", "WEBDRIVER_BIDI_CDDL")
 load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
@@ -306,12 +307,6 @@ LARGE_TEST_DATA = [
     "//common/src/web:js-lib",
 ]
 
-LARGE_TEST_TAGS = [
-    "browser-test",
-    "no-sandbox",
-    "requires-network",
-]
-
 # Behavior depends on the operating system, which RBE (Linux only) cannot cover.
 OS_SENSITIVE_TESTS = [
     "test/actions_test.js",
@@ -344,7 +339,7 @@ SE_MANAGER_TESTS = [
                 "SELENIUM_BROWSER": browser,
             } | (SE_MANAGER_TEST_ENV if test in SE_MANAGER_TESTS else BROWSERS[browser]["env"]),
             exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if test in SE_MANAGER_TESTS else {},
-            tags = [browser] + LARGE_TEST_TAGS +
+            tags = [browser] + COMMON_TAGS +
                    (["os-sensitive"] if test in OS_SENSITIVE_TESTS else []) +
                    (["se-manager"] if test in SE_MANAGER_TESTS else []),
         ),
@@ -407,7 +402,7 @@ genrule(
             browser,
             "remote",
             "%s-remote" % browser,
-        ] + LARGE_TEST_TAGS,
+        ] + COMMON_TAGS,
     )
     for test in GRID_TESTS
     for browser in GRID_BROWSERS

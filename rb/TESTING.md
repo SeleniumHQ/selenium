@@ -93,7 +93,7 @@ bundle exec rake update
 Or from the parent `selenium` directory:
 
 ```shell
-./go rb:update
+./go rb:local_dev
 ```
 
 To test against a specific Ruby version, set it in `rb/.ruby-version` (Bazel's hermetic Ruby
@@ -109,7 +109,7 @@ echo '<X.Y.Z>' > rb/.ruby-version
 If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development, you can configure it to use Bazel artifacts:
 
 1. Open `rb/` as a main project directory.
-2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
+2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:local_dev` from the `selenium` (parent) directory.
 3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
 4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in the [Environment Variables](#environment-variables) section.
 

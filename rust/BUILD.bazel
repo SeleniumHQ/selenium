@@ -185,5 +185,4 @@ rust_test(
     aliases = aliases(),
     crate = ":selenium_manager",
     edition = "2024",
-    tags = ["no-sandbox"],
 )

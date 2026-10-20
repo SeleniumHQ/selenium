@@ -2,7 +2,7 @@ load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 
 dotnet_nunit_test_suite(
     name = "webdriver",
-    size = "small",
+    size = "large",
     srcs = glob(
         ["**/*.cs"],
         exclude = [
