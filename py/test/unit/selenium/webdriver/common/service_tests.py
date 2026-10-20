@@ -32,12 +32,13 @@ class _UnreachableService(Service):
 
 
 def test_start_terminates_process_when_never_connectable(monkeypatch):
-    monkeypatch.setattr("selenium.webdriver.common.service.sleep", lambda _: None)
+    monkeypatch.setattr(Service, "is_connectable", lambda self: False)
 
     service = _UnreachableService(executable_path=sys.executable, port=utils.free_port())
+    service._start_timeout = 0.5
 
     try:
-        with pytest.raises(WebDriverException):
+        with pytest.raises(WebDriverException, match="Can not connect to the Service"):
             service.start()
 
         assert service.process.poll() is not None
