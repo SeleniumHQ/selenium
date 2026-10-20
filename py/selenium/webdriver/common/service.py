@@ -130,7 +130,7 @@ class Service(ABC):
     def assert_process_still_running(self) -> None:
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
-        if return_code:
+        if return_code is not None:
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
