@@ -147,7 +147,8 @@ public class KubernetesOptions {
         throw new ConfigException("Unable to find JSON config for: " + configKey);
       }
       Capabilities caps =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "kubernetes config '" + configKey + "'"));
 
       if (configKey.startsWith(CONFIGMAP_PREFIX)) {
         // Template mode: load Job template from ConfigMap
@@ -545,5 +546,14 @@ public class KubernetesOptions {
       }
     }
     return result;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

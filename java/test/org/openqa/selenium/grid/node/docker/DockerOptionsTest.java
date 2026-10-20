@@ -18,16 +18,19 @@
 package org.openqa.selenium.grid.node.docker;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 
 class DockerOptionsTest {
 
@@ -72,5 +75,14 @@ class DockerOptionsTest {
     Config config = Mockito.mock(Config.class);
     Mockito.when(config.getAll("docker", "devices")).thenReturn(Optional.of(deviceMapping));
     return config;
+  }
+
+  @Test
+  void nullStereotypeThrowsConfigExceptionNamingTheSource() {
+    assertThatThrownBy(
+            () ->
+                DockerOptions.parseStereotype("null", "docker image 'selenium/standalone-chrome'"))
+        .isInstanceOf(ConfigException.class)
+        .hasMessageContaining("docker image 'selenium/standalone-chrome'");
   }
 }

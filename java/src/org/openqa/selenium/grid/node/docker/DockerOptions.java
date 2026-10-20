@@ -170,7 +170,8 @@ public class DockerOptions {
         throw new DockerException("Unable to find JSON config");
       }
       Capabilities stereotype =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "docker image '" + imageName + "'"));
 
       kinds.put(imageName, stereotype);
     }
@@ -339,5 +340,14 @@ public class DockerOptions {
       }
       throw new RuntimeException(cause);
     }
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }
