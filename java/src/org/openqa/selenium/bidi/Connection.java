@@ -392,6 +392,19 @@ public class Connection implements Closeable {
             String.format(
                 "Method %s called with %s callbacks available",
                 rawDataMap.get("method"), eventCallbacks.size()));
+    boolean wasDispatching = dispatchingEvents.get();
+    dispatchingEvents.set(true);
+    try {
+      dispatchEvent(rawDataMap);
+    } finally {
+      // Removed rather than reset so pooled threads keep no entry for closed connections
+      if (!wasDispatching) {
+        dispatchingEvents.remove();
+      }
+    }
+  }
+
+  private void dispatchEvent(Map<String, Object> rawDataMap) {
     Lock lock = callbacksLock.readLock();
     // A waiting writer will block a reader to enter the lock, even if there are currently other
     // readers holding the lock. TryLock will bypass the waiting writers and acquire the read lock.
@@ -401,8 +414,6 @@ public class Connection implements Closeable {
     if (!lock.tryLock()) {
       lock.lock();
     }
-    boolean wasDispatching = dispatchingEvents.get();
-    dispatchingEvents.set(true);
     try {
       eventCallbacks.entrySet().stream()
           .filter(
@@ -437,10 +448,6 @@ public class Connection implements Closeable {
                 }
               });
     } finally {
-      // Removed rather than reset so pooled threads keep no entry for closed connections
-      if (!wasDispatching) {
-        dispatchingEvents.remove();
-      }
       lock.unlock();
     }
   }
