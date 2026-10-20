@@ -28,10 +28,11 @@ jobs:
     name: Update
     permissions:
       contents: read
+      pull-requests: read
     uses: ./.github/workflows/bazel.yml
     with:
       name: Update
-      run: if git fetch --no-tags --depth=1 origin ${{ inputs.branch }}; then git checkout -q FETCH_HEAD; fi; ${{ inputs.run }}
+      run: ./scripts/github-actions/safe-checkout.sh ${{ inputs.branch }}; ${{ inputs.run }}
       artifact-name: pr-changes
 
   publish:
@@ -62,8 +63,8 @@ jobs:
           TITLE: ${{ inputs.title }}${{ needs.update.outputs.output && format(' {0}', needs.update.outputs.output) || '' }}
           BODY: ${{ inputs.body }}
         run: |
-          if git fetch --no-tags --depth=1 origin "$BRANCH"; then git checkout -q FETCH_HEAD; fi
+          ./scripts/github-actions/safe-checkout.sh "$BRANCH"
           git apply --index changes.patch
           git -c user.name="Selenium CI Bot" -c user.email="selenium-ci@users.noreply.github.com" commit -qm "$TITLE"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" HEAD:refs/heads/"$BRANCH"
+          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" HEAD:refs/heads/"$BRANCH"
           gh pr edit "$BRANCH" --title "$TITLE" || gh pr create --base trunk --head "$BRANCH" --title "$TITLE" --body "$BODY" --label C-build
