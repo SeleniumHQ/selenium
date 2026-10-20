@@ -67,10 +67,6 @@ impl Lock {
         }
         set_lock_path(None);
     }
-
-    pub fn exists(&mut self) -> bool {
-        self.path.exists()
-    }
 }
 
 impl Drop for Lock {
