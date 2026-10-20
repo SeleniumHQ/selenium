@@ -8,11 +8,11 @@ set -x
 FULL_RUN="${1:-false}"
 
 # Bazel only sees the latest `--test_tag_filters`, so this overrides .bazelrc.remote
-TEST_FILTER="--test_tag_filters=-skip-rbe,-se-manager,-chrome-beta,-firefox-beta"
+TEST_FILTER="--test_tag_filters=-skip-rbe,-chrome-beta,-firefox-beta"
 CACHE_RESULTS="auto"
 
 if [ "${FULL_RUN}" = "true" ]; then
-  TEST_FILTER="--test_tag_filters=-skip-rbe,-se-manager"
+  TEST_FILTER="--test_tag_filters=-skip-rbe"
   CACHE_RESULTS="no"
 fi
 
@@ -25,7 +25,8 @@ bazel test --config=rbe-ci --build_tests_only \
   "${TEST_FILTER}" \
   //... -- $(cat .skipped-tests | tr '\n' ' ')
 
-# Build the packages we want to ship to users; release-preparation PRs do it in the parallel prepare-release job
+# Check the packaging rules in the test configuration so the analysis is reused; nightly and
+# release-preparation PRs package the real manager
 if [ "${SKIP_RELEASE_ARTIFACTS:-false}" != "true" ]; then
-  bazel build --config=rbe-ci --build_tag_filters=release-artifact //...
+  bazel build --config=rbe-ci --manager=stub --build_tag_filters=release-artifact //...
 fi

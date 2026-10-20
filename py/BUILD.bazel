@@ -8,6 +8,7 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 load("//common:defs.bzl", "copy_file")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
@@ -27,6 +28,7 @@ py_binary(
     ],
     args = [
         "upload",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -49,6 +51,7 @@ py_binary(
         "upload",
         "--repository",
         "testpypi",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -76,10 +79,10 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.51.0.202609302012"
+SE_VERSION = "4.52.0.202610091837"
 
 BROWSER_VERSIONS = [
-    "v152",
+    "v155",
     "v153",
     "v154",
 ]
@@ -332,6 +335,10 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":bidi",
+        # webdriver.py installs web extensions through the generated protocol layer, so it
+        # rides along with :bidi rather than only reaching the targets that test BiDi.
+        # :remote cannot carry it: the generator depends on :remote, so that would cycle.
+        ":bidi_protocol",
         ":exceptions",
         ":latest",
         ":remote",
@@ -653,6 +660,7 @@ py_wheel(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
     ],
     description_file = "README.rst",
     distribution = "selenium",
@@ -835,6 +843,7 @@ py_test_suite(
     args = [
         "--instafail",
     ],
+    tags = ["unit"],
     deps = [
         ":init-tree",
         ":selenium",
@@ -849,6 +858,7 @@ py_library(
         "test/selenium/webdriver/common/webserver.py",
     ],
     data = [
+        "//common/certificates",
         "//common/src/web",
     ],
     deps = [],
@@ -864,7 +874,11 @@ BIDI_IMPLEMENTATIONS = []
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
-REMOTE_BIDI_TESTS = []
+REMOTE_BIDI_TESTS = [
+    # install_web_extension uploads an unpacked extension to the remote end and
+    # installs from the path it hands back, which only happens over Grid.
+    "test/selenium/webdriver/common/bidi/driver_web_extension_tests.py",
+]
 
 GRID_TESTS = glob(["test/selenium/webdriver/remote/**/*.py"])
 
@@ -1018,7 +1032,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
         deps = [
@@ -1041,7 +1055,6 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = [
-            "no-sandbox",
             "os-sensitive",
         ] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1076,7 +1089,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-%s" % (browser, feature),
         deps = [
@@ -1098,6 +1111,7 @@ FEATURE_SUITE_DEFS = {
     ] + [":test-%s-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
 ) for browser in DEFAULT_BROWSER_TESTS]
 
+# The driver-finder tests exercise Selenium Manager.
 [
     py_test_suite(
         name = "test-%s-driver-finder" % browser,
@@ -1105,9 +1119,12 @@ FEATURE_SUITE_DEFS = {
         srcs = DRIVER_FINDER_TESTS,
         args = [
             "--instafail",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
+            "--driver=" + browser,
+        ],
+        data = SE_MANAGER_TEST_DATA,
+        env = SE_MANAGER_TEST_ENV,
         env_inherit = ["DISPLAY"],
+        exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES,
         flaky = True,
         tags = BROWSERS[browser]["tags"] + ["se-manager"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1132,7 +1149,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-bidi" % browser,
         deps = [
@@ -1167,7 +1184,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1213,7 +1230,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1248,7 +1265,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1284,7 +1301,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1320,7 +1337,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],

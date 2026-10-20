@@ -34,7 +34,7 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.bidi.protocol.script.EvaluateResultException"/>
+    <Class name="org.openqa.selenium.bidi.protocol.script.EvaluationResultException"/>
     <Bug pattern="NM_CLASS_NOT_EXCEPTION"/>
   </Match>
 

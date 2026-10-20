@@ -46,6 +46,7 @@ const JSZip = require('jszip')
 const Script = require('./script')
 const Network = require('./network')
 const Dialog = require('./fedcm/dialog')
+const webExtension = require('./web_extension')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1782,6 +1783,57 @@ class WebDriver {
       cmd.setParameter('payload', payload)
     }
     return await this.execute(cmd)
+  }
+
+  /**
+   * Installs a browser extension. Works with remote (Grid) sessions: a directory is uploaded to
+   * the remote end first, and an archive or base64 bytes are sent inline.
+   *
+   * Requires BiDi (see `options.enableBidi()`). Chromium installs only unpacked directories
+   * (SeleniumHQ/selenium#16541); Firefox also installs without BiDi, see
+   * {@link ../firefox.Driver#installWebExtension}.
+   *
+   *     const extension = await driver.installWebExtension('/path/to/extension')
+   *     await driver.uninstallWebExtension(extension)
+   *
+   * @param {string} extension an unpacked extension directory, a packed extension file
+   *     (.xpi/.crx/.zip), or base64-encoded bytes of one.
+   * @param {Object<string, boolean>=} options browser-specific install options. This browser
+   *     supports none; see {@link ../firefox.Driver#installWebExtension} for Firefox's.
+   * @return {!Promise<!webExtension.WebExtension>} the installed extension.
+   * @throws {error.InvalidArgumentError} if an option is given that this browser cannot honor.
+   * @throws {error.UnsupportedOperationError} if the session was created without BiDi.
+   */
+  async installWebExtension(extension, options = undefined) {
+    webExtension.checkInstallOptions(options, [], (await this.getCapabilities()).getBrowserName() ?? 'this browser')
+    if (!(await webExtension.isBidiEnabled(this))) {
+      throw webExtension.bidiRequired('installWebExtension')
+    }
+    // Required lazily: the generated BiDi modules load the BiDi transport, which a
+    // session that never installs an extension should not pay for.
+    const { WebExtension } = require('../bidi/generated/webextension')
+    const module = await WebExtension.create(this)
+    const result = await module.install({ extensionData: await webExtension.extensionData(this, extension) })
+    return new webExtension.WebExtension(result.extension)
+  }
+
+  /**
+   * Uninstalls a browser extension installed with {@link #installWebExtension}.
+   *
+   * @param {!webExtension.WebExtension} extension the extension returned by
+   *     {@link #installWebExtension}.
+   * @return {!Promise<void>} A promise that resolves once the extension is removed.
+   * @throws {error.InvalidArgumentError} if `extension` is not a `WebExtension`.
+   * @throws {error.UnsupportedOperationError} if the session was created without BiDi.
+   */
+  async uninstallWebExtension(extension) {
+    const id = webExtension.extensionId(extension)
+    if (!(await webExtension.isBidiEnabled(this))) {
+      throw webExtension.bidiRequired('uninstallWebExtension')
+    }
+    const { WebExtension } = require('../bidi/generated/webextension')
+    const module = await WebExtension.create(this)
+    await module.uninstall({ extension: id })
   }
 }
 

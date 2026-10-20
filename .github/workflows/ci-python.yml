@@ -34,15 +34,6 @@ permissions:
 # or dispatch and exclude the smoke tags, so they are the nightly complement of
 # smoke rather than the whole tree.
 jobs:
-  build:
-    name: Build
-    if: github.event_name == 'schedule' || !inputs.smoke
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: |
-        bazel build //py:selenium-wheel //py:selenium-sdist
-
   lint-ruff:
     name: Lint (ruff)
     uses: ./.github/workflows/bazel.yml
@@ -74,13 +65,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.14']
-        os: [ubuntu, macos, windows]
+        python-version: ['3.15']
+        os: [ubuntu]
     with:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: bazel test --local_test_jobs 1 //py:unit
+      run: bazel test //py:unit
 
   smoke:
     name: ${{ matrix.os }}-smoke
@@ -89,11 +80,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows, macos]
-        tag_filters: ["os-sensitive,se-manager,skip-rbe"]
-        include:
-          # RBE already runs the os-sensitive targets on Linux; ubuntu is here for what needs network.
-          - os: ubuntu
-            tag_filters: se-manager,skip-rbe
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: ${{ matrix.os }}
       needs-display: true
@@ -105,12 +95,12 @@ jobs:
         ./scripts/github-actions/bazel-test-if-targets.sh
         --keep_going
         --flaky_test_attempts 3
-        --local_test_jobs 1
+        --local_resources=browser=1
         --build_tests_only
         --skip_incompatible_explicit_targets
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-py.txt
 
   browser-tests:
@@ -134,7 +124,7 @@ jobs:
         bazel test
         --keep_going
         --flaky_test_attempts 3
-        --local_test_jobs 1
+        --local_resources=browser=1
         --pin_browsers=false
         ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe

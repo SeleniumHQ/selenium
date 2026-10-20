@@ -1,2 +1,4 @@
-SE_VERSION = "4.51.0-SNAPSHOT"
+load("//:version.bzl", "VERSIONS")
+
+SE_VERSION = VERSIONS["java"]
 TOOLS_JAVA_VERSION = "17"

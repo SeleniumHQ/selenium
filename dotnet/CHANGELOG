@@ -1,3 +1,9 @@
+v4.51.0
+======
+* Support CDP versions: v153, v154, v155
+* [test] Separate project for NUnit infrastructure (#18104)
+* [build] Automated Browser Version Update (major) with CDP (#18131)
+
 v4.50.0
 ======
 * Support CDP versions: v152, v153, v154

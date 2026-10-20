@@ -4,10 +4,8 @@ on:
   pull_request:
     types: [closed]
     paths:
-      - 'java/version.bzl'
-      - 'rb/lib/selenium/webdriver/version.rb'
+      - 'version.bzl'
       - 'py/selenium/__init__.py'
-      - 'dotnet/version.bzl'
       - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
@@ -28,6 +26,7 @@ jobs:
     if: >-
       github.event.repository.fork == false &&
       github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
       github.event.pull_request.merged == false
     uses: ./.github/workflows/restrict-trunk.yml
@@ -43,7 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       github.event.repository.fork == false &&
-      ((startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+      ((github.event.pull_request.head.repo.full_name == github.repository &&
+       startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
        github.event.pull_request.merged == true) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''))
     outputs:
@@ -152,7 +152,6 @@ jobs:
       name: Publish ${{ matrix.language }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
       node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
-      ruby-version: ${{ matrix.language == 'ruby' && 'jruby-10.1.0.0' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release rbe
@@ -170,6 +169,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build Python
+      use-cache: false
       run: ./go py:build --config=rbe_release
       artifact-name: pypi-distributions
       artifact-path: |
@@ -218,6 +218,7 @@ jobs:
       - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
           BASE_VERSION="${VERSION%.*}.0"
@@ -271,6 +272,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Verify packages
+      use-cache: false
       ref: ${{ needs.parse-tag.outputs.tag }}
       run: ./go ${{ needs.parse-tag.outputs.language }}:verify
     secrets: inherit
@@ -278,9 +280,9 @@ jobs:
   reset-version:
     name: Generate Nightly Versions
     needs: [parse-tag, check-authorization]
-    uses: ./.github/workflows/bazel.yml
+    uses: ./.github/workflows/upload-changes.yml
     with:
-      name: Reset Versions
+      name: Reset versions
       run: ./go ${{ needs.parse-tag.outputs.language }}:version nightly${{ needs.parse-tag.outputs.language == 'all' && ' && ./go rust:version nightly' || '' }}
       artifact-name: version-reset
 
@@ -342,7 +344,7 @@ jobs:
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
       needs.update-version.result == 'success' &&
-      (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+      (needs.parse-tag.outputs.language != 'all' || needs.mirror.result == 'success')
     uses: ./.github/workflows/restrict-trunk.yml
     with:
       unlock: true
@@ -364,8 +366,8 @@ jobs:
           SLACK_COLOR: ${{ contains(needs.*.result, 'failure') && 'failure' || (needs.publish.result == 'success' && 'good' || 'warning') }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
           SLACK_MESSAGE: |
+            ${{ contains(needs.*.result, 'failure') && 'Release failed' || (needs.publish.result == 'success' && 'Release complete' || 'Release did not run') }}
             • Selenium Published: ${{ needs.publish.result }}
             • Python Published: ${{ needs.publish-python.result }}
             • Tag Created: ${{ needs.create-tag.result }}

@@ -35,7 +35,7 @@ module Selenium
         end
       end
 
-      attr_accessor :open_timeout, :read_timeout, :max_redirects, :proxy
+      attr_accessor :open_timeout, :read_timeout, :max_redirects, :proxy, :ignore_certificates
       attr_writer :extra_headers, :user_agent
       attr_reader :server_url
 
@@ -44,6 +44,7 @@ module Selenium
       # @param [Numeric] read_timeout Seconds to wait for a response.
       # @param [Integer] max_redirects Maximum number of redirects to follow.
       # @param [Proxy] proxy Proxy to use for the connection.
+      # @param [Boolean, nil] ignore_certificates Skip verifying the server certificate; nil verifies but falls back with a deprecation.
       # @param [Hash] extra_headers Additional headers to send with each request.
       # @param [String] user_agent Value to send as the User-Agent header.
       # @param [String, URI] server_url URL of the server to connect to.
@@ -52,6 +53,7 @@ module Selenium
                      read_timeout: 120,
                      max_redirects: 20,
                      proxy: nil,
+                     ignore_certificates: nil,
                      extra_headers: nil,
                      user_agent: nil,
                      server_url: nil)
@@ -59,6 +61,7 @@ module Selenium
         @read_timeout = read_timeout
         @max_redirects = max_redirects
         @proxy = proxy || proxy_from_environment
+        @ignore_certificates = ignore_certificates
         @extra_headers = extra_headers
         @user_agent = user_agent
         self.server_url = server_url

@@ -1723,14 +1723,18 @@
     "js-int": {
       "kind": "alias",
       "type": {
-        "primitive": "integer"
+        "primitive": "integer",
+        "min": -9007199254740991,
+        "max": 9007199254740991
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-js-int"
     },
     "js-uint": {
       "kind": "alias",
       "type": {
-        "primitive": "integer"
+        "primitive": "integer",
+        "min": 0,
+        "max": 9007199254740991
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-js-uint"
     },
@@ -2104,7 +2108,9 @@
           "wire": "socksVersion",
           "required": true,
           "type": {
-            "primitive": "integer"
+            "primitive": "integer",
+            "min": 0,
+            "max": 255
           }
         },
         {
@@ -2139,7 +2145,9 @@
           "wire": "socksVersion",
           "required": true,
           "type": {
-            "primitive": "integer"
+            "primitive": "integer",
+            "min": 0,
+            "max": 255
           }
         }
       ],
@@ -3899,7 +3907,9 @@
           "wire": "quality",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1
           }
         }
       ],
@@ -3915,7 +3925,8 @@
           "wire": "maxWidth",
           "required": false,
           "type": {
-            "ref": "js-uint"
+            "ref": "js-uint",
+            "min": 1
           }
         },
         {
@@ -3923,7 +3934,8 @@
           "wire": "maxHeight",
           "required": false,
           "type": {
-            "ref": "js-uint"
+            "ref": "js-uint",
+            "min": 1
           }
         }
       ],
@@ -4370,7 +4382,8 @@
           "wire": "maxNodeCount",
           "required": false,
           "type": {
-            "ref": "js-uint"
+            "ref": "js-uint",
+            "min": 1
           }
         },
         {
@@ -4585,7 +4598,9 @@
           "wire": "scale",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0.1,
+            "max": 2
           }
         },
         {
@@ -4609,7 +4624,8 @@
           "wire": "bottom",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0
           }
         },
         {
@@ -4617,7 +4633,8 @@
           "wire": "left",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0
           }
         },
         {
@@ -4625,7 +4642,8 @@
           "wire": "right",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0
           }
         },
         {
@@ -4633,7 +4651,8 @@
           "wire": "top",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0
           }
         }
       ],
@@ -4649,7 +4668,8 @@
           "wire": "height",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0.0352
           }
         },
         {
@@ -4657,7 +4677,8 @@
           "wire": "width",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0.0352
           }
         }
       ],
@@ -4862,6 +4883,8 @@
           "required": false,
           "type": {
             "primitive": "number",
+            "min": 0,
+            "exclusiveMin": true,
             "nullable": true
           }
         },
@@ -5978,7 +6001,9 @@
           "wire": "latitude",
           "required": true,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": -90,
+            "max": 90
           }
         },
         {
@@ -5986,7 +6011,9 @@
           "wire": "longitude",
           "required": true,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": -180,
+            "max": 180
           }
         },
         {
@@ -5994,7 +6021,8 @@
           "wire": "accuracy",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0
           }
         },
         {
@@ -6012,6 +6040,7 @@
           "required": false,
           "type": {
             "primitive": "number",
+            "min": 0,
             "nullable": true
           }
         },
@@ -6021,6 +6050,9 @@
           "required": false,
           "type": {
             "primitive": "number",
+            "min": 0,
+            "max": 360,
+            "exclusiveMax": true,
             "nullable": true
           }
         },
@@ -6030,6 +6062,7 @@
           "required": false,
           "type": {
             "primitive": "number",
+            "min": 0,
             "nullable": true
           }
         }
@@ -7210,6 +7243,7 @@
           "required": true,
           "type": {
             "ref": "js-uint",
+            "min": 1,
             "nullable": true
           }
         },
@@ -9951,23 +9985,23 @@
       "outbound": true,
       "inbound": false
     },
-    "script.EvaluateResult": {
+    "script.EvaluationResult": {
       "kind": "union",
       "variants": [
-        "script.EvaluateResultSuccess",
-        "script.EvaluateResultException"
+        "script.EvaluationResultSuccess",
+        "script.EvaluationResultException"
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-EvaluateResult",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#type-script-EvaluationResult",
       "selector": {
         "by": "type",
         "variants": [
           {
             "value": "success",
-            "ref": "script.EvaluateResultSuccess"
+            "ref": "script.EvaluationResultSuccess"
           },
           {
             "value": "exception",
-            "ref": "script.EvaluateResultException"
+            "ref": "script.EvaluationResultException"
           }
         ]
       },
@@ -9975,7 +10009,7 @@
       "outbound": false,
       "inbound": true
     },
-    "script.EvaluateResultSuccess": {
+    "script.EvaluationResultSuccess": {
       "kind": "record",
       "fields": [
         {
@@ -10003,11 +10037,11 @@
           }
         }
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultsuccess",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultsuccess",
       "outbound": false,
       "inbound": true
     },
-    "script.EvaluateResultException": {
+    "script.EvaluationResultException": {
       "kind": "record",
       "fields": [
         {
@@ -10035,7 +10069,7 @@
           }
         }
       ],
-      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultexception",
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultexception",
       "outbound": false,
       "inbound": true
     },
@@ -12491,7 +12525,7 @@
     "script.CallFunctionResult": {
       "kind": "alias",
       "type": {
-        "ref": "script.EvaluateResult"
+        "ref": "script.EvaluationResult"
       },
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptcallfunctionresult"
     },
@@ -12574,6 +12608,13 @@
       "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateparameters",
       "outbound": true,
       "inbound": false
+    },
+    "script.EvaluateResult": {
+      "kind": "alias",
+      "type": {
+        "ref": "script.EvaluationResult"
+      },
+      "specHref": "https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresult"
     },
     "script.GetRealms": {
       "kind": "record",
@@ -14179,7 +14220,9 @@
           "wire": "pressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1
           }
         },
         {
@@ -14187,7 +14230,9 @@
           "wire": "tangentialPressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": -1,
+            "max": 1
           }
         },
         {
@@ -14195,7 +14240,9 @@
           "wire": "twist",
           "required": false,
           "type": {
-            "primitive": "integer"
+            "primitive": "integer",
+            "min": 0,
+            "max": 359
           }
         },
         {
@@ -14203,7 +14250,9 @@
           "wire": "altitudeAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1.5707963267948966
           }
         },
         {
@@ -14211,7 +14260,9 @@
           "wire": "azimuthAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 6.283185307179586
           }
         }
       ],
@@ -14283,7 +14334,9 @@
           "wire": "pressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1
           }
         },
         {
@@ -14291,7 +14344,9 @@
           "wire": "tangentialPressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": -1,
+            "max": 1
           }
         },
         {
@@ -14299,7 +14354,9 @@
           "wire": "twist",
           "required": false,
           "type": {
-            "primitive": "integer"
+            "primitive": "integer",
+            "min": 0,
+            "max": 359
           }
         },
         {
@@ -14307,7 +14364,9 @@
           "wire": "altitudeAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1.5707963267948966
           }
         },
         {
@@ -14315,7 +14374,9 @@
           "wire": "azimuthAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 6.283185307179586
           }
         }
       ],
@@ -14411,7 +14472,9 @@
           "wire": "pressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1
           }
         },
         {
@@ -14419,7 +14482,9 @@
           "wire": "tangentialPressure",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": -1,
+            "max": 1
           }
         },
         {
@@ -14427,7 +14492,9 @@
           "wire": "twist",
           "required": false,
           "type": {
-            "primitive": "integer"
+            "primitive": "integer",
+            "min": 0,
+            "max": 359
           }
         },
         {
@@ -14435,7 +14502,9 @@
           "wire": "altitudeAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 1.5707963267948966
           }
         },
         {
@@ -14443,7 +14512,9 @@
           "wire": "azimuthAngle",
           "required": false,
           "type": {
-            "primitive": "number"
+            "primitive": "number",
+            "min": 0,
+            "max": 6.283185307179586
           }
         }
       ],

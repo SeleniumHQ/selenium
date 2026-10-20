@@ -1,0 +1,45 @@
+name: Shared - Upload Changes
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Name of the job
+        required: false
+        type: string
+        default: Generate changes
+      ref:
+        description: Git ref to checkout (branch, tag, or SHA)
+        required: false
+        type: string
+        default: ''
+      run:
+        description: Command that modifies the source tree
+        required: true
+        type: string
+      artifact-name:
+        description: Name of the artifact to upload changes.patch to
+        required: true
+        type: string
+
+jobs:
+  upload-changes:
+    name: ${{ inputs.name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - name: Run command
+        run: ${{ inputs.run }}
+      - name: Save git diff
+        run: git add -A && git diff --binary --staged > changes.patch
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: changes.patch
+          overwrite: true

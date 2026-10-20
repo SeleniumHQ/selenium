@@ -9,9 +9,6 @@ AllCops:
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
 
-Gemspec/DevelopmentDependencies:
-  EnforcedStyle: gemspec
-
 Layout/LineLength:
   AllowedPatterns:
     - '^\s*#'
@@ -61,7 +58,7 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   CountComments: false
-  Max: 110
+  Max: 120
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'lib/selenium/webdriver/bidi/serialization/record.rb'

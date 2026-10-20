@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 def dotnet_version
-  File.foreach('dotnet/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('dotnet')
 end
 
 desc 'Build nupkg files'
@@ -40,8 +38,9 @@ task :release do |_task, arguments|
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
-    puts 'Updating .NET version to nightly...'
     Rake::Task['dotnet:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one has no timestamp
+    SeleniumRake.write_version('dotnet', "#{dotnet_version}#{Time.now.strftime('%Y%m%d%H%M')}")
     ENV['NUGET_API_KEY'] = ENV.fetch('GITHUB_TOKEN', nil)
     ENV['NUGET_SOURCE'] = 'https://nuget.pkg.github.com/seleniumhq/index.json'
   else
@@ -96,13 +95,9 @@ end
 desc 'Update .NET version'
 task :version, [:version] do |_task, arguments|
   old_version = dotnet_version
-  nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-nightly')
   puts "Updating .NET from #{old_version} to #{new_version}"
-
-  file = 'dotnet/version.bzl'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('dotnet', new_version)
 end
 
 desc 'Update .NET dependencies to latest versions'

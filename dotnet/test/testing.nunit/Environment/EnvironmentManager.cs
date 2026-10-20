@@ -28,6 +28,15 @@ public class EnvironmentManager
 {
     private static readonly Lazy<EnvironmentManager> instance = new(() => new EnvironmentManager());
 
+    private static readonly Dictionary<Browser, string> driverPathEnvironmentVariables = new()
+    {
+        [Browser.Chrome] = "SE_CHROMEDRIVER",
+        [Browser.Edge] = "SE_EDGEDRIVER",
+        [Browser.Firefox] = "SE_GECKODRIVER",
+        [Browser.IE] = "SE_IEDRIVER",
+        [Browser.Safari] = "SE_SAFARIDRIVER",
+    };
+
     private EnvironmentManager()
     {
         string dataFilePath;
@@ -72,6 +81,13 @@ public class EnvironmentManager
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
+
+        // Services the tests build themselves then resolve the pinned driver instead of invoking Selenium Manager.
+        if (!string.IsNullOrEmpty(driverServiceLocation)
+            && driverPathEnvironmentVariables.TryGetValue(Browser, out string driverVariable))
+        {
+            System.Environment.SetEnvironmentVariable(driverVariable, driverServiceLocation);
+        }
 
         WebServer = new AppServer();
         WebServer.StartAsync().GetAwaiter().GetResult();

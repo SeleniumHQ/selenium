@@ -8,7 +8,7 @@ require 'net/http'
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v152:v152.publish
+  //java/src/org/openqa/selenium/devtools/v155:v155.publish
   //java/src/org/openqa/selenium/devtools/v153:v153.publish
   //java/src/org/openqa/selenium/devtools/v154:v154.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
@@ -33,9 +33,7 @@ JAVA_RELEASE_TARGETS = %w[
 ].freeze
 
 def java_version
-  File.foreach('java/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('java')
 end
 
 def java_release_targets
@@ -513,6 +511,12 @@ task :update do
       version = maven_stable_release(artifact)
       next if version.nil?
     end
+    if artifact.start_with?('io.fabric8:') && Gem::Version.new(version) >= Gem::Version.new('8')
+      # fabric8 8.0 requires Java 17; stay on 7.x until Selenium's Java minimum reaches 17.
+      # Lifting this also removes the Jackson override on //java/src/org/openqa/selenium/grid/node/kubernetes.
+      version = maven_stable_release(artifact, below: '8')
+      next if version.nil?
+    end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
   File.write(file_path, content)
@@ -521,7 +525,7 @@ task :update do
   Rake::Task['java:pin'].invoke
 end
 
-def maven_stable_release(artifact)
+def maven_stable_release(artifact, below: nil)
   require 'rexml/document'
   group_id, artifact_id = artifact.split(':', 2)
   group_path = group_id.tr('.', '/')
@@ -532,6 +536,7 @@ def maven_stable_release(artifact)
   doc = REXML::Document.new(xml)
   versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
   stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
+  stable.select! { |v| Gem::Version.new(v) < Gem::Version.new(below) } if below
   stable.max_by { |v| Gem::Version.new(v) }
 rescue StandardError => e
   puts "WARNING — Failed to fetch stable release for #{artifact}: #{e.message}"
@@ -555,10 +560,7 @@ task :version, [:version] do |_task, arguments|
   old_version = java_version
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-SNAPSHOT')
   puts "Updating Java from #{old_version} to #{new_version}"
-
-  file = 'java/version.bzl'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('java', new_version)
 end
 
 desc 'Format Java code with google-java-format'

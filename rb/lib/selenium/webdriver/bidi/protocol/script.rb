@@ -94,23 +94,23 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#type-script-EvaluateResult
-          class EvaluateResult < Serialization::Union
+          # @see https://w3c.github.io/webdriver-bidi/#type-script-EvaluationResult
+          class EvaluationResult < Serialization::Union
             discriminator 'type', {success: 'success', exception: 'exception'}
             variants(
-              success: 'Script::EvaluateResultSuccess',
-              exception: 'Script::EvaluateResultException'
+              success: 'Script::EvaluationResultSuccess',
+              exception: 'Script::EvaluationResultException'
             )
             object_only
 
-            def self.success(**) = Script::EvaluateResultSuccess.new(**)
-            def self.exception(**) = Script::EvaluateResultException.new(**)
+            def self.success(**) = Script::EvaluationResultSuccess.new(**)
+            def self.exception(**) = Script::EvaluationResultException.new(**)
           end
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultsuccess
-          EvaluateResultSuccess = Serialization::Record.define(
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultsuccess
+          EvaluationResultSuccess = Serialization::Record.define(
             type: {fixed: 'success'},
             result: {wire_key: 'result', ref: 'Script::RemoteValue'},
             realm: {wire_key: 'realm', primitive: 'string'}
@@ -118,8 +118,8 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluateresultexception
-          EvaluateResultException = Serialization::Record.define(
+          # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptevaluationresultexception
+          EvaluationResultException = Serialization::Record.define(
             type: {fixed: 'exception'},
             exception_details: {wire_key: 'exceptionDetails', ref: 'Script::ExceptionDetails'},
             realm: {wire_key: 'realm', primitive: 'string'}
@@ -129,9 +129,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-ExceptionDetails
           ExceptionDetails = Serialization::Record.define(
-            column_number: {wire_key: 'columnNumber', primitive: 'integer'},
+            column_number: {wire_key: 'columnNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             exception: {wire_key: 'exception', ref: 'Script::RemoteValue'},
-            line_number: {wire_key: 'lineNumber', primitive: 'integer'},
+            line_number: {wire_key: 'lineNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', ref: 'Script::StackTrace'},
             text: {wire_key: 'text', primitive: 'string'}
           )
@@ -376,7 +376,7 @@ module Selenium
             type: {fixed: 'dedicated-worker'},
             realm: {wire_key: 'realm', primitive: 'string'},
             origin: {wire_key: 'origin', primitive: 'string'},
-            owners: {wire_key: 'owners', list: true}
+            owners: {wire_key: 'owners', list: true, primitive: 'string'}
           )
 
           # @api private
@@ -737,8 +737,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptnodeproperties
           NodeProperties = Serialization::Record.define(
-            node_type: {wire_key: 'nodeType', primitive: 'integer'},
-            child_node_count: {wire_key: 'childNodeCount', primitive: 'integer'},
+            node_type: {wire_key: 'nodeType', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            child_node_count: {wire_key: 'childNodeCount', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             attributes: {wire_key: 'attributes', required: false, map: 'string'},
             children: {wire_key: 'children', required: false, ref: 'Script::NodeRemoteValue', list: true},
             local_name: {wire_key: 'localName', required: false, primitive: 'string'},
@@ -767,8 +767,22 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-SerializationOptions
           SerializationOptions = Serialization::Record.define(
-            max_dom_depth: {wire_key: 'maxDomDepth', required: false, nullable: true, primitive: 'integer'},
-            max_object_depth: {wire_key: 'maxObjectDepth', required: false, nullable: true, primitive: 'integer'},
+            max_dom_depth: {
+              wire_key: 'maxDomDepth',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            max_object_depth: {
+              wire_key: 'maxObjectDepth',
+              required: false,
+              nullable: true,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
             include_shadow_tree: {
               wire_key: 'includeShadowTree',
               required: false,
@@ -780,9 +794,9 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-script-StackFrame
           StackFrame = Serialization::Record.define(
-            column_number: {wire_key: 'columnNumber', primitive: 'integer'},
+            column_number: {wire_key: 'columnNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             function_name: {wire_key: 'functionName', primitive: 'string'},
-            line_number: {wire_key: 'lineNumber', primitive: 'integer'},
+            line_number: {wire_key: 'lineNumber', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             url: {wire_key: 'url', primitive: 'string'}
           )
 
@@ -832,8 +846,8 @@ module Selenium
           AddPreloadScriptParameters = Serialization::Record.define(
             function_declaration: {wire_key: 'functionDeclaration', primitive: 'string'},
             arguments: {wire_key: 'arguments', required: false, ref: 'Script::ChannelValue', list: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'},
             sandbox: {wire_key: 'sandbox', required: false, primitive: 'string'}
           )
 
@@ -846,7 +860,7 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-scriptdisownparameters
           DisownParameters = Serialization::Record.define(
-            handles: {wire_key: 'handles', list: true},
+            handles: {wire_key: 'handles', list: true, primitive: 'string'},
             target: {wire_key: 'target', ref: 'Script::Target'}
           )
 
@@ -995,7 +1009,7 @@ module Selenium
               this: this,
               user_activation: user_activation
             )
-            execute(cmd: 'script.callFunction', params: params, result: Script::EvaluateResult)
+            execute(cmd: 'script.callFunction', params: params, result: Script::EvaluationResult)
           end
 
           # @api private
@@ -1026,7 +1040,7 @@ module Selenium
               serialization_options: serialization_options,
               user_activation: user_activation
             )
-            execute(cmd: 'script.evaluate', params: params, result: Script::EvaluateResult)
+            execute(cmd: 'script.evaluate', params: params, result: Script::EvaluationResult)
           end
 
           # @api private

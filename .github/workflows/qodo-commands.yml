@@ -1,0 +1,51 @@
+name: Webhook - Qodo Commands
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, labeled]
+
+permissions: {}
+
+jobs:
+  committer:
+    if: >-
+      github.event.repository.fork == false &&
+      github.event.action != 'labeled' &&
+      github.event.pull_request.user.login != 'selenium-ci'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request Qodo for committers
+        run: |
+          committers=$(gh api orgs/SeleniumHQ/teams/selenium-committers/members --paginate --jq '.[].login')
+          if ! grep -qixF "$AUTHOR" <<< "$committers"; then
+            exit 0
+          fi
+          if [[ "$ACTION" == opened ]]; then
+            gh pr comment "$NUMBER" --repo "$REPO" --body /agentic_describe
+          fi
+          gh pr comment "$NUMBER" --repo "$REPO" --body /agentic_review
+        env:
+          # selenium-ci holds a Qodo seat, and reading team membership needs an org-scoped token
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          ACTION: ${{ github.event.action }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+
+  label:
+    if: >-
+      github.event.repository.fork == false &&
+      github.event.action == 'labeled' &&
+      contains(fromJSON('["Q-qodo-describe", "Q-qodo-review"]'), github.event.label.name)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post Qodo command for label
+        run: |
+          gh pr comment "$NUMBER" --repo "$REPO" --body "/agentic_${LABEL#Q-qodo-}"
+          # Removing the label lets it be applied again to request another run
+          gh pr edit "$NUMBER" --repo "$REPO" --remove-label "$LABEL"
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          LABEL: ${{ github.event.label.name }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}

@@ -1,3 +1,7 @@
+Selenium 4.51.0
+* Support CDP versions: v153, v154, v155
+* Validate WebSocket response interval correctly (#17984)
+
 Selenium 4.50.0
 * Support CDP versions: v152, v153, v154
 * cleanup for ruff b904 raise from  (#18030)
