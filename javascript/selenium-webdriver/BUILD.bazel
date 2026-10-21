@@ -1,5 +1,6 @@
 load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@npm//:defs.bzl", "npm_link_all_packages")
@@ -7,6 +8,7 @@ load("@npm//javascript/selenium-webdriver:eslint/package_json.bzl", eslint_bin =
 load("@npm//javascript/selenium-webdriver:jsdoc/package_json.bzl", jsdoc_bin = "bin")
 load("@npm//javascript/selenium-webdriver:prettier/package_json.bzl", prettier_bin = "bin")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+load("//:version.bzl", "VERSIONS")
 load("//common:browsers.bzl", "COMMON_TAGS")
 load("//common:defs.bzl", "copy_file")
 load("//common:webref_cddl.bzl", "BIDI_DFNS_FILES", "BIDI_EXTENSION_CDDL_FILES", "BIDI_VENDOR_CDDL_FILES", "WEBDRIVER_BIDI_CDDL")
@@ -117,7 +119,7 @@ generate_bidi_library(
     vendor_cddl_files = BIDI_VENDOR_CDDL_FILES,
 )
 
-VERSION = "4.52.0-nightly202610091837"
+VERSION = VERSIONS["javascript"]
 
 BROWSER_VERSIONS = [
     "v155",
@@ -127,11 +129,7 @@ BROWSER_VERSIONS = [
 
 js_library(
     name = "prod-src-files",
-    srcs = [
-        "CHANGES.md",
-        "README.md",
-        "package.json",
-    ] + glob([
+    srcs = glob([
         "*.js",
         "example/*.js",
         "http/*.js",
@@ -155,6 +153,13 @@ js_library(
     ],
 )
 
+jq(
+    name = "package-json-stamped",
+    srcs = ["package.json"],
+    out = "stamped/package.json",
+    filter = '.version = "%s"' % VERSION,
+)
+
 npm_package(
     name = "selenium-webdriver",
     srcs = [
@@ -172,13 +177,21 @@ npm_package(
         "//javascript/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/selenium-webdriver/lib/atoms:is_displayed",
         "//javascript/selenium-webdriver/lib/atoms:mutation-listener",
-    ],
+    ] + select({
+        # Tests link the unstamped package, so the version and the docs that change every release stay out of it
+        "//common:stamp": [
+            "CHANGES.md",
+            "README.md",
+            ":package-json-stamped",
+        ],
+        "//conditions:default": ["package.json"],
+    }),
     package = "selenium-webdriver",
     publishable = True,
+    replace_prefixes = {"stamped/": ""},
     tags = [
         "release-artifact",
     ],
-    version = VERSION,
     visibility = ["//visibility:public"],
 )
 
@@ -503,6 +516,7 @@ prettier_bin.prettier_test(
     chdir = package_name(),
     data = [
         ":large-test-srcs",
+        ":package-json",
         ":prettier-config",
         ":prettier-ignore",
         ":prod-src-files",
@@ -561,6 +575,7 @@ jsdoc(
     name = "docs",
     config = "jsdoc_conf.json",
     data = [
+        "README.md",
         ":node_modules/clean-jsdoc-theme",
         ":prod-src-files",
     ],
