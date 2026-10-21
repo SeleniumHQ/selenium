@@ -20,6 +20,7 @@
   <input id="date" type="date">
   <input id="color" type="color">
   <div id="editable" contenteditable="true"></div>
+  <div id="closedHost"></div>
   <form id="form" target="sink" action="about:blank"><input id="only"></form>
   <iframe name="sink" style="display:none"></iframe>
   <script type="text/javascript">
@@ -32,6 +33,12 @@
     var listeners = [];
 
     function $(id) { return document.getElementById(id); }
+
+    var closedInput = (function() {
+      var root = $('closedHost').attachShadow({mode: 'closed'});
+      root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
 
     function on(el, t, fn) {
       el.addEventListener(t, fn);
@@ -50,6 +57,7 @@
       });
       $('date').value = '';
       $('editable').textContent = '';
+      closedInput.value = '';
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     });
 
@@ -164,6 +172,13 @@
     QUnit.test('typing moves focus to the element', function(assert) {
       type($('textbox'), ['a']);
       assert.strictEqual(document.activeElement, $('textbox'));
+    });
+
+    QUnit.test('a field inside a closed shadow root is typed into', function(assert) {
+      type(closedInput, ['ab']);
+      assert.strictEqual(closedInput.value, 'ab');
+      type(closedInput, ['c']);
+      assert.strictEqual(closedInput.value, 'abc', 'already focused: appends');
     });
 
     QUnit.test('contenteditable is edited', function(assert) {

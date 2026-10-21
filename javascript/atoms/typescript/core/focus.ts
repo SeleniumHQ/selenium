@@ -20,8 +20,23 @@ import { isFocusable } from './focusable.js'
 
 // The focused element, looking through open shadow roots: document.activeElement
 // stops at the shadow host.
-export function getDeepActiveElement(doc: Document): Element | null {
-  let active = doc.activeElement
+function getDeepActiveElement(doc: Document): Element | null {
+  return throughOpenShadowRoots(doc.activeElement)
+}
+
+// The focused element as seen from `element`. A closed shadow root hides its
+// focused element from the document, but not from a node inside it: when
+// focus is within the element's own shadow root, that root's active element
+// is the true one, and the document would only report the host.
+export function getActiveElementFrom(element: Element): Element | null {
+  const root = element.getRootNode() as Node & Partial<DocumentOrShadowRoot>
+  if (root !== element.ownerDocument && root.activeElement) {
+    return throughOpenShadowRoots(root.activeElement)
+  }
+  return getDeepActiveElement(element.ownerDocument)
+}
+
+function throughOpenShadowRoots(active: Element | null): Element | null {
   while (active && active.shadowRoot && active.shadowRoot.activeElement) {
     active = active.shadowRoot.activeElement
   }
@@ -48,15 +63,14 @@ function focusTarget(element: Element): Element {
 // into view and a second scroll would move it again.
 export function focusOnElement(element: Element): boolean {
   const target = focusTarget(element)
-  const doc = target.ownerDocument
-  const previous = getDeepActiveElement(doc)
+  const previous = getActiveElementFrom(target)
   if (previous === target) {
     return false
   }
   if (typeof (target as HTMLElement).focus === 'function') {
     ;(target as HTMLElement).focus({ preventScroll: true })
   }
-  const active = getDeepActiveElement(doc)
+  const active = getActiveElementFrom(target)
   if (active === target) {
     return true
   }

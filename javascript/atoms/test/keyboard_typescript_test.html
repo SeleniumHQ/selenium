@@ -21,6 +21,7 @@
   <input id="limited" maxlength="3">
   <div id="editable" contenteditable="true"></div>
   <div id="plain">not focusable</div>
+  <div id="closed-host"></div>
   <iframe name="sink" style="display:none"></iframe>
   <form id="with-button" target="sink" action="about:blank">
     <input id="with-button-field"><input id="with-button-second"><button id="submit-button">go</button>
@@ -62,6 +63,14 @@
 
     function $(id) { return document.getElementById(id); }
 
+    // document.activeElement stops at a closed root's host and nothing can
+    // look through it; only a reference to the field itself gets inside.
+    var closedField = (function() {
+      var root = $('closed-host').attachShadow({mode: 'closed'});
+      root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
+
     function record(el, types) {
       var log = [];
       (types || ['keydown', 'keypress', 'beforeinput', 'textInput', 'input', 'keyup']).forEach(function(type) {
@@ -100,6 +109,7 @@
 
     QUnit.testStart(function() {
       ['target', 'other', 'area', 'email', 'limited'].forEach(function(id) { $(id).value = ''; });
+      closedField.value = '';
       $('editable').textContent = '';
       if (document.activeElement && document.activeElement.blur) {
         document.activeElement.blur();
@@ -425,6 +435,21 @@
       typeText('a');
       assert.strictEqual($('target').value, '');
       assert.strictEqual($('other').value, 'a');
+    });
+
+    QUnit.test('keys reach a field inside a closed shadow root', function(assert) {
+      closedField.value = 'ab';
+      keyboard.moveCursor(closedField);
+      typeText('c');
+      assert.strictEqual(closedField.value, 'abc', 'caret moved to the end and the key typed');
+    });
+
+    QUnit.test('keys follow focus out of a closed shadow root when a handler moves it', function(assert) {
+      on(closedField, 'input', function() { $('other').focus(); });
+      keyboard.moveCursor(closedField);
+      typeText('ab');
+      assert.strictEqual(closedField.value, 'a');
+      assert.strictEqual($('other').value, 'b');
     });
 
     QUnit.test('moveCursor blurs the focused element when the target cannot take focus', function(assert) {

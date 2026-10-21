@@ -17,7 +17,7 @@
 
 import { UNKNOWN_ERROR, botError } from './error.js'
 import { type EventFactory, EventType, type PointerArgs, fire } from './events.js'
-import { focusOnElement, getDeepActiveElement } from './focus.js'
+import { focusOnElement, getActiveElementFrom } from './focus.js'
 import { getClientRect } from './geometry.js'
 import { isInteractable } from './interactable.js'
 
@@ -91,9 +91,9 @@ export class Mouse {
     }
     // Focus is mousedown's default action: cancelling mousedown keeps focus
     // where it was, and so does a handler that moved focus itself.
-    const focusedBefore = getDeepActiveElement(element.ownerDocument)
+    const focusedBefore = getActiveElementFrom(element)
     if (this.fire(element, EventType.MOUSEDOWN, { buttons: 1, detail: 1 }, interactable)) {
-      if (getDeepActiveElement(element.ownerDocument) === focusedBefore) {
+      if (getActiveElementFrom(element) === focusedBefore) {
         focusOnElement(element)
       }
     }

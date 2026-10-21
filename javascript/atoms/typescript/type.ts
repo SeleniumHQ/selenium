@@ -18,7 +18,7 @@
 import { isElement } from './core/element.js'
 import { ELEMENT_NOT_INTERACTABLE, INVALID_ARGUMENT, botError } from './core/error.js'
 import { EventType, fire } from './core/events.js'
-import { getDeepActiveElement } from './core/focus.js'
+import { getActiveElementFrom } from './core/focus.js'
 import { isInteractable } from './core/interactable.js'
 import { Keyboard } from './core/keyboard.js'
 import { type Key, Keys, fromChar, isModifier } from './core/keys.js'
@@ -115,7 +115,7 @@ const PICKER_TYPES = new Set(['date', 'datetime-local', 'month', 'time', 'week',
 // The third argument (a keyboard to reuse) never crossed the wire and is
 // ignored.
 function type(element: Element, keys: string[], _optKeyboard?: unknown, optPersistModifiers?: boolean): void {
-  if (element !== getDeepActiveElement(element.ownerDocument)) {
+  if (element !== getActiveElementFrom(element)) {
     if (!isInteractable(element)) {
       throw botError(ELEMENT_NOT_INTERACTABLE, 'Element is not currently interactable and may not be manipulated')
     }

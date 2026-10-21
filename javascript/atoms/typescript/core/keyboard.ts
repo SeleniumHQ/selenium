@@ -19,7 +19,7 @@ import { isContentEditable, isEditable, isFileInput } from './editable.js'
 import { isElement } from './element.js'
 import { UNKNOWN_ERROR, botError } from './error.js'
 import { type EventFactory, EventType, type KeyboardArgs, fire } from './events.js'
-import { focusOnElement, getDeepActiveElement } from './focus.js'
+import { focusOnElement, getActiveElementFrom } from './focus.js'
 import { implicitlySubmit } from './form.js'
 import { type Key, Keys, isModifier, keyCodeFor } from './keys.js'
 
@@ -106,7 +106,7 @@ export class Keyboard {
   // to the element being typed into when focus is nowhere in particular.
   private target(): Element {
     const element = this.element as Element
-    const active = getDeepActiveElement(element.ownerDocument)
+    const active = getActiveElementFrom(element)
     return active && !isElement(active, 'BODY') ? active : element
   }
 
