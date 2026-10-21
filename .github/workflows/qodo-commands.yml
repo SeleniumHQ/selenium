@@ -43,7 +43,7 @@ jobs:
         run: |
           gh pr comment "$NUMBER" --repo "$REPO" --body "/agentic_${LABEL#Q-qodo-}"
           # Removing the label lets it be applied again to request another run
-          gh pr edit "$NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          gh api -X DELETE "repos/$REPO/issues/$NUMBER/labels/$LABEL"
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
           LABEL: ${{ github.event.label.name }}

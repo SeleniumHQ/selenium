@@ -31,15 +31,35 @@ class _UnreachableService(Service):
         return ["-c", "import time; time.sleep(30)"]
 
 
+class _CleanlyExitingService(Service):
+    """A driver process that exits with status 0 before serving /status."""
+
+    def command_line_args(self):
+        return ["-c", "pass"]
+
+
 def test_start_terminates_process_when_never_connectable(monkeypatch):
-    monkeypatch.setattr("selenium.webdriver.common.service.sleep", lambda _: None)
+    monkeypatch.setattr(Service, "is_connectable", lambda self: False)
 
     service = _UnreachableService(executable_path=sys.executable, port=utils.free_port())
+    service._start_timeout = 0.5
 
     try:
-        with pytest.raises(WebDriverException):
+        with pytest.raises(WebDriverException, match="Can not connect to the Service"):
             service.start()
 
         assert service.process.poll() is not None
+    finally:
+        service.stop()
+
+
+def test_start_raises_when_process_exits_cleanly_before_connecting(monkeypatch):
+    monkeypatch.setattr(Service, "is_connectable", lambda self: False)
+
+    service = _CleanlyExitingService(executable_path=sys.executable, port=utils.free_port())
+
+    try:
+        with pytest.raises(WebDriverException, match="Status code was: 0"):
+            service.start()
     finally:
         service.stop()

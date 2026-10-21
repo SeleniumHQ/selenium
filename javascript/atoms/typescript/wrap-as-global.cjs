@@ -15,16 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Wraps the compiled isShown TypeScript output as a browser global so that
-// test HTML pages can load it directly via <script> and access it as
-// window.bot.dom.typescript.isShown.
+// Publishes a built atom as a browser global so the QUnit pages can load it
+// with a plain <script> tag.
+//
+// The input is the same `.generated.js` the language bindings inject, so the
+// test pages exercise the shipped artifact byte for byte rather than a
+// separately-built copy of it.
+//
+// Usage: wrap-as-global.cjs <input.generated.js> <output.js> <dotted.global.name>
 
-const fs = require('node:fs');
+const fs = require('node:fs')
 
-const [inputPath, outputPath] = process.argv.slice(2);
+const [inputPath, outputPath, globalName] = process.argv.slice(2)
 
-if (!inputPath || !outputPath) {
-  throw new Error('Expected input and output file paths');
+if (!inputPath || !outputPath || !globalName) {
+  throw new Error('Expected input path, output path, and dotted global name')
 }
 
 const licenseHeader = `// Licensed to the Software Freedom Conservancy (SFC) under one
@@ -42,44 +47,21 @@ const licenseHeader = `// Licensed to the Software Freedom Conservancy (SFC) und
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License.`;
+// under the License.
+`
 
-const preamble = `
-window.bot = window.bot || {};
-window.bot.dom = window.bot.dom || {};
-window.bot.dom.typescript = window.bot.dom.typescript || {};
-window.bot.dom.typescript.IS_SHADOW_DOM_ENABLED = typeof ShadowRoot === 'function';
-window.bot.dom.typescript.isShown = `;
-
-const input = fs.readFileSync(inputPath, 'utf8');
-
-// The compiled TypeScript output is CommonJS. Strip the module-system boilerplate,
-// extract the exported default function name, and wrap the body in an IIFE so the
-// atom is accessible as window.bot.dom.typescript.isShown in test pages.
-const lines = input.split('\n');
-const stripped = lines.filter(line => {
-  if (line.trim() === '"use strict";') return false;
-  if (line.startsWith('Object.defineProperty(exports, "__esModule"')) return false;
-  return true;
-});
-
-let exportedName = null;
-const body = stripped.filter(line => {
-  const match = line.match(/^exports\.default\s*=\s*(\w+)\s*;?\s*$/);
-  if (match) {
-    exportedName = match[1];
-    return false;
-  }
-  return true;
-});
-
-if (!exportedName) {
-  throw new Error(`Could not find 'exports.default = <name>' in: ${inputPath}`);
+const segments = globalName.split('.')
+if (segments.some((segment) => !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(segment))) {
+  throw new Error(`Not a usable dotted global name: ${globalName}`)
 }
 
-while (body.length && body[0].trim() === '') body.shift();
-while (body.length && body[body.length - 1].trim() === '') body.pop();
+// Build up each intermediate namespace so several atoms can share a prefix
+// without the load order between their <script> tags mattering.
+const namespaces = segments.slice(0, -1).map((_segment, index) => {
+  const path = `window.${segments.slice(0, index + 1).join('.')}`
+  return `${path} = ${path} || {};`
+})
 
-const iife = `(function () {\n${body.join('\n')}\n  return ${exportedName};\n})()`;
-const output = licenseHeader + preamble + iife;
-fs.writeFileSync(outputPath, output);
+const atom = fs.readFileSync(inputPath, 'utf8').trimEnd()
+
+fs.writeFileSync(outputPath, `${licenseHeader}\n${namespaces.join('\n')}\nwindow.${globalName} = ${atom};\n`)
