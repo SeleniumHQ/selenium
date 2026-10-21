@@ -94,8 +94,10 @@ class _Wire:
     nullable: bool = False
     ref: str | None = None
     is_list: bool = False
+    element_nullable: bool = False
     enum: str | None = None
-    primitive: str | None = None
+    primitive: str | list[str] | None = None
+    bounds: dict[str, int | float] | None = None
     scalar: str | list[str] | None = None
     fixed: Any = UNSET
 
@@ -110,8 +112,10 @@ def meta(
     nullable: bool = False,
     ref: str | None = None,
     is_list: bool = False,
+    element_nullable: bool = False,
     enum: str | None = None,
-    primitive: str | None = None,
+    primitive: str | list[str] | None = None,
+    bounds: dict[str, int | float] | None = None,
     scalar: str | list[str] | None = None,
     fixed: Any = UNSET,
 ) -> dict:
@@ -124,6 +128,11 @@ def meta(
     ``scalar`` marks a map field (a ``[key, value]`` list whose value type is an
     object-only union): the union's string keys pass through when they match this
     primitive, rather than being rejected as non-objects.
+
+    ``primitive`` may name several allowed JSON kinds. ``bounds`` constrain their
+    numeric arms; generation rejects numeric arms with different bounds.
+    ``element_nullable`` permits null elements in a list independently of whether
+    the entire field is ``nullable``.
     """
     descriptor = _Wire(
         wire=name,
@@ -131,8 +140,10 @@ def meta(
         nullable=nullable,
         ref=ref,
         is_list=is_list,
+        element_nullable=element_nullable,
         enum=enum,
         primitive=primitive,
+        bounds=bounds,
         scalar=scalar,
         fixed=fixed,
     )
@@ -245,6 +256,8 @@ class Record:
     def _validate_enum(self, name: str, w: _Wire, value: Any) -> None:
         enum_cls = resolve(w.enum)  # type: ignore[arg-type]
         for item in value if w.is_list else [value]:
+            if item is None and w.is_list and w.element_nullable:
+                continue
             if isinstance(item, enum_cls):
                 continue
             try:
@@ -340,9 +353,8 @@ def _read_field(cls: type, name: str, w: _Wire, payload: dict) -> Any:
         expected = "a list" if w.is_list else "a single value"
         raise BiDiSerializationError(f"{cls.__name__}.{name} expected {expected}, got {raw!r}")
     if w.is_list:
-        if w.scalar is not None:
-            return [_read_map_entry(cls, name, w, item) for item in raw]
-        return [_read_scalar(cls, name, w, item) for item in raw]
+        read_item = _read_map_entry if w.scalar is not None else _read_scalar
+        return [None if item is None and w.element_nullable else read_item(cls, name, w, item) for item in raw]
     return _read_scalar(cls, name, w, raw)
 
 
@@ -391,6 +403,7 @@ def _is_whole(value: Any) -> bool:
 # not Python type: ``integer`` admits any whole number, ``number`` an int or a float. ``bool``
 # is excluded from the numeric checks: it is an ``int`` subclass but is not a number.
 _PRIMITIVE_CHECKS = {
+    "None": lambda v: v is None,
     "str": lambda v: isinstance(v, str),
     "bool": lambda v: isinstance(v, bool),
     "int": _is_whole,
@@ -398,7 +411,27 @@ _PRIMITIVE_CHECKS = {
 }
 
 
+def _check_primitive(owner: str, name: str, w: _Wire, value: Any) -> None:
+    primitives = w.primitive if isinstance(w.primitive, list) else [w.primitive]
+    checks = [_PRIMITIVE_CHECKS[p] for p in primitives if p is not None and p in _PRIMITIVE_CHECKS]
+    if checks and not any(check(value) for check in checks):
+        expected = " or ".join(p for p in primitives if p is not None)
+        raise BiDiSerializationError(f"{owner}.{name}: expected {expected}, got {type(value).__name__} {value!r}")
+    # Bounds constrain the numeric arm only; strings in a primitive union keep their vocabulary.
+    if w.bounds and isinstance(value, (int, float)) and not isinstance(value, bool):
+        for side, exclusive in (("min", "exclusiveMin"), ("max", "exclusiveMax")):
+            bound = w.bounds.get(side)
+            if bound is None:
+                continue
+            outside = value < bound if side == "min" else value > bound
+            if outside or (w.bounds.get(exclusive) and value == bound):
+                raise BiDiSerializationError(f"{owner}.{name}: {value!r} is outside declared bounds {w.bounds!r}")
+
+
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
+    # A nullable field returns in _read_field; a null reaching here is a list element.
+    if raw is None:
+        raise BiDiSerializationError(f"{cls.__name__}.{name}: list element cannot be None")
     if w.fixed is not UNSET:
         # A nullable constant (a non-nullable one is baked and never read): the wire value must be
         # the literal, else it is invalid. A null took the nullable
@@ -425,12 +458,10 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected an object, got {got} {raw!r}")
         return klass.from_json(raw)  # type: ignore[attr-defined]
-    if w.primitive is not None and raw is not None:
-        check = _PRIMITIVE_CHECKS.get(w.primitive)
-        if check and not check(raw):
-            got = type(raw).__name__
-            raise BiDiSerializationError(f"{cls.__name__}.{name}: expected {w.primitive}, got {got} {raw!r}")
-        if w.primitive == "int" and isinstance(raw, float):
+    if w.primitive is not None:
+        _check_primitive(cls.__name__, name, w, raw)
+        primitives = w.primitive if isinstance(w.primitive, list) else [w.primitive]
+        if "int" in primitives and "float" not in primitives and isinstance(raw, float):
             # A whole number is exact in both types, so the declared type is held with nothing lost.
             return int(raw)
     return raw
@@ -449,6 +480,8 @@ def _validate_outbound(owner: str, name: str, w: _Wire, value: Any) -> None:
             raise BiDiSerializationError(f"{owner}.{name}: expected a list, got {type(value).__name__} {value!r}")
         validate_item = _validate_outbound_map_entry if w.scalar is not None else _validate_outbound_scalar
         for item in value:
+            if item is None and w.element_nullable:
+                continue
             validate_item(owner, name, w, item)
         return
     _validate_outbound_scalar(owner, name, w, value)
@@ -498,18 +531,14 @@ def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) 
 
 def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
     if value is None:
-        return  # null is handled upstream
+        raise BiDiSerializationError(f"{owner}.{name}: list element cannot be None")
     if w.enum is not None:
         return  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:
         _validate_ref_value(owner, name, resolve(w.ref), value)
         return
     if w.primitive is not None:
-        check = _PRIMITIVE_CHECKS.get(w.primitive)
-        if check and not check(value):
-            raise BiDiSerializationError(
-                f"{owner}.{name}: expected {w.primitive}, got {type(value).__name__} {value!r}"
-            )
+        _check_primitive(owner, name, w, value)
 
 
 class Union:

@@ -216,8 +216,10 @@ class FieldIR:
     nullable: bool
     ref: str | None
     is_list: bool
+    element_nullable: bool
     enum: str | None
-    primitive: str | None
+    primitive: str | list[str] | None
+    bounds: dict[str, int | float]
     scalar: str | list[str] | None
     fixed: Any
     py_type: str
@@ -275,7 +277,7 @@ class ModuleIR:
 # The complete set of primitives the projector emits; it rejects `unknown` upstream
 # (an unhandled CDDL construct fails the schema check), so we never see one.
 _PRIMITIVE = {"string": "str", "integer": "int", "number": "float", "boolean": "bool", "null": "None"}
-_LEAF_PRIMITIVE = {"string": "str", "integer": "int", "number": "float", "boolean": "bool"}
+_LEAF_PRIMITIVE = {"string": "str", "integer": "int", "number": "float", "boolean": "bool", "null": "None"}
 
 
 class Schema:
@@ -366,7 +368,7 @@ class Schema:
                 records.append(self._record_ir(name, type_))
             elif kind == "union":
                 unions.append(self._union_ir(name))
-            elif kind == "alias" and "union" in type_["type"]:
+            elif kind == "alias" and "union" in type_["type"] and self._primitive_arms(type_["type"]) is None:
                 unions.append(self._union_ir(name))
         return records, unions
 
@@ -403,6 +405,7 @@ class Schema:
 
     def _field_ir(self, field_: dict) -> FieldIR:
         resolved = self._resolve(field_["type"])
+        primitive = self._leaf_primitive(field_["type"])
         # Carry a const literal whether or not it is nullable. A non-nullable const is a baked
         # discriminator (forced, init=False); a nullable const (e.g. ``bypass: true / null``) is a
         # settable field held to its literal-or-null by the runtime.
@@ -416,8 +419,10 @@ class Schema:
             nullable=resolved["nullable"],
             ref=resolved["ref"],
             is_list=resolved["list"],
+            element_nullable=bool(resolved.get("element_nullable")),
             enum=self._enum_ref(field_["type"]),
-            primitive=self._leaf_primitive(field_["type"]),
+            primitive=primitive,
+            bounds=self._union_bounds(field_["type"]) if isinstance(primitive, list) else {},
             scalar=self._scalar_py(resolved.get("scalar")),
             fixed=const,
             py_type=py,
@@ -584,13 +589,25 @@ class Schema:
 
     # --- type resolution (serialization facts) ---
     def _resolve(self, node: dict) -> dict:
-        nullable = bool(node.get("nullable"))
+        nullable = self._is_nullable(node)
         if "list" in node:
             element = self._resolve(node["list"])
-            return {"ref": element["ref"], "list": True, "nullable": nullable, "scalar": element.get("scalar")}
+            return {
+                "ref": element["ref"],
+                "list": True,
+                "nullable": nullable,
+                "element_nullable": self._is_nullable(node["list"]),
+                "scalar": element.get("scalar"),
+            }
         if "ref" in node:
             named = self._resolve_named(node["ref"], {})
-            return {"ref": named["ref"], "list": named["list"], "nullable": nullable, "scalar": named.get("scalar")}
+            return {
+                "ref": named["ref"],
+                "list": named["list"],
+                "nullable": nullable,
+                "element_nullable": named.get("element_nullable", False),
+                "scalar": named.get("scalar"),
+            }
         if "union" in node:
             return self._resolve_union(node, nullable)
         return {"ref": None, "list": False, "nullable": nullable}
@@ -636,32 +653,55 @@ class Schema:
 
     def _resolve_named_alias(self, name: str, inner: dict, seen: dict) -> dict:
         if "union" in inner:
+            if self._primitive_arms(inner) is not None:
+                return dict(self._OPAQUE)
             return {"ref": self._domain_ref(name), "list": False}
         if "ref" in inner:
             return self._resolve_named(inner["ref"], seen)
         if "list" in inner:
-            element = self._resolve(inner["list"])
-            return {"ref": element["ref"], "list": True, "scalar": element.get("scalar")}
+            return self._resolve(inner)
         return {"ref": None, "list": False}
+
+    def _is_nullable(self, node: dict, seen: set[str] | None = None) -> bool:
+        """Whether this node admits null; a list child has its own independent nullability."""
+        if node.get("nullable") or node.get("primitive") == "null":
+            return True
+        seen = set() if seen is None else seen
+        if "union" in node:
+            return any(self._is_nullable(arm, seen.copy()) for arm in node["union"])
+        ref = node.get("ref")
+        type_ = self.types.get(ref, {})
+        if ref not in seen and type_.get("kind") == "alias":
+            return self._is_nullable(type_["type"], seen | {ref})
+        return False
 
     def _domain_ref(self, name: str) -> str | None:
         return name if "." in name else None
 
-    def _enum_ref(self, node: dict) -> str | None:
-        ref = node.get("ref") or (node.get("list") or {}).get("ref")
-        if ref and self.types.get(ref, {}).get("kind") == "enum":
+    def _enum_ref(self, node: dict, seen: set[str] | None = None) -> str | None:
+        if "list" in node:
+            return self._enum_ref(node["list"], seen)
+        seen = set() if seen is None else seen
+        ref = node.get("ref")
+        named = self.types.get(ref, {})
+        if ref and named.get("kind") == "enum":
             return ref
+        if ref not in seen and named.get("kind") == "alias":
+            return self._enum_ref(named["type"], seen | {ref})
         return None
 
     # The runtime-checkable scalar type of a field (or of a list's elements),
     # following alias chains (e.g. js-uint -> integer). None for a record ref,
-    # union, const, enum, or opaque/unknown type — those are validated elsewhere.
-    def _leaf_primitive(self, node: dict, seen: set[str] | None = None) -> str | None:
+    # structured union, const, enum, or opaque/unknown type — those are validated elsewhere.
+    def _leaf_primitive(self, node: dict, seen: set[str] | None = None) -> str | list[str] | None:
         seen = seen or set()
         if "list" in node:
             return self._leaf_primitive(node["list"], seen)
         if "primitive" in node:
             return _LEAF_PRIMITIVE.get(node["primitive"])
+        if "union" in node:
+            arms = self._primitive_arms({**node, "nullable": False})
+            return list(dict.fromkeys(p for p, _ in arms)) if arms else None
         if "ref" in node:
             name = node["ref"]
             type_ = self.types.get(name)
@@ -671,11 +711,70 @@ class Schema:
             return self._leaf_primitive(type_["type"], seen)
         return None
 
+    def _primitive_arms(self, node: dict, seen: set[str] | None = None) -> list[tuple[str, dict]] | None:
+        """Resolve only primitive arms, retaining each numeric arm's alias bounds.
+
+        A const, enum or structured arm cannot be widened to its underlying primitive.
+        The existing scalar metadata remains reserved for script's [key, value] maps.
+        """
+        seen = set() if seen is None else seen
+        if "const" in node:
+            return None
+        primitive = _LEAF_PRIMITIVE.get(node.get("primitive"))
+        arms: list[tuple[str, dict]] = []
+        if primitive:
+            arms = [(primitive, {})]
+        elif "union" in node:
+            for arm in node["union"]:
+                resolved = self._primitive_arms(arm, seen.copy())
+                if resolved is None:
+                    return None
+                arms.extend(resolved)
+        elif "ref" in node:
+            ref = node["ref"]
+            type_ = self.types.get(ref, {})
+            if ref in seen or type_.get("kind") != "alias":
+                return None
+            resolved = self._primitive_arms(type_["type"], seen | {ref})
+            if resolved is None:
+                return None
+            arms = resolved
+        else:
+            return None
+        return [(p, self._narrow_bounds(bounds, node)) for p, bounds in arms]
+
+    @staticmethod
+    def _narrow_bounds(bounds: dict, node: dict) -> dict:
+        result = bounds.copy()
+        for side, flag in (("min", "exclusiveMin"), ("max", "exclusiveMax")):
+            if side not in node:
+                continue
+            tighter = side not in result or (node[side] > result[side] if side == "min" else node[side] < result[side])
+            if tighter or (node[side] == result[side] and node.get(flag)):
+                result[side] = node[side]
+                result.pop(flag, None)
+                if node.get(flag):
+                    result[flag] = True
+        return result
+
+    def _union_bounds(self, node: dict) -> dict:
+        # Only primitive unions gain bounds here; the remaining numeric fields belong to #18195.
+        if "list" in node:
+            return self._union_bounds(node["list"])
+        if "ref" in node and self.types.get(node["ref"], {}).get("kind") == "alias":
+            inner = self.types[node["ref"]]["type"]
+            return self._narrow_bounds(self._union_bounds(inner), node)
+        arms = self._primitive_arms({**node, "nullable": False}) or []
+        numeric = [bounds for p, bounds in arms if p in ("int", "float")]
+        if numeric and any(bounds != numeric[0] for bounds in numeric):
+            raise ValueError(f"numeric union arms have different bounds: {numeric!r}")
+        return numeric[0] if numeric else {}
+
     # --- Python type annotations ---
     def py_type(self, node: dict) -> tuple[str, set[str]]:
         refs: set[str] = set()
         base = self._py_base(node, refs)
-        nullable = node.get("nullable") and base != "None"
+        nullable = self._is_nullable(node) and base != "None"
         return (f"{base} | None" if nullable else base), refs
 
     def _py_base(self, node: dict, refs: set[str]) -> str:
@@ -685,7 +784,8 @@ class Schema:
         if "ref" in node:
             return self._py_ref(node["ref"], refs)
         if "union" in node:
-            return "Any"
+            primitives = self._leaf_primitive(node)
+            return " | ".join(primitives) if isinstance(primitives, list) else "Any"
         if "const" in node:
             value = node["const"]
             if isinstance(value, bool):
@@ -699,7 +799,7 @@ class Schema:
 
     def _py_inner(self, node: dict, refs: set[str]) -> tuple[str, set[str]]:
         base = self._py_base(node, refs)
-        return (f"{base} | None" if node.get("nullable") and base != "None" else base), refs
+        return (f"{base} | None" if self._is_nullable(node) and base != "None" else base), refs
 
     def _py_ref(self, name: str, refs: set[str], seen: set[str] | None = None) -> str:
         seen = seen or set()
@@ -724,6 +824,8 @@ class Schema:
         if kind == "alias":
             inner = type_["type"]
             if "union" in inner:
+                if self._primitive_arms(inner) is not None:
+                    return self._py_base(inner, refs)
                 refs.add(name)
                 return value_alias(name)
             if "ref" in inner:
@@ -849,10 +951,16 @@ def _wire_args(f: FieldIR) -> list[str]:
         args.append(f"ref={lit(f.ref)}")
     if f.is_list:
         args.append("is_list=True")
+    if f.element_nullable:
+        args.append("element_nullable=True")
     if f.enum:
         args.append(f"enum={lit(f.enum)}")
     if f.primitive:
-        args.append(f"primitive={lit(f.primitive)}")
+        value = f"[{', '.join(lit(p) for p in f.primitive)}]" if isinstance(f.primitive, list) else lit(f.primitive)
+        args.append(f"primitive={value}")
+    if f.bounds:
+        bounds = ", ".join(f"{lit(k)}: {lit(v)}" for k, v in f.bounds.items())
+        args.append(f"bounds={{{bounds}}}")
     if f.scalar:
         value = f"[{', '.join(lit(s) for s in f.scalar)}]" if isinstance(f.scalar, list) else lit(f.scalar)
         args.append(f"scalar={value}")

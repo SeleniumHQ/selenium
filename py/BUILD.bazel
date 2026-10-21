@@ -821,6 +821,14 @@ py_binary(
 )
 
 py_library(
+    name = "bidi_protocol_generator",
+    testonly = True,
+    srcs = ["generate_bidi_protocol.py"],
+    visibility = ["//visibility:private"],
+    deps = [":remote"],
+)
+
+py_library(
     name = "bidi_protocol",
     # Listed explicitly, not globbed: a local generate run drops the generated modules here too, and a glob would double them against the rule's outputs.
     srcs = [":create-bidi-protocol-src"] + [
@@ -845,6 +853,7 @@ py_test_suite(
     ],
     tags = ["unit"],
     deps = [
+        ":bidi_protocol_generator",
         ":init-tree",
         ":selenium",
     ] + TEST_DEPS,

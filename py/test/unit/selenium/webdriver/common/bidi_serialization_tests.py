@@ -26,7 +26,7 @@ UNSET omit-vs-null, and union dispatch.
 """
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, make_dataclass
 from enum import Enum
 from typing import Any
 
@@ -204,6 +204,63 @@ class UnionField(Record):
     obj: Any = field(default=UNSET, metadata=meta("obj", ref="test.ObjectOnly"))
     shape: Any = field(default=UNSET, metadata=meta("shape", ref="test.Shape"))
     nested: Any = field(default=UNSET, metadata=meta("nested", ref="test.NestedUnion"))
+
+
+@dataclass(frozen=True)
+class ListFields(Record):
+    primitives: Any = field(default=UNSET, metadata=meta("primitives", is_list=True, primitive="str", nullable=True))
+    enums: Any = field(default=UNSET, metadata=meta("enums", is_list=True, enum="test.Color"))
+    records: Any = field(default=UNSET, metadata=meta("records", is_list=True, ref="test.Point"))
+    unions: Any = field(default=UNSET, metadata=meta("unions", is_list=True, ref="test.Shape"))
+
+
+@dataclass(frozen=True)
+class BoundedUnionList(Record):
+    values: list[int | str] = field(
+        metadata=meta(
+            "values",
+            required=True,
+            is_list=True,
+            primitive=["int", "str"],
+            bounds={"min": 1, "max": 3, "exclusiveMin": True, "exclusiveMax": True},
+        )
+    )
+
+
+@pytest.mark.parametrize("value", [1, 3, 0, 4])
+def test_primitive_union_numeric_bounds_are_checked_in_both_directions(value):
+    with pytest.raises(BiDiSerializationError, match="outside declared bounds"):
+        BoundedUnionList(values=[value]).as_json()
+    with pytest.raises(BiDiSerializationError, match="outside declared bounds"):
+        BoundedUnionList.from_json({"values": [value]})
+
+
+def test_primitive_union_bounds_apply_only_to_the_numeric_arm():
+    values = [2.0, "1", "3", ""]
+    assert BoundedUnionList(values=values).as_json() == {"values": values}
+    parsed = BoundedUnionList.from_json({"values": values})
+    assert parsed.values == values
+    assert type(parsed.values[0]) is int
+
+
+@pytest.mark.parametrize("name", ["primitives", "enums", "records", "unions"])
+def test_non_nullable_list_elements_reject_none_outbound(name):
+    with pytest.raises(BiDiSerializationError):
+        ListFields(**{name: [None]}).as_json()
+
+
+@pytest.mark.parametrize("name", ["primitives", "enums", "records", "unions"])
+def test_non_nullable_list_elements_reject_none_inbound(name):
+    with pytest.raises(BiDiSerializationError):
+        ListFields.from_json({name: [None]})
+
+
+@pytest.mark.parametrize("values", [[], ["a", "b"], None])
+def test_optional_nullable_list_field_is_distinct_from_nullable_elements(values):
+    assert ListFields(primitives=values).as_json() == {"primitives": values}
+    assert ListFields.from_json({"primitives": values}).primitives == values
+    assert ListFields().as_json() == {}
+    assert ListFields.from_json({}).primitives is UNSET
 
 
 # --- UNSET sentinel ---
@@ -705,3 +762,75 @@ def test_build_rejects_a_field_that_does_not_belong_to_the_selected_variant():
 def test_build_raises_when_no_variant_matches():
     with pytest.raises(BiDiSerializationError, match=r"no Shape variant matches"):
         Shape.build(depth=5)
+
+
+@pytest.mark.parametrize(
+    ("facts", "valid", "raw", "invalid"),
+    [
+        ({"primitive": "str"}, "a", "a", 1),
+        ({"enum": "test.Color"}, Color.RED, "red", "green"),
+        ({"ref": "test.Point"}, Point(x=1, y=2), {"x": 1, "y": 2}, "bad"),
+        ({"ref": "test.Shape"}, Circle(radius=2), {"radius": 2}, "bad"),
+    ],
+)
+@pytest.mark.parametrize("nullable", [True, False])
+def test_element_nullability_preserves_primitive_enum_record_and_union_checks(facts, valid, raw, invalid, nullable):
+    cls = make_dataclass(
+        "NullableElements",
+        [("values", Any, field(metadata=meta("values", is_list=True, element_nullable=nullable, **facts)))],
+        bases=(Record,),
+        frozen=True,
+    )
+    if nullable:
+        assert cls(values=[None, valid]).as_json() == {"values": [None, raw]}
+        assert cls.from_json({"values": [None, raw]}).values == [None, valid]
+    else:
+        with pytest.raises(BiDiSerializationError):
+            cls(values=[None, valid]).as_json()
+        with pytest.raises(BiDiSerializationError):
+            cls.from_json({"values": [None, raw]})
+    # A permitted null does not relax the type of another element.
+    with pytest.raises(BiDiSerializationError):
+        cls(values=[invalid]).as_json()
+    with pytest.raises(BiDiSerializationError):
+        cls.from_json({"values": [invalid]})
+
+
+@pytest.mark.parametrize("container_nullable", [True, False])
+@pytest.mark.parametrize("element_nullable", [True, False])
+def test_container_and_element_nullability_are_independent(container_nullable, element_nullable):
+    cls = make_dataclass(
+        "IndependentNullability",
+        [
+            (
+                "values",
+                Any,
+                field(
+                    default=UNSET,
+                    metadata=meta(
+                        "values",
+                        is_list=True,
+                        primitive="str",
+                        nullable=container_nullable,
+                        element_nullable=element_nullable,
+                    ),
+                ),
+            )
+        ],
+        bases=(Record,),
+        frozen=True,
+    )
+    assert cls().as_json() == {}
+    assert cls.from_json({}).values is UNSET
+    for values in [[], ["a"]]:
+        assert cls(values=values).as_json() == {"values": values}
+        assert cls.from_json({"values": values}).values == values
+    for values, allowed in [(None, container_nullable), ([None, "a"], element_nullable)]:
+        if allowed:
+            assert cls(values=values).as_json() == {"values": values}
+            assert cls.from_json({"values": values}).values == values
+        else:
+            with pytest.raises(BiDiSerializationError):
+                cls(values=values).as_json()
+            with pytest.raises(BiDiSerializationError):
+                cls.from_json({"values": values})
