@@ -27,7 +27,7 @@ use crate::metadata::{
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY,
     OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG, REG_VERSION_ARG, STABLE, SeleniumManager,
-    create_http_client, get_binary_extension, path_to_string,
+    get_binary_extension, path_to_string,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -36,6 +36,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -76,7 +77,7 @@ pub struct EdgeManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -93,13 +94,11 @@ impl EdgeManager {
         let static_browser_name: &str = Box::leak(browser_name.into_boxed_str());
         let driver_name = EDGEDRIVER_NAME;
         let config = ManagerConfig::default(static_browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(EdgeManager {
             browser_name: static_browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -136,12 +135,12 @@ impl SeleniumManager for EdgeManager {
         first_existing_path(EDGE_KNOWN_DIRS, EDGE_KNOWN_NAMES)
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -258,7 +257,7 @@ impl SeleniumManager for EdgeManager {
                         &self.driver_name, latest_stable_url
                     ));
                     let latest_driver_version = read_version_from_link(
-                        self.get_http_client(),
+                        self.get_http_client()?,
                         &latest_stable_url,
                         self.get_logger(),
                     )?;
@@ -279,8 +278,11 @@ impl SeleniumManager for EdgeManager {
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
                 ));
-                let driver_version =
-                    read_version_from_link(self.get_http_client(), &driver_url, self.get_logger())?;
+                let driver_version = read_version_from_link(
+                    self.get_http_client()?,
+                    &driver_url,
+                    self.get_logger(),
+                )?;
 
                 let driver_ttl = self.get_ttl();
                 if should_cache_driver_version(
@@ -419,7 +421,7 @@ impl SeleniumManager for EdgeManager {
         ));
 
         let edge_products =
-            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client(), &edge_updates_url)?;
+            parse_json_from_url::<Vec<EdgeProduct>>(self.get_http_client()?, &edge_updates_url)?;
 
         let edge_channel = if self.is_beta(browser_version) {
             "Beta"

@@ -26,7 +26,7 @@ use crate::metadata::{
 };
 use crate::{
     BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
-    SeleniumManager, create_http_client, format_three_args, format_two_args,
+    SeleniumManager, format_three_args, format_two_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -36,6 +36,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -76,7 +77,7 @@ pub struct FirefoxManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -88,13 +89,11 @@ impl FirefoxManager {
         let browser_name = FIREFOX_NAME;
         let driver_name = GECKODRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(FirefoxManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -111,7 +110,7 @@ impl FirefoxManager {
         let browser_version = self.get_browser_version().to_string();
         let firefox_versions_url = self.create_firefox_details_url(endpoint);
         let firefox_versions =
-            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
 
         let versions_map = firefox_versions.as_object().unwrap();
         let filter_key = if browser_version.contains('.') {
@@ -148,12 +147,12 @@ impl SeleniumManager for FirefoxManager {
         browser_names
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -243,7 +242,7 @@ impl SeleniumManager for FirefoxManager {
                 let driver_version_url =
                     self.get_driver_mirror_versions_url_or_default(DRIVER_VERSIONS_URL);
                 let driver_version = match parse_json_from_url::<GeckodriverReleases>(
-                    self.get_http_client(),
+                    self.get_http_client()?,
                     &driver_version_url,
                 ) {
                     Ok(driver_releases) => {
@@ -291,7 +290,7 @@ impl SeleniumManager for FirefoxManager {
                             LATEST_RELEASE
                         );
                         read_redirect_from_link(
-                            self.get_http_client(),
+                            self.get_http_client()?,
                             latest_url,
                             self.get_logger(),
                         )?
@@ -426,7 +425,7 @@ impl SeleniumManager for FirefoxManager {
 
         let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
         let firefox_versions =
-            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
         let browser_version = firefox_versions
             .get(FIREFOX_STABLE_LABEL)
             .unwrap()
@@ -449,7 +448,7 @@ impl SeleniumManager for FirefoxManager {
         if self.is_unstable(browser_version) {
             let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
             let firefox_versions =
-                parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+                parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
             let version_label = if self.is_beta(browser_version) {
                 FIREFOX_BETA_LABEL
             } else if self.is_dev(browser_version) {
@@ -507,7 +506,7 @@ impl SeleniumManager for FirefoxManager {
                 );
                 self.get_logger()
                     .trace(format!("Checking release URL: {}", release_url));
-                let content = read_content_from_link(self.get_http_client(), &release_url)?;
+                let content = read_content_from_link(self.get_http_client()?, &release_url)?;
                 if !content.contains("Not Found") {
                     return Ok(version.to_string());
                 }
