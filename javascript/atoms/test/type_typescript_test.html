@@ -22,6 +22,7 @@
   <div id="editable" contenteditable="true"></div>
   <div id="closedHost"></div>
   <div id="inertHost" style="pointer-events:none"></div>
+  <div id="dateHost"></div>
   <form id="form" target="sink" action="about:blank"><input id="only"></form>
   <iframe name="sink" style="display:none"></iframe>
   <script type="text/javascript">
@@ -38,6 +39,12 @@
     var inertHostInput = (function() {
       var root = $('inertHost').attachShadow({mode: 'open'});
       root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
+
+    var hostedDate = (function() {
+      var root = $('dateHost').attachShadow({mode: 'open'});
+      root.innerHTML = '<input type="date">';
       return root.querySelector('input');
     })();
 
@@ -66,6 +73,7 @@
       $('editable').textContent = '';
       closedInput.value = '';
       inertHostInput.value = '';
+      hostedDate.value = '';
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     });
 
@@ -195,6 +203,12 @@
       inertHostInput.focus();
       type($('inertHost'), ['a']);
       assert.strictEqual(inertHostInput.value, 'a');
+    });
+
+    QUnit.test('a focused shadow host passes a date to the picker inside it', function(assert) {
+      hostedDate.focus();
+      type($('dateHost'), ['2026-10-21']);
+      assert.strictEqual(hostedDate.value, '2026-10-21');
     });
 
     QUnit.test('contenteditable is edited', function(assert) {

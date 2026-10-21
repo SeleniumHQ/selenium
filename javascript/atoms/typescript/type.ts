@@ -18,7 +18,7 @@
 import { isElement } from './core/element.js'
 import { ELEMENT_NOT_INTERACTABLE, INVALID_ARGUMENT, botError } from './core/error.js'
 import { EventType, fire } from './core/events.js'
-import { holdsFocus } from './core/focus.js'
+import { getActiveElementFrom, holdsFocus } from './core/focus.js'
 import { isInteractable } from './core/interactable.js'
 import { Keyboard } from './core/keyboard.js'
 import { type Key, Keys, fromChar, isModifier } from './core/keys.js'
@@ -125,8 +125,10 @@ function type(element: Element, keys: string[], _optKeyboard?: unknown, optPersi
   const keyboard = new Keyboard()
   keyboard.moveCursor(element)
 
-  if (isElement(element, 'INPUT') && PICKER_TYPES.has((element as HTMLInputElement).type)) {
-    if (setPickerValue(element as HTMLInputElement, keys.join(''))) {
+  // A host whose shadow tree holds focus passes its keys to the field inside.
+  const receiver = holdsFocus(element) ? getActiveElementFrom(element) || element : element
+  if (isElement(receiver, 'INPUT') && PICKER_TYPES.has((receiver as HTMLInputElement).type)) {
+    if (setPickerValue(receiver as HTMLInputElement, keys.join(''))) {
       return
     }
   }
