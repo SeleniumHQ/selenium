@@ -70,6 +70,9 @@
         $(id).readOnly = false;
       });
       $('date').value = '';
+      $('date').readOnly = false;
+      $('color').readOnly = false;
+      $('color').value = '#000000';
       $('editable').textContent = '';
       closedInput.value = '';
       inertHostInput.value = '';
@@ -223,6 +226,18 @@
       type($('date'), ['2026-10-14']);
       assert.strictEqual($('date').value, '2026-10-14');
       assert.deepEqual(log, ['input', 'change']);
+    });
+
+    QUnit.test('a read-only picker gets keys but keeps its value', function(assert) {
+      [['date', '2026-10-21', ''], ['color', '#336699', '#000000']].forEach(function(c) {
+        var el = $(c[0]);
+        el.readOnly = true;
+        var keys = 0;
+        on(el, 'keydown', function() { keys++; });
+        type(el, [c[1]]);
+        assert.strictEqual(el.value, c[2], c[0] + ' value');
+        assert.ok(keys > 0, c[0] + ' got keys');
+      });
     });
 
     QUnit.test('a colour input takes a well-formed value', function(assert) {

@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import { isEditable } from './core/editable.js'
 import { isElement } from './core/element.js'
 import { ELEMENT_NOT_INTERACTABLE, INVALID_ARGUMENT, botError } from './core/error.js'
 import { EventType, fire } from './core/events.js'
@@ -127,7 +128,9 @@ function type(element: Element, keys: string[], _optKeyboard?: unknown, optPersi
 
   // A host whose shadow tree holds focus passes its keys to the field inside.
   const receiver = holdsFocus(element) ? getActiveElementFrom(element) || element : element
-  if (isElement(receiver, 'INPUT') && PICKER_TYPES.has((receiver as HTMLInputElement).type)) {
+  // A read-only picker falls through to the keyboard, which fires the keys
+  // but edits nothing, as it does for a read-only text field.
+  if (isElement(receiver, 'INPUT') && PICKER_TYPES.has((receiver as HTMLInputElement).type) && isEditable(receiver)) {
     if (setPickerValue(receiver as HTMLInputElement, keys.join(''))) {
       return
     }
