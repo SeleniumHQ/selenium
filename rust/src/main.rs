@@ -101,6 +101,11 @@ struct Cli {
     #[clap(long, value_parser)]
     proxy: Option<String>,
 
+    /// Disable TLS certificate validation for network requests (not recommended; use only when
+    /// the required CA cannot be added to the system trust store)
+    #[clap(long)]
+    insecure: bool,
+
     /// Timeout for network requests (in seconds)
     #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
     timeout: u64,
@@ -299,6 +304,7 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
