@@ -90,17 +90,11 @@ module Selenium
           def start(http)
             http.start
           rescue OpenSSL::SSL::SSLError => e
-            failure = e.message[/certificate verify failed.*/]
-            raise unless failure
+            raise unless e.message.include?('certificate verify failed')
 
             remedies = 'ClientConfig#ignore_certificates = true for a self-signed certificate, ' \
                        'or a trusted CA bundle for one signed by a private CA'
-            raise e.class, "#{e.message}; #{remedies}", e.backtrace unless client_config.ignore_certificates.nil?
-
-            WebDriver.logger.deprecate("Connecting to #{server_url.host} although its #{failure}", remedies,
-                                       id: :ignore_certificates)
-            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-            http.start
+            raise e.class, "#{e.message}; #{remedies}", e.backtrace
           end
 
           MAX_RETRIES = 3
