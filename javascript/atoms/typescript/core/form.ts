@@ -58,7 +58,12 @@ export function implicitlySubmit(field: HTMLInputElement): void {
   if (!form) {
     return
   }
-  const elements = Array.from(form.elements)
+  // Read through the prototype because a control named "elements" or
+  // "requestSubmit" shadows the form's own property.
+  const win = (form.ownerDocument.defaultView || window) as Window & typeof globalThis
+  const formPrototype = win.HTMLFormElement.prototype
+  const controls = Object.getOwnPropertyDescriptor(formPrototype, 'elements')!.get!.call(form) as HTMLFormControlsCollection
+  const elements = Array.from(controls)
   const defaultButton = elements.find(isSubmitButton)
   if (defaultButton) {
     if (!defaultButton.disabled) {
@@ -71,6 +76,6 @@ export function implicitlySubmit(field: HTMLInputElement): void {
     (element) => element.tagName === 'INPUT' && BLOCKS_IMPLICIT_SUBMISSION.includes((element as HTMLInputElement).type),
   )
   if (blocking.length <= 1) {
-    form.requestSubmit()
+    formPrototype.requestSubmit.call(form)
   }
 }

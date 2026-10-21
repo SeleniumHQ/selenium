@@ -34,6 +34,12 @@
   <form id="disabled-button" target="sink" action="about:blank">
     <input id="disabled-button-field"><button disabled>go</button>
   </form>
+  <form id="named-elements" target="sink" action="about:blank">
+    <input id="named-elements-field" name="elements"><input><button>go</button>
+  </form>
+  <form id="named-request-submit" target="sink" action="about:blank">
+    <input id="named-request-submit-field" name="requestSubmit">
+  </form>
   <script type="text/javascript">
     // Assertions ported from keyboard_test.html, with the expected numbers
     // replaced by what Chrome and Firefox report for real key presses today
@@ -412,6 +418,15 @@
       assert.strictEqual($('other').value, 'b');
     });
 
+    QUnit.test('moveCursor keeps focus where a focus handler redirects it', function(assert) {
+      on($('target'), 'focus', function() { $('other').focus(); });
+      keyboard.moveCursor($('target'));
+      assert.strictEqual(document.activeElement, $('other'));
+      typeText('a');
+      assert.strictEqual($('target').value, '');
+      assert.strictEqual($('other').value, 'a');
+    });
+
     QUnit.test('moveCursor blurs the focused element when the target cannot take focus', function(assert) {
       $('target').focus();
       keyboard.moveCursor($('plain'));
@@ -469,6 +484,15 @@
 
     QUnit.test('enter does nothing when the default button is disabled', function(assert) {
       assert.deepEqual(submits(assert, 'disabled-button', 'disabled-button-field'), {submitted: 0, clicked: 0});
+    });
+
+    // Named controls shadow form properties, so these must not be read off the form.
+    QUnit.test('enter clicks the default button when a control is named elements', function(assert) {
+      assert.deepEqual(submits(assert, 'named-elements', 'named-elements-field'), {submitted: 1, clicked: 1});
+    });
+
+    QUnit.test('enter submits when a control is named requestSubmit', function(assert) {
+      assert.deepEqual(submits(assert, 'named-request-submit', 'named-request-submit-field'), {submitted: 1, clicked: 0});
     });
 
     QUnit.test('cancelling the enter keydown stops implicit submission', function(assert) {

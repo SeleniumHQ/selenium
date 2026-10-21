@@ -184,15 +184,18 @@ function typeCharacter(keyboard: Keyboard, ch: string): void {
 }
 
 // Whether the input accepted `text` as its value. A value the control would
-// sanitise away is rejected and left to the keyboard, as before.
+// sanitise away is rejected and left to the keyboard, as before. A colour
+// input stores hex digits in lower case, so "#FF0000" is accepted as
+// "#ff0000".
 function setPickerValue(input: HTMLInputElement, text: string): boolean {
   const previous = input.value
+  const expected = input.type === 'color' ? text.toLowerCase() : text
   input.value = text
-  if (input.value !== text) {
+  if (input.value !== expected) {
     input.value = previous
     return false
   }
-  if (previous !== text) {
+  if (previous !== expected) {
     fire(input, EventType.INPUT, { inputType: 'insertReplacementText', data: null })
     fire(input, EventType.CHANGE, undefined)
   }

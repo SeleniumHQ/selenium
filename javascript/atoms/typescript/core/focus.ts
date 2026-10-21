@@ -42,22 +42,27 @@ function focusTarget(element: Element): Element {
 //
 // focus() already blurs whatever had focus, so the explicit blur is only for
 // a target that cannot take focus: a real click on non-focusable content
-// still takes focus away from the field that had it. preventScroll because
-// the caller has already scrolled the element into view and a second scroll
-// would move it again.
+// still takes focus away from the field that had it. When focus lands
+// somewhere else, a focus handler moved it there on purpose, so it is left
+// alone. preventScroll because the caller has already scrolled the element
+// into view and a second scroll would move it again.
 export function focusOnElement(element: Element): boolean {
   const target = focusTarget(element)
   const doc = target.ownerDocument
-  if (getDeepActiveElement(doc) === target) {
+  const previous = getDeepActiveElement(doc)
+  if (previous === target) {
     return false
   }
   if (typeof (target as HTMLElement).focus === 'function') {
     ;(target as HTMLElement).focus({ preventScroll: true })
   }
-  if (getDeepActiveElement(doc) === target) {
+  const active = getDeepActiveElement(doc)
+  if (active === target) {
     return true
   }
-  const active = getDeepActiveElement(doc)
+  if (active !== previous) {
+    return false
+  }
   if (active && !isElement(active, 'BODY') && typeof (active as HTMLElement).blur === 'function') {
     ;(active as HTMLElement).blur()
   }

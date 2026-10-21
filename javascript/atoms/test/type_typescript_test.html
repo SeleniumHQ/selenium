@@ -184,6 +184,14 @@
       type($('color'), ['#336699']);
       assert.strictEqual($('color').value, '#336699');
     });
+
+    QUnit.test('a colour input takes an upper case value, which it stores lower case', function(assert) {
+      var log = [];
+      on($('color'), 'input', function(e) { log.push('input'); });
+      type($('color'), ['#FF0000']);
+      assert.strictEqual($('color').value, '#ff0000');
+      assert.deepEqual(log, ['input']);
+    });
   </script>
 </body>
 
