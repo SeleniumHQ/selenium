@@ -67,4 +67,9 @@ jobs:
           git apply --index changes.patch
           git -c user.name="Selenium CI Bot" -c user.email="selenium-ci@users.noreply.github.com" commit -qm "$TITLE"
           git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" HEAD:refs/heads/"$BRANCH"
-          gh pr edit "$BRANCH" --title "$TITLE" || gh pr create --base trunk --head "$BRANCH" --title "$TITLE" --body "$BODY" --label C-build
+          number=$(gh pr list --head "$BRANCH" --base trunk --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh api --silent -X PATCH "repos/$GH_REPO/pulls/$number" -f title="$TITLE"
+          else
+            gh pr create --base trunk --head "$BRANCH" --title "$TITLE" --body "$BODY" --label C-build
+          fi
