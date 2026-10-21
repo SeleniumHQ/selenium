@@ -13,7 +13,9 @@ console=$(awk '{ gsub(/\033\[[0-9;]*m/, ""); sub(/^\([0-9:]+\) /, ""); print }' 
 retry_wait=0
 # Scan the whole log rather than `ERROR:` lines: http_archive fetch failures report the status
 # code inside a Starlark traceback below the ERROR line.
-if grep -qE 'Error downloading.*(GET returned (5[0-9][0-9]|429)|timed out|Connection reset|Unknown host)|Error accessing registry.*Unknown host' <<<"$console"; then
+# Only registry DNS failures count: a mirror list reports just its last mirror's error, and some
+# Maven artifacts list the dead maven.ibiblio.org last.
+if grep -qE 'Error downloading.*(GET returned (5[0-9][0-9]|429)|timed out|Connection reset)|Error accessing registry.*(GET returned (5[0-9][0-9]|429)|Unknown host)' <<<"$console"; then
   retry_wait=60
 elif grep -qE "ChecksumFailureException: .*is actually .da39a3ee5e6b4b0d3255bfef95601890afd80709|UriNotFoundException: Unable to download" <<<"$console"; then
   # The Maven resolver inside `bazel run @maven//:pin` reports a Central outage as empty downloads
