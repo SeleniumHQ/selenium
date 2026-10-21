@@ -19,7 +19,7 @@ import { isContentEditable, isEditable, isFileInput } from './editable.js'
 import { isElement } from './element.js'
 import { UNKNOWN_ERROR, botError } from './error.js'
 import { type EventFactory, EventType, type KeyboardArgs, fire } from './events.js'
-import { focusOnElement, getActiveElementFrom } from './focus.js'
+import { focusOnElement, getActiveElementFrom, holdsFocus } from './focus.js'
 import { implicitlySubmit } from './form.js'
 import { type Key, Keys, isModifier, keyCodeFor } from './keys.js'
 
@@ -52,10 +52,12 @@ export class Keyboard {
   }
 
   // Focuses the element, as clicking into it would, and when that moved focus
-  // puts the caret at the end of its text.
+  // puts the caret at the end of its text. A shadow host whose tree already
+  // holds focus is left alone: focusing the host itself would blur the field
+  // inside it that the keys are meant for.
   moveCursor(element: Element): void {
     this.element = element
-    if (focusOnElement(element) && isEditable(element)) {
+    if (!holdsFocus(element) && focusOnElement(element) && isEditable(element)) {
       caretToEnd(element)
     }
   }

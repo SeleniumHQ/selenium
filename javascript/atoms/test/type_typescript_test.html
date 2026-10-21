@@ -21,6 +21,7 @@
   <input id="color" type="color">
   <div id="editable" contenteditable="true"></div>
   <div id="closedHost"></div>
+  <div id="inertHost" style="pointer-events:none"></div>
   <form id="form" target="sink" action="about:blank"><input id="only"></form>
   <iframe name="sink" style="display:none"></iframe>
   <script type="text/javascript">
@@ -33,6 +34,12 @@
     var listeners = [];
 
     function $(id) { return document.getElementById(id); }
+
+    var inertHostInput = (function() {
+      var root = $('inertHost').attachShadow({mode: 'open'});
+      root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
 
     var closedInput = (function() {
       var root = $('closedHost').attachShadow({mode: 'closed'});
@@ -58,6 +65,7 @@
       $('date').value = '';
       $('editable').textContent = '';
       closedInput.value = '';
+      inertHostInput.value = '';
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     });
 
@@ -179,6 +187,14 @@
       assert.strictEqual(closedInput.value, 'ab');
       type(closedInput, ['c']);
       assert.strictEqual(closedInput.value, 'abc', 'already focused: appends');
+    });
+
+    // As with Closure, which compared against document.activeElement: a host
+    // that already holds focus is not checked for interactability again.
+    QUnit.test('a focused shadow host is typed into even if it is not interactable', function(assert) {
+      inertHostInput.focus();
+      type($('inertHost'), ['a']);
+      assert.strictEqual(inertHostInput.value, 'a');
     });
 
     QUnit.test('contenteditable is edited', function(assert) {

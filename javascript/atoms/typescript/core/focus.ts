@@ -36,6 +36,14 @@ export function getActiveElementFrom(element: Element): Element | null {
   return getDeepActiveElement(element.ownerDocument)
 }
 
+// The focused element itself, or a shadow host whose tree holds focus: the
+// one its own root reports as active. Keys already go to either, so typing
+// into one needs no focusing or interactability check.
+export function holdsFocus(element: Element): boolean {
+  const root = element.getRootNode() as Node & Partial<DocumentOrShadowRoot>
+  return element === getActiveElementFrom(element) || element === root.activeElement
+}
+
 function throughOpenShadowRoots(active: Element | null): Element | null {
   while (active && active.shadowRoot && active.shadowRoot.activeElement) {
     active = active.shadowRoot.activeElement
