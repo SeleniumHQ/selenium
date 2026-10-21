@@ -68,6 +68,7 @@ py_binary(
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    timeout = "moderate",  # resolution over the network requires additional time
     srcs = [
         "pyproject.toml",
         "requirements.txt",
