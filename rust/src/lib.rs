@@ -1854,6 +1854,85 @@ pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
 }
 
 #[cfg(test)]
+mod http_client_tests {
+    use super::*;
+    use rustls::pki_types::pem::PemObject;
+    use rustls::pki_types::{CertificateDer, PrivateKeyDer};
+    use rustls::{ServerConfig, ServerConnection, StreamOwned};
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
+    use std::sync::Arc;
+
+    // Throwaway self-signed certificate for localhost, used only to stand up an
+    // untrusted TLS endpoint without network access.
+    const SELF_SIGNED_CERT: &str = "-----BEGIN CERTIFICATE-----
+MIIBlTCCATugAwIBAgIUQU7p5FcAxQxeMeQmPKpYKz4smEkwCgYIKoZIzj0EAwIw
+FDESMBAGA1UEAwwJbG9jYWxob3N0MCAXDTI2MTAyMTE2MjYxNloYDzIxMjYwOTI3
+MTYyNjE2WjAUMRIwEAYDVQQDDAlsb2NhbGhvc3QwWTATBgcqhkjOPQIBBggqhkjO
+PQMBBwNCAATHx6i+qofIU3hflZEIbFpOBySdpw+Cna6MUKAdRTbmfUeDhentZxKh
+QAhfcFT4chHJqwK5dhVTBnUOgsfyyPRho2kwZzAdBgNVHQ4EFgQUcXD6phiKt9kn
+41AURGcSSWSG5TIwHwYDVR0jBBgwFoAUcXD6phiKt9kn41AURGcSSWSG5TIwDwYD
+VR0TAQH/BAUwAwEB/zAUBgNVHREEDTALgglsb2NhbGhvc3QwCgYIKoZIzj0EAwID
+SAAwRQIgYrDKXTVZAaRMOXf9CSqDDL4lHYSU/907S7FutskbnNsCIQCWaiyW9qFP
++VWYfa9GXkfl7QNtKUfBM+S9GF9lu3E7yw==
+-----END CERTIFICATE-----";
+    const SELF_SIGNED_KEY: &str = "-----BEGIN PRIVATE KEY-----
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgSBzITPb9pswFCDyq
+57PpdpwQO8hssT4RHNuR+I0ivCKhRANCAATHx6i+qofIU3hflZEIbFpOBySdpw+C
+na6MUKAdRTbmfUeDhentZxKhQAhfcFT4chHJqwK5dhVTBnUOgsfyyPRh
+-----END PRIVATE KEY-----";
+
+    fn start_self_signed_https_server() -> u16 {
+        let cert = CertificateDer::from_pem_slice(SELF_SIGNED_CERT.as_bytes()).unwrap();
+        let key = PrivateKeyDer::from_pem_slice(SELF_SIGNED_KEY.as_bytes()).unwrap();
+        let config =
+            ServerConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))
+                .with_safe_default_protocol_versions()
+                .unwrap()
+                .with_no_client_auth()
+                .with_single_cert(vec![cert], key)
+                .unwrap();
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        thread::spawn(move || {
+            let (tcp, _) = listener.accept().unwrap();
+            tcp.set_read_timeout(Some(Duration::from_secs(10))).unwrap();
+            let conn = ServerConnection::new(Arc::new(config)).unwrap();
+            let mut tls = StreamOwned::new(conn, tcp);
+            let mut buf = [0u8; 1024];
+            if tls.read(&mut buf).is_ok() {
+                let _ = tls.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n");
+            }
+        });
+        port
+    }
+
+    #[tokio::test]
+    async fn create_http_client_rejects_untrusted_certificate() {
+        let client = create_http_client(10, "").unwrap();
+        let port = start_self_signed_https_server();
+
+        let result = client
+            .get(format!("https://localhost:{}/", port))
+            .send()
+            .await;
+
+        let err = result.expect_err("request to a self-signed endpoint must fail");
+        assert!(
+            format!("{:?}", err).contains("Certificate"),
+            "expected a certificate validation error, got: {:?}",
+            err
+        );
+    }
+
+    #[test]
+    fn create_http_client_propagates_invalid_proxy_error() {
+        assert!(create_http_client(10, "http://[invalid").is_err());
+    }
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::logger::Logger;
