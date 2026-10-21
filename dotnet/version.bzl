@@ -6,7 +6,7 @@ SE_VERSION = VERSIONS["dotnet"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v155",
-    "v153",
+    "v156",
     "v154",
 ]
 
