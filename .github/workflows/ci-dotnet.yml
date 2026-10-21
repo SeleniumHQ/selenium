@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Unit Tests
-      os: windows
+      os: ubuntu
       run: bazel test //dotnet/test/unit/... --flaky_test_attempts=1
 
   integration-tests:
