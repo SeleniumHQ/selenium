@@ -29,8 +29,8 @@ use selenium_manager::metadata::clear_metadata;
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
-    CACHE_TTL_DAYS, SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
-    prune_old_cache_entries,
+    CACHE_TTL_DAYS, SeleniumManager, clear_cache, format_error, get_manager_by_browser,
+    get_manager_by_driver, prune_old_cache_entries,
 };
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
@@ -328,7 +328,7 @@ fn main() {
                     format!(
                         "There was an error managing {} ({}); using driver found in the cache",
                         selenium_manager.get_driver_name(),
-                        err
+                        format_error(&err)
                     ),
                     selenium_manager.is_offline(),
                 );
@@ -348,7 +348,7 @@ fn main() {
                 let error_msg = if log.is_debug_enabled() {
                     format!("{:?}", err)
                 } else {
-                    err.to_string()
+                    format_error(&err)
                 };
                 log.error(error_msg);
                 flush_and_exit(DATAERR, log, Some(err));

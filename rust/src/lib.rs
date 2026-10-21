@@ -48,9 +48,10 @@ use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{env, fs, thread};
+use std::{env, fs, io, thread};
 use walkdir::{DirEntry, WalkDir};
 use which::which;
 
@@ -106,6 +107,7 @@ pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
+pub const TLS_CERTIFICATE_ERR_MSG: &str = "TLS certificate validation failed. If a proxy or mirror on your network uses its own certificate authority, add it to the system trust store (on Linux, SSL_CERT_FILE can point to a CA bundle)";
 pub const UNC_PREFIX: &str = r"\\?\";
 pub const SM_BETA_LABEL: &str = "0.";
 pub const LATEST_RELEASE: &str = "latest";
@@ -119,9 +121,9 @@ pub trait SeleniumManager {
 
     fn get_browser_names_in_path(&self) -> Vec<&str>;
 
-    fn get_http_client(&self) -> &Client;
+    fn get_http_client_cell(&self) -> &OnceLock<Client>;
 
-    fn set_http_client(&mut self, http_client: Client);
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client>;
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
@@ -213,7 +215,7 @@ pub trait SeleniumManager {
             driver_url
         ));
         let (_tmp_folder, driver_zip_file) =
-            download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
+            download_to_tmp_folder(self.get_http_client()?, driver_url, self.get_logger())?;
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
@@ -380,7 +382,7 @@ pub trait SeleniumManager {
             install_note
         ));
         let (_tmp_folder, driver_zip_file) =
-            download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+            download_to_tmp_folder(self.get_http_client()?, browser_url, self.get_logger())?;
 
         let browser_label_for_download =
             self.get_browser_label_for_download(original_browser_version)?;
@@ -1002,7 +1004,14 @@ pub trait SeleniumManager {
                 lang: self.get_language_binding().to_ascii_lowercase(),
                 selenium_version: self.get_selenium_version().to_ascii_lowercase(),
             };
-            let http_client = self.get_http_client().to_owned();
+            let http_client = match self.get_http_client() {
+                Ok(http_client) => http_client.to_owned(),
+                Err(err) => {
+                    self.get_logger()
+                        .debug(format!("Skipping stats: {}", format_error(&err)));
+                    return Ok(());
+                }
+            };
             let sender = self.get_sender().to_owned();
             let cache_path = self.get_cache_path()?;
             let mut metadata = get_metadata(self.get_logger(), &cache_path);
@@ -1031,7 +1040,11 @@ pub trait SeleniumManager {
     ) -> Result<(), Error> {
         if *is_driver_in_path && self.is_fallback_driver_from_cache() {
             self.get_logger().debug_or_warn(
-                format!("Exception managing {}: {}", self.get_browser_name(), err),
+                format!(
+                    "Exception managing {}: {}",
+                    self.get_browser_name(),
+                    format_error(&err)
+                ),
                 self.is_offline(),
             );
             Ok(())
@@ -1559,9 +1572,10 @@ pub trait SeleniumManager {
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Error> {
         if !proxy.is_empty() && !self.is_offline() {
+            Proxy::all(&proxy)?;
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
             self.get_config_mut().proxy = proxy;
-            self.update_http_client()?;
+            self.reset_http_client();
         }
         Ok(())
     }
@@ -1575,7 +1589,7 @@ pub trait SeleniumManager {
             self.get_config_mut().timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
-            self.update_http_client()?;
+            self.reset_http_client();
         }
         Ok(())
     }
@@ -1587,7 +1601,7 @@ pub trait SeleniumManager {
     fn set_insecure(&mut self, insecure: bool) -> Result<(), Error> {
         if insecure && !self.is_insecure() {
             self.get_config_mut().insecure = true;
-            self.update_http_client()?;
+            self.reset_http_client();
         }
         if self.is_insecure() {
             self.get_logger().warn(
@@ -1597,13 +1611,17 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn update_http_client(&mut self) -> Result<(), Error> {
-        let proxy = self.get_proxy();
-        let timeout = self.get_timeout();
-        let insecure = self.is_insecure();
-        let http_client = create_http_client(timeout, proxy, insecure)?;
-        self.set_http_client(http_client);
-        Ok(())
+    fn get_http_client(&self) -> Result<&Client, Error> {
+        if let Some(http_client) = self.get_http_client_cell().get() {
+            return Ok(http_client);
+        }
+        let http_client =
+            create_http_client(self.get_timeout(), self.get_proxy(), self.is_insecure())?;
+        Ok(self.get_http_client_cell().get_or_init(|| http_client))
+    }
+
+    fn reset_http_client(&mut self) {
+        self.get_http_client_cell_mut().take();
     }
 
     fn get_ttl(&self) -> u64 {
@@ -1874,6 +1892,14 @@ pub fn create_http_client(timeout: u64, proxy: &str, insecure: bool) -> Result<C
     Ok(client_builder.build()?)
 }
 
+pub fn format_error(err: &Error) -> String {
+    if is_tls_certificate_error(err) {
+        format!("{err:#}. {TLS_CERTIFICATE_ERR_MSG}")
+    } else {
+        format!("{err:#}")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1997,6 +2023,38 @@ mod tests {
         let log = Logger::new();
         prune_old_cache_entries(&log, "/nonexistent/path/that/does/not/exist", 30);
     }
+
+    #[test]
+    fn http_client_is_not_created_until_needed() {
+        let manager = crate::chrome::ChromeManager::new().unwrap();
+        assert!(manager.get_http_client_cell().get().is_none());
+
+        manager.get_http_client().unwrap();
+
+        assert!(manager.get_http_client_cell().get().is_some());
+    }
+
+    #[test]
+    fn format_error_adds_hint_for_untrusted_certificate() {
+        let tls_error = io::Error::new(
+            io::ErrorKind::InvalidData,
+            rustls::Error::InvalidCertificate(rustls::CertificateError::UnknownIssuer),
+        );
+        let err = Error::new(io::Error::other(tls_error)).context("error sending request");
+
+        assert!(format_error(&err).ends_with(TLS_CERTIFICATE_ERR_MSG));
+    }
+
+    #[test]
+    fn format_error_shows_cause_without_hint_for_other_errors() {
+        let err =
+            Error::new(io::Error::other("connection refused")).context("error sending request");
+
+        assert_eq!(
+            format_error(&err),
+            "error sending request: connection refused"
+        );
+    }
 }
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
@@ -2035,6 +2093,23 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> 
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+fn is_tls_certificate_error(err: &Error) -> bool {
+    err.chain().any(|cause| {
+        let mut current = cause;
+        // io::Error::source() skips the error it wraps (and reqwest nests them), so unwrap by hand
+        while let Some(inner) = current
+            .downcast_ref::<io::Error>()
+            .and_then(|io_error| io_error.get_ref())
+        {
+            current = inner;
+        }
+        matches!(
+            current.downcast_ref::<rustls::Error>(),
+            Some(rustls::Error::InvalidCertificate(_) | rustls::Error::General(_))
+        )
+    })
 }
 
 #[cfg(test)]
