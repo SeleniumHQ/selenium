@@ -343,6 +343,36 @@
       assert.strictEqual(result.status, 'stale element reference');
     });
 
+    QUnit.test('a callback value that cannot be transferred is reported, not thrown', function(assert) {
+      var result, thrown = null;
+      executeAsyncScript(
+          'var cyclic = {}; cyclic.self = cyclic; try { arguments[0](cyclic); } catch (e) { window.__thrown = e; }',
+          [], 0, function(r) { result = r; });
+      thrown = window.__thrown || null;
+      delete window.__thrown;
+      assert.strictEqual(thrown, null, 'nothing thrown into the script');
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'javascript error');
+    });
+
+    QUnit.test('a response is delivered once even when delivery throws', function(assert) {
+      var done = assert.async();
+      var calls = 0;
+      executeAsyncScript('arguments[0](1)', [], 20, function() {
+        calls++;
+        throw new Error('delivery failed');
+      });
+      window.setTimeout(function() {
+        assert.strictEqual(calls, 1);
+        done();
+      }, 60);
+    });
+
+    QUnit.test('a handle naming the cache counter is stale', function(assert) {
+      var result = executeScript('return arguments[0];', [{ELEMENT: 'nextId'}]);
+      assert.strictEqual(result.status, 'stale element reference');
+    });
+
     QUnit.test('ShouldBeAbleToExecuteAsyncFunc', function(assert) {
       var done = assert.async();
       executeAsyncScript(function(callback) { callback(1); }, [], 0, function(result) {

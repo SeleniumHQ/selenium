@@ -86,11 +86,11 @@ export function getElement(key: string, optDoc?: Document): Element | Window {
   key = decodeURIComponent(key)
   const doc = optDoc || document
   const cache = getCache(doc)
-  if (!(key in cache)) {
+  // The cache also holds its own id counter, which is not a handle.
+  const el = cache[key] as Record<string, unknown> | number | undefined
+  if (typeof el !== 'object' || el === null) {
     throw botError(STALE_ELEMENT_REFERENCE, 'Element does not exist in cache')
   }
-
-  const el = cache[key] as Record<string, unknown>
 
   if ('setInterval' in el) {
     if (el['closed']) {
@@ -272,6 +272,9 @@ export function executeAsyncScript(
     if (responseSent) {
       return
     }
+    // Marked before delivery, so an onDone that throws cannot be followed by
+    // the timeout or the unload handler delivering a second response.
+    responseSent = true
     win.removeEventListener('unload', onunload, true)
     win.clearTimeout(timeoutId)
     let response: Response
@@ -281,10 +284,15 @@ export function executeAsyncScript(
       err.stack = cause.stack
       response = wrapError(err)
     } else {
-      response = wrapResponse(value)
+      // A value that cannot be transferred, such as a cyclic object, is the
+      // script's error to report, not an exception thrown back into it.
+      try {
+        response = wrapResponse(value)
+      } catch (e) {
+        response = wrapError(e)
+      }
     }
     onDone(optStringify ? JSON.stringify(response) : response)
-    responseSent = true
   }
 
   if (win.closed) {

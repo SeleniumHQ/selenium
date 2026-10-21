@@ -238,6 +238,7 @@
     "dist/",
     "index.ts",
     "typescript/",
+    "!typescript/testing/",
     "LICENSE",
     "NOTICE",
     "README.md"

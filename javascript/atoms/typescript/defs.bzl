@@ -20,8 +20,8 @@
 An atom ships in two shapes, both built from one entry point:
 
   typescript/<name>.generated.js  the injectable expression the language
-                                  bindings send over the wire, and the text the
-                                  `@selenium/atoms` `/source` subpath exports
+                                  bindings send over the wire (not yet exported
+                                  from the npm package)
   typescript/<name>-global.js     the same bytes published as a browser global
                                   so the QUnit pages can load it with <script>
 

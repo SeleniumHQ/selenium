@@ -237,12 +237,12 @@ function deleteText(field: TextField, forward: boolean): void {
       if (end >= value.length) {
         return
       }
-      end += isSurrogatePairAt(value, end) ? 2 : 1
+      end = stepRight(value, end)
     } else {
       if (start <= 0) {
         return
       }
-      start -= isSurrogatePairAt(value, start - 2) ? 2 : 1
+      start = stepLeft(value, start)
     }
   }
   const inputType = forward ? 'deleteContentForward' : 'deleteContentBackward'
@@ -251,6 +251,15 @@ function deleteText(field: TextField, forward: boolean): void {
   }
   replaceRange(field, '', start, end)
   fire(field, EventType.INPUT, { inputType, data: null })
+}
+
+// One character left or right of `index`, never splitting a surrogate pair.
+function stepLeft(value: string, index: number): number {
+  return Math.max(index - (isSurrogatePairAt(value, index - 2) ? 2 : 1), 0)
+}
+
+function stepRight(value: string, index: number): number {
+  return Math.min(index + (isSurrogatePairAt(value, index) ? 2 : 1), value.length)
 }
 
 function isSurrogatePairAt(value: string, index: number): boolean {
@@ -285,7 +294,7 @@ function moveCaret(field: TextField, key: Key, shift: boolean): void {
     } else if (start !== end) {
       caret = key === Keys.LEFT ? start : end
     } else {
-      caret = key === Keys.LEFT ? Math.max(start - 1, 0) : Math.min(end + 1, length)
+      caret = key === Keys.LEFT ? stepLeft(field.value, start) : stepRight(field.value, end)
     }
     field.setSelectionRange(caret, caret, 'none')
     return
@@ -297,9 +306,9 @@ function moveCaret(field: TextField, key: Key, shift: boolean): void {
   } else if (key === Keys.END) {
     moved = length
   } else if (key === Keys.LEFT) {
-    moved = Math.max(focus - 1, 0)
+    moved = stepLeft(field.value, focus)
   } else {
-    moved = Math.min(focus + 1, length)
+    moved = stepRight(field.value, focus)
   }
   // A selection with no prior extent is anchored at the caret.
   const fixed = start === end ? start : anchor

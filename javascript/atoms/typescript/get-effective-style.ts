@@ -30,7 +30,7 @@ function toCamelCase(name: string): string {
 // name and fell back to getPropertyValue, returning '' rather than null when
 // there is no view to compute against. The empty string is what makes the
 // cascaded fallback below fire.
-function getComputedStyleValue(elem: Element, styleName: string): string {
+function getComputedStyleValue(elem: Element, styleName: string, cssName: string): string {
   const view = elem.ownerDocument.defaultView
   if (!view) {
     return ''
@@ -40,18 +40,18 @@ function getComputedStyleValue(elem: Element, styleName: string): string {
     return ''
   }
   return (styles as unknown as Record<string, string>)[styleName] ||
-    styles.getPropertyValue(styleName) ||
+    styles.getPropertyValue(cssName) ||
     ''
 }
 
 // bot.dom.getCascadedStyle_. The elem.currentStyle preference the original
 // opened with was IE-only and is dropped; every browser we support fell
 // through to elem.style anyway.
-function getCascadedStyle(elem: Element, styleName: string): string | null {
+function getCascadedStyle(elem: Element, styleName: string, cssName: string): string | null {
   const style = (elem as HTMLElement).style
   let value: string | undefined = (style as unknown as Record<string, string>)[styleName]
   if (value === undefined && typeof style.getPropertyValue === 'function') {
-    value = style.getPropertyValue(styleName)
+    value = style.getPropertyValue(cssName)
   }
 
   if (value !== 'inherit') {
@@ -59,7 +59,7 @@ function getCascadedStyle(elem: Element, styleName: string): string | null {
   }
 
   const parent = getParentElement(elem)
-  return parent ? getCascadedStyle(parent, styleName) : null
+  return parent ? getCascadedStyle(parent, styleName, cssName) : null
 }
 
 // The effective value of a CSS property, with colours normalised.
@@ -77,8 +77,12 @@ function getEffectiveStyle(elem: Element, propertyName: string): string | null {
     // The IE-only styleFloat spelling the original also chose between is gone.
     styleName = 'cssFloat'
   }
+  // getPropertyValue takes the CSS spelling, not the camel-cased one; without
+  // it a custom property such as --accent, which has no camel-cased form,
+  // could never be read.
+  const cssName = styleName === 'cssFloat' ? 'float' : propertyName
 
-  const style = getComputedStyleValue(elem, styleName) || getCascadedStyle(elem, styleName)
+  const style = getComputedStyleValue(elem, styleName, cssName) || getCascadedStyle(elem, styleName, cssName)
   if (style === null) {
     return null
   }

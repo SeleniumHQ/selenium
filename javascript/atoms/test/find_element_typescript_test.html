@@ -37,6 +37,7 @@ under the License.
     <a id="link2" href="#">Partial match link</a>
     <input id="input1" name="myinput" type="text">
     <span id="span1" class="myclass">A span</span>
+  <b id="punctuated-class" class="a#b[c]"></b>
   </div>
 </div>
 <!-- Two elements share the id "dup-id". The one in #dup-scope is "inside";
@@ -145,6 +146,12 @@ under the License.
     var el = findElement({'className': 'otherclass'}, fixture);
     assert.ok(el !== null);
     assert.equal(el.getAttribute('id'), 'para2');
+  });
+
+  QUnit.test('finds a class name containing selector punctuation', function(assert) {
+    var el = findElement({'class name': 'a#b[c]'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el && el.id, 'punctuated-class');
   });
 
   QUnit.test('returns null when class name matches nothing', function(assert) {

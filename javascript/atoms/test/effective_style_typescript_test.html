@@ -26,6 +26,10 @@
       float: left;
     }
 
+    #custom-property {
+      --accent-colour: rebeccapurple;
+    }
+
     #blocky {
       display: block;
       margin-top: 7px;
@@ -83,6 +87,10 @@
       assert.strictEqual(styleOf('floated', 'styleFloat'), 'left', 'styleFloat');
     });
 
+    QUnit.test('reads a custom property by its own name', function (assert) {
+      assert.strictEqual(styleOf('custom-property', '--accent-colour'), 'rebeccapurple');
+    });
+
     QUnit.test('leaves a non-colour property untouched', function (assert) {
       assert.strictEqual(styleOf('blocky', 'display'), 'block');
       assert.strictEqual(styleOf('blocky', 'margin-top'), '7px');
@@ -109,6 +117,7 @@
   <div id="translucent"></div>
   <div id="hex-background"></div>
   <div id="floated"></div>
+  <div id="custom-property"></div>
   <div id="blocky"></div>
   <div id="bordered"></div>
 </body>

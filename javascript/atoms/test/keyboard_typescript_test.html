@@ -345,6 +345,21 @@
       assert.strictEqual(el.value, 'a');
     });
 
+    QUnit.test('arrows step over a whole surrogate pair', function(assert) {
+      var el = $('target');
+      keyboard.moveCursor(el);
+      typeText('a😀b');
+      tap(Keys.LEFT);
+      tap(Keys.LEFT);
+      assert.deepEqual([el.selectionStart, el.selectionEnd], [1, 1], 'left');
+      tap(Keys.RIGHT);
+      assert.deepEqual([el.selectionStart, el.selectionEnd], [3, 3], 'right');
+      keyboard.pressKey(Keys.SHIFT);
+      tap(Keys.LEFT);
+      keyboard.releaseKey(Keys.SHIFT);
+      assert.deepEqual([el.selectionStart, el.selectionEnd], [1, 3], 'shift+left');
+    });
+
     QUnit.test('arrows, home and end move the caret', function(assert) {
       var el = $('target');
       keyboard.moveCursor(el);
@@ -429,6 +444,11 @@
     });
 
     QUnit.test('moveCursor keeps focus where a focus handler redirects it', function(assert) {
+      // Focus events only fire while the window has system focus.
+      if (!document.hasFocus()) {
+        assert.expect(0);
+        return;
+      }
       on($('target'), 'focus', function() { $('other').focus(); });
       keyboard.moveCursor($('target'));
       assert.strictEqual(document.activeElement, $('other'));

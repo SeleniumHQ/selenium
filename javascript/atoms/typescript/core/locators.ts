@@ -55,6 +55,12 @@ function idSelector(target: string): string | null {
   return /^\d/.test(target) ? null : '#' + cssEscapeId(target)
 }
 
+// Builds a CSS selector matching one class. The Closure locator escaped only
+// dots, so a class such as "a#b" was read as a class plus an id.
+function classSelector(target: string): string {
+  return '.' + (hasCssEscape() ? CSS.escape(target) : cssEscapeId(target))
+}
+
 // Builds a CSS selector matching an exact name attribute, or returns null when
 // the caller must scan attributes instead. Without CSS.escape, a line break
 // cannot be written inside a quoted CSS string.
@@ -124,9 +130,7 @@ function classNameMany(target: string, root: Root): Element[] {
     throw botError(INVALID_SELECTOR, 'Compound class names not permitted')
   }
   try {
-    // Backslash-escape dots so a class name containing a literal dot is not
-    // misread as a CSS descendant combinator.
-    return Array.from(root.querySelectorAll('.' + target.replace(/\\/g, '\\\\').replace(/\./g, '\\.')))
+    return Array.from(root.querySelectorAll(classSelector(target)))
   } catch (_e) {
     throw botError(INVALID_SELECTOR, 'An invalid or illegal class name was specified')
   }
@@ -304,8 +308,7 @@ function classNameSingle(target: string, root: Root): Element | null {
     throw botError(INVALID_SELECTOR, 'Compound class names not permitted')
   }
   try {
-    // locators/classname.js:62-68 – uses querySelector after dot-escaping.
-    return root.querySelector('.' + target.replace(/\\/g, '\\\\').replace(/\./g, '\\.')) ?? null
+    return root.querySelector(classSelector(target)) ?? null
   } catch (_e) {
     throw botError(INVALID_SELECTOR, 'An invalid or illegal class name was specified')
   }
