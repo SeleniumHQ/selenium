@@ -212,7 +212,7 @@ public class ExternalProcess {
           buffer = new ByteArrayOutputStream();
         }
 
-        AtomicLong forwarded = new AtomicLong();
+        ForwardingProgress forwarded = new ForwardingProgress();
         Thread worker =
             new Thread(
                 () -> {
@@ -230,6 +230,13 @@ public class ExternalProcess {
                   } catch (IOException ex) {
                     LOG.log(
                         Level.WARNING, "failed to copy the output of process " + process.pid(), ex);
+                    // e.g. copyOutputTo was closed, while a child of the process still writes to
+                    // the pipe; keep reading, so the child does not block on a full pipe
+                    try {
+                      input.transferTo(OutputStream.nullOutputStream());
+                    } catch (IOException ignored) {
+                      // the pipe is gone, nobody can block on it anymore
+                    }
                   }
                   LOG.log(Level.FINE, "completed to copy the output of process " + process.pid());
                 },
@@ -259,15 +266,18 @@ public class ExternalProcess {
   private final Process process;
   private final OutputStream outputStream;
   private final Thread worker;
-  // the number of bytes the worker has forwarded, null when the worker was not started by Builder
-  private final @Nullable AtomicLong forwarded;
+  // how far the worker has forwarded the output, null when the worker was not started by Builder
+  private final @Nullable ForwardingProgress forwarded;
 
   public ExternalProcess(Process process, OutputStream outputStream, Thread worker) {
     this(process, outputStream, worker, null);
   }
 
   private ExternalProcess(
-      Process process, OutputStream outputStream, Thread worker, @Nullable AtomicLong forwarded) {
+      Process process,
+      OutputStream outputStream,
+      Thread worker,
+      @Nullable ForwardingProgress forwarded) {
     this.process = process;
     this.outputStream = outputStream;
     this.worker = worker;
@@ -373,14 +383,14 @@ public class ExternalProcess {
    * #OUTPUT_QUIET_PERIOD_MS}, but keep waiting as long as output still arrives.
    */
   private void awaitWorker() {
-    AtomicLong counter = forwarded;
+    ForwardingProgress progress = forwarded;
     boolean quiet = false;
     try {
       // the worker might not stop even when process.destroyForcibly is called
-      if (counter == null) {
+      if (progress == null) {
         worker.join(8000);
       } else {
-        quiet = joinUntilQuiet(counter, 8000);
+        quiet = joinUntilQuiet(progress, 8000);
       }
     } catch (InterruptedException ex) {
       Thread.interrupted();
@@ -406,18 +416,20 @@ public class ExternalProcess {
 
   /**
    * Joins the worker until it stopped, the timeout elapsed, or no output was forwarded for {@link
-   * #OUTPUT_QUIET_PERIOD_MS}.
+   * #OUTPUT_QUIET_PERIOD_MS}. A write that is still in progress, e.g. to a slow {@code
+   * copyOutputTo} stream, does not count as silence.
    *
    * @return true when the worker is still running, but did not forward any output in the last
    *     {@link #OUTPUT_QUIET_PERIOD_MS}
    */
-  private boolean joinUntilQuiet(AtomicLong counter, long timeoutMs) throws InterruptedException {
+  private boolean joinUntilQuiet(ForwardingProgress progress, long timeoutMs)
+      throws InterruptedException {
     long deadline = System.nanoTime() + MILLISECONDS.toNanos(timeoutMs);
     long last = -1;
 
     while (worker.isAlive()) {
-      long count = counter.get();
-      if (count == last) {
+      long count = progress.bytes.get();
+      if (count == last && !progress.writing) {
         return true;
       }
       last = count;
@@ -432,27 +444,43 @@ public class ExternalProcess {
     return false;
   }
 
-  /** Counts the bytes written through it, so a waiting thread can see the output is flowing. */
+  /** How far the worker has forwarded the output, read by a thread waiting for it. */
+  private static class ForwardingProgress {
+    private final AtomicLong bytes = new AtomicLong();
+    private volatile boolean writing;
+  }
+
+  /** Records the progress of the writes through it, so a waiting thread can see output flowing. */
   private static class CountingOutputStream extends OutputStream {
 
     private final OutputStream delegate;
-    private final AtomicLong count;
+    private final ForwardingProgress progress;
 
-    private CountingOutputStream(OutputStream delegate, AtomicLong count) {
+    private CountingOutputStream(OutputStream delegate, ForwardingProgress progress) {
       this.delegate = delegate;
-      this.count = count;
+      this.progress = progress;
     }
 
     @Override
     public void write(int b) throws IOException {
-      delegate.write(b);
-      count.incrementAndGet();
+      progress.writing = true;
+      try {
+        delegate.write(b);
+        progress.bytes.incrementAndGet();
+      } finally {
+        progress.writing = false;
+      }
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-      delegate.write(b, off, len);
-      count.addAndGet(len);
+      progress.writing = true;
+      try {
+        delegate.write(b, off, len);
+        progress.bytes.addAndGet(len);
+      } finally {
+        progress.writing = false;
+      }
     }
 
     @Override
