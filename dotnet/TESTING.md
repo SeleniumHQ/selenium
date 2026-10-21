@@ -5,7 +5,7 @@ This guide helps contributors write tests in the Selenium .NET codebase.
 ## Test Framework
 
 * Tests use NUnit.
-* All tests inherit from `DriverTestFixture`.
+* Browser-backed WebDriver tests inherit from `DriverTestFixture`; unit tests do not.
 * Test HTML pages accessed via properties like `simpleTestPage`, `javascriptPage`.
 * `WaitFor<T>()` provides waiting with 5-second default timeout.
 
@@ -32,7 +32,29 @@ public class MyFeatureTest : DriverTestFixture
 
 ## Running Tests
 
-Tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then
+### Unit Tests
+
+In-process unit tests are grouped by production library under `dotnet/test/unit`.
+WebDriver unit tests live in `dotnet/test/unit/webdriver` in the `Selenium.WebDriver.UnitTests` project.
+They must not start browsers, access the real filesystem or network, or launch child processes.
+Use an in-process fake where a dependency is needed, such as the BiDi `FakeTransport`.
+The project has no browser setup fixture, test web server, or browser configuration.
+Existing browser-free tests outside this project have not all been migrated.
+
+```shell
+bazel test //dotnet/test/unit/...                       # All unit tests, no browser variants
+bazel test //dotnet/test/unit/webdriver/...            # WebDriver unit tests
+bazel test //dotnet/test/unit/webdriver:BiDi/SessionUnitTests # One fixture
+bazel test //dotnet/test/unit/... --test_output=all --cache_test_results=no
+```
+
+Unit targets are tagged `unit` and sized `small`. CI runs them separately from browser tests,
+without flaky-test retries. Preserve fixture-specific isolation attributes: telemetry tests
+that register process-wide activity listeners must remain nonparallel.
+
+### Browser Tests
+
+WebDriver browser tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then
 generates a target per test class, plus a per-browser variant for each supported browser. The
 bare class target runs on the default browser (Firefox, the first entry in the `browsers` list in
 [`BUILD.bazel`](test/webdriver/BUILD.bazel)).
@@ -140,7 +162,10 @@ From `EnvironmentManager.Instance`:
 
 ```
 dotnet/test/
-├── testing.nunit/                  # Shared NUnit infrastructure (library used by all test projects)
+├── unit/                           # In-process unit projects grouped by production library
+│   └── webdriver/                  # WebDriver unit project; no browser/server infrastructure
+│       └── BiDi/                   # BiDi unit tests and fake transport
+├── testing.nunit/                  # Shared browser-test NUnit infrastructure
 │   ├── DriverTestFixture.cs        # Base class
 │   ├── AssemblyFixtureBase.cs      # Base for each project's [SetUpFixture]
 │   ├── appconfig.json              # Driver configurations
@@ -158,5 +183,9 @@ dotnet/test/
 ## Build Files
 
 * Adding tests shouldn't require Bazel changes—the suite globs `**/*.cs`.
-* Make sure new `*Tests.cs` files are under `dotnet/test/webdriver`, which has the
-  `dotnet_nunit_test_suite` declaration in `BUILD.bazel`.
+* Put WebDriver in-process unit tests in `dotnet/test/unit/webdriver` and browser-backed
+  WebDriver tests in `dotnet/test/webdriver`. Both have a `dotnet_nunit_test_suite`
+  declaration in `BUILD.bazel`. Add future unit projects under `dotnet/test/unit/<library>`
+  with their own project and build files to keep source discovery and dependencies separate.
+* Name fixture files `*Tests.cs` so Bazel generates per-fixture targets. Each migrated fixture
+  must be compiled by only one test project; move sources rather than linking duplicate copies.
