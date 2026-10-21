@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>editable_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/is-editable-global.js"></script>
+  <script type="text/javascript">
+    // Ported from bot.dom.isEditable: an element the user can put a value into,
+    // and which is not readOnly.
+    var isEditable = window.bot.dom.typescript.isEditable;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function input(type) {
+      var el = document.createElement('input');
+      el.type = type;
+      return el;
+    }
+
+    QUnit.test('free-text inputs are editable', function (assert) {
+      var types = ['text', 'search', 'tel', 'url', 'email', 'password', 'number'];
+      types.forEach(function (type) {
+        assert.strictEqual(isEditable(input(type)), true, type + ' should be editable');
+      });
+    });
+
+    QUnit.test('a textarea is editable', function (assert) {
+      assert.strictEqual(isEditable(byId('a-textarea')), true);
+    });
+
+    QUnit.test('typeable non-text inputs are editable', function (assert) {
+      var types = ['range', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
+      types.forEach(function (type) {
+        assert.strictEqual(isEditable(input(type)), true, type + ' should be editable');
+      });
+    });
+
+    QUnit.test('a file input is editable', function (assert) {
+      assert.strictEqual(isEditable(input('file')), true);
+    });
+
+    QUnit.test('non-typeable controls are not editable', function (assert) {
+      assert.strictEqual(isEditable(input('checkbox')), false, 'checkbox');
+      assert.strictEqual(isEditable(input('radio')), false, 'radio');
+      assert.strictEqual(isEditable(input('hidden')), false, 'hidden');
+      assert.strictEqual(isEditable(byId('a-div')), false, 'plain div');
+      assert.strictEqual(isEditable(byId('a-select')), false, 'select');
+    });
+
+    QUnit.test('readOnly cancels editability', function (assert) {
+      assert.strictEqual(isEditable(byId('readonly-text')), false, 'readonly text input');
+      assert.strictEqual(isEditable(byId('readonly-textarea')), false, 'readonly textarea');
+    });
+
+    QUnit.test('a contentEditable element is editable', function (assert) {
+      assert.strictEqual(isEditable(byId('editable-div')), true);
+      assert.strictEqual(isEditable(byId('inheriting-editable-span')), true, 'inherits from the ancestor');
+    });
+
+    QUnit.test('disabled does not make a field uneditable', function (assert) {
+      // isEditable answers "can this hold user text", not "can the user reach
+      // it" — that is isInteractable's job.
+      assert.strictEqual(isEditable(byId('disabled-text')), true);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="a-div">plain</div>
+  <textarea id="a-textarea"></textarea>
+  <textarea id="readonly-textarea" readonly></textarea>
+  <input type="text" id="readonly-text" readonly value="ro">
+  <input type="text" id="disabled-text" disabled value="d">
+  <select id="a-select">
+    <option>one</option>
+  </select>
+  <div id="editable-div" contenteditable="true">
+    <span id="inheriting-editable-span">inherits</span>
+  </div>
+</body>
+
+</html>

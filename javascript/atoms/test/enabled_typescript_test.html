@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>enabled_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/is-enabled-global.js"></script>
+  <script type="text/javascript">
+    // Assertions ported from enabled_test.html, which is the behaviour spec for
+    // bot.dom.isEnabled. The browser-version branches in that file (Gecko < 2,
+    // WebKit < 535, Android < 5) are gone: every browser we support now takes
+    // what used to be the else branch.
+    //
+    // The buttons carry type="button" so that a stray activation cannot submit
+    // the form and navigate the runner away mid-suite.
+    var isEnabled = window.bot.dom.typescript.isEnabled;
+
+    function assertEnabled(assert, id) {
+      var element = document.getElementById(id);
+      assert.ok(element, 'no such element: ' + id);
+      assert.ok(isEnabled(element), id + ' should be enabled');
+    }
+
+    function assertDisabled(assert, id) {
+      var element = document.getElementById(id);
+      assert.ok(element, 'no such element: ' + id);
+      assert.notOk(isEnabled(element), id + ' should be disabled');
+    }
+
+    QUnit.test('elements that do not support the disabled attribute are always enabled', function (assert) {
+      assert.ok(isEnabled(document.body), 'Body should be enabled');
+      assert.ok(isEnabled(document.getElementById('a-form')), 'Form should be enabled');
+    });
+
+    QUnit.test('should be enabled if it does not have the disabled attribute', function (assert) {
+      assertEnabled(assert, 'enabled-button-a');
+    });
+
+    QUnit.test('should be disabled if it has the disabled attribute', function (assert) {
+      assertDisabled(assert, 'disabled-button-b');
+      assertDisabled(assert, 'disabled-button-c');
+      assertDisabled(assert, 'disabled-button-d');
+      // disabled="false" still disables: presence is what counts, not the value.
+      assertDisabled(assert, 'disabled-button-e');
+    });
+
+    QUnit.test('disabled should be an inherited attribute', function (assert) {
+      assertEnabled(assert, 'enabled-select');
+      assertEnabled(assert, 'enabled-option');
+      assertDisabled(assert, 'disabled-optgroup');
+      assertDisabled(assert, 'inherits-disabled');
+
+      assertDisabled(assert, 'disabled-select');
+      assertDisabled(assert, 'inherits-disabled-2');
+    });
+
+    QUnit.test('disabled should inherit from fieldset unless in the first legend', function (assert) {
+      assertEnabled(assert, 'enabled-legend-button');
+      assertDisabled(assert, 'disabled-legend-button');
+      assertDisabled(assert, 'disabled-fieldset-button');
+    });
+
+    QUnit.test('enabled should respond to the disabled property', function (assert) {
+      var element = document.getElementById('enabled-button-a');
+      element.disabled = true;
+      assertDisabled(assert, 'enabled-button-a');
+      element.disabled = false;
+      assertEnabled(assert, 'enabled-button-a');
+    });
+
+    QUnit.test('a detached node reports enabled rather than throwing', function (assert) {
+      assert.ok(isEnabled(document.createElement('option')), 'a detached option should not throw');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <form id="a-form" onsubmit="return false;">
+    <button type="button" id="enabled-button-a" value="Enabled A"></button>
+    <button type="button" id="disabled-button-b" value="Enabled B" disabled></button>
+    <button type="button" id="disabled-button-c" value="Enabled C" disabled="disabled"></button>
+    <button type="button" id="disabled-button-d" value="Enabled D" disabled="true"></button>
+    <button type="button" id="disabled-button-e" value="Enabled E" disabled="false"></button>
+
+    <select id="enabled-select">
+      <option id="enabled-option">foo</option>
+      <optgroup id="disabled-optgroup" disabled>
+        <option id="inherits-disabled">bar</option>
+      </optgroup>
+    </select>
+
+    <select id="disabled-select" disabled>
+      <optgroup>
+        <option id="inherits-disabled-2">baz</option>
+      </optgroup>
+    </select>
+
+    <fieldset id="disabled-fieldset" disabled="disabled">
+      <legend>
+        <button type="button" id="enabled-legend-button">Enabled Legend Button</button>
+      </legend>
+      <legend>
+        <button type="button" id="disabled-legend-button">Disabled Legend Button</button>
+      </legend>
+      <button type="button" id="disabled-fieldset-button">Disabled Fieldset Button</button>
+    </fieldset>
+  </form>
+</body>
+
+</html>

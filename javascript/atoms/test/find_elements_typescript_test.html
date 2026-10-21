@@ -37,6 +37,7 @@ under the License.
     <a id="link2" href="#">Partial match link</a>
     <input id="input1" name="myinput" type="text">
     <span id="span1" class="myclass">A span</span>
+  <b id="punctuated-class" class="a#b[c]"></b>
   </div>
 </div>
 <span id="dup" style="position: absolute; top: 200px; left: 0; width: 40px; height: 20px;">outside</span>
@@ -89,6 +90,16 @@ under the License.
     fixture.removeChild(el);
   });
 
+  QUnit.test('finds elements by id containing a NUL character', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'nul\u0000id');
+    fixture.appendChild(el);
+    var elements = findElements({'id': 'nul\u0000id'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0], el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds elements by class name', function(assert) {
     var elements = findElements({'class name': 'myclass'}, fixture);
     assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'span1'].sort());
@@ -97,6 +108,11 @@ under the License.
   QUnit.test('finds elements by className alias', function(assert) {
     var elements = findElements({'className': 'otherclass'}, fixture);
     assert.deepEqual(ids(elements), ['para2']);
+  });
+
+  QUnit.test('finds elements by a class name containing selector punctuation', function(assert) {
+    var elements = findElements({'class name': 'a#b[c]'}, fixture);
+    assert.deepEqual(elements.map(function(e) { return e.id; }), ['punctuated-class']);
   });
 
   QUnit.test('throws for empty class name', function(assert) {
