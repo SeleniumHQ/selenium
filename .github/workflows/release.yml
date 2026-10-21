@@ -149,7 +149,7 @@ jobs:
     with:
       name: Publish ${{ matrix.language }}
       gem-trusted-publishing: ${{ matrix.language == 'ruby' }}
-      node-version: ${{ matrix.language == 'javascript' && '24.14.1' || '' }}
+      node-version: ${{ matrix.language == 'javascript' && '24.22.1' || '' }}
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release rbe
