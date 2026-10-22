@@ -39,48 +39,41 @@ public class EnvironmentManager
 
     private EnvironmentManager()
     {
-        string dataFilePath;
+        string appConfigFilePath;
         Runfiles runfiles = null;
         try
         {
             runfiles = Runfiles.Create();
-            dataFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
+            appConfigFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
         }
         catch (FileNotFoundException)
         {
-            dataFilePath = "appconfig.json";
+            appConfigFilePath = "appconfig.json";
         }
         string currentDirectory = this.CurrentDirectory;
 
-        string configurationPath = Path.GetFullPath(dataFilePath);
+        string configurationPath = Path.GetFullPath(appConfigFilePath);
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Path.GetDirectoryName(configurationPath))
             .AddJsonFile(Path.GetFileName(configurationPath), optional: false, reloadOnChange: false)
             .AddEnvironmentVariables()
+            .AddNUnitParameters()
             .Build();
         TestEnvironment env = new();
         configuration.Bind(env);
-
-        string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
-        string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
-
-        string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
-
-        string headless = System.Environment.GetEnvironmentVariable("HEADLESS") ?? TestContext.Parameters.Get("Headless", string.Empty);
 
         // Bazel's $(location ...) expands to a runfiles-relative path (e.g.
         // "../+pin_browsers_extension+mac_chrome/Chrome.app/Contents/MacOS/Chrome")
         // which is relative to <runfiles>/_main. The driver process runs from a
         // different cwd and cannot resolve that, so absolutize through TEST_SRCDIR.
-        driverServiceLocation = ResolveRunfilesPath(driverServiceLocation);
-        browserLocation = ResolveRunfilesPath(browserLocation);
+        string driverServiceLocation = ResolveRunfilesPath(env.DriverServiceLocation);
+        string browserLocation = ResolveRunfilesPath(env.BrowserLocation);
 
-        DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
+        DriverConfig driverConfig = env.DriverConfigs[env.ActiveDriverConfig];
 
-        Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
-        DriverServiceLocation = driverServiceLocation;
+        Configuration = env;
+        env.DriverServiceLocation = driverServiceLocation;
         BrowserLocation = browserLocation;
-        DriverConfig = driverConfig;
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
@@ -151,11 +144,7 @@ public class EnvironmentManager
 
     public Browser Browser { get; }
 
-    public bool Headless { get; }
-
-    public DriverConfig DriverConfig { get; }
-
-    public string DriverServiceLocation { get; }
+    internal TestEnvironment Configuration { get; }
 
     public string BrowserLocation { get; }
 

@@ -1,6 +1,8 @@
 {
-  "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
+  "Headless": false,
+  "DriverServiceLocation": null,
+  "BrowserLocation": null,
   "DriverConfigs": {
     "Chrome": {
       "Browser": "Chrome",
