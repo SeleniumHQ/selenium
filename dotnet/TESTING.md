@@ -11,7 +11,7 @@ This guide helps contributors write tests in the Selenium .NET codebase.
 
 ```csharp
 [TestFixture]
-public class MyFeatureTest : DriverTestFixture
+public class MyFeatureTests : DriverTestFixture
 {
     [Test]
     public void ShouldFindElement()
@@ -47,7 +47,7 @@ Unit targets are tagged `unit` and sized `small`. CI runs them in a separate job
 
 ### Browser Tests
 
-WebDriver browser tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then generates targets for test source files named `*Test.cs` or `*Tests.cs`, with browser-specific variants for the generated browser targets. The bare fixture target runs on the default browser (Firefox, the first entry in the `browsers` list in [`BUILD.bazel`](test/webdriver/BUILD.bazel)).
+WebDriver browser tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then generates targets for test fixtures, with browser-specific variants for the generated browser targets. Name fixture files `*Tests.cs` to follow the project convention. The bare fixture target runs on the default browser (Firefox, the first entry in the `browsers` list in [`BUILD.bazel`](test/webdriver/BUILD.bazel)).
 
 ```shell
 bazel test //dotnet/test/webdriver/...                        # All generated tests and browser variants
@@ -160,6 +160,5 @@ dotnet/test/
 
 ## Build Files
 
-* Adding a test source to an existing suite usually does not require a Bazel change because each suite globs `**/*.cs`; Bazel generates per-fixture targets for files ending in `*Test.cs` or `*Tests.cs`, but name fixture files `*Tests.cs` to follow the project convention.
+* Adding a test source to an existing suite usually does not require a Bazel change because each suite globs `**/*.cs` and generates per-fixture targets; name fixture files `*Tests.cs` to follow the project convention.
 * Put WebDriver in-process unit tests in `dotnet/test/unit/webdriver` and browser-backed WebDriver tests in `dotnet/test/webdriver`. Both have a `dotnet_nunit_test_suite` declaration in `BUILD.bazel`. Add future unit projects under `dotnet/test/unit/<library>` with their own project and build files to keep source discovery and dependencies separate.
-* Name fixture files `*Tests.cs`. Each migrated fixture must be compiled by only one test project; move sources rather than linking duplicate copies.
