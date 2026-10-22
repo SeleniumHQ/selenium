@@ -19,8 +19,8 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using Bazel;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
@@ -52,11 +52,14 @@ public class EnvironmentManager
         }
         string currentDirectory = this.CurrentDirectory;
 
-        string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        string configurationPath = Path.GetFullPath(dataFilePath);
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Path.GetDirectoryName(configurationPath))
+            .AddJsonFile(Path.GetFileName(configurationPath), optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables()
+            .Build();
+        TestEnvironment env = new();
+        configuration.Bind(env);
 
         string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
         string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
@@ -77,7 +80,7 @@ public class EnvironmentManager
         Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
         DriverServiceLocation = driverServiceLocation;
         BrowserLocation = browserLocation;
-        DriverTypeName = driverConfig.DriverTypeName;
+        DriverConfig = driverConfig;
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
@@ -150,7 +153,7 @@ public class EnvironmentManager
 
     public bool Headless { get; }
 
-    public string DriverTypeName { get; }
+    public DriverConfig DriverConfig { get; }
 
     public string DriverServiceLocation { get; }
 
