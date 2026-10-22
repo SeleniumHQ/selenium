@@ -835,6 +835,16 @@ py_library(
     deps = [":exceptions"],
 )
 
+# Exposes the generator module itself (not just its CLI binaries) so its own unit tests
+# (test/unit/.../bidi_generate_protocol_tests.py) can import `generate_bidi_protocol` and
+# exercise `Schema`'s type-resolution logic directly against synthetic schema fixtures.
+py_library(
+    name = "generate-bidi-protocol-lib",
+    testonly = True,
+    srcs = ["generate_bidi_protocol.py"],
+    visibility = ["//visibility:private"],
+)
+
 py_test_suite(
     name = "unit",
     size = "small",
@@ -846,6 +856,7 @@ py_test_suite(
     ],
     tags = ["unit"],
     deps = [
+        ":generate-bidi-protocol-lib",
         ":init-tree",
         ":selenium",
     ] + TEST_DEPS,

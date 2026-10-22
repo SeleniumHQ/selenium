@@ -221,6 +221,9 @@ class FieldIR:
     scalar: str | list[str] | None
     fixed: Any
     py_type: str
+    # The runtime-check primitive name (``str``/``int``/…) for a string-keyed map field's
+    # value type, or None for every other field. See Schema._map_record.
+    map_of: str | None = None
 
 
 @dataclass
@@ -421,6 +424,7 @@ class Schema:
             scalar=self._scalar_py(resolved.get("scalar")),
             fixed=const,
             py_type=py,
+            map_of=resolved.get("map"),
         )
 
     # The projector's ``scalar`` primitive name(s) mapped to the runtime check names
@@ -590,7 +594,13 @@ class Schema:
             return {"ref": element["ref"], "list": True, "nullable": nullable, "scalar": element.get("scalar")}
         if "ref" in node:
             named = self._resolve_named(node["ref"], {})
-            return {"ref": named["ref"], "list": named["list"], "nullable": nullable, "scalar": named.get("scalar")}
+            return {
+                "ref": named["ref"],
+                "list": named["list"],
+                "nullable": nullable,
+                "scalar": named.get("scalar"),
+                "map": named.get("map"),
+            }
         if "union" in node:
             return self._resolve_union(node, nullable)
         return {"ref": None, "list": False, "nullable": nullable}
@@ -625,7 +635,9 @@ class Schema:
             return dict(self._OPAQUE)
         kind = type_["kind"]
         if kind == "record":
-            return dict(self._OPAQUE) if not type_["fields"] else {"ref": self._domain_ref(name), "list": False}
+            if type_["fields"]:
+                return {"ref": self._domain_ref(name), "list": False}
+            return self._map_record(type_)
         if kind == "union":
             return {"ref": self._domain_ref(name), "list": False}
         if kind == "enum":
@@ -633,6 +645,15 @@ class Schema:
         if kind == "alias":
             return self._resolve_named_alias(name, type_["type"], seen)
         return dict(self._OPAQUE)
+
+    # A field-less record is either a genuinely empty one (opaque) or the projector's
+    # stand-in for an inline map (``{*text => text}`` hoisted into a record with no
+    # fields and the value type under ``map``, e.g. script.NodePropertiesAttributes).
+    # Only a primitive-valued map is modeled (a ref- or union-valued map — the Mozilla
+    # vendor types — stays opaque for now, matching the Ruby/Java generators, #18106).
+    def _map_record(self, type_: dict) -> dict:
+        primitive = _LEAF_PRIMITIVE.get((type_.get("map") or {}).get("primitive"))
+        return {"ref": None, "list": False, "map": primitive} if primitive else dict(self._OPAQUE)
 
     def _resolve_named_alias(self, name: str, inner: dict, seen: dict) -> dict:
         if "union" in inner:
@@ -715,7 +736,7 @@ class Schema:
             return type_class_name(name)
         if kind == "record":
             if not type_["fields"]:
-                return "Any"
+                return self._map_py_type(type_)
             refs.add(name)
             return type_class_name(name)
         if kind == "union":
@@ -733,6 +754,12 @@ class Schema:
                 return f"list[{elem}]"
             return self._py_base(inner, refs)
         return "Any"
+
+    # The annotation for a field-less synthetic map record: a builtin ``dict[str, V]``
+    # needs no import, so no ref is recorded (unlike every other branch of _py_ref).
+    def _map_py_type(self, type_: dict) -> str:
+        primitive = _LEAF_PRIMITIVE.get((type_.get("map") or {}).get("primitive"))
+        return f"dict[str, {primitive}]" if primitive else "Any"
 
     _pending_refs: set[str] = set()
 
@@ -856,6 +883,8 @@ def _wire_args(f: FieldIR) -> list[str]:
     if f.scalar:
         value = f"[{', '.join(lit(s) for s in f.scalar)}]" if isinstance(f.scalar, list) else lit(f.scalar)
         args.append(f"scalar={value}")
+    if f.map_of:
+        args.append(f"map={lit(f.map_of)}")
     if f.fixed is not _NO_FIXED:
         args.append(f"fixed={lit(f.fixed)}")
     return args
