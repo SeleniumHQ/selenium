@@ -40,7 +40,14 @@ public abstract class BiDiTestFixture
         driver = driverFactory.CreateDriver(configureOptions: options =>
         {
             options.UseWebSocketUrl = true;
+
+            if (options is Safari.SafariOptions safariOptions)
+            {
+                safariOptions.AddAdditionalOption("safari:experimentalWebSocketUrl", true);
+            }
+
             options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+            
             ConfigureDriverOptions(options);
         });
 
