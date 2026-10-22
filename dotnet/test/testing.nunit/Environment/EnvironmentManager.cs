@@ -19,8 +19,8 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using Bazel;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
@@ -52,8 +52,14 @@ public class EnvironmentManager
         }
         string currentDirectory = this.CurrentDirectory;
 
-        string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, DriverConfigJson.Options);
+        string configurationPath = Path.GetFullPath(dataFilePath);
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Path.GetDirectoryName(configurationPath))
+            .AddJsonFile(Path.GetFileName(configurationPath), optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables()
+            .Build();
+        TestEnvironment env = new();
+        configuration.Bind(env);
         foreach (DriverConfig config in env.DriverConfigs.Values)
         {
             config.ValidateOptions();

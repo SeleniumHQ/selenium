@@ -97,7 +97,7 @@ public class DriverFactory
         switch (this.browser)
         {
             case Browser.Chrome:
-                ChromeDriverConfigOptions chromeConfig = this.driverConfig.GetBrowserOptions<ChromeDriverConfigOptions>("Chrome");
+                ChromeDriverConfigOptions chromeConfig = this.driverConfig.Options.Chrome ?? new ChromeDriverConfigOptions();
                 var chromeOptions = new ChromeOptions();
                 if (!string.IsNullOrEmpty(chromeConfig.BrowserVersion))
                 {
@@ -114,7 +114,7 @@ public class DriverFactory
                 }
                 return ApplyOverriddenOptions(chromeOptions, overriddenOptions);
             case Browser.Edge:
-                ChromiumDriverConfigOptions edgeConfig = this.driverConfig.GetBrowserOptions<ChromiumDriverConfigOptions>("Edge");
+                EdgeDriverConfigOptions edgeConfig = this.driverConfig.Options.Edge ?? new EdgeDriverConfigOptions();
                 var edgeOptions = new EdgeOptions();
                 if (!string.IsNullOrEmpty(edgeConfig.BrowserVersion))
                 {
@@ -131,7 +131,7 @@ public class DriverFactory
                 }
                 return ApplyOverriddenOptions(edgeOptions, overriddenOptions);
             case Browser.IE:
-                InternetExplorerDriverConfigOptions internetExplorerConfig = this.driverConfig.GetBrowserOptions<InternetExplorerDriverConfigOptions>("InternetExplorer");
+                InternetExplorerDriverConfigOptions internetExplorerConfig = this.driverConfig.Options.InternetExplorer ?? new InternetExplorerDriverConfigOptions();
                 return ApplyOverriddenOptions(new InternetExplorerOptions
                 {
                     RequireWindowFocus = internetExplorerConfig.RequireWindowFocus,
@@ -139,7 +139,7 @@ public class DriverFactory
                     AttachToEdgeChrome = internetExplorerConfig.AttachToEdgeChrome,
                 }, overriddenOptions);
             case Browser.Firefox:
-                FirefoxDriverConfigOptions firefoxConfig = this.driverConfig.GetBrowserOptions<FirefoxDriverConfigOptions>("Firefox");
+                FirefoxDriverConfigOptions firefoxConfig = this.driverConfig.Options.Firefox ?? new FirefoxDriverConfigOptions();
                 var firefoxOptions = new FirefoxOptions
                 {
                     AcceptInsecureCertificates = firefoxConfig.AcceptInsecureCertificates,
@@ -159,7 +159,7 @@ public class DriverFactory
                 }
                 return ApplyOverriddenOptions(firefoxOptions, overriddenOptions);
             case Browser.Safari:
-                SafariDriverConfigOptions safariConfig = this.driverConfig.GetBrowserOptions<SafariDriverConfigOptions>("Safari");
+                SafariDriverConfigOptions safariConfig = this.driverConfig.Options.Safari ?? new SafariDriverConfigOptions();
                 var safariOptions = new SafariOptions();
                 if (safariConfig.UseTechnologyPreview)
                 {

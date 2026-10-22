@@ -18,6 +18,7 @@ csharp_library(
     out = "Testing.NUnit",
     project_sdk = "web",
     target_frameworks = ["net10.0"],
+    interceptors_namespaces = ["Microsoft.Extensions.Configuration.Binder.SourceGeneration"],
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
