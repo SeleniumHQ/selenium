@@ -25,6 +25,9 @@ itself is covered by bidi_serialization_tests; here the subject is the generated
 code that sits on top of it.
 """
 
+from dataclasses import fields
+from typing import get_type_hints
+
 import pytest
 
 from selenium.common.exceptions import WebDriverException
@@ -34,9 +37,11 @@ from selenium.webdriver.common._bidi.browsing_context import (
     CreateType,
     GetTreeResult,
     Info,
+    PrintParameters,
 )
 from selenium.webdriver.common._bidi.network import Cookie, InterceptPhase, Network
-from selenium.webdriver.common._bidi.serialization import BiDiSerializationError
+from selenium.webdriver.common._bidi.serialization import BiDiSerializationError, UnsetType
+from selenium.webdriver.common._bidi.session import Session, SubscribeParameters
 from selenium.webdriver.common._bidi.storage import PartialCookie
 from selenium.webdriver.common._bidi.transport import Transport
 from selenium.webdriver.common._bidi.web_extension import ExtensionPath, WebExtension
@@ -61,6 +66,49 @@ class DrivingConnection:
 def _domain(cls, reply=None):
     connection = DrivingConnection(reply=reply)
     return cls(Transport(connection)), connection
+
+
+@pytest.mark.parametrize("value", [True, 1.5, {}, [], None, -1, 2**53])
+def test_page_ranges_rejects_invalid_elements_before_sending(value):
+    context, connection = _domain(BrowsingContext, reply={"data": "pdf"})
+    with pytest.raises(BiDiSerializationError):
+        context.print(context="ctx", page_ranges=[value])
+    assert connection.sent is None
+
+
+@pytest.mark.parametrize("value", [True, 1.5, {}, [], None, -1, 2**53])
+def test_page_ranges_rejects_invalid_elements_on_receipt(value):
+    with pytest.raises(BiDiSerializationError):
+        PrintParameters.from_json({"context": "ctx", "pageRanges": [value]})
+
+
+@pytest.mark.parametrize("values", [[], [0, 5.0, "1-3", 2**53 - 1]])
+def test_page_ranges_accepts_integers_and_strings(values):
+    context, connection = _domain(BrowsingContext, reply={"data": "pdf"})
+    context.print(context="ctx", page_ranges=values)
+    assert connection.sent["params"]["pageRanges"] == values
+    parsed = PrintParameters.from_json({"context": "ctx", "pageRanges": values})
+    assert parsed.page_ranges == values
+    if values:
+        assert type(parsed.page_ranges[1]) is int
+
+
+def test_page_ranges_generated_type_and_metadata_describe_scalar_union():
+    assert get_type_hints(PrintParameters)["page_ranges"] == list[int | str] | UnsetType
+    descriptor = next(f.metadata["bidi"] for f in fields(PrintParameters) if f.name == "page_ranges")
+    assert descriptor.is_list
+    assert descriptor.primitive == ["int", "str"]
+    assert descriptor.scalar is None
+    assert descriptor.bounds == {"min": 0, "max": 2**53 - 1}
+
+
+def test_primitive_list_null_element_fails_before_sending():
+    session, connection = _domain(Session)
+    with pytest.raises(BiDiSerializationError):
+        session.subscribe(events=[None])
+    assert connection.sent is None
+    with pytest.raises(BiDiSerializationError):
+        SubscribeParameters.from_json({"events": [None]})
 
 
 # --- dispatch + result parsing ---
