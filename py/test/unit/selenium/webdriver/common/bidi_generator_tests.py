@@ -44,6 +44,7 @@ from generate_bidi_protocol import (
     FieldIR,
     ParamIR,
     RecordIR,
+    Schema,
     UnionIR,
     VariantIR,
     _emit_command,
@@ -60,6 +61,7 @@ from generate_bidi_protocol import (
     tuple_lit,
     type_class_name,
     value_alias,
+    vendor_field_name,
     wrap_call,
 )
 
@@ -627,3 +629,70 @@ def test_a_command_with_union_parameters_dispatches_through_build():
     )
 
     assert "        params = DoThingParameters.build(value=value)" in _emit_command(command)
+
+
+# --- vendor overlays ------------------------------------------------------------------------
+
+
+def _vendor_schema(vendor, types=None):
+    if types is None:
+        types = {
+            "x.Info": {
+                "kind": "record",
+                "fields": [{"name": "url", "wire": "url", "required": True, "type": {"primitive": "string"}}],
+            }
+        }
+    return Schema({"types": types, "commands": [], "events": [], "vendor": vendor})
+
+
+def _scope_field(wire="moz:scope"):
+    return {
+        "name": wire,
+        "wire": wire,
+        "required": False,
+        "type": {"enum": ["chrome", "content"], "primitive": "string"},
+    }
+
+
+@pytest.mark.parametrize(
+    ("namespace", "wire", "expected"),
+    [
+        ("moz", "moz:scope", "moz_scope"),
+        ("moz", "moz:allowPrivateBrowsing", "moz_allow_private_browsing"),
+        ("moz", "moz:firefoxOptions", "moz_firefox_options"),
+        ("moz", "debuggerAddress", "moz_debugger_address"),
+    ],
+)
+def test_vendor_field_name_keeps_the_namespace_as_a_word_prefix(namespace, wire, expected):
+    assert vendor_field_name(namespace, wire) == expected
+
+
+def test_a_vendor_field_is_folded_into_the_record_it_extends():
+    schema = _vendor_schema({"moz": {"extends": {"x.Info": {"via": "x.InfoExtension", "fields": [_scope_field()]}}}})
+
+    fields = schema.types["x.Info"]["fields"]
+
+    assert [f["wire"] for f in fields] == ["url", "moz:scope"]
+    assert fields[1] == {
+        "name": "moz_scope",
+        "wire": "moz:scope",
+        "required": False,
+        "type": {"enum": ["chrome", "content"], "primitive": "string"},
+    }
+
+
+def test_a_vendor_overlay_on_an_unknown_type_is_rejected():
+    with pytest.raises(ValueError, match="'moz' extends 'x.Gone', which is not a record"):
+        _vendor_schema({"moz": {"extends": {"x.Gone": {"fields": [_scope_field()]}}}})
+
+
+def test_a_vendor_overlay_on_a_type_that_is_not_a_record_is_rejected():
+    types = {"x.Level": {"kind": "enum", "values": ["a", "b"]}}
+
+    with pytest.raises(ValueError, match="'moz' extends 'x.Level', which is not a record"):
+        _vendor_schema({"moz": {"extends": {"x.Level": {"fields": [_scope_field()]}}}}, types)
+
+
+def test_a_vendor_overlay_may_not_redeclare_a_shared_field():
+    with pytest.raises(ValueError, match="'moz' redeclares 'url' on 'x.Info'"):
+        _vendor_schema({"moz": {"extends": {"x.Info": {"fields": [_scope_field("url")]}}}})
