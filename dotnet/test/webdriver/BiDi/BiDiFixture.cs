@@ -47,7 +47,7 @@ public abstract class BiDiTestFixture
             }
 
             options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
-            
+
             ConfigureDriverOptions(options);
         });
 
