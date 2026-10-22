@@ -53,10 +53,11 @@ public class EnvironmentManager
         string currentDirectory = this.CurrentDirectory;
 
         string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, new JsonSerializerOptions
+        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, DriverConfigJson.Options);
+        foreach (DriverConfig config in env.DriverConfigs.Values)
         {
-            PropertyNameCaseInsensitive = true
-        });
+            config.ValidateOptions();
+        }
 
         string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
         string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
@@ -77,7 +78,7 @@ public class EnvironmentManager
         Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
         DriverServiceLocation = driverServiceLocation;
         BrowserLocation = browserLocation;
-        DriverTypeName = driverConfig.DriverTypeName;
+        DriverConfig = driverConfig;
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
@@ -150,7 +151,7 @@ public class EnvironmentManager
 
     public bool Headless { get; }
 
-    public string DriverTypeName { get; }
+    public DriverConfig DriverConfig { get; }
 
     public string DriverServiceLocation { get; }
 

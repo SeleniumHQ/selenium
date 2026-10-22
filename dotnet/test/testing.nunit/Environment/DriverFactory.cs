@@ -17,242 +17,186 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Concurrent;
 using System.IO;
-using System.Reflection;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class DriverFactory
 {
-    private static readonly ConcurrentDictionary<string, Type> driverTypes = new();
-
-    private readonly Type driverType;
+    private readonly Browser browser;
+    private readonly DriverConfig driverConfig;
     private readonly string driverPath;
     private readonly string browserBinaryLocation;
     private readonly bool headless;
-    private readonly Dictionary<Browser, Type> serviceTypes = new Dictionary<Browser, Type>();
-    private readonly Dictionary<Browser, Type> optionsTypes = new Dictionary<Browser, Type>();
 
     public DriverFactory(EnvironmentManager environment)
     {
-        this.driverType = driverTypes.GetOrAdd(environment.DriverTypeName, ResolveDriverType);
+        this.browser = environment.Browser;
+        this.driverConfig = environment.DriverConfig;
         this.driverPath = environment.DriverServiceLocation;
         this.browserBinaryLocation = environment.BrowserLocation;
         this.headless = environment.Headless;
-
-        this.PopulateServiceTypes();
-        this.PopulateOptionsTypes();
-    }
-
-    private static Type ResolveDriverType(string driverTypeName)
-    {
-        // Bazel uses unpredictable assembly names to execute tests, so search all loaded assemblies.
-        return AppDomain.CurrentDomain.GetAssemblies()
-            .AsEnumerable()
-            .Reverse()
-            .Select(assembly => assembly.GetType(driverTypeName))
-            .FirstOrDefault(t => t != null)
-            ?? throw new ArgumentOutOfRangeException(nameof(driverTypeName), $"Unable to find driver type {driverTypeName}");
-    }
-
-    private void PopulateOptionsTypes()
-    {
-        this.optionsTypes[Browser.Chrome] = typeof(ChromeOptions);
-        this.optionsTypes[Browser.Edge] = typeof(EdgeOptions);
-        this.optionsTypes[Browser.Firefox] = typeof(FirefoxOptions);
-        this.optionsTypes[Browser.IE] = typeof(InternetExplorerOptions);
-        this.optionsTypes[Browser.Safari] = typeof(SafariOptions);
-    }
-
-    private void PopulateServiceTypes()
-    {
-        this.serviceTypes[Browser.Chrome] = typeof(ChromeDriverService);
-        this.serviceTypes[Browser.Edge] = typeof(EdgeDriverService);
-        this.serviceTypes[Browser.Firefox] = typeof(FirefoxDriverService);
-        this.serviceTypes[Browser.IE] = typeof(InternetExplorerDriverService);
-        this.serviceTypes[Browser.Safari] = typeof(SafariDriverService);
     }
 
     public IWebDriver CreateDriver(DriverOptions driverOptions = null, bool logging = false, Action<DriverOptions> configureOptions = null)
     {
-        Browser browser = Browser.All;
-        DriverService service = null;
-        DriverOptions options = null;
-        bool enableLogging = logging;
-
-        List<Type> constructorArgTypeList = new List<Type>();
-        if (typeof(ChromeDriver).IsAssignableFrom(driverType))
+        if (this.browser == Browser.Remote)
         {
-            browser = Browser.Chrome;
-            options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
-
-            var chromeOptions = (ChromeOptions)options;
-            chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-            if (this.headless)
-            {
-                chromeOptions.AddArgument("--headless");
-            }
-
-            service = CreateService<ChromeDriverService>();
-            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
-            {
-                ((ChromeOptions)options).BinaryLocation = this.browserBinaryLocation;
-            }
-            if (enableLogging)
-            {
-                ((ChromiumDriverService)service).EnableVerboseLogging = true;
-            }
-        }
-        else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
-        {
-            browser = Browser.Edge;
-            options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
-
-            var edgeOptions = (EdgeOptions)options;
-            edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
-            if (this.headless)
-            {
-                edgeOptions.AddArgument("--headless");
-            }
-
-            service = CreateService<EdgeDriverService>();
-            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
-            {
-                ((EdgeOptions)options).BinaryLocation = this.browserBinaryLocation;
-            }
-            if (enableLogging)
-            {
-                ((ChromiumDriverService)service).EnableVerboseLogging = true;
-            }
-        }
-        else if (typeof(InternetExplorerDriver).IsAssignableFrom(driverType))
-        {
-            browser = Browser.IE;
-            options = GetDriverOptions<InternetExplorerOptions>(driverType, driverOptions);
-            service = CreateService<InternetExplorerDriverService>();
-            if (enableLogging)
-            {
-                ((InternetExplorerDriverService)service).LoggingLevel = InternetExplorerDriverLogLevel.Trace;
-            }
-        }
-        else if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
-        {
-            browser = Browser.Firefox;
-            options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
-            if (this.headless)
-            {
-                ((FirefoxOptions)options).AddArgument("-headless");
-            }
-            service = CreateService<FirefoxDriverService>();
-            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
-            {
-                ((FirefoxOptions)options).BinaryLocation = this.browserBinaryLocation;
-            }
-            if (enableLogging)
-            {
-                ((FirefoxDriverService)service).LogLevel = FirefoxDriverLogLevel.Trace;
-            }
-        }
-        else if (typeof(SafariDriver).IsAssignableFrom(driverType))
-        {
-            browser = Browser.Safari;
-            options = GetDriverOptions<SafariOptions>(driverType, driverOptions);
-            service = CreateService<SafariDriverService>();
+            var remoteDriver = new RemoteWebDriver(RemoteSeleniumServer.ServerUri, new ChromeOptions());
+            remoteDriver.FileDetector = new LocalFileDetector();
+            return remoteDriver;
         }
 
-        if (!String.IsNullOrEmpty(this.driverPath) && service != null)
+        DriverOptions options = this.CreateDriverOptions(driverOptions);
+        DriverService service = this.CreateDriverService();
+
+        if (!String.IsNullOrEmpty(this.driverPath))
         {
             service.DriverServicePath = Path.GetDirectoryName(this.driverPath);
             service.DriverServiceExecutableName = Path.GetFileName(this.driverPath);
         }
 
-        if (options != null)
+        if (logging)
         {
-            configureOptions?.Invoke(options);
-        }
-
-        if (browser != Browser.All)
-        {
-            constructorArgTypeList.Add(this.serviceTypes[browser]);
-            constructorArgTypeList.Add(this.optionsTypes[browser]);
-            ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
-            if (ctorInfo != null)
+            switch (service)
             {
-                return (IWebDriver)ctorInfo.Invoke(new object[] { service, options });
+                case ChromiumDriverService chromiumService:
+                    chromiumService.EnableVerboseLogging = true;
+                    break;
+                case InternetExplorerDriverService internetExplorerService:
+                    internetExplorerService.LoggingLevel = InternetExplorerDriverLogLevel.Trace;
+                    break;
+                case FirefoxDriverService firefoxService:
+                    firefoxService.LogLevel = FirefoxDriverLogLevel.Trace;
+                    break;
             }
         }
 
-        IWebDriver driver = (IWebDriver)Activator.CreateInstance(driverType);
-        return driver;
+        configureOptions?.Invoke(options);
+
+        return this.browser switch
+        {
+            Browser.Chrome => new ChromeDriver((ChromeDriverService)service, (ChromeOptions)options),
+            Browser.Edge => new EdgeDriver((EdgeDriverService)service, (EdgeOptions)options),
+            Browser.IE => new InternetExplorerDriver((InternetExplorerDriverService)service, (InternetExplorerOptions)options),
+            Browser.Firefox => new FirefoxDriver((FirefoxDriverService)service, (FirefoxOptions)options),
+            Browser.Safari => new SafariDriver((SafariDriverService)service, (SafariOptions)options),
+            _ => throw new InvalidOperationException($"Unsupported browser: {this.browser}"),
+        };
     }
 
-    private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
+    private DriverOptions CreateDriverOptions(DriverOptions overriddenOptions)
     {
-        T options = new T();
-        Type optionsType = typeof(T);
-
-        PropertyInfo defaultOptionsProperty = driverType.GetProperty("DefaultOptions", BindingFlags.Public | BindingFlags.Static);
-        if (defaultOptionsProperty != null && defaultOptionsProperty.PropertyType == optionsType)
+        switch (this.browser)
         {
-            options = (T)defaultOptionsProperty.GetValue(null, null);
+            case Browser.Chrome:
+                ChromeDriverConfigOptions chromeConfig = this.driverConfig.GetBrowserOptions<ChromeDriverConfigOptions>("Chrome");
+                var chromeOptions = new ChromeOptions();
+                if (!string.IsNullOrEmpty(chromeConfig.BrowserVersion))
+                {
+                    chromeOptions.BrowserVersion = chromeConfig.BrowserVersion;
+                }
+                chromeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+                if (this.headless)
+                {
+                    chromeOptions.AddArgument("--headless");
+                }
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    chromeOptions.BinaryLocation = this.browserBinaryLocation;
+                }
+                return ApplyOverriddenOptions(chromeOptions, overriddenOptions);
+            case Browser.Edge:
+                ChromiumDriverConfigOptions edgeConfig = this.driverConfig.GetBrowserOptions<ChromiumDriverConfigOptions>("Edge");
+                var edgeOptions = new EdgeOptions();
+                if (!string.IsNullOrEmpty(edgeConfig.BrowserVersion))
+                {
+                    edgeOptions.BrowserVersion = edgeConfig.BrowserVersion;
+                }
+                edgeOptions.AddArguments("--no-sandbox", "--disable-dev-shm-usage");
+                if (this.headless)
+                {
+                    edgeOptions.AddArgument("--headless");
+                }
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    edgeOptions.BinaryLocation = this.browserBinaryLocation;
+                }
+                return ApplyOverriddenOptions(edgeOptions, overriddenOptions);
+            case Browser.IE:
+                InternetExplorerDriverConfigOptions internetExplorerConfig = this.driverConfig.GetBrowserOptions<InternetExplorerDriverConfigOptions>("InternetExplorer");
+                return ApplyOverriddenOptions(new InternetExplorerOptions
+                {
+                    RequireWindowFocus = internetExplorerConfig.RequireWindowFocus,
+                    UsePerProcessProxy = internetExplorerConfig.UsePerProcessProxy,
+                    AttachToEdgeChrome = internetExplorerConfig.AttachToEdgeChrome,
+                }, overriddenOptions);
+            case Browser.Firefox:
+                FirefoxDriverConfigOptions firefoxConfig = this.driverConfig.GetBrowserOptions<FirefoxDriverConfigOptions>("Firefox");
+                var firefoxOptions = new FirefoxOptions
+                {
+                    AcceptInsecureCertificates = firefoxConfig.AcceptInsecureCertificates,
+                    EnableDevToolsProtocol = firefoxConfig.EnableDevToolsProtocol,
+                };
+                if (!string.IsNullOrEmpty(firefoxConfig.BrowserVersion))
+                {
+                    firefoxOptions.BrowserVersion = firefoxConfig.BrowserVersion;
+                }
+                if (this.headless)
+                {
+                    firefoxOptions.AddArgument("-headless");
+                }
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    firefoxOptions.BinaryLocation = this.browserBinaryLocation;
+                }
+                return ApplyOverriddenOptions(firefoxOptions, overriddenOptions);
+            case Browser.Safari:
+                SafariDriverConfigOptions safariConfig = this.driverConfig.GetBrowserOptions<SafariDriverConfigOptions>("Safari");
+                var safariOptions = new SafariOptions();
+                if (safariConfig.UseTechnologyPreview)
+                {
+                    safariOptions.UseTechnologyPreview();
+                }
+                return ApplyOverriddenOptions(safariOptions, overriddenOptions);
+            default:
+                throw new InvalidOperationException($"Unsupported browser: {this.browser}");
         }
+    }
 
+    private DriverService CreateDriverService()
+    {
+        return this.browser switch
+        {
+            Browser.Chrome => ChromeDriverService.CreateDefaultService(),
+            Browser.Edge => EdgeDriverService.CreateDefaultService(),
+            Browser.IE => InternetExplorerDriverService.CreateDefaultService(),
+            Browser.Firefox => FirefoxDriverService.CreateDefaultService(),
+            Browser.Safari => SafariDriverService.CreateDefaultService(),
+            _ => throw new InvalidOperationException($"Unsupported browser: {this.browser}"),
+        };
+    }
+
+    private static T ApplyOverriddenOptions<T>(T options, DriverOptions overriddenOptions) where T : DriverOptions
+    {
         if (overriddenOptions != null)
         {
             options.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
             options.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
             options.Proxy = overriddenOptions.Proxy;
-
             options.ScriptTimeout = overriddenOptions.ScriptTimeout;
             options.PageLoadTimeout = overriddenOptions.PageLoadTimeout;
             options.ImplicitWaitTimeout = overriddenOptions.ImplicitWaitTimeout;
-
             options.UseWebSocketUrl = overriddenOptions.UseWebSocketUrl;
         }
 
         return options;
-    }
-
-    private T MergeOptions<T>(object baseOptions, DriverOptions overriddenOptions) where T : DriverOptions, new()
-    {
-        // If the driver type has a static DefaultOptions property,
-        // get the value of that property, which should be a valid
-        // options of the generic type (T). Otherwise, create a new
-        // instance of the browser-specific options class.
-        T mergedOptions = new T();
-        if (baseOptions != null && baseOptions is T)
-        {
-            mergedOptions = (T)baseOptions;
-        }
-
-        if (overriddenOptions != null)
-        {
-            mergedOptions.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
-            mergedOptions.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
-            mergedOptions.Proxy = overriddenOptions.Proxy;
-        }
-
-        return mergedOptions;
-    }
-
-    private T CreateService<T>() where T : DriverService
-    {
-        T service = default(T);
-        Type serviceType = typeof(T);
-
-        MethodInfo createDefaultServiceMethod = serviceType.GetMethod("CreateDefaultService", BindingFlags.Public | BindingFlags.Static, null, new Type[] { }, null);
-        if (createDefaultServiceMethod != null && createDefaultServiceMethod.ReturnType == serviceType)
-        {
-            service = (T)createDefaultServiceMethod.Invoke(null, new object[] { });
-        }
-
-        return service;
     }
 }

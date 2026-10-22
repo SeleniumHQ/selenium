@@ -17,20 +17,126 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class DriverConfig
 {
-    public string DriverTypeName { get; set; }
-
+    [JsonPropertyName("Browser")]
     [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
     public Browser BrowserValue { get; set; }
+
+    public JsonElement Options { get; set; }
 
     public string RemoteCapabilities { get; set; }
 
     public bool AutoStartRemoteServer { get; set; }
 
     public bool Logging { get; set; }
+
+    public void ValidateOptions()
+    {
+        switch (this.BrowserValue)
+        {
+            case Browser.Chrome:
+                this.GetBrowserOptions<ChromeDriverConfigOptions>("Chrome");
+                break;
+            case Browser.Edge:
+                this.GetBrowserOptions<ChromiumDriverConfigOptions>("Edge");
+                break;
+            case Browser.IE:
+                this.GetBrowserOptions<InternetExplorerDriverConfigOptions>("InternetExplorer");
+                break;
+            case Browser.Firefox:
+                this.GetBrowserOptions<FirefoxDriverConfigOptions>("Firefox");
+                break;
+            case Browser.Safari:
+                this.GetBrowserOptions<SafariDriverConfigOptions>("Safari");
+                break;
+            case Browser.Remote:
+                this.GetBrowserOptions<RemoteDriverConfigOptions>("Remote");
+                break;
+            default:
+                throw new JsonException($"Unsupported browser value '{this.BrowserValue}' in driver config.");
+        }
+    }
+
+    public T GetBrowserOptions<T>(string browserOptionsName) where T : class, new()
+    {
+        if (this.Options.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null)
+        {
+            return new T();
+        }
+
+        if (this.Options.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("Driver config Options must be an object.");
+        }
+
+        JsonProperty? matchingOptions = null;
+        foreach (JsonProperty property in this.Options.EnumerateObject())
+        {
+            if (matchingOptions.HasValue || property.Name != browserOptionsName)
+            {
+                throw new JsonException($"Options for browser '{this.BrowserValue}' must contain only a '{browserOptionsName}' object.");
+            }
+
+            matchingOptions = property;
+        }
+
+        if (!matchingOptions.HasValue)
+        {
+            return new T();
+        }
+
+        return matchingOptions.Value.Value.Deserialize<T>(DriverConfigJson.Options) ?? new T();
+    }
+}
+
+public sealed class ChromeDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+}
+
+public sealed class ChromiumDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+}
+
+public sealed class InternetExplorerDriverConfigOptions
+{
+    public bool RequireWindowFocus { get; set; }
+
+    public bool UsePerProcessProxy { get; set; }
+
+    public bool AttachToEdgeChrome { get; set; }
+}
+
+public sealed class FirefoxDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+
+    public bool AcceptInsecureCertificates { get; set; }
+
+    public bool EnableDevToolsProtocol { get; set; }
+}
+
+public sealed class SafariDriverConfigOptions
+{
+    public bool UseTechnologyPreview { get; set; }
+}
+
+public sealed class RemoteDriverConfigOptions
+{
+}
+
+internal static class DriverConfigJson
+{
+    public static readonly JsonSerializerOptions Options = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+    };
 }
