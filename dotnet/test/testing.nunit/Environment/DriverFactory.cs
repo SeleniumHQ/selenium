@@ -39,10 +39,10 @@ public class DriverFactory
     public DriverFactory(EnvironmentManager environment)
     {
         this.browser = environment.Browser;
-        this.driverConfig = environment.DriverConfig;
-        this.driverPath = environment.DriverServiceLocation;
+        this.driverConfig = environment.Configuration.DriverConfigs[environment.Configuration.ActiveDriverConfig];
+        this.driverPath = environment.Configuration.DriverServiceLocation;
         this.browserBinaryLocation = environment.BrowserLocation;
-        this.headless = environment.Headless;
+        this.headless = environment.Configuration.Headless;
     }
 
     public IWebDriver CreateDriver(DriverOptions driverOptions = null, bool logging = false, Action<DriverOptions> configureOptions = null)
