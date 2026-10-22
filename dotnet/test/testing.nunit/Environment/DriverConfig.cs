@@ -33,30 +33,6 @@ public class DriverConfig
     public bool AutoStartRemoteServer { get; set; }
 
     public bool Logging { get; set; }
-
-    public void ValidateOptions()
-    {
-        this.Options ??= new DriverConfigOptions();
-
-        string expectedOptionsName = this.BrowserValue switch
-        {
-            Browser.Chrome => "Chrome",
-            Browser.Edge => "Edge",
-            Browser.IE => "InternetExplorer",
-            Browser.Firefox => "Firefox",
-            Browser.Safari => "Safari",
-            Browser.Remote => null,
-                _ => throw new InvalidOperationException($"Unsupported browser value '{this.BrowserValue}' in driver config."),
-        };
-
-        foreach (string configuredOptionsName in this.Options.GetConfiguredOptionNames())
-        {
-            if (configuredOptionsName != expectedOptionsName)
-            {
-                throw new InvalidOperationException($"Options for browser '{this.BrowserValue}' cannot contain '{configuredOptionsName}' options.");
-            }
-        }
-    }
 }
 
 public sealed class DriverConfigOptions
@@ -70,30 +46,6 @@ public sealed class DriverConfigOptions
     public FirefoxDriverConfigOptions Firefox { get; set; }
 
     public SafariDriverConfigOptions Safari { get; set; }
-
-    public IEnumerable<string> GetConfiguredOptionNames()
-    {
-        if (this.Chrome != null)
-        {
-            yield return "Chrome";
-        }
-        if (this.Edge != null)
-        {
-            yield return "Edge";
-        }
-        if (this.InternetExplorer != null)
-        {
-            yield return "InternetExplorer";
-        }
-        if (this.Firefox != null)
-        {
-            yield return "Firefox";
-        }
-        if (this.Safari != null)
-        {
-            yield return "Safari";
-        }
-    }
 }
 
 public sealed class ChromeDriverConfigOptions

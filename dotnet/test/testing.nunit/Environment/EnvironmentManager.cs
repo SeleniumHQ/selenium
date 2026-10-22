@@ -60,10 +60,6 @@ public class EnvironmentManager
             .Build();
         TestEnvironment env = new();
         configuration.Bind(env);
-        foreach (DriverConfig config in env.DriverConfigs.Values)
-        {
-            config.ValidateOptions();
-        }
 
         string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
         string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
