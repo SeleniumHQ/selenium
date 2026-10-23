@@ -108,7 +108,7 @@ js_test(
     data = [
         "typescript/accessibility-node.schema.json",
         ":typescript/testing/accessibility.generated.js",
-        "//common/src/web:web",
+        "//common/src/web",
     ],
     entry_point = "typescript/testing/corpus-consistent.mjs",
     fixed_args = [
@@ -130,10 +130,16 @@ TEST_BUNDLES = {
     "mouse": "bot.mouse.typescript",
 }
 
+# Every test-only module is a source of every test bundle: esbuild resolves
+# imports only among the sources it is given, and a bundle's entry may import
+# a sibling (the accessibility bundle imports its text renderer). Only what an
+# entry imports ends up in its bundle.
+TEST_BUNDLE_SRCS = ATOM_SRCS + glob(["typescript/testing/*.ts"])
+
 [
     typescript_atom(
         name = "testing/%s" % bundle,
-        srcs = ATOM_SRCS + ["typescript/testing/%s.ts" % bundle],
+        srcs = TEST_BUNDLE_SRCS,
         global_name = global_name,
         visibility = ["//visibility:private"],
     )
@@ -603,6 +609,6 @@ closure_test_suite(
         ":deps",
         # The accessibility corpus pages, loaded by
         # test/accessibility_corpus_typescript_test.html.
-        "//common/src/web:web",
+        "//common/src/web",
     ] + [":testing/%s-global" % bundle for bundle in TEST_BUNDLES],
 )
