@@ -152,10 +152,19 @@ function disabled(element: Element, disabledByAncestor: boolean): boolean {
 }
 
 // The body is the default active element and is not "focused" in any sense a
-// user would recognise.
+// user would recognise. Focus inside a shadow tree is known to that tree's
+// root; the document only knows the host, which is not itself focused while
+// something it can see inside its shadow root is.
 function focused(element: Element): boolean {
   const doc = element.ownerDocument
-  return doc.activeElement === element && element !== doc.body && element !== doc.documentElement
+  if (element === doc.body || element === doc.documentElement) {
+    return false
+  }
+  const root = element.getRootNode() as Document | ShadowRoot
+  if (root.activeElement !== element) {
+    return false
+  }
+  return !(element.shadowRoot && element.shadowRoot.activeElement)
 }
 
 /**

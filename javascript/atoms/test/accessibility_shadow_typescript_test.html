@@ -128,6 +128,19 @@ under the License.
 
     QUnit.module('names across the flat tree');
 
+    QUnit.test('the focused element inside a shadow root reports focused, not its host', function (assert) {
+      var host = byId('focus-host');
+      var input = host.shadowRoot.getElementById('shadow-input');
+      input.focus();
+      try {
+        assert.deepEqual(strip(snapshot(host)), node('generic', 'focus-host', [
+          node('textbox', 'shadow-input', [], '', { states: { focused: true }, value: '' }),
+        ]));
+      } finally {
+        input.blur();
+      }
+    });
+
     QUnit.test('aria-labelledby resolves inside the shadow root that holds it', function (assert) {
       var root = byId('labelled-host').shadowRoot;
       assert.strictEqual(snapshot(root.getElementById('shadow-button')).name, 'Shadow label');
@@ -152,6 +165,7 @@ under the License.
   <div id="hidden-slot-host"><p id="hidden-slotted" slot="hidden">hidden</p><p id="visible-slotted">shown</p></div>
   <div id="closed-host"><p id="closed-light">light</p></div>
   <div id="labelled-host"></div>
+  <div id="focus-host"></div>
   <div id="content-host" role="heading" aria-level="2">Light</div>
 
   <script type="text/javascript">
@@ -168,6 +182,7 @@ under the License.
       '<h2 id="inner-heading">Inner</h2>';
     attach('hidden-slot-host', '<div style="display: none"><slot name="hidden"></slot></div><slot></slot>');
     attach('closed-host', '<h2>Shadow heading nobody can see</h2><slot></slot>', 'closed');
+    attach('focus-host', '<input id="shadow-input" type="text">');
     attach('labelled-host', '<span id="shadow-label">Shadow label</span><button id="shadow-button" aria-labelledby="shadow-label">x</button>');
     attach('content-host', '<slot></slot> suffix');
   </script>
