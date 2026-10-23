@@ -151,8 +151,6 @@ test:windows --test_env=PROCESSOR_ARCHITECTURE
 test:windows --test_env=PROGRAMFILES="C:\\Program Files"
 test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 
-test --test_timeout=1800
-
 # Browser tests claim one `browser` each, and Bazel fails every action of a target that claims an
 # undeclared resource, so `build` (which `test` inherits) must declare it. CI lowers this to 1.
 build --local_resources=browser=HOST_CPUS

@@ -38,7 +38,7 @@ import json
 import keyword
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -221,6 +221,7 @@ class FieldIR:
     scalar: str | list[str] | None
     fixed: Any
     py_type: str
+    bounds: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -276,6 +277,30 @@ class ModuleIR:
 # (an unhandled CDDL construct fails the schema check), so we never see one.
 _PRIMITIVE = {"string": "str", "integer": "int", "number": "float", "boolean": "bool", "null": "None"}
 _LEAF_PRIMITIVE = {"string": "str", "integer": "int", "number": "float", "boolean": "bool"}
+_NUMERIC_PRIMITIVES = {"integer", "number"}
+# The schema's numeric bound keys, in the order the field metadata renders them.
+_BOUND_KEYS = ("min", "max", "exclusiveMin", "exclusiveMax")
+
+
+def _narrow_bounds(bounds: dict[str, Any], narrowing: dict[str, Any]) -> dict[str, Any]:
+    """Bounds a value must satisfy under both: each side keeps the tighter, at a tie the exclusive one."""
+    result = dict(bounds)
+    for side, flag in (("min", "exclusiveMin"), ("max", "exclusiveMax")):
+        if side not in narrowing or not _tighter_bound(side, flag, narrowing, bounds):
+            continue
+        result[side] = narrowing[side]
+        result.pop(flag, None)
+        if narrowing.get(flag):
+            result[flag] = True
+    return {k: result[k] for k in _BOUND_KEYS if k in result}
+
+
+def _tighter_bound(side: str, flag: str, candidate: dict[str, Any], current: dict[str, Any]) -> bool:
+    if side not in current:
+        return True
+    if candidate[side] == current[side]:
+        return bool(candidate.get(flag)) and not current.get(flag)
+    return candidate[side] > current[side] if side == "min" else candidate[side] < current[side]
 
 
 class Schema:
@@ -421,6 +446,7 @@ class Schema:
             scalar=self._scalar_py(resolved.get("scalar")),
             fixed=const,
             py_type=py,
+            bounds=self._leaf_bounds(field_["type"]),
         )
 
     # The projector's ``scalar`` primitive name(s) mapped to the runtime check names
@@ -671,6 +697,25 @@ class Schema:
             return self._leaf_primitive(type_["type"], seen)
         return None
 
+    # The numeric bounds a field's values (or a list's elements) are held to: an alias chain's
+    # bounds (js-uint's 0..2**53-1) narrowed by each referencing node's own (`js-uint .ge 1`).
+    # Empty for a non-numeric leaf, the same leaves _leaf_primitive leaves unchecked.
+    def _leaf_bounds(self, node: dict, seen: set[str] | None = None) -> dict[str, Any]:
+        seen = seen or set()
+        if "list" in node:
+            return self._leaf_bounds(node["list"], seen)
+        own = {k: node[k] for k in _BOUND_KEYS if k in node}
+        if "primitive" in node:
+            return own if node["primitive"] in _NUMERIC_PRIMITIVES else {}
+        if "ref" in node:
+            name = node["ref"]
+            type_ = self.types.get(name)
+            if name in seen or not type_ or type_["kind"] != "alias":
+                return {}
+            seen.add(name)
+            return _narrow_bounds(self._leaf_bounds(type_["type"], seen), own)
+        return {}
+
     # --- Python type annotations ---
     def py_type(self, node: dict) -> tuple[str, set[str]]:
         refs: set[str] = set()
@@ -858,6 +903,7 @@ def _wire_args(f: FieldIR) -> list[str]:
         args.append(f"scalar={value}")
     if f.fixed is not _NO_FIXED:
         args.append(f"fixed={lit(f.fixed)}")
+    args += [f"{camel_to_snake(key)}={lit(value)}" for key, value in f.bounds.items()]
     return args
 
 

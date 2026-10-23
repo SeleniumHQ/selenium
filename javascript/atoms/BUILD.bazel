@@ -1,14 +1,16 @@
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library", "js_test")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//:version.bzl", "VERSIONS")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 load("//javascript/atoms:typescript/defs.bzl", "ATOMS", "typescript_atom")
 
 package(default_visibility = ["//visibility:public"])
 
-VERSION = "4.52.0-nightly202610091837"
+VERSION = VERSIONS["javascript"]
 
 # These build tools are CommonJS; the .cjs extension keeps that true regardless
 # of the "type": "module" declared by the @selenium/atoms package.json above
@@ -126,6 +128,13 @@ genrule(
     cmd = "cp $(locations //:license) $(@D)",
 )
 
+jq(
+    name = "package-json-stamped",
+    srcs = ["package.json"],
+    out = "stamped/package.json",
+    filter = '.version = "%s"' % VERSION,
+)
+
 npm_package(
     name = "selenium-atoms-package",
     srcs = [
@@ -134,13 +143,16 @@ npm_package(
         "README.npm.md",
         # Published so the emitted .d.ts.map / .js.map resolve for consumers.
         "index.ts",
-        "package.json",
         ":atoms-npm-compiled",
         ":license",
+        ":package-json-stamped",
     ] + ATOM_SRCS,
     package = "@selenium/atoms",
     publishable = True,
-    replace_prefixes = {"README.npm.md": "README.md"},
+    replace_prefixes = {
+        "README.npm.md": "README.md",
+        "stamped/": "",
+    },
     tags = ["release-artifact"],
     version = VERSION,
     visibility = ["//visibility:public"],

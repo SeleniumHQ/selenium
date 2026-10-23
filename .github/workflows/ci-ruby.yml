@@ -30,6 +30,14 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build Gems
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Gems
+      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
+
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
