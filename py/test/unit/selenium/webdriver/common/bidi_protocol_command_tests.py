@@ -32,10 +32,12 @@ from selenium.webdriver.common._bidi.browsing_context import (
     BrowsingContext,
     CreateResult,
     CreateType,
+    CssLocator,
     GetTreeResult,
     Info,
 )
-from selenium.webdriver.common._bidi.network import Cookie, InterceptPhase, Network
+from selenium.webdriver.common._bidi.emulation import Emulation, GeolocationCoordinates
+from selenium.webdriver.common._bidi.network import Cookie, InterceptPhase, Network, ResponseData
 from selenium.webdriver.common._bidi.serialization import BiDiSerializationError
 from selenium.webdriver.common._bidi.storage import PartialCookie
 from selenium.webdriver.common._bidi.transport import Transport
@@ -176,6 +178,61 @@ def test_a_received_only_extensible_type_retains_unknown_wire_keys():
         }
     )
     assert cookie.extensions == {"vendorSpecific": "x"}
+
+
+# --- numeric bounds from the schema ---
+#
+# A CDDL range or `.ge` / `.gt` bound is part of a number's declared type. A field's own bound
+# narrows the bounds of the alias it references (`maxNodeCount: js-uint .ge 1` is 1..2**53-1).
+
+
+def test_a_fields_own_bound_narrows_its_aliass_bound_before_any_wire_call():
+    context, connection = _domain(BrowsingContext, reply={"nodes": []})
+
+    with pytest.raises(BiDiSerializationError, match=r"max_node_count: 0 is out of range \(must be >= 1\)"):
+        context.locate_nodes(context="ctx-1", locator=CssLocator(value="p"), max_node_count=0)
+    assert connection.sent is None
+
+    context.locate_nodes(context="ctx-1", locator=CssLocator(value="p"), max_node_count=1)
+    assert connection.sent["params"]["maxNodeCount"] == 1
+
+
+def test_an_exclusive_min_rejects_a_value_on_the_bound_before_any_wire_call():
+    context, connection = _domain(BrowsingContext, reply={})
+
+    with pytest.raises(BiDiSerializationError, match=r"device_pixel_ratio: 0 is out of range \(must be > 0\)"):
+        context.set_viewport(context="ctx-1", device_pixel_ratio=0)
+    assert connection.sent is None
+
+
+def test_an_exclusive_max_rejects_a_value_on_the_bound_before_any_wire_call():
+    emulation, connection = _domain(Emulation, reply={})
+    coordinates = GeolocationCoordinates(latitude=0, longitude=0, heading=360)
+
+    with pytest.raises(BiDiSerializationError, match=r"heading: 360 is out of range \(must be < 360\)"):
+        emulation.set_geolocation_override(coordinates=coordinates)
+    assert connection.sent is None
+
+
+def test_an_aliased_bound_rejects_an_out_of_range_received_value():
+    response = {
+        "url": "https://example.com",
+        "protocol": "http/1.1",
+        "status": -1,
+        "statusText": "",
+        "fromCache": False,
+        "headers": [],
+        "mimeType": "text/html",
+        "bytesReceived": 0,
+        "headersSize": None,
+        "bodySize": None,
+        "content": {"size": 0},
+    }
+
+    with pytest.raises(BiDiSerializationError, match=r"ResponseData.status: -1 is out of range \(must be >= 0\)"):
+        ResponseData.from_json(response)
+
+    assert ResponseData.from_json({**response, "status": 200}).status == 200
 
 
 # --- vendor overlays folded into the type they extend ---
