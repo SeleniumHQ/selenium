@@ -35,6 +35,10 @@ export interface SnapshotContext {
   readonly styles: Map<Element, Map<string, CSSStyleDeclaration | null>>
   readonly names: Map<Element, NameResult>
   readonly descriptions: Map<Element, string>
+  /** Text alternative per element as a descendant of something being named (the standard recursive traversal), which every enclosing content-named ancestor repeats. */
+  readonly descendantTexts: Map<Element, string>
+  /** Name-from-content text per element for the standard traversal. */
+  readonly contentTexts: Map<Element, string>
   /** Generated ::before and ::after text per element, read at most once. */
   readonly generated: Map<Element, [string, string]>
   /** Per tree scope (document or shadow root): whether any of its sheets can define generated content. */
@@ -62,6 +66,8 @@ export function createContext(): SnapshotContext {
     styles: new Map(),
     names: new Map(),
     descriptions: new Map(),
+    descendantTexts: new Map(),
+    contentTexts: new Map(),
     generated: new Map(),
     generatedScopes: new Map(),
     placed: new Set(),

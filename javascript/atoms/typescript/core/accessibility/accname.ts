@@ -241,7 +241,27 @@ function isInline(element: Element, t: Traversal): boolean {
 
 // 2F: the concatenated text alternatives of the children, with generated
 // content around them and block-level children set off by spaces.
+//
+// Cached per element for the traversal every enclosing content-named
+// ancestor repeats (a cell's text is wanted by the row, then by the cell, then
+// by a link inside it): no reference being followed, no hidden content
+// included, no control skipped, a name rather than a description. The
+// `recursive` flag does not change the result, since children are always
+// traversed as recursive. Other traversals compute afresh.
 function fromContent(element: Element, t: Traversal): string {
+  const cacheable = !t.inReference && !t.includeHidden && t.skip === null && !t.describing
+  if (!cacheable) {
+    return computeContentText(element, t)
+  }
+  let text = t.context.contentTexts.get(element)
+  if (text === undefined) {
+    text = computeContentText(element, t)
+    t.context.contentTexts.set(element, text)
+  }
+  return text
+}
+
+function computeContentText(element: Element, t: Traversal): string {
   // An invisible element's own text and generated content are not rendered;
   // visibility is inherited, so only descendants that set themselves visible
   // again contribute, through the recursion below.
@@ -379,6 +399,14 @@ function placeholder(element: Element): string | null {
   return null
 }
 
+// The traversal every content-named ancestor repeats for the same descendant:
+// a cell is a descendant of its row, a link of its cell. Its result depends
+// on nothing but the element, so it is cached per element; the top-level
+// result (computeName) differs in steps 2C, 2E and 2F and has its own cache.
+function isStandardDescendantTraversal(t: Traversal): boolean {
+  return t.recursive && !t.inReference && !t.includeHidden && t.skip === null && !t.describing
+}
+
 function textAlternative(node: Node, t: Traversal): string {
   if (node.nodeType === TEXT_NODE) {
     return node.nodeValue || ''
@@ -386,7 +414,16 @@ function textAlternative(node: Node, t: Traversal): string {
   if (node.nodeType !== ELEMENT_NODE) {
     return ''
   }
-  return computeTextAlternative(node as Element, t).text
+  const element = node as Element
+  if (!isStandardDescendantTraversal(t)) {
+    return computeTextAlternative(element, t).text
+  }
+  let text = t.context.descendantTexts.get(element)
+  if (text === undefined) {
+    text = computeTextAlternative(element, t).text
+    t.context.descendantTexts.set(element, text)
+  }
+  return text
 }
 
 // The computation for one element, also used for the element being named.

@@ -119,6 +119,18 @@ under the License.
       }
       return '<table><tbody>' + h + '</tbody></table>';
     }
+    // Three nested content-named levels: row, cell, link.
+    function tableWithLinks(rows, cols) {
+      var h = '';
+      for (var r = 0; r < rows; r++) {
+        h += '<tr>';
+        for (var c = 0; c < cols; c++) {
+          h += '<td><a href="#">link ' + r + ',' + c + '</a></td>';
+        }
+        h += '</tr>';
+      }
+      return '<table><tbody>' + h + '</tbody></table>';
+    }
     function headings(n) {
       var h = '';
       for (var i = 0; i < n; i++) {
@@ -158,6 +170,7 @@ under the License.
       measure('list 8000', list(8000), 2),
       measure('table 1000x10', table(1000, 10), 2),
       measure('table 100x100', table(100, 100), 2),
+      measure('table with links 500x5', tableWithLinks(500, 5), 2),
       measure('headings 4000', headings(4000), 2),
       measure('document-like 1000', documentLike(1000), 2),
       measure('fan-in 2000', fanIn(2000), 2),
