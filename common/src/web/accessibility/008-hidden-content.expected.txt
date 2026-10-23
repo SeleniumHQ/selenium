@@ -1,0 +1,18 @@
+- document "Hidden content"
+  - paragraph
+    - text: Shown
+  - paragraph
+    - text: visible again
+  - paragraph
+    - text: Off-screen but rendered
+  - paragraph
+    - text: Visually hidden text
+  - paragraph
+    - text: Transparent but rendered
+  - group
+    - button "More"
+  - group
+    - button "Less" [expanded]
+    - paragraph
+      - text: Expanded
+  - region "Skipped"

@@ -82,6 +82,36 @@ js_test(
     ],
 )
 
+# The pure parts of the accessibility modules (the reference text renderer)
+# run in Node against the test-only bundle, with no browser.
+js_test(
+    name = "accessibility-unit-tests",
+    size = "small",
+    data = [":typescript/testing/accessibility.generated.js"],
+    entry_point = "typescript/testing/accessibility-unit-tests.mjs",
+    fixed_args = ["$(rootpath :typescript/testing/accessibility.generated.js)"],
+)
+
+# The shared accessibility corpus is the cross-binding contract: every
+# expectation validates against the node schema and every text file is the
+# renderer's output over its JSON, so a removed or renamed field fails here
+# before any binding sees it.
+js_test(
+    name = "accessibility-corpus-consistent",
+    size = "small",
+    data = [
+        "typescript/accessibility-node.schema.json",
+        ":typescript/testing/accessibility.generated.js",
+        "//common/src/web:web",
+    ],
+    entry_point = "typescript/testing/corpus-consistent.mjs",
+    fixed_args = [
+        "common/src/web/accessibility",
+        "$(rootpath typescript/accessibility-node.schema.json)",
+        "$(rootpath :typescript/testing/accessibility.generated.js)",
+    ],
+)
+
 # ── test-only bundles ────────────────────────────────────────────────────────
 
 # Shared modules that no atom reaches yet still need a QUnit page. Each entry
@@ -565,5 +595,8 @@ closure_test_suite(
     data = [
         ":atoms",
         ":deps",
+        # The accessibility corpus pages, loaded by
+        # test/accessibility_corpus_typescript_test.html.
+        "//common/src/web:web",
     ] + [":testing/%s-global" % bundle for bundle in TEST_BUNDLES],
 )

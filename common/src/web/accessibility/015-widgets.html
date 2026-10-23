@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>ARIA widgets</title>
+</head>
+<body>
+  <div id="tablist" role="tablist" aria-label="Views"><button id="tab1" role="tab" aria-selected="true" aria-controls="panel1">First</button><button id="tab2" role="tab" aria-selected="false">Second</button></div>
+  <div id="panel1" role="tabpanel" aria-labelledby="tab1"><p id="panel-text">First panel</p></div>
+  <ul id="tree" role="tree" aria-label="Files"><li id="folder" role="treeitem" aria-expanded="true" aria-level="1" aria-selected="false">src<ul role="group" id="group"><li id="file" role="treeitem" aria-level="2" aria-selected="true">index.ts</li></ul></li></ul>
+  <div id="listbox" role="listbox" aria-label="Colours"><div id="red" role="option" aria-selected="true">Red</div><div id="green" role="option">Green</div></div>
+  <div id="slider" role="slider" aria-label="Zoom" aria-valuemin="0" aria-valuemax="200" aria-valuenow="150" aria-valuetext="150 percent" tabindex="0"></div>
+  <div id="progress" role="progressbar" aria-label="Upload" aria-valuenow="40"></div>
+  <button id="switch" role="switch" aria-checked="true">Notifications</button>
+  <div id="menubar" role="menubar" aria-label="Main"><div id="menuitem" role="menuitem">File</div><div id="menucheck" role="menuitemcheckbox" aria-checked="mixed">Wrap</div></div>
+  <div id="toolbar" role="toolbar" aria-label="Format"><button id="bold" aria-pressed="false">B</button></div>
+  <span id="tip" role="tooltip">Tooltip text</span>
+</body>
+</html>

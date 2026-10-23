@@ -1,0 +1,108 @@
+{
+  "role": "document",
+  "name": "Shadow DOM",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "heading",
+      "name": "Shadow heading",
+      "description": "",
+      "states": {
+        "level": 2
+      },
+      "element": "shadow-heading",
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "light",
+      "children": [
+        {
+          "role": "text",
+          "name": "Light paragraph",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "button",
+      "name": "Shadow label",
+      "description": "",
+      "states": {},
+      "element": "shadow-button",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Shadow label",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "p-a",
+      "children": [
+        {
+          "role": "text",
+          "name": "A",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "p-b",
+      "children": [
+        {
+          "role": "text",
+          "name": "B",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "fallback",
+      "children": [
+        {
+          "role": "text",
+          "name": "Fallback",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "heading",
+      "name": "Nested",
+      "description": "",
+      "states": {
+        "level": 2
+      },
+      "element": "inner-heading",
+      "children": []
+    }
+  ]
+}

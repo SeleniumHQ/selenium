@@ -1,0 +1,172 @@
+{
+  "role": "document",
+  "name": "Lists",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "ul",
+      "children": [
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "li1",
+          "children": [
+            {
+              "role": "text",
+              "name": "One",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "li2",
+          "children": [
+            {
+              "role": "text",
+              "name": "Two",
+              "description": "",
+              "states": {},
+              "children": []
+            },
+            {
+              "role": "link",
+              "name": "more",
+              "description": "",
+              "states": {},
+              "element": "li-link",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "ol",
+      "children": [
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "oli",
+          "children": [
+            {
+              "role": "text",
+              "name": "First",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "menu",
+      "children": [
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "mli",
+          "children": [
+            {
+              "role": "text",
+              "name": "Item",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "term",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "dt",
+      "children": [
+        {
+          "role": "text",
+          "name": "Term",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "definition",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "dd",
+      "children": [
+        {
+          "role": "text",
+          "name": "Definition",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Layout only",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "aria-list",
+      "children": [
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "aria-item",
+          "children": [
+            {
+              "role": "text",
+              "name": "ARIA item",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

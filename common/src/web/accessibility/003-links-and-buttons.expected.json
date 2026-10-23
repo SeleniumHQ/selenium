@@ -1,0 +1,111 @@
+{
+  "role": "document",
+  "name": "Links and buttons",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "link",
+      "name": "A link",
+      "description": "",
+      "states": {},
+      "element": "link",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Not a link",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Map",
+      "description": "",
+      "states": {},
+      "element": "link-with-image",
+      "children": [
+        {
+          "role": "img",
+          "name": "Map",
+          "description": "",
+          "states": {},
+          "element": "link-image",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "button",
+      "name": "Save now",
+      "description": "",
+      "states": {},
+      "element": "button",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Disabled",
+      "description": "",
+      "states": {
+        "disabled": true
+      },
+      "element": "disabled",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Bold",
+      "description": "",
+      "states": {
+        "pressed": true
+      },
+      "element": "toggle",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Menu",
+      "description": "",
+      "states": {
+        "expanded": false
+      },
+      "element": "menu",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Send",
+      "description": "",
+      "states": {},
+      "element": "submit",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Reset",
+      "description": "",
+      "states": {},
+      "element": "reset",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Custom",
+      "description": "",
+      "states": {},
+      "element": "aria-button",
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Help",
+      "description": "Opens the help",
+      "states": {},
+      "element": "titled",
+      "children": []
+    }
+  ]
+}

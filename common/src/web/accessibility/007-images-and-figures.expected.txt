@@ -1,0 +1,12 @@
+- document "Images and figures"
+  - img "A map"
+  - img
+  - img "Titled image"
+  - figure "Sales by month"
+    - img "Chart"
+    - text: Sales by month
+  - graphics-document "Logo"
+    - text: Logo
+  - img "Rating: 4 of 5"
+  - link "Zone"
+  - img "Mapped"

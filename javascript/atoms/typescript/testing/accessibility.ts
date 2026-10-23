@@ -19,5 +19,6 @@
 // only through the tree walk, exposed so their QUnit pages can drive them
 // directly. Not in the ATOMS registry and never published.
 import { hiddenState, isCollapsedDetailsContent, isHidden } from '../core/accessibility/hidden.js'
+import { toText } from './accessibility-text.js'
 
-export default { hiddenState, isCollapsedDetailsContent, isHidden }
+export default { hiddenState, isCollapsedDetailsContent, isHidden, toText }

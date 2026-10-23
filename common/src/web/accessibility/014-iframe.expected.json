@@ -1,0 +1,57 @@
+{
+  "role": "document",
+  "name": "Frames",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "before",
+      "children": [
+        {
+          "role": "text",
+          "name": "Before the frame",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "iframe",
+      "name": "Embedded content",
+      "description": "",
+      "states": {},
+      "element": "frame",
+      "children": []
+    },
+    {
+      "role": "iframe",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "untitled",
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "after",
+      "children": [
+        {
+          "role": "text",
+          "name": "After the frame",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    }
+  ]
+}
