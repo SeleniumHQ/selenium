@@ -16,6 +16,7 @@
 // under the License.
 
 import { isElement } from '../element.js'
+import { computeRole } from './roles.js'
 import type { AccessibilityNode } from './types.js'
 
 const DOCUMENT_NODE = 9
@@ -62,16 +63,15 @@ function documentName(element: Element): string {
  * accessibility tree. Frames are reported as `iframe` leaves and never
  * descended into; callers stitch child-document snapshots in themselves.
  *
- * Roles, names, states and children for elements below the document root
- * arrive in later slices; until then every other element is reported as an
- * unnamed generic node so the node shape is already the final one.
+ * Names, states and children arrive in later slices; until then every node
+ * other than the document root is unnamed and childless, so the node shape is
+ * already the final one.
  */
 function accessibilitySnapshot(root?: Element | Document | null): AccessibilityNode {
   const element = resolveRoot(root)
-  if (element === element.ownerDocument.documentElement) {
-    return createNode('document', documentName(element), element)
-  }
-  return createNode('generic', '', element)
+  const role = computeRole(element)
+  const name = role === 'document' ? documentName(element) : ''
+  return createNode(role, name, element)
 }
 
 export default accessibilitySnapshot
