@@ -89,6 +89,12 @@ under the License.
       }
       byId('owned-pool').innerHTML = owned;
       byId('owner').setAttribute('aria-owns', ids.join(' '));
+
+      var gridRows = '';
+      for (var g = 0; g < 200; g++) {
+        gridRows += '<tr><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td></tr>';
+      }
+      byId('role-probe-table').innerHTML = '<tbody>' + gridRows + '</tbody>';
     }
 
     QUnit.module('scale');
@@ -135,6 +141,34 @@ under the License.
       assert.ok(rows.every(function (row) { return row.children[0].name === 'Shared header'; }), 'every cell is named by the header');
       assert.ok(probeReads < 20, 'the header was resolved once: its probe was read ' + probeReads + ' times for 500 referrers');
       assert.ok(run.ms < 3000, 'took ' + run.ms + 'ms');
+    });
+
+    QUnit.test('1000 cells of one grid look up its role once per snapshot', function (assert) {
+      // Each cell's role depends on its table's role; the context caches the
+      // table's role so the cells share one lookup instead of each reading
+      // the attribute again.
+      var table = byId('role-probe-table');
+      var roleReads = 0;
+      var original = Element.prototype.getAttribute;
+      Element.prototype.getAttribute = function (name) {
+        if (this === table && name === 'role') {
+          roleReads++;
+        }
+        return original.apply(this, arguments);
+      };
+      var run;
+      try {
+        run = timed(function () { return snapshot(byId('role-probe-root')); });
+      } finally {
+        Element.prototype.getAttribute = original;
+      }
+      var grid = run.result.children[0];
+      assert.strictEqual(grid.role, 'grid');
+      var body = grid.children[0];
+      assert.strictEqual(body.role, 'rowgroup');
+      assert.strictEqual(body.children.length, 200, 'one row per tr');
+      assert.ok(body.children.every(function (row) { return row.children.length === 5 && row.children[0].role === 'gridcell'; }), 'every row has five gridcells');
+      assert.ok(roleReads < 10, 'the table\'s role attribute was read ' + roleReads + ' times for 1000 cells');
     });
 
     QUnit.test('an owner of 500 elements places all of them', function (assert) {
@@ -189,6 +223,7 @@ under the License.
   <div id="deep"></div>
   <div id="fan-in-root"><span id="shared-header">Shared <span id="probe" aria-label="header">x</span></span><div id="fan-in"></div></div>
   <div id="owns-scale"><ul id="owner"></ul><div id="owned-pool"></div></div>
+  <div id="role-probe-root"><table id="role-probe-table" role="grid"></table></div>
 
   <button id="broken-refs" aria-labelledby="nope nope2" aria-describedby="nada" aria-owns="zip" aria-controls="zap">Content</button>
   <div id="spaced-role" role="

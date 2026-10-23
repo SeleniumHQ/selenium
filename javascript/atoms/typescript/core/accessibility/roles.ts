@@ -65,6 +65,13 @@ export function isPresentational(role: string): boolean {
 }
 
 /**
+ * How the role of another element is found when one element's role depends
+ * on it (a cell on its table, an li on its list). The snapshot context
+ * passes its cached lookup so the owner is computed once for all of them.
+ */
+export type RoleLookup = (element: Element) => string
+
+/**
  * The first token of the role attribute that names a role authors may use,
  * or null when there is none. Tokens match ASCII case-insensitively, which is
  * what engines do.
@@ -133,8 +140,8 @@ function hasAuthorName(element: Element): boolean {
 
 // WAI-ARIA 1.2 §9.1: when an element with required owned elements is
 // presentational, so are those owned elements.
-function ownerIsPresentational(owner: Element | null): boolean {
-  return owner !== null && isPresentational(computeRole(owner))
+function ownerIsPresentational(owner: Element | null, lookup: RoleLookup): boolean {
+  return owner !== null && isPresentational(lookup(owner))
 }
 
 function hasAncestor(element: Element, names: ReadonlySet<string>, roles: ReadonlySet<string> | null = null): boolean {
@@ -187,29 +194,35 @@ function inputRole(input: HTMLInputElement): string {
   }
 }
 
-function tableCellRole(cell: Element): string {
+function tableCellRole(cell: Element, lookup: RoleLookup): string {
   const table = cell.closest('table')
-  if (ownerIsPresentational(table)) {
+  if (!table) {
+    return 'cell'
+  }
+  const tableRole = lookup(table)
+  if (isPresentational(tableRole)) {
     return 'generic'
   }
-  const tableRole = table ? explicitRole(table) : null
   return tableRole === 'grid' || tableRole === 'treegrid' ? 'gridcell' : 'cell'
 }
 
-function tableHeaderRole(header: Element): string {
-  if (ownerIsPresentational(header.closest('table'))) {
+function tableHeaderRole(header: Element, lookup: RoleLookup): string {
+  if (ownerIsPresentational(header.closest('table'), lookup)) {
     return 'generic'
   }
   const scope = (header.getAttribute('scope') || '').toLowerCase()
   return scope === 'row' || scope === 'rowgroup' ? 'rowheader' : 'columnheader'
 }
 
-function tablePartRole(part: Element, role: string): string {
-  return ownerIsPresentational(part.closest('table')) ? 'generic' : role
+function tablePartRole(part: Element, role: string, lookup: RoleLookup): string {
+  return ownerIsPresentational(part.closest('table'), lookup) ? 'generic' : role
 }
 
-/** The html-aam implicit role of an element, with no regard to its role attribute. */
-export function implicitRole(element: Element): string {
+/**
+ * The html-aam implicit role of an element, with no regard to its role
+ * attribute. `lookup` finds the role of an element this one depends on.
+ */
+export function implicitRole(element: Element, lookup: RoleLookup = computeRole): string {
   switch (element.localName) {
     case 'a':
     case 'area':
@@ -283,7 +296,7 @@ export function implicitRole(element: Element): string {
       return 'insertion'
     case 'li': {
       const parent = element.parentElement
-      if (!parent || !LIST_PARENTS.has(parent.localName) || ownerIsPresentational(parent)) {
+      if (!parent || !LIST_PARENTS.has(parent.localName) || ownerIsPresentational(parent, lookup)) {
         return 'generic'
       }
       return 'listitem'
@@ -333,17 +346,17 @@ export function implicitRole(element: Element): string {
     case 'tbody':
     case 'tfoot':
     case 'thead':
-      return tablePartRole(element, 'rowgroup')
+      return tablePartRole(element, 'rowgroup', lookup)
     case 'td':
-      return tableCellRole(element)
+      return tableCellRole(element, lookup)
     case 'textarea':
       return 'textbox'
     case 'th':
-      return tableHeaderRole(element)
+      return tableHeaderRole(element, lookup)
     case 'time':
       return 'time'
     case 'tr':
-      return tablePartRole(element, 'row')
+      return tablePartRole(element, 'row', lookup)
     default:
       return 'generic'
   }
@@ -353,14 +366,16 @@ export function implicitRole(element: Element): string {
  * The role the snapshot reports for an element: the explicit role when it
  * names a usable role and is not a presentational role on an element that
  * cannot be presentational (WAI-ARIA 1.2 §9.1), otherwise the implicit one.
+ * `lookup` finds the role of an element this one depends on; without one,
+ * it is computed afresh.
  */
-export function computeRole(element: Element): string {
+export function computeRole(element: Element, lookup: RoleLookup = computeRole): string {
   const explicit = explicitRole(element)
   if (explicit === null) {
-    return implicitRole(element)
+    return implicitRole(element, lookup)
   }
   if (isPresentational(explicit) && (canTakeFocus(element) || hasGlobalAriaAttribute(element))) {
-    return implicitRole(element)
+    return implicitRole(element, lookup)
   }
   return explicit
 }

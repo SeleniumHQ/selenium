@@ -82,7 +82,9 @@ export function createContext(): SnapshotContext {
 export function roleOf(element: Element, context: SnapshotContext): string {
   let role = context.roles.get(element)
   if (role === undefined) {
-    role = computeRole(element)
+    // The role of a cell depends on its table's, which every cell would
+    // otherwise recompute; the lookup goes through this cache.
+    role = computeRole(element, (owner) => roleOf(owner, context))
     context.roles.set(element, role)
   }
   return role
