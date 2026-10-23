@@ -361,3 +361,62 @@ fn unreadable_metadata_falls_back_to_empty() {
         "a metadata cache that cannot be opened must degrade to empty metadata, not panic"
     );
 }
+
+// Windows may refuse to open a file while it is being replaced, so the guarantee checked
+// here only holds on Unix.
+#[cfg(unix)]
+#[test]
+fn concurrent_reader_never_sees_partially_written_metadata() {
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, Ordering};
+    use std::thread;
+
+    let tmp = tempdir().unwrap();
+    let cache = tmp.path().to_path_buf();
+    let log = selenium_manager::logger::Logger::default();
+
+    let metadata = Metadata {
+        browsers: Vec::new(),
+        drivers: (0..200)
+            .map(|i| create_driver_metadata(&i.to_string(), "chromedriver", "120.0.0", 3600))
+            .collect(),
+        stats: Vec::new(),
+        cached_assets: Vec::new(),
+    };
+    write_metadata(&metadata, &log, Some(cache.clone()));
+
+    let done = Arc::new(AtomicBool::new(false));
+    let writer = {
+        let cache = cache.clone();
+        let done = done.clone();
+        thread::spawn(move || {
+            let log = selenium_manager::logger::Logger::default();
+            for _ in 0..500 {
+                write_metadata(&metadata, &log, Some(cache.clone()));
+            }
+            done.store(true, Ordering::SeqCst);
+        })
+    };
+
+    let mut reads = 0;
+    while !done.load(Ordering::SeqCst) {
+        let read_back = get_metadata(&log, &Some(cache.clone()));
+        assert_eq!(
+            read_back.drivers.len(),
+            200,
+            "a reader must see the whole metadata file while another process rewrites it (read #{reads})"
+        );
+        reads += 1;
+    }
+    writer.join().unwrap();
+
+    let leftovers: Vec<_> = fs::read_dir(&cache)
+        .unwrap()
+        .map(|e| e.unwrap().file_name())
+        .filter(|name| name != "se-metadata.json")
+        .collect();
+    assert!(
+        leftovers.is_empty(),
+        "temporary files left in cache: {leftovers:?}"
+    );
+}
