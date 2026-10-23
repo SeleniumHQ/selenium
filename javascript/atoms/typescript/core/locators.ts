@@ -21,6 +21,7 @@
 // and cannot drift between them.
 
 import { botError, INVALID_ARGUMENT, INVALID_SELECTOR, NO_SUCH_ELEMENT } from './error.js'
+import getVisibleText from '../get-text.js'
 
 type LocatorTarget = Record<string, unknown>
 type Root = Document | Element | ShadowRoot
@@ -110,13 +111,10 @@ function normalizeLinkText(s: string): string {
 
 // Reads the visible text of a link element, trimming surrounding whitespace.
 // locators/link_text.js:51-58 – getVisibleText + trim pattern.
-// We use innerText where available (respects CSS visibility) and fall back to
-// textContent, matching what bot.dom.getVisibleText does in modern browsers.
+// innerText is not used because it falls back to textContent for elements that
+// are not rendered, which would let hidden links match.
 function getLinkText(el: Element): string {
-  const text = (el as HTMLElement).innerText !== undefined
-    ? (el as HTMLElement).innerText
-    : el.textContent || ''
-  return normalizeLinkText(text).replace(/^[\s]+|[\s]+$/g, '')
+  return getVisibleText(el).replace(/^[\s]+|[\s]+$/g, '')
 }
 
 // ── many (multi-element) implementations ──────────────────────────────────────
