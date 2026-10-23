@@ -16,7 +16,8 @@
 // under the License.
 
 import { isElement } from '../element.js'
-import { computeRole } from './roles.js'
+import { createContext } from './context.js'
+import { buildTree } from './tree.js'
 import type { AccessibilityNode } from './types.js'
 
 const DOCUMENT_NODE = 9
@@ -44,17 +45,6 @@ function resolveRoot(root: Element | Document | null | undefined): Element {
   return root
 }
 
-function createNode(role: string, name: string, element: Element): AccessibilityNode {
-  return { role, name, description: '', states: {}, element, children: [] }
-}
-
-// html-aam maps the html element to role document and names it from the title.
-// The title getter already collapses ASCII whitespace; trimming covers what it
-// leaves at the ends.
-function documentName(element: Element): string {
-  return (element.ownerDocument.title || '').trim()
-}
-
 /**
  * Computes an accessibility snapshot of the subtree rooted at `root`, or of the
  * whole document when no root is given.
@@ -63,15 +53,11 @@ function documentName(element: Element): string {
  * accessibility tree. Frames are reported as `iframe` leaves and never
  * descended into; callers stitch child-document snapshots in themselves.
  *
- * Names, states and children arrive in later slices; until then every node
- * other than the document root is unnamed and childless, so the node shape is
- * already the final one.
+ * Names, descriptions, states and values arrive in later slices; until then
+ * only the document root is named, from the title.
  */
 function accessibilitySnapshot(root?: Element | Document | null): AccessibilityNode {
-  const element = resolveRoot(root)
-  const role = computeRole(element)
-  const name = role === 'document' ? documentName(element) : ''
-  return createNode(role, name, element)
+  return buildTree(resolveRoot(root), createContext())
 }
 
 export default accessibilitySnapshot

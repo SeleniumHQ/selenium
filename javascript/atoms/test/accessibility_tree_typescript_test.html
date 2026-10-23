@@ -31,12 +31,24 @@ under the License.
     // Tree-shape tests for the accessibility-snapshot atom. The assertions
     // compare whole subtrees: the shape of the tree is the contract every
     // binding is held to (docs/decisions/18205-accessibility-tree-snapshot.md).
+    //
+    // Names are not computed yet, so every element node here has name "" and
+    // text leaves are always emitted; the name slice adds suppression of text
+    // leaves under nodes named from their content.
     var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
 
     // `element` is a live Element and cannot be compared structurally, so it
     // is swapped for the element's id (or tag name when it has none) before a
     // deepEqual. Empty description/states are dropped so expectations stay
-    // short; the schema test in slice 7 is what pins them as always present.
+    // short; the schema test in a later slice is what pins them as present.
     function strip(node) {
       var out = { role: node.role, name: node.name };
       if (node.description) {
@@ -55,17 +67,35 @@ under the License.
       return out;
     }
 
+    function text(content) {
+      return { role: 'text', name: content, children: [] };
+    }
+
+    function leaf(role, id) {
+      return { role: role, name: '', element: id, children: [] };
+    }
+
+    function node(role, id, children) {
+      return { role: role, name: '', element: id, children: children };
+    }
+
     QUnit.module('accessibility snapshot: root');
 
-    QUnit.test('the whole page is rooted at the html element as role document', function (assert) {
-      var node = snapshot();
-      assert.strictEqual(node.element, document.documentElement, 'root element is <html>');
-      assert.deepEqual(strip(node), {
-        role: 'document',
-        name: 'Accessibility snapshot fixture',
-        element: 'html',
-        children: [],
-      });
+    QUnit.test('the whole page is rooted at the html element as role document, with head and body hoisted away', function (assert) {
+      var root = snapshot();
+      assert.strictEqual(root.element, document.documentElement, 'root element is <html>');
+      assert.strictEqual(root.role, 'document');
+      assert.strictEqual(root.name, 'Accessibility snapshot fixture');
+      assert.notOk(root.children.some(function (child) { return child.element === document.body; }),
+        'body is generic and does not produce a node');
+      // head is generic and everything in it is unrendered, so the first child
+      // comes from the body: QUnit gives #qunit role=main and renders its
+      // header, a heading wrapping a link, first inside it.
+      var main = root.children[0];
+      assert.strictEqual(main.role, 'main');
+      assert.strictEqual(main.element, byId('qunit'));
+      assert.deepEqual(strip(main.children[0]),
+        node('heading', 'qunit-header', [node('link', 'a', [text('Accessibility snapshot fixture')])]));
     });
 
     QUnit.test('a Document root is the same as no root', function (assert) {
@@ -89,12 +119,12 @@ under the License.
     });
 
     QUnit.test('every node carries the full schema, even when empty', function (assert) {
-      var node = snapshot();
-      assert.deepEqual(Object.keys(node).sort(),
+      var root = snapshot();
+      assert.deepEqual(Object.keys(root).sort(),
         ['children', 'description', 'element', 'name', 'role', 'states']);
-      assert.strictEqual(node.description, '');
-      assert.deepEqual(node.states, {});
-      assert.notOk('value' in node, 'value is absent, not undefined, when the role has none');
+      assert.strictEqual(root.description, '');
+      assert.deepEqual(root.states, {});
+      assert.notOk('value' in root, 'value is absent, not undefined, when the role has none');
     });
 
     QUnit.test('a root that is not an element throws rather than returning a partial tree', function (assert) {
@@ -105,12 +135,117 @@ under the License.
     QUnit.test('a detached root throws', function (assert) {
       assert.throws(function () { snapshot(document.createElement('div')); }, /detached|document/i);
     });
+
+    QUnit.test('an explicit root always produces a node, even a generic one that would be pruned below another root', function (assert) {
+      var wrapper = strip(snapshot(byId('wrapper')));
+      assert.strictEqual(wrapper.role, 'generic');
+      assert.strictEqual(wrapper.element, 'wrapper');
+      assert.deepEqual(wrapper.children, strip(snapshot(byId('tree-root'))).children,
+        'the wrapper is pruned under tree-root, so both roots see the same children');
+    });
+
+    QUnit.test('a hidden root produces its node but no children', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('hidden-subtree'))), leaf('generic', 'hidden-subtree'));
+    });
+
+    QUnit.module('accessibility snapshot: tree walk');
+
+    QUnit.test('the fixture tree, in document order with pruned wrappers hoisted in place', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('tree-root'))), node('generic', 'tree-root', [
+        node('heading', 'h', [text('Title')]),
+        text('plain text'),
+        leaf('button', 'btn'),
+        node('paragraph', 'p', [text('para')]),
+        node('heading', 'h-visible', [text('Seen')]),
+        node('group', 'closed', [leaf('button', 'sum')]),
+        leaf('iframe', 'frame'),
+        leaf('img', 'img'),
+        node('link', 'link', [text('Go'), node('emphasis', 'em', [text('now')])]),
+        node('table', 't', [node('rowgroup', 'tbody', [node('row', 'tr', [node('cell', 'cell', [text('A')])])])]),
+        node('paragraph', 'ws', []),
+        node('paragraph', 'multi', [text('lots of space')]),
+        leaf('checkbox', 'cb'),
+      ]));
+    });
+
+    QUnit.test('element references are the live elements, and text leaves have none', function (assert) {
+      var root = snapshot(byId('tree-root'));
+      assert.strictEqual(root.children[0].element, byId('h'));
+      assert.strictEqual(root.children[0].children[0].role, 'text');
+      assert.notOk('element' in root.children[0].children[0], 'text leaf has no element key');
+      assert.strictEqual(root.children[1].role, 'text');
+      assert.notOk('element' in root.children[1], 'hoisted text leaf has no element key');
+    });
+
+    QUnit.test('text leaves still carry the full schema', function (assert) {
+      var textLeaf = snapshot(byId('tree-root')).children[1];
+      assert.deepEqual(Object.keys(textLeaf).sort(), ['children', 'description', 'name', 'role', 'states']);
+      assert.strictEqual(textLeaf.description, '');
+      assert.deepEqual(textLeaf.states, {});
+    });
+
+    QUnit.test('aria-hidden and display none remove the whole subtree', function (assert) {
+      var ids = strip(snapshot(byId('tree-root'))).children.map(function (c) { return c.element; });
+      assert.strictEqual(ids.indexOf('hidden-subtree'), -1);
+      assert.strictEqual(ids.indexOf('h-hidden'), -1);
+      assert.strictEqual(ids.indexOf('display-none'), -1);
+      assert.strictEqual(ids.indexOf('h-none'), -1);
+    });
+
+    QUnit.test('visibility hidden removes the node and its text but keeps visible descendants', function (assert) {
+      var stripped = strip(snapshot(byId('tree-root')));
+      var ids = stripped.children.map(function (c) { return c.element; });
+      assert.strictEqual(ids.indexOf('invisible-nav'), -1, 'the nav itself produces no node');
+      assert.strictEqual(ids.indexOf('h-unseen'), -1, 'a heading inheriting the hidden visibility produces no node');
+      assert.ok(ids.indexOf('h-visible') !== -1, 'a heading that sets itself visible is hoisted up');
+      assert.notOk(JSON.stringify(stripped).indexOf('nav text') !== -1, 'text inside the hidden nav is not a leaf');
+    });
+
+    QUnit.test('roles with presentational children are leaves', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('btn'))), leaf('button', 'btn'), 'button content becomes its name, not children');
+      assert.deepEqual(strip(snapshot(byId('cb'))), leaf('checkbox', 'cb'));
+    });
+
+    QUnit.test('frames are leaves the bindings fill in', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('frame'))), leaf('iframe', 'frame'));
+    });
+
+    QUnit.test('whitespace in text is collapsed and whitespace-only text produces nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('ws'))), node('paragraph', 'ws', []));
+      assert.deepEqual(strip(snapshot(byId('multi'))), node('paragraph', 'multi', [text('lots of space')]));
+    });
   </script>
 </head>
 
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+
+  <div id="tree-root">
+    <div id="wrapper">
+      <h1 id="h">Title</h1>
+      <span>plain text</span>
+      <button id="btn">Save <b>now</b></button>
+      <div role="none"><p id="p">para</p></div>
+      <div id="hidden-subtree" aria-hidden="true"><h2 id="h-hidden">never</h2></div>
+      <div id="display-none" style="display: none"><h2 id="h-none">never</h2></div>
+      <nav id="invisible-nav" style="visibility: hidden">
+        nav text
+        <h2 id="h-visible" style="visibility: visible">Seen</h2>
+        <h2 id="h-unseen">Unseen</h2>
+      </nav>
+      <details id="closed"><summary id="sum">More</summary><p>hidden para</p></details>
+      <iframe id="frame" src="about:blank" title="frame"></iframe>
+      <img id="img" src="/testdata/map.png" alt="Logo">
+      <img id="deco" src="/testdata/map.png" alt="">
+      <a id="link" href="#">Go <em id="em">now</em></a>
+      <table id="t"><tr><td id="cell">A</td></tr></table>
+      <p id="ws">   </p>
+      <p id="multi">  lots   of
+         space </p>
+      <div role="checkbox" id="cb" aria-checked="false">Remember <b>me</b></div>
+    </div>
+  </div>
 </body>
 
 </html>
