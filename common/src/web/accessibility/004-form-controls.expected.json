@@ -285,7 +285,7 @@
           "role": "textbox",
           "name": "Secret",
           "description": "",
-          "value": "hunter2",
+          "value": "•••••••",
           "states": {},
           "element": "secret",
           "children": []

@@ -32,7 +32,7 @@
     - text: Level
     - meter "Level": 0.25
     - text: Secret
-    - textbox "Secret": hunter2
+    - textbox "Secret": •••••••
     - group "Off"
       - text: Off
       - textbox "Off field" [disabled]

@@ -55,7 +55,9 @@ under the License.
 
     QUnit.test('text inputs, textareas and search boxes report their current value', function (assert) {
       byId('typed').value = 'typed later';
-      assertValues(assert, { 'typed': 'typed later', 'empty': '', 'textarea': 'default text', 'search': 'q', 'password': 'secret' });
+      // A password's value is masked, one bullet per character, as Chromium's
+      // accessibility tree exposes it: a snapshot ends up in logs and reports.
+      assertValues(assert, { 'typed': 'typed later', 'empty': '', 'textarea': 'default text', 'search': 'q', 'password': '••••••' });
     });
 
     QUnit.test('a contenteditable textbox reports its rendered text', function (assert) {

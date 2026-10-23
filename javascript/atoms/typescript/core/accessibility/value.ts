@@ -73,7 +73,12 @@ export function embeddedValue(element: Element, role: string): string | null {
       return selectedOptionsText(element as HTMLSelectElement)
     }
     if ('value' in element && typeof (element as HTMLInputElement).value === 'string') {
-      return (element as HTMLInputElement).value
+      const value = (element as HTMLInputElement).value
+      // A password is masked one bullet per character, as Chromium's
+      // accessibility tree exposes it: snapshots end up in logs and reports.
+      return element.localName === 'input' && (element as HTMLInputElement).type === 'password'
+        ? '\u2022'.repeat(value.length)
+        : value
     }
     if (role === 'listbox') {
       return selectedAriaOptions(element)
