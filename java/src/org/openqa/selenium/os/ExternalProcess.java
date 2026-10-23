@@ -428,8 +428,11 @@ public class ExternalProcess {
     long last = -1;
 
     while (worker.isAlive()) {
+      // read the flag before the count: a write that ends between the two reads has already
+      // advanced the count, so it cannot pass for silence
+      boolean writing = progress.writing;
       long count = progress.bytes.get();
-      if (count == last && !progress.writing) {
+      if (count == last && !writing) {
         return true;
       }
       last = count;
