@@ -252,6 +252,17 @@ under the License.
     fixture.removeChild(a);
   });
 
+  QUnit.test('does not find a hidden link by link text', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.display = 'none';
+    a.textContent = 'Hidden link';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'Hidden link'}, fixture), null);
+    assert.strictEqual(findElement({'partial link text': 'idden li'}, fixture), null);
+    fixture.removeChild(a);
+  });
+
   // ── partial link text ────────────────────────────────────────────────────────
 
   QUnit.test('finds element by partial link text', function(assert) {

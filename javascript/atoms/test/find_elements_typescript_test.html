@@ -175,6 +175,17 @@ under the License.
     fixture.removeChild(a);
   });
 
+  QUnit.test('does not find hidden links by link text', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.display = 'none';
+    a.textContent = 'Hidden link';
+    fixture.appendChild(a);
+    assert.equal(findElements({'link text': 'Hidden link'}, fixture).length, 0);
+    assert.equal(findElements({'partial link text': 'idden li'}, fixture).length, 0);
+    fixture.removeChild(a);
+  });
+
   QUnit.test('finds elements by name attribute', function(assert) {
     var elements = findElements({'name': 'myinput'}, fixture);
     assert.equal(elements.length, 1);
