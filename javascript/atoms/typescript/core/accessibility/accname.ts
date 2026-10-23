@@ -88,7 +88,11 @@ function referencedElements(element: Element, attributeName: string): Element[] 
   return found
 }
 
-// 2B: the text alternatives of the referenced elements, space-joined.
+// 2B: the text alternatives of the referenced elements, space-joined. A
+// target's text alternative is the same whoever references it and whether
+// for a name or a description (2B is not applied inside a reference and 2C
+// is), so it is computed once per snapshot: a header that labels every cell
+// of a column is read once, not once per cell.
 function fromReferences(element: Element, attributeName: string, t: Traversal): string {
   const parts: string[] = []
   for (const target of referencedElements(element, attributeName)) {
@@ -96,15 +100,18 @@ function fromReferences(element: Element, attributeName: string, t: Traversal): 
       continue
     }
     t.visited.add(target)
-    parts.push(
-      textAlternative(target, {
+    let text = t.context.referenceTexts.get(target)
+    if (text === undefined) {
+      text = textAlternative(target, {
         ...t,
         inReference: true,
         recursive: false,
         includeHidden: isHidden(target, t.context),
         skip: null,
-      }),
-    )
+      })
+      t.context.referenceTexts.set(target, text)
+    }
+    parts.push(text)
   }
   return normalize(parts.join(' '))
 }

@@ -39,6 +39,8 @@ export interface SnapshotContext {
   readonly descendantTexts: Map<Element, string>
   /** Name-from-content text per element for the standard traversal. */
   readonly contentTexts: Map<Element, string>
+  /** Text alternative per aria-labelledby / aria-describedby target, which many elements can reference. */
+  readonly referenceTexts: Map<Element, string>
   /** Generated ::before and ::after text per element, read at most once. */
   readonly generated: Map<Element, [string, string]>
   /** Per tree scope (document or shadow root): whether any of its sheets can define generated content. */
@@ -68,6 +70,7 @@ export function createContext(): SnapshotContext {
     descriptions: new Map(),
     descendantTexts: new Map(),
     contentTexts: new Map(),
+    referenceTexts: new Map(),
     generated: new Map(),
     generatedScopes: new Map(),
     placed: new Set(),

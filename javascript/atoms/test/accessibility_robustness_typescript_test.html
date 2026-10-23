@@ -111,10 +111,29 @@ under the License.
     });
 
     QUnit.test('500 cells labelled by one header resolve it once per snapshot', function (assert) {
-      var run = timed(function () { return snapshot(byId('fan-in')); });
-      var rows = run.result.children[0].children[0].children;
+      // The header holds a probe span whose aria-label is read every time the
+      // header's text alternative is computed; the reference cache makes that
+      // once per snapshot, plus the probe's own visit by the walk.
+      var probe = byId('probe');
+      var probeReads = 0;
+      var original = Element.prototype.getAttribute;
+      Element.prototype.getAttribute = function () {
+        if (this === probe) {
+          probeReads++;
+        }
+        return original.apply(this, arguments);
+      };
+      var run;
+      try {
+        run = timed(function () { return snapshot(byId('fan-in-root')); });
+      } finally {
+        Element.prototype.getAttribute = original;
+      }
+      var table = run.result.children.filter(function (c) { return c.role === 'table'; })[0];
+      var rows = table.children[0].children;
       assert.strictEqual(rows.length, 500);
       assert.ok(rows.every(function (row) { return row.children[0].name === 'Shared header'; }), 'every cell is named by the header');
+      assert.ok(probeReads < 20, 'the header was resolved once: its probe was read ' + probeReads + ' times for 500 referrers');
       assert.ok(run.ms < 3000, 'took ' + run.ms + 'ms');
     });
 
@@ -168,8 +187,7 @@ under the License.
 
   <div id="big"></div>
   <div id="deep"></div>
-  <div id="fan-in"></div>
-  <span id="shared-header">Shared header</span>
+  <div id="fan-in-root"><span id="shared-header">Shared <span id="probe" aria-label="header">x</span></span><div id="fan-in"></div></div>
   <div id="owns-scale"><ul id="owner"></ul><div id="owned-pool"></div></div>
 
   <button id="broken-refs" aria-labelledby="nope nope2" aria-describedby="nada" aria-owns="zip" aria-controls="zap">Content</button>
