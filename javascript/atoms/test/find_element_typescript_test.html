@@ -22,6 +22,11 @@ under the License.
   <meta charset="utf-8">
   <title>find_element_typescript_test</title>
   <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <style>
+    /* qunit.css moves the fixture off-screen, which the link text locators
+       treat as hidden. */
+    #qunit-fixture { position: static; }
+  </style>
   <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
   <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="/filez/_main/javascript/atoms/typescript/find-element-global.js"></script>
@@ -55,7 +60,12 @@ under the License.
 
   var findElement = window.bot.locators.typescript.findElement;
 
-  var fixture = document.getElementById('qunit-fixture');
+  // QUnit replaces #qunit-fixture with a fresh clone before every test, so a
+  // reference taken once would point at a detached element that is never shown.
+  var fixture;
+  QUnit.hooks.beforeEach(function() {
+    fixture = document.getElementById('qunit-fixture');
+  });
 
   // ── css selector ─────────────────────────────────────────────────────────────
 
@@ -260,6 +270,17 @@ under the License.
     fixture.appendChild(a);
     assert.strictEqual(findElement({'link text': 'Hidden link'}, fixture), null);
     assert.strictEqual(findElement({'partial link text': 'idden li'}, fixture), null);
+    fixture.removeChild(a);
+  });
+
+  QUnit.test('finds a hidden link by the text of a visible child', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.visibility = 'hidden';
+    a.innerHTML = 'Hidden <span style="visibility:visible">shown child</span>';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'shown child'}, fixture), a);
+    assert.strictEqual(findElement({'partial link text': 'Hidden'}, fixture), null);
     fixture.removeChild(a);
   });
 
