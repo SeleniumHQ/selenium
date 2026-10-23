@@ -101,7 +101,7 @@ function fromReferences(element: Element, attributeName: string, t: Traversal): 
         ...t,
         inReference: true,
         recursive: false,
-        includeHidden: isHidden(target),
+        includeHidden: isHidden(target, t.context),
         skip: null,
       }),
     )
@@ -159,7 +159,7 @@ function fromContent(element: Element, t: Traversal): string {
   // An invisible element's own text and generated content are not rendered;
   // visibility is inherited, so only descendants that set themselves visible
   // again contribute, through the recursion below.
-  const ownTextHidden = !t.includeHidden && hiddenState(element) === 'self'
+  const ownTextHidden = !t.includeHidden && hiddenState(element, t.context) === 'self'
   let text = ownTextHidden ? '' : pseudoContent(element, '::before', t)
   const textCollapsed = isClosedDetails(element)
   const children = flatTreeChildren(element)
@@ -182,7 +182,7 @@ function fromContent(element: Element, t: Traversal): string {
       text += ' '
       continue
     }
-    const childState = t.includeHidden ? 'rendered' : hiddenState(childElement)
+    const childState = t.includeHidden ? 'rendered' : hiddenState(childElement, t.context)
     if (childState === 'subtree' || childState === 'contents') {
       continue
     }
@@ -216,7 +216,7 @@ function fromLabels(element: Element, t: Traversal): string | null {
   const parts: string[] = []
   for (let i = 0; i < labels.length; i++) {
     const label = labels[i]
-    parts.push(fromContent(label, { ...t, recursive: true, includeHidden: isHidden(label), skip: element }))
+    parts.push(fromContent(label, { ...t, recursive: true, includeHidden: isHidden(label, t.context), skip: element }))
   }
   const text = normalize(parts.join(' '))
   return text !== '' ? text : null

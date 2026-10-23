@@ -25,6 +25,8 @@
 // Ancestry follows the flat tree (slots and shadow hosts), because that is
 // what gets rendered, not the light DOM.
 
+import { SnapshotContext, styleOf } from './context.js'
+
 const DOCUMENT_NODE = 9
 const DOCUMENT_FRAGMENT_NODE = 11
 
@@ -48,14 +50,9 @@ function isAriaHidden(element: Element): boolean {
   return value !== null && value.trim().toLowerCase() === 'true'
 }
 
-function computedStyle(element: Element): CSSStyleDeclaration | null {
-  const view = element.ownerDocument.defaultView
-  return view ? view.getComputedStyle(element) : null
-}
-
 // The UA stylesheet gives every area display: none; what renders it is the
 // image whose usemap points at its map. So an area is as hidden as that image.
-function areaState(area: Element): HiddenState {
+function areaState(area: Element, context: SnapshotContext): HiddenState {
   const map = area.closest('map')
   const name = map ? map.getAttribute('name') : null
   if (!name) {
@@ -65,7 +62,7 @@ function areaState(area: Element): HiddenState {
   for (let i = 0; i < images.length; i++) {
     const image = images[i]
     const usemap = (image.getAttribute('usemap') || '').replace(/^#/, '')
-    if (usemap === name && hiddenState(image) === 'rendered' && !isHiddenByAncestor(image)) {
+    if (usemap === name && hiddenState(image, context) === 'rendered' && !isHiddenByAncestor(image, context)) {
       return 'rendered'
     }
   }
@@ -148,8 +145,21 @@ export function isCollapsedDetailsContent(child: Element, parent: Element): bool
   return true
 }
 
-/** See HiddenState. Ancestors are not consulted; isHidden does that. */
-export function hiddenState(element: Element): HiddenState {
+/**
+ * See HiddenState. Ancestors are not consulted; isHidden does that. Cached
+ * per element in the context: the walk, name-from-content and reference
+ * resolution all ask about the same elements.
+ */
+export function hiddenState(element: Element, context: SnapshotContext): HiddenState {
+  let state = context.hidden.get(element)
+  if (state === undefined) {
+    state = computeHiddenState(element, context)
+    context.hidden.set(element, state)
+  }
+  return state
+}
+
+function computeHiddenState(element: Element, context: SnapshotContext): HiddenState {
   // Inert content is still painted, but browsers leave it out of the
   // accessibility tree along with everything it contains.
   if (isAriaHidden(element) || element.hasAttribute('inert')) {
@@ -162,9 +172,9 @@ export function hiddenState(element: Element): HiddenState {
     return 'subtree'
   }
   if (element.localName === 'area') {
-    return areaState(element)
+    return areaState(element, context)
   }
-  const style = computedStyle(element)
+  const style = styleOf(element, context)
   // No view (an inert template fragment) and a detached element (empty
   // computed values) are both unrendered.
   if (!style || style.display === '' || style.display === 'none') {
@@ -186,7 +196,7 @@ export function hiddenState(element: Element): HiddenState {
 }
 
 /** Whether an ancestor in the flat tree hides this element, whatever the element does itself. */
-export function isHiddenByAncestor(element: Element): boolean {
+export function isHiddenByAncestor(element: Element, context: SnapshotContext): boolean {
   let child = element
   for (;;) {
     const parent = flatTreeParent(child)
@@ -196,7 +206,7 @@ export function isHiddenByAncestor(element: Element): boolean {
     if (parent === null) {
       return false
     }
-    const state = hiddenState(parent)
+    const state = hiddenState(parent, context)
     if (isCollapsedDetailsContent(child, parent) || state === 'subtree' || state === 'contents') {
       return true
     }
@@ -205,13 +215,13 @@ export function isHiddenByAncestor(element: Element): boolean {
 }
 
 /** Whether the element is hidden in the accname sense. */
-export function isHidden(element: Element): boolean {
-  const own = hiddenState(element)
+export function isHidden(element: Element, context: SnapshotContext): boolean {
+  const own = hiddenState(element, context)
   if (own === 'self' || own === 'subtree') {
     return true
   }
   // Visibility is inherited, so the element's own computed value above already
   // accounts for ancestors that set it; only subtree-wide hiding is checked
   // on the way up.
-  return isHiddenByAncestor(element)
+  return isHiddenByAncestor(element, context)
 }

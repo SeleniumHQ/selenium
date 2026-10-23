@@ -18,7 +18,15 @@
 // Test-only entry point: the accessibility modules the public atom reaches
 // only through the tree walk, exposed so their QUnit pages can drive them
 // directly. Not in the ATOMS registry and never published.
+import { createContext } from '../core/accessibility/context.js'
 import { hiddenState, isCollapsedDetailsContent, isHidden } from '../core/accessibility/hidden.js'
 import { toText } from './accessibility-text.js'
 
-export default { hiddenState, isCollapsedDetailsContent, isHidden, toText }
+// The hidden page asks about one element at a time, so each call gets the
+// fresh per-call context a snapshot would have.
+export default {
+  hiddenState: (element: Element) => hiddenState(element, createContext()),
+  isCollapsedDetailsContent,
+  isHidden: (element: Element) => isHidden(element, createContext()),
+  toText,
+}

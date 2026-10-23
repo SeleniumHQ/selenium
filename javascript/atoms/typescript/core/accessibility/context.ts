@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import type { HiddenState } from './hidden.js'
 import { computeRole } from './roles.js'
 
 // State shared by one snapshot call. It lives exactly as long as the call:
@@ -24,12 +25,13 @@ import { computeRole } from './roles.js'
 // Nothing in the DOM can change during the synchronous walk, so memoising
 // per-element results within the call is safe.
 //
-// Roles and styles are cached because name computation asks for the roles
-// and display of descendants and of aria-labelledby targets that the walk
-// also visits; names are cached because several nodes can reference the
-// same element.
+// Roles, hidden states and styles are cached because name computation asks
+// for the roles, hidden-ness and display of descendants and of
+// aria-labelledby targets that the walk also visits; names are cached
+// because several nodes can reference the same element.
 export interface SnapshotContext {
   readonly roles: Map<Element, string>
+  readonly hidden: Map<Element, HiddenState>
   readonly styles: Map<Element, Map<string, CSSStyleDeclaration | null>>
   readonly names: Map<Element, NameResult>
   readonly descriptions: Map<Element, string>
@@ -52,6 +54,7 @@ export interface NameResult {
 export function createContext(): SnapshotContext {
   return {
     roles: new Map(),
+    hidden: new Map(),
     styles: new Map(),
     names: new Map(),
     descriptions: new Map(),

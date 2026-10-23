@@ -103,7 +103,7 @@ function visitElement(
   if (domParent && isCollapsedDetailsContent(element, domParent)) {
     return
   }
-  const hidden = hiddenState(element)
+  const hidden = hiddenState(element, context)
   if (hidden === 'subtree') {
     return
   }
@@ -211,8 +211,9 @@ export function buildTree(root: Element, context: SnapshotContext): Accessibilit
   const role = roleOf(root, context)
   const name = computeName(root, context)
   const node = elementNode(root, role, name.text, context)
-  const hidden = hiddenState(root)
-  const descend = hidden !== 'subtree' && hidden !== 'contents' && !isLeaf(root, role) && !isHiddenByAncestor(root)
+  const hidden = hiddenState(root, context)
+  const descend =
+    hidden !== 'subtree' && hidden !== 'contents' && !isLeaf(root, role) && !isHiddenByAncestor(root, context)
   if (descend) {
     collectChildren(root, context, hidden === 'self', name.source === 'content', node.children)
   }
