@@ -33,6 +33,11 @@ under the License.
     .alt::before { content: "★ " / "star "; }
     @media (min-width: 1px) { .nested::before { content: "Nested "; } }
     .more::after { content: " (more)"; }
+    .icon::before { content: url(/testdata/map.png); }
+    .icon-text::before { content: url(/testdata/map.png) "Pic "; }
+    .toggled::before { content: "★ "; display: none; }
+    .invisible-pseudo::before { content: "★ "; visibility: hidden; }
+    #pseudo-part-host::part(b)::before { content: "Part "; }
     .gone { display: none; }
     .block { display: block; }
   </style>
@@ -204,6 +209,21 @@ under the License.
       assertNames(assert, { 'pseudo-nested': 'Nested Save', 'pseudo-host': 'Pre Light', 'pseudo-adopted': 'Save (adopted)' });
     });
 
+    QUnit.test('an image in generated content is not text; a string beside it is', function (assert) {
+      // Chromium serialises the computed value as url("...") with the URL
+      // quoted, which a reader of quoted strings must not take for text.
+      assertNames(assert, { 'pseudo-url': 'Save', 'pseudo-url-text': 'Pic Save' });
+    });
+
+    QUnit.test('generated content of a pseudo-element that is not rendered is left out', function (assert) {
+      assertNames(assert, { 'pseudo-display-none': 'Save', 'pseudo-invisible': 'Save' });
+    });
+
+    QUnit.test('generated content styled through ::part comes from the host\'s scope', function (assert) {
+      var part = byId('pseudo-part-host').shadowRoot.getElementById('pseudo-part');
+      assert.strictEqual(snapshot(part).name, 'Part Save');
+    });
+
     QUnit.test('UA quotes on q are not text the atom can read (pinned limitation)', function (assert) {
       // The computed content is the keyword open-quote, not a string, so the
       // quote marks engines add to the name are absent here.
@@ -315,12 +335,19 @@ under the License.
   <div id="pseudo-host" role="heading" aria-level="2">Light</div>
   <button id="pseudo-adopted" class="adopted">Save</button>
   <button id="pseudo-quote"><q>hi</q></button>
+  <button id="pseudo-url" class="icon">Save</button>
+  <button id="pseudo-url-text" class="icon-text">Save</button>
+  <button id="pseudo-display-none" class="toggled">Save</button>
+  <button id="pseudo-invisible" class="invisible-pseudo">Save</button>
+  <div id="pseudo-part-host"></div>
   <script type="text/javascript">
     document.getElementById('pseudo-host').attachShadow({ mode: 'open' }).innerHTML =
       '<style>:host::before { content: "Pre "; }</style><slot></slot>';
     var adopted = new CSSStyleSheet();
     adopted.replaceSync('.adopted::after { content: " (adopted)"; }');
     document.adoptedStyleSheets = [adopted];
+    document.getElementById('pseudo-part-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<button part="b" id="pseudo-part">Save</button>';
   </script>
   <button id="pseudo-alt" class="alt">Save</button>
   <label for="outer">Count <input id="inner" type="text" value="5"></label><label for="inner">Inner label</label><input id="outer" type="text">

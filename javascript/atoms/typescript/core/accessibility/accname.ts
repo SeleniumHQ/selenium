@@ -171,20 +171,31 @@ function scopeDefinesGeneratedContent(scope: Document | ShadowRoot, t: Traversal
 }
 
 // The scopes whose sheets can style an element's pseudo-elements: its own
-// tree, its shadow root (through :host::before), and the tree of the slot it
-// is assigned to (through ::slotted()::before). The UA stylesheet is not
-// consulted: its only generated content is the open-quote and close-quote
-// keywords on q, which are not strings and are not text the atom can read
-// (the names page pins that).
+// tree, its shadow root (through :host::before), the tree of the slot it is
+// assigned to (through ::slotted()::before), and, for an element with a part
+// name, every enclosing tree (through ::part()::before). The UA stylesheet is
+// not consulted: its only generated content is the open-quote and
+// close-quote keywords on q, which are not strings and are not text the atom
+// can read (the names page pins that).
 function mayHaveGeneratedContent(element: Element, t: Traversal): boolean {
-  if (scopeDefinesGeneratedContent(element.getRootNode() as Document | ShadowRoot, t)) {
+  if (scopeDefinesGeneratedContent(rootNodeOf(element), t)) {
     return true
   }
   if (element.shadowRoot && scopeDefinesGeneratedContent(element.shadowRoot, t)) {
     return true
   }
   const slot = element.assignedSlot
-  return !!slot && scopeDefinesGeneratedContent(slot.getRootNode() as Document | ShadowRoot, t)
+  if (slot && scopeDefinesGeneratedContent(rootNodeOf(slot), t)) {
+    return true
+  }
+  if (element.hasAttribute('part')) {
+    for (let host = (rootNodeOf(element) as ShadowRoot).host; host; host = (rootNodeOf(host) as ShadowRoot).host) {
+      if (scopeDefinesGeneratedContent(rootNodeOf(host), t)) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 // Generated content of ::before and ::after, read once per element and only
@@ -202,13 +213,49 @@ function pseudoContent(element: Element, pseudo: '::before' | '::after', t: Trav
   return pseudo === '::before' ? texts[0] : texts[1]
 }
 
+// The index just past the quoted string that opens at `start`.
+function endOfString(content: string, start: number): number {
+  const quote = content[start]
+  let i = start + 1
+  while (i < content.length && content[i] !== quote) {
+    if (content[i] === '\\' && i + 1 < content.length) {
+      i++
+    }
+    i++
+  }
+  return i + 1
+}
+
+// The index just past the function whose opening parenthesis is at `start`,
+// so url("...") and the like, whose quoted arguments are not text, are read
+// as one token.
+function endOfFunction(content: string, start: number): number {
+  let depth = 0
+  let i = start
+  while (i < content.length) {
+    const char = content[i]
+    if (char === '"' || char === "'") {
+      i = endOfString(content, i)
+      continue
+    }
+    if (char === '(') {
+      depth++
+    } else if (char === ')' && --depth === 0) {
+      return i + 1
+    }
+    i++
+  }
+  return i
+}
+
 // The computed `content` is a list of strings and other tokens; only the
 // strings are text, and a bare slash introduces alternative text that
 // replaces everything before it. A slash inside a quoted string is just a
-// character.
+// character, and a quoted string inside a function (the URL of an image)
+// is not text. A pseudo-element that is not rendered has no text at all.
 function readPseudoContent(element: Element, pseudo: string, t: Traversal): string {
   const style = styleOf(element, t.context, pseudo)
-  if (!style) {
+  if (!style || style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') {
     return ''
   }
   const content = style.content
@@ -220,17 +267,11 @@ function readPseudoContent(element: Element, pseudo: string, t: Traversal): stri
   while (i < content.length) {
     const char = content[i]
     if (char === '"' || char === "'") {
-      let j = i + 1
-      let value = ''
-      while (j < content.length && content[j] !== char) {
-        if (content[j] === '\\' && j + 1 < content.length) {
-          j++
-        }
-        value += content[j]
-        j++
-      }
-      text += value
-      i = j + 1
+      const end = endOfString(content, i)
+      text += content.slice(i + 1, end - 1).replace(/\\(.)/g, '$1')
+      i = end
+    } else if (char === '(') {
+      i = endOfFunction(content, i)
     } else if (char === '/') {
       text = ''
       i++
