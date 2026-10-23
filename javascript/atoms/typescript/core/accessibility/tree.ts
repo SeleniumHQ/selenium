@@ -17,7 +17,7 @@
 
 import { computeDescription, computeName } from './accname.js'
 import { roleOf, SnapshotContext } from './context.js'
-import { hiddenState, isClosedDetails, isCollapsedDetailsContent, isHiddenByAncestor } from './hidden.js'
+import { flatTreeChildren, hiddenState, isClosedDetails, isCollapsedDetailsContent, isHiddenByAncestor } from './hidden.js'
 import { isPresentational } from './roles.js'
 import { computeStates, computeValue } from './states.js'
 import type { AccessibilityNode } from './types.js'
@@ -76,9 +76,9 @@ function isLeaf(element: Element, role: string): boolean {
 }
 
 /**
- * Appends the nodes for `parent`'s children to `out`, in document order.
- * Children that produce no node (pruned roles, visibility-hidden elements)
- * contribute their own children in their place, so hoisting keeps order.
+ * Appends the node(s) for one element to `out`: its own node with its
+ * children, or, when it produces no node (pruned role, visibility-hidden),
+ * its children in its place so hoisting keeps order.
  *
  * `textHidden` is true while inside an element whose visibility hides its
  * text: visibility is inherited, so the text of such an element and of
@@ -86,9 +86,55 @@ function isLeaf(element: Element, role: string): boolean {
  * `textConsumed` is true below a node whose name was computed from its
  * content: that text already appears as the name and is not repeated as
  * leaves, while the element structure below is still reported.
- *
- * Walks `childNodes` for now; the composed-DOM slice replaces this with the
- * flat tree (shadow roots, slots) and adds aria-owns re-parenting.
+ */
+function visitElement(
+  element: Element,
+  context: SnapshotContext,
+  textHidden: boolean,
+  textConsumed: boolean,
+  out: AccessibilityNode[],
+): void {
+  if (context.placed.has(element)) {
+    return
+  }
+  context.placed.add(element)
+
+  const domParent = element.parentElement
+  if (domParent && isCollapsedDetailsContent(element, domParent)) {
+    return
+  }
+  const hidden = hiddenState(element)
+  if (hidden === 'subtree') {
+    return
+  }
+  if (hidden === 'self') {
+    collectChildren(element, context, true, textConsumed, out)
+    return
+  }
+
+  const role = roleOf(element, context)
+  const name = computeName(element, context)
+  const descend = hidden !== 'contents' && !isLeaf(element, role)
+  if (!producesNode(role, name.text)) {
+    // The element is rendered, so its own visibility is visible even under
+    // an invisible ancestor: its text shows.
+    if (descend) {
+      collectChildren(element, context, false, textConsumed, out)
+    }
+    return
+  }
+  const node = elementNode(element, role, name.text, context)
+  if (descend) {
+    collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
+  }
+  out.push(node)
+}
+
+/**
+ * Appends the nodes for `parent`'s children to `out`: its flat-tree children
+ * in render order, then the elements it owns through aria-owns. An element
+ * some owner in the walked subtree claims is skipped at its DOM position and
+ * placed under that owner instead (ADR 18205 §3).
  */
 function collectChildren(
   parent: Element,
@@ -100,7 +146,9 @@ function collectChildren(
   // Text directly inside a closed details is collapsed content like any
   // element other than its summary.
   const textCollapsed = isClosedDetails(parent)
-  for (let child = parent.firstChild; child; child = child.nextSibling) {
+  const children = flatTreeChildren(parent)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
     if (child.nodeType === TEXT_NODE) {
       if (!textHidden && !textConsumed && !textCollapsed) {
         const text = normalizeText(child.nodeValue || '')
@@ -110,41 +158,44 @@ function collectChildren(
       }
       continue
     }
-    if (child.nodeType !== ELEMENT_NODE) {
-      continue
+    if (child.nodeType === ELEMENT_NODE && !context.claimed.has(child as Element)) {
+      visitElement(child as Element, context, textHidden, textConsumed, out)
     }
-    const element = child as Element
-    if (context.placed.has(element)) {
-      continue
+  }
+  const owned = context.owned.get(parent)
+  if (owned) {
+    for (const element of owned) {
+      visitElement(element, context, textHidden, textConsumed, out)
     }
-    context.placed.add(element)
+  }
+}
 
-    if (isCollapsedDetailsContent(element, parent)) {
-      continue
-    }
-    const hidden = hiddenState(element)
-    if (hidden === 'subtree') {
-      continue
-    }
-    if (hidden === 'self') {
-      collectChildren(element, context, true, textConsumed, out)
-      continue
-    }
-
-    const role = roleOf(element, context)
-    const name = computeName(element, context)
-    const descend = hidden !== 'contents' && !isLeaf(element, role)
-    if (!producesNode(role, name.text)) {
-      if (descend) {
-        collectChildren(element, context, false, textConsumed, out)
+/**
+ * Records every aria-owns relation whose owner is in the subtree under
+ * `root`, so owned elements can be skipped where they sit and placed under
+ * their owner. An element cannot own itself or an ancestor, and an id that
+ * resolves to nothing is ignored. Owners inside shadow trees are not found by
+ * querySelectorAll; their targets stay at their DOM position.
+ */
+function recordOwnership(root: Element, context: SnapshotContext): void {
+  const owners: Element[] = root.hasAttribute('aria-owns') ? [root] : []
+  const descendants = root.querySelectorAll('[aria-owns]')
+  for (let i = 0; i < descendants.length; i++) {
+    owners.push(descendants[i])
+  }
+  for (const owner of owners) {
+    const scope = owner.getRootNode() as Document | ShadowRoot
+    const targets: Element[] = []
+    for (const id of (owner.getAttribute('aria-owns') || '').trim().split(/\s+/)) {
+      const target = id ? scope.getElementById(id) : null
+      if (target && target !== owner && !target.contains(owner) && !context.claimed.has(target)) {
+        targets.push(target)
+        context.claimed.add(target)
       }
-      continue
     }
-    const node = elementNode(element, role, name.text, context)
-    if (descend) {
-      collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
+    if (targets.length) {
+      context.owned.set(owner, targets)
     }
-    out.push(node)
   }
 }
 
@@ -155,6 +206,7 @@ function collectChildren(
  * ancestor, has no children.
  */
 export function buildTree(root: Element, context: SnapshotContext): AccessibilityNode {
+  recordOwnership(root, context)
   context.placed.add(root)
   const role = roleOf(root, context)
   const name = computeName(root, context)

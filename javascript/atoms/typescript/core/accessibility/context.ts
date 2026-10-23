@@ -35,6 +35,10 @@ export interface SnapshotContext {
   readonly descriptions: Map<Element, string>
   /** Elements already placed in the tree; aria-owns re-parenting must not place one twice. */
   readonly placed: Set<Element>
+  /** aria-owns targets of each owner in the walked subtree, in attribute order. */
+  readonly owned: Map<Element, Element[]>
+  /** Every owned element, so it is skipped at its DOM position and placed under its owner. */
+  readonly claimed: Set<Element>
 }
 
 /** Where a name came from decides whether text below the node is repeated and whether title is free for the description. */
@@ -46,7 +50,15 @@ export interface NameResult {
 }
 
 export function createContext(): SnapshotContext {
-  return { roles: new Map(), styles: new Map(), names: new Map(), descriptions: new Map(), placed: new Set() }
+  return {
+    roles: new Map(),
+    styles: new Map(),
+    names: new Map(),
+    descriptions: new Map(),
+    placed: new Set(),
+    owned: new Map(),
+    claimed: new Set(),
+  }
 }
 
 export function roleOf(element: Element, context: SnapshotContext): string {

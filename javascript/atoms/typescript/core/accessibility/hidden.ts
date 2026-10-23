@@ -113,6 +113,25 @@ function flatTreeParent(node: Element): FlatTreeParent {
 }
 
 /**
+ * The nodes rendered as this element's children, in render order: the shadow
+ * root's children for a host, the assigned nodes (or the fallback while none
+ * are assigned) for a slot, otherwise the DOM children. Nested slots are
+ * flattened away, so a slot element never appears in the result.
+ *
+ * A closed shadow root cannot be seen, so its host's light children are
+ * returned as if they rendered; see flatTreeParent.
+ */
+export function flatTreeChildren(element: Element): ArrayLike<Node> {
+  if (element.localName === 'slot') {
+    return (element as HTMLSlotElement).assignedNodes({ flatten: true })
+  }
+  if (element.shadowRoot) {
+    return element.shadowRoot.childNodes
+  }
+  return element.childNodes
+}
+
+/**
  * Children of a closed details element are not rendered, apart from its first
  * summary. The browser does this through a UA shadow tree that is closed to
  * script, so it has to be known here rather than read from the DOM.

@@ -16,7 +16,7 @@
 // under the License.
 
 import { NameResult, roleOf, SnapshotContext, styleOf } from './context.js'
-import { hiddenState, isClosedDetails, isCollapsedDetailsContent, isHidden } from './hidden.js'
+import { flatTreeChildren, hiddenState, isClosedDetails, isCollapsedDetailsContent, isHidden } from './hidden.js'
 import { embeddedValue, isEmbeddedControl } from './value.js'
 
 // Accessible name and description, following the accname 1.2 text
@@ -162,7 +162,9 @@ function fromContent(element: Element, t: Traversal): string {
   const ownTextHidden = !t.includeHidden && hiddenState(element) === 'self'
   let text = ownTextHidden ? '' : pseudoContent(element, '::before', t)
   const textCollapsed = isClosedDetails(element)
-  for (let child = element.firstChild; child; child = child.nextSibling) {
+  const children = flatTreeChildren(element)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
     if (child.nodeType === TEXT_NODE) {
       if (!ownTextHidden && !textCollapsed) {
         text += child.nodeValue || ''
@@ -173,7 +175,7 @@ function fromContent(element: Element, t: Traversal): string {
       continue
     }
     const childElement = child as Element
-    if (childElement === t.skip || isCollapsedDetailsContent(childElement, element)) {
+    if (childElement === t.skip || isCollapsedDetailsContent(childElement, childElement.parentElement || element)) {
       continue
     }
     if (childElement.localName === 'br') {
