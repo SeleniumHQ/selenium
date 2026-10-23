@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Accessibility snapshot fixture</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // Tree-shape tests for the accessibility-snapshot atom. The assertions
+    // compare whole subtrees: the shape of the tree is the contract every
+    // binding is held to (docs/decisions/18205-accessibility-tree-snapshot.md).
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    // `element` is a live Element and cannot be compared structurally, so it
+    // is swapped for the element's id (or tag name when it has none) before a
+    // deepEqual. Empty description/states are dropped so expectations stay
+    // short; the schema test in slice 7 is what pins them as always present.
+    function strip(node) {
+      var out = { role: node.role, name: node.name };
+      if (node.description) {
+        out.description = node.description;
+      }
+      if (node.value !== undefined) {
+        out.value = node.value;
+      }
+      if (Object.keys(node.states).length) {
+        out.states = node.states;
+      }
+      if (node.element) {
+        out.element = node.element.id || node.element.tagName.toLowerCase();
+      }
+      out.children = node.children.map(strip);
+      return out;
+    }
+
+    QUnit.module('accessibility snapshot: root');
+
+    QUnit.test('the whole page is rooted at the html element as role document', function (assert) {
+      var node = snapshot();
+      assert.strictEqual(node.element, document.documentElement, 'root element is <html>');
+      assert.deepEqual(strip(node), {
+        role: 'document',
+        name: 'Accessibility snapshot fixture',
+        element: 'html',
+        children: [],
+      });
+    });
+
+    QUnit.test('a Document root is the same as no root', function (assert) {
+      assert.deepEqual(strip(snapshot(document)), strip(snapshot()));
+    });
+
+    QUnit.test('the html element as an explicit root is the same as no root', function (assert) {
+      assert.deepEqual(strip(snapshot(document.documentElement)), strip(snapshot()));
+    });
+
+    QUnit.test('the document name is the trimmed title', function (assert) {
+      var saved = document.title;
+      try {
+        document.title = '  Padded title  ';
+        assert.strictEqual(snapshot().name, 'Padded title');
+        document.title = '';
+        assert.strictEqual(snapshot().name, '', 'no title gives an empty name, not undefined');
+      } finally {
+        document.title = saved;
+      }
+    });
+
+    QUnit.test('every node carries the full schema, even when empty', function (assert) {
+      var node = snapshot();
+      assert.deepEqual(Object.keys(node).sort(),
+        ['children', 'description', 'element', 'name', 'role', 'states']);
+      assert.strictEqual(node.description, '');
+      assert.deepEqual(node.states, {});
+      assert.notOk('value' in node, 'value is absent, not undefined, when the role has none');
+    });
+
+    QUnit.test('a root that is not an element throws rather than returning a partial tree', function (assert) {
+      assert.throws(function () { snapshot(document.createTextNode('text')); }, /element/i);
+      assert.throws(function () { snapshot(42); }, /element/i);
+    });
+
+    QUnit.test('a detached root throws', function (assert) {
+      assert.throws(function () { snapshot(document.createElement('div')); }, /detached|document/i);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+</body>
+
+</html>

@@ -181,6 +181,10 @@
     "./submit": {
       "types": "./dist/typescript/submit.d.ts",
       "default": "./dist/typescript/submit.js"
+    },
+    "./accessibility-snapshot": {
+      "types": "./dist/typescript/accessibility-snapshot.d.ts",
+      "default": "./dist/typescript/accessibility-snapshot.js"
     }
   },
   "typesVersions": {
@@ -227,7 +231,8 @@
       "click": ["./dist/typescript/click.d.ts"],
       "type": ["./dist/typescript/type.d.ts"],
       "clear": ["./dist/typescript/clear.d.ts"],
-      "submit": ["./dist/typescript/submit.d.ts"]
+      "submit": ["./dist/typescript/submit.d.ts"],
+      "accessibility-snapshot": ["./dist/typescript/accessibility-snapshot.d.ts"]
     }
   },
   "engines": {

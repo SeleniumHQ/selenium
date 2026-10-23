@@ -52,7 +52,7 @@ js_test(
 # and tree-shakes down to what each entry point actually imports.
 ATOM_SRCS = glob([
     "typescript/*.ts",
-    "typescript/core/*.ts",
+    "typescript/core/**/*.ts",
 ])
 
 # ── the atoms ────────────────────────────────────────────────────────────────

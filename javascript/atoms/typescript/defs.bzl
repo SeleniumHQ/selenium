@@ -302,6 +302,15 @@ ATOMS = [
         "global": "bot.action.typescript.submit",
         "aliases": [],
     },
+    # Not a DOM primitive behind a WebDriver command: the snapshot is computed by
+    # script and labelled as such, so it gets its own namespace rather than
+    # bot.dom (docs/decisions/18205-accessibility-tree-snapshot.md).
+    {
+        "name": "accessibility-snapshot",
+        "export": "accessibilitySnapshot",
+        "global": "bot.accessibility.typescript.snapshot",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
