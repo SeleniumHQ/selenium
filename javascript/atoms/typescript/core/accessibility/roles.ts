@@ -54,7 +54,10 @@ const GLOBAL_ARIA_ATTRIBUTES: ReadonlyArray<string> = [
 const NATIVELY_FOCUSABLE: ReadonlySet<string> = new Set(['button', 'iframe', 'input', 'select', 'summary', 'textarea'])
 
 const SECTIONING_CONTENT: ReadonlySet<string> = new Set(['article', 'aside', 'nav', 'section'])
+// html-aam: a header or footer is a landmark only outside these elements and
+// outside elements with these roles.
 const HEADER_FOOTER_SCOPES: ReadonlySet<string> = new Set(['article', 'aside', 'main', 'nav', 'section'])
+const HEADER_FOOTER_SCOPE_ROLES: ReadonlySet<string> = new Set(['article', 'complementary', 'main', 'navigation', 'region'])
 const LIST_PARENTS: ReadonlySet<string> = new Set(['menu', 'ol', 'ul'])
 
 export function isPresentational(role: string): boolean {
@@ -134,10 +137,16 @@ function ownerIsPresentational(owner: Element | null): boolean {
   return owner !== null && isPresentational(computeRole(owner))
 }
 
-function hasAncestor(element: Element, names: ReadonlySet<string>): boolean {
+function hasAncestor(element: Element, names: ReadonlySet<string>, roles: ReadonlySet<string> | null = null): boolean {
   for (let parent = element.parentElement; parent; parent = parent.parentElement) {
     if (names.has(parent.localName)) {
       return true
+    }
+    if (roles !== null) {
+      const role = explicitRole(parent)
+      if (role !== null && roles.has(role)) {
+        return true
+      }
     }
   }
   return false
@@ -242,7 +251,7 @@ export function implicitRole(element: Element): string {
     case 'figure':
       return 'figure'
     case 'footer':
-      return hasAncestor(element, HEADER_FOOTER_SCOPES) ? 'generic' : 'contentinfo'
+      return hasAncestor(element, HEADER_FOOTER_SCOPES, HEADER_FOOTER_SCOPE_ROLES) ? 'generic' : 'contentinfo'
     case 'form':
       return 'form'
     case 'frame':
@@ -258,7 +267,7 @@ export function implicitRole(element: Element): string {
     case 'h6':
       return 'heading'
     case 'header':
-      return hasAncestor(element, HEADER_FOOTER_SCOPES) ? 'generic' : 'banner'
+      return hasAncestor(element, HEADER_FOOTER_SCOPES, HEADER_FOOTER_SCOPE_ROLES) ? 'generic' : 'banner'
     case 'hr':
       return 'separator'
     case 'html':

@@ -241,6 +241,10 @@ under the License.
       assertRoles(assert, { 'header-in-article': 'generic', 'footer-in-section': 'generic', 'header-in-main': 'generic' });
     });
 
+    QUnit.test('header and footer inside an element with a landmark role are generic', function (assert) {
+      assertRoles(assert, { 'header-in-role-main': 'generic', 'footer-in-role-region': 'generic', 'header-in-role-article': 'generic' });
+    });
+
     QUnit.test('main, nav, article and search', function (assert) {
       assertRoles(assert, { 'main': 'main', 'nav': 'navigation', 'article': 'article', 'search': 'search' });
     });
@@ -288,6 +292,9 @@ under the License.
   </main>
   <aside id="aside">top-level aside</aside>
   <footer id="footer">site footer</footer>
+  <div role="main"><header id="header-in-role-main">x</header></div>
+  <div role="region" aria-label="Region"><footer id="footer-in-role-region">x</footer></div>
+  <div role="article"><header id="header-in-role-article">x</header></div>
 
   <div id="div-as-button" role="button">button</div>
   <ul id="ul-as-tablist" role="tablist"><li>tab</li></ul>
