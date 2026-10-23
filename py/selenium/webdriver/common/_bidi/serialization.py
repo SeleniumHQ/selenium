@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import math
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -415,6 +416,12 @@ _PRIMITIVE_CHECKS = {
 
 def _out_of_bounds(w: _Wire, value: Any) -> str | None:
     """The bound a numeric value violates (e.g. ``">= 1"``), or None when it is in range."""
+    if w.min is None and w.max is None:
+        return None
+    # NaN compares false against every bound, and an infinity escapes a one-sided range; neither
+    # is a JSON number, so a bounded field holds them out explicitly.
+    if isinstance(value, float) and not math.isfinite(value):
+        return "a finite number"
     if w.min is not None and (value <= w.min if w.exclusive_min else value < w.min):
         return f"{'>' if w.exclusive_min else '>='} {w.min}"
     if w.max is not None and (value >= w.max if w.exclusive_max else value > w.max):

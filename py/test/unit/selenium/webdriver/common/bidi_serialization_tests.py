@@ -517,6 +517,11 @@ def test_as_json_rejects_a_value_above_an_inclusive_max():
         Bounded(count=9007199254740992).as_json()
 
 
+def test_as_json_rejects_an_integer_too_large_for_a_float_as_out_of_range():
+    with pytest.raises(BiDiSerializationError, match=r"must be <= 9007199254740991"):
+        Bounded(count=10**400).as_json()
+
+
 def test_as_json_rejects_a_value_equal_to_an_exclusive_min():
     with pytest.raises(BiDiSerializationError, match=r"Bounded.ratio: 0 is out of range \(must be > 0\)"):
         Bounded(count=1, ratio=0).as_json()
@@ -549,6 +554,20 @@ def test_from_json_rejects_a_value_equal_to_an_exclusive_bound():
 def test_from_json_checks_bounds_on_each_list_element():
     with pytest.raises(BiDiSerializationError, match=r"Bounded.sizes: -2 is out of range"):
         Bounded.from_json({"count": 1, "sizes": [1, -2]})
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_as_json_rejects_a_non_finite_value_on_a_bounded_field(value):
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.ratio: .* is out of range \(must be a finite number\)"):
+        Bounded(count=1, ratio=value).as_json()
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf")])
+def test_from_json_rejects_a_non_finite_value_on_a_bounded_field(value):
+    with pytest.raises(
+        BiDiSerializationError, match=r"Bounded.heading: .* is out of range \(must be a finite number\)"
+    ):
+        Bounded.from_json({"count": 1, "heading": value})
 
 
 def test_from_json_accepts_in_range_values():
