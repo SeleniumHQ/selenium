@@ -87,9 +87,15 @@ js_test(
 js_test(
     name = "accessibility-unit-tests",
     size = "small",
-    data = [":typescript/testing/accessibility.generated.js"],
+    data = [
+        ":typescript/accessibility-snapshot.generated.js",
+        ":typescript/testing/accessibility.generated.js",
+    ],
     entry_point = "typescript/testing/accessibility-unit-tests.mjs",
-    fixed_args = ["$(rootpath :typescript/testing/accessibility.generated.js)"],
+    fixed_args = [
+        "$(rootpath :typescript/testing/accessibility.generated.js)",
+        "$(rootpath :typescript/accessibility-snapshot.generated.js)",
+    ],
 )
 
 # The shared accessibility corpus is the cross-binding contract: every

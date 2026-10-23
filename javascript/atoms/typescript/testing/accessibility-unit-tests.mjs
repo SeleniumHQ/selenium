@@ -20,16 +20,20 @@
 // (typescript/testing/accessibility.generated.js), the same bytes the QUnit
 // pages load, evaluated the way the bindings evaluate an atom.
 //
-// Usage: accessibility-unit-tests.mjs <testing/accessibility.generated.js>
+// It also holds the atom's own size to a ceiling: the bundle crosses the
+// wire on every injection into a document that predates the preload, so a
+// dependency that balloons it should fail here rather than ship.
+//
+// Usage: accessibility-unit-tests.mjs <testing/accessibility.generated.js> <accessibility-snapshot.generated.js>
 
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { test } from 'node:test'
 import vm from 'node:vm'
 
-const [bundlePath] = process.argv.slice(2)
-if (!bundlePath) {
-  throw new Error('Expected the path of the testing bundle')
+const [bundlePath, atomPath] = process.argv.slice(2)
+if (!bundlePath || !atomPath) {
+  throw new Error('Expected the paths of the testing bundle and the atom bundle')
 }
 const sandbox = { module: { exports: undefined } }
 vm.runInNewContext(`module.exports = ${fs.readFileSync(bundlePath, 'utf8').trim()};`, sandbox, { filename: bundlePath })
@@ -69,4 +73,11 @@ test('quotes and backslashes in names are escaped; an empty value is not written
 
 test('description is not part of the text form', () => {
   assert.equal(toText({ ...node('button', 'Save'), description: 'Saves the form' }), '- button "Save"')
+})
+
+test('the atom bundle stays under 64 KiB', () => {
+  const size = fs.statSync(atomPath).size
+  assert.ok(size < 64 * 1024, `accessibility-snapshot.generated.js is ${size} bytes`)
+  // Printed so the size is in the log of every run, not only when it fails.
+  console.log(`# accessibility-snapshot.generated.js: ${size} bytes`)
 })
