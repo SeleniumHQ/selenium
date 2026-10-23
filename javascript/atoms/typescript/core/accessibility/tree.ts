@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import { computeDescription, computeName } from './accname.js'
 import { roleOf, SnapshotContext } from './context.js'
 import { hiddenState, isCollapsedDetailsContent } from './hidden.js'
 import { isPresentational } from './roles.js'
@@ -34,8 +35,8 @@ const CHILDREN_PRESENTATIONAL: ReadonlySet<string> = new Set([
 // context that only the bindings can reach, so the walk stops here.
 const FRAME_ROLE = 'iframe'
 
-function createNode(role: string, name: string, element?: Element): AccessibilityNode {
-  const node: AccessibilityNode = { role, name, description: '', states: {}, children: [] }
+function createNode(role: string, name: string, description: string, element?: Element): AccessibilityNode {
+  const node: AccessibilityNode = { role, name, description, states: {}, children: [] }
   // Text leaves carry no key at all rather than `element: undefined`, so the
   // serialized shape matches the schema literally.
   if (element) {
@@ -46,15 +47,6 @@ function createNode(role: string, name: string, element?: Element): Accessibilit
 
 function normalizeText(text: string): string {
   return text.replace(/\s+/g, ' ').trim()
-}
-
-// Placeholder until the name slice: only the document root has a name, from
-// the title (html-aam).
-function nameOf(element: Element, role: string): string {
-  if (role === 'document') {
-    return (element.ownerDocument.title || '').trim()
-  }
-  return ''
 }
 
 // ADR 18205 §2: an element produces a node when its role is not generic,
@@ -75,6 +67,9 @@ function isLeafRole(role: string): boolean {
  * `textHidden` is true while inside an element whose visibility hides its
  * text: visibility is inherited, so the text of such an element and of
  * descendants that do not set themselves visible again is not rendered.
+ * `textConsumed` is true below a node whose name was computed from its
+ * content: that text already appears as the name and is not repeated as
+ * leaves, while the element structure below is still reported.
  *
  * Walks `childNodes` for now; the composed-DOM slice replaces this with the
  * flat tree (shadow roots, slots) and adds aria-owns re-parenting.
@@ -83,14 +78,15 @@ function collectChildren(
   parent: Element,
   context: SnapshotContext,
   textHidden: boolean,
+  textConsumed: boolean,
   out: AccessibilityNode[],
 ): void {
   for (let child = parent.firstChild; child; child = child.nextSibling) {
     if (child.nodeType === TEXT_NODE) {
-      if (!textHidden) {
+      if (!textHidden && !textConsumed) {
         const text = normalizeText(child.nodeValue || '')
         if (text !== '') {
-          out.push(createNode('text', text))
+          out.push(createNode('text', text, ''))
         }
       }
       continue
@@ -112,19 +108,19 @@ function collectChildren(
       continue
     }
     if (hidden === 'self') {
-      collectChildren(element, context, true, out)
+      collectChildren(element, context, true, textConsumed, out)
       continue
     }
 
     const role = roleOf(element, context)
-    const name = nameOf(element, role)
-    if (!producesNode(role, name)) {
-      collectChildren(element, context, false, out)
+    const name = computeName(element, context)
+    if (!producesNode(role, name.text)) {
+      collectChildren(element, context, false, textConsumed, out)
       continue
     }
-    const node = createNode(role, name, element)
+    const node = createNode(role, name.text, computeDescription(element, context), element)
     if (!isLeafRole(role)) {
-      collectChildren(element, context, false, node.children)
+      collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
     }
     out.push(node)
   }
@@ -138,10 +134,11 @@ function collectChildren(
 export function buildTree(root: Element, context: SnapshotContext): AccessibilityNode {
   context.placed.add(root)
   const role = roleOf(root, context)
-  const node = createNode(role, nameOf(root, role), root)
+  const name = computeName(root, context)
+  const node = createNode(role, name.text, computeDescription(root, context), root)
   const hidden = hiddenState(root)
   if (hidden !== 'subtree' && !isLeafRole(role)) {
-    collectChildren(root, context, hidden === 'self', node.children)
+    collectChildren(root, context, hidden === 'self', name.source === 'content', node.children)
   }
   return node
 }

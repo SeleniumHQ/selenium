@@ -53,8 +53,7 @@ function resolveRoot(root: Element | Document | null | undefined): Element {
  * accessibility tree. Frames are reported as `iframe` leaves and never
  * descended into; callers stitch child-document snapshots in themselves.
  *
- * Names, descriptions, states and values arrive in later slices; until then
- * only the document root is named, from the title.
+ * States and values arrive in a later slice.
  */
 function accessibilitySnapshot(root?: Element | Document | null): AccessibilityNode {
   return buildTree(resolveRoot(root), createContext())

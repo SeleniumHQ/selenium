@@ -32,9 +32,8 @@ under the License.
     // compare whole subtrees: the shape of the tree is the contract every
     // binding is held to (docs/decisions/18205-accessibility-tree-snapshot.md).
     //
-    // Names are not computed yet, so every element node here has name "" and
-    // text leaves are always emitted; the name slice adds suppression of text
-    // leaves under nodes named from their content.
+    // Text that an ancestor's name was computed from is not repeated as text
+    // leaves below it; the element structure still is.
     var snapshot = window.bot.accessibility.typescript.snapshot;
 
     function byId(id) {
@@ -71,12 +70,12 @@ under the License.
       return { role: 'text', name: content, children: [] };
     }
 
-    function leaf(role, id) {
-      return { role: role, name: '', element: id, children: [] };
+    function leaf(role, id, name) {
+      return { role: role, name: name || '', element: id, children: [] };
     }
 
-    function node(role, id, children) {
-      return { role: role, name: '', element: id, children: children };
+    function node(role, id, children, name) {
+      return { role: role, name: name || '', element: id, children: children };
     }
 
     QUnit.module('accessibility snapshot: root');
@@ -95,7 +94,8 @@ under the License.
       assert.strictEqual(main.role, 'main');
       assert.strictEqual(main.element, byId('qunit'));
       assert.deepEqual(strip(main.children[0]),
-        node('heading', 'qunit-header', [node('link', 'a', [text('Accessibility snapshot fixture')])]));
+        node('heading', 'qunit-header', [leaf('link', 'a', 'Accessibility snapshot fixture')], 'Accessibility snapshot fixture'),
+        'the heading is named from its content, so no text leaf repeats it');
     });
 
     QUnit.test('a Document root is the same as no root', function (assert) {
@@ -152,29 +152,40 @@ under the License.
 
     QUnit.test('the fixture tree, in document order with pruned wrappers hoisted in place', function (assert) {
       assert.deepEqual(strip(snapshot(byId('tree-root'))), node('generic', 'tree-root', [
-        node('heading', 'h', [text('Title')]),
+        node('heading', 'h', [], 'Title'),
         text('plain text'),
-        leaf('button', 'btn'),
+        leaf('button', 'btn', 'Save now'),
         node('paragraph', 'p', [text('para')]),
-        node('heading', 'h-visible', [text('Seen')]),
-        node('group', 'closed', [leaf('button', 'sum')]),
-        leaf('iframe', 'frame'),
-        leaf('img', 'img'),
-        node('link', 'link', [text('Go'), node('emphasis', 'em', [text('now')])]),
-        node('table', 't', [node('rowgroup', 'tbody', [node('row', 'tr', [node('cell', 'cell', [text('A')])])])]),
+        node('heading', 'h-visible', [], 'Seen'),
+        node('group', 'closed', [leaf('button', 'sum', 'More')]),
+        leaf('iframe', 'frame', 'frame'),
+        leaf('img', 'img', 'Logo'),
+        node('link', 'link', [node('emphasis', 'em', [])], 'Go now'),
+        node('table', 't', [node('rowgroup', 'tbody', [node('row', 'tr', [node('cell', 'cell', [], 'A')], 'A')])]),
         node('paragraph', 'ws', []),
         node('paragraph', 'multi', [text('lots of space')]),
-        leaf('checkbox', 'cb'),
+        leaf('checkbox', 'cb', 'Remember me'),
+        node('generic', 'named-generic', [node('paragraph', 'named-generic-p', [text('inside')])], 'Sidebar'),
       ]));
+    });
+
+    QUnit.test('a generic element with a name produces a node instead of being pruned', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('named-generic'))),
+        node('generic', 'named-generic', [node('paragraph', 'named-generic-p', [text('inside')])], 'Sidebar'));
+    });
+
+    QUnit.test('text consumed by an ancestor name is not repeated as leaves, but the structure below stays', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('link'))), node('link', 'link', [node('emphasis', 'em', [])], 'Go now'));
+      assert.deepEqual(strip(snapshot(byId('h'))), node('heading', 'h', [], 'Title'));
     });
 
     QUnit.test('element references are the live elements, and text leaves have none', function (assert) {
       var root = snapshot(byId('tree-root'));
       assert.strictEqual(root.children[0].element, byId('h'));
-      assert.strictEqual(root.children[0].children[0].role, 'text');
-      assert.notOk('element' in root.children[0].children[0], 'text leaf has no element key');
       assert.strictEqual(root.children[1].role, 'text');
       assert.notOk('element' in root.children[1], 'hoisted text leaf has no element key');
+      assert.strictEqual(root.children[3].children[0].role, 'text');
+      assert.notOk('element' in root.children[3].children[0], 'text leaf has no element key');
     });
 
     QUnit.test('text leaves still carry the full schema', function (assert) {
@@ -202,12 +213,12 @@ under the License.
     });
 
     QUnit.test('roles with presentational children are leaves', function (assert) {
-      assert.deepEqual(strip(snapshot(byId('btn'))), leaf('button', 'btn'), 'button content becomes its name, not children');
-      assert.deepEqual(strip(snapshot(byId('cb'))), leaf('checkbox', 'cb'));
+      assert.deepEqual(strip(snapshot(byId('btn'))), leaf('button', 'btn', 'Save now'), 'button content becomes its name, not children');
+      assert.deepEqual(strip(snapshot(byId('cb'))), leaf('checkbox', 'cb', 'Remember me'));
     });
 
     QUnit.test('frames are leaves the bindings fill in', function (assert) {
-      assert.deepEqual(strip(snapshot(byId('frame'))), leaf('iframe', 'frame'));
+      assert.deepEqual(strip(snapshot(byId('frame'))), leaf('iframe', 'frame', 'frame'));
     });
 
     QUnit.test('whitespace in text is collapsed and whitespace-only text produces nothing', function (assert) {
@@ -244,6 +255,7 @@ under the License.
       <p id="multi">  lots   of
          space </p>
       <div role="checkbox" id="cb" aria-checked="false">Remember <b>me</b></div>
+      <div id="named-generic" aria-label="Sidebar"><p id="named-generic-p">inside</p></div>
     </div>
   </div>
 </body>

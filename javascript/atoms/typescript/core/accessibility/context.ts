@@ -24,17 +24,29 @@ import { computeRole } from './roles.js'
 // Nothing in the DOM can change during the synchronous walk, so memoising
 // per-element results within the call is safe.
 //
-// Roles are cached because name computation (a later slice) asks for the
-// roles of descendants and of aria-labelledby targets that the walk also
-// visits. Computed-style and name caches join here when that slice lands.
+// Roles and styles are cached because name computation asks for the roles
+// and display of descendants and of aria-labelledby targets that the walk
+// also visits; names are cached because several nodes can reference the
+// same element.
 export interface SnapshotContext {
   readonly roles: Map<Element, string>
+  readonly styles: Map<Element, Map<string, CSSStyleDeclaration | null>>
+  readonly names: Map<Element, NameResult>
+  readonly descriptions: Map<Element, string>
   /** Elements already placed in the tree; aria-owns re-parenting must not place one twice. */
   readonly placed: Set<Element>
 }
 
+/** Where a name came from decides whether text below the node is repeated and whether title is free for the description. */
+export type NameSource = 'none' | 'reference' | 'label' | 'native' | 'content' | 'title' | 'placeholder'
+
+export interface NameResult {
+  readonly text: string
+  readonly source: NameSource
+}
+
 export function createContext(): SnapshotContext {
-  return { roles: new Map(), placed: new Set() }
+  return { roles: new Map(), styles: new Map(), names: new Map(), descriptions: new Map(), placed: new Set() }
 }
 
 export function roleOf(element: Element, context: SnapshotContext): string {
@@ -44,4 +56,23 @@ export function roleOf(element: Element, context: SnapshotContext): string {
     context.roles.set(element, role)
   }
   return role
+}
+
+/**
+ * The computed style of an element, or of one of its pseudo-elements when
+ * `pseudo` is "::before" or "::after". Null when the element has no view.
+ */
+export function styleOf(element: Element, context: SnapshotContext, pseudo = ''): CSSStyleDeclaration | null {
+  let perPseudo = context.styles.get(element)
+  if (!perPseudo) {
+    perPseudo = new Map()
+    context.styles.set(element, perPseudo)
+  }
+  let style = perPseudo.get(pseudo)
+  if (style === undefined) {
+    const view = element.ownerDocument.defaultView
+    style = view ? view.getComputedStyle(element, pseudo || null) : null
+    perPseudo.set(pseudo, style)
+  }
+  return style
 }
