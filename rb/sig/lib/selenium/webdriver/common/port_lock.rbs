@@ -18,10 +18,8 @@
 
 module Selenium
   module WebDriver
-    class SocketLock
-      @port: untyped
-
-      @server: untyped
+    class PortLock
+      @path: untyped
 
       @timeout: untyped
 
@@ -31,15 +29,13 @@ module Selenium
 
       private
 
-      def lock: () -> untyped?
+      def lock: () -> untyped
+
+      def open_lock_file: () -> untyped
+
+      def release: (untyped file) -> untyped
 
       def current_time: () -> untyped
-
-      def release: () -> untyped
-
-      def can_lock?: () -> untyped
-
-      def did_lock?: () -> untyped
     end
   end
 end
