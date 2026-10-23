@@ -162,6 +162,8 @@ select = [
     "PIE",
     "PLE",
     "PLR0133",
+    "PYI032",
+    "PYI034",
     "PYI041",
     "PT",
     "RUF",
