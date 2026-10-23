@@ -1,5 +1,12 @@
 load("@rules_ruby//ruby:defs.bzl", "rb_library")
-load("//rb/spec:tests.bzl", "DEFAULT_BROWSERS", "rb_integration_test")
+load("//rb/spec:tests.bzl", "rb_integration_test")
+
+filegroup(
+    name = "all_srcs",
+    testonly = True,
+    srcs = glob(["**/*.rb"]),
+    visibility = ["//rb/spec:__pkg__"],
+)
 
 rb_library(
     name = "spec_helper",
@@ -9,7 +16,8 @@ rb_library(
         "spec_support.rb",
     ] + glob(["spec_support/**/*"]),
     data = [
-        "//rb:manager-linux",
+        "//rb:manager-linux-arm64",
+        "//rb:manager-linux-x86_64",
         "//rb:manager-macos",
         "//rb:manager-windows",
     ],
@@ -24,6 +32,7 @@ rb_library(
         "//rb/lib/selenium/webdriver:remote",
         "//rb/spec:rspec_matchers",
         "@bundle",
+        "@rules_ruby//ruby/runfiles",
     ],
 )
 
@@ -36,6 +45,11 @@ _OS_SENSITIVE = [
 # specs whose classes have both bidi implementations
 _BIDI_IMPLEMENTATIONS = [
     "navigation_spec.rb",
+]
+
+# bidi implementations that must also run over a Grid
+_GRID_BIDI = [
+    "driver_spec.rb",
 ]
 
 # tests that require bidi enabled
@@ -58,7 +72,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     )
     for file in glob(
         ["*_spec.rb"],
-        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _BIDI_ONLY + _DEVTOOLS + _NO_GRID,
+        exclude = _OS_SENSITIVE + _BIDI_IMPLEMENTATIONS + _GRID_BIDI + _BIDI_ONLY + _DEVTOOLS + _NO_GRID,
     )
 ]
 
@@ -66,8 +80,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        browsers = DEFAULT_BROWSERS,
-        no_grid = True,
+        grid = False,
         tags = ["se-manager"],
         deps = [
             "//rb/lib/selenium/webdriver:common",
@@ -92,7 +105,7 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        tags = ["bidi"],
+        bidi = True,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
@@ -104,7 +117,22 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        bidi_only = True,
+        bidi = True,
+        data = ["//common/extensions"],
+        grid_bidi = True,
+        deps = [
+            "//rb/lib/selenium/webdriver:bidi",
+        ],
+    )
+    for f in _GRID_BIDI
+]
+
+[
+    rb_integration_test(
+        name = f[:-8],
+        srcs = [f],
+        bidi = True,
+        classic = False,
         deps = [
             "//rb/lib/selenium/webdriver:bidi",
         ],
@@ -116,7 +144,6 @@ _NO_GRID = ["driver_finder_spec.rb"]
     rb_integration_test(
         name = f[:-8],
         srcs = [f],
-        tags = ["exclusive-if-local"],
         deps = [
             "//rb/lib/selenium/devtools",
             "//rb/lib/selenium/webdriver:devtools",

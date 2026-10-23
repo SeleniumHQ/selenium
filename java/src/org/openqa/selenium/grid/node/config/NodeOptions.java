@@ -355,7 +355,7 @@ public class NodeOptions {
 
               configMap.forEach(
                   (clazz, config) -> {
-                    Capabilities stereotype = JSON.toType(config, Capabilities.class);
+                    Capabilities stereotype = parseStereotype(config, "driver factory " + clazz);
                     SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
                     sessionFactories.put(stereotype, sessionFactory);
                   });
@@ -469,7 +469,9 @@ public class NodeOptions {
                   thisConfig -> {
                     // create Capabilities object from stereotype of this config
                     Capabilities confStereotype =
-                        JSON.toType(thisConfig.get("stereotype"), Capabilities.class);
+                        parseStereotype(
+                            thisConfig.get("stereotype"),
+                            "driver configuration '" + thisConfig.get("display-name") + "'");
 
                     // extract driver executable path from this config
                     String webDriverExecutablePath = thisConfig.get("webdriver-executable");
@@ -753,6 +755,15 @@ public class NodeOptions {
       return desiredMaxSessions;
     }
     return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 
   public Capabilities enhanceStereotype(Capabilities capabilities) {

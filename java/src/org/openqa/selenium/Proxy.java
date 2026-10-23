@@ -64,7 +64,6 @@ public class Proxy {
   }
 
   private static final String PROXY_TYPE = "proxyType";
-  @Deprecated private static final String FTP_PROXY = "ftpProxy";
   private static final String HTTP_PROXY = "httpProxy";
   private static final String NO_PROXY = "noProxy";
   private static final String SSL_PROXY = "sslProxy";
@@ -77,7 +76,6 @@ public class Proxy {
 
   private ProxyType proxyType = ProxyType.UNSPECIFIED;
   private boolean autodetect = false;
-  @Deprecated private @Nullable String ftpProxy;
   private @Nullable String httpProxy;
   private @Nullable String noProxy;
   private @Nullable String sslProxy;
@@ -96,7 +94,6 @@ public class Proxy {
     setters.put(
         PROXY_TYPE,
         value -> setProxyType(ProxyType.valueOf(((String) value).toUpperCase(Locale.ENGLISH))));
-    setters.put(FTP_PROXY, value -> setFtpProxy((String) value));
     setters.put(HTTP_PROXY, value -> setHttpProxy((String) value));
     setters.put(
         NO_PROXY,
@@ -131,9 +128,6 @@ public class Proxy {
 
     if (proxyType != ProxyType.UNSPECIFIED) {
       m.put(PROXY_TYPE, proxyType.toString());
-    }
-    if (ftpProxy != null) {
-      m.put(FTP_PROXY, ftpProxy);
     }
     if (httpProxy != null) {
       m.put(HTTP_PROXY, httpProxy);
@@ -215,32 +209,6 @@ public class Proxy {
       this.proxyType = ProxyType.UNSPECIFIED;
     }
     this.autodetect = autodetect;
-    return this;
-  }
-
-  /**
-   * Gets the FTP proxy.
-   *
-   * @return the FTP proxy hostname if present, or null if not set
-   * @deprecated getFtpProxy is deprecated and will be removed in a future release.
-   */
-  @Deprecated
-  public @Nullable String getFtpProxy() {
-    return ftpProxy;
-  }
-
-  /**
-   * Specify which proxy to use for FTP connections.
-   *
-   * @param ftpProxy the proxy host, expected format is <code>hostname.com:1234</code>
-   * @return reference to self
-   * @deprecated setFtpProxy is deprecated and will be removed in a future release.
-   */
-  @Deprecated
-  public Proxy setFtpProxy(String ftpProxy) {
-    verifyProxyTypeCompatibility(ProxyType.MANUAL);
-    this.proxyType = ProxyType.MANUAL;
-    this.ftpProxy = ftpProxy;
     return this;
   }
 
@@ -466,7 +434,6 @@ public class Proxy {
         break;
     }
 
-    Optional.ofNullable(getFtpProxy()).ifPresent(p -> builder.append(", ftp=").append(p));
     Optional.ofNullable(getHttpProxy()).ifPresent(p -> builder.append(", http=").append(p));
     Optional.ofNullable(getSocksProxy()).ifPresent(p -> builder.append(", socks=").append(p));
     Optional.ofNullable(getSslProxy()).ifPresent(p -> builder.append(", ssl=").append(p));
@@ -486,7 +453,6 @@ public class Proxy {
     Proxy proxy = (Proxy) o;
     return isAutodetect() == proxy.isAutodetect()
         && getProxyType() == proxy.getProxyType()
-        && Objects.equals(getFtpProxy(), proxy.getFtpProxy())
         && Objects.equals(getHttpProxy(), proxy.getHttpProxy())
         && Objects.equals(getNoProxy(), proxy.getNoProxy())
         && Objects.equals(getSslProxy(), proxy.getSslProxy())
@@ -502,7 +468,6 @@ public class Proxy {
     return Objects.hash(
         getProxyType(),
         isAutodetect(),
-        getFtpProxy(),
         getHttpProxy(),
         getNoProxy(),
         getSslProxy(),

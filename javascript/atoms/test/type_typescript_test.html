@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>type_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/type-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <input id="textbox">
+  <textarea id="textarea"></textarea>
+  <div style="width:0;height:0;overflow:hidden"><input id="hiddenInput"></div>
+  <input id="date" type="date">
+  <input id="color" type="color">
+  <div id="editable" contenteditable="true"></div>
+  <div id="closedHost"></div>
+  <div id="inertHost" style="pointer-events:none"></div>
+  <div id="dateHost"></div>
+  <form id="form" target="sink" action="about:blank"><input id="only"></form>
+  <iframe name="sink" style="display:none"></iframe>
+  <script type="text/javascript">
+    // The atom-level cases of type_test.html, driven through the WebDriver
+    // key code points the atom receives on the wire. Key events, editing and
+    // caret movement are covered by keyboard_typescript_test.html.
+    var type = window.bot.action.typescript.type;
+    var NULL = '\uE000', BACKSPACE = '\uE003', TAB = '\uE004', ENTER = '\uE007', SHIFT = '\uE008',
+        CONTROL = '\uE009', LEFT = '\uE012', DELETE = '\uE017', NUMPAD3 = '\uE01D', F1 = '\uE031';
+    var listeners = [];
+
+    function $(id) { return document.getElementById(id); }
+
+    var inertHostInput = (function() {
+      var root = $('inertHost').attachShadow({mode: 'open'});
+      root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
+
+    var hostedDate = (function() {
+      var root = $('dateHost').attachShadow({mode: 'open'});
+      root.innerHTML = '<input type="date">';
+      return root.querySelector('input');
+    })();
+
+    var closedInput = (function() {
+      var root = $('closedHost').attachShadow({mode: 'closed'});
+      root.innerHTML = '<input>';
+      return root.querySelector('input');
+    })();
+
+    function on(el, t, fn) {
+      el.addEventListener(t, fn);
+      listeners.push([el, t, fn]);
+    }
+
+    function codeIs(code) {
+      return function(e) { return e.code === code; };
+    }
+
+    QUnit.testStart(function() {
+      ['textbox', 'textarea', 'hiddenInput', 'only'].forEach(function(id) {
+        $(id).value = '';
+        $(id).disabled = false;
+        $(id).readOnly = false;
+      });
+      $('date').value = '';
+      $('date').readOnly = false;
+      $('color').readOnly = false;
+      $('color').value = '#000000';
+      $('editable').textContent = '';
+      closedInput.value = '';
+      inertHostInput.value = '';
+      hostedDate.value = '';
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    });
+
+    QUnit.testDone(function() {
+      listeners.forEach(function(l) { l[0].removeEventListener(l[1], l[2]); });
+      listeners = [];
+    });
+
+    QUnit.test('lower case, upper case, numbers and symbols', function(assert) {
+      type($('textbox'), ['abc XYZ 0123 !@#$%^&*()_+{}|:"<>?`~-=[]\\;\',./']);
+      assert.strictEqual($('textbox').value, 'abc XYZ 0123 !@#$%^&*()_+{}|:"<>?`~-=[]\\;\',./');
+    });
+
+    QUnit.test('several sequences type in order', function(assert) {
+      type($('textbox'), ['ab', 'cd']);
+      assert.strictEqual($('textbox').value, 'abcd');
+    });
+
+    QUnit.test('typing appends to existing text', function(assert) {
+      $('textbox').value = 'abc';
+      type($('textbox'), ['def']);
+      assert.strictEqual($('textbox').value, 'abcdef');
+    });
+
+    QUnit.test('WebDriver editing keys', function(assert) {
+      type($('textbox'), ['abc' + BACKSPACE + 'd' + LEFT + LEFT + DELETE]);
+      assert.strictEqual($('textbox').value, 'ad');
+    });
+
+    QUnit.test('numpad keys type their digit', function(assert) {
+      type($('textbox'), [NUMPAD3]);
+      assert.strictEqual($('textbox').value, '3');
+    });
+
+    QUnit.test('newline, tab and backspace aliases', function(assert) {
+      type($('textarea'), ['a\nb\bc']);
+      assert.strictEqual($('textarea').value, 'a\nc');
+      var keys = [];
+      on($('textbox'), 'keydown', function(e) { keys.push(e.key); });
+      type($('textbox'), ['\t']);
+      assert.deepEqual(keys, ['Tab']);
+    });
+
+    QUnit.test('shift toggles and is released at the end', function(assert) {
+      var ups = [];
+      on($('textbox'), 'keyup', function(e) { if (e.key === 'Shift') ups.push(e.shiftKey); });
+      type($('textbox'), ['ab' + SHIFT + 'cd' + SHIFT + 'ef' + SHIFT + 'gh']);
+      assert.strictEqual($('textbox').value, 'abCDefGH');
+      assert.deepEqual(ups, [false, false], 'released by the toggle, then at the end');
+    });
+
+    QUnit.test('NULL releases every held modifier', function(assert) {
+      var mods = [];
+      on($('textbox'), 'keydown', function(e) { if (e.code === 'KeyA') mods.push(e.ctrlKey + '/' + e.shiftKey); });
+      on($('textbox'), 'keydown', function(e) { if (e.ctrlKey) e.preventDefault(); });
+      type($('textbox'), [CONTROL + SHIFT + 'a' + NULL + 'a']);
+      assert.deepEqual(mods, ['true/true', 'false/false']);
+      assert.strictEqual($('textbox').value, 'a');
+    });
+
+    QUnit.test('modifiers persist when asked, with no keyup', function(assert) {
+      var ups = 0;
+      on($('textbox'), 'keyup', function(e) { if (e.key === 'Shift') ups++; });
+      type($('textbox'), ['ab', SHIFT, 'cd'], null, true);
+      assert.strictEqual($('textbox').value, 'abCD');
+      assert.strictEqual(ups, 0);
+    });
+
+    QUnit.test('a function key types nothing', function(assert) {
+      type($('textbox'), ['a' + F1]);
+      assert.strictEqual($('textbox').value, 'a');
+    });
+
+    QUnit.test('an unsupported WebDriver key throws invalid argument', function(assert) {
+      assert.throws(function() { type($('textbox'), ['\uE001']); }, codeIs('invalid argument'));
+    });
+
+    QUnit.test('Enter in a textarea is a newline, in a lone field it submits', function(assert) {
+      type($('textarea'), ['a' + ENTER + 'b']);
+      assert.strictEqual($('textarea').value, 'a\nb');
+      var submitted = 0;
+      on($('form'), 'submit', function(e) { submitted++; e.preventDefault(); });
+      type($('only'), ['x' + ENTER]);
+      assert.strictEqual(submitted, 1);
+    });
+
+    QUnit.test('a hidden element can be typed into when it has focus', function(assert) {
+      $('hiddenInput').focus();
+      type($('hiddenInput'), ['a']);
+      assert.strictEqual($('hiddenInput').value, 'a');
+    });
+
+    QUnit.test('a hidden element without focus cannot be typed into', function(assert) {
+      $('textbox').focus();
+      assert.throws(function() { type($('hiddenInput'), ['a']); }, codeIs('element not interactable'));
+    });
+
+    QUnit.test('a disabled element cannot be typed into', function(assert) {
+      $('textbox').disabled = true;
+      assert.throws(function() { type($('textbox'), ['a']); }, codeIs('element not interactable'));
+    });
+
+    QUnit.test('a read-only element gets keys but no text', function(assert) {
+      $('textbox').readOnly = true;
+      var keys = 0;
+      on($('textbox'), 'keydown', function() { keys++; });
+      type($('textbox'), ['ab']);
+      assert.strictEqual($('textbox').value, '');
+      assert.strictEqual(keys, 2);
+    });
+
+    QUnit.test('typing moves focus to the element', function(assert) {
+      type($('textbox'), ['a']);
+      assert.strictEqual(document.activeElement, $('textbox'));
+    });
+
+    QUnit.test('a field inside a closed shadow root is typed into', function(assert) {
+      type(closedInput, ['ab']);
+      assert.strictEqual(closedInput.value, 'ab');
+      type(closedInput, ['c']);
+      assert.strictEqual(closedInput.value, 'abc', 'already focused: appends');
+    });
+
+    // As with Closure, which compared against document.activeElement: a host
+    // that already holds focus is not checked for interactability again.
+    QUnit.test('a focused shadow host is typed into even if it is not interactable', function(assert) {
+      inertHostInput.focus();
+      type($('inertHost'), ['a']);
+      assert.strictEqual(inertHostInput.value, 'a');
+    });
+
+    QUnit.test('a focused shadow host passes a date to the picker inside it', function(assert) {
+      hostedDate.focus();
+      type($('dateHost'), ['2026-10-21']);
+      assert.strictEqual(hostedDate.value, '2026-10-21');
+    });
+
+    QUnit.test('contenteditable is edited', function(assert) {
+      type($('editable'), ['hello']);
+      assert.strictEqual($('editable').textContent, 'hello');
+    });
+
+    QUnit.test('a date input takes a well-formed value with input and change', function(assert) {
+      var log = [];
+      on($('date'), 'input', function(e) { log.push('input'); });
+      on($('date'), 'change', function(e) { log.push('change'); });
+      type($('date'), ['2026-10-14']);
+      assert.strictEqual($('date').value, '2026-10-14');
+      assert.deepEqual(log, ['input', 'change']);
+    });
+
+    QUnit.test('a read-only picker gets keys but keeps its value', function(assert) {
+      [['date', '2026-10-21', ''], ['color', '#336699', '#000000']].forEach(function(c) {
+        var el = $(c[0]);
+        el.readOnly = true;
+        var keys = 0;
+        on(el, 'keydown', function() { keys++; });
+        type(el, [c[1]]);
+        assert.strictEqual(el.value, c[2], c[0] + ' value');
+        assert.ok(keys > 0, c[0] + ' got keys');
+      });
+    });
+
+    QUnit.test('a colour input takes a well-formed value', function(assert) {
+      type($('color'), ['#336699']);
+      assert.strictEqual($('color').value, '#336699');
+    });
+
+    QUnit.test('a colour input takes an upper case value, which it stores lower case', function(assert) {
+      var log = [];
+      on($('color'), 'input', function(e) { log.push('input'); });
+      type($('color'), ['#FF0000']);
+      assert.strictEqual($('color').value, '#ff0000');
+      assert.deepEqual(log, ['input']);
+    });
+  </script>
+</body>
+
+</html>

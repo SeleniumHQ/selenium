@@ -40,6 +40,7 @@ const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
+const webExtension = require('./lib/web_extension')
 const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
 const BrowsingContextInspector = require('./bidi/browsingContextInspector')
@@ -479,6 +480,14 @@ class Builder {
   }
 
   /**
+   * @return {firefox.ServiceBuilder} the Firefox service currently configured
+   *     for this instance.
+   */
+  getFirefoxService() {
+    return this.firefoxService_
+  }
+
+  /**
    * Sets the {@link firefox.ServiceBuilder} to use to manage the geckodriver
    * child process when creating Firefox sessions locally.
    *
@@ -530,6 +539,14 @@ class Builder {
   setEdgeOptions(options) {
     this.edgeOptions_ = options
     return this
+  }
+
+  /**
+   * @return {edge.Options} the Edge specific options currently configured
+   *     for this builder.
+   */
+  getEdgeOptions() {
+    return this.edgeOptions_
   }
 
   /**
@@ -650,6 +667,11 @@ class Builder {
 
     if (url) {
       this.log_.fine('Creating session on remote server')
+
+      if (typeof url === 'string') {
+        capabilities.set('se:remoteUrl', url)
+      }
+
       let client = Promise.resolve(url).then((url) => new _http.HttpClient(url, this.agent_, this.proxy_))
       let executor = new _http.Executor(client)
 
@@ -786,6 +808,7 @@ exports.WebDriver = webdriver.WebDriver
 exports.WebElement = webdriver.WebElement
 exports.WebElementCondition = webdriver.WebElementCondition
 exports.WebElementPromise = webdriver.WebElementPromise
+exports.WebExtension = webExtension.WebExtension
 exports.error = error
 exports.logging = logging
 exports.promise = promise

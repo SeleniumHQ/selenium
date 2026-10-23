@@ -86,6 +86,7 @@ module Selenium
           @logging_prefs = options.delete(:logging_prefs) || {}
           @encoded_extensions = @options.delete(:encoded_extensions) || []
           @extensions = []
+          @vendor_options = {}
           @options.delete(:extensions).each { |ext| validate_extension(ext) }
         end
 
@@ -185,6 +186,24 @@ module Selenium
         end
 
         #
+        # Add a Chromium-specific capability nested in the browser options object
+        # (e.g. `goog:chromeOptions` / `ms:edgeOptions`) that is not yet exposed
+        # through a dedicated method. This is the escape hatch for legitimate
+        # vendor capabilities the bindings do not model.
+        #
+        # @example Set an option not handled by other methods
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.add_chromium_option('unhandledCapability', 'value')
+        #
+        # @param [String, Symbol] name Name of the capability, as expected by the driver
+        # @param [Object] value Value of the capability
+        #
+
+        def add_chromium_option(name, value)
+          @vendor_options[name.to_s] = value
+        end
+
+        #
         # Enables mobile browser use on Android.
         #
         # @see https://chromedriver.chromium.org/getting-started/getting-started---android
@@ -209,6 +228,7 @@ module Selenium
           enable_logging(browser_options) unless @logging_prefs.empty?
 
           options = browser_options[self.class::KEY]
+          options.merge!(@vendor_options)
           options['binary'] ||= binary_path if binary_path
 
           if @profile

@@ -90,10 +90,15 @@ class SeleniumManager:
             allowed = {
                 ("darwin", "any"): "macos/selenium-manager",
                 ("win32", "x86_64"): "windows/selenium-manager.exe",
+                ("win32", "arm64"): "windows/selenium-manager.exe",
                 ("cygwin", "x86_64"): "windows/selenium-manager.exe",
-                ("linux", "x86_64"): "linux/selenium-manager",
-                ("freebsd", "x86_64"): "linux/selenium-manager",
-                ("openbsd", "x86_64"): "linux/selenium-manager",
+                ("cygwin", "arm64"): "windows/selenium-manager.exe",
+                ("linux", "x86_64"): "linux-x86_64/selenium-manager",
+                ("linux", "aarch64"): "linux-arm64/selenium-manager",
+                ("freebsd", "x86_64"): "linux-x86_64/selenium-manager",
+                ("freebsd", "aarch64"): "linux-arm64/selenium-manager",
+                ("openbsd", "x86_64"): "linux-x86_64/selenium-manager",
+                ("openbsd", "aarch64"): "linux-arm64/selenium-manager",
             }
 
             # some operating systems report x86-64 architecture as amd64/AMD64

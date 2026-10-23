@@ -58,7 +58,9 @@ class Service(service.ChromiumService):
         )
 
     def command_line_args(self) -> list[str]:
-        return ["--enable-chrome-logs", f"--port={self.port}"] + self._service_args
+        # skip when CHROME_LOG_FILE is set; --enable-chrome-logs would override the user's log file
+        args = [] if "CHROME_LOG_FILE" in self.env else ["--enable-chrome-logs"]
+        return args + [f"--port={self.port}"] + self._service_args
 
     @property
     def service_args(self) -> Sequence[str]:

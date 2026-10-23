@@ -19,11 +19,6 @@ rb_test(
     size = "small",
     srcs = glob(["**/*_spec.rb"]),
     args = ["rb/spec/unit/"],
-    data = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
-    ],
     main = "@bundle//bin:rspec",
     tags = ["unit"],
     visibility = ["//rb:__subpackages__"],

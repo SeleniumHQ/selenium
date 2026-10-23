@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Tests;
 [TestFixture]
 public class TextHandlingTests : DriverTestFixture
 {
-    private readonly string NewLine = System.Environment.NewLine;
+    private readonly string NewLine = Environment.NewLine;
 
     [Test]
     public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
@@ -40,7 +40,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheEntireTextContentOfChildElements()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.Contain("A div containing"));
@@ -63,7 +63,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldRepresentABlockLevelElementAsANewline()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.StartWith("A div containing" + NewLine));
@@ -74,7 +74,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("lotsofspaces")).Text;
 
         Assert.That(text, Is.EqualTo("This line has lots of spaces."));
@@ -83,7 +83,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldTrimText()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("multiline")).Text;
 
         Assert.That(text, Does.StartWith("A div containing"));
@@ -93,7 +93,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("nbsp")).Text;
 
         Assert.That(text, Is.EqualTo("This line has a non-breaking space"));
@@ -142,7 +142,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void HavingInlineElementsShouldNotAffectHowTextIsReturned()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("inline")).Text;
         Assert.That(text, Is.EqualTo("This line has text within elements that are meant to be displayed inline"));
     }
@@ -150,7 +150,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnTheEntireTextOfInlineElements()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
         string text = Driver.FindElement(By.Id("span")).Text;
 
         Assert.That(text, Is.EqualTo("An inline element"));
@@ -210,7 +210,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTextIsOnlySpaces()
     {
-        Driver.Url = (Urls.XhtmlTestPage);
+        Driver.Url = Urls.XhtmlTestPage;
 
         string text = Driver.FindElement(By.Id("spaces")).Text;
         Assert.That(text, Is.Empty);
@@ -219,7 +219,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTextIsEmpty()
     {
-        Driver.Url = (Urls.XhtmlTestPage);
+        Driver.Url = Urls.XhtmlTestPage;
 
         string text = Driver.FindElement(By.Id("empty")).Text;
         Assert.That(text, Is.Empty);
@@ -228,7 +228,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
     {
-        Driver.Url = (Urls.XhtmlFormPage);
+        Driver.Url = Urls.XhtmlFormPage;
 
         string text = Driver.FindElement(By.Id("self-closed")).Text;
         Assert.That(text, Is.Empty);
@@ -256,7 +256,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldHandleNestedBlockLevelElements()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
 
         string text = Driver.FindElement(By.Id("nestedblocks")).Text;
 
@@ -267,7 +267,7 @@ public class TextHandlingTests : DriverTestFixture
     [Test]
     public void ShouldHandleWhitespaceInInlineElements()
     {
-        Driver.Url = (Urls.SimpleTestPage);
+        Driver.Url = Urls.SimpleTestPage;
 
         string text = Driver.FindElement(By.Id("inlinespan")).Text;
 

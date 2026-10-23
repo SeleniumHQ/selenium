@@ -24,6 +24,8 @@ use selenium_manager::logger::JsonOutput;
 use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command;
 use std::borrow::BorrowMut;
+use std::env::consts::ARCH;
+use std::env::consts::OS;
 use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
@@ -127,4 +129,9 @@ pub fn assert_output(
                 .contains(&error_code.to_string())
         );
     }
+}
+
+#[allow(dead_code)]
+pub fn is_linux_arm64() -> bool {
+    OS == "linux" && ARCH == "aarch64"
 }

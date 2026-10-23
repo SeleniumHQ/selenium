@@ -69,6 +69,7 @@ module Selenium
           @options[:prefs]['remote.active-protocols'] = 1
           @options[:env] ||= {}
           @options[:log] ||= {level: log_level} if log_level
+          @vendor_options = {}
 
           process_profile(@options.delete(:profile))
         end
@@ -100,6 +101,23 @@ module Selenium
 
         def add_preference(name, value)
           @options[:prefs][name] = value
+        end
+
+        #
+        # Add a Firefox-specific capability nested in the `moz:firefoxOptions`
+        # object that is not yet exposed through a dedicated method. This is the
+        # escape hatch for legitimate vendor capabilities the bindings do not model.
+        #
+        # @example Set an option not handled by other methods
+        #   options = Selenium::WebDriver::Firefox::Options.new
+        #   options.add_firefox_option('unhandledCapability', 'value')
+        #
+        # @param [String, Symbol] name Name of the capability, as expected by geckodriver
+        # @param [Object] value Value of the capability
+        #
+
+        def add_firefox_option(name, value)
+          @vendor_options[name.to_s] = value
         end
 
         #
@@ -153,6 +171,7 @@ module Selenium
         def process_browser_options(browser_options)
           browser_options['moz:debuggerAddress'] = true if @debugger_address
           options = browser_options[KEY]
+          options.merge!(@vendor_options)
           options['binary'] ||= Firefox.path if Firefox.path
           options['profile'] = @profile if @profile
         end

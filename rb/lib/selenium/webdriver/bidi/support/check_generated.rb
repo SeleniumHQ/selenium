@@ -25,19 +25,27 @@ module BiDiGenerate
   # current schema — catching a hand-edit or a forgotten regeneration. Re-renders each module
   # in memory (no file writes) and compares. The .rbs are covered by Steep.
   def self.check!(schema_rootpath)
-    modules = build_ir(Schema.new(JSON.parse(File.read(schema_path(schema_rootpath)))))
+    schema = Schema.new(JSON.parse(File.read(schema_path(schema_rootpath))))
     protocol_dir = File.expand_path('../protocol', __dir__)
     template = File.join(__dir__, 'templates', 'module.rb.erb')
 
-    stale = modules.reject do |mod|
+    stale = build_ir(schema).filter_map do |mod|
       path = File.join(protocol_dir, "#{mod.filename}.rb")
-      File.exist?(path) && File.read(path) == render(mod, template)
+      "#{mod.filename}.rb" unless File.exist?(path) && File.read(path) == render(mod, template)
     end
+    stale << 'error_code.rb' unless error_module_current?(schema, protocol_dir)
     return if stale.empty?
 
-    warn "Generated BiDi protocol code is stale or hand-edited: #{stale.map { |m| "#{m.filename}.rb" }.sort.join(', ')}"
+    warn "Generated BiDi protocol code is stale or hand-edited: #{stale.sort.join(', ')}"
     warn 'Regenerate with: bazel run //rb/lib/selenium/webdriver:bidi-generate'
     exit 1
+  end
+
+  # Whether the checked-in protocol/error_code.rb matches what the generator would render now.
+  def self.error_module_current?(schema, protocol_dir)
+    mod = ErrorModule.new(filename: 'error_code', codes: error_code_map(schema))
+    path = File.join(protocol_dir, 'error_code.rb')
+    File.exist?(path) && File.read(path) == render(mod, File.join(__dir__, 'templates', 'error_code.rb.erb'))
   end
 
   # $(rootpath) is relative to the runfiles root; __dir__ anchors us there so it resolves the

@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::is_linux_arm64;
 use crate::common::{assert_browser, assert_driver, get_selenium_manager, get_stdout};
 
 use rstest::rstest;
@@ -30,6 +31,9 @@ mod common;
 #[case("firefox")]
 #[case("edge")]
 fn config_test(#[case] browser_name: String) {
+    if is_linux_arm64() && browser_name.eq("edge") {
+        return;
+    }
     let tmp_dir = Builder::new().prefix("sm-config-test").tempdir().unwrap();
     let config_path = tmp_dir.path().join("se-config.toml");
     let config_file = File::create(config_path.as_path()).unwrap();

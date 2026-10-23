@@ -52,6 +52,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -180,6 +181,24 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  void advertisesRemoteUrlToTheServer() {
+    AtomicReference<Object> seen = new AtomicReference<>();
+
+    RemoteWebDriver.builder()
+        .oneOf(new FirefoxOptions())
+        .address("http://localhost:34576")
+        .connectingWith(
+            config ->
+                req -> {
+                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+                  return CANNED_SESSION_RESPONSE;
+                })
+        .build();
+
+    assertThat(seen.get()).isEqualTo("http://localhost:34576");
+  }
+
+  @Test
   void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -262,6 +281,35 @@ class RemoteWebDriverBuilderTest {
         .build();
 
     assertThat(seen).hasValue(uri);
+  }
+
+  @Test
+  @NullMarked
+  void doesNotAdvertiseRemoteUrlWhenUsingDriverService() throws IOException {
+    URI uri = URI.create("http://localhost:9898");
+    URL url = uri.toURL();
+
+    DriverService service =
+        new FakeDriverService() {
+          @Override
+          public URL getUrl() {
+            return url;
+          }
+        };
+
+    AtomicReference<Object> seen = new AtomicReference<>();
+    RemoteWebDriver.builder()
+        .oneOf(new FirefoxOptions())
+        .withDriverService(service)
+        .connectingWith(
+            config ->
+                req -> {
+                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+                  return CANNED_SESSION_RESPONSE;
+                })
+        .build();
+
+    assertThat(seen.get()).isNull();
   }
 
   @Test
@@ -361,6 +409,97 @@ class RemoteWebDriverBuilderTest {
                 .build();
 
     assertThat(driver.getSessionId()).isEqualTo(SESSION_ID);
+  }
+
+  @Test
+  void shouldInitializeBiDiWhenBuilt() {
+    java.util.logging.Logger logger =
+        java.util.logging.Logger.getLogger(RemoteWebDriver.class.getName());
+    List<java.util.logging.LogRecord> records = new ArrayList<>();
+    java.util.logging.Handler handler =
+        new java.util.logging.Handler() {
+          @Override
+          public void publish(java.util.logging.LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.addHandler(handler);
+
+    HttpResponse response =
+        new HttpResponse()
+            .setContent(
+                Contents.asJson(
+                    Map.of(
+                        "value",
+                        Map.of(
+                            "sessionId",
+                            SESSION_ID,
+                            "capabilities",
+                            new ImmutableCapabilities(
+                                "browserName",
+                                "firefox",
+                                // Scheme is deliberately not ws/wss so createBiDi() fails
+                                // deterministically at the scheme check, without opening a real
+                                // socket, while still proving it was invoked at all.
+                                "webSocketUrl",
+                                "http://granted-by-server.example/session")))));
+
+    try {
+      RemoteWebDriver driver =
+          (RemoteWebDriver)
+              RemoteWebDriver.builder()
+                  .oneOf(new FirefoxOptions().enableBiDi())
+                  .address("http://localhost:34576")
+                  .connectingWith(config -> req -> response)
+                  .build();
+
+      assertThat(driver.getCapabilities().getCapability("webSocketUrl"))
+          .isEqualTo("http://granted-by-server.example/session");
+      assertThat(records)
+          .extracting(java.util.logging.LogRecord::getMessage)
+          .anyMatch(
+              message ->
+                  message != null && message.contains("did not return a valid webSocketUrl"));
+    } finally {
+      logger.removeHandler(handler);
+    }
+  }
+
+  @Test
+  void shouldNotInitializeBiDiIfNotSupported() {
+    HttpResponse response =
+        new HttpResponse()
+            .setContent(
+                Contents.asJson(
+                    Map.of(
+                        "value",
+                        Map.of(
+                            "sessionId",
+                            SESSION_ID,
+                            "capabilities",
+                            new ImmutableCapabilities(
+                                "browserName",
+                                "firefox",
+                                // Deliberately set to true
+                                // Some versions of Firefox returns the same capability
+                                // back as it is if not supported
+                                "webSocketUrl",
+                                true)))));
+    RemoteWebDriver driver =
+        (RemoteWebDriver)
+            RemoteWebDriver.builder()
+                .oneOf(new FirefoxOptions().enableBiDi())
+                .address("http://localhost:34576")
+                .connectingWith(config -> req -> response)
+                .build();
+
+    assertThatExceptionOfType(BiDiException.class).isThrownBy(driver::getHandle);
   }
 
   @Test

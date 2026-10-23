@@ -60,14 +60,14 @@ module Selenium
 
         # Inbound: map a wire token (or list) back to its enum symbol, raising on a token
         # outside our schema so a non-compliant (or newer-than-schema) browser value fails
-        # loud instead of silently passing through untyped.
+        # loud instead of silently passing through untyped. A null field never reaches here
+        # (Record#read handles it), so a nil is a list element and raises too.
         #
         # @api private
         def self.to_symbol(name, value, enum)
-          return value if value.nil?
           return value.map { |element| to_symbol(name, element, enum) } if value.is_a?(::Array)
 
-          enum.key(value) || raise(Error::WebDriverError, "#{name} received an unknown value: #{value.inspect}")
+          enum.key(value) || raise(Error::SerializationError, "#{name} received an unknown value: #{value.inspect}")
         end
       end
     end # BiDi

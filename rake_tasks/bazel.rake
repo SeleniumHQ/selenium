@@ -13,7 +13,13 @@ TARGET_OVERRIDES = {
   'java/maven_install.json' => 'java',
   'py/requirements_lock.txt' => 'py',
   'rb/Gemfile.lock' => 'rb',
-  'javascript/selenium-webdriver/package.json' => 'javascript'
+  'javascript/selenium-webdriver/package.json' => 'javascript',
+  '.github/workflows/ci-dotnet.yml' => 'dotnet',
+  '.github/workflows/ci-java.yml' => 'java',
+  '.github/workflows/ci-javascript.yml' => 'javascript',
+  '.github/workflows/ci-python.yml' => 'py',
+  '.github/workflows/ci-ruby.yml' => 'rb',
+  '.github/workflows/ci-rust.yml' => 'rust'
 }.freeze
 
 # ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
@@ -44,7 +50,9 @@ task :affected_targets do |_task, args|
               BINDING_TARGETS.values
             elsif File.exist?(index_file)
               override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
-              covered_pattern = Regexp.union(override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} })
+              covered_pattern = Regexp.union(
+                override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} }
+              )
               index_targets = affected_targets_with_index(changed_files, index_file).grep_v(covered_pattern)
               (override_targets + index_targets).uniq
             else
@@ -60,6 +68,10 @@ task :affected_targets do |_task, args|
     File.write('bazel-targets.txt', targets.sort.join(' '))
     targets.sort.each { |t| puts t }
   end
+
+  manager_changed = changed_files.any? { |f| f.start_with?('rust/') }
+  puts 'Selenium Manager sources changed' if manager_changed
+  File.write('compile-manager.txt', manager_changed.to_s)
 end
 
 # ./go bazel:build_test_index                    --> 'build/bazel-test-file-index'
@@ -122,8 +134,8 @@ def add_test_to_index(index, test, srcs)
   srcs.each do |src|
     # Convert //pkg:file to pkg/file
     filepath = src.sub(%r{^//}, '').tr(':', '/')
-    # Skip dotnet tests for java sources (dotnet depends on java server but has no remote tests)
-    next if filepath.start_with?('java/') && test.start_with?('//dotnet/')
+    # Not currently running grid tests in other bindings on GitHub Runners
+    next if filepath.start_with?('java/') && !test.start_with?('//java/')
 
     index[filepath] << test
   end
@@ -162,7 +174,8 @@ def affected_targets_with_index(changed_files, index_file)
     return affected_targets_by_directory(changed_files)
   end
 
-  test_files, lib_files = changed_files.partition { |f| f.match?(%r{[_-]test\.rb$|_tests?\.py$|Test\.java$|\.test\.[jt]s$|_spec\.rb$|^dotnet/test/}) }
+  test_pattern = %r{[_-]test\.rb$|_tests?\.py$|Test\.java$|\.test\.[jt]s$|_spec\.rb$|^dotnet/test/}
+  test_files, lib_files = changed_files.partition { |f| f.match?(test_pattern) }
 
   affected = Set.new
   # Just test the tests
@@ -179,7 +192,36 @@ def affected_targets_with_index(changed_files, index_file)
     end
   end
 
-  affected.to_a
+  prune_stale_targets(affected.to_a)
+end
+
+# The index is a trunk snapshot, so renamed/removed targets leave stale labels that break
+# `bazel test`. Drop any label whose test is gone; keep all if the check can't run.
+def prune_stale_targets(labels)
+  live = live_test_labels(labels)
+  return labels if live.nil?
+
+  kept = labels.select { |l| live.include?(l) }
+  (labels - kept).each { |l| puts "  Dropping stale target not in graph: #{l}" }
+  kept
+end
+
+# Test labels that still exist in `labels`' packages. Only on-disk packages are queried, so
+# `//pkg:*` can't error on a deleted package. Returns nil if the query itself fails.
+def live_test_labels(labels)
+  packages = labels.filter_map { |l| l[%r{\A//([^:]*)}, 1] }.uniq
+  packages.select! { |pkg| File.exist?(File.join(pkg, 'BUILD.bazel')) || File.exist?(File.join(pkg, 'BUILD')) }
+  return Set.new if packages.empty?
+
+  live = Set.new
+  query = packages.map { |pkg| "//#{pkg}:*" }.join(' + ')
+  Bazel.execute('query', ['--output=label'], "kind(_test, #{query})") do |out|
+    live = out.lines.map(&:strip).select { |l| l.start_with?('//') }.to_set
+  end
+  live
+rescue StandardError => e
+  puts "  Warning: keeping all targets; stale-target check failed: #{e.message}"
+  nil
 end
 
 def query_unindexed_file(filepath)
@@ -189,9 +231,10 @@ def query_unindexed_file(filepath)
   rel = pkg == '.' ? filepath : filepath.sub(%r{^#{Regexp.escape(pkg)}/}, '')
   pkg = '' if pkg == '.'
 
-  # Find targets that contain this file in their srcs
+  # BUILD files are never in a target's srcs, so match the whole package to catch added/renamed targets.
+  scope = File.basename(filepath).start_with?('BUILD') ? "//#{pkg}:*" : "attr(srcs, '#{rel}', //#{pkg}:*)"
   containing = []
-  Bazel.execute('query', ['--output=label'], "attr(srcs, '#{rel}', //#{pkg}:*)") do |out|
+  Bazel.execute('query', ['--output=label'], scope) do |out|
     containing = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
   return [] if containing.empty?
@@ -202,8 +245,7 @@ def query_unindexed_file(filepath)
     targets = out.lines.map(&:strip).select { |l| l.start_with?('//') }
   end
 
-  # dotnet tests depend on java server, but there are no remote tests, so safe to ignore
-  filepath.start_with?('java/') ? targets.reject { |t| t.start_with?('//dotnet/') } : targets
+  filepath.start_with?('java/') ? targets.select { |t| t.start_with?('//java/') } : targets
 rescue StandardError => e
   puts "  Warning: Failed to query unindexed file #{filepath}: #{e.message}"
   []

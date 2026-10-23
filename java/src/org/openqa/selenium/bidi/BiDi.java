@@ -21,22 +21,30 @@ import static java.util.Collections.emptyMap;
 
 import java.io.Closeable;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
 @Beta
+@ApiStatus.Internal
 public class BiDi implements Closeable {
   private static final Logger LOG = Logger.getLogger(BiDi.class.getName());
 
   private final Duration timeout;
   private final Connection connection;
+  // Held across the remote round trip of every subscription change, so that no change can observe
+  // or undo the half-finished local state of another (callbacks detached but the unsubscribe not
+  // yet answered, or a rejected unsubscribe restoring callbacks that a later change removed)
+  private final Lock subscriptionLock = new ReentrantLock();
 
   /**
    * @deprecated Use constructor with timeout parameter: {@link #BiDi(Connection, Duration)}
@@ -88,9 +96,7 @@ public class BiDi implements Closeable {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
-    String subscriptionId = subscribe(Map.of("events", List.of(event.getMethod())));
-    connection.addListener(subscriptionId, event, handler);
-    return subscriptionId;
+    return subscribe(Map.of("events", List.of(event.getMethod())), event, handler);
   }
 
   public <X> String addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
@@ -98,11 +104,10 @@ public class BiDi implements Closeable {
     Require.nonNull("Browsing context id", browsingContextId);
     Require.nonNull("Handler to call", handler);
 
-    String subscriptionId =
-        subscribe(
-            Map.of("contexts", List.of(browsingContextId), "events", List.of(event.getMethod())));
-    connection.addListener(subscriptionId, event, handler);
-    return subscriptionId;
+    return subscribe(
+        Map.of("contexts", List.of(browsingContextId), "events", List.of(event.getMethod())),
+        event,
+        handler);
   }
 
   public <X> String addListener(
@@ -111,35 +116,27 @@ public class BiDi implements Closeable {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
-    String subscriptionId =
-        subscribe(Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod())));
-    connection.addListener(subscriptionId, event, handler);
-    return subscriptionId;
-  }
-
-  <X> String addListener(Event<X> event, Consumer<X> handler, SubscriptionScope scope) {
-    Require.nonNull("Event to listen for", event);
-    Require.nonNull("Handler to call", handler);
-    Require.nonNull("Subscription scope", scope);
-
-    Map<String, Object> params = new HashMap<>(scope.toMap());
-    params.put("events", List.of(event.getMethod()));
-    String subscriptionId = subscribe(params);
-    connection.addListener(subscriptionId, event, handler);
-    return subscriptionId;
+    return subscribe(
+        Map.of("contexts", browsingContextIds, "events", List.of(event.getMethod())),
+        event,
+        handler);
   }
 
   // The subscription id returned by the browser is the sole identifier we need to unsubscribe
   // later: it is unique regardless of whether the subscription was scoped to events, contexts, or
   // user contexts, so there is no need to separately track how a listener was subscribed.
-  private String subscribe(Map<String, Object> params) {
-    Map<String, Object> result = send(new Command<>("session.subscribe", params, Map.class));
-    Object subscriptionId = result.get("subscription");
-    if (!(subscriptionId instanceof String) || ((String) subscriptionId).isEmpty()) {
-      throw new BiDiException(
-          "session.subscribe did not return a valid subscription id: " + result);
-    }
-    return (String) subscriptionId;
+  private <X> String subscribe(Map<String, Object> params, Event<X> event, Consumer<X> handler) {
+    return whileHoldingSubscriptionLock(
+        () -> {
+          Map<String, Object> result = send(new Command<>("session.subscribe", params, Map.class));
+          Object subscriptionId = result.get("subscription");
+          if (!(subscriptionId instanceof String) || ((String) subscriptionId).isEmpty()) {
+            throw new BiDiException(
+                "session.subscribe did not return a valid subscription id: " + result);
+          }
+          connection.addListener((String) subscriptionId, event, handler);
+          return (String) subscriptionId;
+        });
   }
 
   public <X> void clearListener(Set<String> browsingContextIds, Event<X> event) {
@@ -155,11 +152,16 @@ public class BiDi implements Closeable {
     Require.nonNull("Event to listen for", event);
 
     // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
-    // first place
-    if (connection.isEventSubscribed(event)) {
-      send(new Command<>("session.unsubscribe", Map.of("events", List.of(event.getMethod()))));
-      connection.clearListener(event);
-    }
+    // first place. Local callbacks are removed before unsubscribing so events that arrive during
+    // the unsubscribe round trip are not delivered to a listener the caller has already cleared.
+    whileHoldingSubscriptionLock(
+        () -> {
+          if (connection.isEventSubscribed(event)) {
+            unsubscribe(
+                connection.detachListeners(event), Map.of("events", List.of(event.getMethod())));
+          }
+          return null;
+        });
   }
 
   public void removeListener(String id) {
@@ -167,14 +169,52 @@ public class BiDi implements Closeable {
 
     // The browser throws an error if we try to unsubscribe a subscription id that was not
     // subscribed in the first place
-    if (connection.isSubscribed(id)) {
-      send(new Command<>("session.unsubscribe", Map.of("subscriptions", List.of(id))));
-      connection.removeListener(id);
+    whileHoldingSubscriptionLock(
+        () -> {
+          if (connection.isSubscribed(id)) {
+            unsubscribe(connection.detachListeners(id), Map.of("subscriptions", List.of(id)));
+          }
+          return null;
+        });
+  }
+
+  private void unsubscribe(
+      Map<Event<?>, Map<String, Consumer<?>>> detached, Map<String, Object> params) {
+    try {
+      send(new Command<>("session.unsubscribe", params));
+    } catch (RuntimeException e) {
+      // The remote end still has the subscription, so keep delivering its events and let the
+      // caller retry
+      connection.restoreListeners(detached);
+      throw e;
     }
   }
 
   public void clearListeners() {
-    connection.clearListeners();
+    whileHoldingSubscriptionLock(
+        () -> {
+          connection.clearListeners();
+          return null;
+        });
+  }
+
+  private <T> T whileHoldingSubscriptionLock(Supplier<T> change) {
+    if (connection.isDispatchingEventsOnCurrentThread()) {
+      // The change holding the lock cannot finish until this event handler returns and releases
+      // the callbacks, so waiting for it here would never end
+      if (!subscriptionLock.tryLock()) {
+        throw new BiDiException(
+            "Cannot change BiDi subscriptions from an event handler while another subscription"
+                + " change is in progress");
+      }
+    } else {
+      subscriptionLock.lock();
+    }
+    try {
+      return change.get();
+    } finally {
+      subscriptionLock.unlock();
+    }
   }
 
   public BiDiSessionStatus getBidiSessionStatus() {

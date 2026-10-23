@@ -17,7 +17,7 @@
 
 import pytest
 
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.common.exceptions import MoveTargetOutOfBoundsException, NoSuchWindowException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -68,14 +68,14 @@ def test_should_be_able_to_click_on_an_element_hidden_by_double_overflow(driver,
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
     driver.find_element(By.ID, "link").click()
-    WebDriverWait(driver, 3).until(EC.title_is("Clicked Successfully!"))
+    WebDriverWait(driver, 3, ignored_exceptions=[NoSuchWindowException]).until(EC.title_is("Clicked Successfully!"))
 
 
 def test_should_be_able_to_click_on_an_element_hidden_by_yoverflow(driver, pages):
     pages.load("scrolling_tests/page_with_y_overflow_auto.html")
 
     driver.find_element(By.ID, "link").click()
-    WebDriverWait(driver, 3).until(EC.title_is("Clicked Successfully!"))
+    WebDriverWait(driver, 3, ignored_exceptions=[NoSuchWindowException]).until(EC.title_is("Clicked Successfully!"))
 
 
 def test_should_not_scroll_overflow_elements_which_are_visible(driver, pages):
@@ -174,7 +174,7 @@ def test_should_be_able_to_click_element_that_is_out_of_view_in_anested_frame_th
 def test_should_not_scroll_when_getting_element_size(driver, pages):
     pages.load("scroll3.html")
     scrollTop = get_scroll_top(driver)
-    driver.find_element(By.ID, "button1").size
+    _ = driver.find_element(By.ID, "button1").size
     assert scrollTop == get_scroll_top(driver)
 
 

@@ -29,7 +29,7 @@ public sealed record CapabilityRequest
 
     public string? PlatformName { get; init; }
 
-    public ProxyConfiguration? ProxyConfiguration { get; init; }
+    public ProxyConfiguration? Proxy { get; init; }
 
     public UserPromptHandler? UnhandledPromptBehavior { get; init; }
 }

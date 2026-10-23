@@ -1,0 +1,204 @@
+// <copyright file="EnvironmentManager.cs" company="Selenium Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+// </copyright>
+
+using System.IO;
+using System.Runtime.InteropServices;
+using Bazel;
+using Microsoft.Extensions.Configuration;
+
+namespace OpenQA.Selenium.Testing.NUnit.Environment;
+
+public class EnvironmentManager
+{
+    private static readonly Lazy<EnvironmentManager> instance = new(() => new EnvironmentManager());
+
+    private static readonly Dictionary<Browser, string> driverPathEnvironmentVariables = new()
+    {
+        [Browser.Chrome] = "SE_CHROMEDRIVER",
+        [Browser.Edge] = "SE_EDGEDRIVER",
+        [Browser.Firefox] = "SE_GECKODRIVER",
+        [Browser.IE] = "SE_IEDRIVER",
+        [Browser.Safari] = "SE_SAFARIDRIVER",
+    };
+
+    private EnvironmentManager()
+    {
+        string appConfigFilePath;
+        Runfiles runfiles = null;
+        try
+        {
+            runfiles = Runfiles.Create();
+            appConfigFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
+        }
+        catch (FileNotFoundException)
+        {
+            appConfigFilePath = "appconfig.json";
+        }
+        string currentDirectory = this.CurrentDirectory;
+
+        string configurationPath = Path.GetFullPath(appConfigFilePath);
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Path.GetDirectoryName(configurationPath))
+            .AddJsonFile(Path.GetFileName(configurationPath), optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables()
+            .AddNUnitParameters()
+            .Build();
+        TestEnvironment env = new();
+        configuration.Bind(env);
+
+        // Bazel's $(location ...) expands to a runfiles-relative path (e.g.
+        // "../+pin_browsers_extension+mac_chrome/Chrome.app/Contents/MacOS/Chrome")
+        // which is relative to <runfiles>/_main. The driver process runs from a
+        // different cwd and cannot resolve that, so absolutize through TEST_SRCDIR.
+        string driverServiceLocation = ResolveRunfilesPath(env.DriverServiceLocation);
+        string browserLocation = ResolveRunfilesPath(env.BrowserLocation);
+
+        DriverConfig driverConfig = env.DriverConfigs[env.ActiveDriverConfig];
+
+        Configuration = env;
+        env.DriverServiceLocation = driverServiceLocation;
+        BrowserLocation = browserLocation;
+
+        Browser = driverConfig.BrowserValue;
+        RemoteCapabilities = driverConfig.RemoteCapabilities;
+
+        // Services the tests build themselves then resolve the pinned driver instead of invoking Selenium Manager.
+        if (!string.IsNullOrEmpty(driverServiceLocation)
+            && driverPathEnvironmentVariables.TryGetValue(Browser, out string driverVariable))
+        {
+            System.Environment.SetEnvironmentVariable(driverVariable, driverServiceLocation);
+        }
+
+        WebServer = new AppServer();
+        WebServer.StartAsync().GetAwaiter().GetResult();
+
+        // Find selenium-manager binary.
+        try
+        {
+            string managerFilePath = "";
+            runfiles ??= Runfiles.Create();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/windows/selenium-manager.exe");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                var linuxArch = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "arm64" : "x86_64";
+                managerFilePath = runfiles.Rlocation($"_main/dotnet/src/webdriver/manager/linux-{linuxArch}/selenium-manager");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                managerFilePath = runfiles.Rlocation("_main/dotnet/src/webdriver/manager/macos/selenium-manager");
+            }
+
+            System.Environment.SetEnvironmentVariable("SE_MANAGER_PATH", managerFilePath);
+        }
+        catch (FileNotFoundException)
+        {
+            // Use the default one.
+        }
+
+        string projectRoot = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
+        if (!string.IsNullOrEmpty(projectRoot))
+        {
+            projectRoot += "/_main";
+        }
+        else
+        {
+            projectRoot = FindProjectRoot(currentDirectory);
+        }
+
+        bool autoStartRemoteServer = false;
+        if (Browser == Browser.Remote)
+        {
+            autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
+        }
+
+        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
+    }
+
+    ~EnvironmentManager()
+    {
+        RemoteServer?.StopAsync().Wait();
+        WebServer?.StopAsync().Wait();
+    }
+
+    public static EnvironmentManager Instance => instance.Value;
+
+    public Browser Browser { get; }
+
+    internal TestEnvironment Configuration { get; }
+
+    public string BrowserLocation { get; }
+
+    public string CurrentDirectory
+    {
+        get
+        {
+            string assemblyLocation = Path.GetDirectoryName(typeof(EnvironmentManager).Assembly.Location);
+            string testDirectory = TestContext.CurrentContext.TestDirectory;
+            if (assemblyLocation != testDirectory)
+            {
+                return assemblyLocation;
+            }
+            return testDirectory;
+        }
+    }
+
+    public AppServer WebServer { get; }
+
+    public RemoteSeleniumServer RemoteServer { get; }
+
+    public string RemoteCapabilities { get; }
+
+    private static string FindProjectRoot(string startDirectory)
+    {
+        // Walk up until we find a directory containing common/ and dotnet/
+        DirectoryInfo info = new DirectoryInfo(startDirectory);
+        while (info is not null && info != info.Root)
+        {
+            if (Directory.Exists(Path.Combine(info.FullName, "common"))
+                && Directory.Exists(Path.Combine(info.FullName, "dotnet")))
+            {
+                return info.FullName;
+            }
+            info = info.Parent;
+        }
+
+        return startDirectory;
+    }
+
+    private static string ResolveRunfilesPath(string path)
+    {
+        if (string.IsNullOrEmpty(path) || Path.IsPathRooted(path))
+        {
+            return path;
+        }
+
+        string srcdir = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
+        if (string.IsNullOrEmpty(srcdir))
+        {
+            return path;
+        }
+
+        // Bazel $(location ...) emits paths relative to <runfiles>/_main.
+        return Path.GetFullPath(Path.Combine(srcdir, "_main", path));
+    }
+}

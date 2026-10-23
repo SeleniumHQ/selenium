@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Safari
       describe Driver, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
-                                     {browser: %i[safari safari_preview]}] do
+                                     {browser_family: :safari}] do
         it 'gets and sets permissions' do
           driver.permissions = {'getUserMedia' => false}
           expect(driver.permissions).to eq('getUserMedia' => false)

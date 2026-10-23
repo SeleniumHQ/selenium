@@ -10,24 +10,81 @@ package(
 )
 
 alias(
-    name = "selenium-manager-linux",
+    name = "selenium-manager-linux-x86_64",
     actual = select({
-        "//common:use_pinned_browser": "@download_sm_linux//file",
-        "//conditions:default": "//rust:selenium-manager-linux",
+        "//common:manager_all": "//rust:_xc_file-linux-x86_64",
+        "//common:manager_host": "//rust:selenium-manager-linux-x86_64",
+        "//common:manager_stub": ":stub-selenium-manager",
+        "//conditions:default": "@download_sm_linux_x86_64//file",
+    }),
+)
+
+alias(
+    name = "selenium-manager-linux-arm64",
+    actual = select({
+        "//common:manager_all": "//rust:_xc_file-linux-arm64",
+        "//common:manager_host": "//rust:selenium-manager-linux-arm64",
+        "//common:manager_stub": ":stub-selenium-manager",
+        "//conditions:default": "@download_sm_linux_arm64//file",
     }),
 )
 
 alias(
     name = "selenium-manager-macos",
     actual = select({
-        "//common:use_pinned_browser": "@download_sm_macos//file",
-        "//conditions:default": "//rust:selenium-manager-macos",
+        "//common:manager_all": "//rust:_xc_file-macos",
+        "//common:manager_host": "//rust:selenium-manager-macos",
+        "//common:manager_stub": ":stub-selenium-manager",
+        "//conditions:default": "@download_sm_macos//file",
     }),
 )
 
-# The Rust selenium-manager cannot be built from source on Windows (pending the
-# @llvm toolchain migration)
 alias(
     name = "selenium-manager-windows",
-    actual = "@download_sm_windows//file",
+    actual = select({
+        "//common:manager_all": "//rust:_xc_file-windows",
+        "//common:manager_host": "//rust:selenium-manager-windows",
+        "//common:manager_stub": ":stub-selenium-manager-windows",
+        "//conditions:default": "@download_sm_windows//file",
+    }),
+)
+
+alias(
+    name = "selenium-manager-sbom",
+    actual = select({
+        "//common:manager_host": ":stub-selenium-manager.cdx.json",
+        "//common:manager_stub": ":stub-selenium-manager.cdx.json",
+        "//conditions:default": "@download_sm_sbom//file",
+    }),
+)
+
+alias(
+    name = "selenium-manager-notice",
+    actual = select({
+        "//common:manager_host": ":stub-selenium-manager-THIRD-PARTY-NOTICES.txt",
+        "//common:manager_stub": ":stub-selenium-manager-THIRD-PARTY-NOTICES.txt",
+        "//conditions:default": "@download_sm_notice//file",
+    }),
+)
+
+exports_files(
+    srcs = [
+        "stub-selenium-manager",
+        "stub-selenium-manager.cdx.json",
+        "stub-selenium-manager-THIRD-PARTY-NOTICES.txt",
+    ],
+    visibility = ["//rust:__pkg__"],
+)
+
+# Windows hosts run the manager in every browser test and cannot execute the shell-script stub.
+filegroup(
+    name = "stub-selenium-manager-windows",
+    srcs = select(
+        {
+            "//common:linux": ["stub-selenium-manager"],
+            "//common:macos": ["stub-selenium-manager"],
+        },
+        no_match_error = "--manager=stub is not supported on Windows hosts; use --manager=download",
+    ),
+    tags = ["manual"],
 )

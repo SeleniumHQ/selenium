@@ -20,7 +20,12 @@ import argparse
 import json
 import os
 import re
-import urllib.request
+
+import urllib3
+
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def run(lockfile_path):
@@ -39,10 +44,12 @@ def run(lockfile_path):
         else:
             continue
         try:
-            with urllib.request.urlopen(releases_url) as response:
-                json_resp = json.loads(response.read())
-                new_version = json_resp["tag_name"]
-                assets = json_resp["assets"]
+            response = http.request("GET", releases_url)
+            if response.status != 200:
+                continue
+            json_resp = json.loads(response.data)
+            new_version = json_resp["tag_name"]
+            assets = json_resp["assets"]
         except Exception:
             continue
         if new_version != version:

@@ -11,8 +11,15 @@
       <Pack>false</Pack>
     </Content>
 
-    <Content Include="$(MSBuildThisFileDirectory)..\runtimes\linux\native\selenium-manager">
-      <Link>runtimes\linux\native\%(Filename)%(Extension)</Link>
+    <Content Include="$(MSBuildThisFileDirectory)..\runtimes\linux-x64\native\selenium-manager">
+      <Link>runtimes\linux-x64\native\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+      <Pack>false</Pack>
+    </Content>
+
+    <Content Include="$(MSBuildThisFileDirectory)..\runtimes\linux-arm64\native\selenium-manager">
+      <Link>runtimes\linux-arm64\native\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
       <Pack>false</Pack>

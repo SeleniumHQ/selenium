@@ -23,6 +23,7 @@ import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodSpec;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
+import io.fabric8.kubernetes.api.model.SecurityContext;
 import io.fabric8.kubernetes.api.model.VolumeMount;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.Config;
@@ -146,7 +147,8 @@ public class KubernetesOptions {
         throw new ConfigException("Unable to find JSON config for: " + configKey);
       }
       Capabilities caps =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "kubernetes config '" + configKey + "'"));
 
       if (configKey.startsWith(CONFIGMAP_PREFIX)) {
         // Template mode: load Job template from ConfigMap
@@ -432,11 +434,13 @@ public class KubernetesOptions {
       String containerImagePullPolicy = null;
       Map<String, Quantity> containerResourceRequests = null;
       Map<String, Quantity> containerResourceLimits = null;
+      SecurityContext containerSecurityContext = null;
       String assetsClaimName = null;
       List<Container> containers = spec.getContainers();
       if (containers != null && !containers.isEmpty()) {
         Container firstContainer = containers.get(0);
         containerImagePullPolicy = firstContainer.getImagePullPolicy();
+        containerSecurityContext = firstContainer.getSecurityContext();
         ResourceRequirements resources = firstContainer.getResources();
         if (resources != null) {
           containerResourceRequests = resources.getRequests();
@@ -489,7 +493,8 @@ public class KubernetesOptions {
               containerResourceLimits,
               assetsClaimName,
               nodePodName,
-              nodePodUid);
+              nodePodUid,
+              containerSecurityContext);
 
       LOG.info(String.format("Inspected Node Pod '%s' for inheritable spec fields", podName));
       return inherited;
@@ -541,5 +546,14 @@ public class KubernetesOptions {
       }
     }
     return result;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

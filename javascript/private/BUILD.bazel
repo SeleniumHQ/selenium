@@ -1,13 +1,22 @@
 load("@rules_python//python:defs.bzl", "py_binary")
+load("//common:defs.bzl", "copy_file")
+
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
 
 py_binary(
     name = "gen_file",
     srcs = [
         "gen_file.py",
     ],
+    data = [":license_header_local"],
     visibility = [
         "//visibility:public",
     ],
+    deps = ["//scripts:generated_note"],
 )
 
 py_binary(

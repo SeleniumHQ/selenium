@@ -6,15 +6,22 @@ load(
     "rb_gem_push",
 )
 load("//common:defs.bzl", "copy_file")
+load("//rb:version.bzl", "SE_VERSION")
 
 package(default_visibility = ["//:__subpackages__"])
 
 GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
 
 copy_file(
-    name = "manager-linux",
-    src = "//common/manager:selenium-manager-linux",
-    out = "bin/linux/selenium-manager",
+    name = "manager-linux-x86_64",
+    src = "//common/manager:selenium-manager-linux-x86_64",
+    out = "bin/linux-x86_64/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux-arm64",
+    src = "//common/manager:selenium-manager-linux-arm64",
+    out = "bin/linux-arm64/selenium-manager",
 )
 
 copy_file(
@@ -27,6 +34,18 @@ copy_file(
     name = "manager-windows",
     src = "//common/manager:selenium-manager-windows",
     out = "bin/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-sbom",
+    src = "//common/manager:selenium-manager-sbom",
+    out = "bin/selenium-manager.cdx.json",
+)
+
+copy_file(
+    name = "manager-notice",
+    src = "//common/manager:selenium-manager-notice",
+    out = "bin/selenium-manager-THIRD-PARTY-NOTICES.txt",
 )
 
 select_file(
@@ -63,8 +82,11 @@ rb_gem_build(
         "CHANGES",
         "README.md",
         ":license",
-        ":manager-linux",
+        ":manager-linux-arm64",
+        ":manager-linux-x86_64",
         ":manager-macos",
+        ":manager-notice",
+        ":manager-sbom",
         ":manager-windows",
         ":notice",
     ],
@@ -117,18 +139,6 @@ rb_gem_build(
 rb_gem_push(
     name = "selenium-devtools-release",
     gem = ":selenium-devtools",
-)
-
-rb_binary(
-    name = "selenium-webdriver-bump-nightly-version",
-    args = [
-        "rb/support/nightly_version_generator.rb",
-        "rb/lib/selenium/webdriver/version.rb",
-    ],
-    deps = [
-        "//rb/lib/selenium/webdriver:version",
-        "//rb/support:nightly_version_generator",
-    ],
 )
 
 rb_gem_push(
@@ -186,6 +196,7 @@ rb_binary(
     data = [
         "Gemfile",
     ],
+    env = {"SE_VERSION": SE_VERSION},
     deps = [
         "//rb/support:bundle",
     ],
@@ -200,6 +211,7 @@ rb_binary(
     data = [
         "Gemfile",
     ],
+    env = {"SE_VERSION": SE_VERSION},
     deps = [
         "//rb/support:bundle",
     ],

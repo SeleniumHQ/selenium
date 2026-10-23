@@ -193,6 +193,7 @@ java_binary(
         "//:__pkg__",
         "//deploys/docker:__pkg__",
         "//dotnet/test:__subpackages__",
+        "//java:__pkg__",
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",
@@ -200,6 +201,8 @@ java_binary(
     ],
     runtime_deps = [
         ":grid",
+        # fabric8 excluded; supplied at runtime via `--ext`.
+        "//java/src/org/openqa/selenium/grid/node/kubernetes:kubernetes-embedded",
         "//java/src/org/openqa/selenium/grid/sessionmap/redis",
         artifact("org.slf4j:slf4j-jdk14"),
     ],

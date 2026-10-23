@@ -91,6 +91,17 @@ module Selenium
       end
 
       #
+      # Returns the WebDriver BiDi connection for this session.
+      #
+      # @return [BiDi]
+      # @raise [Error::WebDriverError] if BiDi was not enabled for this session
+      #
+
+      def bidi
+        @bridge.bidi
+      end
+
+      #
       # @return [Navigation]
       # @see Navigation
       #
@@ -264,6 +275,30 @@ module Selenium
 
       def network
         @network ||= WebDriver::Network.new(bridge)
+      end
+
+      #
+      # Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
+      # or base64-encoded bytes; works with remote (Grid) sessions.
+      #
+      # @note Chromium requires a BiDi session and installs only unpacked directories
+      #   (SeleniumHQ/selenium#16541); Firefox falls back to the classic endpoint without BiDi.
+      # @param [String] path directory, packed extension, or base64-encoded bytes
+      # @return [WebExtension] the installed extension
+      #
+
+      def install_web_extension(...)
+        bridge.install_web_extension(...)
+      end
+
+      #
+      # Uninstalls a browser extension installed with {#install_web_extension}.
+      #
+      # @param [WebExtension] extension the extension returned by {#install_web_extension}
+      #
+
+      def uninstall_web_extension(extension)
+        bridge.uninstall_web_extension(extension.id)
       end
 
       #-------------------------------- sugar  --------------------------------

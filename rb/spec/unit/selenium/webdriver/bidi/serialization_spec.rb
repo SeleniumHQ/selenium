@@ -79,7 +79,31 @@ module Selenium
               payload = {'type' => 'futuristic', 'value' => 'x'}
 
               expect { BrowsingContext::Locator.from_json(payload) }
-                .to raise_error(Error::WebDriverError, /variant not in this Selenium's BiDi schema/)
+                .to raise_error(Error::SerializationError, /variant not in this Selenium's BiDi schema/)
+            end
+
+            it 'raises when an object-only union receives a bare scalar (no arm can match)' do
+              expect { Script::RemoteValue.from_json('not-an-object') }
+                .to raise_error(Error::SerializationError, /RemoteValue expected an object/)
+            end
+
+            it 'passes a declared bare scalar through a union that has a scalar arm (input.Origin)' do
+              expect(Input::Origin.from_json('viewport')).to eq('viewport')
+            end
+
+            it 'raises when a bare scalar is not one of the union scalar arms' do
+              expect { Input::Origin.from_json('banana') }
+                .to raise_error(Error::SerializationError, /Origin received a scalar not in this Selenium/)
+            end
+
+            it 'keeps a map string key while typing its object value (object-only value union)' do
+              parsed = Script::ObjectRemoteValue.from_json(
+                'type' => 'object', 'value' => [['k', {'type' => 'number', 'value' => 2}]]
+              )
+              key, value = parsed.value.first
+
+              expect(key).to eq('k') # a bare-string key survives, not rejected by the object-only union
+              expect(value).to be_a(Script::NumberValue)
             end
           end
 
@@ -124,6 +148,45 @@ module Selenium
               expect(value).to be_a(Script::NumberValue)
               expect(value.value).to eq(2)
             end
+
+            # The outbound mirror of the map-key case: a bare-string key serializes through the
+            # scalar-tolerant union untouched while its object value is typed, and round-trips back.
+            it 'serializes and round-trips a map LocalValue whose key is a bare string' do
+              obj = Script::ObjectLocalValue.new(value: [['k', Script::StringValue.new(value: 'x')]])
+
+              expect(obj.as_json).to eq(
+                'type' => 'object',
+                'value' => [['k', {'type' => 'string', 'value' => 'x'}]]
+              )
+              expect(Script::LocalValue.from_json(obj.as_json)).to eq(obj)
+            end
+
+            # A scalar-tolerant position still validates the scalar arm's type: the map entry is
+            # `RemoteValue / text`, so a non-string bare value is a wire error, not passed through.
+            it 'rejects a wrong-typed scalar at a map key position instead of passing it through' do
+              wire = {'type' => 'object', 'value' => [[42, {'type' => 'number', 'value' => 2}]]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::SerializationError, /value expected string, got 42/)
+            end
+
+            # Scalar tolerance is the key's alone: the value is the object-only RemoteValue union,
+            # so a bare-scalar value is rejected rather than passed through — object_only holds here.
+            it 'rejects a bare-scalar map value against the object-only value union' do
+              wire = {'type' => 'object', 'value' => [['k', 'bare string, not an object']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::SerializationError, /expected an object on the wire/)
+            end
+
+            # A map is `[key, value]` pairs; a malformed entry that is not a 2-item pair is a wire
+            # error, not something to pass through the scalar-tolerant path.
+            it 'rejects a malformed map entry that is not a [key, value] pair' do
+              wire = {'type' => 'object', 'value' => [['orphan-key']]}
+
+              expect { Script::ObjectRemoteValue.from_json(wire) }
+                .to raise_error(Error::SerializationError, /expected a \[key, value\] pair/)
+            end
           end
 
           describe 'optional + nullable fields' do
@@ -141,15 +204,235 @@ module Selenium
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: true).as_json).to eq('bypass' => true)
               expect(BrowsingContext::SetBypassCSPParameters.new(bypass: nil).as_json).to eq('bypass' => nil)
             end
+
+            it 'rejects a value that is neither the literal nor null, before it reaches the wire' do
+              expect { BrowsingContext::SetBypassCSPParameters.new(bypass: false) }
+                .to raise_error(ArgumentError, /bypass must be true/)
+              expect { Emulation::SetScriptingEnabledParameters.new(enabled: true) }
+                .to raise_error(ArgumentError, /enabled must be false/)
+            end
           end
 
           describe 'extensible records' do
-            it 'captures unknown keys and merges them back on serialization' do
-              parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42)
+            # The spec sanctions extras on an extensible type, so they are captured silently — no
+            # undeclared-property warning, unlike a closed type.
+            it 'captures unknown keys silently and merges them back on serialization' do
+              parsed = nil
+              expect { parsed = Script::SharedReference.from_json('sharedId' => 's1', 'webdriverValue' => 42) }
+                .not_to have_warning(:bidi_undeclared_property)
 
               expect(parsed.shared_id).to eq('s1')
               expect(parsed.extensions).to eq('webdriverValue' => 42)
               expect(parsed.as_json).to eq('sharedId' => 's1', 'webdriverValue' => 42)
+            end
+
+            # An extensible type keeps unknown properties so a received-then-resent payload
+            # round-trips them. Extensibility alone is the trigger.
+            it 'preserves an unknown key on an extensible type across a receive/re-send round trip' do
+              parsed = nil
+              expect { parsed = Storage::CookieFilter.from_json('name' => 'sid', 'x-vendor' => 'keep-me') }
+                .not_to have_warning(:bidi_undeclared_property)
+
+              expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
+              expect(parsed.as_json).to eq('name' => 'sid', 'x-vendor' => 'keep-me')
+            end
+
+            # network.Cookie is extensible but received-only (not reachable from any command's
+            # params); it still preserves and echoes an unknown key, because extensibility — not
+            # send-reachability — is what sanctions the extra field.
+            it 'preserves an unknown key on an extensible received-only type across re-serialize' do
+              wire = Network::Cookie.new(**valid_cookie_attrs).as_json.merge('x-vendor' => 'keep-me')
+              parsed = nil
+              expect { parsed = Network::Cookie.from_json(wire) }.not_to have_warning(:bidi_undeclared_property)
+
+              expect(parsed.extensions).to eq('x-vendor' => 'keep-me')
+              expect(parsed.as_json).to include('x-vendor' => 'keep-me')
+            end
+
+            # An extra is by definition a field the spec does not declare, so an extensions key that
+            # collides with a declared wire key would silently clobber a typed, validated value on the
+            # wire. Reject it at the merge instead — the single gate every outbound path funnels through.
+            it 'rejects an extension that shadows a declared field on serialize' do
+              cookie = Network::Cookie.new(**valid_cookie_attrs, extensions: {'name' => 'clobber'})
+
+              expect { cookie.as_json }.to raise_error(ArgumentError, /extensions shadow declared fields: name/)
+            end
+
+            # A symbol key stringifies to a declared wire key on serialization, so it must trip the same
+            # guard rather than ride onto the wire as a duplicate of the typed field.
+            it 'rejects a symbol-keyed extension that shadows a declared field on serialize' do
+              cookie = Network::Cookie.new(**valid_cookie_attrs, extensions: {name: 'clobber'})
+
+              expect { cookie.as_json }.to raise_error(ArgumentError, /extensions shadow declared fields: name/)
+            end
+
+            it 'warns on and drops an unknown key on a non-extensible type' do
+              wire = {'type' => 'password', 'username' => 'u', 'password' => 'p', 'x-vendor' => 'v'}
+              parsed = nil
+              expect { parsed = Network::AuthCredentials.from_json(wire) }.to have_warning(:bidi_undeclared_property)
+
+              expect(parsed).not_to respond_to(:extensions)
+            end
+          end
+
+          describe 'webExtension.install Firefox (moz:) vendor extension' do
+            let(:extension) { WebExtension::ExtensionPath.new(path: '/tmp/ext') }
+
+            # Construct the moz vendor subclass directly, with execute stubbed to capture the
+            # params the vendor install would send.
+            def moz_install(**kwargs)
+              captured = nil
+              connection = Object.new
+              connection.define_singleton_method(:send_cmd) { |**| {} }
+              domain = WebExtension::Moz.new(connection)
+              domain.define_singleton_method(:execute) { |params:, **| captured = params }
+              domain.install(extension_data: extension, **kwargs)
+              captured
+            end
+
+            it 'serializes typed moz: options under their exact wire keys' do
+              params = moz_install(allow_private_browsing: true, permanent: false)
+
+              expect(params).to be_a(WebExtension::Moz::InstallParameters)
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:allowPrivateBrowsing' => true,
+                'moz:permanent' => false
+              )
+            end
+
+            it 'omits vendor options left unset' do
+              params = moz_install(permanent: true)
+
+              expect(params.as_json).to eq(
+                'extensionData' => {'type' => 'path', 'path' => '/tmp/ext'},
+                'moz:permanent' => true
+              )
+            end
+
+            it 'keeps moz: off the shared install so non-Firefox sessions never see it' do
+              shared = WebExtension.instance_method(:install).parameters.map(&:last)
+
+              expect(shared).to eq([:extension_data])
+            end
+
+            it 'rejects a moz: option of the wrong type before sending' do
+              expect { moz_install(permanent: 'yes') }.to raise_error(ArgumentError, /permanent/)
+            end
+
+            it 'keeps the shared params closed to undeclared fields' do
+              expect { WebExtension::InstallParameters.new(extension_data: extension, extensions: {'moz:future' => 1}) }
+                .to raise_error(ArgumentError, /extensions/)
+            end
+          end
+
+          describe 'browsingContext Firefox (moz:) vendor extension' do
+            def moz_get_tree(**kwargs)
+              captured = nil
+              connection = Object.new
+              connection.define_singleton_method(:send_cmd) { |**| {} }
+              domain = BrowsingContext::Moz.new(connection)
+              domain.define_singleton_method(:execute) { |params:, **| captured = params }
+              domain.get_tree(**kwargs)
+              captured
+            end
+
+            def info_wire(**extra)
+              {'children' => nil, 'clientWindow' => 'w', 'context' => 'c', 'originalOpener' => nil,
+               'url' => 'about:blank', 'userContext' => 'default'}.merge(extra)
+            end
+
+            it 'serializes moz:scope from the vendor get_tree' do
+              params = moz_get_tree(max_depth: 0, scope: :chrome)
+
+              expect(params).to be_a(BrowsingContext::Moz::GetTreeParameters)
+              expect(params.as_json).to eq('maxDepth' => 0, 'moz:scope' => 'chrome')
+            end
+
+            it 'rejects a moz:scope outside its allowed values before sending' do
+              expect { moz_get_tree(scope: :bogus) }.to raise_error(ArgumentError, /moz:scope must be one of/)
+            end
+
+            it 'keeps the shared params closed to undeclared fields' do
+              expect { BrowsingContext::GetTreeParameters.new(extensions: {'moz:scope' => 'chrome'}) }
+                .to raise_error(ArgumentError, /extensions/)
+            end
+
+            it 'reads moz:name and moz:scope into typed fields on Info' do
+              parsed = nil
+              wire = info_wire('moz:name' => 'tab', 'moz:scope' => 'content')
+              expect { parsed = BrowsingContext::Info.from_json(wire) }.not_to have_warning(:bidi_undeclared_property)
+
+              expect(parsed.moz_name).to eq('tab')
+              expect(parsed.moz_scope).to eq(:content)
+            end
+
+            it 'rejects a moz:scope value outside its allowed set on Info' do
+              expect { BrowsingContext::Info.from_json(info_wire('moz:scope' => 'bogus')) }
+                .to raise_error(Error::SerializationError, /unknown value/)
+            end
+
+            it 'warns on and drops an undeclared field on Info' do
+              parsed = nil
+              expect { parsed = BrowsingContext::Info.from_json(info_wire('x-vendor' => 'v')) }
+                .to have_warning(:bidi_undeclared_property)
+
+              expect(parsed).not_to respond_to(:extensions)
+            end
+          end
+
+          describe 'session.CapabilityRequest Firefox (moz:) vendor capability' do
+            it 'serializes typed moz:firefoxOptions under its wire key' do
+              log = Session::CapabilityRequestFirefoxOptions::Log.new(level: :trace)
+              options = Session::CapabilityRequestFirefoxOptions.new(args: ['-headless'], log: log,
+                                                                     prefs: {'remote.active-protocols' => 1})
+              request = Session::CapabilityRequest.new(browser_name: 'firefox', moz_firefox_options: options)
+
+              expect(request.as_json).to eq(
+                'browserName' => 'firefox',
+                'moz:firefoxOptions' => {'args' => ['-headless'], 'log' => {'level' => 'trace'},
+                                         'prefs' => {'remote.active-protocols' => 1}}
+              )
+            end
+
+            it 'rejects a Firefox option the vendor schema does not declare' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(bogus: true) }
+                .to raise_error(ArgumentError, /bogus/)
+            end
+
+            it 'rejects a log level outside its allowed values' do
+              expect { Session::CapabilityRequestFirefoxOptions::Log.new(level: :loud) }
+                .to raise_error(ArgumentError, /must be one of/)
+            end
+
+            it 'accepts each prefs value type the vendor schema declares' do
+              prefs = {'a' => 'text', 'b' => true, 'c' => 1}
+
+              expect(Session::CapabilityRequestFirefoxOptions.new(prefs: prefs).as_json).to eq('prefs' => prefs)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => 1.5}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected string or boolean or integer, got 1.5/)
+            end
+
+            it 'rejects a prefs value outside string, boolean and integer on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => []}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected string or boolean or integer/)
+            end
+
+            it 'rejects moz:firefoxOptions passed through the extensions map' do
+              request = Session::CapabilityRequest.new(extensions: {'moz:firefoxOptions' => {}})
+
+              expect { request.as_json }
+                .to raise_error(ArgumentError, /extensions shadow declared fields: moz:firefoxOptions/)
+            end
+
+            it "still carries another vendor's capabilities in the extensions map" do
+              request = Session::CapabilityRequest.new(browser_name: 'chrome',
+                                                       extensions: {'goog:chromeOptions' => {'args' => []}})
+
+              expect(request.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {'args' => []})
             end
           end
 
@@ -229,7 +512,211 @@ module Selenium
 
             it 'raises on an inbound enum value outside our schema' do
               expect { Log::ConsoleLogEntry.from_json('type' => 'console', 'level' => 'futureLevel') }
-                .to raise_error(Error::WebDriverError, /level received an unknown value.*futureLevel/)
+                .to raise_error(Error::SerializationError, /level received an unknown value.*futureLevel/)
+            end
+          end
+
+          describe 'outbound primitive validation' do
+            it 'rejects a wrong-typed primitive at construction, so an invalid object cannot exist' do
+              expect { BrowsingContext::NavigateParameters.new(context: 'c', url: 123) }
+                .to raise_error(ArgumentError, /NavigateParameters#url expected string/)
+            end
+
+            it 'rejects a fractional value for an integer field, mirroring the wire integer/number split' do
+              expect { Emulation::ScreenArea.new(width: 5.5, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected integer/)
+            end
+
+            it 'accepts a whole-valued float for an integer field, as the wire may spell it either way' do
+              expect(Emulation::ScreenArea.new(width: 5.0, height: 5).as_json).to eq('width' => 5.0, 'height' => 5)
+            end
+
+            it 'accepts either an integer or a float for a number field' do
+              klass = Emulation::GeolocationCoordinates
+
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 1.5).accuracy).to eq(1.5)
+              expect(klass.new(latitude: 0, longitude: 0, accuracy: 2).accuracy).to eq(2)
+            end
+          end
+
+          describe 'numeric bounds' do
+            def locate_nodes(max_node_count)
+              locator = BrowsingContext::CssLocator.new(value: 'p')
+              BrowsingContext::LocateNodesParameters.new(context: 'c', locator: locator, max_node_count: max_node_count)
+            end
+
+            def response_wire(status)
+              {'url' => 'https://example.com', 'protocol' => 'http/1.1', 'status' => status, 'statusText' => 'OK',
+               'fromCache' => false, 'headers' => [], 'mimeType' => 'text/html', 'bytesReceived' => 0,
+               'headersSize' => nil, 'bodySize' => nil, 'content' => {'size' => 0}}
+            end
+
+            it 'rejects a value below an inclusive minimum before sending' do
+              expect { locate_nodes(0) }
+                .to raise_error(ArgumentError, /LocateNodesParameters#max_node_count expected >= 1, got 0/)
+            end
+
+            it 'accepts a value at an inclusive minimum' do
+              expect(locate_nodes(1).max_node_count).to eq(1)
+            end
+
+            it 'rejects a value at an exclusive minimum' do
+              expect { BrowsingContext::SetViewportParameters.new(device_pixel_ratio: 0) }
+                .to raise_error(ArgumentError, /SetViewportParameters#device_pixel_ratio expected > 0, got 0/)
+            end
+
+            it 'rejects a value at an exclusive maximum' do
+              expect { Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 360) }
+                .to raise_error(ArgumentError, /GeolocationCoordinates#heading expected < 360, got 360/)
+            end
+
+            it 'accepts a value just under an exclusive maximum' do
+              expect(Emulation::GeolocationCoordinates.new(latitude: 0, longitude: 0, heading: 359.9).heading)
+                .to eq(359.9)
+            end
+
+            it 'holds a field to the range of the alias it names' do
+              expect { Emulation::ScreenArea.new(width: 2**53, height: 5) }
+                .to raise_error(ArgumentError, /ScreenArea#width expected <= 9007199254740991, got 9007199254740992/)
+            end
+
+            it 'rejects a value outside the range of the alias it names on receipt' do
+              expect { Network::ResponseData.from_json(response_wire(-1)) }
+                .to raise_error(Error::SerializationError, /ResponseData#status expected >= 0, got -1/)
+            end
+
+            it 'rejects a value outside a field-declared range on receipt' do
+              wire = {'proxyType' => 'manual', 'socksProxy' => 'localhost:1080', 'socksVersion' => 256}
+
+              expect { Session::ManualProxyConfiguration.from_json(wire) }
+                .to raise_error(Error::SerializationError, /ManualProxyConfiguration#socks_version expected <= 255/)
+            end
+
+            it 'holds an integer map value to the range of its arm before sending' do
+              expect { Session::CapabilityRequestFirefoxOptions.new(prefs: {'a' => -(2**53)}) }
+                .to raise_error(ArgumentError, /prefs\["a"\] expected >= -9007199254740991, got -9007199254740992/)
+            end
+
+            it 'holds an integer map value to the range of its arm on receipt' do
+              expect { Session::CapabilityRequestFirefoxOptions.from_json('prefs' => {'a' => 2**53}) }
+                .to raise_error(Error::SerializationError, /prefs\["a"\] expected <= 9007199254740991/)
+            end
+
+            it 'holds an integer list element to the range of its arm before sending' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: ['1-3', -1]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected >= 0, got -1/)
+            end
+          end
+
+          describe 'outbound ref validation' do
+            # A record-typed ref: the value must be an instance of that exact record. A different
+            # record (even a sibling reference type) is a caller error caught before the wire.
+            it 'accepts the declared record for a record-typed ref' do
+              params = Input::SetFilesParameters.new(
+                context: 'c', element: Script::SharedReference.new(shared_id: 's1'), files: []
+              )
+
+              expect(params.element).to be_a(Script::SharedReference)
+            end
+
+            it 'rejects a wrong record for a record-typed ref' do
+              wrong = Script::RemoteObjectReference.new(handle: 'h')
+
+              expect { Input::SetFilesParameters.new(context: 'c', element: wrong, files: []) }
+                .to raise_error(ArgumentError, /SetFilesParameters#element expected Script::SharedReference/)
+            end
+
+            # A union-typed ref accepts any of the union's declared variants (decision 1), so a Cookie
+            # value may be either BytesValue arm.
+            it 'accepts any declared variant for a union-typed ref' do
+              string_cookie = Network::Cookie.new(**valid_cookie_attrs, value: Network::StringValue.new(value: 'YQ=='))
+              base64_cookie = Network::Cookie.new(**valid_cookie_attrs, value: Network::Base64Value.new(value: 'YQ=='))
+
+              expect(string_cookie.value).to be_a(Network::StringValue)
+              expect(base64_cookie.value).to be_a(Network::Base64Value)
+            end
+
+            # A record from a different union with the same wire shape is still not a BytesValue
+            # variant, so it is rejected rather than duck-typed onto the wire.
+            it 'rejects a variant from a different union for a union-typed ref' do
+              expect { Network::Cookie.new(**valid_cookie_attrs, value: Script::StringValue.new(value: 'x')) }
+                .to raise_error(ArgumentError, /Cookie#value expected Network::BytesValue/)
+            end
+
+            # BytesValue is object_only, so a bare scalar cannot match any arm — the outbound mirror of
+            # rejecting a non-object where a typed object is expected (decision 4).
+            it 'rejects a bare scalar for an object-only union ref' do
+              expect { Network::Cookie.new(**valid_cookie_attrs, value: 'plain') }
+                .to raise_error(ArgumentError, /Cookie#value expected Network::BytesValue/)
+            end
+
+            # A union with a bare-scalar arm (input.Origin's "viewport"/"pointer") admits each of its
+            # declared literals, but a record from another union remains a cross-union mismatch.
+            it 'accepts a declared bare-scalar arm for a non-object-only union ref' do
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: 'viewport').origin).to eq('viewport')
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: 'pointer').origin).to eq('pointer')
+            end
+
+            # The object arm is still accepted alongside the scalar arms.
+            it 'accepts the object arm for a scalar-tolerant union ref' do
+              origin = Input::ElementOrigin.new(element: Script::SharedReference.new(shared_id: 's1'))
+
+              expect(Input::PointerMoveAction.new(x: 0, y: 0, origin: origin).origin).to be_a(Input::ElementOrigin)
+            end
+
+            # scalar_values pins the arm's literals ("viewport"/"pointer"), so a string outside that set
+            # matches no arm and is a caller error rather than a value the browser rejects a round-trip later.
+            it 'rejects a bare string that is not one of the union scalar arms' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: 'banana') }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            # A wrong-typed scalar (a number or boolean where the arm is a string literal) is likewise
+            # not one of the declared arms.
+            it 'rejects a wrong-typed scalar for a union ref whose arms are string literals' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: 1) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: true) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            it 'rejects a cross-union variant even where a scalar arm exists' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: Script::StringValue.new(value: 'x')) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            # A raw Hash is an object that matched no variant, not a bare-scalar arm, so it is rejected
+            # rather than passed through untyped.
+            it 'rejects a raw Hash for a union ref with a scalar arm' do
+              expect { Input::PointerMoveAction.new(x: 0, y: 0, origin: {type: 'element'}) }
+                .to raise_error(ArgumentError, /PointerMoveAction#origin expected Input::Origin/)
+            end
+
+            # A ref list validates every element against the ref, so one bad element is rejected even
+            # when its siblings are valid variants.
+            it 'accepts a list whose every element is a declared variant' do
+              array = Script::ArrayLocalValue.new(value: [Script::StringValue.new(value: 'x'),
+                                                          Script::NumberValue.new(value: 1)])
+
+              expect(array.value.size).to eq(2)
+            end
+
+            it 'validates each element of a ref list, rejecting a non-variant element' do
+              expect { Script::ArrayLocalValue.new(value: [Script::NumberValue.new(value: 1), 42]) }
+                .to raise_error(ArgumentError, /ArrayLocalValue#value expected Script::LocalValue, got 42/)
+            end
+
+            # A scalar-arm map keeps its bare-string key while still typing the value: a wrong-typed
+            # value (not a LocalValue variant) at the value position is rejected before the wire.
+            it 'rejects a non-variant value at a scalar-arm map position' do
+              expect { Script::ObjectLocalValue.new(value: [['k', 'not-a-value']]) }
+                .to raise_error(ArgumentError, /ObjectLocalValue#value expected Script::LocalValue, got "not-a-value"/)
+            end
+
+            # The bare key at a scalar-arm map position must still match the arm's primitive.
+            it 'rejects a wrong-typed bare key at a scalar-arm map position' do
+              expect { Script::ObjectLocalValue.new(value: [[42, Script::StringValue.new(value: 'x')]]) }
+                .to raise_error(ArgumentError, /ObjectLocalValue#value expected string, got 42/)
             end
           end
 
@@ -249,7 +736,7 @@ module Selenium
 
             it 'raises on an unrecognized inbound token' do
               expect { Bluetooth::SimulateAdapterParameters.from_json('context' => 'c', 'state' => 'powered-sideways') }
-                .to raise_error(Error::WebDriverError, /state received an unknown value.*powered-sideways/)
+                .to raise_error(Error::SerializationError, /state received an unknown value.*powered-sideways/)
             end
 
             it 'coerces each element of a list-valued enum' do
@@ -259,6 +746,119 @@ module Selenium
               expect(Network::AddInterceptParameters.from_json(params.as_json).phases)
                 .to eq(%i[before_request_sent auth_required])
             end
+
+            # A nullable inline literal choice (scrollbarType = "classic" / "overlay" / null) is
+            # hoisted to a named enum, so it validates as a closed vocabulary in both directions
+            # (and still admits null) rather than passing any string through as it did when opaque.
+            it 'validates a hoisted nullable inline enum, still admitting null' do
+              klass = Emulation::SetScrollbarTypeOverrideParameters
+
+              expect(klass.new(scrollbar_type: :overlay).as_json).to eq('scrollbarType' => 'overlay')
+              expect(klass.new(scrollbar_type: nil).as_json).to eq('scrollbarType' => nil)
+              expect { klass.new(scrollbar_type: :banana) }.to raise_error(ArgumentError, /must be one of/)
+              expect { klass.from_json('scrollbarType' => 'banana') }
+                .to raise_error(Error::SerializationError, /received an unknown value/)
+            end
+
+            it 'raises on an inbound null element in a list-valued enum' do
+              expect { Network::AddInterceptParameters.from_json('phases' => ['beforeRequestSent', nil]) }
+                .to raise_error(Error::SerializationError, /phases received an unknown value: nil/)
+            end
+          end
+
+          describe 'primitive list elements' do
+            it 'round-trips a list of strings' do
+              params = Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: %w[c1 c2])
+
+              expect(Session::SubscribeParameters.from_json(params.as_json))
+                .to have_attributes(events: %w[log.entryAdded], contexts: %w[c1 c2])
+            end
+
+            it 'rejects a wrong-typed element at construction' do
+              expect { Session::SubscribeParameters.new(events: ['log.entryAdded', 1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { Session::SubscribeParameters.new(events: [nil]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a wrong-typed element of an alias-typed list (browsingContext.BrowsingContext)' do
+              expect { Session::SubscribeParameters.new(events: %w[log.entryAdded], contexts: [:c1]) }
+                .to raise_error(ArgumentError, /SubscribeParameters#contexts\[0\] expected string, got :c1/)
+            end
+
+            it 'raises on an inbound wrong-typed element' do
+              expect { Session::SubscribeParameters.from_json('events' => ['log.entryAdded', 1]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[1\] expected string, got 1/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { Session::SubscribeParameters.from_json('events' => [nil]) }
+                .to raise_error(Error::SerializationError, /SubscribeParameters#events\[0\] expected string, got nil/)
+            end
+
+            it 'rejects a fractional element of an integer list in both directions' do
+              expect { Bluetooth::SimulateDescriptorResponseParameters.new(**descriptor_response(data: [1.5])) }
+                .to raise_error(ArgumentError, /data\[0\] expected integer, got 1.5/)
+              expect { Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [1.5])) }
+                .to raise_error(Error::SerializationError, /data\[0\] expected integer, got 1.5/)
+            end
+
+            it 'accepts a whole-valued float element of an integer list and holds it as an Integer' do
+              parsed = Bluetooth::SimulateDescriptorResponseParameters.from_json(descriptor_wire(data: [5.0, 6]))
+
+              expect(parsed.data).to eq([5, 6])
+              expect(parsed.data).to all(be_an(::Integer))
+            end
+
+            def descriptor_response(data:)
+              {context: 'c', address: 'a', service_uuid: 's', characteristic_uuid: 'ch', descriptor_uuid: 'd',
+               type: :read, code: 0, data: data}
+            end
+
+            def descriptor_wire(data:)
+              {'context' => 'c', 'address' => 'a', 'serviceUuid' => 's', 'characteristicUuid' => 'ch',
+               'descriptorUuid' => 'd', 'type' => 'read', 'code' => 0, 'data' => data}
+            end
+          end
+
+          # browsingContext.PrintParameters.pageRanges is a list of `js-uint / text`.
+          describe 'scalar-union list elements' do
+            it 'round-trips integer and string elements' do
+              params = BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, '3-5'])
+
+              expect(params.as_json).to include('pageRanges' => [1, '3-5'])
+              expect(BrowsingContext::PrintParameters.from_json(params.as_json).page_ranges).to eq([1, '3-5'])
+            end
+
+            it 'rejects an element outside the union at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [1, true]) }
+                .to raise_error(ArgumentError, /page_ranges\[1\] expected integer or string, got true/)
+            end
+
+            it 'rejects a nil element at construction' do
+              expect { BrowsingContext::PrintParameters.new(context: 'c', page_ranges: [nil]) }
+                .to raise_error(ArgumentError, /page_ranges\[0\] expected integer or string, got nil/)
+            end
+
+            it 'raises on an inbound element outside the union' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [{}]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[0\] expected integer or string, got \{\}/)
+            end
+
+            it 'raises on an inbound null element' do
+              expect { BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => ['1', nil]) }
+                .to raise_error(Error::SerializationError, /page_ranges\[1\] expected integer or string, got nil/)
+            end
+
+            it 'holds an inbound whole-valued float element as an Integer' do
+              parsed = BrowsingContext::PrintParameters.from_json('context' => 'c', 'pageRanges' => [5.0, '7'])
+
+              expect(parsed.page_ranges).to eq([5, '7'])
+              expect(parsed.page_ranges.first).to be_an(::Integer)
+            end
           end
 
           describe 'inbound shape validation' do
@@ -266,55 +866,115 @@ module Selenium
             # tripping the required-presence check on the others.
             let(:cookie_wire) { Network::Cookie.new(**valid_cookie_attrs).as_json }
 
-            it 'raises when a required field is missing from the response' do
-              expect { Network::Cookie.from_json('name' => 'sid') }
-                .to raise_error(Error::WebDriverError, /Cookie#value is required but was missing/)
-            end
-
             it 'raises when a non-nullable field arrives as explicit null' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => nil)) }
-                .to raise_error(Error::WebDriverError, /Cookie#name received null but is not nullable/)
+                .to raise_error(Error::SerializationError, /Cookie#name received null but is not nullable/)
             end
 
             it 'raises when a list-typed field arrives as a scalar' do
               expect { Network::AddInterceptParameters.from_json('phases' => 'beforeRequestSent') }
-                .to raise_error(Error::WebDriverError, /phases expected a list/)
+                .to raise_error(Error::SerializationError, /phases expected a list/)
             end
 
             it 'raises when a scalar-typed field arrives as a list' do
               expect { Network::Cookie.from_json(cookie_wire.merge('sameSite' => %w[none])) }
-                .to raise_error(Error::WebDriverError, /same_site expected a single value/)
+                .to raise_error(Error::SerializationError, /same_site expected a single value/)
             end
 
             it 'raises when an object-typed record arrives as a scalar' do
               expect { Network::AuthCredentials.from_json('not-an-object') }
-                .to raise_error(Error::WebDriverError, /AuthCredentials expected an object/)
+                .to raise_error(Error::SerializationError, /AuthCredentials expected an object/)
             end
 
             it 'raises when a string-typed field arrives as a number' do
               expect { Network::Cookie.from_json(cookie_wire.merge('name' => 123)) }
-                .to raise_error(Error::WebDriverError, /name expected string/)
+                .to raise_error(Error::SerializationError, /name expected string/)
             end
 
             it 'raises when a boolean-typed field arrives as a string' do
               expect { Network::Cookie.from_json(cookie_wire.merge('secure' => 'yes')) }
-                .to raise_error(Error::WebDriverError, /secure expected boolean/)
+                .to raise_error(Error::SerializationError, /secure expected boolean/)
             end
 
             it 'raises when an integer-typed field arrives as a string' do
               expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 'nope', 'data' => 'x') }
-                .to raise_error(Error::WebDriverError, /key expected integer/)
+                .to raise_error(Error::SerializationError, /key expected integer/)
             end
 
             it 'raises when an integer-typed field arrives as a non-integer float' do
               expect { Bluetooth::BluetoothManufacturerData.from_json('key' => 1.5, 'data' => 'x') }
-                .to raise_error(Error::WebDriverError, /key expected integer/)
+                .to raise_error(Error::SerializationError, /key expected integer/)
             end
 
             it 'accepts an integer for an integer-typed field' do
               parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5, 'data' => 'x')
 
               expect(parsed.key).to eq(5)
+            end
+
+            it 'accepts a whole-valued float for an integer-typed field and holds it as an Integer' do
+              parsed = Bluetooth::BluetoothManufacturerData.from_json('key' => 5.0, 'data' => 'x')
+
+              expect(parsed.key).to be_an(::Integer).and eq(5)
+            end
+
+            # Signal 3: a scalar hidden behind an alias (size -> js-uint -> integer) now carries
+            # its leaf primitive, so a wrong-typed value is rejected instead of passing opaque.
+            it 'raises when an alias-typed integer field (js-uint) arrives as a string' do
+              expect { Network::Cookie.from_json(cookie_wire.merge('size' => 'big')) }
+                .to raise_error(Error::SerializationError, /size expected integer/)
+            end
+          end
+
+          # RequestDeviceInfo is a minimal record: a required `id` and a required-and-nullable `name`.
+          describe 'inbound required fields' do
+            it 'raises when a required field is missing from the response' do
+              expect { Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1') }
+                .to raise_error(Error::SerializationError, /RequestDeviceInfo#name is required but was missing/)
+            end
+
+            it 'accepts an explicit null for a required-and-nullable field' do
+              parsed = Bluetooth::RequestDeviceInfo.from_json('id' => 'dev-1', 'name' => nil)
+
+              expect(parsed.name).to be_nil
+            end
+          end
+
+          # script.NodeProperties.attributes is `{*text => text}`: a string-keyed map of strings,
+          # carried as a `map:` descriptor rather than an opaque pass-through.
+          describe 'primitive-valued map fields' do
+            def node_properties(attributes)
+              Script::NodeProperties.from_json('nodeType' => 1, 'childNodeCount' => 0, 'attributes' => attributes)
+            end
+
+            it 'reads a conforming map as a Hash' do
+              expect(node_properties('id' => 'main', 'class' => 'a b').attributes)
+                .to eq('id' => 'main', 'class' => 'a b')
+            end
+
+            it 'raises when the map arrives as a scalar' do
+              expect { node_properties('oops') }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'raises when the map arrives as a list' do
+              expect { node_properties(%w[id main]) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes expected a map/)
+            end
+
+            it 'raises when a map value is not the declared primitive' do
+              expect { node_properties('id' => 1) }
+                .to raise_error(Error::SerializationError, /NodeProperties#attributes\["id"\] expected string, got 1/)
+            end
+
+            it 'rejects a non-map at construction, mirroring the inbound check' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: 'oops') }
+                .to raise_error(ArgumentError, /NodeProperties#attributes expected a map, got "oops"/)
+            end
+
+            it 'rejects a wrong-typed map value at construction' do
+              expect { Script::NodeProperties.new(node_type: 1, child_node_count: 0, attributes: {'id' => 1}) }
+                .to raise_error(ArgumentError, /NodeProperties#attributes\["id"\] expected string, got 1/)
             end
           end
         end

@@ -1,0 +1,31 @@
+name: Webhook - Release Ready
+
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - 'common/devtools/**'
+
+permissions: {}
+
+jobs:
+  notify:
+    name: Notify Release Ready
+    if: >
+      github.event.repository.fork == false &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'pinned-browser-updates' &&
+      contains(github.event.pull_request.title, 'with CDP')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ':rocket:'
+          SLACK_COLOR: good
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: "Ready for release: CDP was updated in <${{ github.event.pull_request.html_url }}|#${{ github.event.pull_request.number }}>. Anything that needs to land before it goes out?"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

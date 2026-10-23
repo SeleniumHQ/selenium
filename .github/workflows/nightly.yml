@@ -1,4 +1,4 @@
-name: Nightly
+name: Release - Nightly
 on:
   schedule:
     - cron: 0 0 * * *
@@ -36,7 +36,7 @@ jobs:
       language: ${{ steps.parse.outputs.language }}
       artifact-name: ${{ steps.parse.outputs.artifact-name }}
       artifact-path: ${{ steps.parse.outputs.artifact-path }}
-      release-in-progress: ${{ steps.check.outputs.release-in-progress }}
+      skip-publish: ${{ steps.check.outputs.skip-publish }}
     steps:
       - name: Parse inputs
         id: parse
@@ -58,13 +58,13 @@ jobs:
           set -euo pipefail
           rulesets=$(gh api "repos/$GH_REPO/rulesets" 2>/dev/null || echo '[{"name":"Release: api-error"}]')
           if jq -e 'any(.[]; .name | startswith("Release:"))' <<<"$rulesets" >/dev/null; then
-            echo "release-in-progress=true" >> "$GITHUB_OUTPUT"
+            echo "skip-publish=true" >> "$GITHUB_OUTPUT"
           fi
 
   nightly-release:
     name: Nightly ${{ matrix.language }}
     needs: prepare
-    if: needs.prepare.outputs.release-in-progress != 'true'
+    if: needs.prepare.outputs.skip-publish != 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -72,7 +72,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly ${{ matrix.language }} Release
-      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly', matrix.language) || 'echo skipping' }}
+      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly rbe', matrix.language) || 'echo skipping' }}
       artifact-name: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-name || '' }}
       artifact-path: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-path || '' }}
     secrets: inherit
@@ -80,24 +80,12 @@ jobs:
   release-grid:
     name: Release Grid
     needs: [prepare, nightly-release]
-    if: always() && needs.prepare.outputs.artifact-name
-    runs-on: ubuntu-latest
+    if: always() && needs.prepare.outputs.artifact-name && needs.nightly-release.result != 'skipped'
     permissions:
       contents: write
-    steps:
-      - name: Download grid packages
-        uses: actions/download-artifact@v8
-        with:
-          name: nightly-grid
-          path: build/dist
-      - name: Create nightly release
-        uses: marvinpinto/action-automatic-releases@v1.2.1
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: nightly
-          title: Nightly
-          prerelease: true
-          files: build/dist/*.*
+    uses: ./.github/workflows/release-grid.yml
+    with:
+      artifact-name: ${{ needs.prepare.outputs.artifact-name }}
 
   on-failure:
     name: Notify on Failure
@@ -113,6 +101,6 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly ${{ needs.prepare.outputs.language }} Release failed
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "${{ needs.prepare.outputs.language == 'all' && 'Nightly release failed' || format('Nightly {0} release failed', needs.prepare.outputs.language) }}: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

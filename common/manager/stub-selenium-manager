@@ -1,0 +1,5 @@
+#!/bin/sh
+# Bundled in place of a prebuilt Selenium Manager by --manager=stub and, for the non-host platforms,
+# --manager=host, so a pin bump does not invalidate every test that bundles the manager.
+echo "selenium-manager: this is a stub from a --manager=stub or --manager=host build; use --manager=download or --manager=all" >&2
+exit 1

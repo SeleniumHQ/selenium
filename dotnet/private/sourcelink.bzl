@@ -9,6 +9,18 @@ load("@rules_dotnet//dotnet/private/transitions:tfm_transition.bzl", "tfm_transi
 
 def _generate_sourcelink_json(ctx):
     output = ctx.actions.declare_file(ctx.label.name + "_sourcelink.json")
+
+    # Only stamped builds read the workspace status file: its git revision changes
+    # every commit and would otherwise invalidate every assembly and test.
+    if not ctx.attr.stamp:
+        ctx.actions.write(
+            output = output,
+            content = '{{"documents":{{"*":"{repo}/raw/HEAD/*"}}}}\n'.format(
+                repo = ctx.attr.repo_url.rstrip("/"),
+            ),
+        )
+        return output
+
     ctx.actions.run_shell(
         inputs = [ctx.info_file],
         outputs = [output],
@@ -76,6 +88,7 @@ def _compile_action(ctx, tfm):
         is_language_specific_analyzer = ctx.attr.is_language_specific_analyzer,
         analyzer_configs = ctx.files.analyzer_configs,
         compiler_options = ctx.attr.compiler_options + [pathmap, "/sourcelink:" + sourcelink_json.path],
+        interceptors_namespaces = ctx.attr.interceptors_namespaces,
         is_windows = is_windows,
     )
 
@@ -87,8 +100,12 @@ _SOURCELINK_ATTRS["repo_url"] = attr.string(
     doc = "Source repository URL for SourceLink metadata (e.g. https://github.com/owner/repo).",
     default = "https://github.com/SeleniumHQ/selenium",
 )
+_SOURCELINK_ATTRS["stamp"] = attr.bool(
+    doc = "Embed the current git revision in the SourceLink metadata. Defaults to the --stamp flag.",
+    default = False,
+)
 
-csharp_sourcelink_library = rule(
+_csharp_sourcelink_library = rule(
     _csharp_sourcelink_library_impl,
     doc = "Compile a C# DLL with SourceLink metadata embedded in the PDB.",
     attrs = _SOURCELINK_ATTRS,
@@ -96,3 +113,15 @@ csharp_sourcelink_library = rule(
     toolchains = ["@rules_dotnet//dotnet:toolchain_type"],
     cfg = tfm_transition,
 )
+
+def csharp_sourcelink_library(name, stamp = None, **kwargs):
+    if stamp == None:
+        stamp = select({
+            "//dotnet/private:stamp_enabled": True,
+            "//conditions:default": False,
+        })
+    _csharp_sourcelink_library(
+        name = name,
+        stamp = stamp,
+        **kwargs
+    )

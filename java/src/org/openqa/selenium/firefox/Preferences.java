@@ -18,13 +18,11 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -34,7 +32,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
 
 class Preferences {
 
@@ -53,27 +50,13 @@ class Preferences {
 
   public Preferences() {}
 
-  public Preferences(Reader defaults) {
-    readDefaultPreferences(defaults);
-  }
-
-  public Preferences(Reader defaults, File userPrefs) {
-    readDefaultPreferences(defaults);
-    try (Reader reader = Files.newBufferedReader(userPrefs.toPath(), Charset.defaultCharset())) {
-      readPreferences(reader);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
   public Preferences(File userPrefs) {
     readUserPrefs(userPrefs);
   }
 
-  public Preferences(Reader defaults, Reader reader) {
-    readDefaultPreferences(defaults);
-    try (reader) {
-      readPreferences(reader);
+  public Preferences(Reader userPrefs) {
+    try (userPrefs) {
+      readPreferences(userPrefs);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -86,32 +69,6 @@ class Preferences {
   private void readUserPrefs(File userPrefs) {
     try (Reader reader = Files.newBufferedReader(userPrefs.toPath(), Charset.defaultCharset())) {
       readPreferences(reader);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private void readDefaultPreferences(Reader defaultsReader) {
-    try {
-      String rawJson;
-      try (StringWriter writer = new StringWriter()) {
-        defaultsReader.transferTo(writer);
-        rawJson = writer.getBuffer().toString();
-      }
-      Map<String, Object> map = new Json().toType(rawJson, MAP_TYPE);
-
-      Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
-      frozen.forEach(
-          (key, value) -> {
-            if (value instanceof Long) {
-              value = ((Long) value).intValue();
-            }
-            setPreference(key, value);
-          });
-
-      Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
-      mutable.forEach(this::setPreference);
-
     } catch (IOException e) {
       throw new WebDriverException(e);
     }

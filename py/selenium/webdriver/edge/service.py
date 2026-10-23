@@ -58,8 +58,9 @@ class Service(service.ChromiumService):
         )
 
     def command_line_args(self) -> list[str]:
-        # yes, it is --enable-chrome-logs, even on msedgedriver
-        return ["--enable-chrome-logs", f"--port={self.port}"] + self._service_args
+        # yes, it is --enable-chrome-logs, even on msedgedriver; skip when CHROME_LOG_FILE is set
+        args = [] if "CHROME_LOG_FILE" in self.env else ["--enable-chrome-logs"]
+        return args + [f"--port={self.port}"] + self._service_args
 
     @property
     def service_args(self) -> Sequence[str]:

@@ -19,13 +19,11 @@
 
 require 'timeout'
 require 'socket'
-require 'rexml/document'
 
 module Selenium
   module WebDriver
     module Firefox
       autoload :Util, 'selenium/webdriver/firefox/util'
-      autoload :Extension, 'selenium/webdriver/firefox/extension'
       autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
       autoload :Profile, 'selenium/webdriver/firefox/profile'
       autoload :Features, 'selenium/webdriver/firefox/features'

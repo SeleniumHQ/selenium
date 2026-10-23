@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 class ConstructorCoercer extends TypeCoercer<Object> {
@@ -130,6 +131,19 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     return Optional.class.equals(parameter.getType());
   }
 
+  // Distinct from isOptional: this governs whether a JSON null is an acceptable *value* for an
+  // already-present property, not whether the property's key may be absent. An Optional-typed
+  // parameter is always nullable; a parameter explicitly annotated @Nullable is nullable too,
+  // even when its key is required (e.g. a required field whose value may legitimately be null).
+  private boolean isNullable(Parameter parameter) {
+    // jspecify's @Nullable is @Target(TYPE_USE) only, not PARAMETER, so it is not visible via
+    // Parameter.isAnnotationPresent (a declaration-annotation query); it must be read off the
+    // annotated type instead.
+    return isOptional(parameter)
+        || parameter.isAnnotationPresent(Nullable.class)
+        || parameter.getAnnotatedType().isAnnotationPresent(Nullable.class);
+  }
+
   private boolean hasNoArgConstructor(Class<?> aClass) {
     return Arrays.stream(aClass.getDeclaredConstructors())
         .anyMatch(constructor -> constructor.getParameterCount() == 0);
@@ -162,12 +176,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     private final Constructor<?> constructor;
     private final Parameter[] parameters;
     private final Map<String, Integer> parameterIndexes;
+    // Computed once here rather than re-checked reflectively on every create() call: the
+    // JsonTypeCoercer caches the coercer built for a type, so this candidate — and this flag —
+    // is reused for every future deserialization of that type, not just the first one.
+    private final boolean warnsOnUnknownFields;
 
     ConstructorCandidate(Constructor<?> constructor) {
       this.constructor = constructor;
       this.constructor.setAccessible(true);
       this.parameters = constructor.getParameters();
       this.parameterIndexes = getParameterIndexes(parameters);
+      this.warnsOnUnknownFields =
+          constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class);
     }
 
     int parameterCount() {
@@ -195,7 +215,7 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         Object value =
             coerceValue(
                 properties.get(parameter.getName()), parameter.getParameterizedType(), setting);
-        if (value == null && !isOptional(parameter)) {
+        if (value == null && !isNullable(parameter)) {
           throw new JsonException(
               String.format(
                   "Constructor parameter %s.%s cannot be null",
@@ -203,6 +223,11 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         }
 
         values[i] = value;
+      }
+
+      if (warnsOnUnknownFields) {
+        UnknownFieldsWarning.warnOnUnknownFields(
+            constructor.getDeclaringClass(), parameterIndexes.keySet(), properties);
       }
 
       try {

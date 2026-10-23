@@ -83,11 +83,11 @@ def test_can_add_pacproxy_to_options():
 
 def test_can_not_change_initialized_proxy_type():
     proxy = Proxy(raw={"proxyType": "direct"})
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         proxy.proxy_type = ProxyType.SYSTEM
 
     proxy = Proxy(raw={"proxyType": ProxyType.DIRECT})
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         proxy.proxy_type = ProxyType.SYSTEM
 
 

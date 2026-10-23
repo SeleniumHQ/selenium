@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, skip_unless: [{bidi: false, reason: 'Not yet implemented with BiDi'},
-                                     {browser: %i[chrome edge]}] do
+                                     {browser_family: :chromium}] do
       after { |example| reset_driver!(example: example) }
 
       it 'sends commands' do

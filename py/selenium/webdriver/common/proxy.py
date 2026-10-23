@@ -66,24 +66,24 @@ class _ProxyTypeDescriptor:
     def __set__(self, obj, value):
         if self.name == "autodetect" and not isinstance(value, bool):
             raise ValueError("Autodetect proxy value needs to be a boolean")
-        getattr(obj, "_verify_proxy_type_compatibility")(self.p_type)
-        setattr(obj, "proxyType", self.p_type)
+        obj._verify_proxy_type_compatibility(self.p_type)
+        obj.proxyType = self.p_type
         setattr(obj, self.name, value)
 
 
 class Proxy:
     """Proxy configuration containing proxy type and necessary proxy settings."""
 
-    proxyType = ProxyType.UNSPECIFIED
-    autodetect = False
-    httpProxy = ""
-    noProxy = ""
-    proxyAutoconfigUrl = ""
-    sslProxy = ""
-    socksProxy = ""
-    socksUsername = ""
-    socksPassword = ""
-    socksVersion = None
+    proxyType: dict = ProxyType.UNSPECIFIED
+    autodetect: bool = False
+    httpProxy: str = ""
+    noProxy: str | list[str] = ""
+    proxyAutoconfigUrl: str = ""
+    sslProxy: str = ""
+    socksProxy: str = ""
+    socksUsername: str = ""
+    socksPassword: str = ""
+    socksVersion: int | None = None
 
     # create descriptor type objects
     auto_detect = _ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)

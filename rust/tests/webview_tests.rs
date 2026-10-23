@@ -19,6 +19,7 @@ use crate::common::{assert_driver, get_selenium_manager};
 
 mod common;
 
+#[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
 #[test]
 fn webview2_test() {
     let mut cmd = get_selenium_manager();

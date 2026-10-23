@@ -20,15 +20,21 @@
 # serialization must load first (it defines the Serialization runtime the generated
 # classes build on), then the Domain base the generated classes subclass. Add a require
 # below when a new BiDi domain is generated.
+require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/bidi/serialization'
 require 'selenium/webdriver/bidi/transport'
 require 'selenium/webdriver/bidi/protocol/domain'
+require 'selenium/webdriver/bidi/protocol/error_code'
+require 'selenium/webdriver/bidi/error'
 require 'selenium/webdriver/bidi/protocol/bluetooth'
 require 'selenium/webdriver/bidi/protocol/browser'
 require 'selenium/webdriver/bidi/protocol/browsing_context'
+require 'selenium/webdriver/bidi/protocol/digital_credentials'
 require 'selenium/webdriver/bidi/protocol/emulation'
 require 'selenium/webdriver/bidi/protocol/input'
 require 'selenium/webdriver/bidi/protocol/log'
+require 'selenium/webdriver/bidi/protocol/moz_debugging'
+require 'selenium/webdriver/bidi/protocol/moz_profiler'
 require 'selenium/webdriver/bidi/protocol/network'
 require 'selenium/webdriver/bidi/protocol/permissions'
 require 'selenium/webdriver/bidi/protocol/script'

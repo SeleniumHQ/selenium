@@ -47,7 +47,7 @@ Several browsers are supported, as well as the Remote protocol:
 Installing
 ==========
 
-Install or upgrade the Python bindings with `pip <https://pip.pypa.io/>`.
+Install or upgrade the Python bindings with `pip <https://pip.pypa.io/>`_.
 
 Latest official release::
 

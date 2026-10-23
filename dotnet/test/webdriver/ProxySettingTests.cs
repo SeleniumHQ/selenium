@@ -24,7 +24,6 @@ using System.Text;
 using BenderProxy;
 using BenderProxy.Writers;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -38,9 +37,7 @@ public class ProxySettingTests : DriverTestFixture
     [SetUp]
     public void RestartOriginalDriver()
     {
-        Driver = EnvironmentManager.Instance.GetCurrentDriver();
         proxyServer = new ProxyServer();
-        EnvironmentManager.Instance.DriverStarting += EnvironmentManagerDriverStarting;
     }
 
     [TearDown]
@@ -57,8 +54,6 @@ public class ProxySettingTests : DriverTestFixture
             proxyServer.Quit();
             proxyServer = null;
         }
-
-        EnvironmentManager.Instance.DriverStarting -= EnvironmentManagerDriverStarting;
     }
 
     [Test]
@@ -143,9 +138,9 @@ public class ProxySettingTests : DriverTestFixture
         }
     }
 
-    private void EnvironmentManagerDriverStarting(object sender, DriverStartingEventArgs e)
+    protected override void ConfigureDriverOptions(DriverOptions options)
     {
-        if (e.Options is InternetExplorerOptions ieOptions)
+        if (options is InternetExplorerOptions ieOptions)
         {
             ieOptions.EnsureCleanSession = true;
         }
@@ -153,7 +148,7 @@ public class ProxySettingTests : DriverTestFixture
 
     private void InitLocalDriver(Proxy proxy)
     {
-        EnvironmentManager.Instance.CloseCurrentDriver();
+        CloseDriver();
         if (localDriver != null)
         {
             localDriver.Quit();
@@ -161,7 +156,7 @@ public class ProxySettingTests : DriverTestFixture
 
         ProxyOptions options = new ProxyOptions();
         options.Proxy = proxy;
-        localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        localDriver = CreateDriverInstance(options);
     }
 
     private class ProxyOptions : DriverOptions

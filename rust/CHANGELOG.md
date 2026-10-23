@@ -1,3 +1,29 @@
+0.4.51
+======
+* Degrade to empty metadata when the cache cannot be read (#18101)
+* configure the Chrome sandbox after unpacking a Chrome for Testing build on Windows (#18139)
+
+0.4.50
+======
+* Show a proper error message if we can't open metdata_path (#18087)
+
+0.4.49
+======
+* fix Windows architecture detection under WOW64 (#17987)
+* Add license and notice links to Selenium Manager help (#17986)
+* Add support for Chrome arm64 on Linux (#17915)
+
+0.4.48
+======
+* Honour the `DO_NOT_TRACK` env var (#17931)
+
+0.4.47
+======
+* honor --browser-version in Selenium Manager Electron driver resolution (#17567)
+* locate Chrome and Edge in known install directories (#17838)
+* Prevent empty driver version from being cached in metadata (#17757)
+* Test Selenium Manager on Linux arm64 (#16045)
+
 0.4.46
 ======
 * [build] Automated Browser Version Update (#17687)

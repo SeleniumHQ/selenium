@@ -1,0 +1,11 @@
+filegroup(
+    name = "certificates",
+    srcs = [
+        "localhost.crt",
+        "localhost.key",
+    ],
+    visibility = [
+        "//py:__pkg__",
+        "//rb/spec:__subpackages__",
+    ],
+)

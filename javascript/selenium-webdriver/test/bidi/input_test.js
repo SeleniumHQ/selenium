@@ -62,7 +62,7 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+        assert.deepStrictEqual(rect, { width: 200, height: 200, x: 0, y: 0 })
 
         const actions = await driver.actions().click(div).getSequences()
 
@@ -77,7 +77,7 @@ suite(
           'No clicks returned',
         )
         const clicks = await driver.executeScript('return clicks')
-        assert.deepStrictEqual(clicks, [[250, 250]])
+        assert.deepStrictEqual(clicks, [[100, 100]])
       })
 
       it('can move relative to element center', async function () {
@@ -87,7 +87,7 @@ suite(
 
         const div = await driver.findElement(By.css('div'))
         const rect = await div.getRect()
-        assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+        assert.deepStrictEqual(rect, { width: 200, height: 200, x: 0, y: 0 })
 
         const actions = await driver.actions().move({ x: 10, y: 10, origin: div }).click().getSequences()
 
@@ -102,7 +102,7 @@ suite(
           'No clicks returned',
         )
         const clicks = await driver.executeScript('return clicks')
-        assert.deepStrictEqual(clicks, [[260, 260]])
+        assert.deepStrictEqual(clicks, [[110, 110]])
       })
 
       ignore(env.browsers(Browser.SAFARI)).it('doubleClick(element)', async function () {

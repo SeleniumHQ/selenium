@@ -27,8 +27,11 @@ module Selenium
         DRIVER_PATH_ENV_KEY = 'SE_EDGEDRIVER'
 
         def initialize(args: nil, **)
+          args = Array(args.dup)
+          # yes, it is --enable-chrome-logs, even on msedgedriver; skip when CHROME_LOG_FILE is set
+          args << '--enable-chrome-logs' unless ENV.key?('CHROME_LOG_FILE') || args.include?('--enable-chrome-logs')
+
           if ENV.key?('SE_DEBUG')
-            args = Array(args.dup)
             warn_driver_log_override if args.reject! { |arg| arg.include?('log-level') || arg.include?('silent') }
             args << '--verbose'
           end

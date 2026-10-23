@@ -68,12 +68,28 @@ module Selenium
             .with(method: 'browsingContext.setViewport', params: {'context' => 'c', 'viewport' => nil})
         end
 
-        it 'raises on an error reply' do
+        it 'raises the shared classic class for a code common to both transports' do
           allow(connection).to receive(:send_cmd)
             .and_return('error' => 'no such frame', 'message' => 'gone', 'stacktrace' => '')
 
           expect { transport.execute(cmd: 'browsingContext.navigate') }
-            .to raise_error(Error::WebDriverError, /no such frame: gone/)
+            .to raise_error(Error::NoSuchFrameError, /gone/)
+        end
+
+        it 'raises the BiDi-specific class for a code unique to BiDi' do
+          allow(connection).to receive(:send_cmd)
+            .and_return('error' => 'no such node', 'message' => 'gone', 'stacktrace' => '')
+
+          expect { transport.execute(cmd: 'script.callFunction') }
+            .to raise_error(Error::NoSuchNodeError, /gone/)
+        end
+
+        it 'falls back to WebDriverError for an unrecognized code' do
+          allow(connection).to receive(:send_cmd)
+            .and_return('error' => 'unheard of', 'message' => 'gone', 'stacktrace' => '')
+
+          expect { transport.execute(cmd: 'browsingContext.navigate') }
+            .to raise_error(Error::WebDriverError, /gone/)
         end
       end
     end # BiDi

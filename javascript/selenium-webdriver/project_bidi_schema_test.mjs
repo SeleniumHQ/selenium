@@ -20,7 +20,14 @@
 // The completeness test is the "compare input to output independent of
 // generation" gate — it re-derives expected methods from the raw AST, not the model.
 import assert from 'node:assert/strict'
-import { projectSchema, checkSchema, checkCompleteness } from './project_bidi_schema.mjs'
+import {
+  projectSchema,
+  checkSchema,
+  checkCompleteness,
+  buildSpecHrefs,
+  buildSpecLinks,
+} from './project_bidi_schema.mjs'
+import { extractAnchors } from './extract_bidi_anchors.mjs'
 
 const lit = (v) => ({ Type: 'literal', Value: v, Unwrapped: false })
 const ref = (v) => ({ Type: 'group', Value: v, Unwrapped: false })
@@ -57,6 +64,7 @@ describe('projectSchema', () => {
     assert.deepEqual(schema.types['network.SetCacheBehaviorParametersCacheBehavior'], {
       kind: 'enum',
       values: ['default', 'bypass'],
+      primitive: 'string',
       synthetic: true,
       owner: 'network.SetCacheBehaviorParameters',
       label: 'CacheBehavior',
@@ -64,6 +72,27 @@ describe('projectSchema', () => {
     assert.deepEqual(schema.types['network.SetCacheBehaviorParameters'].fields[0].type, {
       ref: 'network.SetCacheBehaviorParametersCacheBehavior',
     })
+  })
+
+  it('tags a numeric enum with its value primitive, so a binding reads the type rather than deriving it', () => {
+    const ast = [group('x.T', [field('grid', [lit(0), lit(1)])])]
+    const [, def] = Object.entries(projectSchema(ast, {}).types).find(([, t]) => t.kind === 'enum')
+    assert.deepEqual(def.values, [0, 1])
+    assert.equal(def.primitive, 'integer')
+  })
+
+  it('camelCases a quoted wire key into an identifier, keeping the wire name exact', () => {
+    const ast = [group('x.T', [field('prefers-color-scheme', ['text'], { n: 0, m: 1 })])]
+    const [f] = projectSchema(ast, {}).types['x.T'].fields
+    assert.equal(f.name, 'prefersColorScheme')
+    assert.equal(f.wire, 'prefers-color-scheme')
+  })
+
+  it('leaves a wire key that is already an identifier verbatim (namespaceURI is not mangled)', () => {
+    const ast = [group('x.T', [field('namespaceURI', ['text'])])]
+    const [f] = projectSchema(ast, {}).types['x.T'].fields
+    assert.equal(f.name, 'namespaceURI')
+    assert.equal(f.wire, 'namespaceURI')
   })
 
   it('hoists an inline record so the field is a plain ref (no inline records), tagged with its origin', () => {
@@ -77,6 +106,16 @@ describe('projectSchema', () => {
 
   it('marks `* text => any` extensible instead of emitting a phantom field', () => {
     const open = schema.types['x.OpenMap']
+    assert.equal(open.extensible, true)
+    assert.equal(open.fields.length, 0)
+  })
+
+  it('treats an unbounded occurrence as extensible whether m is null or Infinity', () => {
+    // The cddl parser emits the `*` upper bound as Infinity; only the AST's JSON
+    // round-trip renders it as null. Projecting an AST directly (no round-trip) must
+    // still recognize it, not emit a `text` field.
+    const ast = [group('x.RawOpenMap', [field('text', ['any'], { n: 0, m: Infinity })])]
+    const open = projectSchema(ast, {}).types['x.RawOpenMap']
     assert.equal(open.extensible, true)
     assert.equal(open.fields.length, 0)
   })
@@ -145,13 +184,16 @@ describe('projectType (list / union / alias defs)', () => {
           { ref: 'x.Other', requires: ['b'] },
         ],
       },
+      objectOnly: true, // both arms are records
+      inbound: false, // no model → reachable from no message root
+      outbound: false,
     })
   })
   it('projects a single-member dispatch choice group as an alias to its ref', () => {
     assert.deepEqual(schema.types['x.FooEvent'], { kind: 'alias', type: { ref: 'x.Item' } })
   })
 
-  it('projects an integer range as integer and a float range as number', () => {
+  it('projects an integer range as integer and a float range as number, keeping its bounds', () => {
     const s = projectSchema(
       [
         {
@@ -164,14 +206,111 @@ describe('projectType (list / union / alias defs)', () => {
           Name: 'x.F',
           PropertyType: [{ Type: 'range', Value: { Min: { Value: 0.1 }, Max: { Value: 2 } } }],
         },
+        {
+          // `(0.0..1.0)` — integral bounds, but the `IsFloat` marker makes it a number range.
+          Type: 'variable',
+          Name: 'x.W',
+          PropertyType: [
+            { Type: 'range', Value: { Min: { Value: 0, IsFloat: true }, Max: { Value: 1, IsFloat: true } } },
+          ],
+        },
       ],
       {},
     )
-    assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { primitive: 'integer' } })
-    assert.deepEqual(s.types['x.F'], { kind: 'alias', type: { primitive: 'number' } })
+    assert.deepEqual(s.types['x.U'], { kind: 'alias', type: { primitive: 'integer', min: 0, max: 100 } })
+    assert.deepEqual(s.types['x.F'], { kind: 'alias', type: { primitive: 'number', min: 0.1, max: 2 } })
+    assert.deepEqual(s.types['x.W'], { kind: 'alias', type: { primitive: 'number', min: 0, max: 1 } })
   })
 
-  it('unwraps a control-operator (.default / .ge) wrapped field type to its inner type', () => {
+  describe('numeric bounds', () => {
+    const num = (v) => ({ Type: 'literal', Value: v, Unwrapped: false, IsFloat: true })
+    const range = (min, max, inclusive = true) => ({
+      Type: 'range',
+      Value: { Inclusive: inclusive, Min: lit(min), Max: lit(max) },
+    })
+    const op = (type, value) => ({ Type: type, Value: num(value) })
+    const fieldType = (type, extra = {}) =>
+      projectSchema([group('x.R', [{ ...field('n', type), ...extra }])], {}).types['x.R'].fields[0].type
+
+    it('excludes only the upper bound of a `...` range', () => {
+      assert.deepEqual(fieldType([range(0, 360, false)]), {
+        primitive: 'integer',
+        min: 0,
+        max: 360,
+        exclusiveMax: true,
+      })
+    })
+
+    it('keeps a range bound on a nullable field', () => {
+      assert.deepEqual(fieldType([{ Type: range(0, 360, false) }, 'null']), {
+        primitive: 'integer',
+        min: 0,
+        max: 360,
+        exclusiveMax: true,
+        nullable: true,
+      })
+    })
+
+    it('carries .ge / .le as inclusive and .gt / .lt as exclusive bounds on a primitive', () => {
+      assert.deepEqual(fieldType([{ Type: 'float', Operator: op('ge', 0) }]), { primitive: 'number', min: 0 })
+      assert.deepEqual(fieldType([{ Type: 'float', Operator: op('gt', 0) }]), {
+        primitive: 'number',
+        min: 0,
+        exclusiveMin: true,
+      })
+      assert.deepEqual(fieldType([{ Type: 'int', Operator: op('le', 10) }]), { primitive: 'integer', max: 10 })
+      assert.deepEqual(fieldType([{ Type: 'int', Operator: op('lt', 10) }]), {
+        primitive: 'integer',
+        max: 10,
+        exclusiveMax: true,
+      })
+    })
+
+    it('carries a bound on a ref, narrowing the alias it names', () => {
+      assert.deepEqual(fieldType([{ Type: ref('js-uint'), Operator: op('ge', 1) }]), { ref: 'js-uint', min: 1 })
+    })
+
+    it('carries a bound the parser hangs on the field (`(float / null) .ge 1.0`)', () => {
+      assert.deepEqual(fieldType(['float', 'null'], { Operator: op('ge', 1) }), {
+        primitive: 'number',
+        nullable: true,
+        min: 1,
+      })
+    })
+
+    it('carries a bound the parser hangs on a definition (`x = (0..10) .ge 5`)', () => {
+      const def = { Type: 'variable', Name: 'x.N', PropertyType: { Type: range(0, 10) }, Operator: op('ge', 5) }
+      assert.deepEqual(projectSchema([def], {}).types['x.N'].type, { primitive: 'integer', min: 5, max: 10 })
+    })
+
+    it('keeps the tighter bound when an operator narrows a range', () => {
+      assert.deepEqual(fieldType([{ Type: range(0, 10) }], { Operator: op('ge', 5) }), {
+        primitive: 'integer',
+        min: 5,
+        max: 10,
+      })
+      assert.deepEqual(fieldType([{ Type: range(0, 10) }], { Operator: op('ge', -1) }), {
+        primitive: 'integer',
+        min: 0,
+        max: 10,
+      })
+      assert.deepEqual(fieldType([{ Type: range(0, 10) }], { Operator: op('lt', 10) }), {
+        primitive: 'integer',
+        min: 0,
+        max: 10,
+        exclusiveMax: true,
+      })
+    })
+
+    it('fails closed on a range bound it cannot resolve to a number (`0..max-len`)', () => {
+      const unresolved = { Type: 'range', Value: { Min: lit(0), Max: ref('lim') } }
+      const s = projectSchema([group('x.R', [field('n', [unresolved])])], {})
+      assert.deepEqual(s.types['x.R'].fields[0].type, { primitive: 'unknown' })
+      assert.ok(checkSchema(s).some((e) => /unknown primitive/.test(e)))
+    })
+  })
+
+  it('unwraps a .default-wrapped field type to its inner type', () => {
     const wrapped = {
       Name: 'n',
       Occurrence: { n: 1, m: 1 },
@@ -368,6 +507,196 @@ describe('unionSelector', () => {
   })
 })
 
+describe('schema signals (objectOnly / extensible / enum primitive)', () => {
+  const rec = (name, typeConst) => group(name, [field('type', [lit(typeConst)])])
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+  const enumDef = (name, values) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: values.map(lit),
+  })
+
+  it('flags a union whose every arm is an object type as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.B']), rec('x.A', 'a'), rec('x.B', 'b')], {})
+    assert.equal(s.types['x.U'].objectOnly, true)
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('does not flag a first-class union with an enum (scalar) arm as objectOnly', () => {
+    const s = projectSchema([union('x.U', ['x.A', 'x.E']), rec('x.A', 'a'), enumDef('x.E', ['one', 'two'])], {})
+    assert.equal(s.types['x.E'].kind, 'enum')
+    assert.equal(s.types['x.U'].objectOnly, undefined)
+  })
+
+  it('does not flag a bare-scalar alias-union (input.Origin shape) as objectOnly', () => {
+    // "viewport" / "pointer" / ElementOrigin — the const arms keep it an alias-union
+    // that must still pass a bare-string payload through, so it stays unflagged.
+    const origin = {
+      Type: 'variable',
+      Name: 'x.Origin',
+      IsChoiceAddition: false,
+      Comments: [],
+      PropertyType: [lit('viewport'), lit('pointer'), ref('x.Element')],
+    }
+    const s = projectSchema([origin, group('x.Element', [field('type', [lit('element')]), field('id', ['text'])])], {})
+    assert.equal(s.types['x.Origin'].kind, 'alias')
+    assert.equal(s.types['x.Origin'].objectOnly, undefined)
+    // The const arms' literals are pinned so a binding can reject a wrong string, not just a wrong primitive.
+    assert.equal(s.types['x.Origin'].type.scalar, 'string')
+    assert.deepEqual(s.types['x.Origin'].type.scalarValues, ['viewport', 'pointer'])
+  })
+
+  it('marks every extensible type extensible, regardless of send/receive reachability', () => {
+    // Extensibility is the whole signal: a type reachable only through a command's result
+    // keeps its extras store just as one reachable through params does. Send-reachability
+    // ("retain extras only where they can be sent back") is deliberately not a factor.
+    const ast = [
+      group('x.SetParams', [field('cfg', [ref('x.Config')])]),
+      group('x.Config', [field('text', ['any'], { n: 0, m: null })]),
+      group('x.GetResult', [field('info', [ref('x.Info')])]),
+      group('x.Info', [field('text', ['any'], { n: 0, m: null })]),
+    ]
+    const model = { x: { commands: [{ method: 'x.set', name: 'set', params: 'x.SetParams', result: 'x.GetResult' }] } }
+    const s = projectSchema(ast, model)
+    assert.equal(s.types['x.Config'].extensible, true) // reachable through the command's params
+    assert.equal(s.types['x.Info'].extensible, true) // reachable only through the result
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('hoists a nullable literal choice to a named enum, referenced with the null preserved', () => {
+    // A nullable literal choice (`("classic" / "overlay") / null`) is hoisted (normalize_bidi_ast)
+    // to a named enum and referenced with the null kept on the field — a nullable enum ref, not an
+    // inline enum carrying a primitive.
+    const s = projectSchema([group('x.R', [field('kind', [lit('classic'), lit('overlay'), 'null'])])], {})
+    assert.deepEqual(s.types['x.R'].fields[0].type, { ref: 'x.RKind', nullable: true })
+    assert.equal(s.types['x.RKind'].kind, 'enum')
+    assert.deepEqual(s.types['x.RKind'].values, ['classic', 'overlay'])
+    assert.deepEqual(checkSchema(s), [])
+  })
+
+  it('flags an inline union with a bare-scalar arm as scalar-tolerant (map key: Ref / text)', () => {
+    const ast = [
+      group('x.R', [field('entry', [ref('x.U'), 'text']), field('objects', [ref('x.A'), ref('x.B')])]),
+      union('x.U', ['x.A', 'x.B']),
+      rec('x.A', 'a'),
+      rec('x.B', 'b'),
+    ]
+    const s = projectSchema(ast, {}).types['x.R'].fields
+    // The `Ref / text` arm makes the union scalar-tolerant, carrying the arm's primitive...
+    assert.deepEqual(s[0].type, { union: [{ ref: 'x.U' }, { primitive: 'string' }], scalar: 'string' })
+    // ...but an all-object union is not flagged (no scalar arm to pass through).
+    assert.deepEqual(s[1].type, { union: [{ ref: 'x.A' }, { ref: 'x.B' }] })
+  })
+})
+
+describe('directionality (inbound / outbound per structured type)', () => {
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+  })
+  // A command (params x.DoParams → result x.DoResult) and an event (params x.HappenedParams)
+  // seed the walk. x.Both is referenced from both params and result; x.NoMessage from neither.
+  // x.LocalNode and x.RemoteNode are structural look-alikes (same `type: "node"`) reached
+  // only through params vs only through result, so they must land on opposite sides.
+  const ast = [
+    group('x.DoParams', [
+      field('cfg', [ref('x.OutOnly')]),
+      field('shared', [ref('x.Both')]),
+      field('lv', [ref('x.LocalValue')]),
+    ]),
+    group('x.OutOnly', [field('a', ['text'])]),
+    group('x.Both', [field('b', ['text'])]),
+    group('x.DoResult', [
+      field('info', [ref('x.InOnly')]),
+      field('note', [ref('x.Both')]),
+      field('rv', [ref('x.RemoteValue')]),
+    ]),
+    group('x.InOnly', [field('c', ['text'])]),
+    group('x.HappenedParams', [field('d', ['text'])]),
+    group('x.NoMessage', [field('e', ['text'])]),
+    union('x.LocalValue', ['x.LocalNode', 'x.LocalString']),
+    group('x.LocalNode', [field('type', [lit('node')]), field('v', ['text'])]),
+    group('x.LocalString', [field('type', [lit('string')]), field('v', ['text'])]),
+    union('x.RemoteValue', ['x.RemoteNode', 'x.RemoteString']),
+    group('x.RemoteNode', [field('type', [lit('node')]), field('v', ['text'])]),
+    group('x.RemoteString', [field('type', [lit('string')]), field('v', ['text'])]),
+  ]
+  const model = {
+    x: {
+      commands: [{ method: 'x.doThing', name: 'doThing', params: 'x.DoParams', result: 'x.DoResult' }],
+      events: [{ method: 'x.happened', name: 'happened', params: 'x.HappenedParams' }],
+    },
+  }
+  const schema = projectSchema(ast, model)
+  const dir = (n) => ({ inbound: schema.types[n].inbound, outbound: schema.types[n].outbound })
+
+  it('marks a params-only record outbound (send side)', () => {
+    assert.deepEqual(dir('x.OutOnly'), { inbound: false, outbound: true })
+    assert.deepEqual(dir('x.DoParams'), { inbound: false, outbound: true })
+  })
+
+  it('marks a result/event-only payload inbound (receive side)', () => {
+    assert.deepEqual(dir('x.InOnly'), { inbound: true, outbound: false })
+    assert.deepEqual(dir('x.DoResult'), { inbound: true, outbound: false })
+    assert.deepEqual(dir('x.HappenedParams'), { inbound: true, outbound: false })
+  })
+
+  it('marks a type reached from both params and result as both (Cookie-shaped)', () => {
+    assert.deepEqual(dir('x.Both'), { inbound: true, outbound: true })
+  })
+
+  it('leaves a type reachable from no message at (false, false)', () => {
+    assert.deepEqual(dir('x.NoMessage'), { inbound: false, outbound: false })
+  })
+
+  it('splits structural look-alikes by reachability, not by name (LocalValue vs RemoteValue variant)', () => {
+    assert.deepEqual(dir('x.LocalNode'), { inbound: false, outbound: true }) // reached via params
+    assert.deepEqual(dir('x.RemoteNode'), { inbound: true, outbound: false }) // reached via result
+    assert.deepEqual(dir('x.LocalValue'), { inbound: false, outbound: true })
+    assert.deepEqual(dir('x.RemoteValue'), { inbound: true, outbound: false })
+  })
+
+  it('passes both validators (flags present on every structured type, (false,false) not an error)', () => {
+    assert.deepEqual(checkSchema(schema), [])
+    assert.deepEqual(checkCompleteness(ast, schema), [])
+  })
+
+  it('fails completeness when a structured type is missing a directionality flag', () => {
+    const broken = projectSchema(ast, model)
+    delete broken.types['x.OutOnly'].outbound
+    assert.ok(
+      checkCompleteness(ast, broken).some((e) => /x\.OutOnly: missing directionality flag/.test(e)),
+      'a stripped flag must fail closed',
+    )
+  })
+
+  it('does not flag enums or aliases (only record/union carry directionality)', () => {
+    // An enum and an alias are leaves/pass-throughs, not constructed message parts.
+    const s = projectSchema(
+      [
+        { Type: 'variable', Name: 'x.E', IsChoiceAddition: false, Comments: [], PropertyType: [lit('a'), lit('b')] },
+        { Type: 'variable', Name: 'x.A', IsChoiceAddition: false, Comments: [], PropertyType: [ref('x.OutOnly')] },
+        group('x.OutOnly', [field('a', ['text'])]),
+      ],
+      {},
+    )
+    assert.equal(s.types['x.E'].inbound, undefined)
+    assert.equal(s.types['x.A'].outbound, undefined)
+    assert.deepEqual(checkCompleteness([], s), [])
+  })
+})
+
 describe('checkCompleteness (input vs output, generator-independent)', () => {
   it('fails when a command/event present in the AST is missing from the schema', () => {
     const astWithExtra = [
@@ -378,26 +707,144 @@ describe('checkCompleteness (input vs output, generator-independent)', () => {
     const errors = checkCompleteness(astWithExtra, schema)
     assert.deepEqual(errors, ['dropped from schema: network.droppedCmd'])
   })
+})
 
-  it('does not fail for a known-incomplete (allowlisted) drop', () => {
-    const astWithKnown = [
-      ...AST,
-      leaf('bluetooth.X', 'bluetooth.characteristicEventGenerated', 'network.SetCacheBehaviorParameters'),
-    ]
-    assert.deepEqual(checkCompleteness(astWithKnown, projectSchema(AST, MODEL)), [])
+describe('specHref (spec-definition links from the webref dfns index)', () => {
+  // Shape mirrors a real webref ed/dfns/<spec>.json: { spec, dfns: [{ type, linkingText, href }] }.
+  const dfnsDoc = (url, entries) => ({
+    spec: { url },
+    dfns: entries.map(([type, name, href]) => ({ type, linkingText: [name], href })),
   })
 
-  it('flags an allowlisted method as stale once it is emitted', () => {
-    const schema = projectSchema(AST, MODEL)
-    schema.events.push({
-      domain: 'bluetooth',
-      method: 'bluetooth.characteristicEventGenerated',
-      name: 'characteristicEventGenerated',
-      params: null,
-    })
-    assert.deepEqual(checkCompleteness(AST, schema), [
-      'stale KNOWN_INCOMPLETE entry (now emitted, remove it): bluetooth.characteristicEventGenerated',
+  it('maps cddl-type entries by name, ignoring keys/values/other dfn types', () => {
+    const hrefs = buildSpecHrefs([
+      dfnsDoc('https://w3c.github.io/webdriver-bidi/', [
+        [
+          'cddl-type',
+          'session.CapabilityRequest',
+          'https://w3c.github.io/webdriver-bidi/#cddl-type-sessioncapabilityrequest',
+        ],
+        ['cddl-key', 'proxy', 'https://w3c.github.io/webdriver-bidi/#cddl-key-sessioncapabilityrequest-proxy'],
+        ['cddl-value', 'default', 'https://w3c.github.io/webdriver-bidi/#cddl-value-networksamesite-default'],
+        ['dfn', 'wait queue', 'https://w3c.github.io/webdriver-bidi/#wait-queue'],
+      ]),
     ])
+    assert.deepEqual(hrefs, {
+      'session.CapabilityRequest': 'https://w3c.github.io/webdriver-bidi/#cddl-type-sessioncapabilityrequest',
+    })
+  })
+
+  it('merges multiple indexes and keeps absolute per-spec origins (first wins on clash)', () => {
+    const hrefs = buildSpecHrefs([
+      dfnsDoc('https://w3c.github.io/webdriver-bidi/', [['cddl-type', 'x.Shared', 'https://a.example/#x']]),
+      dfnsDoc('https://w3c.github.io/permissions/', [
+        ['cddl-type', 'x.Shared', 'https://b.example/#x'], // clash: first index wins
+        ['cddl-type', 'permissions.Foo', 'https://w3c.github.io/permissions/#cddl-type-permissionsfoo'],
+      ]),
+    ])
+    assert.equal(hrefs['x.Shared'], 'https://a.example/#x')
+    assert.equal(hrefs['permissions.Foo'], 'https://w3c.github.io/permissions/#cddl-type-permissionsfoo')
+  })
+
+  it('is empty and harmless on missing/malformed input', () => {
+    assert.deepEqual(buildSpecHrefs(), {})
+    assert.deepEqual(buildSpecHrefs([null, {}, { dfns: null }]), {})
+  })
+})
+
+describe('buildSpecLinks (merge CDDL fallback with prose anchors)', () => {
+  const dfnsDoc = (entries) => ({ dfns: entries.map(([t, name, href]) => ({ type: t, linkingText: [name], href })) })
+
+  it('lowercases CDDL keys and lets a prose section override the CDDL production', () => {
+    const dfns = [
+      dfnsDoc([
+        ['cddl-type', 'network.Cookie', 'CDDL_COOKIE'],
+        ['cddl-type', 'network.OtherType', 'CDDL_OTHER'],
+      ]),
+    ]
+    const links = buildSpecLinks(dfns, { types: { 'network.cookie': 'PROSE_COOKIE' } })
+    assert.equal(links.types['network.cookie'], 'PROSE_COOKIE') // prose wins
+    assert.equal(links.types['network.othertype'], 'CDDL_OTHER') // CDDL fallback, lowercased key
+  })
+
+  it('passes command/event/module anchor maps through to their buckets', () => {
+    const links = buildSpecLinks([], {
+      modules: { network: 'M' },
+      commands: { 'network.setcachebehavior': 'C' },
+      events: { 'log.entryadded': 'E' },
+    })
+    assert.equal(links.domains.network, 'M')
+    assert.equal(links.commands['network.setcachebehavior'], 'C')
+    assert.equal(links.events['log.entryadded'], 'E')
+  })
+
+  it('is harmless with no anchors (CDDL-only) or no inputs', () => {
+    assert.deepEqual(buildSpecLinks(), { types: {}, commands: {}, events: {}, domains: {} })
+  })
+})
+
+describe('extractAnchors (prose-anchor index from spec HTML)', () => {
+  const base = 'https://w3c.github.io/webdriver-bidi/'
+  const idx = extractAnchors(
+    [
+      '<h2 id="module-session">Session</h2>',
+      "<h3 id='command-session-subscribe'>subscribe</h3>", // single-quoted ids are matched too
+      '<h3 id="type-session-CapabilityRequest">CapabilityRequest</h3>',
+      '<h3 id="event-log-entryAdded">entryAdded</h3>',
+      '<h4 id="module-browser-commands">a sub-section, not a module</h4>',
+      '<h4 id="cddl-type-sessionstatus">a CDDL production, ignored</h4>',
+    ].join('\n'),
+    base,
+  )
+
+  it('indexes module/type/command/event prose sections with lowercased dotted keys', () => {
+    assert.equal(idx.modules.session, `${base}#module-session`)
+    assert.equal(idx.commands['session.subscribe'], `${base}#command-session-subscribe`)
+    assert.equal(idx.types['session.capabilityrequest'], `${base}#type-session-CapabilityRequest`)
+    assert.equal(idx.events['log.entryadded'], `${base}#event-log-entryAdded`)
+  })
+
+  it('ignores module sub-sections and CDDL productions', () => {
+    assert.equal(idx.modules.browser, undefined) // module-browser-commands is a sub-section
+    assert.equal(
+      Object.values(idx.types).some((h) => h.includes('cddl-type')),
+      false,
+    )
+  })
+})
+
+describe('spec links attached to the schema (types, commands, events, domains)', () => {
+  const B = 'https://w3c.github.io/webdriver-bidi/'
+  const links = {
+    types: { 'network.setcachebehaviorparameters': `${B}#type-network-SetCacheBehaviorParameters` },
+    commands: { 'network.setcachebehavior': `${B}#command-network-setCacheBehavior` },
+    events: {},
+    domains: { network: `${B}#module-network` },
+  }
+  const schema = projectSchema(AST, MODEL, links)
+
+  it('links a type (case-insensitively) and a domain, omitting the unlinked', () => {
+    assert.equal(
+      schema.types['network.SetCacheBehaviorParameters'].specHref,
+      links.types['network.setcachebehaviorparameters'],
+    )
+    assert.equal(schema.domains.network.specHref, links.domains.network)
+    // A synthetic type (hoisted enum) has no spec definition → no specHref.
+    assert.equal(schema.types['network.SetCacheBehaviorParametersCacheBehavior'].specHref, undefined)
+    // A type/domain absent from the maps is untouched.
+    assert.equal(schema.types['session.Caps'].specHref, undefined)
+  })
+
+  it('links a command by its wire method, and omits an event with no anchor', () => {
+    assert.equal(schema.commands[0].specHref, links.commands['network.setcachebehavior'])
+  })
+
+  it('is fully optional: the two-arg call emits no specHref and an empty domains map', () => {
+    const bare = projectSchema(AST, MODEL)
+    for (const node of Object.values(bare.types)) assert.equal(node.specHref, undefined)
+    assert.equal(bare.commands[0].specHref, undefined)
+    assert.deepEqual(bare.domains, {})
+    assert.deepEqual(checkSchema(bare), [])
   })
 })
 
@@ -412,6 +859,26 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.T.a: unresolved type x.Missing'])
+  })
+
+  it('flags two wire keys projecting to one field name', () => {
+    const schema = {
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.T': {
+          kind: 'record',
+          fields: [
+            { name: 'colorGamut', wire: 'colorGamut', required: false, type: { primitive: 'string' } },
+            { name: 'colorGamut', wire: 'color-gamut', required: false, type: { primitive: 'string' } },
+          ],
+        },
+      },
+    }
+    assert.deepEqual(checkSchema(schema), [
+      'x.T: wire keys colorGamut and color-gamut both project to field name colorGamut',
+    ])
   })
 
   it('catches an unresolved ref inside an alias', () => {
@@ -444,6 +911,39 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.T.a: projected to an unknown primitive (unhandled CDDL type)'])
+  })
+
+  describe('numeric bounds', () => {
+    const withField = (type) => ({
+      schemaVersion: 1,
+      commands: [],
+      events: [],
+      types: {
+        'x.T': { kind: 'record', fields: [{ name: 'a', wire: 'a', required: true, type }] },
+        'x.Uint': { kind: 'alias', type: { primitive: 'integer', min: 0 } },
+        'x.Text': { kind: 'alias', type: { primitive: 'string' } },
+        'x.Rec': { kind: 'record', fields: [] },
+      },
+    })
+    const misplaced = ['x.T.a: carries a numeric bound on a non-numeric type']
+
+    it('accepts a bound on a numeric primitive or on a ref to a numeric alias', () => {
+      assert.deepEqual(checkSchema(withField({ primitive: 'number', min: 0, exclusiveMin: true })), [])
+      assert.deepEqual(checkSchema(withField({ ref: 'x.Uint', min: 1 })), [])
+    })
+
+    it('rejects a bound on a non-numeric primitive', () => {
+      assert.deepEqual(checkSchema(withField({ primitive: 'string', max: 10 })), misplaced)
+    })
+
+    it('rejects a bound on a ref that does not alias a number', () => {
+      assert.deepEqual(checkSchema(withField({ ref: 'x.Text', min: 1 })), misplaced)
+      assert.deepEqual(checkSchema(withField({ ref: 'x.Rec', min: 1 })), misplaced)
+    })
+
+    it('rejects a misplaced bound nested in a list element', () => {
+      assert.deepEqual(checkSchema(withField({ list: { primitive: 'boolean', min: 0 } })), misplaced)
+    })
   })
 
   it('flags a synthetic type whose owner does not resolve', () => {
@@ -595,5 +1095,175 @@ describe('checkSchema (referential integrity)', () => {
       },
     }
     assert.deepEqual(checkSchema(schema), ['x.foo: params null does not match required envelope params x.FooParams'])
+  })
+})
+
+describe('vendor section (extension groups and vendor types routed out of the shared schema)', () => {
+  const tagged = (name, type, via) => ({
+    ...field(name, type, { n: 0, m: 1 }),
+    'x-selenium-vendor': 'moz',
+    'x-selenium-vendor-via': via,
+  })
+  const base = [
+    leaf('session.New', 'session.new', 'session.CapabilityRequest'),
+    group('session.CapabilityRequest', [field('browserName', ['text'], { n: 0, m: 1 })]),
+    group('browsingContext.Info', [field('url', ['text'])]),
+  ]
+  const extension = (target, props) => ({ ...group(`${target}Extension`, props), 'x-selenium-vendor-extends': target })
+  const vendorDefs = [
+    extension('session.CapabilityRequest', [
+      tagged(
+        'moz:firefoxOptions',
+        [ref('session.CapabilityRequestFirefoxOptions')],
+        'session.CapabilityRequestExtension',
+      ),
+    ]),
+    extension('browsingContext.Info', [
+      tagged('moz:scope', [lit('chrome'), lit('content')], 'browsingContext.InfoExtension'),
+    ]),
+    {
+      ...group('session.CapabilityRequestFirefoxOptions', [
+        field('log', { Type: 'group', Name: '', Properties: [field('level', [lit('info'), lit('warn')])] }),
+      ]),
+      'x-selenium-vendor': 'moz',
+    },
+  ]
+  const model = {
+    session: {
+      commands: [{ method: 'session.new', name: 'new', params: 'session.CapabilityRequest', result: null }],
+      events: [],
+    },
+  }
+  const schema = projectSchema([...base, ...vendorDefs], model)
+
+  it('keeps the shared sections exactly upstream: no vendor field, group, or type', () => {
+    assert.deepEqual(
+      schema.types['session.CapabilityRequest'].fields.map((f) => f.name),
+      ['browserName'],
+    )
+    assert.deepEqual(
+      schema.types['browsingContext.Info'].fields.map((f) => f.name),
+      ['url'],
+    )
+    assert.equal(
+      Object.keys(schema.types).some((n) => n.endsWith('Extension') || n.includes('FirefoxOptions')),
+      false,
+    )
+    const { vendor, ...shared } = schema
+    assert.deepEqual(shared, projectSchema(base, model))
+  })
+
+  it('routes extension fields into extends (wire names, enums inline) and vendor types beside them', () => {
+    const moz = schema.vendor.moz
+    assert.deepEqual(moz.extends['browsingContext.Info'], {
+      via: 'browsingContext.InfoExtension',
+      fields: [
+        {
+          name: 'moz:scope',
+          wire: 'moz:scope',
+          required: false,
+          type: { enum: ['chrome', 'content'], primitive: 'string' },
+        },
+      ],
+    })
+    assert.deepEqual(moz.extends['session.CapabilityRequest'].fields[0].type, {
+      ref: 'session.CapabilityRequestFirefoxOptions',
+    })
+    assert.deepEqual(Object.keys(moz.types).sort(), [
+      'session.CapabilityRequestFirefoxOptions',
+      'session.CapabilityRequestFirefoxOptionsLevel',
+      'session.CapabilityRequestFirefoxOptionsLog',
+    ])
+    assert.equal(
+      moz.types['session.CapabilityRequestFirefoxOptionsLog'].owner,
+      'session.CapabilityRequestFirefoxOptions',
+    )
+  })
+
+  it('validates across both sections: the extended type is a shared record and refs resolve', () => {
+    assert.deepEqual(checkSchema(schema), [])
+    const dangling = structuredClone(schema)
+    delete dangling.vendor.moz.types['session.CapabilityRequestFirefoxOptions']
+    assert.ok(
+      checkSchema(dangling).includes(
+        'moz:session.CapabilityRequest.moz:firefoxOptions: unresolved type session.CapabilityRequestFirefoxOptions',
+      ),
+    )
+    const orphan = structuredClone(schema)
+    orphan.vendor.moz.extends['session.Gone'] = orphan.vendor.moz.extends['session.CapabilityRequest']
+    assert.ok(checkSchema(orphan).includes('moz: extends session.Gone, which is not a shared record'))
+  })
+})
+
+describe('vendor modules (commands, events, and types filed under the namespace)', () => {
+  const vendorType = (name, props) => ({ ...group(name, props), 'x-selenium-vendor': 'moz' })
+  const union = (name, refs) => ({
+    Type: 'variable',
+    Name: name,
+    IsChoiceAddition: false,
+    Comments: [],
+    PropertyType: refs.map(ref),
+    'x-selenium-vendor': 'moz',
+  })
+  const base = [group('EmptyResult', [field('text', ['any'], { n: 0, m: null })])]
+  const vendorDefs = [
+    { ...leaf('mozProfiler.Stop', 'moz:profiler.stop', 'mozProfiler.StopParameters'), 'x-selenium-vendor': 'moz' },
+    vendorType('mozProfiler.StopParameters', [field('discard', ['bool'], { n: 0, m: 1 })]),
+    vendorType('mozProfiler.StopResult', [field('path', ['text'])]),
+    union('mozProfiler.StartResult', ['EmptyResult']),
+    union('MozProfilerResult', ['mozProfiler.StartResult', 'mozProfiler.StopResult']),
+  ]
+  const ast = [...base, ...vendorDefs]
+  const vendorModel = {
+    'moz:profiler': {
+      commands: [
+        {
+          method: 'moz:profiler.stop',
+          name: 'stop',
+          params: 'mozProfiler.StopParameters',
+          result: 'mozProfiler.StopResult',
+          vendor: 'moz',
+        },
+      ],
+      events: [],
+    },
+  }
+  const schema = projectSchema(ast, {}, {}, vendorModel)
+  const moz = schema.vendor.moz
+
+  it('files a vendor module under its wire domain, in the top-level shape', () => {
+    assert.deepEqual(moz.commands, [
+      {
+        domain: 'moz:profiler',
+        method: 'moz:profiler.stop',
+        name: 'stop',
+        params: { ref: 'mozProfiler.StopParameters' },
+        result: { ref: 'mozProfiler.StopResult' },
+      },
+    ])
+    assert.deepEqual(moz.events, [])
+    assert.deepEqual(schema.commands, [])
+    assert.deepEqual(Object.keys(schema.types), ['EmptyResult'])
+    assert.equal(moz.types['mozProfiler.StopParameters'].outbound, true)
+    assert.equal(moz.types['mozProfiler.StopResult'].inbound, true)
+  })
+
+  it('treats a bare <Module>Result grouping as request-correlated, like the core result unions', () => {
+    assert.deepEqual(moz.types.MozProfilerResult.selector, { correlated: true })
+  })
+
+  it('validates across both sections and counts vendor methods as emitted', () => {
+    assert.deepEqual(checkSchema(schema), [])
+    assert.deepEqual(checkCompleteness(ast, schema), [])
+    const dropped = structuredClone(schema)
+    dropped.vendor.moz.commands = []
+    assert.deepEqual(checkCompleteness(ast, dropped), ['dropped from schema: moz:profiler.stop'])
+    const dangling = structuredClone(schema)
+    delete dangling.vendor.moz.types['mozProfiler.StopParameters']
+    assert.ok(checkSchema(dangling).some((e) => e.includes('unresolved type mozProfiler.StopParameters')))
+  })
+
+  it('yields no vendor modules from a vendor-free model', () => {
+    assert.deepEqual(projectSchema(base, {}, {}, {}), projectSchema(base, {}))
   })
 })

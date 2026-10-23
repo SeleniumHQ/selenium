@@ -37,8 +37,15 @@ under the License.
     <a id="link2" href="#">Partial match link</a>
     <input id="input1" name="myinput" type="text">
     <span id="span1" class="myclass">A span</span>
+  <b id="punctuated-class" class="a#b[c]"></b>
   </div>
 </div>
+<span id="dup" style="position: absolute; top: 200px; left: 0; width: 40px; height: 20px;">outside</span>
+<div id="dup-scope" style="position: absolute; top: 0; left: 0; width: 100px; height: 80px;">
+  <span id="dup" style="position: absolute; top: 0; left: 0; width: 40px; height: 20px;">inside</span>
+  <p id="dup-below" style="position: absolute; top: 40px; left: 0; width: 40px; height: 20px; margin: 0;">below</p>
+</div>
+<span id="outside-anchor" style="position: absolute; top: 0; left: 200px; width: 40px; height: 20px;">outside anchor</span>
 
 <script>
 (function() {
@@ -73,6 +80,26 @@ under the License.
     assert.equal(elements.length, 0);
   });
 
+  QUnit.test('finds elements by id with newline in value', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'my\nid');
+    fixture.appendChild(el);
+    var elements = findElements({'id': 'my\nid'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0], el);
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds elements by id containing a NUL character', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'nul\u0000id');
+    fixture.appendChild(el);
+    var elements = findElements({'id': 'nul\u0000id'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0], el);
+    fixture.removeChild(el);
+  });
+
   QUnit.test('finds elements by class name', function(assert) {
     var elements = findElements({'class name': 'myclass'}, fixture);
     assert.deepEqual(ids(elements).sort(), ['para1', 'para2', 'span1'].sort());
@@ -81,6 +108,11 @@ under the License.
   QUnit.test('finds elements by className alias', function(assert) {
     var elements = findElements({'className': 'otherclass'}, fixture);
     assert.deepEqual(ids(elements), ['para2']);
+  });
+
+  QUnit.test('finds elements by a class name containing selector punctuation', function(assert) {
+    var elements = findElements({'class name': 'a#b[c]'}, fixture);
+    assert.deepEqual(elements.map(function(e) { return e.id; }), ['punctuated-class']);
   });
 
   QUnit.test('throws for empty class name', function(assert) {
@@ -128,6 +160,21 @@ under the License.
     assert.equal(elements[0].getAttribute('id'), 'link2');
   });
 
+  QUnit.test('finds elements by link text with non-breaking spaces', function(assert) {
+    var a = document.createElement('a');
+    a.innerHTML = 'Hello&nbsp;World';
+    a.setAttribute('id', 'nbsp-link');
+    fixture.appendChild(a);
+    var elements = findElements({'link text': 'Hello World'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'nbsp-link');
+
+    var partialElements = findElements({'partial link text': 'lo Wo'}, fixture);
+    assert.equal(partialElements.length, 1);
+    assert.equal(partialElements[0].getAttribute('id'), 'nbsp-link');
+    fixture.removeChild(a);
+  });
+
   QUnit.test('finds elements by name attribute', function(assert) {
     var elements = findElements({'name': 'myinput'}, fixture);
     assert.equal(elements.length, 1);
@@ -153,6 +200,17 @@ under the License.
     var elements = findElements({'name': 'my\\input'}, fixture);
     assert.equal(elements.length, 1);
     assert.equal(elements[0].getAttribute('id'), 'backslash-name-input');
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds elements by name with newline in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my\ninput');
+    el.setAttribute('id', 'newline-name-input');
+    fixture.appendChild(el);
+    var elements = findElements({'name': 'my\ninput'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'newline-name-input');
     fixture.removeChild(el);
   });
 
@@ -186,6 +244,70 @@ under the License.
   QUnit.test('finds no elements when none match css selector', function(assert) {
     var elements = findElements({'css selector': 'table'}, fixture);
     assert.equal(elements.length, 0);
+  });
+
+  // Relative-locator anchor when a root is supplied:
+  // resolveAnchor deliberately checks the supplied root before falling back to document,
+  // pinning that an anchor inside the scoped container takes precedence over an anchor outside.
+  QUnit.test('resolves a locator anchor inside the supplied root', function(assert) {
+    var scope = document.getElementById('dup-scope');
+    var elements = findElements({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'dup'}]}]
+      }
+    }, scope);
+    assert.deepEqual(ids(elements), ['dup-below']);
+  });
+
+  QUnit.test('falls back to the document for an anchor outside the supplied root', function(assert) {
+    var scope = document.getElementById('dup-scope');
+    var elements = findElements({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'outside-anchor'}]}]
+      }
+    }, scope);
+    assert.deepEqual(ids(elements), ['dup-below']);
+  });
+
+  QUnit.test('resolves a locator anchor inside a shadow root', function(assert) {
+    var host = document.createElement('div');
+    fixture.appendChild(host);
+    var shadow = host.attachShadow({mode: 'open'});
+    shadow.innerHTML =
+        '<span id="shadow-anchor" style="display: block; height: 20px;">a</span>' +
+        '<p id="shadow-below" style="margin: 0; height: 20px;">b</p>';
+    var locator = {
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'shadow-anchor'}]}]
+      }
+    };
+    assert.deepEqual(ids(findElements(locator, shadow)), ['shadow-below']);
+    assert.throws(function() {
+      findElements({
+        relative: {
+          root: {'tag name': 'span'},
+          filters: [{kind: 'below', args: [{id: 'shadow-anchor'}]}]
+        }
+      });
+    }, /No element has been found/);
+  });
+
+  QUnit.test('finds by tag name inside a shadow root', function(assert) {
+    var host = document.createElement('div');
+    fixture.appendChild(host);
+    var shadow = host.attachShadow({mode: 'open'});
+    shadow.innerHTML = '<div class="foo"><p id="shadow-p"><span id="shadow-span">s</span></p></div>';
+    var elements = findElements({'tag name': 'p'}, shadow);
+    assert.equal(elements.length, 1);
+    assert.equal(elements[0].getAttribute('id'), 'shadow-p');
+    assert.deepEqual(ids(findElements({'tag name': 'div.foo'}, shadow)), []);
+    assert.deepEqual(ids(findElements({'tag name': 'p > span'}, shadow)), []);
+    assert.deepEqual(ids(findElements({'tag name': 'p,span'}, shadow)), []);
+    assert.equal(findElements({'tag name': 'p:unsupported'}, shadow).length, 0);
+    assert.deepEqual(ids(findElements({'tag name': 'SPAN'}, shadow)), ['shadow-span']);
   });
 })();
 </script>

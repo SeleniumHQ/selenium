@@ -50,7 +50,8 @@ module Selenium
         def binary
           @binary ||= begin
             if (location = ENV.fetch('SE_MANAGER_PATH', nil))
-              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}")
+              WebDriver.logger.debug("Selenium Manager set by ENV['SE_MANAGER_PATH']: #{location}",
+                                     id: :selenium_manager)
             end
             location ||= platform_location
 
@@ -76,14 +77,18 @@ module Selenium
           elsif Platform.mac?
             "#{directory}/macos/selenium-manager"
           elsif Platform.linux?
-            "#{directory}/linux/selenium-manager"
+            "#{directory}/#{linux_directory}/selenium-manager"
           elsif Platform.unix?
             WebDriver.logger.warn('Selenium Manager binary may not be compatible with Unix',
                                   id: %i[selenium_manager unix_binary])
-            "#{directory}/linux/selenium-manager"
+            "#{directory}/#{linux_directory}/selenium-manager"
           else
             raise Error::WebDriverError, "unsupported platform: #{Platform.os}"
           end
+        end
+
+        def linux_directory
+          RbConfig::CONFIG['host_cpu'].to_s.downcase == 'aarch64' ? 'linux-arm64' : 'linux-x86_64'
         end
 
         def execute_command(*command)

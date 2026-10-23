@@ -29,6 +29,8 @@ import io.fabric8.kubernetes.api.model.PodDNSConfigBuilder;
 import io.fabric8.kubernetes.api.model.PodSecurityContext;
 import io.fabric8.kubernetes.api.model.PodSecurityContextBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.SecurityContext;
+import io.fabric8.kubernetes.api.model.SecurityContextBuilder;
 import io.fabric8.kubernetes.api.model.Toleration;
 import io.fabric8.kubernetes.api.model.TolerationBuilder;
 import java.util.List;
@@ -41,6 +43,7 @@ class InheritedPodSpecTest {
   void emptySpecHasNoInheritedFields() {
     InheritedPodSpec spec = InheritedPodSpec.empty();
     assertThat(spec.hasInheritedFields()).isFalse();
+    assertThat(spec.getContainerSecurityContext()).isNull();
     assertThat(spec.getTolerations()).isEmpty();
     assertThat(spec.getAffinity()).isNull();
     assertThat(spec.getImagePullSecrets()).isEmpty();
@@ -377,6 +380,42 @@ class InheritedPodSpecTest {
             "my-pvc");
     assertThat(spec.hasInheritedFields()).isTrue();
     assertThat(spec.getAssetsClaimName()).isEqualTo("my-pvc");
+  }
+
+  @Test
+  void specWithContainerSecurityContextHasInheritedFields() {
+    SecurityContext containerSecCtx =
+        new SecurityContextBuilder()
+            .withAllowPrivilegeEscalation(false)
+            .withNewCapabilities()
+            .withDrop("ALL")
+            .endCapabilities()
+            .build();
+    InheritedPodSpec spec =
+        new InheritedPodSpec(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            containerSecCtx);
+    assertThat(spec.hasInheritedFields()).isTrue();
+    assertThat(spec.getContainerSecurityContext()).isNotNull();
+    assertThat(spec.getContainerSecurityContext().getAllowPrivilegeEscalation()).isFalse();
+    assertThat(spec.getContainerSecurityContext().getCapabilities().getDrop())
+        .containsExactly("ALL");
   }
 
   @Test

@@ -23,7 +23,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.Closeable;
-import java.io.StringReader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,19 +43,20 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
 
 @Beta
+@ApiStatus.Internal
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
@@ -69,8 +69,10 @@ public class Connection implements Closeable {
             return thread;
           });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks =
+  private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
+  // Per connection, because a callback for one session holds only that connection's callbacks
+  private final ThreadLocal<Boolean> dispatchingEvents = ThreadLocal.withInitial(() -> false);
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<String, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
@@ -220,6 +222,61 @@ public class Connection implements Closeable {
     }
   }
 
+  /**
+   * Removes the callbacks for an event and returns them so they can be put back with {@link
+   * #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(Event<?> event) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<String, Consumer<?>> removed = eventCallbacks.remove(event);
+      return removed == null ? Map.of() : Map.of(event, removed);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Removes the callback registered under a subscription id and returns it, keyed by event, so it
+   * can be put back with {@link #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(String id) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<Event<?>, Map<String, Consumer<?>>> removed = new HashMap<>();
+      eventCallbacks.forEach(
+          (event, handlers) -> {
+            Consumer<?> handler = handlers.remove(id);
+            if (handler != null) {
+              removed.put(event, Map.of(id, handler));
+            }
+          });
+      eventCallbacks.values().removeIf(Map::isEmpty);
+      return removed;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  void restoreListeners(Map<Event<?>, Map<String, Consumer<?>>> detached) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      detached.forEach(
+          (event, handlers) ->
+              eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).putAll(handlers));
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /** Whether the current thread is running event callbacks, and so holds them against changes. */
+  boolean isDispatchingEventsOnCurrentThread() {
+    return dispatchingEvents.get();
+  }
+
   public boolean isSubscribed(String id) {
     Lock lock = callbacksLock.readLock();
     lock.lock();
@@ -297,17 +354,16 @@ public class Connection implements Closeable {
   }
 
   private void handle(CharSequence data) {
-    // It's kind of gross to decode the data twice, but this lets us get started on something
-    // that feels nice to users.
-    // TODO: decode once, and once only
-
+    // Parse the incoming message once, here, into a Map. A response then passes its "result"
+    // value to the command's mapper and an event passes its "params" Map to the event's mapper;
+    // neither re-parses the message text.
     String asString = String.valueOf(data);
     LOG.log(getDebugLogLevel(), "<- {0}", asString);
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
         && (raw.get("result") != null || raw.get("error") != null)) {
-      handleResponse(asString, raw);
+      handleResponse(raw);
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
       handleEventResponse(raw);
     } else {
@@ -315,32 +371,17 @@ public class Connection implements Closeable {
     }
   }
 
-  private void handleResponse(String rawDataString, Map<String, Object> rawDataMap) {
-    Consumer<Either<Throwable, JsonInput>> consumer =
+  private void handleResponse(Map<String, Object> rawDataMap) {
+    Consumer<Either<Throwable, @Nullable Object>> consumer =
         methodCallbacks.remove(((Number) rawDataMap.get("id")).longValue());
     if (consumer == null) {
       return;
     }
 
-    try (StringReader reader = new StringReader(rawDataString);
-        JsonInput input = JSON.newInput(reader)) {
-      input.beginObject();
-      while (input.hasNext()) {
-        switch (input.nextName()) {
-          case "result":
-            consumer.accept(Either.right(input));
-            break;
-
-          case "error":
-            consumer.accept(Either.left(new WebDriverException(rawDataString)));
-            input.skipValue();
-            break;
-
-          default:
-            input.skipValue();
-        }
-      }
-      input.endObject();
+    if (rawDataMap.get("error") != null) {
+      consumer.accept(Either.left(new WebDriverException(JSON.toJson(rawDataMap))));
+    } else {
+      consumer.accept(Either.right(rawDataMap.get("result")));
     }
   }
 
@@ -351,6 +392,19 @@ public class Connection implements Closeable {
             String.format(
                 "Method %s called with %s callbacks available",
                 rawDataMap.get("method"), eventCallbacks.size()));
+    boolean wasDispatching = dispatchingEvents.get();
+    dispatchingEvents.set(true);
+    try {
+      dispatchEvent(rawDataMap);
+    } finally {
+      // Removed rather than reset so pooled threads keep no entry for closed connections
+      if (!wasDispatching) {
+        dispatchingEvents.remove();
+      }
+    }
+  }
+
+  private void dispatchEvent(Map<String, Object> rawDataMap) {
     Lock lock = callbacksLock.readLock();
     // A waiting writer will block a reader to enter the lock, even if there are currently other
     // readers holding the lock. TryLock will bypass the waiting writers and acquire the read lock.

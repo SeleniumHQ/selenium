@@ -25,6 +25,7 @@ module Selenium
       describe Service do
         describe '#new' do
           let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
+          let(:debug_args) { ENV.key?('SE_DEBUG') ? ['--verbose'] : [] }
 
           before do
             allow(Platform).to receive(:assert_executable)
@@ -52,10 +53,16 @@ module Selenium
             expect(service.host).to eq Platform.localhost
           end
 
-          it 'does not create args by default' do
+          it 'enables chrome logs by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
+          end
+
+          it 'does not duplicate --enable-chrome-logs when provided' do
+            service = described_class.new(args: ['--enable-chrome-logs'])
+
+            expect(service.extra_args).to eq(['--enable-chrome-logs'] + debug_args)
           end
 
           it 'uses sets log path to stdout' do
@@ -74,21 +81,22 @@ module Selenium
             service = described_class.new(log: '/path/to/log.txt')
 
             expect(service.log).to be_nil
-            expect(service.args).to eq ['--log-path=/path/to/log.txt']
+            expect(service.args).to eq(['--enable-chrome-logs'] + debug_args + ['--log-path=/path/to/log.txt'])
           end
 
           it 'uses provided args' do
             service = described_class.new(args: ['--foo', '--bar'])
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+            expect(service.extra_args).to eq(['--foo', '--bar', '--enable-chrome-logs'] + debug_args)
           end
 
           context 'when SE_DEBUG is set' do
             around do |example|
+              original_debug = ENV.fetch('SE_DEBUG', nil)
               ENV['SE_DEBUG'] = '1'
               example.run
             ensure
-              ENV.delete('SE_DEBUG')
+              original_debug ? ENV['SE_DEBUG'] = original_debug : ENV.delete('SE_DEBUG')
             end
 
             it 'adds --verbose flag' do
@@ -115,16 +123,13 @@ module Selenium
 
         context 'when initializing driver' do
           let(:driver) { Chrome::Driver }
-          let(:service) do
-            instance_double(described_class, launch: service_manager, executable_path: nil, 'executable_path=': nil,
-                                             class: described_class)
-          end
-          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
+          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com', start: nil) }
           let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
           let(:finder) { instance_double(DriverFinder, browser_path?: false, driver_path: '/path/to/driver') }
 
           before do
             allow(Remote::Bridge).to receive(:new).and_return(bridge)
+            allow(ServiceManager).to receive(:new).and_return(service_manager)
             allow(bridge).to receive(:browser).and_return(:chrome)
           end
 
@@ -136,18 +141,17 @@ module Selenium
 
           it 'is created when :url is not provided' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new).and_return(service)
 
             driver.new
-            expect(described_class).to have_received(:new).with(no_args)
+            expect(ServiceManager).to have_received(:new).once.with(an_instance_of(described_class))
           end
 
           it 'accepts :service without creating a new instance' do
             allow(DriverFinder).to receive(:new).and_return(finder)
-            allow(described_class).to receive(:new)
+            service = described_class.new
 
             driver.new(service: service)
-            expect(described_class).not_to have_received(:new)
+            expect(ServiceManager).to have_received(:new).once.with(service)
           end
         end
       end

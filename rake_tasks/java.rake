@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 require 'base64'
+require 'json'
 require 'net/http'
 
 # use #java_release_targets to access this list
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v149:v149.publish
-  //java/src/org/openqa/selenium/devtools/v150:v150.publish
-  //java/src/org/openqa/selenium/devtools/v148:v148.publish
+  //java/src/org/openqa/selenium/devtools/v155:v155.publish
+  //java/src/org/openqa/selenium/devtools/v153:v153.publish
+  //java/src/org/openqa/selenium/devtools/v154:v154.publish
   //java/src/org/openqa/selenium/devtools/latest:latest.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -32,9 +33,7 @@ JAVA_RELEASE_TARGETS = %w[
 ].freeze
 
 def java_version
-  File.foreach('java/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('java')
 end
 
 def java_release_targets
@@ -72,67 +71,146 @@ def verify_java_release_targets
   raise error_message
 end
 
-def read_m2_user_pass
-  settings_path = File.join(Dir.home, '.m2', 'settings.xml')
-  unless File.exist?(settings_path)
-    warn "Maven settings file not found at #{settings_path}"
-    return
-  end
+module Sonatype
+  module_function
 
-  puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
-  settings = File.read(settings_path)
-  found_section = false
-  settings.each_line do |line|
-    if !found_section
-      found_section = line.include? '<id>central</id>'
-    elsif line.include?('<username>')
-      ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
-    elsif line.include?('<password>')
-      ENV['MAVEN_PASSWORD'] = line[%r{<password>(.*?)</password>}, 1]
+  def load_credentials
+    ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
+    ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
+    return if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+    settings_path = File.join(Dir.home, '.m2', 'settings.xml')
+    unless File.exist?(settings_path)
+      warn "Maven settings file not found at #{settings_path}"
+      return
     end
-    break if ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+
+    puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
+    server = File.read(settings_path)[%r{<id>central</id>.*?</server>}m].to_s
+    ENV['MAVEN_USER'] = server[%r{<username>(.*?)</username>}, 1]
+    ENV['MAVEN_PASSWORD'] = server[%r{<password>(.*?)</password>}, 1]
   end
-end
 
-def sonatype_auth_token
-  read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-  Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
-end
+  def auth_token
+    load_credentials
+    Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
+  end
 
-def trigger_sonatype_publish(token)
-  puts 'Triggering Sonatype upload with automatic publishing...'
-  uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq?publishing_type=automatic')
+  def trigger_publish
+    puts 'Triggering Sonatype upload with automatic publishing...'
+    url = 'https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/' \
+          'org.seleniumhq?publishing_type=automatic'
+    uri = URI(url)
 
-  req = Net::HTTP::Post.new(uri)
-  req['Authorization'] = "Basic #{token}"
-  req['Accept'] = '*/*'
-  req['Content-Length'] = '0'
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{auth_token}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
 
-  begin
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
-                                                  open_timeout: 10, read_timeout: 180) do |http|
-      http.request(req)
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                    open_timeout: 10, read_timeout: 180) do |http|
+        http.request(req)
+      end
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      warn <<~MSG
+        Request timed out.
+        The deployment may still have been created on the server.
+        Check https://central.sonatype.com/publishing/deployments for status.
+      MSG
+      raise e
     end
-  rescue Net::ReadTimeout, Net::OpenTimeout => e
-    warn <<~MSG
-      Request timed out.
-      The deployment may still have been created on the server.
-      Check https://central.sonatype.com/publishing/deployments for status.
-    MSG
-    raise e
+
+    unless res.is_a?(Net::HTTPSuccess)
+      warn "Failed to trigger upload (HTTP #{res.code}): #{res.body}"
+      exit(1)
+    end
+
+    puts 'Upload triggered — Sonatype will automatically validate and publish.'
   end
 
-  unless res.is_a?(Net::HTTPSuccess)
-    warn "Failed to trigger upload (HTTP #{res.code}): #{res.body}"
-    exit(1)
+  def request_json(request)
+    request['Accept'] = 'application/json'
+    res = SeleniumRake.get_request(request)
+    raise "#{request.uri.path} returned HTTP #{res.code}: #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+
+    JSON.parse(res.body)
   end
 
-  puts 'Upload triggered — Sonatype will automatically validate and publish.'
+  # Staging repositories are keyed by (user, IP, user agent) and the search defaults to the caller's
+  # IP, so ip=any is required to see one opened by a previous attempt on a different runner.
+  def staging_repositories
+    req = Net::HTTP::Get.new(URI('https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?ip=any'))
+    req['Authorization'] = "Basic #{auth_token}"
+    request_json(req).fetch('repositories')
+  end
+
+  def published?(version)
+    query = "namespace=org.seleniumhq.selenium&name=selenium-java&version=#{version}"
+    req = Net::HTTP::Get.new(URI("https://central.sonatype.com/api/v1/publisher/published?#{query}"))
+    # The Portal documents Bearer, where the staging API shim above takes Basic. Same credential.
+    req['Authorization'] = "Bearer #{auth_token}"
+    request_json(req).fetch('published')
+  end
+
+  def drop_repository(key)
+    req = Net::HTTP::Delete.new(URI("https://ossrh-staging-api.central.sonatype.com/manual/drop/repository/#{key}"))
+    req['Authorization'] = "Basic #{auth_token}"
+    res = SeleniumRake.get_request(req)
+    raise "Failed to drop staging repository #{key} (HTTP #{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+  end
+
+  def portal_status(deployment_id)
+    req = Net::HTTP::Post.new(URI("https://central.sonatype.com/api/v1/publisher/status?id=#{deployment_id}"))
+    req['Authorization'] = "Bearer #{auth_token}"
+    req['Content-Length'] = '0'
+    request_json(req)
+  end
+
+  def for_version?(status, version)
+    purls = status.fetch('purls', [])
+    purls.empty? || purls.any? { |purl| purl.end_with?("@#{version}") }
+  end
+
+  def already_deployed?(version)
+    deployed = published?(version) || staging_repositories.any? { |repo| leftover_published?(repo, version) }
+    puts "#{version} is already deployed — skipping the deploy." if deployed
+    deployed
+  end
+
+  # Release runs are serialized and staging repositories are visible only to the token that created
+  # them, so a leftover is a dead earlier attempt: drop it, unless the Portal is still working on it.
+  def leftover_published?(repo, version)
+    return false if repo['state'] == 'released'
+
+    if repo['state'] == 'closed'
+      status = portal_status(repo['portal_deployment_id'])
+      return false unless for_version?(status, version)
+      # The Portal lists purls once it has examined the deployment, so only then is it known to hold this version
+      return status.fetch('purls', []).any? if status['deploymentState'] == 'PUBLISHED'
+      unless status['deploymentState'] == 'FAILED'
+        raise "A previous attempt is still #{status['deploymentState']} at the Portal (#{repo['key']}); " \
+              'rerun once it settles.'
+      end
+    end
+
+    puts "Dropping staging repository #{repo['key']} left #{repo['state']} by a previous attempt"
+    drop_repository(repo['key'])
+    false
+  end
+
+  def deployment_status(version)
+    staging_repositories.filter_map { |repo| repo['portal_deployment_id'] }.each do |id|
+      status = portal_status(id)
+      return status if for_version?(status, version)
+    end
+    nil
+  end
 end
 
 desc 'Build Java Client Jars'
 task :build do |_task, arguments|
-  java_release_targets.each { |target| Bazel.execute('build', arguments.to_a, target) }
+  Bazel.execute('build', arguments.to_a, java_release_targets)
 end
 
 desc 'Build the selenium client jars'
@@ -143,6 +221,94 @@ end
 desc 'Build Grid Server'
 task :grid do |_task, arguments|
   Bazel.execute('build', arguments.to_a, '//java/src/org/openqa/selenium/grid:executable-grid')
+end
+
+# IDE test runners supply their own JUnit Platform launcher/engine; a second copy clashes.
+JAVA_LIBS_IDE_TEST_RUNTIME = %w[
+  junit-jupiter-engine junit-platform-engine junit-platform-launcher junit-platform-reporting
+].freeze
+
+# Third-party jars on the IntelliJ modules' resolved classpath. Scoping to this drops unused
+# transitives (e.g. javacc's test-only junit-4) by construction. Reads two providers, duck-typed
+# because cquery keys them by long Starlark ids: JavaInfo.transitive_runtime_jars for libraries, and
+# JavaRuntimeClasspathInfo.runtime_classpath for the in-tree java_binary tools (CDP/module generators).
+def resolved_third_party_jars
+  expr = '"\n".join(' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "transitive_runtime_jars") for f in p.transitive_runtime_jars.to_list()] + ' \
+         '[f.path for p in providers(target).values() ' \
+         'if hasattr(p, "runtime_classpath") for f in p.runtime_classpath.to_list()])'
+  query = 'set(//java/src/... //java/test/... //java/src/dev/...)'
+  jars = []
+  Bazel.execute('cquery', ['--pin_browsers=false', '--output=starlark', "--starlark:expr=#{expr}"], query) do |out|
+    jars = out.lines.map(&:strip)
+              .grep(%r{\+\+maven\+maven/.*\.jar$})
+              .map { |path| File.basename(path).sub(/\A(?:processed|header)_/, '') }
+  end
+  jars.uniq.reject { |base| JAVA_LIBS_IDE_TEST_RUNTIME.any? { |name| base.start_with?(name) } }
+end
+
+desc 'Copy Bazel-built dependency jars to ./java-libs for local development'
+task :local_dev do
+  # pin_browsers defaults true and pulls pinned browsers this task doesn't need. @maven has the
+  # third-party jars; the module builds materialize the generated jars (devtools) the IDE can't rebuild.
+  ['@maven//...', '//java/test/...', '//java/src/dev/...'].each do |target|
+    Bazel.execute('build', ['--pin_browsers=false'], target)
+  end
+
+  needed = resolved_third_party_jars
+  raise 'Resolved classpath query returned no third-party jars' if needed.empty?
+
+  # Bazel.execute merges stdout/stderr, so keep only the path line.
+  execroot = nil
+  Bazel.execute('info', [], 'execution_root') do |out|
+    execroot = out.lines.map(&:strip).grep(%r{[\\/]execroot[\\/]}).last
+  end
+  raise 'Could not determine Bazel execution_root' unless execroot
+
+  # Skip the exec-configuration bazel-out tree (config dir ends in "-exec") to avoid build-tool dupes.
+  exec_config = %r{[\\/]bazel-out[\\/][^\\/]*-exec[\\/]}
+  bin = File.join(execroot, 'bazel-out', '*', 'bin')
+  maven_tree = 'external/rules_jvm_external++maven+maven'
+  jars = Dir.glob([
+                    File.join(bin, maven_tree, '**/*.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp.jar'),
+                    File.join(bin, 'java/src/org/openqa/selenium/devtools/v*/libcdp-src.jar'),
+                    File.join(bin, 'external/rules_java+/**/librunfiles.jar'),
+                    File.join(bin, 'external/rules_jvm_external+/**/libzip.jar')
+                  ]).grep_v(exec_config)
+
+  lib = File.join(Dir.pwd, 'java-libs')
+  sources = File.join(lib, 'sources')
+  FileUtils.rm_rf(lib)
+  FileUtils.mkdir_p(sources)
+
+  jars.each do |path|
+    base = File.basename(path)
+    if path.include?(maven_tree)
+      # rules_jvm_external emits header_/processed_ compile variants beside the raw jar; skip those
+      # and copy the raw jar, whose clean name matches the stripped `needed` basenames.
+      next if base.start_with?('header_', 'processed_')
+      next unless needed.include?(base.sub(/-(?:sources|src)\.jar$/, '.jar'))
+    elsif base.start_with?('libcdp')
+      # Every CDP version emits libcdp.jar; prefix with the version dir so a flat dir holds them all.
+      base = "#{File.basename(File.dirname(path))}-#{base}"
+    end
+
+    dir = base.end_with?('-sources.jar', '-src.jar') ? sources : lib
+    dest = File.join(dir, base)
+    warn "warning: overwriting #{base} (duplicate basename)" if File.exist?(dest)
+    FileUtils.cp(path, dest)
+  end
+
+  copied = Dir.children(lib).select { |entry| entry.end_with?('.jar') }
+  raise "No dependency jars copied to #{lib}; expected Bazel outputs are missing" if copied.empty?
+
+  # Fail loudly rather than hand the IDE an incomplete classpath if a resolved jar wasn't materialized.
+  missing = needed - copied
+  raise "Resolved classpath jars missing from #{lib}: #{missing.join(', ')}" unless missing.empty?
+
+  puts "Copied #{copied.size} dependency jars to #{lib}"
 end
 
 desc 'Package Java bindings and grid into releasable packages and stage for release'
@@ -167,49 +333,25 @@ task :package do |_task, arguments|
 end
 
 desc 'Validate Java release credentials'
-task :check_credentials do |_task, arguments|
-  nightly = arguments.to_a.include?('nightly')
-
-  has_env = (ENV['MAVEN_USER'] || ENV.fetch('SEL_M2_USER',
-                                            nil)) && (ENV['MAVEN_PASSWORD'] || ENV.fetch('SEL_M2_PASS', nil))
-  settings = File.join(Dir.home, '.m2', 'settings.xml')
-  has_file = File.exist?(settings) && File.read(settings).include?('<id>central</id>')
-  unless has_env || has_file
+task :check_credentials do
+  Sonatype.load_credentials
+  unless ENV['MAVEN_USER'] && ENV['MAVEN_PASSWORD']
     raise 'Missing Maven credentials: set MAVEN_USER/MAVEN_PASSWORD or configure ~/.m2/settings.xml'
   end
 
-  next if nightly
-
-  has_gpg = system('which gpg >/dev/null 2>&1') || system('where gpg >NUL 2>&1')
-  raise 'Missing GPG: gpg command not found (required for signing releases)' unless has_gpg
+  load_pgp_signing_key
+  if ENV['PGP_SIGNING_KEY'].empty? || ENV['PGP_SIGNING_PWD'].empty?
+    raise 'Missing signing key: set GPG_PRIVATE_KEY and GPG_PASSPHRASE (required for signing releases)'
+  end
 end
 
 desc 'Deploy all jars to Maven'
 task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
 
-  unless nightly
-    already_published = begin
-      Rake::Task['java:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['java:verify'].reenable
-    end
-
-    if already_published
-      puts 'Java packages already published — skipping release.'
-      next
-    end
-  end
-
-  Rake::Task['java:check_credentials'].invoke(*(nightly ? ['nightly'] : []))
-
-  ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
-  ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
-  token = sonatype_auth_token
+  Rake::Task['java:check_credentials'].invoke
 
   repo_domain = 'central.sonatype.com'
   repo = if nightly
@@ -218,7 +360,8 @@ task :release do |_task, arguments|
            "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
          end
   ENV['MAVEN_REPO'] = "https://#{repo}"
-  ENV['GPG_SIGN'] = (!nightly).to_s
+  ENV['USE_IN_MEMORY_PGP_KEYS'] = 'true'
+  ENV['GPG_SIGN'] = 'false'
 
   if nightly
     puts 'Updating Java version to nightly...'
@@ -226,20 +369,64 @@ task :release do |_task, arguments|
   end
 
   puts 'Packaging Java artifacts...'
-  Rake::Task['java:package'].invoke('--config=release')
-  Rake::Task['java:build'].invoke('--config=release')
+  Rake::Task['java:build'].invoke("--config=#{config}")
+  Rake::Task['java:package'].invoke("--config=#{config}")
 
-  puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
-  java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+  next if !nightly && Sonatype.already_deployed?(java_version)
+
+  puts "Deploying Java artifacts to '#{ENV.fetch('MAVEN_REPO', nil)}'"
+  java_release_targets.each { |target| Bazel.execute('run', ["--config=#{config}"], target) }
 
   next if nightly
 
-  trigger_sonatype_publish(token)
+  Sonatype.trigger_publish
 end
 
-desc 'Verify Java packages are published on Maven Central'
+def load_pgp_signing_key
+  key = ENV.fetch('GPG_PRIVATE_KEY', '')
+  ENV['PGP_SIGNING_KEY'] = key.start_with?('-----BEGIN PGP') ? Base64.strict_encode64(key) : key
+  ENV['PGP_SIGNING_PWD'] = ENV.fetch('GPG_PASSPHRASE', '')
+end
+
+def maven_central_pom_url
+  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
+  "#{base}/#{java_version}/selenium-java-#{java_version}.pom"
+end
+
+desc 'Verify Sonatype accepted the Java deployment for Maven Central'
 task :verify do
-  SeleniumRake.verify_package_published("https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom")
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
+  deployments = 'https://central.sonatype.com/publishing/deployments'
+
+  loop do
+    begin
+      status = Sonatype.deployment_status(java_version)
+    rescue StandardError => e
+      puts "  #{e.class}: #{e.message}"
+      status = nil
+    end
+    state = status&.fetch('deploymentState', nil)
+
+    case state
+    when 'PUBLISHED'
+      puts "#{java_version} is published on Maven Central"
+      break
+    when 'PUBLISHING'
+      puts "#{java_version} is accepted; Maven Central sync pending at #{maven_central_pom_url}"
+      break
+    when 'FAILED'
+      raise "Sonatype rejected #{java_version}: #{status['errors'].to_json}; check #{deployments}"
+    when 'VALIDATED'
+      raise "#{java_version} validated but automatic publishing did not engage; publish it at #{deployments}"
+    end
+
+    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      raise "#{java_version} is still #{state || 'missing'} at Sonatype; check #{deployments}"
+    end
+
+    puts "  #{java_version} is #{state || 'not yet visible'} at Sonatype, retrying in 15s"
+    sleep 15
+  end
 end
 
 desc 'Install jars to local m2 directory'
@@ -294,7 +481,7 @@ task :docs_generate do
   Bazel.execute('build', [], '//java/src/org/openqa/selenium/grid:all-javadocs')
 end
 
-desc 'Update Maven dependencies'
+desc 'Update Maven dependencies to latest versions'
 task :update do
   puts 'Updating Maven dependencies'
   # Make sure things are in a good state to start with
@@ -324,6 +511,12 @@ task :update do
       version = maven_stable_release(artifact)
       next if version.nil?
     end
+    if artifact.start_with?('io.fabric8:') && Gem::Version.new(version) >= Gem::Version.new('8')
+      # fabric8 8.0 requires Java 17; stay on 7.x until Selenium's Java minimum reaches 17.
+      # Lifting this also removes the Jackson override on //java/src/org/openqa/selenium/grid/node/kubernetes.
+      version = maven_stable_release(artifact, below: '8')
+      next if version.nil?
+    end
     content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
   end
   File.write(file_path, content)
@@ -332,7 +525,7 @@ task :update do
   Rake::Task['java:pin'].invoke
 end
 
-def maven_stable_release(artifact)
+def maven_stable_release(artifact, below: nil)
   require 'rexml/document'
   group_id, artifact_id = artifact.split(':', 2)
   group_path = group_id.tr('.', '/')
@@ -343,6 +536,7 @@ def maven_stable_release(artifact)
   doc = REXML::Document.new(xml)
   versions = doc.elements.to_a('metadata/versioning/versions/version').map(&:text)
   stable = versions.grep(/\A\d+\.\d+(\.\d+)*\z/)
+  stable.select! { |v| Gem::Version.new(v) < Gem::Version.new(below) } if below
   stable.max_by { |v| Gem::Version.new(v) }
 rescue StandardError => e
   puts "WARNING — Failed to fetch stable release for #{artifact}: #{e.message}"
@@ -366,10 +560,7 @@ task :version, [:version] do |_task, arguments|
   old_version = java_version
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-SNAPSHOT')
   puts "Updating Java from #{old_version} to #{new_version}"
-
-  file = 'java/version.bzl'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('java', new_version)
 end
 
 desc 'Format Java code with google-java-format'

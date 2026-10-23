@@ -104,7 +104,11 @@ class CaptureLoggingRule {
 
     public void write(Level writeLogsHigherThan) {
       Formatter formatter = new OurFormatter();
-      records.stream()
+      List<LogRecord> snapshot;
+      synchronized (records) {
+        snapshot = new ArrayList<>(records);
+      }
+      snapshot.stream()
           .filter(record -> record.getLevel().intValue() >= writeLogsHigherThan.intValue())
           .forEach(record -> System.out.print(formatter.format(record)));
     }

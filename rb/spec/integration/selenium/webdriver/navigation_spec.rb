@@ -21,7 +21,9 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Navigation do
-      it 'navigates back and forward' do
+      it 'navigates back and forward',
+         pending_if: {browser_family: :safari, bidi: true,
+                      reason: 'Safari does not support BiDi browsingContext.traverseHistory'} do
         form_title = 'We Leave From Here'
         result_title = 'We Arrive Here'
         form_url = url_for 'formPage.html'

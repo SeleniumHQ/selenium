@@ -40,12 +40,13 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
-const BIDI = require('../bidi')
+const { getBidiConnection, closeBidiConnection } = require('./bidi_connection')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
 const Script = require('./script')
 const Network = require('./network')
 const Dialog = require('./fedcm/dialog')
+const webExtension = require('./web_extension')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -692,6 +693,16 @@ class WebDriver {
   }
 
   /**
+   * The shared logger deprecation notices (e.g. {@link WebDriver#getBidi})
+   * are emitted through — a class-level accessor since a deprecation can be
+   * reported from a static/prototype context with no driver instance at hand.
+   * @return {!./logging.Logger} the shared `selenium.webdriver.webdriver` logger.
+   */
+  static get logger() {
+    return logging.getLogger('selenium.webdriver.webdriver')
+  }
+
+  /**
    * Creates a new WebDriver session.
    *
    * This function will always return a WebDriver instance. If there is an error
@@ -794,10 +805,9 @@ class WebDriver {
         this._cdpWsConnection.close()
       }
 
-      // Close the BiDi websocket connection
-      if (this._bidiConnection !== undefined) {
-        this._bidiConnection.close()
-      }
+      // Not awaited: the session is already torn down by this point, so
+      // closing our end of the socket doesn't need to gate quit() completing.
+      closeBidiConnection(this)
     })
   }
 
@@ -1045,6 +1055,9 @@ class WebDriver {
   async findElementInternal_(locatorFn, context) {
     let result = await locatorFn(context)
     if (Array.isArray(result)) {
+      if (result.length === 0) {
+        throw new NoSuchElementError('Cannot locate an element with provided parameters')
+      }
       result = result[0]
     }
     if (!(result instanceof WebElement)) {
@@ -1088,7 +1101,15 @@ class WebDriver {
    * @private
    */
   async findElementsInternal_(locatorFn, context) {
-    const result = await locatorFn(context)
+    let result
+    try {
+      result = await locatorFn(context)
+    } catch (ex) {
+      if (ex instanceof NoSuchElementError) {
+        return []
+      }
+      throw ex
+    }
     if (result instanceof WebElement) {
       return [result]
     }
@@ -1299,19 +1320,6 @@ class WebDriver {
 
   async getCdpTargets() {
     this._cdpConnection.execute('Target.getTargets')
-  }
-
-  /**
-   * Initiates bidi connection using 'webSocketUrl'
-   * @returns {BIDI}
-   */
-  async getBidi() {
-    if (this._bidiConnection === undefined) {
-      const caps = await this.getCapabilities()
-      let WebSocketUrl = caps['map_'].get('webSocketUrl')
-      this._bidiConnection = new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
-    }
-    return this._bidiConnection
   }
 
   /**
@@ -1776,7 +1784,88 @@ class WebDriver {
     }
     return await this.execute(cmd)
   }
+
+  /**
+   * Installs a browser extension. Works with remote (Grid) sessions: a directory is uploaded to
+   * the remote end first, and an archive or base64 bytes are sent inline.
+   *
+   * Requires BiDi (see `options.enableBidi()`). Chromium installs only unpacked directories
+   * (SeleniumHQ/selenium#16541); Firefox also installs without BiDi, see
+   * {@link ../firefox.Driver#installWebExtension}.
+   *
+   *     const extension = await driver.installWebExtension('/path/to/extension')
+   *     await driver.uninstallWebExtension(extension)
+   *
+   * @param {string} extension an unpacked extension directory, a packed extension file
+   *     (.xpi/.crx/.zip), or base64-encoded bytes of one.
+   * @param {Object<string, boolean>=} options browser-specific install options. This browser
+   *     supports none; see {@link ../firefox.Driver#installWebExtension} for Firefox's.
+   * @return {!Promise<!webExtension.WebExtension>} the installed extension.
+   * @throws {error.InvalidArgumentError} if an option is given that this browser cannot honor.
+   * @throws {error.UnsupportedOperationError} if the session was created without BiDi.
+   */
+  async installWebExtension(extension, options = undefined) {
+    webExtension.checkInstallOptions(options, [], (await this.getCapabilities()).getBrowserName() ?? 'this browser')
+    if (!(await webExtension.isBidiEnabled(this))) {
+      throw webExtension.bidiRequired('installWebExtension')
+    }
+    // Required lazily: the generated BiDi modules load the BiDi transport, which a
+    // session that never installs an extension should not pay for.
+    const { WebExtension } = require('../bidi/generated/webextension')
+    const module = await WebExtension.create(this)
+    const result = await module.install({ extensionData: await webExtension.extensionData(this, extension) })
+    return new webExtension.WebExtension(result.extension)
+  }
+
+  /**
+   * Uninstalls a browser extension installed with {@link #installWebExtension}.
+   *
+   * @param {!webExtension.WebExtension} extension the extension returned by
+   *     {@link #installWebExtension}.
+   * @return {!Promise<void>} A promise that resolves once the extension is removed.
+   * @throws {error.InvalidArgumentError} if `extension` is not a `WebExtension`.
+   * @throws {error.UnsupportedOperationError} if the session was created without BiDi.
+   */
+  async uninstallWebExtension(extension) {
+    const id = webExtension.extensionId(extension)
+    if (!(await webExtension.isBidiEnabled(this))) {
+      throw webExtension.bidiRequired('uninstallWebExtension')
+    }
+    const { WebExtension } = require('../bidi/generated/webextension')
+    const module = await WebExtension.create(this)
+    await module.uninstall({ extension: id })
+  }
 }
+
+/**
+ * Returns the WebDriver BiDi connection for this session.
+ *
+ * @deprecated BiDi is an internal implementation detail — this accessor hands
+ * back the raw transport directly, which is no longer supported public API.
+ * Use a composed BiDi module instead, e.g. `Network.create(driver)` or
+ * `require('selenium-webdriver/bidi/network')`.
+ * @function
+ * @name WebDriver#getBidi
+ * @returns {Promise<import('../bidi')>} A promise resolving to this session's raw
+ *     BiDi connection, opened on first access and reused afterward.
+ */
+// Object.defineProperty, not `WebDriver.prototype.getBidi = function () {...}`:
+// a plain assignment creates an enumerable property, but a method declared in
+// the class body (like every other method here) is non-enumerable — so BiDi
+// would become more discoverable off the driver than it was before.
+Object.defineProperty(WebDriver.prototype, 'getBidi', {
+  value: function () {
+    WebDriver.logger.deprecate(
+      'webdriver-getBidi',
+      'WebDriver#getBidi() is deprecated. Use a composed BiDi module instead, e.g. Network.create(driver) or ' +
+        "require('selenium-webdriver/bidi/network').",
+    )
+    return getBidiConnection(this)
+  },
+  writable: true,
+  enumerable: false,
+  configurable: true,
+})
 
 /**
  * Interface for navigating back and forth in the browser history.

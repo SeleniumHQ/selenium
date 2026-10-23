@@ -295,22 +295,6 @@ public class RemoteWebDriverBuilder {
               public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
                 return handler.execute(req);
               }
-
-              @Override
-              public <T>
-                  java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>>
-                      sendAsyncNative(
-                          java.net.http.HttpRequest request,
-                          java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendAsyncNative is not supported");
-              }
-
-              @Override
-              public <T> java.net.http.HttpResponse<T> sendNative(
-                  java.net.http.HttpRequest request,
-                  java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendNative is not supported");
-              }
             };
           }
         };
@@ -413,7 +397,7 @@ public class RemoteWebDriverBuilder {
                 new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
                     .andThen(new DumpHttpExchangeFilter())
-                    .andThen(new CloseHttpClientFilter(clientFactory, client)));
+                    .andThen(new CloseHttpClientFilter(client)));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
@@ -526,11 +510,27 @@ public class RemoteWebDriverBuilder {
         .collect(Collectors.toSet());
   }
 
+  // If any requested capability sets se:remoteUrl explicitly, auto-injection is suppressed for the
+  // whole payload to preserve that value and avoid an alwaysMatch/firstMatch overlap. When several
+  // first-match alternatives are supplied and only some set it, the others do not receive the
+  // client-reachable URL; that multi-alternative case is intentionally not supported.
+  private boolean hasExplicitRemoteUrl() {
+    return additionalCapabilities.containsKey("se:remoteUrl")
+        || requestedCapabilities.stream()
+            .anyMatch(caps -> caps.getCapabilityNames().contains("se:remoteUrl"));
+  }
+
   private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
+    Map<String, Object> alwaysMatch = new TreeMap<>(additionalCapabilities);
+    URI baseUri = getBaseUri();
+    if (baseUri != null && driverService == null && !hasExplicitRemoteUrl()) {
+      alwaysMatch.put("se:remoteUrl", baseUri.toString());
+    }
+
     Map<String, Object> w3cCaps = new TreeMap<>();
-    w3cCaps.put("alwaysMatch", additionalCapabilities);
+    w3cCaps.put("alwaysMatch", alwaysMatch);
     if (!requestedCapabilities.isEmpty()) {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }
@@ -540,11 +540,9 @@ public class RemoteWebDriverBuilder {
 
   private static class CloseHttpClientFilter implements Filter {
 
-    private final HttpClient.Factory factory;
     private final HttpClient client;
 
-    CloseHttpClientFilter(HttpClient.Factory factory, HttpClient client) {
-      this.factory = Require.nonNull("Http client factory", factory);
+    CloseHttpClientFilter(HttpClient client) {
       this.client = Require.nonNull("Http client", client);
     }
 
@@ -564,7 +562,6 @@ public class RemoteWebDriverBuilder {
                         } catch (Exception e) {
                           LOG.log(WARNING, "Exception swallowed while closing http client", e);
                         }
-                        factory.cleanupIdleClients();
                       }
                     });
           }

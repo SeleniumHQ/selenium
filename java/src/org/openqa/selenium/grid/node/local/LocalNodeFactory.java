@@ -70,6 +70,7 @@ public class LocalNodeFactory {
                 serverOptions.getExternalUri(),
                 nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
                 secretOptions.getRegistrationSecret())
+            .gridUrlSpecified(nodeOptions.getPublicGridUri().isPresent())
             .maximumConcurrentSessions(nodeOptions.getMaxSessions())
             .sessionTimeout(sessionTimeout)
             .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())

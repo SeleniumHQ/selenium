@@ -46,12 +46,36 @@ bazel test //javascript/selenium-webdriver/...  # All tests
 # Per-file browser targets are named test-<file>-<browser>; discover exact names with:
 # bazel query //javascript/selenium-webdriver:all | grep element-finding
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-chrome
+bazel test //javascript/selenium-webdriver:test-element-finding-test.js-edge
 bazel test //javascript/selenium-webdriver:test-element-finding-test.js-firefox
+
+# Against a Grid (chrome and firefox only). Each target starts its own Selenium
+# standalone server and routes every session through it.
+bazel test //javascript/selenium-webdriver:test-upload-test.js-chrome-remote
+bazel test //javascript/selenium-webdriver/... --test_tag_filters=chrome-remote
+
+# What GitHub Actions runs on every pull request, on macOS and Windows
+bazel test //javascript/selenium-webdriver/... --test_tag_filters=unit,os-sensitive,se-manager
 
 # Additional Arguments
 bazel test //javascript/selenium-webdriver/... --flaky_test_attempts=3
 bazel test //javascript/selenium-webdriver/... --test_output=all
 ```
+
+Each large test file gets a target per browser it runs against: chrome, edge and firefox, or
+the ones its `suite()` is limited to (`{ browsers: [...] }`), as recorded in
+`test/test_browsers.bzl`. It also gets chrome and firefox `-remote` targets, except the files in
+`NO_GRID_TESTS` in `BUILD.bazel`, which test a local driver service itself.
+
+By default on Linux, Bazel uses pinned versions of the browser and driver, so tests do not depend on
+what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ## Skipping Tests
 
@@ -77,6 +101,14 @@ suite(function (env) {
 
 Browser values: `Browser.CHROME`, `Browser.FIREFOX`, `Browser.SAFARI`, `Browser.EDGE`, `Browser.IE`
 
+To skip a test that cannot run through a Grid, use `env.remote()` and give the reason, ideally
+a tracked issue:
+
+```javascript
+// System access can only be granted to a local geckodriver, not a Grid session.
+ignore(env.remote()).describe('context switching', function () {})
+```
+
 ## Helpers
 
 ### From `lib/test`
@@ -94,6 +126,7 @@ Browser values: `Browser.CHROME`, `Browser.FIREFOX`, `Browser.SAFARI`, `Browser.
 | ------------------------ | ----------------------------------------- |
 | `env.builder()`          | Get WebDriver builder for current browser |
 | `env.browsers(...names)` | Predicate for browser matching            |
+| `env.remote()`           | Predicate for running through a Grid      |
 
 ### Test Utilities (`test/lib/testutil.js`)
 
@@ -125,5 +158,8 @@ Test files end in `_test.js`.
 ## Build Files
 
 - Adding tests shouldn't require Bazel changes for existing directories.
-- Small tests (no browser) go in `test/lib/`.
+- Small tests (no browser) go in `test/lib/` and are listed in `SMALL_TESTS`.
 - Large tests (browser required) go in `test/`.
+- A large test file whose `suite()` is limited to some browsers needs a matching entry in
+  `test/test_browsers.bzl`; `test/lib/test_browsers_test.js` fails and names the entry to add if
+  they disagree.

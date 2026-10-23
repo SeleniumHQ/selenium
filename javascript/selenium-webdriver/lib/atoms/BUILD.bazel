@@ -1,9 +1,25 @@
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("//common:defs.bzl", "copy_file")
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
+copy_file(
+    name = "generated_note_local",
+    src = "//scripts:generated_note_template.txt",
+    out = "generated_note_template.txt",
+)
+
 js_binary(
     name = "make_atoms_module",
-    data = ["make-atoms-module.js"],
+    data = [
+        "make-atoms-module.js",
+        ":generated_note_local",
+        ":license_header_local",
+    ],
     entry_point = ":make-atoms-module.js",
 )
 

@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization.Metadata;
+
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
@@ -25,11 +27,11 @@ public abstract class Module
 
     private EventDispatcher EventDispatcher { get; set; } = null!;
 
-    protected Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    protected Task<TResult> ExecuteAsync<TParameters, TResult>(string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {
-        return Broker.ExecuteAsync(descriptor, @params, options, cancellationToken);
+        return Broker.ExecuteAsync(method, @params, paramsTypeInfo, resultTypeInfo, options, cancellationToken);
     }
 
     protected IEventSource<TEventArgs> CreateEventSource<TEventArgs>(EventDescriptor<TEventArgs> descriptor)

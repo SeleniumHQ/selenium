@@ -165,7 +165,7 @@ public class RelayOptions {
         throw new ConfigException("Unable to find stereotype config. " + allConfigs);
       }
       Capabilities stereotype =
-          JSON.toType(extractConfiguredValue(allConfigs.get(i)), Capabilities.class);
+          parseStereotype(extractConfiguredValue(allConfigs.get(i)), "relay config " + (i / 2 + 1));
       parsedConfigs.put(maxSessions, stereotype);
     }
 
@@ -196,5 +196,14 @@ public class RelayOptions {
       return keyValue.substring(keyValue.indexOf("=") + 1);
     }
     return keyValue;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

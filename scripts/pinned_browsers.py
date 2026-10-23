@@ -9,11 +9,15 @@ from pathlib import Path
 import urllib3
 from packaging.version import parse
 
+from scripts.generated_note import generated_note
+
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def calculate_hash(url):
@@ -39,10 +43,10 @@ def get_chrome_info_for_channel(channel):
     )
     versions = json.loads(r.data)["versions"]
 
-    return sorted(
+    return max(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
-    )[-1]
+    )
 
 
 def chromedriver(selected_version, workspace_prefix=""):
@@ -531,7 +535,7 @@ js_library(
 
 
 if __name__ == "__main__":
-    content = """# This file has been generated using `bazel run scripts:pinned_browsers`
+    content = f"""{generated_note("#", "scripts/pinned_browsers.py", "bazel run //scripts:pinned_browsers")}
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//common/private:deb_archive.bzl", "deb_archive")

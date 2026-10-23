@@ -78,6 +78,20 @@ impl BrowserPath {
     }
 }
 
+// Returns the first `<dir>/<name>` that exists, searched name-major (every dir tried for a
+// name before moving to the next name), matching how a browser's own driver walks candidates.
+pub fn first_existing_path(dirs: &[&str], names: &[&str]) -> Option<PathBuf> {
+    for name in names {
+        for dir in dirs {
+            let candidate = Path::new(dir).join(name);
+            if candidate.exists() {
+                return Some(candidate);
+            }
+        }
+    }
+    None
+}
+
 pub fn create_parent_path_if_not_exists(path: &Path) -> Result<(), Error> {
     if let Some(p) = path.parent() {
         create_path_if_not_exists(p)?;
@@ -199,7 +213,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
     let header = find_bytes(&file_bytes, SEVEN_ZIP_HEADER);
     let index_7z = header.ok_or(anyhow!("Incorrect SFX (self extracting exe) file"))?;
     let file_reader = Cursor::new(&file_bytes[index_7z..]);
-    sevenz_rust::decompress(file_reader, zip_parent).unwrap();
+    sevenz_rust2::decompress(file_reader, zip_parent).unwrap();
 
     let zip_parent_str = path_to_string(zip_parent);
     let core_str = format!(r"{}\core", zip_parent_str);
@@ -502,7 +516,7 @@ pub fn unzip(
             }
             None => continue,
         };
-        if file.name().ends_with('/') {
+        if file.name()?.ends_with('/') {
             log.trace(format!("File extracted to {}", tmp_path.display()));
             fs::create_dir_all(&tmp_path)?;
         } else {
@@ -675,6 +689,7 @@ pub fn collect_files_from_cache<F: Fn(&DirEntry) -> bool>(
         .sort_by_file_name()
         .into_iter()
         .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.file_type().is_file())
         .filter(|entry| filter(entry))
         .map(|entry| entry.path().to_owned())
         .collect()

@@ -3,13 +3,25 @@ name: CI - Ruby
 on:
   workflow_call:
     inputs:
-      targets:
-        required: true
-        type: string
+      smoke:
+        description: Smoke tests always run; callers pass false to add the full matrix
+        required: false
+        type: boolean
+        default: true
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       smoke:
-        description: Run smoke tests only
+        description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
         type: boolean
         default: false
@@ -18,6 +30,14 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build Gems
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Gems
+      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
+
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
@@ -25,11 +45,11 @@ jobs:
       name: Lint
       run: ./go rb:lint
 
-  # jruby is run on RBE; minimum MRI is run by os-tests. This matrix
-  # covers truffleruby and the most recent MRI release.
+  # Minimum MRI is run by os-tests and RBE. This matrix covers the most
+  # recent MRI release, jruby and truffleruby.
   unit-tests:
     name: Unit Tests
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -37,73 +57,88 @@ jobs:
         include:
           - ruby-version: 4.0.4
             os: ubuntu
+          - ruby-version: jruby-10.1.0.0
+            os: ubuntu
           - ruby-version: truffleruby-34.0.1
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
-      rerun-with-debug: true
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --test_size_filters small
         //rb/...
 
   smoke:
     name: ${{ matrix.os }}-smoke
-    if: github.event_name != 'schedule' && (github.event_name != 'workflow_dispatch' || inputs.smoke)
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
+        os: [windows, macos]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
         include:
-          - os: ubuntu
-          - os: windows
-          - os: macos
+          # Edge has no linux-arm64 build
+          - os: ubuntu-24.04-arm
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
     with:
       name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      download-artifact-name: targets
       run: >
+        [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
+        ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
-        --test_tag_filters=unit,os-sensitive,se-manager,skip-rbe
-        ${{ inputs.targets || '//rb/...' }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
+        --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
     name: ${{ matrix.os }}-full
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.smoke)
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         os: [windows]
-        tag_filters: [chrome-beta, firefox-beta, edge-local]
+        tag_filters:
+          - chrome-beta-local,chrome-beta-bidi
+          - firefox-beta-local,firefox-beta-bidi
+          - edge-local,edge-bidi,chrome-grid,firefox-grid,edge-grid
         include:
           - os: macos
-            tag_filters: safari-local
+            tag_filters: safari-local,safari-preview-bidi,safari-grid
     with:
       name: (${{ matrix.tag_filters }})
       needs-display: true
+      safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
       run: >
         bazel test
+        --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_size_filters large
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
         //rb/...

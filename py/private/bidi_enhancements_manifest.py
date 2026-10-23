@@ -173,7 +173,10 @@ class SetClientWindowStateParameters:
             state: The window state to set. Can be one of:
                 - A string: "fullscreen", "maximized", "minimized", "normal"
                 - A ClientWindowRectState object with width, height, x, y
-                - A dict representing the state
+                - A dict with a "state" key plus any of width, height, x, y
+
+        Returns:
+            The updated client window information returned by the browser.
 
         Raises:
             ValueError: If client_window is not provided or state is invalid.
@@ -183,19 +186,33 @@ class SetClientWindowStateParameters:
         if state is None:
             raise ValueError("state is required")
 
-        # Serialize ClientWindowRectState if needed
-        state_param = state
-        if hasattr(state, '__dataclass_fields__'):
-            # It's a dataclass, convert to dict
-            state_param = {
-                k: v for k, v in state.__dict__.items()
-                if v is not None
+        if isinstance(state, str):
+            members: dict[str, Any] = {"state": state}
+        elif hasattr(state, "__dataclass_fields__"):
+            # Read through the field names rather than __dict__: the baked
+            # discriminator is declared init=False, so it only ever lives on the
+            # class.
+            members = {
+                name: getattr(state, name, None)
+                for name in state.__dataclass_fields__
+                if getattr(state, name, None) is not None
             }
+        elif isinstance(state, dict):
+            members = {k: v for k, v in state.items() if v is not None}
+        else:
+            raise ValueError(
+                "state must be a named-state string, a ClientWindowRectState, "
+                f"or a dict, got {type(state).__name__}"
+            )
 
-        params = {
-            "clientWindow": client_window,
-            "state": state_param,
-        }
+        if "state" not in members:
+            raise ValueError("state is required")
+
+        # browser.SetClientWindowStateParameters is a CDDL group choice: the
+        # chosen variant contributes its members to the enclosing params map, so
+        # a rect's width/height/x/y are siblings of clientWindow rather than a
+        # nested object under "state".
+        params = {"clientWindow": client_window, **members}
         cmd = command_builder("browser.setClientWindowState", params)
         return self._conn.execute(cmd)''',
         ],
@@ -1176,7 +1193,8 @@ disownDataParameters = DisownDataParameters''',
             return self._request_handlers.add_handler(url_patterns, event)
         if callable(callback) and event not in LEGACY_REQUEST_HANDLER_EVENTS:
             if not isinstance(event, str) or looks_like_url_glob(event):
-                return self._request_handlers.add_handler(event, callback)
+                patterns = event if event is not None else url_patterns
+                return self._request_handlers.add_handler(patterns, callback)
         canonical_event = self._canonical_request_handler_event(event)
         phase_map = {
             "before_request": "beforeRequestSent",

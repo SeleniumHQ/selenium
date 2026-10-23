@@ -24,6 +24,7 @@ import {
   canonicalizeVariantParams,
   dedupeDefs,
   flattenGroupComposition,
+  spliceExtensionGroups,
 } from './normalize_bidi_ast.mjs'
 
 const lit = (v) => ({ Type: 'literal', Value: v, Unwrapped: false })
@@ -53,6 +54,18 @@ describe('hoistInlineEnums', () => {
     assert.deepEqual(
       enumDef.PropertyType.map((e) => e.Value),
       ['powered-off', 'subscribe-to-notifications'],
+    )
+  })
+
+  it('hoists a nullable literal choice, keeping the null on the field and out of the enum', () => {
+    const ast = [def('x.T', [field('scrollbarType', [lit('classic'), lit('overlay'), 'null'])])]
+    const out = hoistInlineEnums(ast)
+
+    const enumName = 'x.TScrollbarType'
+    assert.deepEqual(byName(out, 'x.T').Properties[0].Type, [ref(enumName), 'null'])
+    assert.deepEqual(
+      byName(out, enumName).PropertyType.map((e) => e.Value),
+      ['classic', 'overlay'],
     )
   })
 
@@ -290,6 +303,24 @@ describe('dedupeDefs', () => {
     assert.equal(out.length, 1)
     assert.equal(out[0].Properties[0].Name, 'a')
   })
+
+  it('folds a //= choice addition into the retained base group', () => {
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    const ast = [def('x.Ext', [field('a', ['text'])]), addition]
+    const out = dedupeDefs(ast)
+    assert.equal(out.length, 1)
+    assert.deepEqual(
+      out[0].Properties.map((p) => p.Name),
+      ['a', 'b'],
+    )
+  })
+
+  it('does not mutate the base def when folding', () => {
+    const base = def('x.Ext', [field('a', ['text'])])
+    const addition = { ...def('x.Ext', [field('b', ['text'])]), IsChoiceAddition: true }
+    dedupeDefs([base, addition])
+    assert.equal(base.Properties.length, 1)
+  })
 })
 
 describe('normalizeAst', () => {
@@ -298,5 +329,100 @@ describe('normalizeAst', () => {
     const snapshot = structuredClone(ast)
     normalizeAst(ast)
     assert.deepEqual(ast, snapshot)
+  })
+})
+
+describe('spliceExtensionGroups', () => {
+  const via = 'webExtension.InstallParametersExtension'
+  const vendorField = (name) => ({
+    Name: name,
+    Occurrence: { n: 0, m: 1 },
+    Type: ['bool'],
+    Comments: [],
+    'x-selenium-vendor': 'moz',
+    'x-selenium-vendor-via': via,
+  })
+  const extension = (name, target, props) => ({ ...def(name, props), 'x-selenium-vendor-extends': target })
+  // The `-all` grammar defines a shared record twice (local + remote); both must be spliced.
+  const ast = [
+    def('webExtension.InstallParameters', [field('extensionData', [ref('webExtension.ExtensionData')])]),
+    def('webExtension.InstallParameters', [field('extensionData', [ref('webExtension.ExtensionData')])]),
+    def('webExtension.Untagged', [field('x', ['text'])]),
+    extension(via, 'webExtension.InstallParameters', [vendorField('moz:permanent')]),
+  ]
+
+  it('appends a tagged extension group to every spec record it names, as an anonymous spread', () => {
+    const out = spliceExtensionGroups(ast)
+    const targets = out.filter((d) => d.Name === 'webExtension.InstallParameters')
+    assert.equal(targets.length, 2)
+    for (const t of targets) {
+      const spread = t.Properties.at(-1)
+      assert.equal(spread.Name, '')
+      assert.deepEqual(spread.Type, [ref(via)])
+    }
+    assert.equal(ast[0].Properties.length, 1, 'input untouched')
+  })
+
+  it('leaves a def without the tag alone', () => {
+    assert.deepEqual(byName(spliceExtensionGroups(ast), 'webExtension.Untagged'), ast[2])
+  })
+
+  it('resolves the spliced fields into the target through normalization, provenance intact', () => {
+    const [target] = normalizeAst(ast).filter((d) => d.Name === 'webExtension.InstallParameters')
+    assert.deepEqual(
+      target.Properties.map((p) => p.Name),
+      ['extensionData', 'moz:permanent'],
+    )
+    assert.equal(target.Properties[1]['x-selenium-vendor-via'], via)
+  })
+
+  it('fails when a tagged extension group names no spec record', () => {
+    assert.throws(
+      () =>
+        spliceExtensionGroups([
+          extension('browsingContext.GoneParametersExtension', 'browsingContext.GoneParameters', []),
+        ]),
+      /browsingContext.GoneParametersExtension has no spec record browsingContext.GoneParameters/,
+    )
+  })
+})
+
+describe('vendor provenance through normalization', () => {
+  const vendorDef = (name, props) => ({ ...def(name, props), 'x-selenium-vendor': 'moz' })
+
+  it('a def synthesized out of a vendor def inherits the vendor tag', () => {
+    const ast = [
+      vendorDef('session.CapabilityRequestFirefoxOptions', [
+        field('log', { Type: 'group', Name: '', Properties: [field('level', [lit('info'), lit('warn')])] }),
+      ]),
+    ]
+    const out = normalizeAst(ast)
+    assert.equal(byName(out, 'session.CapabilityRequestFirefoxOptionsLog')['x-selenium-vendor'], 'moz')
+    assert.equal(byName(out, 'session.CapabilityRequestFirefoxOptionsLevel')['x-selenium-vendor'], 'moz')
+    const spec = normalizeAst([
+      def('a.B', [field('c', { Type: 'group', Name: '', Properties: [field('d', ['text'])] })]),
+    ])
+    assert.equal(byName(spec, 'a.BC')['x-selenium-vendor'], undefined)
+  })
+
+  it('keeps an extension-group field enum inline rather than hoisting it', () => {
+    const scope = {
+      Name: 'moz:scope',
+      Occurrence: { n: 0, m: 1 },
+      Type: [lit('chrome'), lit('content')],
+      Comments: [],
+      'x-selenium-vendor': 'moz',
+      'x-selenium-vendor-via': 'browsingContext.InfoExtension',
+    }
+    const out = normalizeAst([
+      def('browsingContext.Info', [field('url', ['text'])]),
+      { ...def('browsingContext.InfoExtension', [scope]), 'x-selenium-vendor-extends': 'browsingContext.Info' },
+    ])
+    assert.equal(
+      out.some((d) => d.Name.endsWith('MozScope')),
+      false,
+    )
+    const info = byName(out, 'browsingContext.Info')
+    assert.deepEqual(info.Properties.find((p) => p.Name === 'moz:scope').Type, [lit('chrome'), lit('content')])
   })
 })

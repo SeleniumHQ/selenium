@@ -123,11 +123,14 @@ function topLevelFields(body) {
       i++
       continue
     }
-    const m = depth === 0 ? /^(\w+)(\??):\s*/.exec(body.slice(i)) : null
+    // A property key is a bare identifier or a quoted string (cddl2ts quotes keys
+    // that are not valid identifiers, e.g. the vendor-prefixed `"moz:permanent"`).
+    const m = depth === 0 ? /^(?:"([^"]+)"|(\w+))(\??):\s*/.exec(body.slice(i)) : null
     if (!m) {
       i++
       continue
     }
+    const name = m[1] ?? m[2]
     let j = i + m[0].length
     let d = 0
     while (j < body.length && !(d === 0 && body[j] === ';')) {
@@ -140,7 +143,7 @@ function topLevelFields(body) {
     // object bodies removed, so `null`/`[]` belonging to nested fields (e.g. an
     // inline `{ x: T | null }`) are not attributed to this field.
     const shallow = stripObjectBodies(type)
-    fields[m[1]] = { optional: m[2] === '?', nullable: /\bnull\b/.test(shallow), array: /\[\]/.test(shallow) }
+    fields[name] = { optional: m[3] === '?', nullable: /\bnull\b/.test(shallow), array: /\[\]/.test(shallow) }
     i = j + 1
   }
   return fields

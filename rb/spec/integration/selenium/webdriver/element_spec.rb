@@ -29,14 +29,14 @@ module Selenium
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'raises if different element receives click', pending_if: {browser: %i[safari safari_preview]} do
+      it 'raises if different element receives click', pending_if: {browser_family: :safari} do
         open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'contents', timeout: 10)
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
-      it 'raises if element is partially covered', pending_if: {browser: %i[safari safari_preview]} do
+      it 'raises if element is partially covered', pending_if: {browser_family: :safari} do
         open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'other_contents')
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
@@ -183,7 +183,7 @@ module Selenium
           let(:element) { wait_for_element(id: 'checkedchecky') }
           let(:prop_or_attr) { 'checked' }
 
-          it '#dom_attribute returns String', pending_if: {browser: :safari} do
+          it '#dom_attribute returns String', pending_if: {browser_family: :safari} do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
@@ -195,7 +195,7 @@ module Selenium
             expect(element.attribute(prop_or_attr)).to eq 'true'
           end
 
-          it '#dom_attribute does not update after click', pending_if: {browser: :safari} do
+          it '#dom_attribute does not update after click', pending_if: {browser_family: :safari} do
             element.click
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
@@ -318,7 +318,7 @@ module Selenium
           it '#property returns object',
              pending_if: [{browser: :firefox,
                            reason: 'https://github.com/mozilla/geckodriver/issues/1846'},
-                          {browser: :safari}] do
+                          {browser_family: :safari}] do
             expect(element.property(prop_or_attr)).to eq %w[width height]
           end
 
@@ -348,7 +348,7 @@ module Selenium
           let(:element) { wait_for_element(name: 'readonly') }
           let(:prop_or_attr) { 'readonly' }
 
-          it '#dom_attribute returns a String', pending_if: {browser: :safari} do
+          it '#dom_attribute returns a String', pending_if: {browser_family: :safari} do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 
@@ -368,7 +368,7 @@ module Selenium
           it '#dom_attribute returns a String',
              pending_if: [{browser: :firefox,
                            reason: 'https://github.com/mozilla/geckodriver/issues/1850'},
-                          {browser: :safari}] do
+                          {browser_family: :safari}] do
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
 

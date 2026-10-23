@@ -1,5 +1,5 @@
 # Configuration for Label Commenter - ./.github/label-commenter-config.yml
-name: Label Commenter
+name: Webhook - Label Commenter
 
 on:
   issues:

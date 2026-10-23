@@ -41,6 +41,12 @@
  * Type-name refs use the dotted CDDL name (e.g. `network.Request`), matching the
  * raw AST. Result/void handling stays in the model (`buildResultTypeNames`).
  *
+ * Vendor extension groups (defs the generator tagged `x-selenium-vendor-extends` with the
+ * spec type they extend) are spliced into that type first, so the transforms below see them
+ * as ordinary group composition. A def synthesized out of a
+ * vendor def (tagged `x-selenium-vendor`) inherits that tag, so the projector can route
+ * everything a vendor contributes out of the shared schema.
+ *
  * Defs synthesized for anonymous constructs (hoisted enums/records, union arms)
  * carry `x-selenium-synthetic` plus `x-selenium-owner` (the def they were lifted
  * out of) and `x-selenium-label` (the member name within it). The projector turns
@@ -83,6 +89,11 @@ function nameAllocator(existing) {
   }
 }
 
+/** The vendor provenance a def synthesized out of `owner` inherits (none for a spec owner). */
+function inheritedVendor(owner) {
+  return owner?.['x-selenium-vendor'] ? { 'x-selenium-vendor': owner['x-selenium-vendor'] } : {}
+}
+
 /** True when `entry` is a reference to a named group (`{Type:'group', Value}`). */
 function isGroupRef(entry) {
   return entry && typeof entry === 'object' && entry.Type === 'group' && typeof entry.Value === 'string'
@@ -95,6 +106,16 @@ function isInlineGroup(entry) {
 
 function groupRef(value) {
   return { Type: 'group', Value: value, Unwrapped: false }
+}
+
+/** True when `entry` is a string/number/bool literal (`{Type:'literal', Value}`). */
+function isLiteral(entry) {
+  return entry && typeof entry === 'object' && entry.Type === 'literal'
+}
+
+/** True when `entry` is the CDDL null keyword (bare `'null'`) or a `nil`/`null` prelude ref. */
+function isNullArm(entry) {
+  return entry === 'null' || (isGroupRef(entry) && (entry.Value === 'null' || entry.Value === 'nil'))
 }
 
 /**
@@ -151,9 +172,11 @@ function eachPropertyDeep(properties, fn) {
 }
 
 /**
- * Rewrite fields whose type is a union of >= 2 string literals into a reference
- * to a synthetic enum def, and append those enum defs. Single-literal fields
- * (discriminators) are left untouched. Returns a new AST array.
+ * Rewrite fields whose type is a choice of >= 2 string literals (optionally with a
+ * null alternative) into a reference to a synthetic enum def, and append those enum
+ * defs. A null alternative is kept on the field so the enum stays nullable; the enum
+ * def itself holds only the literals. Single-literal fields (discriminators) are left
+ * untouched. Returns a new AST array.
  * @param {object[]} ast The AST to transform.
  * @returns {object[]} A new AST array with inline enums hoisted to named defs.
  */
@@ -167,9 +190,15 @@ export function hoistInlineEnums(ast) {
     const owner = splitName(def.Name ?? '')
     eachPropertyDeep(def.Properties, (prop) => {
       const entries = typeList(prop.Type)
-      const allLiterals =
-        entries.length >= 2 && entries.every((e) => e && typeof e === 'object' && e.Type === 'literal')
-      if (!allLiterals) return
+      const literals = entries.filter(isLiteral)
+      const nullArms = entries.filter(isNullArm)
+      // Hoist a choice of >= 2 string literals, tolerating a null alternative so a nullable inline
+      // enum (`("a" / "b") / null`) is still named. The null stays on the field (below), never in the
+      // enum def; anything else in the choice (a ref, a single literal discriminator) is left untouched.
+      if (literals.length < 2 || literals.length + nullArms.length !== entries.length) return
+      // A vendor extension-group field keeps its enum inline: the group is dropped from the
+      // schema once its fields resolve into the target, leaving a hoisted enum with no owner.
+      if (prop['x-selenium-vendor-via']) return
 
       const base = pascal(prop.Name) || `Value${created.length}`
       const localName = `${owner.local}${base}`
@@ -179,13 +208,14 @@ export function hoistInlineEnums(ast) {
         Type: 'variable',
         Name: synthName,
         IsChoiceAddition: false,
-        PropertyType: entries.map((e) => structuredClone(e)),
+        PropertyType: literals.map((e) => structuredClone(e)),
         Comments: prop.Comments ?? [],
         'x-selenium-synthetic': true,
         'x-selenium-owner': def.Name,
         'x-selenium-label': base,
+        ...inheritedVendor(def),
       })
-      prop.Type = [groupRef(synthName)]
+      prop.Type = [groupRef(synthName), ...nullArms.map((e) => structuredClone(e))]
     })
   }
 
@@ -226,6 +256,7 @@ export function hoistInlineRecords(ast) {
         'x-selenium-synthetic': true,
         'x-selenium-owner': def.Name,
         'x-selenium-label': pascal(prop.Name),
+        ...inheritedVendor(def),
       }
       created.push(newDef)
       queue.push(newDef)
@@ -350,6 +381,7 @@ export function canonicalizeVariantParams(ast) {
         'x-selenium-synthetic': true,
         'x-selenium-owner': def.Name,
         'x-selenium-label': memberLabel,
+        ...inheritedVendor(def),
       })
       if (supersedes) {
         superseded.add(supersedes)
@@ -446,26 +478,73 @@ export function flattenGroupComposition(ast) {
 }
 
 // ============================================================
+// Vendor extension groups
+// ============================================================
+
+/**
+ * Splice each vendor extension group into the spec type it extends — read "as if the group had
+ * been included in that type" (Mozilla's `Extensions.md`). The generator classifies the groups
+ * and tags each with its target (`x-selenium-vendor-extends`); here the group is appended to
+ * every same-named spec record as an anonymous group spread (the shape `{ Extensible }` takes),
+ * which `flattenGroupComposition` resolves like any other composition. A target that is not a
+ * record fails loudly rather than shipping a stray type.
+ * Pure — returns a new array; the input is not mutated.
+ * @param {object[]} ast The AST to transform.
+ * @returns {object[]} A new AST array with each extension group spliced into its target.
+ */
+export function spliceExtensionGroups(ast) {
+  const out = structuredClone(ast)
+  for (const def of out) {
+    const target = def?.['x-selenium-vendor-extends']
+    if (!target) continue
+    const records = out.filter((d) => d.Name === target && isRecordGroup(d))
+    if (!records.length) throw new Error(`vendor extension group ${def.Name} has no spec record ${target} to extend`)
+    for (const record of records)
+      record.Properties.push({
+        HasCut: false,
+        Occurrence: { n: 1, m: 1 },
+        Name: '',
+        Type: [groupRef(def.Name)],
+        Comments: [],
+      })
+  }
+  return out
+}
+
+// ============================================================
 // Pipeline
 // ============================================================
 
 /**
- * Drop duplicate definitions, keeping the first occurrence — the `*-all.cddl`
- * input concatenates local + remote specs that both define shared types. This
- * matches `buildModel`'s `buildDefMap` ("first wins") so the normalized artifact
- * carries one def per name.
+ * Collapse same-named definitions into one. A plain duplicate keeps the first
+ * occurrence — the `*-all.cddl` input concatenates local + remote specs that both
+ * define shared types, matching `buildModel`'s `buildDefMap` ("first wins"). A
+ * choice-addition (`//=` group socket or `/=` type socket, `IsChoiceAddition: true`)
+ * instead folds its members into the retained base, so a group extension point
+ * (`SomeGroup //= (...)`) is resolved before `flattenGroupComposition` splices that
+ * group into its referents.
+ * Pure — folds into a fresh clone rather than mutating the input def.
  * @param {object[]} ast The AST to dedupe.
- * @returns {object[]} A new AST array with duplicate-named defs removed (first wins).
+ * @returns {object[]} A new AST array with duplicate-named defs collapsed.
  */
 export function dedupeDefs(ast) {
-  const seen = new Set()
+  const indexByName = new Map()
   const out = []
   for (const def of ast) {
-    if (def && typeof def === 'object' && typeof def.Name === 'string') {
-      if (seen.has(def.Name)) continue
-      seen.add(def.Name)
+    const name = def && typeof def === 'object' && typeof def.Name === 'string' ? def.Name : null
+    if (name === null || !indexByName.has(name)) {
+      if (name !== null) indexByName.set(name, out.length)
+      out.push(def)
+      continue
     }
-    out.push(def)
+    if (!def.IsChoiceAddition) continue // plain duplicate: first wins
+    const i = indexByName.get(name)
+    const base = out[i]
+    const merged = { ...base }
+    if (base.Properties || def.Properties) merged.Properties = [...(base.Properties ?? []), ...(def.Properties ?? [])]
+    if (base.PropertyType || def.PropertyType)
+      merged.PropertyType = [...(base.PropertyType ?? []), ...(def.PropertyType ?? [])]
+    out[i] = merged
   }
   return out
 }
@@ -476,7 +555,8 @@ export function dedupeDefs(ast) {
  * @returns {object[]} A new, normalized AST array.
  */
 export function normalizeAst(ast) {
-  let result = dedupeDefs(ast)
+  let result = spliceExtensionGroups(ast)
+  result = dedupeDefs(result)
   result = hoistInlineEnums(result)
   result = canonicalizeVariantParams(result)
   result = hoistInlineRecords(result)

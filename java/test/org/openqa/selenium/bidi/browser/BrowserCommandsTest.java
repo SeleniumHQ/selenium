@@ -46,6 +46,7 @@ import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -171,6 +172,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
@@ -263,9 +265,17 @@ class BrowserCommandsTest extends JupiterTestBase {
     }
   }
 
+  private static final Pattern IN_PROGRESS_DOWNLOAD = Pattern.compile(".*\\.(part|crdownload)");
+
   private static List<String> files(Path dir) {
     try (Stream<Path> files = Files.list(dir)) {
-      return files.map(path -> path.getFileName().toString()).collect(toList());
+      // Browsers stage downloads under a temporary name and rename on completion. Those temps
+      // appear and disappear on their own schedule, so including them makes any comparison of
+      // two directory listings depend on timing.
+      return files
+          .map(path -> path.getFileName().toString())
+          .filter(name -> !IN_PROGRESS_DOWNLOAD.matcher(name).matches())
+          .collect(toList());
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to check files in " + dir, e);
     }

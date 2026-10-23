@@ -122,4 +122,102 @@ class ByTest {
         .containsEntry("using", "css selector")
         .containsEntry("value", "#one\\ two");
   }
+
+  @Test
+  void ensureLeadingAsciiDigitIsEscapedAsCodePoint() {
+    By by = By.className("5foo");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob).containsEntry("using", "css selector").containsEntry("value", ".\\35 foo");
+  }
+
+  @Test
+  void ensureLeadingNonAsciiDigitIsNotMisescapedAsADifferentAsciiDigit() {
+    // U+0665 (Arabic-Indic digit five) has numeric value 5, but is not an ASCII digit.
+    // It is already a valid CSS identifier-start code point and must be passed through as-is,
+    // rather than being (mis)escaped to the same selector as an ASCII '5'.
+    By arabicIndicFive = By.className("٥foo");
+    By asciiFive = By.className("5foo");
+
+    Json json = new Json();
+    Map<String, Object> arabicBlob = json.toType(json.toJson(arabicIndicFive), MAP_TYPE);
+    Map<String, Object> asciiBlob = json.toType(json.toJson(asciiFive), MAP_TYPE);
+
+    assertThat(arabicBlob).containsEntry("using", "css selector").containsEntry("value", ".٥foo");
+    assertThat(arabicBlob.get("value")).isNotEqualTo(asciiBlob.get("value"));
+  }
+
+  @Test
+  void ensureNameContainingPercentDoesNotThrowAndIsTreatedAsLiteral() {
+    By by = By.name("50%off");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='50%off']");
+  }
+
+  @Test
+  void ensureNameContainingFormatSpecifierIsNotDoubleFormatted() {
+    By by = By.name("foo%sbar");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='foo%sbar']");
+  }
+
+  @Test
+  void ensureNameContainingBackslashIsEscapedAsLiteral() {
+    By by = By.name("a\\b");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='a\\\\b']");
+  }
+
+  @Test
+  void getJavascriptExecutorAcceptsAContextWrappingAJavascriptCapableDriver() {
+    WebDriver driver = new StubDriver();
+
+    assertThat(By.cssSelector("cheese").getJavascriptExecutor(new DriverWrappingContext(driver)))
+        .isSameAs(driver);
+  }
+
+  /**
+   * Mirrors a context such as {@code RemoteWebElement}, which is not a {@link JavascriptExecutor}
+   * itself but wraps a driver that may be one.
+   */
+  private static class DriverWrappingContext implements SearchContext, WrapsDriver {
+
+    private final WebDriver driver;
+
+    DriverWrappingContext(WebDriver driver) {
+      this.driver = driver;
+    }
+
+    @Override
+    public WebDriver getWrappedDriver() {
+      return driver;
+    }
+
+    @Override
+    public List<WebElement> findElements(By by) {
+      throw new UnsupportedOperationException("findElements");
+    }
+
+    @Override
+    public WebElement findElement(By by) {
+      throw new UnsupportedOperationException("findElement");
+    }
+  }
 }

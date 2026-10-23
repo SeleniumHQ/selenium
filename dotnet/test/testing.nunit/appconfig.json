@@ -1,0 +1,103 @@
+{
+  "ActiveDriverConfig": "Chrome",
+  "Headless": false,
+  "DriverServiceLocation": null,
+  "BrowserLocation": null,
+  "DriverConfigs": {
+    "Chrome": {
+      "Browser": "Chrome",
+      "RemoteCapabilities": "chrome",
+      "Logging": false
+    },
+
+    "ChromeDev": {
+      "Browser": "Chrome",
+      "Options": {
+        "Chrome": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "chrome",
+      "Logging": false
+    },
+
+    "EdgeIEMode": {
+      "Browser": "IE",
+      "Options": {
+        "InternetExplorer": {
+          "RequireWindowFocus": true,
+          "UsePerProcessProxy": true,
+          "AttachToEdgeChrome": true
+        }
+      },
+      "RemoteCapabilities": "internet explorer",
+      "Logging": false
+    },
+
+    "Edge": {
+      "Browser": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge",
+      "Logging": false
+    },
+
+    "EdgeDev": {
+      "Browser": "Edge",
+      "Options": {
+        "Edge": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "MicrosoftEdge",
+      "Logging": false
+    },
+
+    "Firefox": {
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox",
+      "Logging": false
+    },
+
+    "FirefoxNightly": {
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "BrowserVersion": "nightly",
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox",
+      "Logging": false
+    },
+
+    "Safari": {
+      "Browser": "Safari",
+      "RemoteCapabilities": "safari",
+      "Logging": false
+    },
+
+    "SafariTechPreview": {
+      "Browser": "Safari",
+      "Options": {
+        "Safari": {
+          "UseTechnologyPreview": true
+        }
+      },
+      "RemoteCapabilities": "safari",
+      "Logging": false
+    },
+
+    "Remote": {
+      "Browser": "Remote",
+      "RemoteCapabilities": "chrome",
+      "AutoStartRemoteServer": true,
+      "Logging": false
+    }
+  }
+}

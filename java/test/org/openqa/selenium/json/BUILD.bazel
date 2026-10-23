@@ -12,6 +12,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/json",
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,
 )
 

@@ -1,9 +1,37 @@
 # frozen_string_literal: true
 
+# This file is loaded twice — once as `node:`, once aliased as `javascript:` —
+# so these are methods rather than constants to avoid redefinition warnings.
+def webdriver_package_json
+  'javascript/selenium-webdriver/package.json'
+end
+
+def atoms_package_json
+  'javascript/atoms/package.json'
+end
+
+def webdriver_publish_target
+  '//javascript/selenium-webdriver:selenium-webdriver.publish'
+end
+
+def atoms_publish_target
+  '//javascript/atoms:selenium-atoms-package.publish'
+end
+
 def node_version
-  File.foreach('javascript/selenium-webdriver/package.json') do |line|
-    return line.split(':').last.strip.tr('",', '') if line.include?('version')
-  end
+  SeleniumRake.version('javascript')
+end
+
+def publish_npm_package(target, config, dry_run)
+  bazel_args = ["--config=#{config}"]
+  bazel_args += ['--', '--dry-run=true'] if dry_run
+
+  Bazel.execute('run', bazel_args, target)
+rescue RuntimeError => e
+  raise if dry_run
+  raise unless e.message.match?(/cannot publish over the previously published/i)
+
+  puts "#{target} version already published — skipping."
 end
 
 def setup_github_npm_auth
@@ -26,16 +54,25 @@ def setup_github_npm_auth
   File.chmod(0o600, npmrc)
 
   # Update package.json for GitHub Packages
-  package_json = 'javascript/selenium-webdriver/package.json'
-  content = File.read(package_json)
+  content = File.read(webdriver_package_json)
   content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
   content = content.gsub('"name": "selenium-webdriver"', '"name": "@seleniumhq/selenium-webdriver"')
-  File.write(package_json, content)
+  File.write(webdriver_package_json, content)
+
+  # GitHub Packages only accepts the repository owner's scope, so @selenium
+  # becomes @seleniumhq. It also derives visibility from the repository, so
+  # drop the npmjs access flag rather than send one it does not honour.
+  content = File.read(atoms_package_json)
+  content = content.gsub('https://registry.npmjs.org/', 'https://npm.pkg.github.com')
+  content = content.gsub('"name": "@selenium/atoms"', '"name": "@seleniumhq/atoms"')
+  content = content.gsub(/^\s*"access": "public",\n/, '')
+  File.write(atoms_package_json, content)
 end
 
-desc 'Build Node npm package'
+desc 'Build Node npm packages'
 task :build do |_task, arguments|
   args = arguments.to_a
+  Bazel.execute('build', args, '//javascript/atoms:selenium-atoms-package')
   Bazel.execute('build', args, '//javascript/selenium-webdriver')
 end
 
@@ -44,9 +81,15 @@ task :pin do
   Bazel.execute('run', ['--', 'install', '--dir', Dir.pwd, '--lockfile-only'], '@pnpm//:pnpm')
 end
 
-desc 'Update JavaScript dependencies and refresh lockfile'
-task :update do
-  Bazel.execute('run', ['--', 'update', '-r', '--dir', Dir.pwd], '@pnpm//:pnpm')
+desc 'Update JavaScript dependencies to latest versions within specified range'
+task :update do |_task, arguments|
+  # update versions beyond the specified range
+  upgrade = arguments.to_a.include?('latest')
+
+  args = ['--', 'update', '-r', '--dir', Dir.pwd]
+  args << '--latest' if upgrade
+
+  Bazel.execute('run', args, '@pnpm//:pnpm')
   Rake::Task['node:pin'].invoke
 end
 
@@ -68,49 +111,28 @@ task :release do |_task, arguments|
   args = arguments.to_a
   nightly = args.delete('nightly')
   dry_run = args.delete('dry-run')
-
-  unless nightly || dry_run
-    already_published = begin
-      Rake::Task['node:verify'].invoke
-      true
-    rescue StandardError
-      false
-    ensure
-      Rake::Task['node:verify'].reenable
-    end
-
-    if already_published
-      puts 'Node package already published — skipping release.'
-      next
-    end
-  end
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
 
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
 
   if nightly
-    puts 'Updating Node version to nightly...'
     Rake::Task['node:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one has no timestamp
+    SeleniumRake.write_version('javascript', "#{node_version}#{Time.now.strftime('%Y%m%d%H%M')}")
     setup_github_npm_auth unless dry_run
   end
 
   puts dry_run ? 'Running Node package dry-run...' : 'Running Node package release...'
-  target = '//javascript/selenium-webdriver:selenium-webdriver.publish'
-  bazel_args = ['--config=release']
-  bazel_args += ['--', '--dry-run=true'] if dry_run
-
-  begin
-    Bazel.execute('run', bazel_args, target)
-  rescue RuntimeError => e
-    raise if dry_run
-    raise unless e.message.match?(/cannot publish over the previously published/i)
-
-    puts 'npm package version already published — skipping.'
-  end
+  # @selenium/atoms publishes first so the lower-level package is on the
+  # registry before anything that may start depending on it.
+  publish_npm_package(atoms_publish_target, config, dry_run)
+  publish_npm_package(webdriver_publish_target, config, dry_run)
 end
 
-desc 'Verify Node package is published on npm'
+desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
+  SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{node_version}")
 end
 
 desc 'Alias for node:release'
@@ -134,7 +156,7 @@ end
 
 desc 'Install Node package locally via pnpm link'
 task :install do
-  Bazel.execute('build', [], '//javascript/selenium-webdriver')
+  Bazel.execute('build', ['--stamp'], '//javascript/selenium-webdriver')
   pkg_dir = File.expand_path('bazel-bin/javascript/selenium-webdriver/selenium-webdriver')
   Bazel.execute('run', ['--', '--dir', pkg_dir, 'link', '--global'], '@pnpm//:pnpm')
 end
@@ -149,14 +171,9 @@ end
 desc 'Update Node version'
 task :version, [:version] do |_task, arguments|
   old_version = node_version
-  nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-nightly')
   puts "Updating Node from #{old_version} to #{new_version}"
-
-  %w[javascript/selenium-webdriver/package.json javascript/selenium-webdriver/BUILD.bazel].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, 'w') { |f| f.puts text }
-  end
+  SeleniumRake.write_version('javascript', new_version)
 end
 
 desc 'Format JavaScript code with prettier'

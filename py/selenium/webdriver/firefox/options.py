@@ -24,7 +24,7 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 class Log:
     def __init__(self) -> None:
-        self.level = None
+        self.level: str | None = None
 
     def to_capabilities(self) -> dict:
         if self.level:

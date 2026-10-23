@@ -84,7 +84,7 @@ class WebSocketConnection:
     def __init__(self, url, timeout, interval):
         if not isinstance(timeout, (int, float)) or timeout < 0:
             raise WebDriverException("timeout must be a positive number")
-        if not isinstance(interval, (int, float)) or timeout < 0:
+        if not isinstance(interval, (int, float)) or interval <= 0:
             raise WebDriverException("interval must be a positive number")
 
         self.url = url
@@ -118,7 +118,12 @@ class WebSocketConnection:
         self._started.clear()
         self._ws = None
 
-    def execute(self, command):
+    def _round_trip(self, payload):
+        """Assign an id, envelope and send the frame, and return the correlated raw reply.
+
+        Shared by ``execute`` (coroutine path) and ``send_cmd`` (direct path). Raises on
+        timeout; the caller decides what to do with a reply that carries ``error``.
+        """
         with self._id_lock:
             self._id += 1
             current_id = self._id
@@ -126,8 +131,6 @@ class WebSocketConnection:
         event = threading.Event()
         with self._events_lock:
             self._events[current_id] = event
-
-        payload = self._serialize_command(command)
         payload["id"] = current_id
         if self.session_id:
             payload["sessionId"] = self.session_id
@@ -140,7 +143,18 @@ class WebSocketConnection:
             with self._events_lock:
                 self._events.pop(current_id, None)
             raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
-        response = self._messages.pop(current_id)
+        return self._messages.pop(current_id)
+
+    def send_cmd(self, method, params):
+        """Send one command and return its raw reply (``result`` or ``error`` left intact).
+
+        The dumb-send counterpart to ``execute``: no coroutine, no error raising. The
+        caller parses the reply into its declared type and raises on ``error`` itself.
+        """
+        return self._round_trip({"method": method, "params": params})
+
+    def execute(self, command):
+        response = self._round_trip(self._serialize_command(command))
 
         if "error" in response:
             error = response["error"]
