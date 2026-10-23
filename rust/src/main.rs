@@ -345,12 +345,7 @@ fn main() {
                 log_browser_path(&log, &browser_path);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                let error_msg = if log.is_debug_enabled() {
-                    format!("{:?}", err)
-                } else {
-                    format_error(&err)
-                };
-                log.error(error_msg);
+                log.error(format_error(&err));
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });
