@@ -33,9 +33,11 @@ const DOCUMENT_FRAGMENT_NODE = 11
  *   rendered  it has a box
  *   self      its own box is invisible but a descendant may set itself visible
  *             again (visibility is inherited, not a subtree switch)
- *   subtree   nothing below it is rendered either
+ *   contents  its own box is rendered but nothing below it is
+ *             (content-visibility: hidden, which hidden="until-found" uses)
+ *   subtree   neither it nor anything below it is rendered
  */
-export type HiddenState = 'rendered' | 'self' | 'subtree'
+export type HiddenState = 'rendered' | 'self' | 'contents' | 'subtree'
 
 // The flat-tree parent of a node, or one of two terminals.
 const NOT_RENDERED: unique symbol = Symbol('not rendered')
@@ -49,6 +51,29 @@ function isAriaHidden(element: Element): boolean {
 function computedStyle(element: Element): CSSStyleDeclaration | null {
   const view = element.ownerDocument.defaultView
   return view ? view.getComputedStyle(element) : null
+}
+
+// The UA stylesheet gives every area display: none; what renders it is the
+// image whose usemap points at its map. So an area is as hidden as that image.
+function areaState(area: Element): HiddenState {
+  const map = area.closest('map')
+  const name = map ? map.getAttribute('name') : null
+  if (!name) {
+    return 'subtree'
+  }
+  const images = area.ownerDocument.querySelectorAll('img[usemap]')
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i]
+    const usemap = (image.getAttribute('usemap') || '').replace(/^#/, '')
+    if (usemap === name && hiddenState(image) === 'rendered' && !isHiddenByAncestor(image)) {
+      return 'rendered'
+    }
+  }
+  return 'subtree'
+}
+
+export function isClosedDetails(element: Element): boolean {
+  return element.localName === 'details' && !element.hasAttribute('open')
 }
 
 /**
@@ -93,7 +118,7 @@ function flatTreeParent(node: Element): FlatTreeParent {
  * script, so it has to be known here rather than read from the DOM.
  */
 export function isCollapsedDetailsContent(child: Element, parent: Element): boolean {
-  if (parent.localName !== 'details' || parent.hasAttribute('open')) {
+  if (!isClosedDetails(parent)) {
     return false
   }
   for (let sibling = parent.firstElementChild; sibling; sibling = sibling.nextElementSibling) {
@@ -106,7 +131,9 @@ export function isCollapsedDetailsContent(child: Element, parent: Element): bool
 
 /** See HiddenState. Ancestors are not consulted; isHidden does that. */
 export function hiddenState(element: Element): HiddenState {
-  if (isAriaHidden(element)) {
+  // Inert content is still painted, but browsers leave it out of the
+  // accessibility tree along with everything it contains.
+  if (isAriaHidden(element) || element.hasAttribute('inert')) {
     return 'subtree'
   }
   // With scripting enabled a noscript element renders nothing, but Chromium
@@ -115,6 +142,9 @@ export function hiddenState(element: Element): HiddenState {
   if (element.localName === 'noscript') {
     return 'subtree'
   }
+  if (element.localName === 'area') {
+    return areaState(element)
+  }
   const style = computedStyle(element)
   // No view (an inert template fragment) and a detached element (empty
   // computed values) are both unrendered.
@@ -122,20 +152,22 @@ export function hiddenState(element: Element): HiddenState {
     return 'subtree'
   }
   const visibility = style.visibility
-  if (visibility === 'hidden' || visibility === 'collapse') {
+  const invisible = visibility === 'hidden' || visibility === 'collapse'
+  const contentsSkipped = style.getPropertyValue('content-visibility') === 'hidden'
+  if (invisible && contentsSkipped) {
+    return 'subtree'
+  }
+  if (contentsSkipped) {
+    return 'contents'
+  }
+  if (invisible) {
     return 'self'
   }
   return 'rendered'
 }
 
-/** Whether the element is hidden in the accname sense. */
-export function isHidden(element: Element): boolean {
-  if (hiddenState(element) !== 'rendered') {
-    return true
-  }
-  // Visibility is inherited, so the element's own computed value above already
-  // accounts for ancestors that set it; only subtree-wide hiding is checked
-  // on the way up.
+/** Whether an ancestor in the flat tree hides this element, whatever the element does itself. */
+export function isHiddenByAncestor(element: Element): boolean {
   let child = element
   for (;;) {
     const parent = flatTreeParent(child)
@@ -145,9 +177,22 @@ export function isHidden(element: Element): boolean {
     if (parent === null) {
       return false
     }
-    if (isCollapsedDetailsContent(child, parent) || hiddenState(parent) === 'subtree') {
+    const state = hiddenState(parent)
+    if (isCollapsedDetailsContent(child, parent) || state === 'subtree' || state === 'contents') {
       return true
     }
     child = parent
   }
+}
+
+/** Whether the element is hidden in the accname sense. */
+export function isHidden(element: Element): boolean {
+  const own = hiddenState(element)
+  if (own === 'self' || own === 'subtree') {
+    return true
+  }
+  // Visibility is inherited, so the element's own computed value above already
+  // accounts for ancestors that set it; only subtree-wide hiding is checked
+  // on the way up.
+  return isHiddenByAncestor(element)
 }

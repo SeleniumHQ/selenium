@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { isFocusable } from '../focusable.js'
-
 // Role computation: the explicit role attribute with the WAI-ARIA 1.2 fallback
 // and conflict rules, then the html-aam implicit mapping. Where html-aam says
 // an element has "no corresponding role" this reports `generic`, so the
@@ -41,14 +39,19 @@ const CONCRETE_ROLES: ReadonlySet<string> = new Set([
   'graphics-document', 'graphics-object', 'graphics-symbol',
 ])
 
-// WAI-ARIA 1.2 §6.4, global states and properties. Their presence stops
+// WAI-ARIA 1.2 §6.4, global states and properties, including the four the
+// spec deprecates as globals but still lists. Their presence stops
 // none/presentation from applying (§9.1).
 const GLOBAL_ARIA_ATTRIBUTES: ReadonlyArray<string> = [
   'aria-atomic', 'aria-busy', 'aria-controls', 'aria-current', 'aria-describedby',
-  'aria-description', 'aria-details', 'aria-dropeffect', 'aria-flowto', 'aria-grabbed',
-  'aria-hidden', 'aria-keyshortcuts', 'aria-label', 'aria-labelledby', 'aria-live',
-  'aria-owns', 'aria-relevant', 'aria-roledescription',
+  'aria-description', 'aria-details', 'aria-disabled', 'aria-dropeffect', 'aria-errormessage',
+  'aria-flowto', 'aria-grabbed', 'aria-haspopup', 'aria-hidden', 'aria-invalid',
+  'aria-keyshortcuts', 'aria-label', 'aria-labelledby', 'aria-live', 'aria-owns',
+  'aria-relevant', 'aria-roledescription',
 ]
+
+// Elements that take focus on their own, when not disabled.
+const NATIVELY_FOCUSABLE: ReadonlySet<string> = new Set(['button', 'iframe', 'input', 'select', 'summary', 'textarea'])
 
 const SECTIONING_CONTENT: ReadonlySet<string> = new Set(['article', 'aside', 'nav', 'section'])
 const HEADER_FOOTER_SCOPES: ReadonlySet<string> = new Set(['article', 'aside', 'main', 'nav', 'section'])
@@ -80,16 +83,55 @@ function hasGlobalAriaAttribute(element: Element): boolean {
   return GLOBAL_ARIA_ATTRIBUTES.some((name) => element.hasAttribute(name))
 }
 
-// html-aam makes some roles depend on whether the author named the element
-// (section, aside inside sectioning content). Only author attributes count
-// here; the full name computation is not what those rows ask for.
+// "Focusable" in the §9.1 sense: the element can take focus at all, including
+// through a negative tabindex. This is narrower than core/focusable.ts, which
+// answers WebDriver's question and counts every anchor and label.
+function canTakeFocus(element: Element): boolean {
+  const tabindex = element.getAttribute('tabindex')
+  if (tabindex !== null && /^\s*[-+]?\d+\s*$/.test(tabindex)) {
+    return true
+  }
+  const name = element.localName
+  if (name === 'a' || name === 'area') {
+    return element.hasAttribute('href')
+  }
+  if (NATIVELY_FOCUSABLE.has(name)) {
+    if (name === 'input' && (element as HTMLInputElement).type === 'hidden') {
+      return false
+    }
+    return !('disabled' in element && (element as HTMLInputElement).disabled)
+  }
+  return (element as HTMLElement).isContentEditable === true
+}
+
+// html-aam makes some roles depend on whether the element has an accessible
+// name (section, aside inside sectioning content). Only the author sources
+// that can produce one are checked here: aria-label, an aria-labelledby that
+// resolves to something with text, or a title. The full name computation is
+// not what those rows ask for.
 function hasAuthorName(element: Element): boolean {
   const label = element.getAttribute('aria-label')
   if (label !== null && label.trim() !== '') {
     return true
   }
   const labelledBy = element.getAttribute('aria-labelledby')
-  return labelledBy !== null && labelledBy.trim() !== ''
+  if (labelledBy !== null && labelledBy.trim() !== '') {
+    const root = element.getRootNode() as Document | ShadowRoot
+    for (const id of labelledBy.trim().split(/\s+/)) {
+      const target = root.getElementById(id)
+      if (target && ((target.textContent || '').trim() !== '' || (target.getAttribute('aria-label') || '').trim() !== '')) {
+        return true
+      }
+    }
+  }
+  const title = element.getAttribute('title')
+  return title !== null && title.trim() !== ''
+}
+
+// WAI-ARIA 1.2 §9.1: when an element with required owned elements is
+// presentational, so are those owned elements.
+function ownerIsPresentational(owner: Element | null): boolean {
+  return owner !== null && isPresentational(computeRole(owner))
 }
 
 function hasAncestor(element: Element, names: ReadonlySet<string>): boolean {
@@ -138,13 +180,23 @@ function inputRole(input: HTMLInputElement): string {
 
 function tableCellRole(cell: Element): string {
   const table = cell.closest('table')
+  if (ownerIsPresentational(table)) {
+    return 'generic'
+  }
   const tableRole = table ? explicitRole(table) : null
   return tableRole === 'grid' || tableRole === 'treegrid' ? 'gridcell' : 'cell'
 }
 
 function tableHeaderRole(header: Element): string {
+  if (ownerIsPresentational(header.closest('table'))) {
+    return 'generic'
+  }
   const scope = (header.getAttribute('scope') || '').toLowerCase()
   return scope === 'row' || scope === 'rowgroup' ? 'rowheader' : 'columnheader'
+}
+
+function tablePartRole(part: Element, role: string): string {
+  return ownerIsPresentational(part.closest('table')) ? 'generic' : role
 }
 
 /** The html-aam implicit role of an element, with no regard to its role attribute. */
@@ -212,7 +264,7 @@ export function implicitRole(element: Element): string {
     case 'html':
       return 'document'
     case 'img':
-      if (element.getAttribute('alt') === '' && !hasGlobalAriaAttribute(element) && !isFocusable(element)) {
+      if (element.getAttribute('alt') === '' && !hasGlobalAriaAttribute(element) && !canTakeFocus(element)) {
         return 'presentation'
       }
       return 'img'
@@ -222,7 +274,10 @@ export function implicitRole(element: Element): string {
       return 'insertion'
     case 'li': {
       const parent = element.parentElement
-      return parent && LIST_PARENTS.has(parent.localName) ? 'listitem' : 'generic'
+      if (!parent || !LIST_PARENTS.has(parent.localName) || ownerIsPresentational(parent)) {
+        return 'generic'
+      }
+      return 'listitem'
     }
     case 'main':
       return 'main'
@@ -269,7 +324,7 @@ export function implicitRole(element: Element): string {
     case 'tbody':
     case 'tfoot':
     case 'thead':
-      return 'rowgroup'
+      return tablePartRole(element, 'rowgroup')
     case 'td':
       return tableCellRole(element)
     case 'textarea':
@@ -279,7 +334,7 @@ export function implicitRole(element: Element): string {
     case 'time':
       return 'time'
     case 'tr':
-      return 'row'
+      return tablePartRole(element, 'row')
     default:
       return 'generic'
   }
@@ -295,7 +350,7 @@ export function computeRole(element: Element): string {
   if (explicit === null) {
     return implicitRole(element)
   }
-  if (isPresentational(explicit) && (isFocusable(element) || hasGlobalAriaAttribute(element))) {
+  if (isPresentational(explicit) && (canTakeFocus(element) || hasGlobalAriaAttribute(element))) {
     return implicitRole(element)
   }
   return explicit

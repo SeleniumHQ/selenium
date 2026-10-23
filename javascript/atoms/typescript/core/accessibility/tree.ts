@@ -17,23 +17,26 @@
 
 import { computeDescription, computeName } from './accname.js'
 import { roleOf, SnapshotContext } from './context.js'
-import { hiddenState, isCollapsedDetailsContent } from './hidden.js'
+import { hiddenState, isClosedDetails, isCollapsedDetailsContent, isHiddenByAncestor } from './hidden.js'
 import { isPresentational } from './roles.js'
 import type { AccessibilityNode } from './types.js'
 
 const ELEMENT_NODE = 1
 const TEXT_NODE = 3
 
-// WAI-ARIA 1.2 roles with "Children Presentational: True". Their content only
-// contributes to their name, never to the tree.
+// WAI-ARIA 1.2 roles with "Children Presentational: True" (plus the graphics
+// module's symbol). Their content only contributes to their name, never to
+// the tree.
 const CHILDREN_PRESENTATIONAL: ReadonlySet<string> = new Set([
-  'button', 'checkbox', 'img', 'menuitemcheckbox', 'menuitemradio', 'meter', 'option',
-  'progressbar', 'radio', 'scrollbar', 'separator', 'slider', 'switch', 'tab',
+  'button', 'checkbox', 'graphics-symbol', 'img', 'menuitemcheckbox', 'menuitemradio', 'meter',
+  'option', 'progressbar', 'radio', 'scrollbar', 'separator', 'slider', 'switch', 'tab',
 ])
 
-// The ADR's token for frame leaves. The child document is another browsing
-// context that only the bindings can reach, so the walk stops here.
-const FRAME_ROLE = 'iframe'
+// Elements whose DOM children are not rendered content, whatever role they
+// end up with: a frame's children are fallback for a browsing context only
+// the bindings can reach (the ADR's iframe leaf), a textarea's text child is
+// its default value, and media fallback shows only when the media cannot.
+const LEAF_ELEMENTS: ReadonlySet<string> = new Set(['audio', 'frame', 'iframe', 'textarea', 'video'])
 
 function createNode(role: string, name: string, description: string, element?: Element): AccessibilityNode {
   const node: AccessibilityNode = { role, name, description, states: {}, children: [] }
@@ -55,8 +58,8 @@ function producesNode(role: string, name: string): boolean {
   return !(role === 'generic' || isPresentational(role)) || name !== ''
 }
 
-function isLeafRole(role: string): boolean {
-  return role === FRAME_ROLE || CHILDREN_PRESENTATIONAL.has(role)
+function isLeaf(element: Element, role: string): boolean {
+  return LEAF_ELEMENTS.has(element.localName) || CHILDREN_PRESENTATIONAL.has(role)
 }
 
 /**
@@ -81,9 +84,12 @@ function collectChildren(
   textConsumed: boolean,
   out: AccessibilityNode[],
 ): void {
+  // Text directly inside a closed details is collapsed content like any
+  // element other than its summary.
+  const textCollapsed = isClosedDetails(parent)
   for (let child = parent.firstChild; child; child = child.nextSibling) {
     if (child.nodeType === TEXT_NODE) {
-      if (!textHidden && !textConsumed) {
+      if (!textHidden && !textConsumed && !textCollapsed) {
         const text = normalizeText(child.nodeValue || '')
         if (text !== '') {
           out.push(createNode('text', text, ''))
@@ -114,12 +120,15 @@ function collectChildren(
 
     const role = roleOf(element, context)
     const name = computeName(element, context)
+    const descend = hidden !== 'contents' && !isLeaf(element, role)
     if (!producesNode(role, name.text)) {
-      collectChildren(element, context, false, textConsumed, out)
+      if (descend) {
+        collectChildren(element, context, false, textConsumed, out)
+      }
       continue
     }
     const node = createNode(role, name.text, computeDescription(element, context), element)
-    if (!isLeafRole(role)) {
+    if (descend) {
       collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
     }
     out.push(node)
@@ -129,7 +138,8 @@ function collectChildren(
 /**
  * The snapshot rooted at `root`. The root always produces a node, whatever
  * its role or hidden state, so a subtree snapshot of a plain div is still
- * deterministic; a root hidden as a subtree has no children.
+ * deterministic; a root whose subtree is hidden, by itself or by an
+ * ancestor, has no children.
  */
 export function buildTree(root: Element, context: SnapshotContext): AccessibilityNode {
   context.placed.add(root)
@@ -137,7 +147,8 @@ export function buildTree(root: Element, context: SnapshotContext): Accessibilit
   const name = computeName(root, context)
   const node = createNode(role, name.text, computeDescription(root, context), root)
   const hidden = hiddenState(root)
-  if (hidden !== 'subtree' && !isLeafRole(role)) {
+  const descend = hidden !== 'subtree' && hidden !== 'contents' && !isLeaf(root, role) && !isHiddenByAncestor(root)
+  if (descend) {
     collectChildren(root, context, hidden === 'self', name.source === 'content', node.children)
   }
   return node

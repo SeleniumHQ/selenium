@@ -82,7 +82,19 @@ under the License.
         'presentation-button': 'button',
         'none-focusable-ul': 'list',
         'presentation-labelled-ul': 'list',
+        'none-disabled-ul': 'list',
+        'none-link': 'link',
       });
+    });
+
+    QUnit.test('focusable means able to take focus, not what WebDriver calls focusable', function (assert) {
+      // An anchor without href and a disabled button cannot take focus, so
+      // their presentational role stands.
+      assertRoles(assert, { 'none-anchor': 'none', 'presentation-disabled-button': 'presentation', 'none-tabindex-minus-one': 'generic' });
+    });
+
+    QUnit.test('required owned elements of a presentational table or list are presentational too', function (assert) {
+      assertRoles(assert, { 'pres-tr': 'generic', 'pres-td': 'generic', 'pres-th': 'generic', 'pres-tbody': 'generic', 'pres-li': 'generic' });
     });
 
     QUnit.module('implicit roles: text and structure');
@@ -240,7 +252,11 @@ under the License.
     });
 
     QUnit.test('section is a region only when labelled', function (assert) {
-      assertRoles(assert, { 'section': 'generic', 'section-labelled': 'region', 'section-labelledby': 'region' });
+      assertRoles(assert, { 'section': 'generic', 'section-labelled': 'region', 'section-labelledby': 'region', 'section-title': 'region' });
+    });
+
+    QUnit.test('an aria-labelledby that resolves to nothing does not make a landmark', function (assert) {
+      assertRoles(assert, { 'section-bad-labelledby': 'generic', 'section-empty-labelledby': 'generic' });
     });
   </script>
 </head>
@@ -261,6 +277,10 @@ under the License.
     <section id="section">unlabelled section</section>
     <section id="section-labelled" aria-label="Labelled">labelled section</section>
     <section id="section-labelledby" aria-labelledby="h2">labelled by heading</section>
+    <section id="section-title" title="Search results">titled section</section>
+    <section id="section-bad-labelledby" aria-labelledby="no-such-id">labelled by nothing</section>
+    <span id="empty-label"></span>
+    <section id="section-empty-labelledby" aria-labelledby="empty-label">labelled by an empty element</section>
     <section>
       <footer id="footer-in-section">section footer</footer>
     </section>
@@ -281,6 +301,13 @@ under the License.
   <button id="presentation-button" role="presentation">x</button>
   <ul id="none-focusable-ul" role="none" tabindex="0"><li>x</li></ul>
   <ul id="presentation-labelled-ul" role="presentation" aria-label="Menu"><li>x</li></ul>
+  <ul id="none-disabled-ul" role="none" aria-disabled="true"><li>x</li></ul>
+  <a id="none-link" role="none" href="#">x</a>
+  <a id="none-anchor" role="none">x</a>
+  <button id="presentation-disabled-button" role="presentation" disabled>x</button>
+  <div id="none-tabindex-minus-one" role="none" tabindex="-1">x</div>
+  <table role="presentation"><tbody id="pres-tbody"><tr id="pres-tr"><th id="pres-th">h</th><td id="pres-td">d</td></tr></tbody></table>
+  <ul role="presentation"><li id="pres-li">x</li></ul>
 
   <h1 id="h1">h1</h1><h2 id="h2">h2</h2><h3 id="h3">h3</h3><h4 id="h4">h4</h4><h5 id="h5">h5</h5><h6 id="h6">h6</h6>
   <p id="p">p</p>

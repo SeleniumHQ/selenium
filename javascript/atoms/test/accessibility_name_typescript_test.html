@@ -29,6 +29,8 @@ under the License.
   <script src="../typescript/accessibility-snapshot-global.js"></script>
   <style>
     .star::before { content: "★ "; }
+    .slash::before { content: "1 / 2 "; }
+    .alt::before { content: "★ " / "star "; }
     .more::after { content: " (more)"; }
     .gone { display: none; }
     .block { display: block; }
@@ -112,6 +114,10 @@ under the License.
       assertNames(assert, { 'img-alt': 'Logo', 'img-title': 'Titled', 'area-alt': 'Region' });
     });
 
+    QUnit.test('a present but empty alt is the final answer: title does not name a decorative image', function (assert) {
+      assertNames(assert, { 'img-empty-alt-title': '' });
+    });
+
     QUnit.test('fieldset legend, figure figcaption, table caption', function (assert) {
       assertNames(assert, { 'fieldset': 'Legend text', 'figure': 'Caption text', 'table': 'Table caption' });
     });
@@ -162,8 +168,32 @@ under the License.
       assertNames(assert, { 'embedded-textbox': 'Count 7 items', 'embedded-select': 'Pick Beta please' });
     });
 
+    QUnit.test('an embedded control contributes its value even when it has a label of its own', function (assert) {
+      assertNames(assert, { 'outer': 'Count 5' });
+    });
+
+    QUnit.test('two labels wrapping each other\'s control do not recurse forever', function (assert) {
+      assertNames(assert, { 'x1': 'A', 'x2': 'B' });
+    });
+
+    QUnit.test('a custom listbox contributes only its selected options', function (assert) {
+      assertNames(assert, { 'embedded-custom-listbox': 'Pick B now' });
+    });
+
+    QUnit.test('a contenteditable textbox contributes its rendered text only', function (assert) {
+      assertNames(assert, { 'embedded-contenteditable': 'Say hello now' });
+    });
+
+    QUnit.test('an invisible child contributes neither its text nor its label nor generated content, only visible descendants', function (assert) {
+      assertNames(assert, { 'invisible-child-sources': 'Save vis' });
+    });
+
     QUnit.test('CSS generated content before and after is included', function (assert) {
       assertNames(assert, { 'pseudo-before': '★ Save', 'pseudo-after': 'Save (more)' });
+    });
+
+    QUnit.test('a slash inside generated content is text; a bare slash introduces the alternative text', function (assert) {
+      assertNames(assert, { 'pseudo-slash': '1 / 2 Save', 'pseudo-alt': 'star Save' });
     });
 
     QUnit.module('tooltip (2I) and the document');
@@ -222,6 +252,7 @@ under the License.
   <input id="image-alt" type="image" alt="Picture button" src="/testdata/map.png">
   <img id="img-alt" src="/testdata/map.png" alt="Logo">
   <img id="img-title" src="/testdata/map.png" title="Titled">
+  <img id="img-empty-alt-title" src="/testdata/map.png" alt="" title="Tooltip">
   <map name="m"><area id="area-alt" href="#" shape="rect" coords="0,0,1,1" alt="Region"></map>
   <fieldset id="fieldset"><legend>Legend text</legend><input type="text"></fieldset>
   <figure id="figure"><img src="/testdata/map.png" alt="x"><figcaption>Caption text</figcaption></figure>
@@ -265,6 +296,13 @@ under the License.
   <div id="embedded-textbox" role="heading" aria-level="2">Count <input type="text" value="7"> items</div>
   <div id="embedded-select" role="heading" aria-level="2">Pick <select><option>Alpha</option><option selected>Beta</option></select> please</div>
   <button id="pseudo-before" class="star">Save</button>
+  <button id="pseudo-slash" class="slash">Save</button>
+  <button id="pseudo-alt" class="alt">Save</button>
+  <label for="outer">Count <input id="inner" type="text" value="5"></label><label for="inner">Inner label</label><input id="outer" type="text">
+  <label for="x1">A <input id="x2" type="text"></label><label for="x2">B <input id="x1" type="text"></label>
+  <div id="embedded-custom-listbox" role="heading" aria-level="2">Pick <div role="listbox"><div role="option" aria-selected="false">A</div><div role="option" aria-selected="true">B</div></div> now</div>
+  <div id="embedded-contenteditable" role="heading" aria-level="2">Say <div role="textbox" contenteditable="true">hello <span style="display: none">secret</span></div> now</div>
+  <button id="invisible-child-sources">Save <span style="visibility: hidden" aria-label="Hidden label" class="star">x <b style="visibility: visible">vis</b></span></button>
   <button id="pseudo-after" class="more">Save</button>
 
   <button id="title-only" title="Tip"></button>

@@ -16,7 +16,7 @@
 // under the License.
 
 import { NameResult, roleOf, SnapshotContext, styleOf } from './context.js'
-import { hiddenState, isCollapsedDetailsContent, isHidden } from './hidden.js'
+import { hiddenState, isClosedDetails, isCollapsedDetailsContent, isHidden } from './hidden.js'
 import { embeddedValue, isEmbeddedControl } from './value.js'
 
 // Accessible name and description, following the accname 1.2 text
@@ -110,26 +110,40 @@ function fromReferences(element: Element, attributeName: string, t: Traversal): 
 }
 
 // Generated content of ::before / ::after. The computed `content` is a list
-// of strings and other tokens; only the strings are text, and an alternative
-// text after a slash replaces what comes before it.
+// of strings and other tokens; only the strings are text, and a bare slash
+// introduces alternative text that replaces everything before it. A slash
+// inside a quoted string is just a character.
 function pseudoContent(element: Element, pseudo: string, t: Traversal): string {
   const style = styleOf(element, t.context, pseudo)
   if (!style) {
     return ''
   }
-  let content = style.content
+  const content = style.content
   if (!content || content === 'none' || content === 'normal') {
     return ''
   }
-  const slash = content.indexOf(' / ')
-  if (slash !== -1) {
-    content = content.slice(slash + 3)
-  }
   let text = ''
-  const string = /"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'/g
-  let match: RegExpExecArray | null
-  while ((match = string.exec(content)) !== null) {
-    text += (match[1] !== undefined ? match[1] : match[2]).replace(/\\(.)/g, '$1')
+  let i = 0
+  while (i < content.length) {
+    const char = content[i]
+    if (char === '"' || char === "'") {
+      let j = i + 1
+      let value = ''
+      while (j < content.length && content[j] !== char) {
+        if (content[j] === '\\' && j + 1 < content.length) {
+          j++
+        }
+        value += content[j]
+        j++
+      }
+      text += value
+      i = j + 1
+    } else if (char === '/') {
+      text = ''
+      i++
+    } else {
+      i++
+    }
   }
   return text
 }
@@ -142,11 +156,15 @@ function isInline(element: Element, t: Traversal): boolean {
 // 2F: the concatenated text alternatives of the children, with generated
 // content around them and block-level children set off by spaces.
 function fromContent(element: Element, t: Traversal): string {
-  let text = pseudoContent(element, '::before', t)
+  // An invisible element's own text and generated content are not rendered;
+  // visibility is inherited, so only descendants that set themselves visible
+  // again contribute, through the recursion below.
   const ownTextHidden = !t.includeHidden && hiddenState(element) === 'self'
+  let text = ownTextHidden ? '' : pseudoContent(element, '::before', t)
+  const textCollapsed = isClosedDetails(element)
   for (let child = element.firstChild; child; child = child.nextSibling) {
     if (child.nodeType === TEXT_NODE) {
-      if (!ownTextHidden) {
+      if (!ownTextHidden && !textCollapsed) {
         text += child.nodeValue || ''
       }
       continue
@@ -162,13 +180,19 @@ function fromContent(element: Element, t: Traversal): string {
       text += ' '
       continue
     }
-    if (!t.includeHidden && hiddenState(childElement) === 'subtree') {
+    const childState = t.includeHidden ? 'rendered' : hiddenState(childElement)
+    if (childState === 'subtree' || childState === 'contents') {
       continue
     }
-    const childText = textAlternative(childElement, { ...t, recursive: true })
+    // An invisible child has no text alternative of its own (2A); only what
+    // is visible below it counts.
+    const childText =
+      childState === 'self'
+        ? fromContent(childElement, { ...t, recursive: true })
+        : textAlternative(childElement, { ...t, recursive: true })
     text += isInline(childElement, t) ? childText : ` ${childText} `
   }
-  return text + pseudoContent(element, '::after', t)
+  return text + (ownTextHidden ? '' : pseudoContent(element, '::after', t))
 }
 
 function firstChildNamed(element: Element, localName: string): Element | null {
@@ -297,17 +321,24 @@ function computeTextAlternative(element: Element, t: Traversal): NameResult {
       return { text: normalize(label), source: 'label' }
     }
   }
-  // 2D
-  const native = nativeName(element, t)
-  if (native !== null && normalize(native) !== '') {
-    return { text: normalize(native), source: 'native' }
-  }
-  // 2E
+  // 2E, ahead of 2D: a control reached while naming something else
+  // contributes its value, not its own label. That is what the user sees in
+  // the enclosing label, and it is also what stops two labels that wrap each
+  // other's control from recursing without end.
   if (embedded) {
     const value = embeddedValue(element, role)
     if (value !== null) {
       return { text: normalize(value), source: 'native' }
     }
+  }
+  // 2D. A present alt attribute is the final answer for an image, even when
+  // empty (html-aam): a decorative image does not pick up its title.
+  if ((element.localName === 'img' || element.localName === 'area') && element.hasAttribute('alt')) {
+    return { text: normalize(element.getAttribute('alt') || ''), source: 'native' }
+  }
+  const native = nativeName(element, t)
+  if (native !== null && normalize(native) !== '') {
+    return { text: normalize(native), source: 'native' }
   }
   // 2F, 2H
   if (NAME_FROM_CONTENT.has(role) || t.recursive || t.inReference) {

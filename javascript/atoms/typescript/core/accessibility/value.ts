@@ -38,6 +38,23 @@ function selectedOptionsText(select: HTMLSelectElement): string {
   return texts.join(' ')
 }
 
+// What the user sees: innerText follows CSS (display: none, visibility) where
+// textContent would include hidden descendants.
+function renderedText(element: Element): string {
+  const text = (element as HTMLElement).innerText
+  return typeof text === 'string' ? text : element.textContent || ''
+}
+
+// A listbox built from ARIA: its selected options, in document order.
+function selectedAriaOptions(listbox: Element): string {
+  const selected = listbox.querySelectorAll('[aria-selected="true"]')
+  const texts: string[] = []
+  for (let i = 0; i < selected.length; i++) {
+    texts.push(renderedText(selected[i]))
+  }
+  return texts.join(' ')
+}
+
 /** The current value of an embedded control, or null when the role has none. */
 export function embeddedValue(element: Element, role: string): string | null {
   if (RANGE_ROLES.has(role)) {
@@ -58,7 +75,10 @@ export function embeddedValue(element: Element, role: string): string | null {
     if ('value' in element && typeof (element as HTMLInputElement).value === 'string') {
       return (element as HTMLInputElement).value
     }
-    return element.textContent || ''
+    if (role === 'listbox') {
+      return selectedAriaOptions(element)
+    }
+    return renderedText(element)
   }
   return null
 }

@@ -134,6 +134,21 @@ under the License.
       assert.ok(isHidden(document.createElement('div')));
     });
 
+    QUnit.test('inert content is hidden', function (assert) {
+      assertHidden(assert, ['inert', 'inert-child']);
+    });
+
+    QUnit.test('content-visibility hidden keeps the element but hides its contents', function (assert) {
+      assertRendered(assert, ['cv']);
+      assertHidden(assert, ['cv-child', 'cv-grandchild']);
+    });
+
+    QUnit.test('image map areas are rendered through the image that uses their map', function (assert) {
+      // The UA stylesheet gives area display: none, which is not what decides.
+      assertRendered(assert, ['area-used']);
+      assertHidden(assert, ['area-unused', 'area-hidden-img']);
+    });
+
     QUnit.module('still rendered for accessibility');
 
     QUnit.test('opacity, off-screen position and the clip pattern do not hide', function (assert) {
@@ -177,6 +192,8 @@ under the License.
       assert.strictEqual(hiddenState(byId('visibility-hidden')), 'self', 'visibility can be overridden below');
       assert.strictEqual(hiddenState(byId('visibility-collapse')), 'self');
       assert.strictEqual(hiddenState(byId('transparent')), 'rendered');
+      assert.strictEqual(hiddenState(byId('inert')), 'subtree');
+      assert.strictEqual(hiddenState(byId('cv')), 'contents', 'own box rendered, nothing below it');
     });
 
     QUnit.test('ancestors are not consulted; that is isHidden\'s job', function (assert) {
@@ -227,6 +244,14 @@ under the License.
   <div id="offscreen" class="offscreen">x</div>
   <div id="clip" class="clip"><span id="clip-child">x</span></div>
   <div id="empty-div"></div><span id="empty-span"></span>
+
+  <div id="inert" inert><button id="inert-child">x</button></div>
+  <div id="cv" style="content-visibility: hidden"><div id="cv-child"><span id="cv-grandchild">x</span></div></div>
+  <img src="/testdata/map.png" usemap="#used-map" alt="used">
+  <map name="used-map"><area id="area-used" href="#" shape="rect" coords="0,0,1,1" alt="a"></map>
+  <map name="unused-map"><area id="area-unused" href="#" shape="rect" coords="0,0,1,1" alt="b"></map>
+  <img src="/testdata/map.png" usemap="#hidden-img-map" alt="hidden" style="display: none">
+  <map name="hidden-img-map"><area id="area-hidden-img" href="#" shape="rect" coords="0,0,1,1" alt="c"></map>
 
   <div id="hidden-host" style="display: none"></div>
   <div id="slot-host">
