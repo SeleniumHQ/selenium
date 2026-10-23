@@ -201,23 +201,35 @@ function wouldCycle(target: Element, owner: Element, ownerOf: Map<Element, Eleme
   return false
 }
 
+// The elements with aria-owns under `root`, in the flat tree the walk itself
+// visits: an owner inside an open shadow root is found, and a light-DOM
+// owner no slot takes is not, since it is never rendered and must not take
+// a rendered element away from its place.
+function collectOwners(element: Element, out: Element[]): void {
+  if (element.hasAttribute('aria-owns')) {
+    out.push(element)
+  }
+  const children = flatTreeChildren(element)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
+    if (child.nodeType === ELEMENT_NODE) {
+      collectOwners(child as Element, out)
+    }
+  }
+}
+
 /**
- * Records every aria-owns relation whose owner is in the subtree under
+ * Records every aria-owns relation whose owner is in the flat tree under
  * `root`, so owned elements can be skipped where they sit and placed under
- * their owner. An element is owned by the first owner in document order that
- * can take it: a relation that would make the tree circular (owning
+ * their owner. An element is owned by the first owner in flat-tree order
+ * that can take it: a relation that would make the tree circular (owning
  * yourself, an ancestor, or something that already owns you) is dropped, as
  * is one whose owner has presentational children and so no children to own,
- * and an id that resolves to nothing is ignored. Owners inside shadow trees
- * are not found by querySelectorAll; their targets stay at their DOM
- * position.
+ * and an id that resolves to nothing is ignored.
  */
 function recordOwnership(root: Element, context: SnapshotContext): void {
-  const owners: Element[] = root.hasAttribute('aria-owns') ? [root] : []
-  const descendants = root.querySelectorAll('[aria-owns]')
-  for (let i = 0; i < descendants.length; i++) {
-    owners.push(descendants[i])
-  }
+  const owners: Element[] = []
+  collectOwners(root, owners)
   const ownerOf = new Map<Element, Element>()
   for (const owner of owners) {
     if (isLeaf(owner, roleOf(owner, context))) {

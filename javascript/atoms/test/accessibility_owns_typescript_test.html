@@ -160,6 +160,21 @@ under the License.
       ]));
     });
 
+    QUnit.test('an owner inside an open shadow root re-parents within its tree', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-shadow-host'))), node('generic', 'owns-shadow-host', [
+        node('list', 'shadow-owner', [
+          node('listitem', 'shadow-own-child', [text('a')]),
+          node('listitem', 'shadow-owned', [text('b')]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner that is never rendered (unslotted light DOM) claims nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-unslotted-root'))), node('generic', 'owns-unslotted-root', [
+        node('listitem', 'unslotted-target', [text('kept')]),
+      ]));
+    });
+
     QUnit.test('the element reference of an owned node is the element itself', function (assert) {
       assert.strictEqual(snapshot(byId('owns-root')).children[0].children[1].element, byId('owned-after'));
     });
@@ -221,6 +236,17 @@ under the License.
     <ul id="owns-from-hidden" aria-owns="in-hidden-container"><li id="shown-beside-hidden">shown</li></ul>
     <div hidden><div role="listitem" id="in-hidden-container">hidden</div></div>
   </div>
+
+  <div id="owns-shadow-host"></div>
+  <div id="owns-unslotted-root">
+    <div id="unslotted-host"><ul id="unslotted-owner" aria-owns="unslotted-target"><li>never rendered</li></ul></div>
+    <div role="listitem" id="unslotted-target">kept</div>
+  </div>
+  <script type="text/javascript">
+    document.getElementById('owns-shadow-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<ul id="shadow-owner" aria-owns="shadow-owned"><li id="shadow-own-child">a</li></ul><div role="listitem" id="shadow-owned">b</div>';
+    document.getElementById('unslotted-host').attachShadow({ mode: 'open' }).innerHTML = '<slot name="named"></slot>';
+  </script>
 
   <ul aria-owns="claimed-from-outside"></ul>
   <div id="owned-from-outside-root"><div role="listitem" id="claimed-from-outside">claimed</div></div>
