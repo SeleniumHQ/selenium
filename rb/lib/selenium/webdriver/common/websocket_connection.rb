@@ -55,7 +55,6 @@ module Selenium
         @closing = false
         @session_id = nil
         @url = url
-        @pending_responses = {}
 
         apply_frame_size_limit
         process_handshake
@@ -110,34 +109,21 @@ module Selenium
         data = JSON.generate(data)
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
 
-        cond = ConditionVariable.new
-        @messages_mtx.synchronize do
-          @pending_responses[id] = { cond: cond, response: nil }
-        end
+        @messages_mtx.synchronize { pending_responses[id] = ConditionVariable.new }
 
         begin
-          socket.write(out_frame.to_s)
-        rescue *CONNECTION_ERRORS => e
-          @messages_mtx.synchronize { @pending_responses.delete(id) }
-          raise e, "WebSocket is closed (#{e.class}: #{e.message})"
-        end
-
-        @messages_mtx.synchronize do
-          timeout_at = Process.clock_gettime(Process::CLOCK_MONOTONIC) + RESPONSE_WAIT_TIMEOUT
-          while @pending_responses[id] && @pending_responses[id][:response].nil?
-            raise IOError, 'WebSocket connection closed while waiting for a response' if @closing
-
-            remaining = timeout_at - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            if remaining <= 0
-              @pending_responses.delete(id)
-              raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds waiting for response to command #{id}"
-            end
-            cond.wait(@messages_mtx, remaining)
+          begin
+            socket.write(out_frame.to_s)
+          rescue *CONNECTION_ERRORS => e
+            raise e, "WebSocket is closed (#{e.class}: #{e.message})"
           end
-          entry = @pending_responses.delete(id)
-          raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds waiting for response to command #{id}" unless entry && entry[:response]
 
-          entry[:response]
+          await_response(id)
+        ensure
+          @messages_mtx.synchronize do
+            pending_responses.delete(id)
+            messages.delete(id)
+          end
         end
       end
 
@@ -145,6 +131,30 @@ module Selenium
 
       def messages
         @messages ||= {}
+      end
+
+      def pending_responses
+        @pending_responses ||= {}
+      end
+
+      def await_response(id)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + RESPONSE_WAIT_TIMEOUT
+        @messages_mtx.synchronize do
+          until messages.key?(id)
+            raise IOError, 'WebSocket connection closed while waiting for a response' if @closing
+
+            remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds" if remaining <= 0
+
+            pending_responses[id].wait(@messages_mtx, remaining)
+          end
+          messages.delete(id)
+        end
+      end
+
+      # Once the socket is closed no reply can arrive, so wake waiters instead of letting them run out the timeout
+      def release_pending_responses
+        @messages_mtx.synchronize { pending_responses.each_value(&:broadcast) }
       end
 
       def process_handshake
@@ -166,6 +176,7 @@ module Selenium
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+          close_socket
         end
       end
 
@@ -174,6 +185,8 @@ module Selenium
         socket.close
       rescue *CONNECTION_ERRORS => e
         WebDriver.logger.debug "WebSocket socket closed: #{e.class}: #{e.message}", id: :ws
+      ensure
+        release_pending_responses
       end
 
       def process_incoming_frames
@@ -218,13 +231,11 @@ module Selenium
 
         msg = JSON.parse(message)
         if msg.key?('id')
-          msg_id = msg['id']
           @messages_mtx.synchronize do
-            if @pending_responses.key?(msg_id)
-              @pending_responses[msg_id][:response] = msg
-              @pending_responses[msg_id][:cond].signal
-            else
-              messages[msg_id] = msg
+            # Replies to commands that already timed out are dropped so they don't accumulate
+            if (waiter = pending_responses[msg['id']])
+              messages[msg['id']] = msg
+              waiter.signal
             end
           end
         end
@@ -248,10 +259,6 @@ module Selenium
           bt = Array(e.backtrace).first(5).join("\n")
           WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws
         end
-      end
-
-      def wait
-        @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
       end
 
       def socket

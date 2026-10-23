@@ -21,7 +21,6 @@ import logging
 import threading
 from ssl import CERT_NONE
 from threading import Thread
-from time import sleep
 
 from websocket import WebSocketApp
 
@@ -102,6 +101,8 @@ class WebSocketConnection:
 
         self._start_ws()
         if not self._started.wait(timeout=self.response_wait_timeout):
+            # Stop the listener thread so a failed connection doesn't keep retrying in the background
+            self.close()
             raise WebDriverException("Timed out waiting for connection to start")
 
     def close(self):
@@ -128,22 +129,31 @@ class WebSocketConnection:
             self._id += 1
             current_id = self._id
 
-        event = threading.Event()
-        with self._events_lock:
-            self._events[current_id] = event
         payload["id"] = current_id
         if self.session_id:
             payload["sessionId"] = self.session_id
-
         data = json.dumps(payload, cls=_BiDiEncoder)
-        logger.debug(f"-> {data}"[: self._max_log_message_size])
-        self._ws.send(data)
 
-        if not event.wait(timeout=self.response_wait_timeout):
+        event = threading.Event()
+        with self._events_lock:
+            self._events[current_id] = event
+        try:
+            logger.debug(f"-> {data}"[: self._max_log_message_size])
+            self._ws.send(data)
+
+            if not event.wait(timeout=self.response_wait_timeout):
+                raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
+            with self._events_lock:
+                response = self._messages.pop(current_id, None)
+            if response is None:
+                raise WebDriverException(
+                    f"WebSocket connection closed while waiting for response to BiDi command {current_id}"
+                )
+            return response
+        finally:
             with self._events_lock:
                 self._events.pop(current_id, None)
-            raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
-        return self._messages.pop(current_id)
+                self._messages.pop(current_id, None)
 
     def send_cmd(self, method, params):
         """Send one command and return its raw reply (``result`` or ``error`` left intact).
@@ -210,12 +220,16 @@ class WebSocketConnection:
             ws.close()
 
         def run_socket():
-            if self.url.startswith("wss://"):
-                self._ws.run_forever(sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True)
-            else:
-                self._ws.run_forever(suppress_origin=True)
+            try:
+                if self.url.startswith("wss://"):
+                    ws.run_forever(sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True)
+                else:
+                    ws.run_forever(suppress_origin=True)
+            finally:
+                self._release_pending()
 
-        self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
+        ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
+        self._ws = ws
         self._ws_thread = Thread(target=run_socket, daemon=True)
         self._ws_thread.start()
 
@@ -225,13 +239,20 @@ class WebSocketConnection:
 
         if "id" in message:
             msg_id = message["id"]
-            self._messages[msg_id] = message
+            # Replies to commands that already timed out are dropped so they don't accumulate
             with self._events_lock:
-                event = self._events.pop(msg_id, None)
-            if event:
-                event.set()
+                event = self._events.get(msg_id)
+                if event is not None:
+                    self._messages[msg_id] = message
+                    event.set()
 
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
+
+    def _release_pending(self):
+        # Once the socket is gone no reply can arrive, so wake waiters instead of letting them run out the timeout
+        with self._events_lock:
+            for event in self._events.values():
+                event.set()
