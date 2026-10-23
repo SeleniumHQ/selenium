@@ -206,6 +206,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     Generator(Map<String, Object> schema) {
+      schema = foldVendorExtensions(schema);
       this.schema =
           (Map<String, Object>)
               inlineSyntheticMaps(schema, (Map<String, Object>) schema.get("types"));
@@ -215,9 +216,7 @@ public class BiDiGenerator {
           types.put(entry.getKey(), (Map<String, Object>) entry.getValue());
         }
       }
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       List<Map<String, Object>> events =
           Optional.ofNullable((List<Map<String, Object>>) schema.get("events"))
               .orElse(Collections.emptyList());
@@ -227,6 +226,18 @@ public class BiDiGenerator {
       this.variantParent = computeVariantParent();
       this.scalarUnionParent = computeScalarUnionParent();
       this.syntheticChildren = computeSyntheticChildren();
+    }
+
+    // The spec's commands plus the vendor-variant commands foldVendorExtensions adds (each sends a
+    // vendor-variant params record), so those records count as reachable, sendable types.
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> allCommands() {
+      List<Map<String, Object>> all = new ArrayList<>();
+      for (String key : new String[] {"commands", "vendorCommands"}) {
+        Object list = schema.get(key);
+        if (list instanceof List) all.addAll((List<Map<String, Object>>) list);
+      }
+      return all;
     }
 
     @SuppressWarnings("unchecked")
@@ -248,9 +259,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     private Set<String> computeSenderTypes() {
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       Set<String> result = new LinkedHashSet<>();
       java.util.ArrayDeque<String> queue = new java.util.ArrayDeque<>();
       for (Map<String, Object> cmd : commands) {
@@ -293,9 +302,7 @@ public class BiDiGenerator {
 
     @SuppressWarnings("unchecked")
     private Set<String> computeReceivableTypes() {
-      List<Map<String, Object>> commands =
-          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
-              .orElse(Collections.emptyList());
+      List<Map<String, Object>> commands = allCommands();
       List<Map<String, Object>> events =
           Optional.ofNullable((List<Map<String, Object>>) schema.get("events"))
               .orElse(Collections.emptyList());
@@ -397,6 +404,10 @@ public class BiDiGenerator {
 
       Map<String, List<Map<String, Object>>> cmdByDomain = groupByDomain(commands);
       Map<String, List<Map<String, Object>>> evtByDomain = groupByDomain(events);
+      Map<String, List<Map<String, Object>>> vendorCmdByDomain =
+          groupByDomain(
+              Optional.ofNullable((List<Map<String, Object>>) schema.get("vendorCommands"))
+                  .orElse(Collections.emptyList()));
 
       Set<String> domains = new LinkedHashSet<>();
       domains.addAll(cmdByDomain.keySet());
@@ -407,6 +418,7 @@ public class BiDiGenerator {
             domain,
             cmdByDomain.getOrDefault(domain, Collections.emptyList()),
             evtByDomain.getOrDefault(domain, Collections.emptyList()),
+            vendorCmdByDomain.getOrDefault(domain, Collections.emptyList()),
             outDir);
       }
 
@@ -521,6 +533,7 @@ public class BiDiGenerator {
         String domain,
         List<Map<String, Object>> commands,
         List<Map<String, Object>> events,
+        List<Map<String, Object>> vendorCommands,
         Path outDir)
         throws IOException {
 
@@ -584,7 +597,41 @@ public class BiDiGenerator {
       sb.append("    super(driver);\n");
       sb.append("  }\n\n");
 
-      // Command methods
+      appendCommandMethods(sb, commands, moduleDomain, "");
+
+      // The vendor variant of this module (#18184): a subclass that sends a vendor-variant params
+      // record, so a vendor-only field reaches the wire only when the caller picks the variant.
+      // Choosing the variant for a session's browser belongs to the layer that owns the session.
+      Map<String, List<Map<String, Object>>> byVendor = new LinkedHashMap<>();
+      for (Map<String, Object> cmd : vendorCommands) {
+        byVendor.computeIfAbsent(str(cmd, "vendor"), k -> new ArrayList<>()).add(cmd);
+      }
+      for (Map.Entry<String, List<Map<String, Object>>> v : byVendor.entrySet()) {
+        String variant = capitalize(v.getKey());
+        sb.append("  /** ")
+            .append(v.getKey())
+            .append(": vendor variant of ")
+            .append(cls)
+            .append(", for a session on that vendor's browser. */\n");
+        sb.append("  public static class ")
+            .append(variant)
+            .append(" extends ")
+            .append(cls)
+            .append(" {\n\n");
+        sb.append("    public ").append(variant).append("(WebDriver driver) {\n");
+        sb.append("      super(driver);\n");
+        sb.append("    }\n\n");
+        appendCommandMethods(sb, v.getValue(), moduleDomain, "  ");
+        sb.append("  }\n\n");
+      }
+
+      sb.append("}\n");
+
+      writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
+    }
+
+    private void appendCommandMethods(
+        StringBuilder sb, List<Map<String, Object>> commands, String moduleDomain, String indent) {
       for (Map<String, Object> cmd : commands) {
         String method = str(cmd, "method");
         String cmdName = escapeReserved(str(cmd, "name"));
@@ -609,7 +656,8 @@ public class BiDiGenerator {
           paramsMapExpr = "params.toMap()";
         }
 
-        sb.append("  public ")
+        sb.append(indent)
+            .append("  public ")
             .append(returnType)
             .append(" ")
             .append(cmdName)
@@ -618,13 +666,15 @@ public class BiDiGenerator {
             .append(") {\n");
 
         if ("void".equals(returnType)) {
-          sb.append("    send(new Command<>(\"")
+          sb.append(indent)
+              .append("    send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
               .append("));\n");
         } else if (resultArg != null) {
-          sb.append("    return send(new Command<>(\"")
+          sb.append(indent)
+              .append("    return send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
@@ -632,18 +682,15 @@ public class BiDiGenerator {
               .append(resultArg)
               .append("));\n");
         } else {
-          sb.append("    return send(new Command<>(\"")
+          sb.append(indent)
+              .append("    return send(new Command<>(\"")
               .append(method)
               .append("\", ")
               .append(paramsMapExpr)
               .append("));\n");
         }
-        sb.append("  }\n\n");
+        sb.append(indent).append("  }\n\n");
       }
-
-      sb.append("}\n");
-
-      writeFile(outDir, pkg.replace('.', '/') + "/" + cls + ".java", sb.toString());
     }
 
     // ─── Record POJO ──────────────────────────────────────────────
@@ -2269,6 +2316,155 @@ public class BiDiGenerator {
       Map<String, Object> type = (Map<String, Object>) raw.get("type");
       // wire key stays as the original spec name for JSON serialization
       return new FieldInfo(name, wire != null ? wire : rawName, required, type);
+    }
+
+    // A vendor section declares fields that a vendor adds to a spec type (e.g. Firefox's moz:name
+    // and moz:scope on browsingContext.Info). ADR 17786 counts supported vendor extensions as part
+    // of the spec, so they are declared fields: typed, and the shared type stays closed (#18184).
+    // Where they go depends on direction, as for Ruby in #18190:
+    //  - Received: optional fields on the shared type (Info gets mozName / mozScope), because
+    //    responses and events arrive through the shared classes whatever the browser.
+    //  - Sent (a command's params): a closed vendor-variant record (browsingContext
+    //    .MozGetTreeParameters), sent only by the vendor variant of the module
+    //    (BrowsingContext.Moz#getTree), so the shared params can never carry a vendor field.
+    // An extensible type is left as is: it already keeps vendor fields as extensions.
+    // An inline vendor enum is hoisted to a named type in the extended type's domain (moz:scope
+    // becomes browsingContext.MozScope), since a field can only ref an enum; both directions share
+    // it.
+    @SuppressWarnings("unchecked")
+    static Map<String, Object> foldVendorExtensions(Map<String, Object> schema) {
+      Object vendor = schema.get("vendor");
+      if (!(vendor instanceof Map)) return schema;
+      Map<String, Object> types = new LinkedHashMap<>((Map<String, Object>) schema.get("types"));
+      Map<String, Map<String, Object>> commandByParams = new LinkedHashMap<>();
+      for (Map<String, Object> cmd :
+          Optional.ofNullable((List<Map<String, Object>>) schema.get("commands"))
+              .orElse(Collections.emptyList())) {
+        Object params = cmd.get("params");
+        if (params instanceof Map) {
+          commandByParams.putIfAbsent(str((Map<String, Object>) params, "ref"), cmd);
+        }
+      }
+      List<Map<String, Object>> vendorCommands = new ArrayList<>();
+      for (Map.Entry<String, Object> ns : ((Map<String, Object>) vendor).entrySet()) {
+        String namespace = ns.getKey();
+        Object extendsNode = ((Map<String, Object>) ns.getValue()).get("extends");
+        if (!(extendsNode instanceof Map)) continue;
+        for (Map.Entry<String, Object> ext : ((Map<String, Object>) extendsNode).entrySet()) {
+          String typeName = ext.getKey();
+          Map<String, Object> type = (Map<String, Object>) types.get(typeName);
+          if (type == null) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends unknown type " + typeName);
+          }
+          if (!"record".equals(str(type, "kind"))) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends " + typeName + ", which is not a record");
+          }
+          if (Boolean.TRUE.equals(type.get("extensible"))) continue;
+
+          String domain =
+              typeName.contains(".") ? typeName.substring(0, typeName.indexOf('.')) : "";
+          Map<String, Object> command = commandByParams.get(typeName);
+          List<Object> fields =
+              new ArrayList<>(
+                  Optional.ofNullable((List<Object>) type.get("fields"))
+                      .orElse(Collections.emptyList()));
+          Set<String> taken = new LinkedHashSet<>();
+          for (Object f : fields) taken.add(str((Map<String, Object>) f, "name"));
+
+          for (Object f : (List<Object>) ((Map<String, Object>) ext.getValue()).get("fields")) {
+            Map<String, Object> field = new LinkedHashMap<>((Map<String, Object>) f);
+            String rawName = str(field, "name");
+            String wire = str(field, "wire") != null ? str(field, "wire") : rawName;
+            String prefixed = vendorFieldName(rawName);
+            // A variant record is Firefox-only, so its fields drop the prefix (scope ->
+            // "moz:scope") unless that clashes with a spec field; a shared type keeps it.
+            String name = prefixed;
+            if (command != null) {
+              String stripped = vendorFieldName(stripNamespace(rawName, namespace));
+              if (!taken.contains(stripped)) name = stripped;
+            }
+            field.put("name", name);
+            field.put("wire", wire);
+            field.put("required", Boolean.TRUE.equals(field.get("required")) && command != null);
+            Map<String, Object> fieldType = (Map<String, Object>) field.get("type");
+            if (fieldType != null && fieldType.get("enum") != null) {
+              field.put("type", hoistVendorEnum(types, domain, prefixed, fieldType));
+            }
+            taken.add(name);
+            fields.add(field);
+          }
+
+          Map<String, Object> folded = new LinkedHashMap<>(type);
+          folded.put("fields", fields);
+          if (command == null) {
+            types.put(typeName, folded);
+            continue;
+          }
+          String variantName =
+              (domain.isEmpty() ? "" : domain + ".")
+                  + capitalize(namespace)
+                  + typeName.substring(typeName.indexOf('.') + 1);
+          if (types.containsKey(variantName)) {
+            throw new IllegalStateException(
+                "vendor variant " + variantName + " conflicts with an existing type");
+          }
+          folded.remove("specHref");
+          types.put(variantName, folded);
+          Map<String, Object> variantCommand = new LinkedHashMap<>(command);
+          Map<String, Object> paramsRef = new LinkedHashMap<>();
+          paramsRef.put("ref", variantName);
+          variantCommand.put("params", paramsRef);
+          variantCommand.put("vendor", namespace);
+          vendorCommands.add(variantCommand);
+        }
+      }
+      Map<String, Object> result = new LinkedHashMap<>(schema);
+      result.put("types", types);
+      result.put("vendorCommands", vendorCommands);
+      return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> hoistVendorEnum(
+        Map<String, Object> types, String domain, String fieldName, Map<String, Object> fieldType) {
+      String enumName = (domain.isEmpty() ? "" : domain + ".") + capitalize(fieldName);
+      Map<String, Object> enumNode = new LinkedHashMap<>();
+      enumNode.put("kind", "enum");
+      enumNode.put("values", fieldType.get("enum"));
+      enumNode.put("primitive", fieldType.getOrDefault("primitive", "string"));
+      Object existing = types.get(enumName);
+      if (existing != null && !existing.equals(enumNode)) {
+        throw new IllegalStateException(
+            "vendor enum " + enumName + " conflicts with an existing type");
+      }
+      types.put(enumName, enumNode);
+      Map<String, Object> ref = new LinkedHashMap<>();
+      if (fieldType.containsKey("nullable")) ref.put("nullable", fieldType.get("nullable"));
+      ref.put("ref", enumName);
+      return ref;
+    }
+
+    private static String stripNamespace(String name, String namespace) {
+      String prefix = namespace + ":";
+      return name.startsWith(prefix) ? name.substring(prefix.length()) : name;
+    }
+
+    // "moz:name" -> "mozName": the prefix stays so it can't collide with a spec field of the same
+    // base name, and the colon (not a legal identifier character) camel-cases the next letter.
+    private static String vendorFieldName(String name) {
+      StringBuilder out = new StringBuilder();
+      boolean upper = false;
+      for (char c : name.toCharArray()) {
+        if (c == ':' || c == '-' || c == '_') {
+          upper = out.length() > 0;
+        } else {
+          out.append(upper ? Character.toUpperCase(c) : c);
+          upper = false;
+        }
+      }
+      return out.toString();
     }
 
     // The schema projector has no inline map form for a field, so a CDDL map such as
