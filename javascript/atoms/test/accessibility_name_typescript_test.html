@@ -126,6 +126,10 @@ under the License.
       assertNames(assert, { 'submit-value': 'Send', 'submit-default': 'Submit', 'reset-default': 'Reset', 'button-value': 'Go', 'image-alt': 'Picture button' });
     });
 
+    QUnit.test('a button input takes its label ahead of its value (html-aam)', function (assert) {
+      assertNames(assert, { 'labelled-submit': 'Send the form', 'labelled-reset': 'Start again' });
+    });
+
     QUnit.test('img and area use alt, then title', function (assert) {
       assertNames(assert, { 'img-alt': 'Logo', 'img-title': 'Titled', 'area-alt': 'Region' });
     });
@@ -147,7 +151,10 @@ under the License.
     });
 
     QUnit.test('text inputs: title, then placeholder (pinned: html-aam puts title first)', function (assert) {
-      assertNames(assert, { 'input-title': 'Tip', 'input-placeholder': 'Hint', 'input-title-and-placeholder': 'Tip', 'textarea-placeholder': 'Hint' });
+      assertNames(assert, {
+        'input-title': 'Tip', 'input-placeholder': 'Hint', 'input-title-and-placeholder': 'Tip', 'textarea-placeholder': 'Hint',
+        'number-placeholder': 'Age',
+      });
     });
 
     QUnit.module('name from content (2F)');
@@ -295,6 +302,8 @@ under the License.
   <input id="submit-default" type="submit">
   <input id="reset-default" type="reset">
   <input id="button-value" type="button" value="Go">
+  <label for="labelled-submit">Send the form</label><input id="labelled-submit" type="submit" value="Send">
+  <label for="labelled-reset">Start again</label><input id="labelled-reset" type="reset">
   <input id="image-alt" type="image" alt="Picture button" src="/testdata/map.png">
   <img id="img-alt" src="/testdata/map.png" alt="Logo">
   <img id="img-title" src="/testdata/map.png" title="Titled">
@@ -316,6 +325,7 @@ under the License.
   <input id="input-placeholder" type="text" placeholder="Hint">
   <input id="input-title-and-placeholder" type="text" title="Tip" placeholder="Hint">
   <textarea id="textarea-placeholder" placeholder="Hint"></textarea>
+  <input id="number-placeholder" type="number" placeholder="Age">
 
   <h1 id="h">Title</h1>
   <a id="link" href="#">Go <em>now</em></a>

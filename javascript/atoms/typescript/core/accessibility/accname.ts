@@ -34,7 +34,8 @@ const NAME_FROM_CONTENT: ReadonlySet<string> = new Set([
   'tooltip', 'treeitem',
 ])
 
-const TEXT_INPUT_TYPES: ReadonlySet<string> = new Set(['email', 'password', 'search', 'tel', 'text', 'url'])
+// The input types that take a placeholder.
+const TEXT_INPUT_TYPES: ReadonlySet<string> = new Set(['email', 'number', 'password', 'search', 'tel', 'text', 'url'])
 
 // Display values whose boxes sit inline with text; everything else is treated
 // as block-level when children are joined (2F.iii).
@@ -382,11 +383,16 @@ function inputNativeName(input: HTMLInputElement, t: Traversal): string | null {
     case 'button':
     case 'reset':
     case 'submit': {
+      // html-aam: label elements, then the value, then the user agent's
+      // default button labels.
+      const label = fromLabels(input, t)
+      if (label !== null) {
+        return label
+      }
       const value = attribute(input, 'value')
       if (value !== null) {
         return value
       }
-      // The user agent's default button labels (html-aam).
       return input.type === 'submit' ? 'Submit' : input.type === 'reset' ? 'Reset' : null
     }
     case 'image':
