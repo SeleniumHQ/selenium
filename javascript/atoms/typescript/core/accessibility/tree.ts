@@ -19,7 +19,7 @@ import { computeDescription, computeName } from './accname.js'
 import { roleOf, SnapshotContext } from './context.js'
 import { flatTreeChildren, hiddenState, isClosedDetails, isCollapsedDetailsContent, isHiddenByAncestor } from './hidden.js'
 import { isPresentational } from './roles.js'
-import { computeStates, computeValue } from './states.js'
+import { computeStates, computeValue, isDisabledByAncestor, setsAriaDisabled } from './states.js'
 import type { AccessibilityNode } from './types.js'
 
 const ELEMENT_NODE = 1
@@ -45,12 +45,18 @@ function textLeaf(text: string): AccessibilityNode {
   return { role: 'text', name: text, description: '', states: {}, children: [] }
 }
 
-function elementNode(element: Element, role: string, name: string, context: SnapshotContext): AccessibilityNode {
+function elementNode(
+  element: Element,
+  role: string,
+  name: string,
+  context: SnapshotContext,
+  disabledByAncestor: boolean,
+): AccessibilityNode {
   const node: AccessibilityNode = {
     role,
     name,
     description: computeDescription(element, context),
-    states: computeStates(element, role),
+    states: computeStates(element, role, disabledByAncestor),
     element,
     children: [],
   }
@@ -75,6 +81,15 @@ function isLeaf(element: Element, role: string): boolean {
   return LEAF_ELEMENTS.has(element.localName) || CHILDREN_PRESENTATIONAL.has(role)
 }
 
+// What the walk carries down from the ancestors of the element it visits:
+// whether their visibility hides text, whether an ancestor's name consumed
+// the text, and whether an ancestor sets aria-disabled.
+interface Inherited {
+  readonly textHidden: boolean
+  readonly textConsumed: boolean
+  readonly disabled: boolean
+}
+
 /**
  * Appends the node(s) for one element to `out`: its own node with its
  * children, or, when it produces no node (pruned role, visibility-hidden),
@@ -85,19 +100,16 @@ function isLeaf(element: Element, role: string): boolean {
  * descendants that do not set themselves visible again is not rendered.
  * `textConsumed` is true below a node whose name was computed from its
  * content: that text already appears as the name and is not repeated as
- * leaves, while the element structure below is still reported.
+ * leaves, while the element structure below is still reported. `disabled`
+ * is true below an element that sets aria-disabled, which applies to
+ * everything under it.
  */
-function visitElement(
-  element: Element,
-  context: SnapshotContext,
-  textHidden: boolean,
-  textConsumed: boolean,
-  out: AccessibilityNode[],
-): void {
+function visitElement(element: Element, context: SnapshotContext, above: Inherited, out: AccessibilityNode[]): void {
   if (context.placed.has(element)) {
     return
   }
   context.placed.add(element)
+  const inherited: Inherited = above.disabled || !setsAriaDisabled(element) ? above : { ...above, disabled: true }
 
   const domParent = element.parentElement
   if (domParent && isCollapsedDetailsContent(element, domParent)) {
@@ -108,7 +120,7 @@ function visitElement(
     return
   }
   if (hidden === 'self') {
-    collectChildren(element, context, true, textConsumed, out)
+    collectChildren(element, context, { ...inherited, textHidden: true }, out)
     return
   }
 
@@ -119,13 +131,18 @@ function visitElement(
     // The element is rendered, so its own visibility is visible even under
     // an invisible ancestor: its text shows.
     if (descend) {
-      collectChildren(element, context, false, textConsumed, out)
+      collectChildren(element, context, { ...inherited, textHidden: false }, out)
     }
     return
   }
-  const node = elementNode(element, role, name.text, context)
+  const node = elementNode(element, role, name.text, context, above.disabled)
   if (descend) {
-    collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
+    collectChildren(
+      element,
+      context,
+      { ...inherited, textHidden: false, textConsumed: inherited.textConsumed || name.source === 'content' },
+      node.children,
+    )
   }
   out.push(node)
 }
@@ -136,13 +153,7 @@ function visitElement(
  * some owner in the walked subtree claims is skipped at its DOM position and
  * placed under that owner instead (ADR 18205 §3).
  */
-function collectChildren(
-  parent: Element,
-  context: SnapshotContext,
-  textHidden: boolean,
-  textConsumed: boolean,
-  out: AccessibilityNode[],
-): void {
+function collectChildren(parent: Element, context: SnapshotContext, inherited: Inherited, out: AccessibilityNode[]): void {
   // Text directly inside a closed details is collapsed content like any
   // element other than its summary.
   const textCollapsed = isClosedDetails(parent)
@@ -150,7 +161,7 @@ function collectChildren(
   for (let i = 0; i < children.length; i++) {
     const child = children[i]
     if (child.nodeType === TEXT_NODE) {
-      if (!textHidden && !textConsumed && !textCollapsed) {
+      if (!inherited.textHidden && !inherited.textConsumed && !textCollapsed) {
         const text = normalizeText(child.nodeValue || '')
         if (text !== '') {
           out.push(textLeaf(text))
@@ -159,13 +170,15 @@ function collectChildren(
       continue
     }
     if (child.nodeType === ELEMENT_NODE && !context.claimed.has(child as Element)) {
-      visitElement(child as Element, context, textHidden, textConsumed, out)
+      visitElement(child as Element, context, inherited, out)
     }
   }
   const owned = context.owned.get(parent)
   if (owned) {
     for (const element of owned) {
-      visitElement(element, context, textHidden, textConsumed, out)
+      // aria-disabled follows DOM ancestry, which an owned element does not
+      // share with its owner.
+      visitElement(element, context, { ...inherited, disabled: isDisabledByAncestor(element) }, out)
     }
   }
 }
@@ -210,12 +223,22 @@ export function buildTree(root: Element, context: SnapshotContext): Accessibilit
   context.placed.add(root)
   const role = roleOf(root, context)
   const name = computeName(root, context)
-  const node = elementNode(root, role, name.text, context)
+  const disabledByAncestor = isDisabledByAncestor(root)
+  const node = elementNode(root, role, name.text, context, disabledByAncestor)
   const hidden = hiddenState(root, context)
   const descend =
     hidden !== 'subtree' && hidden !== 'contents' && !isLeaf(root, role) && !isHiddenByAncestor(root, context)
   if (descend) {
-    collectChildren(root, context, hidden === 'self', name.source === 'content', node.children)
+    collectChildren(
+      root,
+      context,
+      {
+        textHidden: hidden === 'self',
+        textConsumed: name.source === 'content',
+        disabled: disabledByAncestor || setsAriaDisabled(root),
+      },
+      node.children,
+    )
   }
   return node
 }

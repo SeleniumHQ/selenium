@@ -46,6 +46,9 @@ const LEVEL_ROLES: ReadonlySet<string> = new Set(['comment', 'listitem', 'row', 
 const VALUE_ROLES: ReadonlySet<string> = new Set([
   'combobox', 'meter', 'progressbar', 'scrollbar', 'searchbox', 'slider', 'spinbutton', 'textbox',
 ])
+// The elements core/enabled.ts can report as disabled; for anything else it
+// answers enabled without looking, so it is not asked.
+const DISABLEABLE_ELEMENTS: ReadonlySet<string> = new Set(['button', 'input', 'optgroup', 'option', 'select', 'textarea'])
 
 function token(element: Element, name: string): string | null {
   const value = element.getAttribute(name)
@@ -122,18 +125,30 @@ function level(element: Element, role: string): number | null {
   return LEVEL_ROLES.has(role) ? ariaLevel(element) : null
 }
 
-// aria-disabled applies to the element and everything below it.
-function ariaDisabled(element: Element): boolean {
-  for (let current: Element | null = element; current; current = current.parentElement) {
-    if (token(current, 'aria-disabled') === 'true') {
+/** Whether the element itself sets aria-disabled=true. */
+export function setsAriaDisabled(element: Element): boolean {
+  return token(element, 'aria-disabled') === 'true'
+}
+
+/**
+ * aria-disabled applies to the element and everything below it. The walk
+ * threads that down, so this ancestor check is only for a root or an owned
+ * element, whose ancestors the walk has not seen.
+ */
+export function isDisabledByAncestor(element: Element): boolean {
+  for (let current = element.parentElement; current; current = current.parentElement) {
+    if (setsAriaDisabled(current)) {
       return true
     }
   }
   return false
 }
 
-function disabled(element: Element): boolean {
-  return !isEnabled(element) || ariaDisabled(element)
+function disabled(element: Element, disabledByAncestor: boolean): boolean {
+  if (disabledByAncestor || setsAriaDisabled(element)) {
+    return true
+  }
+  return DISABLEABLE_ELEMENTS.has(element.localName) && !isEnabled(element)
 }
 
 // The body is the default active element and is not "focused" in any sense a
@@ -143,8 +158,12 @@ function focused(element: Element): boolean {
   return doc.activeElement === element && element !== doc.body && element !== doc.documentElement
 }
 
-/** The states map for an element with the given role; {} when there are none. */
-export function computeStates(element: Element, role: string): Record<string, StateValue> {
+/**
+ * The states map for an element with the given role; {} when there are none.
+ * `disabledByAncestor` is whether an ancestor sets aria-disabled, which the
+ * walk knows without climbing.
+ */
+export function computeStates(element: Element, role: string, disabledByAncestor: boolean): Record<string, StateValue> {
   const states: Record<string, StateValue> = {}
   if (CHECKED_ROLES.has(role)) {
     states.checked = checked(element, role)
@@ -167,7 +186,7 @@ export function computeStates(element: Element, role: string): Record<string, St
   if (headingLevel !== null) {
     states.level = headingLevel
   }
-  if (disabled(element)) {
+  if (disabled(element, disabledByAncestor)) {
     states.disabled = true
   }
   if (focused(element)) {
