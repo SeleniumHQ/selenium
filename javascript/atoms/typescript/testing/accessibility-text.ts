@@ -26,13 +26,19 @@ import type { AccessibilityNode, StateValue } from '../core/accessibility/types.
 //     - text: content
 //
 // One line per node, children indented two spaces. A true state is bare,
-// a false one is left out, any other value is spelled. The description is
-// not part of the text form.
+// a false one is left out, any other value is spelled. A value is written as
+// is, except that a line break or a backslash in it is escaped (\n, \r, \\)
+// so a node never spans two lines. The description is not part of the text
+// form.
 
 const STATE_ORDER: ReadonlyArray<string> = ['checked', 'pressed', 'expanded', 'selected', 'level', 'disabled', 'focused']
 
 function quote(name: string): string {
   return '"' + name.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'
+}
+
+function oneLine(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/\r/g, '\\r').replace(/\n/g, '\\n')
 }
 
 function states(map: Record<string, StateValue>): string {
@@ -58,7 +64,7 @@ function line(node: AccessibilityNode): string {
   }
   out += states(node.states)
   if (node.value !== undefined && node.value !== '') {
-    out += `: ${node.value}`
+    out += `: ${oneLine(node.value)}`
   }
   return out
 }

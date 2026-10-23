@@ -69,7 +69,7 @@ under the License.
     QUnit.test('range roles report aria-valuetext, then aria-valuenow, then the native value', function (assert) {
       assertValues(assert, {
         'range': '30', 'number': '7', 'progress': '1', 'meter': '0.5',
-        'slider-now': '40', 'slider-text': 'Medium', 'spinbutton-now': '3',
+        'slider-now': '40', 'slider-text': 'Medium', 'slider-padded-text': 'Low', 'spinbutton-now': '3',
       });
     });
 
@@ -103,6 +103,7 @@ under the License.
   <meter id="meter" value="0.5"></meter>
   <div id="slider-now" role="slider" aria-valuenow="40"></div>
   <div id="slider-text" role="slider" aria-valuenow="50" aria-valuetext="Medium"></div>
+  <div id="slider-padded-text" role="slider" aria-valuenow="50" aria-valuetext="  Low  "></div>
   <div id="spinbutton-now" role="spinbutton" aria-valuenow="3"></div>
   <div id="slider-empty" role="slider"></div>
   <button id="button">b</button>

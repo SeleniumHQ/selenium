@@ -60,7 +60,7 @@ export function embeddedValue(element: Element, role: string): string | null {
   if (RANGE_ROLES.has(role)) {
     const text = element.getAttribute('aria-valuetext')
     if (text !== null && text.trim() !== '') {
-      return text
+      return text.trim()
     }
     const now = element.getAttribute('aria-valuenow')
     if (now !== null) {

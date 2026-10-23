@@ -71,6 +71,12 @@ test('quotes and backslashes in names are escaped; an empty value is not written
   assert.equal(toText(node('textbox', 'Empty', { value: '' })), '- textbox "Empty"')
 })
 
+test('a value stays on one line: line breaks and backslashes are escaped', () => {
+  assert.equal(toText(node('textbox', 'Notes', { value: 'line one\nline two' })), '- textbox "Notes": line one\\nline two')
+  assert.equal(toText(node('textbox', 'Log', { value: 'a\r\nb' })), '- textbox "Log": a\\r\\nb')
+  assert.equal(toText(node('textbox', 'Path', { value: 'C:\\dir' })), '- textbox "Path": C:\\\\dir')
+})
+
 test('description is not part of the text form', () => {
   assert.equal(toText({ ...node('button', 'Save'), description: 'Saves the form' }), '- button "Save"')
 })
