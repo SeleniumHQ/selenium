@@ -109,11 +109,97 @@ function fromReferences(element: Element, attributeName: string, t: Traversal): 
   return normalize(parts.join(' '))
 }
 
-// Generated content of ::before / ::after. The computed `content` is a list
-// of strings and other tokens; only the strings are text, and a bare slash
-// introduces alternative text that replaces everything before it. A slash
-// inside a quoted string is just a character.
-function pseudoContent(element: Element, pseudo: string, t: Traversal): string {
+const GENERATED_CONTENT_SELECTOR = /::?(before|after)\b/i
+
+// Whether one stylesheet has a rule that can set ::before or ::after content,
+// looking into grouping rules (@media, @supports, @layer, @container, nested
+// rules) and imports. A sheet whose rules cannot be read (cross-origin)
+// counts as defining them: a wrong "no" would drop real text, a wrong "yes"
+// only costs the reads.
+function sheetDefinesGeneratedContent(sheet: CSSStyleSheet): boolean {
+  let rules: CSSRuleList
+  try {
+    rules = sheet.cssRules
+  } catch (e) {
+    return true
+  }
+  return rulesDefineGeneratedContent(rules)
+}
+
+function rulesDefineGeneratedContent(rules: CSSRuleList): boolean {
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i] as CSSRule & { selectorText?: string; cssRules?: CSSRuleList; styleSheet?: CSSStyleSheet | null }
+    if (typeof rule.selectorText === 'string' && GENERATED_CONTENT_SELECTOR.test(rule.selectorText)) {
+      return true
+    }
+    if (rule.styleSheet && sheetDefinesGeneratedContent(rule.styleSheet)) {
+      return true
+    }
+    if (rule.cssRules && rulesDefineGeneratedContent(rule.cssRules)) {
+      return true
+    }
+  }
+  return false
+}
+
+// Whether the sheets of one tree scope (the document or a shadow root) can
+// define generated content; cached per scope for the call.
+function scopeDefinesGeneratedContent(scope: Document | ShadowRoot, t: Traversal): boolean {
+  let defines = t.context.generatedScopes.get(scope)
+  if (defines === undefined) {
+    defines = false
+    const sheets = scope.styleSheets
+    for (let i = 0; i < sheets.length && !defines; i++) {
+      defines = sheetDefinesGeneratedContent(sheets[i])
+    }
+    const adopted = (scope as { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets
+    if (adopted) {
+      for (let i = 0; i < adopted.length && !defines; i++) {
+        defines = sheetDefinesGeneratedContent(adopted[i])
+      }
+    }
+    t.context.generatedScopes.set(scope, defines)
+  }
+  return defines
+}
+
+// The scopes whose sheets can style an element's pseudo-elements: its own
+// tree, its shadow root (through :host::before), and the tree of the slot it
+// is assigned to (through ::slotted()::before). The UA stylesheet is not
+// consulted: its only generated content is the open-quote and close-quote
+// keywords on q, which are not strings and are not text the atom can read
+// (the names page pins that).
+function mayHaveGeneratedContent(element: Element, t: Traversal): boolean {
+  if (scopeDefinesGeneratedContent(element.getRootNode() as Document | ShadowRoot, t)) {
+    return true
+  }
+  if (element.shadowRoot && scopeDefinesGeneratedContent(element.shadowRoot, t)) {
+    return true
+  }
+  const slot = element.assignedSlot
+  return !!slot && scopeDefinesGeneratedContent(slot.getRootNode() as Document | ShadowRoot, t)
+}
+
+// Generated content of ::before and ::after, read once per element and only
+// when some sheet in scope can define it: pseudo-element style reads are the
+// most expensive kind, and every element in a name-from-content traversal
+// would otherwise pay two.
+function pseudoContent(element: Element, pseudo: '::before' | '::after', t: Traversal): string {
+  let texts = t.context.generated.get(element)
+  if (texts === undefined) {
+    texts = mayHaveGeneratedContent(element, t)
+      ? [readPseudoContent(element, '::before', t), readPseudoContent(element, '::after', t)]
+      : ['', '']
+    t.context.generated.set(element, texts)
+  }
+  return pseudo === '::before' ? texts[0] : texts[1]
+}
+
+// The computed `content` is a list of strings and other tokens; only the
+// strings are text, and a bare slash introduces alternative text that
+// replaces everything before it. A slash inside a quoted string is just a
+// character.
+function readPseudoContent(element: Element, pseudo: string, t: Traversal): string {
   const style = styleOf(element, t.context, pseudo)
   if (!style) {
     return ''

@@ -35,6 +35,10 @@ export interface SnapshotContext {
   readonly styles: Map<Element, Map<string, CSSStyleDeclaration | null>>
   readonly names: Map<Element, NameResult>
   readonly descriptions: Map<Element, string>
+  /** Generated ::before and ::after text per element, read at most once. */
+  readonly generated: Map<Element, [string, string]>
+  /** Per tree scope (document or shadow root): whether any of its sheets can define generated content. */
+  readonly generatedScopes: Map<Node, boolean>
   /** Elements already placed in the tree; aria-owns re-parenting must not place one twice. */
   readonly placed: Set<Element>
   /** aria-owns targets of each owner in the walked subtree, in attribute order. */
@@ -58,6 +62,8 @@ export function createContext(): SnapshotContext {
     styles: new Map(),
     names: new Map(),
     descriptions: new Map(),
+    generated: new Map(),
+    generatedScopes: new Map(),
     placed: new Set(),
     owned: new Map(),
     claimed: new Set(),

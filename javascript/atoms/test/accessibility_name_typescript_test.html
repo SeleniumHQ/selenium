@@ -31,6 +31,7 @@ under the License.
     .star::before { content: "★ "; }
     .slash::before { content: "1 / 2 "; }
     .alt::before { content: "★ " / "star "; }
+    @media (min-width: 1px) { .nested::before { content: "Nested "; } }
     .more::after { content: " (more)"; }
     .gone { display: none; }
     .block { display: block; }
@@ -196,6 +197,19 @@ under the License.
       assertNames(assert, { 'pseudo-slash': '1 / 2 Save', 'pseudo-alt': 'star Save' });
     });
 
+    QUnit.test('generated content is found wherever a sheet can define it', function (assert) {
+      // A rule nested in @media, a shadow sheet styling its host, an adopted
+      // stylesheet, and the UA stylesheet's quotes on q, which no author
+      // sheet mentions.
+      assertNames(assert, { 'pseudo-nested': 'Nested Save', 'pseudo-host': 'Pre Light', 'pseudo-adopted': 'Save (adopted)' });
+    });
+
+    QUnit.test('UA quotes on q are not text the atom can read (pinned limitation)', function (assert) {
+      // The computed content is the keyword open-quote, not a string, so the
+      // quote marks engines add to the name are absent here.
+      assertNames(assert, { 'pseudo-quote': 'hi' });
+    });
+
     QUnit.module('tooltip (2I) and the document');
 
     QUnit.test('title names an element that has nothing else', function (assert) {
@@ -297,6 +311,17 @@ under the License.
   <div id="embedded-select" role="heading" aria-level="2">Pick <select><option>Alpha</option><option selected>Beta</option></select> please</div>
   <button id="pseudo-before" class="star">Save</button>
   <button id="pseudo-slash" class="slash">Save</button>
+  <button id="pseudo-nested" class="nested">Save</button>
+  <div id="pseudo-host" role="heading" aria-level="2">Light</div>
+  <button id="pseudo-adopted" class="adopted">Save</button>
+  <button id="pseudo-quote"><q>hi</q></button>
+  <script type="text/javascript">
+    document.getElementById('pseudo-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<style>:host::before { content: "Pre "; }</style><slot></slot>';
+    var adopted = new CSSStyleSheet();
+    adopted.replaceSync('.adopted::after { content: " (adopted)"; }');
+    document.adoptedStyleSheets = [adopted];
+  </script>
   <button id="pseudo-alt" class="alt">Save</button>
   <label for="outer">Count <input id="inner" type="text" value="5"></label><label for="inner">Inner label</label><input id="outer" type="text">
   <label for="x1">A <input id="x2" type="text"></label><label for="x2">B <input id="x1" type="text"></label>
