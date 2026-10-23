@@ -84,6 +84,12 @@ export function isClosedDetails(element: Element): boolean {
  * `assignedSlot` are both null for its host's children, so those read as
  * ordinary children of the host and are treated as rendered.
  */
+// An HTML slot element; an element merely named slot in another namespace
+// has no assigned nodes to ask for.
+function isSlot(element: Element): element is HTMLSlotElement {
+  return element.localName === 'slot' && 'assignedNodes' in element
+}
+
 function flatTreeParent(node: Element): FlatTreeParent {
   const parent = node.parentNode
   if (!parent) {
@@ -103,7 +109,7 @@ function flatTreeParent(node: Element): FlatTreeParent {
   if (parentElement.shadowRoot) {
     return NOT_RENDERED
   }
-  if (parentElement.localName === 'slot' && (parentElement as HTMLSlotElement).assignedNodes().length > 0) {
+  if (isSlot(parentElement) && parentElement.assignedNodes().length > 0) {
     return NOT_RENDERED
   }
   return parentElement
@@ -119,8 +125,8 @@ function flatTreeParent(node: Element): FlatTreeParent {
  * returned as if they rendered; see flatTreeParent.
  */
 export function flatTreeChildren(element: Element): ArrayLike<Node> {
-  if (element.localName === 'slot') {
-    return (element as HTMLSlotElement).assignedNodes({ flatten: true })
+  if (isSlot(element)) {
+    return element.assignedNodes({ flatten: true })
   }
   if (element.shadowRoot) {
     return element.shadowRoot.childNodes

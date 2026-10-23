@@ -146,6 +146,12 @@ under the License.
       assert.deepEqual(snapshot(button).states, { disabled: true });
     });
 
+    QUnit.test('an element named slot outside HTML is not a slot', function (assert) {
+      var root = byId('foreign-slot-root');
+      root.querySelector('svg').appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'slot'));
+      assert.strictEqual(strip(snapshot(root)).children.length, 1, 'the svg is walked without throwing');
+    });
+
     QUnit.test('aria-labelledby resolves inside the shadow root that holds it', function (assert) {
       var root = byId('labelled-host').shadowRoot;
       assert.strictEqual(snapshot(root.getElementById('shadow-button')).name, 'Shadow label');
@@ -172,6 +178,7 @@ under the License.
   <div id="labelled-host"></div>
   <div id="focus-host"></div>
   <div id="disabled-host" aria-disabled="true"></div>
+  <div id="foreign-slot-root"><svg width="10" height="10"><title>Pic</title></svg></div>
   <div id="content-host" role="heading" aria-level="2">Light</div>
 
   <script type="text/javascript">
