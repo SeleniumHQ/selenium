@@ -84,6 +84,16 @@ under the License.
       assertNames(assert, { 'chain-a': 'B content', 'chain-b': 'C content' });
     });
 
+    QUnit.test('two descendants that reference the same element both contribute it', function (assert) {
+      // A row named from its cells, each labelled by the same header: the
+      // header is read for each cell, not only for the first.
+      assertNames(assert, { 'shared-ref-row': 'Qty Qty' });
+    });
+
+    QUnit.test('an id listed twice in one attribute contributes once, as Chromium reads it', function (assert) {
+      assertNames(assert, { 'lb-dup': 'First' });
+    });
+
     QUnit.test('aria-labelledby beats aria-label and content', function (assert) {
       assertNames(assert, { 'lb-beats-label': 'First' });
     });
@@ -265,6 +275,8 @@ under the License.
   <div id="chain-b" aria-labelledby="chain-c">B content</div>
   <div id="chain-c">C content</div>
   <button id="lb-beats-label" aria-labelledby="first" aria-label="Label">Content</button>
+  <div role="row" id="shared-ref-row"><div role="cell" aria-labelledby="qty-h">1</div><div role="cell" aria-labelledby="qty-h">2</div></div><span id="qty-h">Qty</span>
+  <div id="lb-dup" aria-labelledby="first first">x</div>
 
   <button id="label-plain" aria-label="Close">X</button>
   <button id="label-padded" aria-label="  Close  ">X</button>

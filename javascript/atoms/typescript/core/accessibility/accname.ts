@@ -55,8 +55,6 @@ interface Traversal {
   readonly includeHidden: boolean
   /** The labelled control while its own label is traversed; it does not name itself. */
   readonly skip: Element | null
-  /** Referenced elements already visited, so reference cycles end. */
-  readonly visited: Set<Element>
 }
 
 function normalize(text: string): string {
@@ -88,18 +86,21 @@ function referencedElements(element: Element, attributeName: string): Element[] 
   return found
 }
 
-// 2B: the text alternatives of the referenced elements, space-joined. A
-// target's text alternative is the same whoever references it and whether
-// for a name or a description (2B is not applied inside a reference and 2C
-// is), so it is computed once per snapshot: a header that labels every cell
-// of a column is read once, not once per cell.
+// 2B: the text alternatives of the referenced elements, space-joined, an id
+// listed twice counting once (as Chromium reads it). A target's text
+// alternative is the same whoever references it and whether for a name or a
+// description (2B is not applied inside a reference and 2C is), so it is
+// computed once per snapshot: a header that labels every cell of a column is
+// read once, not once per cell. No cycle check is needed beyond
+// `inReference`: nothing below a reference follows references again.
 function fromReferences(element: Element, attributeName: string, t: Traversal): string {
   const parts: string[] = []
+  const listed = new Set<Element>()
   for (const target of referencedElements(element, attributeName)) {
-    if (t.visited.has(target)) {
+    if (listed.has(target)) {
       continue
     }
-    t.visited.add(target)
+    listed.add(target)
     let text = t.context.referenceTexts.get(target)
     if (text === undefined) {
       text = textAlternative(target, {
@@ -533,7 +534,7 @@ function computeTextAlternative(element: Element, t: Traversal): NameResult {
 }
 
 function traversal(context: SnapshotContext, describing: boolean): Traversal {
-  return { context, describing, inReference: false, recursive: false, includeHidden: false, skip: null, visited: new Set() }
+  return { context, describing, inReference: false, recursive: false, includeHidden: false, skip: null }
 }
 
 /** The accessible name of an element and where it came from. */
