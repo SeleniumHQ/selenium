@@ -88,6 +88,7 @@ js_test(
 # under typescript/testing/ default-exports what its page drives. These are not
 # in ATOMS, so they are never published and never reach a binding.
 TEST_BUNDLES = {
+    "accessibility": "bot.accessibility.typescript.testing",
     "events": "bot.events.typescript",
     "keyboard": "bot.keyboard.typescript",
     "mouse": "bot.mouse.typescript",

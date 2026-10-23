@@ -1,0 +1,153 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+// "Hidden" in the accname sense (https://w3c.github.io/accname/#dfn-hidden):
+// an element that is not rendered, or that has aria-hidden=true on itself or
+// an ancestor. This is deliberately not bot.dom.isShown. WebDriver's
+// displayedness also prunes zero-size, transparent and off-screen content,
+// which assistive technology does reach; the "visually hidden" CSS pattern
+// that screen-reader-only text relies on is built on exactly that difference.
+//
+// Ancestry follows the flat tree (slots and shadow hosts), because that is
+// what gets rendered, not the light DOM.
+
+const DOCUMENT_NODE = 9
+const DOCUMENT_FRAGMENT_NODE = 11
+
+/**
+ * What an element does to its own visibility, with no regard to ancestors:
+ *   rendered  it has a box
+ *   self      its own box is invisible but a descendant may set itself visible
+ *             again (visibility is inherited, not a subtree switch)
+ *   subtree   nothing below it is rendered either
+ */
+export type HiddenState = 'rendered' | 'self' | 'subtree'
+
+// The flat-tree parent of a node, or one of two terminals.
+const NOT_RENDERED: unique symbol = Symbol('not rendered')
+type FlatTreeParent = Element | null | typeof NOT_RENDERED
+
+function isAriaHidden(element: Element): boolean {
+  const value = element.getAttribute('aria-hidden')
+  return value !== null && value.trim().toLowerCase() === 'true'
+}
+
+function computedStyle(element: Element): CSSStyleDeclaration | null {
+  const view = element.ownerDocument.defaultView
+  return view ? view.getComputedStyle(element) : null
+}
+
+/**
+ * The parent that renders this node: its slot when it is assigned to one, the
+ * host when it sits directly in a shadow root, otherwise its DOM parent. Null
+ * at the document; NOT_RENDERED for nodes the flat tree leaves out (a child of
+ * a shadow host that no slot took, fallback content of a slot that has
+ * assigned nodes, anything detached or inside an inert fragment).
+ *
+ * A closed shadow root cannot be seen from outside: `shadowRoot` and
+ * `assignedSlot` are both null for its host's children, so those read as
+ * ordinary children of the host and are treated as rendered.
+ */
+function flatTreeParent(node: Element): FlatTreeParent {
+  const parent = node.parentNode
+  if (!parent) {
+    return NOT_RENDERED
+  }
+  if (node.assignedSlot) {
+    return node.assignedSlot
+  }
+  if (parent.nodeType === DOCUMENT_FRAGMENT_NODE) {
+    const host = (parent as ShadowRoot).host
+    return host ? host : NOT_RENDERED
+  }
+  if (parent.nodeType === DOCUMENT_NODE) {
+    return null
+  }
+  const parentElement = parent as Element
+  if (parentElement.shadowRoot) {
+    return NOT_RENDERED
+  }
+  if (parentElement.localName === 'slot' && (parentElement as HTMLSlotElement).assignedNodes().length > 0) {
+    return NOT_RENDERED
+  }
+  return parentElement
+}
+
+/**
+ * Children of a closed details element are not rendered, apart from its first
+ * summary. The browser does this through a UA shadow tree that is closed to
+ * script, so it has to be known here rather than read from the DOM.
+ */
+export function isCollapsedDetailsContent(child: Element, parent: Element): boolean {
+  if (parent.localName !== 'details' || parent.hasAttribute('open')) {
+    return false
+  }
+  for (let sibling = parent.firstElementChild; sibling; sibling = sibling.nextElementSibling) {
+    if (sibling.localName === 'summary') {
+      return sibling !== child
+    }
+  }
+  return true
+}
+
+/** See HiddenState. Ancestors are not consulted; isHidden does that. */
+export function hiddenState(element: Element): HiddenState {
+  if (isAriaHidden(element)) {
+    return 'subtree'
+  }
+  // With scripting enabled a noscript element renders nothing, but Chromium
+  // decides that in layout rather than in its UA stylesheet, so its computed
+  // display still reads inline. This atom only ever runs as script.
+  if (element.localName === 'noscript') {
+    return 'subtree'
+  }
+  const style = computedStyle(element)
+  // No view (an inert template fragment) and a detached element (empty
+  // computed values) are both unrendered.
+  if (!style || style.display === '' || style.display === 'none') {
+    return 'subtree'
+  }
+  const visibility = style.visibility
+  if (visibility === 'hidden' || visibility === 'collapse') {
+    return 'self'
+  }
+  return 'rendered'
+}
+
+/** Whether the element is hidden in the accname sense. */
+export function isHidden(element: Element): boolean {
+  if (hiddenState(element) !== 'rendered') {
+    return true
+  }
+  // Visibility is inherited, so the element's own computed value above already
+  // accounts for ancestors that set it; only subtree-wide hiding is checked
+  // on the way up.
+  let child = element
+  for (;;) {
+    const parent = flatTreeParent(child)
+    if (parent === NOT_RENDERED) {
+      return true
+    }
+    if (parent === null) {
+      return false
+    }
+    if (isCollapsedDetailsContent(child, parent) || hiddenState(parent) === 'subtree') {
+      return true
+    }
+    child = parent
+  }
+}
