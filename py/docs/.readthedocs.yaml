@@ -13,7 +13,7 @@ build:
     python: "3.12"
   commands:
     - pip install -r py/requirements_lock.txt
-    - cd py && python3 generate_api_module_listing.py && cd
+    - cd py && python3 generate_api_module_listing.py && python3 generate_deprecations.py && cd
     - PYTHONPATH=py sphinx-autogen -o $READTHEDOCS_OUTPUT/html py/docs/source/api.rst
     - PYTHONPATH=py sphinx-build -b html -d build/docs/doctrees py/docs/source $READTHEDOCS_OUTPUT/html
 
