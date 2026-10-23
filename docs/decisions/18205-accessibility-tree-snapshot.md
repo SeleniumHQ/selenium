@@ -71,6 +71,10 @@ The contract:
 - The whole-page snapshot is rooted at the top-level browsing context of the current window,
   whatever frame the driver has switched to. To scope to a frame, take a subtree snapshot of its
   `iframe` element.
+- The whole-page root node has role `document`, is named from the document's title, and
+  references the document element. A subtree snapshot's root always produces a node, even when
+  the pruning rule below would drop it; if the root is hidden, by itself or by an ancestor, that
+  node has no children.
 - Both methods descend into every child frame, including cross-origin ones, and attach each
   frame's tree as the children of its `iframe` node. A frame whose document cannot be reached
   (for example, mid-navigation) gives an `iframe` node with no children; the snapshot as a whole
@@ -83,10 +87,13 @@ The contract:
   doing less.
 - `AccessibilityNode` has one more method, which renders the tree as text (`toText()` /
   `to_text` / `ToText()`, per idiom). The format is one line per node,
-  `- role "name" [state] [state=value]`, with children indented two spaces and text leaves
-  written as `- text: content`. That is the line grammar of Playwright's aria snapshot,
-  restricted to the fields below and with no refs. The text is derived from the tree and carries
-  no information the tree lacks.
+  `- role "name" [state] [state=value]: value`, with children indented two spaces and text leaves
+  written as `- text: content`. An empty name is left out, as is the value when absent or empty.
+  States are written in the order of the table below; a `true` state is written bare, a `false`
+  one is left out, and any other value is spelled. The description and element references are
+  not rendered. That is the line grammar of Playwright's aria snapshot, restricted to the fields
+  below and with no refs. The text is derived from the tree and carries no information the tree
+  lacks.
 
 ### 2. Data model
 
@@ -95,7 +102,7 @@ field names to their own casing and map `element` to their element type.
 
 ```text
 AccessibilityNode {
-  role:        string                  // WAI-ARIA role token; "text" for text leaves
+  role:        string                  // WAI-ARIA role token; "text" for text leaves, "iframe" for frames
   name:        string                  // computed accessible name; "" when there is none
   description: string                  // computed accessible description; "" when there is none
   value?:      string                  // current value, for textbox, combobox, searchbox and range roles
@@ -110,12 +117,17 @@ The `states` keys, and when each is present:
 | Key        | Type              | Present                                   |
 |------------|-------------------|-------------------------------------------|
 | `checked`  | `bool \| "mixed"` | whenever the role supports it             |
-| `pressed`  | `bool \| "mixed"` | whenever the role supports it             |
-| `expanded` | `bool`            | whenever the element sets it              |
-| `selected` | `bool`            | whenever the role supports it             |
-| `level`    | `int`             | whenever the role defines a level         |
+| `pressed`  | `bool \| "mixed"` | when a button sets `aria-pressed`         |
+| `expanded` | `bool`            | when the element sets it, or natively (`summary`) |
+| `selected` | `bool`            | always for `option`, `tab` and `treeitem`; for grid cells, rows and headers only when set |
+| `level`    | `int`             | always for headings; for other roles when the element sets it |
 | `disabled` | `true`            | only when disabled                        |
 | `focused`  | `true`            | only on the focused node                  |
+
+`pressed` and grid `selected` follow ARIA's default for an absent attribute: a button without
+`aria-pressed` is not a toggle button, and most grids are not selectable, so reporting `false`
+would mislead. `iframe` is not a WAI-ARIA role; it marks the node under which a binding attaches
+the frame's tree. Elements html-aam gives no corresponding role are reported as `generic`.
 
 An element produces a node when it is not hidden (in the accname sense) and has a role other than
 `generic`, `none` or `presentation`, or has a non-empty name. Elements that produce no node have
@@ -154,15 +166,17 @@ parent and its DOM parent can differ; the reference still identifies the element
 - The only per-binding code is the public methods above, frame stitching (running the script in
   each child context and attaching the result under its `iframe` node), mapping references to
   element types, and the text renderer.
-- A shared corpus of test pages in `common/src/web/` has an expected JSON tree and expected text
-  for each page. Every binding runs the whole corpus in each browser it tests. That corpus, not
-  any one binding's tests, is the cross-binding contract. Engine-specific expectations are allowed
-  where the corpus records a known divergence.
+- A shared corpus of test pages in `common/src/web/accessibility/` has an expected JSON tree and
+  expected text for each page, and a JSON Schema for the data model above is kept beside the
+  atom. Every binding runs the whole corpus in each browser it tests. That corpus, not any one
+  binding's tests, is the cross-binding contract. Engine-specific expectations are allowed where
+  the corpus records a known divergence, and the expected text is produced by one reference
+  renderer that each binding's text renderer is held to.
 
 ### 5. Positioning and the spec
 
 - Output is labelled as *computed*, not as the browser's accessibility tree. Known divergences
-  from each engine's native tree are documented and kept current.
+  from each engine's native tree are documented in the corpus README and kept current.
 - Selenium takes no dependency on WebdriverIO's implementation, and does not ask WebdriverIO
   to depend on Selenium's. `@wdio/snapshot` is used as a point of comparison: we run both
   against the same test pages and record where Selenium's output is more or less accurate
@@ -236,7 +250,9 @@ parent and its DOM parent can differ; the reference still identifies the element
   the browser's tree is what assistive technology users actually encounter.
 - **Known inaccuracy at the edges.** Name computation will not match each engine exactly.
   `display: contents`, CSS-generated content, closed shadow roots and engine-specific pruning
-  are the expected problem areas. One divergence is already known: Chromium keeps leading
+  are the expected problem areas. Script cannot see into a closed shadow root, so the host's
+  light-DOM children are walked as if rendered, and `aria-owns` on an element inside a shadow
+  tree is not applied. One divergence is already known: Chromium keeps leading
   whitespace in accessible names (`" Logout"` for an icon followed by text), which
   script-computed names trim, so a computed name passed to the `locateNodes` accessibility
   locator can match nothing (webdriverio/webdriverio#16131). The *computed* label and the
@@ -250,7 +266,9 @@ parent and its DOM parent can differ; the reference still identifies the element
   only approximate with page-global ref strings. References share the lifetime of the
   document: after navigation they raise the binding's stale element error, and callers take a
   new snapshot. Each reference adds serialization overhead per node, so the first implementation
-  should measure large trees; an option to omit references would be an additive change.
+  should measure large trees; an option to omit references would be an additive change. As a
+  first data point, a 5,000-node tree is about 366 KB as plain JSON before BiDi serialization
+  adds references.
 - **Classic users get nothing.** Users on remote ends without BiDi get a clear error rather than
   a snapshot. Given the direction of the project this is acceptable, but it is a visible gap.
 - **Maintenance.** We own an accname and role implementation, the tree walk, the shared test
