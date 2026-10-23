@@ -16,6 +16,7 @@
 // under the License.
 
 import { isEnabled } from '../enabled.js'
+import { canTakeFocus } from './roles.js'
 import type { StateValue } from './types.js'
 import { embeddedValue } from './value.js'
 
@@ -32,8 +33,13 @@ import { embeddedValue } from './value.js'
 //   level     always for headings (tag, aria-level, or ARIA's default of 2);
 //             elsewhere when the element sets aria-level
 //   disabled  true only when disabled, natively or through aria-disabled on
-//             the element or an ancestor
+//             the element, or on an ancestor when the element can take focus
+//             (WAI-ARIA 1.2: the state reaches focusable descendants)
 //   focused   true only on the focused element
+//
+// For pressed, expanded and the grid parts' selected, "undefined" and an
+// empty value mean the attribute is not set: ARIA defines undefined as "not
+// a toggle", "not expandable", "not selectable".
 //
 // Adding a key is additive under the ADR's compatibility rule; the states
 // page pins the current set.
@@ -53,6 +59,12 @@ const DISABLEABLE_ELEMENTS: ReadonlySet<string> = new Set(['button', 'input', 'o
 function token(element: Element, name: string): string | null {
   const value = element.getAttribute(name)
   return value === null ? null : value.trim().toLowerCase()
+}
+
+// A token whose "undefined" and empty values count as the attribute being absent.
+function optionalToken(element: Element, name: string): string | null {
+  const value = token(element, name)
+  return value === '' || value === 'undefined' ? null : value
 }
 
 function tristate(element: Element, name: string, allowMixed: boolean): StateValue {
@@ -77,7 +89,7 @@ function checked(element: Element, role: string): StateValue {
 }
 
 function expanded(element: Element): boolean | null {
-  const value = token(element, 'aria-expanded')
+  const value = optionalToken(element, 'aria-expanded')
   if (value !== null) {
     return value === 'true'
   }
@@ -91,15 +103,15 @@ function expanded(element: Element): boolean | null {
 }
 
 function selected(element: Element, role: string): boolean | null {
-  if (element.localName === 'option') {
+  if (element.localName === 'option' && role === 'option') {
     return (element as HTMLOptionElement).selected
   }
-  const value = token(element, 'aria-selected')
   if (ALWAYS_SELECTED_ROLES.has(role)) {
-    return value === 'true'
+    return token(element, 'aria-selected') === 'true'
   }
-  if (SELECTABLE_ROLES.has(role) && value !== null) {
-    return value === 'true'
+  if (SELECTABLE_ROLES.has(role)) {
+    const value = optionalToken(element, 'aria-selected')
+    return value === null ? null : value === 'true'
   }
   return null
 }
@@ -130,13 +142,22 @@ export function setsAriaDisabled(element: Element): boolean {
   return token(element, 'aria-disabled') === 'true'
 }
 
+// The DOM parent, or the host for a shadow root's child: aria-disabled on
+// a host reaches into its shadow tree.
+function parentOrHost(element: Element): Element | null {
+  if (element.parentElement) {
+    return element.parentElement
+  }
+  return (element.getRootNode() as ShadowRoot).host || null
+}
+
 /**
- * aria-disabled applies to the element and everything below it. The walk
- * threads that down, so this ancestor check is only for a root or an owned
- * element, whose ancestors the walk has not seen.
+ * Whether an ancestor sets aria-disabled. The walk threads that down, so
+ * this check is only for a root or an owned element, whose ancestors the
+ * walk has not seen.
  */
 export function isDisabledByAncestor(element: Element): boolean {
-  for (let current = element.parentElement; current; current = current.parentElement) {
+  for (let current = parentOrHost(element); current; current = parentOrHost(current)) {
     if (setsAriaDisabled(current)) {
       return true
     }
@@ -144,8 +165,10 @@ export function isDisabledByAncestor(element: Element): boolean {
   return false
 }
 
+// An ancestor's aria-disabled reaches the descendants that can take focus
+// (WAI-ARIA 1.2), not the headings and paragraphs between them.
 function disabled(element: Element, disabledByAncestor: boolean): boolean {
-  if (disabledByAncestor || setsAriaDisabled(element)) {
+  if (setsAriaDisabled(element) || (disabledByAncestor && canTakeFocus(element))) {
     return true
   }
   return DISABLEABLE_ELEMENTS.has(element.localName) && !isEnabled(element)
@@ -178,7 +201,7 @@ export function computeStates(element: Element, role: string, disabledByAncestor
     states.checked = checked(element, role)
   }
   if (role === 'button') {
-    const pressed = token(element, 'aria-pressed')
+    const pressed = optionalToken(element, 'aria-pressed')
     if (pressed !== null) {
       states.pressed = tristate(element, 'aria-pressed', true)
     }

@@ -95,8 +95,9 @@ function hasGlobalAriaAttribute(element: Element): boolean {
 
 // "Focusable" in the §9.1 sense: the element can take focus at all, including
 // through a negative tabindex. This is narrower than core/focusable.ts, which
-// answers WebDriver's question and counts every anchor and label.
-function canTakeFocus(element: Element): boolean {
+// answers WebDriver's question and counts every anchor and label. The states
+// module uses the same notion for what an ancestor's aria-disabled reaches.
+export function canTakeFocus(element: Element): boolean {
   const tabindex = element.getAttribute('tabindex')
   if (tabindex !== null && /^\s*[-+]?\d+\s*$/.test(tabindex)) {
     return true

@@ -41,7 +41,8 @@ under the License.
     //   level     always on headings (tag, aria-level or the ARIA default 2);
     //             elsewhere when the element sets aria-level
     //   disabled  true only when disabled, natively or through aria-disabled
-    //             on the element or an ancestor
+    //             on the element, or on an ancestor when the element can take
+    //             focus (WAI-ARIA 1.2)
     //   focused   true only on the focused element
     var snapshot = window.bot.accessibility.typescript.snapshot;
 
@@ -145,8 +146,24 @@ under the License.
       assertStates(assert, { 'disabled-button': { disabled: true }, 'plain-button': {}, 'in-disabled-fieldset': { disabled: true } });
     });
 
-    QUnit.test('aria-disabled applies to the element and its descendants', function (assert) {
+    QUnit.test('aria-disabled applies to the element and its focusable descendants', function (assert) {
       assertStates(assert, { 'aria-disabled-link': { disabled: true }, 'in-aria-disabled': { disabled: true }, 'aria-disabled-false': {} });
+    });
+
+    QUnit.test('an ancestor\'s aria-disabled does not reach content that cannot take focus (WAI-ARIA 1.2)', function (assert) {
+      assertStates(assert, {
+        'heading-in-aria-disabled': { level: 2 },
+        'menuitem-in-aria-disabled': {},
+        'focusable-menuitem-in-aria-disabled': { disabled: true },
+      });
+    });
+
+    QUnit.test('aria-expanded, aria-pressed and aria-selected set to undefined or empty count as absent', function (assert) {
+      assertStates(assert, { 'pressed-undefined': {}, 'expanded-empty': {}, 'gridcell-selected-undefined': {} });
+    });
+
+    QUnit.test('an option element with another role does not report selected', function (assert) {
+      assertStates(assert, { 'option-as-link': {} });
     });
 
     QUnit.module('focused');
@@ -218,6 +235,15 @@ under the License.
   <a id="aria-disabled-link" href="#" aria-disabled="true">d</a>
   <div aria-disabled="true"><button id="in-aria-disabled">d</button></div>
   <button id="aria-disabled-false" aria-disabled="false">d</button>
+  <div aria-disabled="true">
+    <h2 id="heading-in-aria-disabled">h</h2>
+    <div role="menuitem" id="menuitem-in-aria-disabled">m</div>
+    <div role="menuitem" tabindex="-1" id="focusable-menuitem-in-aria-disabled">m</div>
+  </div>
+  <button id="pressed-undefined" aria-pressed="undefined">p</button>
+  <button id="expanded-empty" aria-expanded="">e</button>
+  <div role="grid"><div role="row"><div role="gridcell" id="gridcell-selected-undefined" aria-selected="undefined">c</div></div></div>
+  <select><option id="option-as-link" role="link" selected>x</option></select>
 
   <input id="focus-me" type="text">
   <h1 id="h1-text">Heading text</h1>

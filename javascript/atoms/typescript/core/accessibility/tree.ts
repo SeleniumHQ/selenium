@@ -101,8 +101,8 @@ interface Inherited {
  * `textConsumed` is true below a node whose name was computed from its
  * content: that text already appears as the name and is not repeated as
  * leaves, while the element structure below is still reported. `disabled`
- * is true below an element that sets aria-disabled, which applies to
- * everything under it.
+ * is true below an element that sets aria-disabled, which the states module
+ * applies to the descendants that can take focus.
  */
 function visitElement(element: Element, context: SnapshotContext, above: Inherited, out: AccessibilityNode[]): void {
   if (context.placed.has(element)) {
