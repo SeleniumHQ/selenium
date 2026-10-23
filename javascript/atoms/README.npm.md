@@ -50,6 +50,40 @@ findElements({ css: '.result' })
 findElements({ 'link text': 'Continue' }, shadowRoot)
 ```
 
+### Accessibility snapshot
+
+```ts
+accessibilitySnapshot(root?: Element | Document): AccessibilityNode
+
+interface AccessibilityNode {
+  role: string                       // WAI-ARIA role; "text" for text leaves
+  name: string                       // accessible name, "" when none
+  description: string                // accessible description, "" when none
+  value?: string                     // textbox, searchbox, combobox and range roles
+  states: Record<string, boolean | number | 'mixed'>
+  element?: Element                  // absent on text leaves
+  children: AccessibilityNode[]
+}
+```
+
+```js
+import accessibilitySnapshot from '@selenium/atoms/accessibility-snapshot'
+
+const tree = accessibilitySnapshot()                 // the whole document
+const dialog = accessibilitySnapshot(dialogElement)  // one subtree
+```
+
+The snapshot is *computed* by script from the DOM, following WAI-ARIA 1.2,
+html-aam and accname 1.2. It is not the browser's own accessibility tree, and
+it can differ from it at the edges. Elements that are hidden in the accname
+sense are left out; generic wrappers are pruned and their children hoisted;
+text an ancestor's name was computed from is not repeated as leaves. Frames
+are reported as `iframe` leaves with no children, since a child document is
+another browsing context the page cannot reach; callers that can reach it
+stitch its snapshot in. Keys in `states` are `checked`, `pressed`,
+`expanded`, `selected`, `level`, `disabled` and `focused`; new keys may be
+added in any release, so ignore keys you do not recognise.
+
 The atoms operate on the DOM of the document they are evaluated in, so they must
 run in the page rather than in the driver process — for example via
 `Runtime.evaluate` over CDP, `script.callFunction` over WebDriver BiDi, or

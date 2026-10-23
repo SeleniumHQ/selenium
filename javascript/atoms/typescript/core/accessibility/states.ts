@@ -1,0 +1,182 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+import { isEnabled } from '../enabled.js'
+import type { StateValue } from './types.js'
+import { embeddedValue } from './value.js'
+
+// The `states` map and `value` field of ADR 18205 §2. Which keys appear:
+//
+//   checked   whenever the role supports it; "mixed" where the role allows it
+//   pressed   when the element sets aria-pressed: a button without it is not
+//             a toggle button, so reporting pressed=false would mislead
+//   expanded  when the element sets aria-expanded, and on a summary from its
+//             details' open state
+//   selected  always for option, tab and treeitem, where selection is part of
+//             the role; for gridcell, row and headers only when the element
+//             sets aria-selected, since most grids are not selectable
+//   level     always for headings (tag, aria-level, or ARIA's default of 2);
+//             elsewhere when the element sets aria-level
+//   disabled  true only when disabled, natively or through aria-disabled on
+//             the element or an ancestor
+//   focused   true only on the focused element
+//
+// Adding a key is additive under the ADR's compatibility rule; the states
+// page pins the current set.
+
+const CHECKED_ROLES: ReadonlySet<string> = new Set(['checkbox', 'menuitemcheckbox', 'menuitemradio', 'radio', 'switch'])
+const MIXED_ALLOWED: ReadonlySet<string> = new Set(['checkbox', 'menuitemcheckbox'])
+const ALWAYS_SELECTED_ROLES: ReadonlySet<string> = new Set(['option', 'tab', 'treeitem'])
+const SELECTABLE_ROLES: ReadonlySet<string> = new Set(['columnheader', 'gridcell', 'row', 'rowheader'])
+const LEVEL_ROLES: ReadonlySet<string> = new Set(['comment', 'listitem', 'row', 'tablist', 'treeitem'])
+const VALUE_ROLES: ReadonlySet<string> = new Set([
+  'combobox', 'meter', 'progressbar', 'scrollbar', 'searchbox', 'slider', 'spinbutton', 'textbox',
+])
+
+function token(element: Element, name: string): string | null {
+  const value = element.getAttribute(name)
+  return value === null ? null : value.trim().toLowerCase()
+}
+
+function tristate(element: Element, name: string, allowMixed: boolean): StateValue {
+  const value = token(element, name)
+  if (value === 'true') {
+    return true
+  }
+  if (value === 'mixed' && allowMixed) {
+    return 'mixed'
+  }
+  return false
+}
+
+function checked(element: Element, role: string): StateValue {
+  if (element.localName === 'input') {
+    const input = element as HTMLInputElement
+    if (input.type === 'checkbox' || input.type === 'radio') {
+      return input.indeterminate && MIXED_ALLOWED.has(role) ? 'mixed' : input.checked
+    }
+  }
+  return tristate(element, 'aria-checked', MIXED_ALLOWED.has(role))
+}
+
+function expanded(element: Element): boolean | null {
+  const value = token(element, 'aria-expanded')
+  if (value !== null) {
+    return value === 'true'
+  }
+  if (element.localName === 'summary') {
+    const details = element.parentElement
+    if (details && details.localName === 'details') {
+      return details.hasAttribute('open')
+    }
+  }
+  return null
+}
+
+function selected(element: Element, role: string): boolean | null {
+  if (element.localName === 'option') {
+    return (element as HTMLOptionElement).selected
+  }
+  const value = token(element, 'aria-selected')
+  if (ALWAYS_SELECTED_ROLES.has(role)) {
+    return value === 'true'
+  }
+  if (SELECTABLE_ROLES.has(role) && value !== null) {
+    return value === 'true'
+  }
+  return null
+}
+
+function ariaLevel(element: Element): number | null {
+  const value = element.getAttribute('aria-level')
+  if (value === null || !/^\s*\d+\s*$/.test(value)) {
+    return null
+  }
+  const level = parseInt(value, 10)
+  return level >= 1 ? level : null
+}
+
+function level(element: Element, role: string): number | null {
+  if (role === 'heading') {
+    const explicit = ariaLevel(element)
+    if (explicit !== null) {
+      return explicit
+    }
+    const tag = /^h([1-6])$/.exec(element.localName)
+    return tag ? Number(tag[1]) : 2
+  }
+  return LEVEL_ROLES.has(role) ? ariaLevel(element) : null
+}
+
+// aria-disabled applies to the element and everything below it.
+function ariaDisabled(element: Element): boolean {
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    if (token(current, 'aria-disabled') === 'true') {
+      return true
+    }
+  }
+  return false
+}
+
+function disabled(element: Element): boolean {
+  return !isEnabled(element) || ariaDisabled(element)
+}
+
+// The body is the default active element and is not "focused" in any sense a
+// user would recognise.
+function focused(element: Element): boolean {
+  const doc = element.ownerDocument
+  return doc.activeElement === element && element !== doc.body && element !== doc.documentElement
+}
+
+/** The states map for an element with the given role; {} when there are none. */
+export function computeStates(element: Element, role: string): Record<string, StateValue> {
+  const states: Record<string, StateValue> = {}
+  if (CHECKED_ROLES.has(role)) {
+    states.checked = checked(element, role)
+  }
+  if (role === 'button') {
+    const pressed = token(element, 'aria-pressed')
+    if (pressed !== null) {
+      states.pressed = tristate(element, 'aria-pressed', true)
+    }
+  }
+  const isExpanded = expanded(element)
+  if (isExpanded !== null) {
+    states.expanded = isExpanded
+  }
+  const isSelected = selected(element, role)
+  if (isSelected !== null) {
+    states.selected = isSelected
+  }
+  const headingLevel = level(element, role)
+  if (headingLevel !== null) {
+    states.level = headingLevel
+  }
+  if (disabled(element)) {
+    states.disabled = true
+  }
+  if (focused(element)) {
+    states.focused = true
+  }
+  return states
+}
+
+/** The current value for textbox, searchbox, combobox and range roles; null when the field is absent. */
+export function computeValue(element: Element, role: string): string | null {
+  return VALUE_ROLES.has(role) ? embeddedValue(element, role) : null
+}

@@ -19,6 +19,7 @@ import { computeDescription, computeName } from './accname.js'
 import { roleOf, SnapshotContext } from './context.js'
 import { hiddenState, isClosedDetails, isCollapsedDetailsContent, isHiddenByAncestor } from './hidden.js'
 import { isPresentational } from './roles.js'
+import { computeStates, computeValue } from './states.js'
 import type { AccessibilityNode } from './types.js'
 
 const ELEMENT_NODE = 1
@@ -38,12 +39,24 @@ const CHILDREN_PRESENTATIONAL: ReadonlySet<string> = new Set([
 // its default value, and media fallback shows only when the media cannot.
 const LEAF_ELEMENTS: ReadonlySet<string> = new Set(['audio', 'frame', 'iframe', 'textarea', 'video'])
 
-function createNode(role: string, name: string, description: string, element?: Element): AccessibilityNode {
-  const node: AccessibilityNode = { role, name, description, states: {}, children: [] }
-  // Text leaves carry no key at all rather than `element: undefined`, so the
+function textLeaf(text: string): AccessibilityNode {
+  // No `element` or `value` key at all rather than undefined, so the
   // serialized shape matches the schema literally.
-  if (element) {
-    node.element = element
+  return { role: 'text', name: text, description: '', states: {}, children: [] }
+}
+
+function elementNode(element: Element, role: string, name: string, context: SnapshotContext): AccessibilityNode {
+  const node: AccessibilityNode = {
+    role,
+    name,
+    description: computeDescription(element, context),
+    states: computeStates(element, role),
+    element,
+    children: [],
+  }
+  const value = computeValue(element, role)
+  if (value !== null) {
+    node.value = value
   }
   return node
 }
@@ -92,7 +105,7 @@ function collectChildren(
       if (!textHidden && !textConsumed && !textCollapsed) {
         const text = normalizeText(child.nodeValue || '')
         if (text !== '') {
-          out.push(createNode('text', text, ''))
+          out.push(textLeaf(text))
         }
       }
       continue
@@ -127,7 +140,7 @@ function collectChildren(
       }
       continue
     }
-    const node = createNode(role, name.text, computeDescription(element, context), element)
+    const node = elementNode(element, role, name.text, context)
     if (descend) {
       collectChildren(element, context, false, textConsumed || name.source === 'content', node.children)
     }
@@ -145,7 +158,7 @@ export function buildTree(root: Element, context: SnapshotContext): Accessibilit
   context.placed.add(root)
   const role = roleOf(root, context)
   const name = computeName(root, context)
-  const node = createNode(role, name.text, computeDescription(root, context), root)
+  const node = elementNode(root, role, name.text, context)
   const hidden = hiddenState(root)
   const descend = hidden !== 'subtree' && hidden !== 'contents' && !isLeaf(root, role) && !isHiddenByAncestor(root)
   if (descend) {

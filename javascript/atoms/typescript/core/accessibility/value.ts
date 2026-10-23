@@ -64,7 +64,7 @@ export function embeddedValue(element: Element, role: string): string | null {
     }
     const now = element.getAttribute('aria-valuenow')
     if (now !== null) {
-      return now
+      return now.trim()
     }
     return 'value' in element ? String((element as HTMLInputElement).value) : null
   }
