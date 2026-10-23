@@ -93,6 +93,20 @@ class ZipTest {
   }
 
   @Test
+  void preservingRootKeepsTheDirectoryAsASingleTopLevelEntry() throws IOException {
+    writeTestFile(new File(inputDir, "manifest.json"));
+    writeTestFile(new File(inputDir, "scripts/background.js"));
+
+    Zip.unzip(Zip.zipToBase64PreservingRoot(inputDir), outputDir);
+
+    File[] topLevel = outputDir.listFiles();
+    assertThat(topLevel).hasSize(1);
+    assertThat(topLevel[0].getName()).isEqualTo(inputDir.getName());
+    assertThat(new File(topLevel[0], "manifest.json")).exists();
+    assertThat(new File(topLevel[0], "scripts/background.js")).exists();
+  }
+
+  @Test
   void testCanUnzip() throws IOException {
     File testZip = File.createTempFile("testUnzip", "zip");
     writeTestZip(testZip, 5, 10_000L);

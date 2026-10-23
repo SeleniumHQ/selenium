@@ -55,6 +55,30 @@ public class Zip {
     }
   }
 
+  /**
+   * Zips {@code input} into a Base64 string, keeping {@code input}'s own name as the archive's
+   * single top-level entry. Unlike {@link #zip(File)} this does not flatten a directory's contents,
+   * so the {@code se/file} upload endpoint — which requires exactly one top-level entry — resolves
+   * the archive back to a single path on the remote end.
+   *
+   * @param input file or directory to zip
+   * @return the Base64-encoded archive
+   * @throws IOException if {@code input} cannot be read
+   */
+  public static String zipToBase64PreservingRoot(File input) throws IOException {
+    File absolute = input.getAbsoluteFile();
+    File parent = absolute.getParentFile();
+    if (parent == null) {
+      throw new IOException("Cannot zip a filesystem root: " + input);
+    }
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+      try (ZipOutputStream zos = new ZipOutputStream(bos)) {
+        addToZip(parent.getAbsolutePath(), zos, absolute);
+      }
+      return Base64.getEncoder().encodeToString(bos.toByteArray());
+    }
+  }
+
   private static void addToZip(String basePath, ZipOutputStream zos, File toAdd)
       throws IOException {
     Path dirPath = toAdd.toPath();
