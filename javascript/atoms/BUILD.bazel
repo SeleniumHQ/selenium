@@ -108,7 +108,7 @@ js_test(
     data = [
         "typescript/accessibility-node.schema.json",
         ":typescript/testing/accessibility.generated.js",
-        "//common/src/web",
+        "//common/src/web:accessibility-corpus",
     ],
     entry_point = "typescript/testing/corpus-consistent.mjs",
     fixed_args = [

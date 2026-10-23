@@ -25,3 +25,12 @@ js_library(
         "//javascript/selenium-webdriver:__subpackages__",
     ],
 )
+
+# The accessibility snapshot corpus (ADR 18205), copied into the output tree
+# so a js_test in another package can read it from its working directory:
+# rules_js copies only its own package's source files there.
+js_library(
+    name = "accessibility-corpus",
+    srcs = glob(["accessibility/**"]),
+    visibility = ["//javascript/atoms:__pkg__"],
+)
