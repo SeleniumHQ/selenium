@@ -176,19 +176,41 @@ function collectChildren(parent: Element, context: SnapshotContext, inherited: I
   const owned = context.owned.get(parent)
   if (owned) {
     for (const element of owned) {
-      // aria-disabled follows DOM ancestry, which an owned element does not
-      // share with its owner.
+      // Hidden-ness still follows DOM ancestry: the walk never reaches the
+      // owned element's DOM ancestors on its way here, so they are checked
+      // now. So does aria-disabled, which an owned element does not share
+      // with its owner.
+      if (isHiddenByAncestor(element, context)) {
+        continue
+      }
       visitElement(element, context, { ...inherited, disabled: isDisabledByAncestor(element) }, out)
     }
   }
 }
 
+// Whether placing `target` under `owner` would make the tree circular: the
+// target is, or contains, the owner or one of the owner's accessibility
+// ancestors, following the ownership recorded so far and DOM parentage
+// otherwise.
+function wouldCycle(target: Element, owner: Element, ownerOf: Map<Element, Element>): boolean {
+  for (let current: Element | null = owner; current; current = ownerOf.get(current) || current.parentElement) {
+    if (target.contains(current)) {
+      return true
+    }
+  }
+  return false
+}
+
 /**
  * Records every aria-owns relation whose owner is in the subtree under
  * `root`, so owned elements can be skipped where they sit and placed under
- * their owner. An element cannot own itself or an ancestor, and an id that
- * resolves to nothing is ignored. Owners inside shadow trees are not found by
- * querySelectorAll; their targets stay at their DOM position.
+ * their owner. An element is owned by the first owner in document order that
+ * can take it: a relation that would make the tree circular (owning
+ * yourself, an ancestor, or something that already owns you) is dropped, as
+ * is one whose owner has presentational children and so no children to own,
+ * and an id that resolves to nothing is ignored. Owners inside shadow trees
+ * are not found by querySelectorAll; their targets stay at their DOM
+ * position.
  */
 function recordOwnership(root: Element, context: SnapshotContext): void {
   const owners: Element[] = root.hasAttribute('aria-owns') ? [root] : []
@@ -196,14 +218,19 @@ function recordOwnership(root: Element, context: SnapshotContext): void {
   for (let i = 0; i < descendants.length; i++) {
     owners.push(descendants[i])
   }
+  const ownerOf = new Map<Element, Element>()
   for (const owner of owners) {
+    if (isLeaf(owner, roleOf(owner, context))) {
+      continue
+    }
     const scope = owner.getRootNode() as Document | ShadowRoot
     const targets: Element[] = []
     for (const id of (owner.getAttribute('aria-owns') || '').trim().split(/\s+/)) {
       const target = id ? scope.getElementById(id) : null
-      if (target && target !== owner && !target.contains(owner) && !context.claimed.has(target)) {
+      if (target && !context.claimed.has(target) && !wouldCycle(target, owner, ownerOf)) {
         targets.push(target)
         context.claimed.add(target)
+        ownerOf.set(target, owner)
       }
     }
     if (targets.length) {

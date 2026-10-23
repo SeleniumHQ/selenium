@@ -129,6 +129,37 @@ under the License.
       ]));
     });
 
+    QUnit.test('two elements that own each other: the first owner in document order wins', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-mutual-root'))), node('generic', 'owns-mutual-root', [
+        node('list', 'mutual-a', [
+          node('listitem', 'mutual-a-item', [text('a')]),
+          node('list', 'mutual-b', [node('listitem', 'mutual-b-item', [text('b')])]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner cannot claim an ancestor of the element that owns it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-chain-root'))), node('generic', 'owns-chain-root', [
+        node('list', 'chain-a', [
+          node('listitem', 'chain-a-item', [text('a')]),
+          node('list', 'chain-b', [node('listitem', 'chain-b-item', [text('b')])]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner whose children are presentational re-parents nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-leaf-root'))), node('generic', 'owns-leaf-root', [
+        node('button', 'leaf-owner', [], 'Open'),
+        node('menu', 'leaf-owned', [node('menuitem', 'leaf-owned-item', [], 'Item')]),
+      ]));
+    });
+
+    QUnit.test('an owned element inside a hidden container is not placed', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-hidden-ancestor-root'))), node('generic', 'owns-hidden-ancestor-root', [
+        node('list', 'owns-from-hidden', [node('listitem', 'shown-beside-hidden', [text('shown')])]),
+      ]));
+    });
+
     QUnit.test('the element reference of an owned node is the element itself', function (assert) {
       assert.strictEqual(snapshot(byId('owns-root')).children[0].children[1].element, byId('owned-after'));
     });
@@ -170,6 +201,26 @@ under the License.
 
   <div id="owns-outside-root"><ul id="owner-of-outside" aria-owns="outside-item"></ul></div>
   <div role="listitem" id="outside-item">outside</div>
+
+  <div id="owns-mutual-root">
+    <ul id="mutual-a" aria-owns="mutual-b"><li id="mutual-a-item">a</li></ul>
+    <ul id="mutual-b" aria-owns="mutual-a"><li id="mutual-b-item">b</li></ul>
+  </div>
+
+  <div id="owns-chain-root">
+    <div id="chain-outer"><ul id="chain-a" aria-owns="chain-b"><li id="chain-a-item">a</li></ul></div>
+    <ul id="chain-b" aria-owns="chain-outer"><li id="chain-b-item">b</li></ul>
+  </div>
+
+  <div id="owns-leaf-root">
+    <button id="leaf-owner" aria-owns="leaf-owned">Open</button>
+    <div role="menu" id="leaf-owned"><div role="menuitem" id="leaf-owned-item">Item</div></div>
+  </div>
+
+  <div id="owns-hidden-ancestor-root">
+    <ul id="owns-from-hidden" aria-owns="in-hidden-container"><li id="shown-beside-hidden">shown</li></ul>
+    <div hidden><div role="listitem" id="in-hidden-container">hidden</div></div>
+  </div>
 
   <ul aria-owns="claimed-from-outside"></ul>
   <div id="owned-from-outside-root"><div role="listitem" id="claimed-from-outside">claimed</div></div>
