@@ -136,6 +136,17 @@ module Selenium
           expect(pending_state).to eq([{}, {}])
         end
 
+        it 'stops waiting when the listener dies on an unexpected error' do
+          allow(socket).to receive(:readpartial).and_return('frame')
+          allow(connection).to receive(:process_incoming_frames).and_raise(JSON::ParserError)
+          allow(socket).to receive(:write) { connection.send(:attach_socket_listener) }
+
+          started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+          expect { connection.send_cmd(method: 'foo') }
+            .to raise_error(IOError, /closed while waiting for a response/)
+          expect(Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).to be < 5
+        end
+
         it 'stops tracking the command when the write fails' do
           allow(socket).to receive(:write).and_raise(Errno::EPIPE)
 

@@ -176,6 +176,8 @@ module Selenium
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+        ensure
+          # Nothing reads replies once the listener stops, however it stopped
           close_socket
         end
       end
