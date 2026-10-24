@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_wire_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script src="../typescript/accessibility-snapshot-wire-global.js"></script>
+  <script type="text/javascript">
+    // The wire shape the language bindings fetch over BiDi: the snapshot as one
+    // JSON string beside the element and frame references, plus the two
+    // answers a binding reads as data rather than from an exception's text (a
+    // root another document owns, a detached root).
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+    var snapshotWire = window.bot.accessibility.typescript.snapshotWire;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    // Both forms with element references written as ids, for comparison.
+    function withIds(node) {
+      var out = { role: node.role, name: node.name, description: node.description, states: node.states };
+      if (node.value !== undefined) {
+        out.value = node.value;
+      }
+      if (node.element) {
+        out.element = node.element.id;
+      }
+      out.children = node.children.map(withIds);
+      return out;
+    }
+
+    function decoded(wire) {
+      function substitute(node) {
+        var out = { role: node.role, name: node.name, description: node.description, states: node.states };
+        if (node.value !== undefined) {
+          out.value = node.value;
+        }
+        if (node.element !== undefined) {
+          out.element = wire.elements[node.element].id;
+        }
+        out.children = node.children.map(substitute);
+        return out;
+      }
+      return substitute(JSON.parse(wire.json));
+    }
+
+    QUnit.module('wire shape');
+
+    QUnit.test('the JSON text decodes to the same tree the atom returns, element indices resolved', function (assert) {
+      var wire = snapshotWire(byId('app'));
+      assert.strictEqual(typeof wire.json, 'string');
+      assert.deepEqual(decoded(wire), withIds(snapshot(byId('app'))));
+    });
+
+    QUnit.test('elements are listed once each in first-mention order, and text leaves carry none', function (assert) {
+      var wire = snapshotWire(byId('app'));
+      var parsed = JSON.parse(wire.json);
+      assert.strictEqual(parsed.element, 0);
+      assert.strictEqual(wire.elements[0], byId('app'));
+      assert.ok(wire.elements.indexOf(byId('save')) > 0, 'the button is referenced');
+      assert.strictEqual(wire.elements.length, new Set(wire.elements).size, 'no element is listed twice');
+      var intro = parsed.children[0];
+      assert.strictEqual(intro.role, 'paragraph');
+      assert.strictEqual(intro.children[0].role, 'text');
+      assert.notOk('element' in intro.children[0]);
+    });
+
+    QUnit.test('without a root the whole document is snapshotted', function (assert) {
+      var wire = snapshotWire();
+      var parsed = JSON.parse(wire.json);
+      assert.strictEqual(parsed.role, 'document');
+      assert.strictEqual(wire.elements[parsed.element], document.documentElement);
+    });
+
+    QUnit.test('a frame node points at its content window', function (assert) {
+      var frame = byId('frame');
+      var wire = snapshotWire(byId('framed'));
+      var parsed = JSON.parse(wire.json);
+      var frameNode = parsed.children.filter(function (child) { return child.role === 'iframe'; })[0];
+      assert.ok(frameNode, 'the frame is in the tree');
+      assert.strictEqual(wire.elements[frameNode.element], frame);
+      assert.strictEqual(wire.windows[frameNode.frame], frame.contentWindow);
+      assert.deepEqual(frameNode.children, [], 'the frame is a leaf for the atom; the binding fills it in');
+    });
+
+    QUnit.test('a root another document owns is answered with null', function (assert) {
+      var foreign = byId('frame').contentDocument.body;
+      assert.strictEqual(snapshotWire(foreign), null);
+    });
+
+    QUnit.test('a null root is answered with null, not with the whole document', function (assert) {
+      // Firefox hands a shared id of another document's node to the called function as null.
+      assert.strictEqual(snapshotWire(null), null);
+      assert.strictEqual(JSON.parse(snapshotWire(undefined).json).role, 'document');
+    });
+
+    QUnit.test('a detached root is answered with an error value, not an exception', function (assert) {
+      var detached = document.createElement('button');
+      detached.textContent = 'Gone';
+      assert.deepEqual(snapshotWire(detached), { error: 'detached' });
+    });
+
+    QUnit.test('a root that is not an element throws', function (assert) {
+      assert.throws(function () { snapshotWire(document.createTextNode('x')); }, /root must be an Element/);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="app" role="region" aria-label="App">
+    <p id="intro">Welcome</p>
+    <button id="save">Save</button>
+    <label for="email">Email</label><input id="email" value="a@b.c">
+  </div>
+  <div id="framed">
+    <iframe id="frame" src="about:blank" title="Embedded"></iframe>
+  </div>
+</body>
+
+</html>

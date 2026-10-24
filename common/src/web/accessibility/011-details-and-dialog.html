@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Details and dialog</title>
+</head>
+<body>
+  <details id="details" open><summary id="summary">Settings</summary><p id="settings">Settings body</p></details>
+  <dialog id="dialog" open aria-labelledby="dialog-title"><h2 id="dialog-title">Confirm</h2><p id="dialog-text">Are you sure?</p><button id="ok">OK</button></dialog>
+  <div id="alert" role="alert">Saved.</div>
+  <div id="status" role="status">3 items</div>
+</body>
+</html>

@@ -162,6 +162,12 @@ copy_file(
 )
 
 copy_file(
+    name = "accessibility-snapshot",
+    src = "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js",
+    out = "selenium/webdriver/remote/accessibilitySnapshot.js",
+)
+
+copy_file(
     name = "mutation-listener",
     src = "//javascript/cdp-support:mutation-listener.js",
     out = "selenium/webdriver/common/mutation-listener.js",
@@ -272,6 +278,7 @@ py_library(
     name = "remote",
     srcs = glob(["selenium/webdriver/remote/**/*.py"]),
     data = [
+        ":accessibility-snapshot",
         ":find-elements",
         ":get-attribute",
         ":is-displayed",

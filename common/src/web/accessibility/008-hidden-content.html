@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Hidden content</title>
+</head>
+<body>
+  <p id="shown">Shown</p>
+  <p id="display-none" style="display: none">display none</p>
+  <p id="hidden-attr" hidden>hidden attribute</p>
+  <div id="aria-hidden" aria-hidden="true"><p>aria-hidden</p><p aria-hidden="false">still hidden</p></div>
+  <div id="invisible" style="visibility: hidden"><p id="invisible-para">invisible</p><p id="visible-again" style="visibility: visible">visible again</p></div>
+  <p id="offscreen" style="position: absolute; left: -9999px">Off-screen but rendered</p>
+  <p id="clip" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Visually hidden text</p>
+  <p id="transparent" style="opacity: 0">Transparent but rendered</p>
+  <div id="inert" inert><button>Inert button</button></div>
+  <details id="closed"><summary id="closed-summary">More</summary><p>Collapsed</p></details>
+  <details id="open" open><summary id="open-summary">Less</summary><p id="expanded-para">Expanded</p></details>
+  <div id="cv" style="content-visibility: hidden" role="region" aria-label="Skipped"><p>Not rendered</p></div>
+  <template id="template"><p>Template</p></template>
+</body>
+</html>

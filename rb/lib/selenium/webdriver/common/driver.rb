@@ -278,6 +278,22 @@ module Selenium
       end
 
       #
+      # Takes an accessibility snapshot of the whole page: the tree of roles, names,
+      # states and values computed from the DOM (ADR 18205), rooted at the document of
+      # the current window's top-level browsing context whatever frame the driver has
+      # switched to, with every reachable child frame's tree attached under its iframe
+      # node. Requires a BiDi session.
+      #
+      # @return [AccessibilityNode] the root of the snapshot
+      # @raise [Error::UnsupportedOperationError] when the session has no BiDi connection
+      # @see AccessibilityNode#to_text
+      #
+
+      def accessibility_snapshot
+        bridge.accessibility_snapshot
+      end
+
+      #
       # Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
       # or base64-encoded bytes; works with remote (Grid) sessions.
       #

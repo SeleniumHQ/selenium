@@ -1,0 +1,97 @@
+{
+  "role": "document",
+  "name": "Images and figures",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "img",
+      "name": "A map",
+      "description": "",
+      "states": {},
+      "element": "img",
+      "children": []
+    },
+    {
+      "role": "img",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "no-alt",
+      "children": []
+    },
+    {
+      "role": "img",
+      "name": "Titled image",
+      "description": "",
+      "states": {},
+      "element": "titled",
+      "children": []
+    },
+    {
+      "role": "figure",
+      "name": "Sales by month",
+      "description": "",
+      "states": {},
+      "element": "figure",
+      "children": [
+        {
+          "role": "img",
+          "name": "Chart",
+          "description": "",
+          "states": {},
+          "element": "figure-img",
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "Sales by month",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "graphics-document",
+      "name": "Logo",
+      "description": "",
+      "states": {},
+      "element": "svg",
+      "children": [
+        {
+          "role": "text",
+          "name": "Logo",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "img",
+      "name": "Rating: 4 of 5",
+      "description": "",
+      "states": {},
+      "element": "aria-img",
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Zone",
+      "description": "",
+      "states": {},
+      "element": "area",
+      "children": []
+    },
+    {
+      "role": "img",
+      "name": "Mapped",
+      "description": "",
+      "states": {},
+      "element": "mapped",
+      "children": []
+    }
+  ]
+}

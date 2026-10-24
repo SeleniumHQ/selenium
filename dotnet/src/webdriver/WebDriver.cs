@@ -21,8 +21,10 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium;
@@ -36,8 +38,14 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
     /// </summary>
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
+    private static readonly ILogger _logger = Log.GetLogger<WebDriver>();
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
+    // Serialises the connection attempt against the close. It is never disposed: a waiter queued
+    // behind the close must wake to see that the driver is gone.
+    private readonly SemaphoreSlim bidiConnecting = new SemaphoreSlim(1, 1);
+    private IBiDi? bidi;
+    private int bidiClosed;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -194,6 +202,61 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     internal INetwork Network => this.network ??= new NetworkManager(this);
+
+    /// <summary>
+    /// Takes an accessibility snapshot of the whole page: the tree of roles, names, states and values
+    /// computed from the DOM, rooted at the document of the current window's top-level browsing
+    /// context whatever frame the driver has switched to, with every reachable child frame's tree
+    /// attached under its <c>iframe</c> node. The snapshot is a copy taken at one point in time.
+    /// </summary>
+    /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
+    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <seealso cref="AccessibilityNode.ToText()"/>
+    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    {
+        AccessibilitySnapshotter snapshotter = await this.AccessibilityAsync(cancellationToken).ConfigureAwait(false);
+        return await snapshotter.SnapshotAsync(null, cancellationToken).ConfigureAwait(false);
+    }
+
+    // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one, and says so
+    // before anything is sent.
+    internal async Task<AccessibilitySnapshotter> AccessibilityAsync(CancellationToken cancellationToken)
+    {
+        if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
+        {
+            throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
+        }
+
+        return new AccessibilitySnapshotter(this, await this.BiDiAsync(cancellationToken).ConfigureAwait(false));
+    }
+
+    /// <summary>
+    /// Gets the driver's own BiDi connection, opened on first use and shared by every component
+    /// that works over BiDi; it is closed with the driver.
+    /// </summary>
+    /// <param name="cancellationToken">A token to cancel the connection attempt.</param>
+    /// <returns>A task whose result is the connection.</returns>
+    /// <exception cref="BiDiException">If the session has no WebSocket URL.</exception>
+    /// <exception cref="ObjectDisposedException">If the driver has been disposed.</exception>
+    internal async Task<IBiDi> BiDiAsync(CancellationToken cancellationToken)
+    {
+        await this.bidiConnecting.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            if (Volatile.Read(ref this.bidiClosed) != 0)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
+
+            return this.bidi ??= await this.AsBiDiAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            this.bidiConnecting.Release();
+        }
+    }
 
     /// <summary>
     /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
@@ -519,6 +582,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     /// <param name="response">Response from the browser</param>
     /// <returns>Element from the page, or <see langword="null"/> if the response does not contain a dictionary.</returns>
+    internal WebElement CreateElementFromReference(string elementId)
+    {
+        return this.elementFactory.CreateElement(new Dictionary<string, object?> { [WebElement.ElementReferencePropertyName] = elementId });
+    }
+
     internal IWebElement? GetElementFromResponse(Response response)
     {
         if (response.Value is Dictionary<string, object?> elementDictionary)
@@ -734,6 +802,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         if (disposing)
         {
+            this.CloseBiDiAsync().AsTask().GetAwaiter().GetResult();
+
             if (this.SessionId is not null)
             {
                 try
@@ -767,6 +837,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A task representing the asynchronous dispose operation.</returns>
     protected virtual async ValueTask DisposeAsyncCore()
     {
+        await this.CloseBiDiAsync().ConfigureAwait(false);
+
         if (this.SessionId is not null)
         {
             try
@@ -789,6 +861,41 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
 
         this.CommandExecutor.Dispose();
+    }
+
+    // Only the first disposal closes the connection. It waits for a connection attempt in flight,
+    // so a BiDi call that overlaps the driver's disposal cannot leave its connection open, and never
+    // lets a close failure escape: the driver still has its own session to quit.
+    private async ValueTask CloseBiDiAsync()
+    {
+        if (Interlocked.Exchange(ref this.bidiClosed, 1) != 0)
+        {
+            return;
+        }
+
+        try
+        {
+            IBiDi? connection;
+            await this.bidiConnecting.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                connection = this.bidi;
+                this.bidi = null;
+            }
+            finally
+            {
+                this.bidiConnecting.Release();
+            }
+
+            if (connection is not null)
+            {
+                await connection.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.Debug("closing the BiDi connection failed: " + e.Message);
+        }
     }
 
     private static void UnpackAndThrowOnError(Response errorResponse, string commandToExecute)

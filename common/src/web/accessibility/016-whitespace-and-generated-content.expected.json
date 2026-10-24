@@ -1,0 +1,80 @@
+{
+  "role": "document",
+  "name": "Whitespace and generated content",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "button",
+      "name": "★ Favourite",
+      "description": "",
+      "states": {},
+      "element": "icon",
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Site (external)",
+      "description": "",
+      "states": {},
+      "element": "suffix",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Done: Task",
+      "description": "",
+      "states": {},
+      "element": "alt",
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Savenow",
+      "description": "",
+      "states": {},
+      "element": "inline",
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Line one Line two",
+      "description": "",
+      "states": {},
+      "element": "blocks",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "First Second",
+      "description": "",
+      "states": {},
+      "element": "br",
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "nbsp",
+      "children": [
+        {
+          "role": "text",
+          "name": "Non breaking space",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "preformatted text",
+      "description": "",
+      "states": {},
+      "children": []
+    }
+  ]
+}

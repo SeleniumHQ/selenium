@@ -1,0 +1,314 @@
+{
+  "role": "document",
+  "name": "Form controls",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "text",
+      "name": "Name",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Name",
+      "description": "",
+      "value": "Ada",
+      "states": {},
+      "element": "name",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Email",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Email",
+      "description": "",
+      "value": "",
+      "states": {},
+      "element": "email",
+      "children": []
+    },
+    {
+      "role": "checkbox",
+      "name": "I agree",
+      "description": "",
+      "states": {
+        "checked": true
+      },
+      "element": "agree",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "I agree",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "checkbox",
+      "name": "Partial",
+      "description": "",
+      "states": {
+        "checked": false
+      },
+      "element": "indeterminate",
+      "children": []
+    },
+    {
+      "role": "group",
+      "name": "Size",
+      "description": "",
+      "states": {},
+      "element": "fieldset",
+      "children": [
+        {
+          "role": "text",
+          "name": "Size",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "radio",
+          "name": "Small",
+          "description": "",
+          "states": {
+            "checked": true
+          },
+          "element": "small",
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "Small",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "radio",
+          "name": "Large",
+          "description": "",
+          "states": {
+            "checked": false
+          },
+          "element": "large",
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "Large",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Notes",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Notes",
+      "description": "",
+      "value": "Some notes",
+      "states": {},
+      "element": "notes",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Choice",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "combobox",
+      "name": "Choice",
+      "description": "",
+      "value": "Beta",
+      "states": {},
+      "element": "choice",
+      "children": [
+        {
+          "role": "option",
+          "name": "Alpha",
+          "description": "",
+          "states": {
+            "selected": false
+          },
+          "element": "alpha",
+          "children": []
+        },
+        {
+          "role": "option",
+          "name": "Beta",
+          "description": "",
+          "states": {
+            "selected": true
+          },
+          "element": "beta",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Many",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "listbox",
+      "name": "Many",
+      "description": "",
+      "states": {},
+      "element": "many",
+      "children": [
+        {
+          "role": "option",
+          "name": "One",
+          "description": "",
+          "states": {
+            "selected": true
+          },
+          "element": "one",
+          "children": []
+        },
+        {
+          "role": "option",
+          "name": "Two",
+          "description": "",
+          "states": {
+            "selected": false
+          },
+          "element": "two",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Volume",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "slider",
+      "name": "Volume",
+      "description": "",
+      "value": "7",
+      "states": {},
+      "element": "volume",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Count",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "spinbutton",
+      "name": "Count",
+      "description": "",
+      "value": "3",
+      "states": {},
+      "element": "count",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Progress",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "progressbar",
+      "name": "Progress",
+      "description": "",
+      "value": "2",
+      "states": {},
+      "element": "progress",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Level",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "meter",
+      "name": "Level",
+      "description": "",
+      "value": "0.25",
+      "states": {},
+      "element": "level",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Secret",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Secret",
+      "description": "",
+      "value": "•••••••",
+      "states": {},
+      "element": "secret",
+      "children": []
+    },
+    {
+      "role": "group",
+      "name": "Off",
+      "description": "",
+      "states": {},
+      "element": "disabled-group",
+      "children": [
+        {
+          "role": "text",
+          "name": "Off",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "textbox",
+          "name": "Off field",
+          "description": "",
+          "value": "",
+          "states": {
+            "disabled": true
+          },
+          "element": "off",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Images and figures</title>
+</head>
+<body>
+  <img id="img" src="../map.png" alt="A map">
+  <img id="decorative" src="../map.png" alt="">
+  <img id="no-alt" src="../map.png">
+  <img id="titled" src="../map.png" title="Titled image">
+  <figure id="figure"><img id="figure-img" src="../map.png" alt="Chart"><figcaption id="caption">Sales by month</figcaption></figure>
+  <svg id="svg" width="10" height="10"><title>Logo</title><circle cx="5" cy="5" r="4"/></svg>
+  <div id="aria-img" role="img" aria-label="Rating: 4 of 5"><span>★★★★☆</span></div>
+  <map name="m"><area id="area" href="#" shape="rect" coords="0,0,1,1" alt="Zone"></map><img id="mapped" src="../map.png" usemap="#m" alt="Mapped">
+</body>
+</html>

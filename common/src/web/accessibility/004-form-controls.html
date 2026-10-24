@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Form controls</title>
+</head>
+<body>
+  <form id="form">
+    <label for="name">Name</label><input id="name" type="text" value="Ada">
+    <label for="email">Email</label><input id="email" type="email" placeholder="you@example.com">
+    <label><input id="agree" type="checkbox" checked> I agree</label>
+    <input id="indeterminate" type="checkbox" aria-label="Partial">
+    <fieldset id="fieldset"><legend id="legend">Size</legend>
+      <label><input id="small" type="radio" name="size" checked> Small</label>
+      <label><input id="large" type="radio" name="size"> Large</label>
+    </fieldset>
+    <label for="notes">Notes</label><textarea id="notes">Some notes</textarea>
+    <label for="choice">Choice</label><select id="choice"><option id="alpha">Alpha</option><option id="beta" selected>Beta</option></select>
+    <label for="many">Many</label><select id="many" multiple size="2"><option id="one" selected>One</option><option id="two">Two</option></select>
+    <label for="volume">Volume</label><input id="volume" type="range" min="0" max="10" value="7">
+    <label for="count">Count</label><input id="count" type="number" value="3">
+    <label for="progress">Progress</label><progress id="progress" value="2" max="4"></progress>
+    <label for="level">Level</label><meter id="level" value="0.25"></meter>
+    <label for="secret">Secret</label><input id="secret" type="password" value="hunter2">
+    <input id="hidden" type="hidden" value="nope">
+    <fieldset id="disabled-group" disabled><legend id="disabled-legend">Off</legend><input id="off" type="text" aria-label="Off field"></fieldset>
+  </form>
+</body>
+</html>

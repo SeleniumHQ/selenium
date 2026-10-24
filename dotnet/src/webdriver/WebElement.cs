@@ -243,6 +243,22 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     }
 
     /// <summary>
+    /// Takes an accessibility snapshot of the subtree under this element. The element always produces
+    /// the root node; an <c>iframe</c> carries its document.
+    /// </summary>
+    /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task whose result is the node for this element, with its subtree.</returns>
+    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <exception cref="StaleElementReferenceException">If the element no longer belongs to a document.</exception>
+    /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/>
+    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    {
+        AccessibilitySnapshotter snapshotter = await this.driver.AccessibilityAsync(cancellationToken).ConfigureAwait(false);
+        return await snapshotter.SnapshotAsync(this.Id, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Gets the computed ARIA role for this element.
     /// </summary>
     public virtual string ComputedAccessibleRole

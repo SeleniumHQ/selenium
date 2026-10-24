@@ -172,6 +172,7 @@ npm_package(
         ":manager-sbom",
         ":manager-windows",
         ":prod-src-files",
+        "//javascript/selenium-webdriver/lib/atoms:accessibility_snapshot",
         "//javascript/selenium-webdriver/lib/atoms:bidi-mutation-listener",
         "//javascript/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/selenium-webdriver/lib/atoms:get_attribute",
@@ -218,6 +219,7 @@ SMALL_TESTS = [
     "test/http/util_test.js",
     "test/io/io_test.js",
     "test/io/zip_test.js",
+    "test/lib/accessibility_snapshot_test.js",
     "test/lib/bidi_connection_test.js",
     "test/lib/by_test.js",
     "test/lib/credentials_test.js",
@@ -493,6 +495,8 @@ eslint_bin.eslint_test(
         ":node_modules/ws",
         ":package-json",
         ":prod-src-files",
+        # lib/accessibility_snapshot.js requires the built atom module statically.
+        "//javascript/selenium-webdriver/lib/atoms:accessibility_snapshot",
     ],
     tags = [
         "lint",

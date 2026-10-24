@@ -19,6 +19,7 @@ rb_test(
     size = "small",
     srcs = glob(["**/*_spec.rb"]),
     args = ["rb/spec/unit/"],
+    data = ["//common/src/web"],
     main = "@bundle//bin:rspec",
     tags = ["unit"],
     visibility = ["//rb:__subpackages__"],

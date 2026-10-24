@@ -1,0 +1,79 @@
+{
+  "role": "document",
+  "name": "Generic wrappers and presentation",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "heading",
+      "name": "Hoisted through wrappers",
+      "description": "",
+      "states": {
+        "level": 2
+      },
+      "element": "deep",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "loose text",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "inside-none",
+      "children": [
+        {
+          "role": "text",
+          "name": "Paragraph inside role none",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Presentational list item text",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Presentational cell text",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Focusable, so still a link",
+      "description": "",
+      "states": {},
+      "element": "pres-link",
+      "children": []
+    },
+    {
+      "role": "generic",
+      "name": "Named div",
+      "description": "",
+      "states": {},
+      "element": "custom-generic",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Custom element text",
+      "description": "",
+      "states": {},
+      "children": []
+    }
+  ]
+}

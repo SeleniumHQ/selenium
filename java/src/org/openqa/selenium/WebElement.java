@@ -192,6 +192,20 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   }
 
   /**
+   * Takes an accessibility snapshot of the subtree under this element. The element always produces
+   * the root node; an {@code iframe} carries its document.
+   *
+   * <p>Requires a WebDriver BiDi session.
+   *
+   * @return the node for this element, with its subtree
+   * @throws UnsupportedOperationException if the driver does not support snapshots
+   * @see WebDriver#getAccessibilitySnapshot()
+   */
+  default AccessibilityNode getAccessibilitySnapshot() {
+    throw new UnsupportedOperationException("getAccessibilitySnapshot");
+  }
+
+  /**
    * Determine whether this element is selected or not. This operation only applies to input
    * elements such as checkboxes, options in a select and radio buttons. For more information on
    * which elements this method supports, refer to the <a

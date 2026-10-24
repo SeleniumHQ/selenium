@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Headings and landmarks</title>
+</head>
+<body>
+  <header id="header"><h1 id="h1">Site title</h1><nav id="nav"><a id="home" href="#">Home</a> <a id="docs" href="#">Docs</a></nav></header>
+  <main id="main">
+    <h2 id="h2">Section</h2>
+    <section id="region" aria-label="Updates"><h3 id="h3">Latest</h3><p id="p1">First paragraph.</p></section>
+    <section id="plain-section"><p id="p2">Unlabelled section content.</p></section>
+    <aside id="aside"><h4 id="h4">Related</h4></aside>
+    <div id="aria-heading" role="heading" aria-level="5">ARIA heading</div>
+    <search id="search"><form id="form"><label for="q">Search</label><input id="q" type="search" value="kittens"></form></search>
+  </main>
+  <footer id="footer"><p id="p3">Footer text</p></footer>
+</body>
+</html>

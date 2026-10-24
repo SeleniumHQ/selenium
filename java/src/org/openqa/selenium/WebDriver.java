@@ -202,6 +202,22 @@ public interface WebDriver extends SearchContext {
    */
   Options manage();
 
+  /**
+   * Takes an accessibility snapshot of the whole page: the tree of roles, names, states and values
+   * computed from the DOM, rooted at the document of the current window's top-level browsing
+   * context whatever frame the driver has switched to, with every reachable child frame's tree
+   * attached under its {@code iframe} node. The snapshot is a copy taken at one point in time.
+   *
+   * <p>Requires a WebDriver BiDi session.
+   *
+   * @return the root node of the snapshot, of role {@code document}
+   * @throws UnsupportedOperationException if the driver does not support snapshots
+   * @see AccessibilityNode#toText()
+   */
+  default AccessibilityNode getAccessibilitySnapshot() {
+    throw new UnsupportedOperationException("getAccessibilitySnapshot");
+  }
+
   /** An interface for managing stuff you would do in a browser menu */
   interface Options {
 

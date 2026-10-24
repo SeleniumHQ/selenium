@@ -21,6 +21,7 @@ java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
 javascript/selenium-webdriver/node_modules/
+javascript/selenium-webdriver/lib/atoms/accessibility-snapshot.js
 javascript/selenium-webdriver/lib/atoms/find-elements.js
 javascript/selenium-webdriver/lib/atoms/get-attribute.js
 javascript/selenium-webdriver/lib/atoms/is-displayed.js
@@ -85,6 +86,7 @@ py/selenium/webdriver/common/linux-x86_64/
 py/selenium/webdriver/common/macos/
 py/selenium/webdriver/common/mutation-listener.js
 py/selenium/webdriver/common/windows/
+py/selenium/webdriver/remote/accessibilitySnapshot.js
 py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js

@@ -3,6 +3,12 @@ load("//common:defs.bzl", "copy_file")
 package(default_visibility = ["//rb:__subpackages__"])
 
 copy_file(
+    name = "accessibility-snapshot",
+    src = "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js",
+    out = "accessibilitySnapshot.js",
+)
+
+copy_file(
     name = "find-elements",
     src = "//javascript/atoms/fragments:find-elements-typescript.js",
     out = "findElements.js",

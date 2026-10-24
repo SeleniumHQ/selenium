@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Whitespace and generated content</title>
+</head>
+<body>
+  <style>
+    .icon::before { content: "★ "; }
+    .suffix::after { content: " (external)"; }
+    .alt::before { content: "✓" / "Done: "; }
+    .block { display: block; }
+  </style>
+  <button id="icon" class="icon">Favourite</button>
+  <a id="suffix" class="suffix" href="#">Site</a>
+  <button id="alt" class="alt">Task</button>
+  <a id="inline" href="#">Save<b>now</b></a>
+  <a id="blocks" href="#"><span class="block">Line one</span><span class="block">Line two</span></a>
+  <button id="br">First<br>Second</button>
+  <p id="nbsp">Non&nbsp;breaking space</p>
+  <pre id="pre">  preformatted
+    text  </pre>
+</body>
+</html>
