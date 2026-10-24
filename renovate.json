@@ -19,7 +19,7 @@
   "constraintsFiltering": "strict",
   "constraints": {
     "node": "22",
-    "python": "3.10",
+    "python": "3.11",
     "ruby": "3.3"
   },
   "packageRules": [
@@ -48,7 +48,7 @@
       "allowedVersions": "<23"
     },
     {
-      "description": "Only propose Python runtime updates within the supported Python 3.10 line.",
+      "description": "Only propose Python runtime updates within the supported Python 3.11 line.",
       "matchDatasources": ["python-version"],
       "matchPackageNames": ["python"],
       "allowedVersions": "<3.11"
