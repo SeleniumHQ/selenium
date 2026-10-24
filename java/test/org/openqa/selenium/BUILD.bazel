@@ -30,9 +30,9 @@ java_test_suite(
     data = ["//common/src/web"],
     deps = [
         ":helpers",
-        "//java/test/org/openqa/selenium/build",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/netty/server:test-server",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
