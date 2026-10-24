@@ -47,6 +47,7 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
     private readonly SemaphoreSlim connecting = new SemaphoreSlim(1, 1);
     private IBiDi? bidi;
     private bool preloaded;
+    private bool disposed;
 
     public AccessibilitySnapshotter(WebDriver driver)
     {
@@ -96,31 +97,38 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
 
     public void Dispose()
     {
-        if (this.bidi is null)
+        this.DisposeAsync().AsTask().GetAwaiter().GetResult();
+    }
+
+    // Waits for a connection attempt in flight, so a snapshot that overlaps the driver's disposal
+    // cannot leave its connection open, and never lets a close failure escape: the driver still has
+    // its own session to quit.
+    public async ValueTask DisposeAsync()
+    {
+        if (this.disposed)
         {
             return;
         }
 
+        this.disposed = true;
         try
         {
-            this.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            await this.connecting.WaitAsync().ConfigureAwait(false);
+            IBiDi? session = this.bidi;
+            this.bidi = null;
+            if (session is not null)
+            {
+                await session.DisposeAsync().ConfigureAwait(false);
+            }
         }
         catch (Exception e)
         {
             _logger.Debug("accessibility snapshot: closing the BiDi connection failed: " + e.Message);
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        IBiDi? session = this.bidi;
-        this.bidi = null;
-        if (session is not null)
+        finally
         {
-            await session.DisposeAsync().ConfigureAwait(false);
+            this.connecting.Dispose();
         }
-
-        this.connecting.Dispose();
     }
 
     // One BiDi connection per driver, opened on the first snapshot. New documents get the atom
@@ -132,6 +140,11 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
         await this.connecting.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(nameof(AccessibilitySnapshotter));
+            }
+
             this.bidi ??= await this.driver.AsBiDiAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             if (!this.preloaded)
             {
