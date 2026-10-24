@@ -22,9 +22,10 @@
  *
  * The tree is computed by the `accessibility-snapshot` atom of `@selenium/atoms`,
  * run over WebDriver BiDi in a sandbox realm so page scripts cannot interfere
- * with it. This module holds the parts that are the binding's: the public node
- * type and its text form, the decoder from the BiDi wire shape, frame
- * stitching, and the mapping of element references to WebElement.
+ * with it. The atom's wire entry hands the tree back as one JSON string beside
+ * the element and frame references, so this module holds only what is the
+ * binding's: the public node type and its text form, the mapping of references
+ * to WebElement, and frame stitching across browsing contexts.
  *
  * The output is *computed* from the DOM following WAI-ARIA, html-aam and
  * accname; it is not the browser's own accessibility tree and can differ from
@@ -43,9 +44,8 @@ const STATE_ORDER = ['checked', 'pressed', 'expanded', 'selected', 'level', 'dis
 
 /** The sandbox realm the atom runs in: page scripts cannot reach its prototypes. */
 const SANDBOX = 'selenium'
-/** Where the atom is kept inside the sandbox realm once installed. */
-const GLOBAL = '__seleniumAccessibilitySnapshot'
 const SERIALIZATION_OPTIONS = { maxDomDepth: 0 }
+const STALE_MESSAGE = 'the snapshot root is no longer attached to a document'
 
 /**
  * One node of an accessibility snapshot.
@@ -143,64 +143,41 @@ function oneLine(value) {
 }
 
 /**
- * Decodes a snapshot from the `script.callFunction` result that carries it.
+ * Builds the node tree from the atom's wire form.
  *
- * @param {!Object} value The BiDi remote value of the atom's return value: an
- *     `object` whose value is a list of `[key, value]` pairs, with arrays as
- *     `array` and elements as `node` values carrying a `sharedId`.
- * @param {function(string): !WebElement} elementFactory Makes the element for a shared id.
- * @return {!AccessibilityNode} The decoded node, with its subtree.
+ * @param {!Object} data The parsed JSON of the tree: the node's fields, with
+ *     `element` an index into `elements` and, on a frame node, `frame` an index
+ *     the binding resolves to the frame's own tree.
+ * @param {!Array<!WebElement>} elements The elements the tree references, in the atom's order.
+ * @param {function(number): !Promise<!Array<!AccessibilityNode>>} frameChildren The
+ *     children of a frame node, from its `frame` index: the frame's document, or
+ *     nothing when it cannot be reached.
+ * @return {!Promise<!AccessibilityNode>} The node, with its subtree.
  */
-function nodeFromRemoteValue(value, elementFactory) {
-  const fields = objectFields(value)
-  const elementValue = fields.get('element')
-  const element =
-    elementValue && elementValue.type === 'node' && 'sharedId' in elementValue
-      ? elementFactory(elementValue.sharedId)
-      : null
-  const valueField = fields.get('value')
-  const states = {}
-  for (const [key, state] of objectFields(fields.get('states'))) {
-    states[key] = stateValue(state)
+async function nodeFromWire(data, elements, frameChildren) {
+  const children = []
+  if ('frame' in data) {
+    children.push(...(await frameChildren(data.frame)))
+  } else {
+    for (const child of data.children) {
+      children.push(await nodeFromWire(child, elements, frameChildren))
+    }
   }
   return new AccessibilityNode({
-    role: stringValue(fields.get('role')),
-    name: stringValue(fields.get('name')),
-    description: fields.has('description') ? stringValue(fields.get('description')) : '',
-    value: valueField ? stringValue(valueField) : undefined,
-    states,
-    element,
-    children: (fields.get('children')?.value ?? []).map((child) => nodeFromRemoteValue(child, elementFactory)),
+    role: data.role,
+    name: data.name,
+    description: data.description ?? '',
+    value: data.value,
+    states: { ...data.states },
+    element: data.element === undefined ? null : elements[data.element],
+    children,
   })
-}
-
-function objectFields(value) {
-  if (!value || value.type !== 'object') {
-    throw new error.WebDriverError(`accessibility snapshot: expected an object remote value, got ${value?.type}`)
-  }
-  // A property name is written as a plain string, or as a string remote value.
-  return new Map((value.value ?? []).map(([key, entry]) => [typeof key === 'string' ? key : stringValue(key), entry]))
-}
-
-function stringValue(value) {
-  return String(value?.value ?? '')
-}
-
-function stateValue(value) {
-  switch (value?.type) {
-    case 'boolean':
-      return Boolean(value.value)
-    case 'number':
-      return Number(value.value)
-    default:
-      return String(value?.value)
-  }
 }
 
 let atomModule = null
 
 /**
- * The atom as a function declaration: the module built by
+ * The atom's wire entry as a function declaration: the module built by
  * lib/atoms/make-atoms-module.js wraps the bundle in a function whose source
  * `String()` returns, which `script.callFunction` can take as is.
  * @return {string}
@@ -231,21 +208,40 @@ function atomDeclaration() {
 /** A shared id that the targeted document does not own. */
 class NoSuchNode extends Error {}
 
-/** The function to call: the whole page, or a root this document owns, else null. */
-function declaration(atom, rootId) {
-  if (!rootId) return `() => ${atom}()`
-  return `(root) => (root && root.ownerDocument === document ? ${atom}(root) : null)`
-}
-
 /** Whether an error says a frame or its document is gone, rather than that a command failed. */
 function frameUnreachable(e) {
   const message = String(e?.message ?? e)
   return e instanceof NoSuchNode || message.includes('no such frame') || message.includes('no such node')
 }
 
+/** The entries of an `object` remote value by property name. */
+function objectFields(value) {
+  if (!value || value.type !== 'object') {
+    throw new error.WebDriverError(`accessibility snapshot: expected an object remote value, got ${value?.type}`)
+  }
+  // A property name is written as a plain string, or as a string remote value.
+  return new Map((value.value ?? []).map(([key, entry]) => [typeof key === 'string' ? key : stringValue(key), entry]))
+}
+
+function stringValue(value) {
+  return String(value?.value ?? '')
+}
+
+function sharedIdOf(node) {
+  if (node?.type !== 'node' || !node.sharedId) {
+    throw new error.WebDriverError('accessibility snapshot: expected a node reference in the elements list')
+  }
+  return node.sharedId
+}
+
+/** The browsing context id of a `window` remote value; null for a frame with no reachable context. */
+function contextOf(window) {
+  return window?.type === 'window' ? (window.value?.context ?? null) : null
+}
+
 /**
- * Takes snapshots for one driver: installs the atom in the sandbox realm of
- * each document and stitches child frames into the tree.
+ * Takes snapshots for one driver: runs the atom in each document and stitches
+ * child frames into the tree.
  */
 class AccessibilitySnapshotter {
   /**
@@ -255,8 +251,6 @@ class AccessibilitySnapshotter {
   constructor(driver, elementFactory) {
     this.driver_ = driver
     this.elementFactory_ = elementFactory
-    /** @private {?Promise<void>} The preload registration, shared by overlapping snapshots. */
-    this.preload_ = null
   }
 
   /**
@@ -277,30 +271,36 @@ class AccessibilitySnapshotter {
           ' before building the driver',
       )
     }
-    await this.ensurePreload_()
     const top = await this.driver_.getWindowHandle()
     if (!root) {
-      return this.snapshotContext_(top, null)
+      const node = await this.snapshotContext_(top, null)
+      if (node === null) {
+        throw new error.WebDriverError('accessibility snapshot: the script returned nothing')
+      }
+      return node
     }
     // The element may live in any frame of the window. Chromium resolves its shared
     // id only in the document that owns it; Firefox resolves it in any document of
-    // the browsing context group, so the script checks ownership itself and each
+    // the browsing context group, so the atom checks ownership itself and each
     // context is tried until the owner is found.
     const rootId = await root.getId()
     for (const context of await this.contexts_(top)) {
+      let node
       try {
-        return await this.snapshotContext_(context, rootId)
+        node = await this.snapshotContext_(context, rootId)
       } catch (e) {
         if (!(e instanceof NoSuchNode)) throw e
+        continue
       }
+      if (node !== null) return node
     }
-    throw new error.StaleElementReferenceError('the snapshot root is no longer attached to a document')
+    throw new error.StaleElementReferenceError(STALE_MESSAGE)
   }
 
   /**
    * Sends one BiDi command over the driver's connection and returns its result.
-   * The commands used here return node remote values by the hundred, whose
-   * attribute maps the generated domain modules would validate one by one.
+   * The call here returns node remote values by the hundred, whose attribute
+   * maps the generated domain modules would validate one by one.
    * @private
    */
   async send_(method, params) {
@@ -312,52 +312,32 @@ class AccessibilitySnapshotter {
     return response.result
   }
 
-  async ensurePreload_() {
-    // New documents get the atom installed as they load; documents that predate
-    // the preload install it on first use, in call_.
-    // Overlapping snapshots share one registration; a failed one is dropped so
-    // the next snapshot tries again.
-    this.preload_ ??= this.send_('script.addPreloadScript', {
-      functionDeclaration: `() => { globalThis.${GLOBAL} = (${atomDeclaration()}); }`,
-      sandbox: SANDBOX,
-    }).catch((e) => {
-      log_.finer(`accessibility snapshot: preload not installed, falling back to on-demand install: ${e}`)
-      this.preload_ = null
-    })
-    await this.preload_
-  }
-
+  /**
+   * The snapshot of `context`, or null when another document owns the root.
+   * @private
+   */
   async snapshotContext_(context, rootId) {
-    const args = rootId ? [{ sharedId: rootId }] : []
-    let result = await this.call_(context, declaration(`globalThis.${GLOBAL}`, rootId), args, false)
-    if (result === null) {
-      // The realm has no atom yet (a document loaded before the preload, or a
-      // remote end without preload support): install it and run in one call.
-      result = await this.call_(
-        context,
-        declaration(`(globalThis.${GLOBAL} = (${atomDeclaration()}))`, rootId),
-        args,
-        true,
-      )
+    const result = await this.call_(context, rootId ? [{ sharedId: rootId }] : [])
+    if (result.type === 'null') return null
+    const fields = objectFields(result)
+    if (fields.has('error')) {
+      // The only error the atom reports as data: the root left its document.
+      throw new error.StaleElementReferenceError(STALE_MESSAGE)
     }
-    if (result.type === 'null') {
-      // Another document owns the root (Firefox resolves shared ids group-wide).
-      throw new NoSuchNode('the root belongs to another document')
-    }
-    const node = nodeFromRemoteValue(result, this.elementFactory_)
-    await this.stitch_(context, node)
-    return node
+    const elements = (fields.get('elements')?.value ?? []).map((node) => this.elementFactory_(sharedIdOf(node)))
+    const windows = (fields.get('windows')?.value ?? []).map(contextOf)
+    return nodeFromWire(JSON.parse(stringValue(fields.get('json'))), elements, (index) => this.stitch_(windows[index]))
   }
 
   /**
-   * Runs `declaration` in the sandbox of `context`; null when it threw and a retry may help.
+   * Runs the atom's wire entry in the sandbox of `context` and returns the remote value of its result.
    * @private
    */
-  async call_(context, declaration, args, final) {
+  async call_(context, args) {
     let raw
     try {
       raw = await this.send_('script.callFunction', {
-        functionDeclaration: declaration,
+        functionDeclaration: `(root) => (${atomDeclaration()})(root)`,
         awaitPromise: false,
         target: { context, sandbox: SANDBOX },
         arguments: args,
@@ -375,52 +355,26 @@ class AccessibilitySnapshotter {
     }
     if (raw.type === 'exception') {
       const text = String(raw.exceptionDetails?.text ?? raw.exceptionDetails)
-      if (text.includes('detached')) {
-        throw new error.StaleElementReferenceError('the snapshot root is no longer attached to a document')
-      }
-      if (!final) return null
       throw new error.WebDriverError(`accessibility snapshot failed in the page: ${text}`)
     }
     return raw.result
   }
 
-  /** Replaces an `iframe` node's children, here or below, with its document's tree where reachable. */
-  async stitch_(context, node) {
-    if (node.role === 'iframe' && node.element) {
-      const childContext = await this.frameContext_(context, node.element)
-      if (childContext) {
-        try {
-          node.children = [await this.snapshotContext_(childContext, null)]
-        } catch (e) {
-          // Gone between discovery and the call, or mid-navigation: the frame
-          // stays a leaf (ADR §1). Anything else is a real failure.
-          if (!frameUnreachable(e)) throw e
-          log_.finer(`accessibility snapshot: frame ${childContext} not reachable: ${e}`)
-        }
-      }
-      return
-    }
-    for (const child of node.children) {
-      await this.stitch_(context, child)
-    }
-  }
-
-  /** The browsing context id of a frame element, from its WindowProxy; null when it has none. */
-  async frameContext_(context, frame) {
+  /**
+   * The document of a frame as the frame node's one child, or no children when unreachable.
+   * @private
+   */
+  async stitch_(context) {
+    if (!context) return []
     try {
-      const raw = await this.send_('script.callFunction', {
-        functionDeclaration: '(frame) => frame.contentWindow',
-        awaitPromise: false,
-        target: { context, sandbox: SANDBOX },
-        arguments: [{ sharedId: await frame.getId() }],
-        resultOwnership: 'none',
-      })
-      if (raw.type !== 'success' || raw.result?.type !== 'window') return null
-      return raw.result.value?.context ?? null
+      const document = await this.snapshotContext_(context, null)
+      return document === null ? [] : [document]
     } catch (e) {
+      // Gone between discovery and the call, or mid-navigation: the frame stays
+      // a leaf (ADR §1). Anything else is a real failure.
       if (!frameUnreachable(e)) throw e
-      log_.finer(`accessibility snapshot: no browsing context for frame: ${e}`)
-      return null
+      log_.finer(`accessibility snapshot: frame ${context} not reachable: ${e}`)
+      return []
     }
   }
 
@@ -438,4 +392,4 @@ class AccessibilitySnapshotter {
   }
 }
 
-module.exports = { AccessibilityNode, AccessibilitySnapshotter, nodeFromRemoteValue }
+module.exports = { AccessibilityNode, AccessibilitySnapshotter, nodeFromWire }

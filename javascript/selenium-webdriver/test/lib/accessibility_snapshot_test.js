@@ -28,7 +28,7 @@ const { locate } = require('../../lib/test/resources')
 const {
   AccessibilityNode,
   AccessibilitySnapshotter,
-  nodeFromRemoteValue,
+  nodeFromWire,
 } = require('selenium-webdriver/lib/accessibility_snapshot')
 const { Capabilities } = require('selenium-webdriver/lib/capabilities')
 const error = require('selenium-webdriver/lib/error')
@@ -111,55 +111,60 @@ describe('AccessibilityNode', function () {
   })
 })
 
-describe('nodeFromRemoteValue', function () {
-  const remote = (type, value, extra = {}) => ({ type, ...(value === undefined ? {} : { value }), ...extra })
-  const object = (fields) => remote('object', Object.entries(fields))
-
-  it('decodes a script.callFunction result: pairs, arrays and nodes with a sharedId', function () {
-    const wire = object({
-      role: remote('string', 'button'),
-      name: remote('string', 'Save'),
-      description: remote('string', 'Saves the form'),
-      states: object({ pressed: remote('string', 'mixed'), disabled: remote('boolean', true) }),
-      element: remote('node', { nodeType: 1 }, { sharedId: 'f.1.e.42' }),
-      children: remote('array', [
-        object({
-          role: remote('string', 'text'),
-          name: remote('string', 'Save'),
-          description: remote('string', ''),
-          states: object({}),
-          children: remote('array', []),
-        }),
-        object({
-          role: remote('string', 'heading'),
-          name: remote('string', 'H'),
-          description: remote('string', ''),
-          value: remote('string', 'v'),
-          states: object({ level: remote('number', 2) }),
-          element: remote('node', { nodeType: 1 }, { sharedId: 'f.1.e.43' }),
-          children: remote('array', []),
-        }),
-      ]),
-    })
-    const made = []
-    const node = nodeFromRemoteValue(wire, (id) => {
-      made.push(id)
-      return `element:${id}`
+describe('nodeFromWire', function () {
+  it('builds the tree from the JSON form and resolves element and frame indices', async function () {
+    const data = {
+      role: 'generic',
+      name: '',
+      description: '',
+      states: {},
+      element: 0,
+      children: [
+        { role: 'text', name: 'Intro', description: '', states: {}, children: [] },
+        {
+          role: 'textbox',
+          name: 'Email',
+          description: 'Where to write',
+          value: 'a@b.c',
+          states: { focused: true, level: 2, pressed: 'mixed', selected: false },
+          element: 1,
+          children: [],
+        },
+        { role: 'iframe', name: 'Embedded', description: '', states: {}, element: 2, frame: 0, children: [] },
+      ],
+    }
+    const stitched = []
+    const node = await nodeFromWire(data, ['element:0', 'element:1', 'element:2'], async (index) => {
+      stitched.push(index)
+      return [new AccessibilityNode({ role: 'document', name: 'Inner' })]
     })
 
-    assert.strictEqual(node.role, 'button')
-    assert.strictEqual(node.name, 'Save')
-    assert.strictEqual(node.description, 'Saves the form')
-    assert.strictEqual(node.value, undefined)
-    assert.deepStrictEqual(node.states, { pressed: 'mixed', disabled: true })
-    assert.strictEqual(node.element, 'element:f.1.e.42')
-    const [text, heading] = node.children
+    assert.strictEqual(node.role, 'generic')
+    assert.strictEqual(node.element, 'element:0')
+    const [text, textbox, frame] = node.children
     assert.strictEqual(text.role, 'text')
     assert.strictEqual(text.element, null)
     assert.deepStrictEqual(text.children, [])
-    assert.strictEqual(heading.value, 'v')
-    assert.deepStrictEqual(heading.states, { level: 2 })
-    assert.deepStrictEqual(made, ['f.1.e.42', 'f.1.e.43'])
+    assert.strictEqual(textbox.element, 'element:1')
+    assert.strictEqual(textbox.value, 'a@b.c')
+    assert.strictEqual(textbox.description, 'Where to write')
+    assert.deepStrictEqual(textbox.states, { focused: true, level: 2, pressed: 'mixed', selected: false })
+    assert.strictEqual(frame.element, 'element:2')
+    assert.deepStrictEqual(
+      frame.children.map((child) => child.name),
+      ['Inner'],
+      "the frame's children come from the binding",
+    )
+    assert.deepStrictEqual(stitched, [0])
+  })
+
+  it('keeps absent fields absent', async function () {
+    const node = await nodeFromWire({ role: 'list', name: '', states: {}, children: [] }, [], async () => [])
+
+    assert.strictEqual(node.description, '')
+    assert.strictEqual(node.value, undefined)
+    assert.strictEqual(node.element, null)
+    assert.deepStrictEqual(node.children, [])
   })
 })
 
@@ -175,43 +180,98 @@ describe('AccessibilitySnapshotter', function () {
     })
   })
 
-  it('tries a failed preload again on the next snapshot', async function () {
+  it('reads a root another document owns as null and a detached root as the stale error', async function () {
     const snapshotter = new AccessibilitySnapshotter({}, () => null)
-    let calls = 0
-    let failing = true
-    snapshotter.send_ = async () => {
-      calls++
-      if (failing) throw new error.UnknownCommandError('script.addPreloadScript')
-      return { script: 'preload-1' }
-    }
+    const answers = []
+    snapshotter.send_ = async () => ({ type: 'success', result: answers.shift() })
 
-    await snapshotter.ensurePreload_()
-    await snapshotter.ensurePreload_()
-    assert.strictEqual(calls, 2, 'a failure must not count as preloaded')
+    answers.push({ type: 'null' })
+    assert.strictEqual(await snapshotter.snapshotContext_('ctx', 'shared-1'), null)
 
-    failing = false
-    await snapshotter.ensurePreload_()
-    await snapshotter.ensurePreload_()
-    assert.strictEqual(calls, 3, 'a success is remembered')
+    answers.push({ type: 'object', value: [['error', { type: 'string', value: 'detached' }]] })
+    await assert.rejects(snapshotter.snapshotContext_('ctx', 'shared-1'), error.StaleElementReferenceError)
   })
 
-  it('shares one preload between overlapping snapshots', async function () {
-    const snapshotter = new AccessibilitySnapshotter({}, () => null)
-    let calls = 0
-    let release
-    snapshotter.send_ = () => {
-      calls++
-      return new Promise((resolve) => {
-        release = () => resolve({ script: 'preload-1' })
-      })
+  it("maps the elements list to elements and a frame index to the frame's context", async function () {
+    const made = []
+    const snapshotter = new AccessibilitySnapshotter({}, (id) => {
+      made.push(id)
+      return `element:${id}`
+    })
+    const contexts = []
+    snapshotter.send_ = async (_method, params) => {
+      contexts.push(params.target.context)
+      if (contexts.length === 1) {
+        return {
+          type: 'success',
+          result: {
+            type: 'object',
+            value: [
+              [
+                'json',
+                {
+                  type: 'string',
+                  value: JSON.stringify({
+                    role: 'document',
+                    name: 'Frames',
+                    description: '',
+                    states: {},
+                    element: 0,
+                    children: [
+                      { role: 'iframe', name: '', description: '', states: {}, element: 1, frame: 0, children: [] },
+                    ],
+                  }),
+                },
+              ],
+              [
+                'elements',
+                {
+                  type: 'array',
+                  value: [
+                    { type: 'node', sharedId: 'top-html' },
+                    { type: 'node', sharedId: 'frame-1' },
+                  ],
+                },
+              ],
+              ['windows', { type: 'array', value: [{ type: 'window', value: { context: 'child' } }] }],
+            ],
+          },
+        }
+      }
+      return {
+        type: 'success',
+        result: {
+          type: 'object',
+          value: [
+            [
+              'json',
+              {
+                type: 'string',
+                value: JSON.stringify({
+                  role: 'document',
+                  name: 'Inner',
+                  description: '',
+                  states: {},
+                  element: 0,
+                  children: [],
+                }),
+              },
+            ],
+            ['elements', { type: 'array', value: [{ type: 'node', sharedId: 'child-html' }] }],
+            ['windows', { type: 'array', value: [] }],
+          ],
+        },
+      }
     }
 
-    const first = snapshotter.ensurePreload_()
-    const second = snapshotter.ensurePreload_()
-    release()
-    await Promise.all([first, second])
-    await snapshotter.ensurePreload_()
+    const tree = await snapshotter.snapshotContext_('top', null)
 
-    assert.strictEqual(calls, 1)
+    assert.deepStrictEqual(contexts, ['top', 'child'], 'the frame is snapshotted in its own context')
+    assert.strictEqual(tree.element, 'element:top-html')
+    assert.strictEqual(tree.children[0].role, 'iframe')
+    assert.strictEqual(tree.children[0].element, 'element:frame-1')
+    assert.strictEqual(tree.children[0].children[0].name, 'Inner')
+    assert.strictEqual(tree.children[0].children[0].element, 'element:child-html')
+    assert.deepStrictEqual(made, ['top-html', 'frame-1', 'child-html'])
   })
 })

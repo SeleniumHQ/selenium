@@ -61,10 +61,10 @@ js_run_binary(
 
 js_run_binary(
     name = "accessibility_snapshot",
-    srcs = ["//javascript/atoms/fragments:accessibility-snapshot-typescript.js"],
+    srcs = ["//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js"],
     outs = ["accessibility-snapshot.js"],
     args = [
-        "$(rootpath //javascript/atoms/fragments:accessibility-snapshot-typescript.js)",
+        "$(rootpath //javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js)",
         "$(rootpath :accessibility-snapshot.js)",
     ],
     tool = ":make_atoms_module",
