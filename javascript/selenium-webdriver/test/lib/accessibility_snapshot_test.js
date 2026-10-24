@@ -194,4 +194,24 @@ describe('AccessibilitySnapshotter', function () {
     await snapshotter.ensurePreload_()
     assert.strictEqual(calls, 3, 'a success is remembered')
   })
+
+  it('shares one preload between overlapping snapshots', async function () {
+    const snapshotter = new AccessibilitySnapshotter({}, () => null)
+    let calls = 0
+    let release
+    snapshotter.send_ = () => {
+      calls++
+      return new Promise((resolve) => {
+        release = () => resolve({ script: 'preload-1' })
+      })
+    }
+
+    const first = snapshotter.ensurePreload_()
+    const second = snapshotter.ensurePreload_()
+    release()
+    await Promise.all([first, second])
+    await snapshotter.ensurePreload_()
+
+    assert.strictEqual(calls, 1)
+  })
 })

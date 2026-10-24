@@ -255,7 +255,8 @@ class AccessibilitySnapshotter {
   constructor(driver, elementFactory) {
     this.driver_ = driver
     this.elementFactory_ = elementFactory
-    this.preloaded_ = false
+    /** @private {?Promise<void>} The preload registration, shared by overlapping snapshots. */
+    this.preload_ = null
   }
 
   /**
@@ -314,18 +315,16 @@ class AccessibilitySnapshotter {
   async ensurePreload_() {
     // New documents get the atom installed as they load; documents that predate
     // the preload install it on first use, in call_.
-    if (this.preloaded_) return
-    try {
-      await this.send_('script.addPreloadScript', {
-        functionDeclaration: `() => { globalThis.${GLOBAL} = (${atomDeclaration()}); }`,
-        sandbox: SANDBOX,
-      })
-    } catch (e) {
-      // Left unset, so the next snapshot tries again.
+    // Overlapping snapshots share one registration; a failed one is dropped so
+    // the next snapshot tries again.
+    this.preload_ ??= this.send_('script.addPreloadScript', {
+      functionDeclaration: `() => { globalThis.${GLOBAL} = (${atomDeclaration()}); }`,
+      sandbox: SANDBOX,
+    }).catch((e) => {
       log_.finer(`accessibility snapshot: preload not installed, falling back to on-demand install: ${e}`)
-      return
-    }
-    this.preloaded_ = true
+      this.preload_ = null
+    })
+    await this.preload_
   }
 
   async snapshotContext_(context, rootId) {
