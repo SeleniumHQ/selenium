@@ -29,12 +29,12 @@ using GetTreeOptions = OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions;
 namespace OpenQA.Selenium;
 
 /// <summary>
-/// Takes accessibility snapshots for one driver: runs the atom's wire entry in the sandbox realm
-/// of each document over the driver's BiDi session and stitches child frames into the tree. The
-/// atom hands the tree back as one JSON string beside the element and frame references, so this
-/// class only maps references and recurses into frames.
+/// Takes accessibility snapshots over the driver's BiDi connection: runs the atom's wire entry in
+/// the sandbox realm of each document and stitches child frames into the tree. The atom hands the
+/// tree back as one JSON string beside the element and frame references, so this class only maps
+/// references and recurses into frames; it holds no connection of its own.
 /// </summary>
-internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
+internal sealed class AccessibilitySnapshotter
 {
     private static readonly ILogger _logger = Log.GetLogger<AccessibilitySnapshotter>();
 
@@ -44,13 +44,12 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
 
     private readonly WebDriver driver;
-    private readonly SemaphoreSlim connecting = new SemaphoreSlim(1, 1);
-    private IBiDi? bidi;
-    private bool disposed;
+    private readonly IBiDi bidi;
 
-    public AccessibilitySnapshotter(WebDriver driver)
+    public AccessibilitySnapshotter(WebDriver driver, IBiDi bidi)
     {
         this.driver = driver;
+        this.bidi = bidi;
     }
 
     /// <summary>
@@ -62,7 +61,7 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
     /// <exception cref="StaleElementReferenceException">When the root no longer belongs to a document.</exception>
     public async Task<AccessibilityNode> SnapshotAsync(string? rootId, CancellationToken cancellationToken)
     {
-        IBiDi session = await this.SessionAsync(cancellationToken).ConfigureAwait(false);
+        IBiDi session = this.bidi;
         BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.driver.CurrentWindowHandle);
 
         if (rootId is null)
@@ -92,62 +91,6 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
         }
 
         throw new StaleElementReferenceException(StaleMessage);
-    }
-
-    public void Dispose()
-    {
-        this.DisposeAsync().AsTask().GetAwaiter().GetResult();
-    }
-
-    // Waits for a connection attempt in flight, so a snapshot that overlaps the driver's disposal
-    // cannot leave its connection open, and never lets a close failure escape: the driver still has
-    // its own session to quit.
-    public async ValueTask DisposeAsync()
-    {
-        if (this.disposed)
-        {
-            return;
-        }
-
-        this.disposed = true;
-        try
-        {
-            await this.connecting.WaitAsync().ConfigureAwait(false);
-            IBiDi? session = this.bidi;
-            this.bidi = null;
-            if (session is not null)
-            {
-                await session.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-        catch (Exception e)
-        {
-            _logger.Debug("accessibility snapshot: closing the BiDi connection failed: " + e.Message);
-        }
-        finally
-        {
-            this.connecting.Dispose();
-        }
-    }
-
-    // One BiDi connection per driver, opened on the first snapshot.
-    private async Task<IBiDi> SessionAsync(CancellationToken cancellationToken)
-    {
-        await this.connecting.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(nameof(AccessibilitySnapshotter));
-            }
-
-            this.bidi ??= await this.driver.AsBiDiAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            return this.bidi;
-        }
-        finally
-        {
-            this.connecting.Release();
-        }
     }
 
     // The snapshot of a context, or null when another document owns the root.

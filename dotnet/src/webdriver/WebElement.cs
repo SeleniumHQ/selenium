@@ -252,9 +252,10 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
     /// <exception cref="StaleElementReferenceException">If the element no longer belongs to a document.</exception>
     /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/>
-    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
     {
-        return this.driver.Accessibility.SnapshotAsync(this.Id, cancellationToken);
+        AccessibilitySnapshotter snapshotter = await this.driver.AccessibilityAsync(cancellationToken).ConfigureAwait(false);
+        return await snapshotter.SnapshotAsync(this.Id, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
