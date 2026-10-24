@@ -37,8 +37,6 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     // The atom records frames as leaves; the binding fills them in, so this page has its own tests.
     private const string FramesPage = "014-iframe";
 
-    private static readonly HttpClient Http = new HttpClient();
-
     public static IEnumerable<string> CorpusPages()
     {
         foreach (JsonNode? page in JsonNode.Parse(Read("index.json"))!.AsArray())
@@ -332,10 +330,12 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     }
 
     // The corpus is read from the test web server, as the pages are, so nothing is read from the
-    // source tree; null when the server has no such file.
-    private static string? Fetch(string file)
+    // source tree; null when the server has no such file. A client per read keeps the fixture free
+    // of anything to dispose, since the case list is read at discovery time.
+    private static string Fetch(string file)
     {
-        using HttpResponseMessage response = Http.GetAsync(Urls.WhereIs("accessibility/" + file)).GetAwaiter().GetResult();
+        using var client = new HttpClient();
+        using HttpResponseMessage response = client.GetAsync(Urls.WhereIs("accessibility/" + file)).GetAwaiter().GetResult();
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
