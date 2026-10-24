@@ -47,7 +47,7 @@ public class DevToolsTabsTests : DevToolsTestFixture
         }
 
         domains.Target.DetachedFromTarget += targetDetachedHandler;
-        
+
         try
         {
             Driver.Close();
