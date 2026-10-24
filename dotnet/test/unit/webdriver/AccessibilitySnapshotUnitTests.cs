@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
-
 namespace OpenQA.Selenium.Tests;
 
 /// <summary>
