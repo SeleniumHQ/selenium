@@ -1,0 +1,34 @@
+name: Plausible Usage
+on:
+  schedule:
+    - cron: 30 12 * * 3
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check Weekly Pageviews
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Check Plausible Pageviews
+        id: check
+        env:
+          PLAUSIBLE_STATS_KEY: ${{ secrets.PLAUSIBLE_STATS_KEY }}
+        run: ./scripts/github-actions/check-plausible-usage.sh
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: ${{ steps.check.outputs.report || 'Plausible stats could not be read for last week' }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
