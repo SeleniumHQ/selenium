@@ -175,15 +175,21 @@ module Selenium
         Class.new do
           attr_reader :calls
 
+          attr_accessor :preload_fails
+
           def initialize(owners)
             @owners = owners
             @calls = []
+            @preload_fails = false
           end
 
           def send_cmd(method, **params)
             @calls << [method, params]
             case method
-            when 'script.addPreloadScript' then {'script' => 'preload'}
+            when 'script.addPreloadScript'
+              raise Error::WebDriverError, 'unknown command: script.addPreloadScript' if preload_fails
+
+              {'script' => 'preload'}
             when 'browsingContext.getTree'
               {'contexts' => [{'context' => 'top', 'children' => [{'context' => 'child', 'children' => []}]}]}
             when 'script.callFunction' then call_function(params)
@@ -220,6 +226,22 @@ module Selenium
         calls = connection.calls.select { |call| call.first == 'script.callFunction' }
         contexts = calls.map { |_, params| params[:target][:context] }
         expect(contexts).to eq %w[top child]
+      end
+
+      it 'tries a failed preload again on the next snapshot' do
+        connection = self.connection.new(%w[top])
+        connection.preload_fails = true
+        snapshotter = described_class.new(bridge_over(connection))
+        preloads = -> { connection.calls.count { |method, _| method == 'script.addPreloadScript' } }
+
+        snapshotter.snapshot
+        snapshotter.snapshot
+        expect(preloads.call).to eq(2), 'a failure must not count as preloaded'
+
+        connection.preload_fails = false
+        snapshotter.snapshot
+        snapshotter.snapshot
+        expect(preloads.call).to eq(3), 'a success is remembered'
       end
 
       it 'raises the stale element error when no context owns the root' do

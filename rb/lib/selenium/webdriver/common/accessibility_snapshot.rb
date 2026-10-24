@@ -247,11 +247,12 @@ module Selenium
       def ensure_preload
         return if @preloaded
 
-        @preloaded = true
         @bidi.send_cmd('script.addPreloadScript',
                        functionDeclaration: "() => { globalThis.#{GLOBAL} = (#{atom}); }",
                        sandbox: SANDBOX)
+        @preloaded = true
       rescue Error::WebDriverError => e
+        # Left unset, so the next snapshot tries again.
         WebDriver.logger.debug("accessibility snapshot: preload not installed, installing on demand: #{e.message}",
                                id: :accessibility_snapshot)
       end
