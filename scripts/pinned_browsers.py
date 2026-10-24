@@ -201,12 +201,14 @@ def get_edge_versions(platform):
                 continue
             for artifact in release["artifacts"]:
                 if artifact["artifactname"] == artifact_name:
-                    versions.append(
-                        {
-                            "url": artifact["location"],
-                            "hash": artifact["hash"],
-                            "version": release["productversion"],
-                        }
+                    versions.extend(
+                        [
+                            {
+                                "url": artifact["location"],
+                                "hash": artifact["hash"],
+                                "version": release["productversion"],
+                            }
+                        ]
                     )
     return versions
 
