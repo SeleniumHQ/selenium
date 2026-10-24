@@ -44,6 +44,7 @@ const { getBidiConnection, closeBidiConnection } = require('./bidi_connection')
 const { PinnedScript } = require('./pinnedScript')
 const JSZip = require('jszip')
 const Script = require('./script')
+const { AccessibilityNode, AccessibilitySnapshotter } = require('./accessibility_snapshot')
 const Network = require('./network')
 const Dialog = require('./fedcm/dialog')
 const webExtension = require('./web_extension')
@@ -659,6 +660,7 @@ function filterNonW3CCaps(capabilities) {
  */
 class WebDriver {
   #script = undefined
+  #accessibility
   #network = undefined
   /**
    * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
@@ -1153,6 +1155,37 @@ class WebDriver {
   /** @override */
   switchTo() {
     return new TargetLocator(this)
+  }
+
+  /**
+   * Snapshots the accessibility tree of the page.
+   *
+   * The tree is computed in the page from the DOM, following WAI-ARIA, html-aam
+   * and accname; it is not the browser's own accessibility tree. It is rooted
+   * at the top-level browsing context of the current window, whatever frame the
+   * driver has switched to, and every child frame's tree is attached under its
+   * `iframe` node. To scope to a frame, take `getAccessibilitySnapshot()` of
+   * its `iframe` element. The snapshot is a copy taken at one point in time.
+   *
+   *     const tree = await driver.getAccessibilitySnapshot()
+   *     console.log(tree.toText())
+   *     await tree.children[0].element.click()
+   *
+   * @return {!Promise<!AccessibilityNode>} The root node, of role `document`,
+   *     named from the title.
+   * @throws {error.UnsupportedOperationError} When the session has no WebDriver
+   *     BiDi connection.
+   */
+  getAccessibilitySnapshot() {
+    return this.accessibility_().snapshot(null)
+  }
+
+  /** @private @return {!AccessibilitySnapshotter} */
+  accessibility_() {
+    if (this.#accessibility === undefined) {
+      this.#accessibility = new AccessibilitySnapshotter(this, (id) => new WebElement(this, id))
+    }
+    return this.#accessibility
   }
 
   script() {
@@ -2999,6 +3032,23 @@ class WebElement {
   }
 
   /**
+   * Snapshots the accessibility tree of this element's subtree.
+   *
+   * The root node is always this element, whatever its role; if the element is
+   * hidden, by itself or by an ancestor, that node has no children. Child frames
+   * are attached under their `iframe` nodes. See
+   * {@link WebDriver#getAccessibilitySnapshot}.
+   *
+   * @return {!Promise<!AccessibilityNode>} The node for this element, with its subtree.
+   * @throws {error.UnsupportedOperationError} When the session has no WebDriver
+   *     BiDi connection.
+   * @throws {error.StaleElementReferenceError} When the element is no longer attached.
+   */
+  getAccessibilitySnapshot() {
+    return this.driver_.accessibility_().snapshot(this)
+  }
+
+  /**
    * Get the computed WAI-ARIA role of element.
    *
    * @return {!Promise<string>} A promise that will be
@@ -3473,6 +3523,7 @@ class AlertPromise extends Alert {
 // PUBLIC API
 
 module.exports = {
+  AccessibilityNode,
   Alert,
   AlertPromise,
   Condition,
