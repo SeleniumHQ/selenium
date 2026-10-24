@@ -53,6 +53,10 @@ const GLOBAL_ARIA_ATTRIBUTES: ReadonlyArray<string> = [
 // Elements that take focus on their own, when not disabled.
 const NATIVELY_FOCUSABLE: ReadonlySet<string> = new Set(['button', 'iframe', 'input', 'select', 'summary', 'textarea'])
 
+// Not a WAI-ARIA role: the token ADR 18205 uses for frame leaves, which the
+// bindings replace with the child document's tree.
+const FRAME_ELEMENTS: ReadonlySet<string> = new Set(['frame', 'iframe'])
+
 const SECTIONING_CONTENT: ReadonlySet<string> = new Set(['article', 'aside', 'nav', 'section'])
 // html-aam: a header or footer is a landmark only outside these elements and
 // outside elements with these roles.
@@ -270,8 +274,6 @@ export function implicitRole(element: Element, lookup: RoleLookup = computeRole)
       return 'form'
     case 'frame':
     case 'iframe':
-      // Not a WAI-ARIA role: the token ADR 18205 uses for frame leaves, which the
-      // bindings replace with the child document's tree.
       return 'iframe'
     case 'h1':
     case 'h2':
@@ -371,6 +373,13 @@ export function implicitRole(element: Element, lookup: RoleLookup = computeRole)
  * it is computed afresh.
  */
 export function computeRole(element: Element, lookup: RoleLookup = computeRole): string {
+  if (FRAME_ELEMENTS.has(element.localName)) {
+    // The token is how the bindings find the frames whose documents they
+    // stitch in, so an explicit role (ARIA in HTML allows application,
+    // document, img and the presentational pair) never replaces it; the
+    // embedded document is exposed whatever the frame element is called.
+    return 'iframe'
+  }
   const explicit = explicitRole(element)
   if (explicit === null) {
     return implicitRole(element, lookup)

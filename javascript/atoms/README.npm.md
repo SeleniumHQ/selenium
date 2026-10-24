@@ -77,14 +77,14 @@ The snapshot is *computed* by script from the DOM, following WAI-ARIA 1.2,
 html-aam and accname 1.2. It is not the browser's own accessibility tree, and
 it can differ from it at the edges. Elements that are hidden in the accname
 sense are left out; generic wrappers are pruned and their children hoisted;
-text an ancestor's name was computed from is not repeated as leaves. Frames
-are reported as `iframe` leaves with no children, since a child document is
-another browsing context the page cannot reach; callers that can reach it
-stitch its snapshot in. Keys in `states` are `checked`, `pressed`,
-`expanded`, `selected`, `level`, `disabled` and `focused`; new keys may be
-added in any release, so ignore keys you do not recognise. A password field's
-`value` is masked, one bullet per character, as the browser's own tree exposes
-it.
+text an ancestor's name was computed from is not repeated as leaves. Frames are
+reported as `iframe` leaves with no children, whatever role attribute they
+carry, since a child document is another browsing context the page cannot
+reach; callers that can reach it stitch its snapshot in. Keys in `states` are
+`checked`, `pressed`, `expanded`, `selected`, `level`, `disabled` and
+`focused`; new keys may be added in any release, so ignore keys you do not
+recognise. A password field's `value` is masked, one bullet per character, as
+the browser's own tree exposes it.
 
 The atoms operate on the DOM of the document they are evaluated in, so they must
 run in the page rather than in the driver process — for example via

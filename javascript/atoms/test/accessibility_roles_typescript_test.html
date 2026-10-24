@@ -156,8 +156,8 @@ under the License.
       assertRoles(assert, { 'svg': 'graphics-document' });
     });
 
-    QUnit.test('frames are reported with the iframe token from ADR 18205', function (assert) {
-      assertRoles(assert, { 'iframe': 'iframe' });
+    QUnit.test('frames are reported with the iframe token from ADR 18205, whatever their explicit role', function (assert) {
+      assertRoles(assert, { 'iframe': 'iframe', 'iframe-app': 'iframe', 'iframe-pres': 'iframe' });
     });
 
     QUnit.module('implicit roles: forms');
@@ -337,6 +337,8 @@ under the License.
   <img id="img-empty-alt" src="/testdata/map.png" alt="">
   <svg id="svg" width="10" height="10"><circle cx="5" cy="5" r="4"/></svg>
   <iframe id="iframe" src="about:blank" title="frame"></iframe>
+  <iframe id="iframe-app" role="application" src="about:blank" title="app"></iframe>
+  <iframe id="iframe-pres" role="presentation" src="about:blank" title="layout"></iframe>
 
   <form id="form">
     <button id="button" type="button">b</button>

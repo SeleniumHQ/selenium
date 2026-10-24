@@ -231,8 +231,8 @@ under the License.
       assert.deepEqual(strip(snapshot(byId('frame'))), leaf('iframe', 'frame', 'frame'));
     });
 
-    QUnit.test('a frame with an explicit role is still a leaf: its fallback content is not rendered', function (assert) {
-      assert.deepEqual(strip(snapshot(byId('frame-app'))), leaf('application', 'frame-app', 'app frame'));
+    QUnit.test('a frame with an explicit role is still an iframe leaf: its fallback content is not rendered', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('frame-app'))), leaf('iframe', 'frame-app', 'app frame'));
     });
 
     QUnit.test('text after the summary of a closed details is not rendered', function (assert) {
