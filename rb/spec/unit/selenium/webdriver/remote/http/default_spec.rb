@@ -108,13 +108,11 @@ module Selenium
               WebMock.enable!
             end
 
-            it 'falls back to an unverified connection with a deprecation by default' do
-              http = nil
-              expect { http = client.send(:http) }
-                .to have_deprecated(:ignore_certificates, /self-signed certificate/)
-
-              expect(http.verify_mode).to eq(OpenSSL::SSL::VERIFY_NONE)
-              expect(http).to be_started
+            it 'rejects the certificate by default and names the remedies' do
+              expect { client.send :http }.to raise_error(
+                OpenSSL::SSL::SSLError,
+                /certificate verify failed.*ignore_certificates = true.*trusted CA bundle/
+              )
             end
 
             it 'rejects the certificate when the config requires verification' do
@@ -123,11 +121,13 @@ module Selenium
               expect { client.send :http }.to raise_error(OpenSSL::SSL::SSLError, /ignore_certificates/)
             end
 
-            it 'connects without a deprecation when the config ignores certificates' do
+            it 'connects when the config ignores certificates' do
               client.client_config.ignore_certificates = true
 
-              expect { client.send :http }.not_to have_deprecated(:ignore_certificates)
-              expect(client.send(:http)).to be_started
+              http = client.send(:http)
+
+              expect(http.verify_mode).to eq(OpenSSL::SSL::VERIFY_NONE)
+              expect(http).to be_started
             end
 
             def with_self_signed_server
