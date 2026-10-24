@@ -23,7 +23,7 @@ This file defines custom enhancements applied to generated BiDi modules,
 including custom dataclass methods, parameter validation/transformation,
 response deserialization, and field extraction.
 
-All code must be compatible with Python 3.10+.
+All code must be compatible with Python 3.11+.
 """
 
 from __future__ import annotations

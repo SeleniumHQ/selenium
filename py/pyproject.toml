@@ -9,7 +9,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -19,7 +19,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Software Development :: Libraries",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -27,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
-    "certifi>=2026.2.25",
+    "certifi>=2026.10.23",
     "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
     "typing_extensions>=4.15.0,<5.0",
@@ -142,7 +141,7 @@ extend-exclude = [
 ]
 line-length = 120
 respect-gitignore = true
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 # Whole families are listed bare; individually-named rules are families whose
@@ -188,6 +187,7 @@ extend-ignore = [
     "RUF005", # Uses of the + operator to concatenate collections
     "RUF012", # Mutable default values in class attributes
     "RUF059", # Unpacked variable is never used
+    "UP042", # Class inherits from both str and Enum instead of StrEnum
 ]
 
 # These globs are matched against paths relative to the working directory, not to

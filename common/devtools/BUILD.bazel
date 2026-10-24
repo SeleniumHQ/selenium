@@ -19,6 +19,7 @@ py_binary(
         "pdl.py",
     ],
     main = "convert_protocol_to_json.py",
+    imports = ["."],
     visibility = [
         "//common/devtools:__subpackages__",
     ],

@@ -57,17 +57,17 @@ def method(param: Optional[str]) -> Optional[int]:
 
 ### Python version
 
-Code must work with Python 3.10 or later. Use modern syntax features available in 3.10+:
+Code must work with Python 3.11 or later. Use modern syntax features available in 3.11+:
 
 - Use `|` for union types instead of `Union[]`
 - Use `X | None` instead of `Optional[X]`
 
-When running tests or code in the terminal, explicitly use `python3.10` or later:
+When running tests or code in the terminal, explicitly use `python3.11` or later:
 
 ```bash
 # Use explicitly
-python3.10 -c "..."
 python3.11 -c "..."
+python3.12 -c "..."
 
 # Avoid relying on `python3` as it may be 3.9 or earlier
 ```
