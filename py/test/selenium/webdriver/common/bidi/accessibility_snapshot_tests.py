@@ -143,13 +143,26 @@ def test_frames_are_stitched_in(driver, pages):
         driver.switch_to.default_content()
 
 
+def test_subtree_snapshot_of_an_iframe_element_carries_its_document(driver, pages):
+    pages.load(f"accessibility/{FRAMES_PAGE}.html")
+    frame = driver.find_element(By.ID, "frame")
+
+    tree = frame.accessibility_snapshot()
+
+    assert tree.role == "iframe"
+    assert tree.name == "Embedded content"
+    assert [child.role for child in tree.children] == ["document"]
+
+
 def test_subtree_snapshot_inside_a_frame(driver, pages):
     pages.load(f"accessibility/{FRAMES_PAGE}.html")
     driver.switch_to.frame("frame")
     try:
         body = driver.find_element(By.TAG_NAME, "body")
         tree = body.accessibility_snapshot()
+        # The root is the frame's body, not the top document that owns the window.
         assert tree.role == "generic"
+        assert tree.name == ""
         assert tree.element.tag_name == "body"
     finally:
         driver.switch_to.default_content()

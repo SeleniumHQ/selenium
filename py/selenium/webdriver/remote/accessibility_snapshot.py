@@ -236,8 +236,10 @@ class AccessibilitySnapshotter:
         top = self._driver.current_window_handle
         if root is None:
             return self._snapshot_context(top, None)
-        # The element may live in any frame of the window; its shared id resolves only
-        # in the document that owns it, so each context is tried until one accepts it.
+        # The element may live in any frame of the window. Chromium resolves its shared
+        # id only in the document that owns it; Firefox resolves it in any document of
+        # the browsing context group, so the script checks ownership itself and each
+        # context is tried until the owner is found.
         for context in self._contexts(top):
             try:
                 return self._snapshot_context(context, root)
@@ -260,15 +262,27 @@ class AccessibilitySnapshotter:
 
     def _snapshot_context(self, context: str, root: WebElement | None) -> AccessibilityNode:
         arguments = [{"sharedId": root.id}] if root is not None else []
-        result = self._call(context, f"(root) => globalThis.{_GLOBAL}(root)", arguments)
+        result = self._call(context, self._declaration(f"globalThis.{_GLOBAL}", root), arguments)
         if result is None:
             # The realm has no atom yet (a document loaded before the preload, or a
             # remote end without preload support): install it and run in one call.
-            result = self._call(context, f"(root) => (globalThis.{_GLOBAL} = ({_atom()}))(root)", arguments, final=True)
+            result = self._call(
+                context, self._declaration(f"(globalThis.{_GLOBAL} = ({_atom()}))", root), arguments, final=True
+            )
         assert result is not None
+        if result.get("type") == "null":
+            # Another document owns the root (Firefox resolves shared ids group-wide).
+            raise _NoSuchNode()
         node = node_from_remote_value(result, self._element)
-        self._stitch_frames(context, node)
+        self._stitch(context, node)
         return node
+
+    @staticmethod
+    def _declaration(atom: str, root: WebElement | None) -> str:
+        """The function to call: the whole page, or a root this document owns, else null."""
+        if root is None:
+            return f"() => {atom}()"
+        return f"(root) => root && root.ownerDocument === document ? {atom}(root) : null"
 
     def _call(self, context: str, declaration: str, arguments: list[Any], final: bool = False) -> dict[str, Any] | None:
         """Run ``declaration`` in the sandbox of ``context``; None when it threw and a retry may help."""
@@ -300,19 +314,22 @@ class AccessibilitySnapshotter:
             raise WebDriverException(f"accessibility snapshot failed in the page: {text}")
         return raw.get("result")
 
-    def _stitch_frames(self, context: str, node: AccessibilityNode) -> None:
-        """Replace each ``iframe`` leaf's children with its document's tree, where reachable."""
+    def _stitch(self, context: str, node: AccessibilityNode) -> None:
+        """Replace an ``iframe`` node's children, here or below, with its document's tree where reachable."""
+        if node.role == "iframe" and node.element is not None:
+            child_context = self._frame_context(context, node.element)
+            if child_context is not None:
+                try:
+                    node.children = [self._snapshot_context(child_context, None)]
+                except (_NoSuchNode, WebDriverException) as e:
+                    # Gone between discovery and the call, or mid-navigation: the frame
+                    # stays a leaf (ADR §1). Anything else is a real failure.
+                    if not _frame_unreachable(e):
+                        raise
+                    logger.debug("accessibility snapshot: frame %s not reachable: %s", child_context, e)
+            return
         for child in node.children:
-            if child.role == "iframe" and child.element is not None:
-                child_context = self._frame_context(context, child.element)
-                if child_context is not None:
-                    try:
-                        child.children = [self._snapshot_context(child_context, None)]
-                    except WebDriverException as e:
-                        # Mid-navigation or otherwise unreachable: the frame stays a leaf (ADR §1).
-                        logger.debug("accessibility snapshot: frame %s not reachable: %s", child_context, e)
-            else:
-                self._stitch_frames(context, child)
+            self._stitch(context, child)
 
     def _frame_context(self, context: str, frame: WebElement) -> str | None:
         """The browsing context id of a frame element, from its WindowProxy; None when it has none."""
@@ -325,6 +342,8 @@ class AccessibilitySnapshotter:
                 result_ownership="none",
             )
         except WebDriverException as e:
+            if not _frame_unreachable(e):
+                raise
             logger.debug("accessibility snapshot: no browsing context for frame: %s", e)
             return None
         if not isinstance(raw, dict) or raw.get("type") != "success":
@@ -337,12 +356,7 @@ class AccessibilitySnapshotter:
     def _contexts(self, top: str) -> Iterator[str]:
         """The window's browsing contexts, top-level first, then each frame depth-first."""
         yield top
-        try:
-            infos = self._driver.browsing_context.get_tree(root=top)
-        except WebDriverException as e:
-            logger.debug("accessibility snapshot: browsing context tree unavailable: %s", e)
-            return
-        stack = list(infos or [])
+        stack = list(self._driver.browsing_context.get_tree(root=top) or [])
         while stack:
             info = stack.pop(0)
             if info.context != top:
@@ -357,3 +371,9 @@ class AccessibilitySnapshotter:
 
 class _NoSuchNode(Exception):
     """A shared id that the targeted document does not own."""
+
+
+def _frame_unreachable(e: Exception) -> bool:
+    """Whether an error says a frame or its document is gone, rather than that a command failed."""
+    message = str(e)
+    return isinstance(e, _NoSuchNode) or "no such frame" in message or "no such node" in message

@@ -63,7 +63,7 @@ task :local_dev, [:all] do |_task, arguments|
   else
     dirs = %w[common/bidi common/_bidi common/devtools]
     files = %w[
-      remote/getAttribute.js remote/isDisplayed.js remote/findElements.js
+      remote/getAttribute.js remote/isDisplayed.js remote/findElements.js remote/accessibilitySnapshot.js
       common/mutation-listener.js common/bidi-mutation-listener.js
       common/linux-x86_64/selenium-manager common/linux-arm64/selenium-manager
       common/macos/selenium-manager common/windows/selenium-manager.exe
