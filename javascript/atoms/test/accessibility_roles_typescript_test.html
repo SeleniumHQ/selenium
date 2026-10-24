@@ -205,7 +205,9 @@ under the License.
     });
 
     QUnit.test('a form is a landmark only when it has an accessible name (html-aam)', function (assert) {
-      assertRoles(assert, { 'form': 'generic', 'form-named': 'form', 'form-titled': 'form' });
+      assertRoles(assert, {
+        'form': 'generic', 'form-named': 'form', 'form-titled': 'form', 'form-image-labelled': 'form',
+      });
     });
 
     QUnit.module('implicit roles: lists and tables');
@@ -261,7 +263,10 @@ under the License.
     });
 
     QUnit.test('section is a region only when labelled', function (assert) {
-      assertRoles(assert, { 'section': 'generic', 'section-labelled': 'region', 'section-labelledby': 'region', 'section-title': 'region' });
+      assertRoles(assert, {
+        'section': 'generic', 'section-labelled': 'region', 'section-labelledby': 'region', 'section-title': 'region',
+        'section-image-labelledby': 'region',
+      });
     });
 
     QUnit.test('an aria-labelledby that resolves to nothing does not make a landmark', function (assert) {
@@ -287,6 +292,7 @@ under the License.
     <section id="section-labelled" aria-label="Labelled">labelled section</section>
     <section id="section-labelledby" aria-labelledby="h2">labelled by heading</section>
     <section id="section-title" title="Search results">titled section</section>
+    <section id="section-image-labelledby" aria-labelledby="image-label">labelled by an image</section>
     <section id="section-bad-labelledby" aria-labelledby="no-such-id">labelled by nothing</section>
     <span id="empty-label"></span>
     <section id="section-empty-labelledby" aria-labelledby="empty-label">labelled by an empty element</section>
@@ -382,6 +388,8 @@ under the License.
   </form>
   <form id="form-named" aria-label="Checkout"></form>
   <form id="form-titled" title="Sign in"></form>
+  <form id="form-image-labelled" aria-labelledby="image-label"></form>
+  <div id="image-label"><img alt="Billing" src="/testdata/map.png"></div>
 
   <ul id="ul"><li id="li-in-ul">one</li></ul>
   <ol id="ol"><li id="li-in-ol">one</li></ol>

@@ -121,10 +121,10 @@ export function canTakeFocus(element: Element): boolean {
 }
 
 // html-aam makes some roles depend on whether the element has an accessible
-// name (section, aside inside sectioning content). Only the author sources
-// that can produce one are checked here: aria-label, an aria-labelledby that
-// resolves to something with text, or a title. The full name computation is
-// not what those rows ask for.
+// name (section, form, aside inside sectioning content). Only the author
+// sources that can produce one are checked here: aria-label, an
+// aria-labelledby that resolves to something with a text alternative, or a
+// title. The full name computation is not what those rows ask for.
 function hasAuthorName(element: Element): boolean {
   const label = element.getAttribute('aria-label')
   if (label !== null && label.trim() !== '') {
@@ -135,13 +135,30 @@ function hasAuthorName(element: Element): boolean {
     const root = element.getRootNode() as Document | ShadowRoot
     for (const id of labelledBy.trim().split(/\s+/)) {
       const target = root.getElementById(id)
-      if (target && ((target.textContent || '').trim() !== '' || (target.getAttribute('aria-label') || '').trim() !== '')) {
+      if (target && hasTextAlternative(target)) {
         return true
       }
     }
   }
   const title = element.getAttribute('title')
   return title !== null && title.trim() !== ''
+}
+
+// The attributes accname reads for the text alternative of an element inside
+// a referenced label when it has no text of its own: an image's alt, a label
+// or tooltip, a control's value.
+const ALTERNATIVE_ATTRIBUTES = ['aria-label', 'alt', 'title', 'value']
+
+// Whether a referenced label can contribute any text: its own text content,
+// or an alternative on it or on an element below it.
+function hasTextAlternative(target: Element): boolean {
+  if ((target.textContent || '').trim() !== '') {
+    return true
+  }
+  const elements = [target, ...Array.from(target.querySelectorAll('*'))]
+  return elements.some((candidate) =>
+    ALTERNATIVE_ATTRIBUTES.some((attribute) => (candidate.getAttribute(attribute) || '').trim() !== ''),
+  )
 }
 
 // WAI-ARIA 1.2 §9.1: when an element with required owned elements is
