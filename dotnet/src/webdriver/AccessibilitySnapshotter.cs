@@ -21,6 +21,7 @@ using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Internal.Logging;
+using System.Text.Json;
 using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 using BrowsingContextInfo = OpenQA.Selenium.BiDi.BrowsingContext.Info;
 using GetTreeOptions = OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions;
@@ -28,8 +29,10 @@ using GetTreeOptions = OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions;
 namespace OpenQA.Selenium;
 
 /// <summary>
-/// Takes accessibility snapshots for one driver: installs the atom in the sandbox realm of each
-/// document over the driver's BiDi session and stitches child frames into the tree.
+/// Takes accessibility snapshots for one driver: runs the atom's wire entry in the sandbox realm
+/// of each document over the driver's BiDi session and stitches child frames into the tree. The
+/// atom hands the tree back as one JSON string beside the element and frame references, so this
+/// class only maps references and recurses into frames.
 /// </summary>
 internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
 {
@@ -38,15 +41,11 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
     // The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
     private const string Sandbox = "selenium";
 
-    // Where the atom is kept inside the sandbox realm once installed.
-    private const string Global = "__seleniumAccessibilitySnapshot";
-
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
 
     private readonly WebDriver driver;
     private readonly SemaphoreSlim connecting = new SemaphoreSlim(1, 1);
     private IBiDi? bidi;
-    private bool preloaded;
     private bool disposed;
 
     public AccessibilitySnapshotter(WebDriver driver)
@@ -55,7 +54,7 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
     }
 
     /// <summary>
-    /// Snapshots the whole page, or the subtree under <paramref name="root"/>.
+    /// Snapshots the whole page, or the subtree under the element <paramref name="rootId"/> refers to.
     /// </summary>
     /// <param name="rootId">The reference of the element whose subtree to snapshot, or <see langword="null"/> for the page of the current window's top-level browsing context.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
@@ -74,7 +73,7 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
 
         // The element may live in any frame of the window. Chromium resolves its shared id only in
         // the document that owns it; Firefox resolves it in any document of the browsing context
-        // group, so the script checks ownership itself and each context is tried until the owner is
+        // group, so the atom checks ownership itself and each context is tried until the owner is
         // found.
         foreach (BiDiBrowsingContext context in await ContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
         {
@@ -131,10 +130,7 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
         }
     }
 
-    // One BiDi connection per driver, opened on the first snapshot. New documents get the atom
-    // installed as they load; documents that predate the preload install it on first use, in
-    // CallAsync(). The flag follows a successful registration, so a failed one is tried again on
-    // the next snapshot.
+    // One BiDi connection per driver, opened on the first snapshot.
     private async Task<IBiDi> SessionAsync(CancellationToken cancellationToken)
     {
         await this.connecting.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -146,22 +142,6 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
             }
 
             this.bidi ??= await this.driver.AsBiDiAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-            if (!this.preloaded)
-            {
-                try
-                {
-                    await this.bidi.Script.AddPreloadScriptAsync(
-                        "() => { globalThis." + Global + " = (" + ResourceUtilities.AccessibilitySnapshotAtom + "); }",
-                        new AddPreloadScriptOptions { Sandbox = Sandbox },
-                        cancellationToken).ConfigureAwait(false);
-                    this.preloaded = true;
-                }
-                catch (BiDiException e)
-                {
-                    _logger.Debug("accessibility snapshot: preload not installed, falling back to on-demand install: " + e.Message);
-                }
-            }
-
             return this.bidi;
         }
         finally
@@ -177,37 +157,74 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
             ? ImmutableArray<LocalValue>.Empty
             : ImmutableArray.Create<LocalValue>(new SharedReferenceLocalValue(rootId));
 
-        RemoteValue? result = await CallAsync(session, context, Declaration("globalThis." + Global, rootId), arguments, false, cancellationToken).ConfigureAwait(false);
-        if (result is null)
+        RemoteValue result = await CallAsync(session, context, arguments, cancellationToken).ConfigureAwait(false);
+        if (result is NullRemoteValue)
         {
-            // The realm has no atom yet (a document loaded before the preload, or a remote end
-            // without preload support): install it and run in one call.
-            string declaration = Declaration("(globalThis." + Global + " = (" + ResourceUtilities.AccessibilitySnapshotAtom + "))", rootId);
-            result = await CallAsync(session, context, declaration, arguments, true, cancellationToken).ConfigureAwait(false);
-        }
-
-        if (result is null || result is NullRemoteValue)
-        {
-            // Another document owns the root (Firefox resolves shared ids group-wide).
             return null;
         }
 
-        return await this.DecodeAsync(session, result, context, cancellationToken).ConfigureAwait(false);
-    }
-
-    // The function to call: the whole page, or a root this document owns, else null.
-    private static string Declaration(string atom, string? rootId)
-    {
-        if (rootId is null)
+        Dictionary<string, RemoteValue> fields = ObjectFields(result);
+        if (fields.ContainsKey("error"))
         {
-            return "() => " + atom + "()";
+            // The only error the atom reports as data: the root left its document.
+            throw new StaleElementReferenceException(StaleMessage);
         }
 
-        return "(root) => root && root.ownerDocument === document ? " + atom + "(root) : null";
+        List<IWebElement> elements = new List<IWebElement>();
+        foreach (RemoteValue node in Items(Required(fields, "elements")))
+        {
+            elements.Add(this.driver.CreateElementFromReference(SharedId(node)));
+        }
+
+        List<BiDiBrowsingContext?> windows = new List<BiDiBrowsingContext?>();
+        foreach (RemoteValue window in Items(Required(fields, "windows")))
+        {
+            windows.Add(ContextOf(window));
+        }
+
+        using JsonDocument document = JsonDocument.Parse(StringOf(Required(fields, "json")));
+        return await this.FromWireAsync(
+            document.RootElement,
+            elements,
+            index => this.StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
     }
 
-    // Runs the declaration in the sandbox of the context; null when it threw and a retry may help.
-    private static async Task<RemoteValue?> CallAsync(IBiDi session, BiDiBrowsingContext context, string declaration, ImmutableArray<LocalValue> arguments, bool installAndRun, CancellationToken cancellationToken)
+    // Builds the node tree from the atom's wire form: the node's fields, with "element" an index
+    // into the elements and, on a frame node, "frame" an index the frame children callback
+    // resolves to the frame's own tree.
+    private async Task<AccessibilityNode> FromWireAsync(JsonElement data, IReadOnlyList<IWebElement> elements, Func<int, Task<IReadOnlyList<AccessibilityNode>>> frameChildren)
+    {
+        List<AccessibilityNode> children = new List<AccessibilityNode>();
+        if (data.TryGetProperty("frame", out JsonElement frame))
+        {
+            children.AddRange(await frameChildren(frame.GetInt32()).ConfigureAwait(false));
+        }
+        else
+        {
+            foreach (JsonElement child in data.GetProperty("children").EnumerateArray())
+            {
+                children.Add(await this.FromWireAsync(child, elements, frameChildren).ConfigureAwait(false));
+            }
+        }
+
+        Dictionary<string, object> states = new Dictionary<string, object>();
+        foreach (JsonProperty state in data.GetProperty("states").EnumerateObject())
+        {
+            states[state.Name] = StateOf(state.Value);
+        }
+
+        return new AccessibilityNode(
+            data.GetProperty("role").GetString() ?? string.Empty,
+            data.GetProperty("name").GetString() ?? string.Empty,
+            data.TryGetProperty("description", out JsonElement description) ? description.GetString() ?? string.Empty : string.Empty,
+            data.TryGetProperty("value", out JsonElement value) ? value.GetString() : null,
+            states,
+            data.TryGetProperty("element", out JsonElement element) ? elements[element.GetInt32()] : null,
+            children);
+    }
+
+    // Runs the atom's wire entry in the sandbox of the context; the remote value of its result.
+    private static async Task<RemoteValue> CallAsync(IBiDi session, BiDiBrowsingContext context, ImmutableArray<LocalValue> arguments, CancellationToken cancellationToken)
     {
         CallFunctionOptions options = new CallFunctionOptions
         {
@@ -216,31 +233,15 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
             SerializationOptions = new SerializationOptions { MaxDomDepth = 0 },
         };
 
-        EvaluateResult result = await CallFunctionAsync(session, context, declaration, options, cancellationToken).ConfigureAwait(false);
-        if (result is EvaluateResultSuccess success)
-        {
-            return success.Result;
-        }
-
-        string text = result is EvaluateResultException failure ? failure.ExceptionDetails.Text : result.ToString()!;
-        if (text.Contains("detached"))
-        {
-            throw new StaleElementReferenceException(StaleMessage);
-        }
-
-        if (!installAndRun)
-        {
-            return null;
-        }
-
-        throw new WebDriverException("accessibility snapshot failed in the page: " + text);
-    }
-
-    private static async Task<EvaluateResult> CallFunctionAsync(IBiDi session, BiDiBrowsingContext context, string declaration, CallFunctionOptions options, CancellationToken cancellationToken)
-    {
+        EvaluateResult result;
         try
         {
-            return await session.Script.CallFunctionAsync(declaration, false, new ContextTarget(context) { Sandbox = Sandbox }, options, cancellationToken).ConfigureAwait(false);
+            result = await session.Script.CallFunctionAsync(
+                "(root) => (" + ResourceUtilities.AccessibilitySnapshotAtom + ")(root)",
+                false,
+                new ContextTarget(context) { Sandbox = Sandbox },
+                options,
+                cancellationToken).ConfigureAwait(false);
         }
         catch (BiDiException e) when (Mentions(e, "no such node"))
         {
@@ -248,96 +249,36 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
             // root lives in another frame or because its document is gone.
             throw new NotOwnedException(e);
         }
-    }
 
-    // Decodes a snapshot from the callFunction result that carries it: an object remote value whose
-    // entries are the node's fields, with arrays as array values and elements as node values
-    // carrying a sharedId. An iframe node's children are replaced by its document's tree where
-    // reachable.
-    private async Task<AccessibilityNode> DecodeAsync(IBiDi session, RemoteValue value, BiDiBrowsingContext context, CancellationToken cancellationToken)
-    {
-        Dictionary<string, RemoteValue> fields = ObjectFields(value);
-        string? sharedId = fields.TryGetValue("element", out RemoteValue? elementValue) && elementValue is NodeRemoteValue node ? node.SharedId : null;
-        string role = StringOf(Required(fields, "role"));
-
-        Dictionary<string, object> states = new Dictionary<string, object>();
-        foreach (KeyValuePair<string, RemoteValue> state in ObjectFields(Required(fields, "states")))
+        if (result is EvaluateResultSuccess success)
         {
-            states[state.Key] = StateOf(state.Value);
+            return success.Result;
         }
 
-        List<AccessibilityNode> children = new List<AccessibilityNode>();
-        if (role == "iframe" && sharedId is not null)
-        {
-            children.AddRange(await this.StitchAsync(session, context, sharedId, cancellationToken).ConfigureAwait(false));
-        }
-        else
-        {
-            if (Required(fields, "children") is not ArrayRemoteValue array)
-            {
-                throw new WebDriverException("accessibility snapshot: expected an array of children");
-            }
-
-            foreach (RemoteValue child in array.Value ?? ImmutableArray<RemoteValue>.Empty)
-            {
-                children.Add(await this.DecodeAsync(session, child, context, cancellationToken).ConfigureAwait(false));
-            }
-        }
-
-        return new AccessibilityNode(
-            role,
-            StringOf(Required(fields, "name")),
-            fields.TryGetValue("description", out RemoteValue? description) ? StringOf(description) : string.Empty,
-            fields.TryGetValue("value", out RemoteValue? fieldValue) ? StringOf(fieldValue) : null,
-            states,
-            sharedId is null ? null : this.driver.CreateElementFromReference(sharedId),
-            children);
+        string text = result is EvaluateResultException failure ? failure.ExceptionDetails.Text : result.ToString()!;
+        throw new WebDriverException("accessibility snapshot failed in the page: " + text);
     }
 
     // The document of a frame as the frame node's one child, or no children when unreachable.
-    private async Task<IReadOnlyList<AccessibilityNode>> StitchAsync(IBiDi session, BiDiBrowsingContext context, string frameId, CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<AccessibilityNode>> StitchAsync(IBiDi session, BiDiBrowsingContext? context, CancellationToken cancellationToken)
     {
-        BiDiBrowsingContext? childContext = await FrameContextAsync(session, context, frameId, cancellationToken).ConfigureAwait(false);
-        if (childContext is null)
+        if (context is null)
         {
             return Array.Empty<AccessibilityNode>();
         }
 
         try
         {
-            AccessibilityNode? document = await this.SnapshotContextAsync(session, childContext, null, cancellationToken).ConfigureAwait(false);
+            AccessibilityNode? document = await this.SnapshotContextAsync(session, context, null, cancellationToken).ConfigureAwait(false);
             return document is null ? Array.Empty<AccessibilityNode>() : new[] { document };
         }
         catch (Exception e) when (FrameUnreachable(e))
         {
             // Gone between discovery and the call, or mid-navigation: the frame stays a leaf.
             // Anything else is a real failure.
-            _logger.Debug("accessibility snapshot: frame " + childContext.Id + " not reachable: " + e.Message);
+            _logger.Debug("accessibility snapshot: frame " + context.Id + " not reachable: " + e.Message);
             return Array.Empty<AccessibilityNode>();
         }
-    }
-
-    // The browsing context of a frame element, from its WindowProxy; null when it has none.
-    private static async Task<BiDiBrowsingContext?> FrameContextAsync(IBiDi session, BiDiBrowsingContext context, string frameId, CancellationToken cancellationToken)
-    {
-        CallFunctionOptions options = new CallFunctionOptions
-        {
-            Arguments = ImmutableArray.Create<LocalValue>(new SharedReferenceLocalValue(frameId)),
-            ResultOwnership = ResultOwnership.None,
-        };
-
-        EvaluateResult result;
-        try
-        {
-            result = await CallFunctionAsync(session, context, "(frame) => frame.contentWindow", options, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception e) when (FrameUnreachable(e))
-        {
-            _logger.Debug("accessibility snapshot: no browsing context for frame: " + e.Message);
-            return null;
-        }
-
-        return result is EvaluateResultSuccess success && success.Result is WindowProxyRemoteValue window ? window.Value.Context : null;
     }
 
     // The window's browsing contexts, top-level first, then each frame depth-first.
@@ -399,14 +340,40 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
         return fields;
     }
 
+    private static ImmutableArray<RemoteValue> Items(RemoteValue value)
+    {
+        if (value is not ArrayRemoteValue array)
+        {
+            throw new WebDriverException("accessibility snapshot: expected an array remote value, got " + value.GetType().Name);
+        }
+
+        return array.Value ?? ImmutableArray<RemoteValue>.Empty;
+    }
+
     private static RemoteValue Required(Dictionary<string, RemoteValue> fields, string name)
     {
         if (!fields.TryGetValue(name, out RemoteValue? value))
         {
-            throw new WebDriverException("accessibility snapshot: the node has no " + name);
+            throw new WebDriverException("accessibility snapshot: the result has no " + name);
         }
 
         return value;
+    }
+
+    private static string SharedId(RemoteValue value)
+    {
+        if (value is not NodeRemoteValue node || string.IsNullOrEmpty(node.SharedId))
+        {
+            throw new WebDriverException("accessibility snapshot: expected a node reference in the elements list");
+        }
+
+        return node.SharedId;
+    }
+
+    // The browsing context of a window remote value; null for a frame with no reachable context.
+    private static BiDiBrowsingContext? ContextOf(RemoteValue value)
+    {
+        return value is WindowProxyRemoteValue window ? window.Value.Context : null;
     }
 
     private static string StringOf(RemoteValue value)
@@ -415,19 +382,18 @@ internal sealed class AccessibilitySnapshotter : IAsyncDisposable, IDisposable
         {
             StringRemoteValue s => s.Value,
             NullRemoteValue or UndefinedRemoteValue => string.Empty,
-            BooleanRemoteValue b => b.Value ? "true" : "false",
-            NumberRemoteValue n => Convert.ToString(n.Value, System.Globalization.CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
         };
     }
 
-    private static object StateOf(RemoteValue value)
+    private static object StateOf(JsonElement value)
     {
-        return value switch
+        return value.ValueKind switch
         {
-            BooleanRemoteValue b => b.Value,
-            NumberRemoteValue n => Convert.ToInt64(n.Value),
-            _ => StringOf(value),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Number => value.GetInt64(),
+            _ => value.GetString() ?? string.Empty,
         };
     }
 
