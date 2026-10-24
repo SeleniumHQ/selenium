@@ -19,9 +19,10 @@
 
 The tree is computed by the ``accessibility-snapshot`` atom of ``@selenium/atoms``,
 run over WebDriver BiDi in a sandbox realm so page scripts cannot interfere with
-it. This module holds the parts that are the binding's: the public node type and
-its text form, the decoder from the BiDi wire shape, frame stitching, and the
-mapping of element references to :class:`WebElement`.
+it. The atom's wire entry hands the tree back as one JSON string beside the
+element and frame references, so this module holds only what is the binding's:
+the public node type and its text form, the mapping of references to
+:class:`WebElement`, and frame stitching across browsing contexts.
 
 The output is *computed* from the DOM following WAI-ARIA, html-aam and accname;
 it is not the browser's own accessibility tree and can differ from it at the
@@ -30,6 +31,7 @@ edges.
 
 from __future__ import annotations
 
+import json
 import logging
 import pkgutil
 from collections.abc import Callable, Iterator
@@ -52,9 +54,8 @@ _STATE_ORDER = ("checked", "pressed", "expanded", "selected", "level", "disabled
 
 # The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
 _SANDBOX = "selenium"
-# Where the atom is kept inside the sandbox realm once installed.
-_GLOBAL = "__seleniumAccessibilitySnapshot"
 _SERIALIZATION_OPTIONS = {"maxDomDepth": 0}
+_STALE_MESSAGE = "the snapshot root is no longer attached to a document"
 
 _atom_source: str | None = None
 
@@ -135,62 +136,42 @@ def _one_line(value: str) -> str:
     return value.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
 
 
-def node_from_remote_value(value: dict[str, Any], element_factory: Callable[[str], WebElement]) -> AccessibilityNode:
-    """Decode a snapshot from the ``script.callFunction`` result that carries it.
+def node_from_wire(
+    data: dict[str, Any],
+    elements: list[WebElement],
+    frame_children: Callable[[int], list[AccessibilityNode]],
+) -> AccessibilityNode:
+    """Build the node tree from the atom's wire form.
 
     Args:
-        value: The BiDi remote value of the atom's return value: an ``object`` whose
-            value is a list of ``[key, value]`` pairs, with arrays as ``array`` and
-            elements as ``node`` values carrying a ``sharedId``.
-        element_factory: Makes the element for a shared id.
+        data: The parsed JSON of the tree: the node's fields, with ``element`` an
+            index into ``elements`` and, on a frame node, ``frame`` an index the
+            binding resolves to the frame's own tree.
+        elements: The elements the tree references, in the atom's order.
+        frame_children: The children of a frame node, from its ``frame`` index: the
+            frame's document, or nothing when it cannot be reached.
 
     Returns:
-        The decoded node, with its subtree.
+        The node, with its subtree.
     """
-    fields = _object_fields(value)
-    element = None
-    element_value = fields.get("element")
-    if element_value is not None and element_value.get("type") == "node" and "sharedId" in element_value:
-        element = element_factory(element_value["sharedId"])
-    value_field = fields.get("value")
+    element_index = data.get("element")
+    if "frame" in data:
+        children = frame_children(data["frame"])
+    else:
+        children = [node_from_wire(child, elements, frame_children) for child in data["children"]]
     return AccessibilityNode(
-        role=_string(fields["role"]),
-        name=_string(fields["name"]),
-        description=_string(fields.get("description", {"type": "string", "value": ""})),
-        value=_string(value_field) if value_field is not None else None,
-        states={key: _state(state) for key, state in _object_fields(fields["states"]).items()},
-        element=element,
-        children=[node_from_remote_value(child, element_factory) for child in fields["children"].get("value", [])],
+        role=data["role"],
+        name=data["name"],
+        description=data.get("description", ""),
+        value=data.get("value"),
+        states=dict(data["states"]),
+        element=elements[element_index] if element_index is not None else None,
+        children=children,
     )
 
 
-def _object_fields(value: dict[str, Any]) -> dict[str, Any]:
-    if value.get("type") != "object":
-        raise WebDriverException(f"accessibility snapshot: expected an object remote value, got {value.get('type')!r}")
-    return {_key(key): entry for key, entry in value.get("value", [])}
-
-
-def _key(key: Any) -> str:
-    # A property name is written as a plain string, or as a string remote value.
-    return key if isinstance(key, str) else _string(key)
-
-
-def _string(value: dict[str, Any]) -> str:
-    return str(value.get("value", ""))
-
-
-def _state(value: dict[str, Any]) -> StateValue:
-    kind = value.get("type")
-    raw = value.get("value")
-    if kind == "boolean":
-        return bool(raw)
-    if kind == "number":
-        return int(raw if raw is not None else 0)
-    return str(raw)
-
-
 def _atom() -> str:
-    """The atom's source, a JavaScript function expression, read once from the package."""
+    """The atom's wire entry, a JavaScript function expression, read once from the package."""
     global _atom_source
     if _atom_source is None:
         package = ".".join(__name__.split(".")[:-1])
@@ -202,15 +183,10 @@ def _atom() -> str:
 
 
 class AccessibilitySnapshotter:
-    """Takes snapshots for one driver.
-
-    Installs the atom in the sandbox realm of each document and stitches child
-    frames into the tree.
-    """
+    """Takes snapshots for one driver: runs the atom in each document and stitches child frames into the tree."""
 
     def __init__(self, driver: WebDriver) -> None:
         self._driver = driver
-        self._preloaded = False
 
     def snapshot(self, root: WebElement | None) -> AccessibilityNode:
         """Snapshot the whole page, or the subtree under ``root``.
@@ -226,65 +202,48 @@ class AccessibilitySnapshotter:
         Raises:
             StaleElementReferenceException: When ``root`` no longer belongs to a document.
         """
-        self._ensure_preload()
         top = self._driver.current_window_handle
         if root is None:
-            return self._snapshot_context(top, None)
+            node = self._snapshot_context(top, None)
+            if node is None:
+                raise WebDriverException("accessibility snapshot: the script returned nothing")
+            return node
         # The element may live in any frame of the window. Chromium resolves its shared
         # id only in the document that owns it; Firefox resolves it in any document of
-        # the browsing context group, so the script checks ownership itself and each
+        # the browsing context group, so the atom checks ownership itself and each
         # context is tried until the owner is found.
         for context in self._contexts(top):
             try:
-                return self._snapshot_context(context, root)
+                node = self._snapshot_context(context, root.id)
             except _NoSuchNode:
                 continue
-        raise StaleElementReferenceException("the snapshot root is no longer attached to a document")
+            if node is not None:
+                return node
+        raise StaleElementReferenceException(_STALE_MESSAGE)
 
-    def _ensure_preload(self) -> None:
-        # New documents get the atom installed as they load; documents that predate
-        # the preload install it on first use, in _call.
-        if self._preloaded:
-            return
-        try:
-            self._driver.script.add_preload_script(
-                function_declaration=f"() => {{ globalThis.{_GLOBAL} = ({_atom()}); }}", sandbox=_SANDBOX
-            )
-        except WebDriverException as e:
-            # Left unset, so the next snapshot tries again.
-            logger.debug("accessibility snapshot: preload not installed, falling back to on-demand install: %s", e)
-            return
-        self._preloaded = True
-
-    def _snapshot_context(self, context: str, root: WebElement | None) -> AccessibilityNode:
-        arguments = [{"sharedId": root.id}] if root is not None else []
-        result = self._call(context, self._declaration(f"globalThis.{_GLOBAL}", root), arguments)
-        if result is None:
-            # The realm has no atom yet (a document loaded before the preload, or a
-            # remote end without preload support): install it and run in one call.
-            result = self._call(
-                context, self._declaration(f"(globalThis.{_GLOBAL} = ({_atom()}))", root), arguments, final=True
-            )
-        assert result is not None
+    def _snapshot_context(self, context: str, root_id: str | None) -> AccessibilityNode | None:
+        """The snapshot of ``context``, or None when another document owns the root."""
+        arguments = [{"sharedId": root_id}] if root_id is not None else []
+        result = self._call(context, arguments)
         if result.get("type") == "null":
-            # Another document owns the root (Firefox resolves shared ids group-wide).
-            raise _NoSuchNode()
-        node = node_from_remote_value(result, self._element)
-        self._stitch(context, node)
-        return node
+            return None
+        fields = _object_fields(result)
+        if "error" in fields:
+            # The only error the atom reports as data: the root left its document.
+            raise StaleElementReferenceException(_STALE_MESSAGE)
+        elements = [self._element(_shared_id(node)) for node in fields["elements"].get("value", [])]
+        windows = [_context_of(window) for window in fields["windows"].get("value", [])]
+        return node_from_wire(
+            json.loads(_string(fields["json"])),
+            elements,
+            lambda index: self._stitch(windows[index]),
+        )
 
-    @staticmethod
-    def _declaration(atom: str, root: WebElement | None) -> str:
-        """The function to call: the whole page, or a root this document owns, else null."""
-        if root is None:
-            return f"() => {atom}()"
-        return f"(root) => root && root.ownerDocument === document ? {atom}(root) : null"
-
-    def _call(self, context: str, declaration: str, arguments: list[Any], final: bool = False) -> dict[str, Any] | None:
-        """Run ``declaration`` in the sandbox of ``context``; None when it threw and a retry may help."""
+    def _call(self, context: str, arguments: list[Any]) -> dict[str, Any]:
+        """Run the atom's wire entry in the sandbox of ``context`` and return the remote value of its result."""
         try:
             raw = self._driver.script.call_function(
-                function_declaration=declaration,
+                function_declaration=f"(root) => ({_atom()})(root)",
                 await_promise=False,
                 target={"context": context, "sandbox": _SANDBOX},
                 arguments=arguments,
@@ -302,52 +261,23 @@ class AccessibilitySnapshotter:
             raise WebDriverException(f"accessibility snapshot: unexpected script result {raw!r}")
         if raw.get("type") == "exception":
             details = raw.get("exceptionDetails") or {}
-            text = str(details.get("text", details))
-            if "detached" in text:
-                raise StaleElementReferenceException("the snapshot root is no longer attached to a document")
-            if not final:
-                return None
-            raise WebDriverException(f"accessibility snapshot failed in the page: {text}")
-        return raw.get("result")
+            raise WebDriverException(f"accessibility snapshot failed in the page: {details.get('text', details)}")
+        return raw.get("result") or {}
 
-    def _stitch(self, context: str, node: AccessibilityNode) -> None:
-        """Replace an ``iframe`` node's children, here or below, with its document's tree where reachable."""
-        if node.role == "iframe" and node.element is not None:
-            child_context = self._frame_context(context, node.element)
-            if child_context is not None:
-                try:
-                    node.children = [self._snapshot_context(child_context, None)]
-                except (_NoSuchNode, WebDriverException) as e:
-                    # Gone between discovery and the call, or mid-navigation: the frame
-                    # stays a leaf (ADR §1). Anything else is a real failure.
-                    if not _frame_unreachable(e):
-                        raise
-                    logger.debug("accessibility snapshot: frame %s not reachable: %s", child_context, e)
-            return
-        for child in node.children:
-            self._stitch(context, child)
-
-    def _frame_context(self, context: str, frame: WebElement) -> str | None:
-        """The browsing context id of a frame element, from its WindowProxy; None when it has none."""
+    def _stitch(self, context: str | None) -> list[AccessibilityNode]:
+        """The document of a frame as the frame node's one child, or no children when unreachable."""
+        if context is None:
+            return []
         try:
-            raw = self._driver.script.call_function(
-                function_declaration="(frame) => frame.contentWindow",
-                await_promise=False,
-                target={"context": context, "sandbox": _SANDBOX},
-                arguments=[{"sharedId": frame.id}],
-                result_ownership="none",
-            )
-        except WebDriverException as e:
+            document = self._snapshot_context(context, None)
+        except (_NoSuchNode, WebDriverException) as e:
+            # Gone between discovery and the call, or mid-navigation: the frame stays
+            # a leaf (ADR §1). Anything else is a real failure.
             if not _frame_unreachable(e):
                 raise
-            logger.debug("accessibility snapshot: no browsing context for frame: %s", e)
-            return None
-        if not isinstance(raw, dict) or raw.get("type") != "success":
-            return None
-        window = raw.get("result") or {}
-        if window.get("type") != "window":
-            return None
-        return (window.get("value") or {}).get("context")
+            logger.debug("accessibility snapshot: frame %s not reachable: %s", context, e)
+            return []
+        return [document] if document is not None else []
 
     def _contexts(self, top: str) -> Iterator[str]:
         """The window's browsing contexts, top-level first, then each frame depth-first."""
@@ -373,3 +303,28 @@ def _frame_unreachable(e: Exception) -> bool:
     """Whether an error says a frame or its document is gone, rather than that a command failed."""
     message = str(e)
     return isinstance(e, _NoSuchNode) or "no such frame" in message or "no such node" in message
+
+
+def _object_fields(value: dict[str, Any]) -> dict[str, Any]:
+    if value.get("type") != "object":
+        raise WebDriverException(f"accessibility snapshot: expected an object remote value, got {value.get('type')!r}")
+    # A property name is written as a plain string, or as a string remote value.
+    return {key if isinstance(key, str) else _string(key): entry for key, entry in value.get("value", [])}
+
+
+def _string(value: dict[str, Any]) -> str:
+    return str(value.get("value", ""))
+
+
+def _shared_id(node: dict[str, Any]) -> str:
+    shared_id = node.get("sharedId")
+    if node.get("type") != "node" or not shared_id:
+        raise WebDriverException("accessibility snapshot: expected a node reference in the elements list")
+    return str(shared_id)
+
+
+def _context_of(window: dict[str, Any]) -> str | None:
+    """The browsing context id of a window remote value; None for a frame with no reachable context."""
+    if window.get("type") != "window":
+        return None
+    return (window.get("value") or {}).get("context")

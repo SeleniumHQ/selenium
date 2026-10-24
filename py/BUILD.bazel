@@ -163,7 +163,7 @@ copy_file(
 
 copy_file(
     name = "accessibility-snapshot",
-    src = "//javascript/atoms/fragments:accessibility-snapshot-typescript.js",
+    src = "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js",
     out = "selenium/webdriver/remote/accessibilitySnapshot.js",
 )
 

@@ -25,12 +25,7 @@ from pathlib import Path
 
 import pytest
 
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.remote.accessibility_snapshot import (
-    AccessibilityNode,
-    AccessibilitySnapshotter,
-    node_from_remote_value,
-)
+from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode, node_from_wire
 
 CORPUS = Path(__file__).parents[6] / "common" / "src" / "web" / "accessibility"
 
@@ -91,101 +86,65 @@ def test_to_text_indents_children_two_spaces_per_level():
     assert tree.to_text() == '- list\n  - listitem\n    - text: one\n    - link "more"'
 
 
-def _remote(type_, value=None, **extra):
-    out = {"type": type_}
-    if value is not None:
-        out["value"] = value
-    out.update(extra)
-    return out
+def test_node_from_wire_builds_the_tree_and_resolves_the_indices():
+    """The atom's wire form: element indices into the elements list, a frame index for frame nodes."""
+    data = {
+        "role": "generic",
+        "name": "",
+        "description": "",
+        "states": {},
+        "element": 0,
+        "children": [
+            {"role": "text", "name": "Intro", "description": "", "states": {}, "children": []},
+            {
+                "role": "textbox",
+                "name": "Email",
+                "description": "Where to write",
+                "value": "a@b.c",
+                "states": {"focused": True, "level": 2, "pressed": "mixed", "selected": False},
+                "element": 1,
+                "children": [],
+            },
+            {
+                "role": "iframe",
+                "name": "Embedded",
+                "description": "",
+                "states": {},
+                "element": 2,
+                "frame": 0,
+                "children": [],
+            },
+        ],
+    }
+    elements = ["element:0", "element:1", "element:2"]
+    stitched = []
 
+    def frame_children(index):
+        stitched.append(index)
+        return [AccessibilityNode(role="document", name="Inner")]
 
-def _remote_object(**fields):
-    return _remote("object", [[key, value] for key, value in fields.items()])
+    node = node_from_wire(data, elements, frame_children)
 
-
-def test_node_from_remote_value_decodes_the_wire_shape():
-    """A script.callFunction result: objects as key/value pairs, arrays, nodes with a sharedId."""
-    wire = _remote_object(
-        role=_remote("string", "button"),
-        name=_remote("string", "Save"),
-        description=_remote("string", "Saves the form"),
-        states=_remote_object(pressed=_remote("string", "mixed"), disabled=_remote("boolean", True)),
-        element=_remote("node", {"nodeType": 1}, sharedId="f.1.e.42"),
-        children=_remote(
-            "array",
-            [
-                _remote_object(
-                    role=_remote("string", "text"),
-                    name=_remote("string", "Save"),
-                    description=_remote("string", ""),
-                    states=_remote_object(),
-                    children=_remote("array", []),
-                ),
-                _remote_object(
-                    role=_remote("string", "heading"),
-                    name=_remote("string", "H"),
-                    description=_remote("string", ""),
-                    value=_remote("string", "v"),
-                    states=_remote_object(level=_remote("number", 2)),
-                    element=_remote("node", {"nodeType": 1}, sharedId="f.1.e.43"),
-                    children=_remote("array", []),
-                ),
-            ],
-        ),
-    )
-    made = []
-
-    def factory(shared_id):
-        made.append(shared_id)
-        return f"element:{shared_id}"
-
-    node = node_from_remote_value(wire, factory)
-
-    assert node.role == "button"
-    assert node.name == "Save"
-    assert node.description == "Saves the form"
-    assert node.value is None
-    assert node.states == {"pressed": "mixed", "disabled": True}
-    assert node.element == "element:f.1.e.42"
-    text, heading = node.children
+    assert node.role == "generic"
+    assert node.element == "element:0"
+    text, textbox, frame = node.children
     assert text.role == "text"
     assert text.element is None
     assert text.children == []
-    assert heading.value == "v"
-    assert heading.states == {"level": 2}
-    assert isinstance(heading.states["level"], int)
-    assert made == ["f.1.e.42", "f.1.e.43"]
+    assert textbox.element == "element:1"
+    assert textbox.value == "a@b.c"
+    assert textbox.description == "Where to write"
+    assert textbox.states == {"focused": True, "level": 2, "pressed": "mixed", "selected": False}
+    assert isinstance(textbox.states["level"], int)
+    assert frame.element == "element:2"
+    assert [child.name for child in frame.children] == ["Inner"], "the frame's children come from the binding"
+    assert stitched == [0]
 
 
-class _Script:
-    """A stand-in for driver.script whose preload fails until told otherwise."""
+def test_node_from_wire_keeps_absent_fields_absent():
+    node = node_from_wire({"role": "list", "name": "", "states": {}, "children": []}, [], lambda index: [])
 
-    def __init__(self):
-        self.calls = 0
-        self.failing = True
-
-    def add_preload_script(self, **kwargs):
-        self.calls += 1
-        if self.failing:
-            raise WebDriverException("unknown command: script.addPreloadScript")
-        return "preload-1"
-
-
-class _Driver:
-    def __init__(self):
-        self.script = _Script()
-
-
-def test_a_failed_preload_is_tried_again_on_the_next_snapshot():
-    driver = _Driver()
-    snapshotter = AccessibilitySnapshotter(driver)
-
-    snapshotter._ensure_preload()
-    assert driver.script.calls == 1
-    snapshotter._ensure_preload()
-    assert driver.script.calls == 2, "a failure must not count as preloaded"
-
-    driver.script.failing = False
-    snapshotter._ensure_preload()
-    snapshotter._ensure_preload()
-    assert driver.script.calls == 3, "a success is remembered"
+    assert node.description == ""
+    assert node.value is None
+    assert node.element is None
+    assert node.children == []
