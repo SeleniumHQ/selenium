@@ -165,13 +165,29 @@ suite(function (env) {
       }
     })
 
+    it('carries the document of an iframe taken as the root', async function () {
+      await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
+      const frame = await driver.findElement(By.id('frame'))
+
+      const tree = await frame.getAccessibilitySnapshot()
+
+      assert.strictEqual(tree.role, 'iframe')
+      assert.strictEqual(tree.name, 'Embedded content')
+      assert.deepStrictEqual(
+        tree.children.map((child) => child.role),
+        ['document'],
+      )
+    })
+
     it('snapshots an element inside a frame', async function () {
       await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
       await driver.switchTo().frame('frame')
       try {
         const body = await driver.findElement(By.css('body'))
         const tree = await body.getAccessibilitySnapshot()
+        // The root is the frame's body, not the top document that owns the window.
         assert.strictEqual(tree.role, 'generic')
+        assert.strictEqual(tree.name, '')
         assert.strictEqual(await tree.element.getTagName(), 'body')
       } finally {
         await driver.switchTo().defaultContent()

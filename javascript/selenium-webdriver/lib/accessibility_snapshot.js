@@ -231,6 +231,18 @@ function atomDeclaration() {
 /** A shared id that the targeted document does not own. */
 class NoSuchNode extends Error {}
 
+/** The function to call: the whole page, or a root this document owns, else null. */
+function declaration(atom, rootId) {
+  if (!rootId) return `() => ${atom}()`
+  return `(root) => (root && root.ownerDocument === document ? ${atom}(root) : null)`
+}
+
+/** Whether an error says a frame or its document is gone, rather than that a command failed. */
+function frameUnreachable(e) {
+  const message = String(e?.message ?? e)
+  return e instanceof NoSuchNode || message.includes('no such frame') || message.includes('no such node')
+}
+
 /**
  * Takes snapshots for one driver: installs the atom in the sandbox realm of
  * each document and stitches child frames into the tree.
@@ -269,8 +281,10 @@ class AccessibilitySnapshotter {
     if (!root) {
       return this.snapshotContext_(top, null)
     }
-    // The element may live in any frame of the window; its shared id resolves only
-    // in the document that owns it, so each context is tried until one accepts it.
+    // The element may live in any frame of the window. Chromium resolves its shared
+    // id only in the document that owns it; Firefox resolves it in any document of
+    // the browsing context group, so the script checks ownership itself and each
+    // context is tried until the owner is found.
     const rootId = await root.getId()
     for (const context of await this.contexts_(top)) {
       try {
@@ -314,14 +328,23 @@ class AccessibilitySnapshotter {
 
   async snapshotContext_(context, rootId) {
     const args = rootId ? [{ sharedId: rootId }] : []
-    let result = await this.call_(context, `(root) => globalThis.${GLOBAL}(root)`, args, false)
+    let result = await this.call_(context, declaration(`globalThis.${GLOBAL}`, rootId), args, false)
     if (result === null) {
       // The realm has no atom yet (a document loaded before the preload, or a
       // remote end without preload support): install it and run in one call.
-      result = await this.call_(context, `(root) => (globalThis.${GLOBAL} = (${atomDeclaration()}))(root)`, args, true)
+      result = await this.call_(
+        context,
+        declaration(`(globalThis.${GLOBAL} = (${atomDeclaration()}))`, rootId),
+        args,
+        true,
+      )
+    }
+    if (result.type === 'null') {
+      // Another document owns the root (Firefox resolves shared ids group-wide).
+      throw new NoSuchNode('the root belongs to another document')
     }
     const node = nodeFromRemoteValue(result, this.elementFactory_)
-    await this.stitchFrames_(context, node)
+    await this.stitch_(context, node)
     return node
   }
 
@@ -360,22 +383,24 @@ class AccessibilitySnapshotter {
     return raw.result
   }
 
-  /** Replaces each `iframe` leaf's children with its document's tree, where reachable. */
-  async stitchFrames_(context, node) {
-    for (const child of node.children) {
-      if (child.role === 'iframe' && child.element) {
-        const childContext = await this.frameContext_(context, child.element)
-        if (childContext) {
-          try {
-            child.children = [await this.snapshotContext_(childContext, null)]
-          } catch (e) {
-            // Mid-navigation or otherwise unreachable: the frame stays a leaf (ADR §1).
-            log_.finer(`accessibility snapshot: frame ${childContext} not reachable: ${e}`)
-          }
+  /** Replaces an `iframe` node's children, here or below, with its document's tree where reachable. */
+  async stitch_(context, node) {
+    if (node.role === 'iframe' && node.element) {
+      const childContext = await this.frameContext_(context, node.element)
+      if (childContext) {
+        try {
+          node.children = [await this.snapshotContext_(childContext, null)]
+        } catch (e) {
+          // Gone between discovery and the call, or mid-navigation: the frame
+          // stays a leaf (ADR §1). Anything else is a real failure.
+          if (!frameUnreachable(e)) throw e
+          log_.finer(`accessibility snapshot: frame ${childContext} not reachable: ${e}`)
         }
-      } else {
-        await this.stitchFrames_(context, child)
       }
+      return
+    }
+    for (const child of node.children) {
+      await this.stitch_(context, child)
     }
   }
 
@@ -392,6 +417,7 @@ class AccessibilitySnapshotter {
       if (raw.type !== 'success' || raw.result?.type !== 'window') return null
       return raw.result.value?.context ?? null
     } catch (e) {
+      if (!frameUnreachable(e)) throw e
       log_.finer(`accessibility snapshot: no browsing context for frame: ${e}`)
       return null
     }
@@ -400,16 +426,12 @@ class AccessibilitySnapshotter {
   /** The window's browsing contexts, top-level first, then each frame depth-first. */
   async contexts_(top) {
     const contexts = [top]
-    try {
-      const tree = await this.send_('browsingContext.getTree', { root: top })
-      const stack = [...(tree.contexts ?? [])]
-      while (stack.length) {
-        const info = stack.shift()
-        if (info.context !== top) contexts.push(info.context)
-        stack.unshift(...(info.children ?? []))
-      }
-    } catch (e) {
-      log_.finer(`accessibility snapshot: browsing context tree unavailable: ${e}`)
+    const tree = await this.send_('browsingContext.getTree', { root: top })
+    const stack = [...(tree.contexts ?? [])]
+    while (stack.length) {
+      const info = stack.shift()
+      if (info.context !== top) contexts.push(info.context)
+      stack.unshift(...(info.children ?? []))
     }
     return contexts
   }
