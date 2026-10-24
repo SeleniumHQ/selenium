@@ -86,7 +86,7 @@ java_library(
 
 copy_file(
     name = "accessibility-snapshot",
-    src = "//javascript/atoms/fragments:accessibility-snapshot-typescript.js",
+    src = "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js",
     out = "accessibilitySnapshot.js",
 )
 

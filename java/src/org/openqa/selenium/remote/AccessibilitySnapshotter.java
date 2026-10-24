@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AccessibilityNode;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.module.Script;
@@ -41,10 +43,13 @@ import org.openqa.selenium.bidi.script.ResultOwnership;
 import org.openqa.selenium.bidi.script.SerializationOptions;
 import org.openqa.selenium.bidi.script.WindowProxyProperties;
 import org.openqa.selenium.io.Read;
+import org.openqa.selenium.json.Json;
 
 /**
- * Takes accessibility snapshots for one BiDi session: installs the atom in the sandbox realm of
- * each document and stitches child frames into the tree.
+ * Takes accessibility snapshots for one BiDi session: runs the atom's wire entry in the sandbox
+ * realm of each document and stitches child frames into the tree. The atom hands the tree back as
+ * one JSON string beside the element and frame references, so this class only maps references and
+ * recurses into frames.
  */
 class AccessibilitySnapshotter {
 
@@ -53,18 +58,16 @@ class AccessibilitySnapshotter {
   /** The sandbox realm the atom runs in: page scripts cannot reach its prototypes. */
   private static final String SANDBOX = "selenium";
 
-  /** Where the atom is kept inside the sandbox realm once installed. */
-  private static final String GLOBAL = "__seleniumAccessibilitySnapshot";
-
   private static final String STALE_MESSAGE =
       "the snapshot root is no longer attached to a document";
+
+  private static final Json JSON = new Json();
 
   private static volatile @Nullable String atomSource;
 
   private final RemoteWebDriver driver;
   private final BiDi bidi;
   private final Script script;
-  private boolean preloaded;
 
   @SuppressWarnings("deprecation")
   AccessibilitySnapshotter(RemoteWebDriver driver) {
@@ -83,7 +86,6 @@ class AccessibilitySnapshotter {
    * @throws StaleElementReferenceException when {@code root} no longer belongs to a document
    */
   AccessibilityNode snapshot(@Nullable RemoteWebElement root) {
-    ensurePreload();
     String top = driver.getWindowHandle();
     if (root == null) {
       AccessibilityNode node = snapshotContext(top, null);
@@ -94,7 +96,7 @@ class AccessibilitySnapshotter {
     }
     // The element may live in any frame of the window. Chromium resolves its shared id only in
     // the document that owns it; Firefox resolves it in any document of the browsing context
-    // group, so the script checks ownership itself and each context is tried until the owner is
+    // group, so the atom checks ownership itself and each context is tried until the owner is
     // found.
     for (String context : contexts(top)) {
       try {
@@ -109,22 +111,46 @@ class AccessibilitySnapshotter {
     throw new StaleElementReferenceException(STALE_MESSAGE);
   }
 
-  // New documents get the atom installed as they load; documents that predate the preload install
-  // it on first use, in call(). The flag follows a successful registration, so a failed one is
-  // tried again on the next snapshot.
-  private void ensurePreload() {
-    if (preloaded) {
-      return;
+  /**
+   * Builds the node tree from the atom's wire form.
+   *
+   * @param data the parsed JSON of the tree: the node's fields, with {@code element} an index into
+   *     {@code elements} and, on a frame node, {@code frame} an index the binding resolves to the
+   *     frame's own tree
+   * @param elements the elements the tree references, in the atom's order
+   * @param frameChildren the children of a frame node, from its {@code frame} index: the frame's
+   *     document, or nothing when it cannot be reached
+   * @return the node, with its subtree
+   */
+  @SuppressWarnings("unchecked")
+  static AccessibilityNode fromWire(
+      Map<String, Object> data,
+      List<? extends WebElement> elements,
+      Function<Integer, List<AccessibilityNode>> frameChildren) {
+    List<AccessibilityNode> children = new ArrayList<>();
+    if (data.containsKey("frame")) {
+      children.addAll(frameChildren.apply(index(data.get("frame"))));
+    } else {
+      for (Object child : (List<Object>) data.get("children")) {
+        children.add(fromWire((Map<String, Object>) child, elements, frameChildren));
+      }
     }
-    try {
-      script.addPreloadScript("() => { globalThis." + GLOBAL + " = (" + atom() + "); }", SANDBOX);
-    } catch (WebDriverException e) {
-      LOG.fine(
-          "accessibility snapshot: preload not installed, falling back to on-demand install: "
-              + e.getMessage());
-      return;
-    }
-    preloaded = true;
+    Map<String, Object> states = new LinkedHashMap<>((Map<String, Object>) data.get("states"));
+    Object element = data.get("element");
+    Object description = data.get("description");
+    Object value = data.get("value");
+    return new AccessibilityNode(
+        (String) data.get("role"),
+        (String) data.get("name"),
+        description == null ? "" : (String) description,
+        value == null ? null : (String) value,
+        states,
+        element == null ? null : elements.get(index(element)),
+        children);
+  }
+
+  private static int index(Object value) {
+    return ((Number) value).intValue();
   }
 
   /** The snapshot of {@code context}, or {@code null} when another document owns the root. */
@@ -133,63 +159,44 @@ class AccessibilitySnapshotter {
         rootId == null
             ? List.of()
             : List.of(new RemoteReference(RemoteReference.Type.SHARED_ID, rootId));
-    RemoteValue result =
-        call(context, declaration("globalThis." + GLOBAL, rootId), arguments, false);
-    if (result == null) {
-      // The realm has no atom yet (a document loaded before the preload, or a remote end without
-      // preload support): install it and run in one call.
-      result =
-          call(
-              context,
-              declaration("(globalThis." + GLOBAL + " = (" + atom() + "))", rootId),
-              arguments,
-              true);
-    }
-    if (result == null || "null".equals(result.getType())) {
-      // Another document owns the root (Firefox resolves shared ids group-wide).
+    RemoteValue result = call(context, arguments);
+    if ("null".equals(result.getType())) {
       return null;
     }
-    return decode(result, context);
-  }
-
-  /** The function to call: the whole page, or a root this document owns, else null. */
-  private static String declaration(String atom, @Nullable String rootId) {
-    if (rootId == null) {
-      return "() => " + atom + "()";
+    Map<String, RemoteValue> fields = objectFields(result);
+    if (fields.containsKey("error")) {
+      // The only error the atom reports as data: the root left its document.
+      throw new StaleElementReferenceException(STALE_MESSAGE);
     }
-    return "(root) => root && root.ownerDocument === document ? " + atom + "(root) : null";
+    List<RemoteWebElement> elements = new ArrayList<>();
+    for (RemoteValue node : items(required(fields, "elements"))) {
+      elements.add(element(sharedId(node)));
+    }
+    List<@Nullable String> windows = new ArrayList<>();
+    for (RemoteValue window : items(required(fields, "windows"))) {
+      windows.add(contextOf(window));
+    }
+    Map<String, Object> data = JSON.toType(string(required(fields, "json")), Json.MAP_TYPE);
+    return fromWire(data, elements, index -> stitch(windows.get(index)));
   }
 
   /**
-   * Runs {@code declaration} in the sandbox of {@code context}; {@code null} when it threw and a
-   * retry may help.
+   * Runs the atom's wire entry in the sandbox of {@code context}; the remote value of its result.
    */
-  private @Nullable RemoteValue call(
-      String context, String declaration, List<LocalValue> arguments, boolean installAndRun) {
+  private RemoteValue call(String context, List<LocalValue> arguments) {
     SerializationOptions options = new SerializationOptions();
     options.setMaxDomDepth(0);
-    EvaluateResult result =
-        callFunction(
-            new CallFunctionParameters(new ContextTarget(context, SANDBOX), declaration, false)
-                .arguments(arguments)
-                .resultOwnership(ResultOwnership.NONE)
-                .serializationOptions(options));
-    if (result.getResultType() == EvaluateResult.Type.SUCCESS) {
-      return ((EvaluateResultSuccess) result).getResult();
-    }
-    String text = ((EvaluateResultExceptionValue) result).getExceptionDetails().getText();
-    if (text != null && text.contains("detached")) {
-      throw new StaleElementReferenceException(STALE_MESSAGE);
-    }
-    if (!installAndRun) {
-      return null;
-    }
-    throw new WebDriverException("accessibility snapshot failed in the page: " + text);
-  }
-
-  private EvaluateResult callFunction(CallFunctionParameters parameters) {
+    EvaluateResult result;
     try {
-      return script.callFunction(parameters);
+      result =
+          script.callFunction(
+              new CallFunctionParameters(
+                      new ContextTarget(context, SANDBOX),
+                      "(root) => (" + atom() + ")(root)",
+                      false)
+                  .arguments(arguments)
+                  .resultOwnership(ResultOwnership.NONE)
+                  .serializationOptions(options));
     } catch (WebDriverException e) {
       // The BiDi "no such node" error: the document of this context does not own the root's
       // shared id, either because the root lives in another frame or because its document is gone.
@@ -198,107 +205,31 @@ class AccessibilitySnapshotter {
       }
       throw e;
     }
-  }
-
-  /**
-   * Decodes a snapshot from the {@code script.callFunction} result that carries it: an {@code
-   * object} remote value whose entries are the node's fields, with arrays as {@code array} and
-   * elements as {@code node} values carrying a {@code sharedId}. An {@code iframe} node's children
-   * are replaced by its document's tree where reachable.
-   */
-  private AccessibilityNode decode(RemoteValue value, String context) {
-    Map<String, RemoteValue> fields = objectFields(value);
-    RemoteValue elementValue = fields.get("element");
-    String sharedId = null;
-    if (elementValue != null && "node".equals(elementValue.getType())) {
-      sharedId = elementValue.getSharedId().orElse(null);
+    if (result.getResultType() == EvaluateResult.Type.SUCCESS) {
+      return ((EvaluateResultSuccess) result).getResult();
     }
-    RemoteValue valueField = fields.get("value");
-    RemoteValue descriptionField = fields.get("description");
-    String role = string(required(fields, "role"));
-
-    Map<String, Object> states = new LinkedHashMap<>();
-    objectFields(required(fields, "states")).forEach((key, state) -> states.put(key, state(state)));
-
-    List<AccessibilityNode> children = new ArrayList<>();
-    if ("iframe".equals(role) && sharedId != null) {
-      children.addAll(stitch(context, sharedId));
-    } else {
-      RemoteValue childrenField = required(fields, "children");
-      Object items = childrenField.getValue().orElse(List.of());
-      if (!(items instanceof List)) {
-        throw new WebDriverException(
-            "accessibility snapshot: expected an array of children, got "
-                + childrenField.getType());
-      }
-      for (Object item : (List<?>) items) {
-        children.add(decode((RemoteValue) item, context));
-      }
-    }
-
-    return new AccessibilityNode(
-        role,
-        string(required(fields, "name")),
-        descriptionField == null ? "" : string(descriptionField),
-        valueField == null ? null : string(valueField),
-        states,
-        sharedId == null ? null : element(sharedId),
-        children);
+    String text = ((EvaluateResultExceptionValue) result).getExceptionDetails().getText();
+    throw new WebDriverException("accessibility snapshot failed in the page: " + text);
   }
 
   /** The document of a frame as the frame node's one child, or no children when unreachable. */
-  private List<AccessibilityNode> stitch(String context, String frameId) {
-    String childContext = frameContext(context, frameId);
-    if (childContext == null) {
+  private List<AccessibilityNode> stitch(@Nullable String context) {
+    if (context == null) {
       return List.of();
     }
+    AccessibilityNode document;
     try {
-      AccessibilityNode document = snapshotContext(childContext, null);
-      return document == null ? List.of() : List.of(document);
-    } catch (NotOwned | WebDriverException e) {
+      document = snapshotContext(context, null);
+    } catch (RuntimeException e) {
       // Gone between discovery and the call, or mid-navigation: the frame stays a leaf. Anything
       // else is a real failure.
       if (!frameUnreachable(e)) {
         throw e;
       }
-      LOG.fine(
-          "accessibility snapshot: frame " + childContext + " not reachable: " + e.getMessage());
+      LOG.fine("accessibility snapshot: frame " + context + " not reachable: " + e.getMessage());
       return List.of();
     }
-  }
-
-  /**
-   * The browsing context id of a frame element, from its WindowProxy; {@code null} when it has
-   * none.
-   */
-  private @Nullable String frameContext(String context, String frameId) {
-    EvaluateResult result;
-    try {
-      result =
-          callFunction(
-              new CallFunctionParameters(
-                      new ContextTarget(context, SANDBOX), "(frame) => frame.contentWindow", false)
-                  .arguments(List.of(new RemoteReference(RemoteReference.Type.SHARED_ID, frameId)))
-                  .resultOwnership(ResultOwnership.NONE));
-    } catch (NotOwned | WebDriverException e) {
-      if (!frameUnreachable(e)) {
-        throw e;
-      }
-      LOG.fine("accessibility snapshot: no browsing context for frame: " + e.getMessage());
-      return null;
-    }
-    if (result.getResultType() != EvaluateResult.Type.SUCCESS) {
-      return null;
-    }
-    RemoteValue window = ((EvaluateResultSuccess) result).getResult();
-    if (!"window".equals(window.getType())) {
-      return null;
-    }
-    Object properties = window.getValue().orElse(null);
-    if (!(properties instanceof WindowProxyProperties)) {
-      return null;
-    }
-    return ((WindowProxyProperties) properties).getBrowsingContext();
+    return document == null ? List.of() : List.of(document);
   }
 
   /** The window's browsing contexts, top-level first, then each frame depth-first. */
@@ -364,10 +295,22 @@ class AccessibilitySnapshotter {
     return fields;
   }
 
+  private static List<RemoteValue> items(RemoteValue array) {
+    Object raw = array.getValue().orElse(List.of());
+    if (!(raw instanceof List)) {
+      throw new WebDriverException("accessibility snapshot: expected an array remote value");
+    }
+    List<RemoteValue> items = new ArrayList<>();
+    for (Object item : (List<?>) raw) {
+      items.add((RemoteValue) item);
+    }
+    return items;
+  }
+
   private static RemoteValue required(Map<String, RemoteValue> fields, String name) {
     RemoteValue value = fields.get(name);
     if (value == null) {
-      throw new WebDriverException("accessibility snapshot: the node has no " + name);
+      throw new WebDriverException("accessibility snapshot: the result has no " + name);
     }
     return value;
   }
@@ -376,19 +319,29 @@ class AccessibilitySnapshotter {
     return value.getValue().map(String::valueOf).orElse("");
   }
 
-  private static Object state(RemoteValue value) {
-    Object raw = value.getValue().orElse(null);
-    switch (value.getType()) {
-      case "boolean":
-        return Boolean.TRUE.equals(raw);
-      case "number":
-        return raw instanceof Number ? ((Number) raw).longValue() : 0L;
-      default:
-        return String.valueOf(raw);
+  private static String sharedId(RemoteValue node) {
+    if (!"node".equals(node.getType()) || node.getSharedId().isEmpty()) {
+      throw new WebDriverException(
+          "accessibility snapshot: expected a node reference in the elements list");
     }
+    return node.getSharedId().get();
   }
 
-  /** The atom's source, a JavaScript function expression, read once from the jar. */
+  /**
+   * The browsing context id of a window remote value; null for a frame with no reachable context.
+   */
+  private static @Nullable String contextOf(RemoteValue window) {
+    if (!"window".equals(window.getType())) {
+      return null;
+    }
+    Object properties = window.getValue().orElse(null);
+    if (!(properties instanceof WindowProxyProperties)) {
+      return null;
+    }
+    return ((WindowProxyProperties) properties).getBrowsingContext();
+  }
+
+  /** The atom's wire entry, a JavaScript function expression, read once from the jar. */
   private static String atom() {
     String source = atomSource;
     if (source == null) {
