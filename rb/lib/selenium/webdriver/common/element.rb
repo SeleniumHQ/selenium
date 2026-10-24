@@ -181,6 +181,21 @@ module Selenium
       end
 
       #
+      # Takes an accessibility snapshot of the subtree under this element (ADR 18205).
+      # The element always produces the root node; an iframe carries its document.
+      # Requires a BiDi session.
+      #
+      # @return [AccessibilityNode] the node for this element, with its subtree
+      # @raise [Error::UnsupportedOperationError] when the session has no BiDi connection
+      # @raise [Error::StaleElementReferenceError] when the element no longer belongs to a document
+      # @see Driver#accessibility_snapshot
+      #
+
+      def accessibility_snapshot
+        bridge.accessibility_snapshot(self)
+      end
+
+      #
       # Get the text content of this element
       #
       # @return [String]

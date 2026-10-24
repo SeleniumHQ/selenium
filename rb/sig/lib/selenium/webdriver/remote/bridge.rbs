@@ -212,6 +212,8 @@ module Selenium
 
         def element_aria_label: (untyped element) -> untyped
 
+        def accessibility_snapshot: (?Element? root) -> AccessibilityNode
+
         def element_value: (untyped element) -> untyped
 
         def element_text: (untyped element) -> untyped
