@@ -102,19 +102,20 @@ function hasGlobalAriaAttribute(element: Element): boolean {
 // answers WebDriver's question and counts every anchor and label. The states
 // module uses the same notion for what an ancestor's aria-disabled reaches.
 export function canTakeFocus(element: Element): boolean {
-  const tabindex = element.getAttribute('tabindex')
-  if (tabindex !== null && /^\s*[-+]?\d+\s*$/.test(tabindex)) {
-    return true
-  }
   const name = element.localName
-  if (name === 'a' || name === 'area') {
-    return element.hasAttribute('href')
-  }
   if (NATIVELY_FOCUSABLE.has(name)) {
+    // A disabled control or a hidden input cannot take focus, whatever its tabindex.
     if (name === 'input' && (element as HTMLInputElement).type === 'hidden') {
       return false
     }
     return !('disabled' in element && (element as HTMLInputElement).disabled)
+  }
+  const tabindex = element.getAttribute('tabindex')
+  if (tabindex !== null && /^\s*[-+]?\d+\s*$/.test(tabindex)) {
+    return true
+  }
+  if (name === 'a' || name === 'area') {
+    return element.hasAttribute('href')
   }
   return (element as HTMLElement).isContentEditable === true
 }
@@ -271,7 +272,8 @@ export function implicitRole(element: Element, lookup: RoleLookup = computeRole)
     case 'footer':
       return hasAncestor(element, HEADER_FOOTER_SCOPES, HEADER_FOOTER_SCOPE_ROLES) ? 'generic' : 'contentinfo'
     case 'form':
-      return 'form'
+      // html-aam: a landmark only with an accessible name, otherwise no role.
+      return hasAuthorName(element) ? 'form' : 'generic'
     case 'frame':
     case 'iframe':
       return 'iframe'

@@ -16,9 +16,8 @@
       - heading "Related" [level=4]
     - heading "ARIA heading" [level=5]
     - search
-      - form
-        - text: Search
-        - searchbox "Search": kittens
+      - text: Search
+      - searchbox "Search": kittens
   - contentinfo
     - paragraph
       - text: Footer text

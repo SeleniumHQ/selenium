@@ -90,7 +90,10 @@ under the License.
     QUnit.test('focusable means able to take focus, not what WebDriver calls focusable', function (assert) {
       // An anchor without href and a disabled button cannot take focus, so
       // their presentational role stands.
-      assertRoles(assert, { 'none-anchor': 'none', 'presentation-disabled-button': 'presentation', 'none-tabindex-minus-one': 'generic' });
+      assertRoles(assert, {
+        'none-anchor': 'none', 'presentation-disabled-button': 'presentation',
+        'presentation-disabled-tabindex-button': 'presentation', 'none-tabindex-minus-one': 'generic',
+      });
     });
 
     QUnit.test('required owned elements of a presentational table or list are presentational too', function (assert) {
@@ -198,9 +201,11 @@ under the License.
     });
 
     QUnit.test('grouping and output elements', function (assert) {
-      assertRoles(assert, {
-        'fieldset': 'group', 'output': 'status', 'progress': 'progressbar', 'meter': 'meter', 'form': 'form',
-      });
+      assertRoles(assert, { 'fieldset': 'group', 'output': 'status', 'progress': 'progressbar', 'meter': 'meter' });
+    });
+
+    QUnit.test('a form is a landmark only when it has an accessible name (html-aam)', function (assert) {
+      assertRoles(assert, { 'form': 'generic', 'form-named': 'form', 'form-titled': 'form' });
     });
 
     QUnit.module('implicit roles: lists and tables');
@@ -312,6 +317,7 @@ under the License.
   <a id="none-link" role="none" href="#">x</a>
   <a id="none-anchor" role="none">x</a>
   <button id="presentation-disabled-button" role="presentation" disabled>x</button>
+  <button id="presentation-disabled-tabindex-button" role="presentation" disabled tabindex="0">x</button>
   <div id="none-tabindex-minus-one" role="none" tabindex="-1">x</div>
   <table role="presentation"><tbody id="pres-tbody"><tr id="pres-tr"><th id="pres-th">h</th><td id="pres-td">d</td></tr></tbody></table>
   <ul role="presentation"><li id="pres-li">x</li></ul>
@@ -374,6 +380,8 @@ under the License.
     <progress id="progress" value="1" max="2"></progress>
     <meter id="meter" value="1" max="2"></meter>
   </form>
+  <form id="form-named" aria-label="Checkout"></form>
+  <form id="form-titled" title="Sign in"></form>
 
   <ul id="ul"><li id="li-in-ul">one</li></ul>
   <ol id="ol"><li id="li-in-ol">one</li></ol>

@@ -154,29 +154,20 @@
           "element": "search",
           "children": [
             {
-              "role": "form",
-              "name": "",
+              "role": "text",
+              "name": "Search",
               "description": "",
               "states": {},
-              "element": "form",
-              "children": [
-                {
-                  "role": "text",
-                  "name": "Search",
-                  "description": "",
-                  "states": {},
-                  "children": []
-                },
-                {
-                  "role": "searchbox",
-                  "name": "Search",
-                  "description": "",
-                  "value": "kittens",
-                  "states": {},
-                  "element": "q",
-                  "children": []
-                }
-              ]
+              "children": []
+            },
+            {
+              "role": "searchbox",
+              "name": "Search",
+              "description": "",
+              "value": "kittens",
+              "states": {},
+              "element": "q",
+              "children": []
             }
           ]
         }
