@@ -315,15 +315,17 @@ class AccessibilitySnapshotter {
     // New documents get the atom installed as they load; documents that predate
     // the preload install it on first use, in call_.
     if (this.preloaded_) return
-    this.preloaded_ = true
     try {
       await this.send_('script.addPreloadScript', {
         functionDeclaration: `() => { globalThis.${GLOBAL} = (${atomDeclaration()}); }`,
         sandbox: SANDBOX,
       })
     } catch (e) {
+      // Left unset, so the next snapshot tries again.
       log_.finer(`accessibility snapshot: preload not installed, falling back to on-demand install: ${e}`)
+      return
     }
+    this.preloaded_ = true
   }
 
   async snapshotContext_(context, rootId) {

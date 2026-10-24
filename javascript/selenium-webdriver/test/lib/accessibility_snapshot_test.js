@@ -174,4 +174,24 @@ describe('AccessibilitySnapshotter', function () {
       return true
     })
   })
+
+  it('tries a failed preload again on the next snapshot', async function () {
+    const snapshotter = new AccessibilitySnapshotter({}, () => null)
+    let calls = 0
+    let failing = true
+    snapshotter.send_ = async () => {
+      calls++
+      if (failing) throw new error.UnknownCommandError('script.addPreloadScript')
+      return { script: 'preload-1' }
+    }
+
+    await snapshotter.ensurePreload_()
+    await snapshotter.ensurePreload_()
+    assert.strictEqual(calls, 2, 'a failure must not count as preloaded')
+
+    failing = false
+    await snapshotter.ensurePreload_()
+    await snapshotter.ensurePreload_()
+    assert.strictEqual(calls, 3, 'a success is remembered')
+  })
 })
