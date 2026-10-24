@@ -202,10 +202,14 @@ module Selenium
           end
 
           describe '#set_text_layout_mode_override',
-                   pending_if: [{browser_family: :chromium,
+                   pending_if: [{browser: :chrome,
+                                 version: 'stable',
+                                 exception: {class: Error::UnsupportedOperationError},
+                                 reason: 'Chrome unsupported operation: emulation.setTextLayoutModeOverride'},
+                                {browser: :edge,
                                  version: 'stable',
                                  exception: {class: Error::UnknownCommandError},
-                                 reason: 'Chromium returns unknown command for setTextLayoutModeOverride'},
+                                 reason: 'Edge returns unknown command for setTextLayoutModeOverride'},
                                 {browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for setTextLayoutModeOverride'}] do

@@ -364,6 +364,26 @@ experimental domain Ads
     returns
       AdMetrics metrics
 
+  # An ad script.
+  # Note: when the script is a transitive ad script, we only fill in the
+  # immediate ancestor script in the provenance's adScriptAncestry field (as its
+  # first entry), rather than filling in the full ancestry. This saves work for
+  # the backend, and the frontend can reconstruct the full ancestry if
+  # necessary.
+  type AdScript extends object
+    properties
+      # The script ID.
+      Runtime.ScriptId scriptId
+      # The ad provenance.
+      Network.AdProvenance provenance
+
+  # Retrieves ad scripts for the current page. To minimize payload size, this
+  # only returns the newly tracked ad scripts since the last call to
+  # getAdScripts (i.e., the delta).
+  command getAdScripts
+    returns
+      array of AdScript newScripts
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -509,8 +529,12 @@ experimental domain Animation
     parameters
       # List of animation ids to seek.
       array of string animations
-      # Set the current time of each animation.
-      number currentTime
+      # Set each animation to the same time.
+      optional number currentTime
+      # Set each animation to a different time. If set, should have the same
+      # length as animations. Exactly one of currentTime or currentTimes should
+      # be set.
+      optional array of number currentTimes
 
   # Sets the paused state of a set of animations.
   command setPaused
@@ -598,7 +622,6 @@ experimental domain Audits
       ExcludeSameSiteLax
       ExcludeSameSiteStrict
       ExcludeDomainNonASCII
-      ExcludeThirdPartyCookieBlockedInFirstPartySet
       ExcludeThirdPartyPhaseout
       ExcludePortMismatch
       ExcludeSchemeMismatch
@@ -1075,6 +1098,7 @@ experimental domain Audits
       UiDismissedNoEmbargo
       CorsError
       SuppressedBySegmentationPlatform
+      PopupBlockedByConnectionAllowlist
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -1161,6 +1185,7 @@ experimental domain Audits
       TokenVerificationKbInvalidSdHash
       TokenVerificationKbMissingCnf
       TokenVerificationKbSignatureFailed
+      CrossOriginIframeNotSupported
 
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
@@ -1301,6 +1326,21 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
+  type WebInstallIssueReason extends string
+    enum
+      ManifestParsingOrNetworkError
+      StartUrlInvalid
+      ManifestMissingNameOrShortName
+      ManifestMissingId
+      NoManifest
+
+  # This issue reports a failure involving a web app manifest used by a Web
+  # Install operation.
+  type WebInstallIssueDetails extends object
+    properties
+      optional string manifestUrl
+      WebInstallIssueReason reason
+
   # The issue warns about blocked calls to privacy sensitive APIs via the
   # Selective Permissions Intervention.
   type SelectivePermissionsInterventionIssueDetails extends object
@@ -1358,6 +1398,7 @@ experimental domain Audits
       SelectivePermissionsInterventionIssue
       EmailVerificationRequestIssue
       LazyLoadImageIssue
+      WebInstallIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1394,6 +1435,7 @@ experimental domain Audits
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
       optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
       optional LazyLoadImageIssueDetails lazyLoadImageIssueDetails
+      optional WebInstallIssueDetails webInstallIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2092,6 +2134,16 @@ domain Browser
       # Commandline parameters
       array of string arguments
 
+  # Adds or updates a mock camera in the shared video capture device list for
+  # test automation. The mock camera is not scoped to a particular page or
+  # frame and is removed when the DevTools session that created it disconnects.
+  experimental command addMockCamera
+    parameters
+      # Required non-empty identifier for the mock camera. This is mapped to an
+      # internal virtual-device identifier and is not the MediaDeviceInfo.deviceId
+      # exposed to the page.
+      string deviceId
+
   # Chrome histogram bucket.
   experimental type Bucket extends object
     properties
@@ -2199,6 +2251,20 @@ domain Browser
   command addPrivacySandboxEnrollmentOverride
     parameters
       string url
+
+  # Gets the current globally-applied privacy control status
+  # See https://www.w3.org/TR/gpc/#get-global-privacy-control
+  experimental command getGlobalPrivacyControl
+    returns
+      boolean gpc
+
+  # Sets and then gets the current globally-applied privacy control status
+  # See https://www.w3.org/TR/gpc/#set-global-privacy-control
+  experimental command setGlobalPrivacyControl
+    parameters
+      boolean gpc
+    returns
+      boolean gpc
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -4323,6 +4389,15 @@ domain DOM
       # List of popovers that were closed in order to respect popover stacking order.
       array of NodeId nodeIds
 
+  # Returns candidate nodes that are configured as triggers for the given popover.
+  experimental command getImplicitAnchorCandidates
+    parameters
+      # Id of the popover HTMLElement.
+      NodeId nodeId
+    returns
+      # Candidate elements that can invoke this popover.
+      array of BackendNodeId backendNodeIds
+
   # When enabling, this API forces an element to gain interest in its target,
   # keeping interest active until disabled.
   experimental command forceShowInterest
@@ -4331,6 +4406,37 @@ domain DOM
       NodeId nodeId
       # If true, opens and holds interest. If false, releases forced interest.
       boolean enable
+
+  # Sets a spelling or grammar error marker on the given range of text.
+  # See https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
+  # Note: exactly one between nodeId, backendNodeId and objectId should be passed
+  # to identify the node.
+  experimental command setTextMarker
+    parameters
+      # Identifier of the node.
+      optional NodeId nodeId
+      # Identifier of the backend node.
+      optional BackendNodeId backendNodeId
+      # JavaScript object id of the node wrapper.
+      optional Runtime.RemoteObjectId objectId
+      # The type of marker to set on the given range of text.
+      enum type
+        # A spelling error marker, rendered as ::spelling-error
+        spelling
+        # A grammar error marker, rendered as ::grammar-error
+        grammar
+      # Start offset into the element's rendered text in UTF-16 code units.
+      # For a text control, an offset into the control's value.
+      # Offsets count text in DOM order and do not enter shadow trees.
+      # To mark text inside a shadow tree, pass the element inside the shadow tree.
+      integer start
+      # End offset (exclusive) in the same units and space as start.
+      integer end
+
+  # Clears the spelling and grammar error text markers overlapping the ranges
+  # set by setTextMarker in this session. These markers are also removed when
+  # the DOM domain is disabled or the session ends.
+  experimental command clearTextMarkers
 
   # Fired when `Element`'s attribute is modified.
   event attributeModified
@@ -5419,6 +5525,22 @@ domain Emulation
       # useful for emulating mobile device orientation lock behavior in
       # responsive design mode.
       experimental optional boolean screenOrientationLockEmulation
+      # Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,
+      # the viewport meta tag is always enabled.
+      experimental optional enum viewportMeta
+        # Enables viewport meta tag processing.
+        enable
+        # Restores the default viewport meta behavior (disabled on desktop,
+        # enabled on mobile).
+        default
+      # Text layout mode. Default: `default`. Note: if `mobile` is `true`,
+      # mobile text layout mode (text autosizing) is always enabled.
+      experimental optional enum textLayoutMode
+        # Enables mobile text layout mode (text autosizing / CSS text-size-adjust).
+        mobile
+        # Restores the default text layout mode behavior (disabled on desktop,
+        # enabled on mobile).
+        default
 
   # Start reporting the given posture value to the Device Posture API.
   # This override can also be set in setDeviceMetricsOverride().
@@ -6302,6 +6424,29 @@ experimental domain FileSystem
     returns
       # Returns the directory object at the path.
       Directory directory
+
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This domain provides commands to trigger the "Find in page" feature.
+experimental domain FindInPage
+  # Forwards `query` to the find-in-page facility, starting a new find session.
+  # Where exactly the search starts from is implementation-specific.
+  command findFirst
+    parameters
+      string query
+
+  # Moves to the next match for the query passed to the most recent
+  # findFirst() call.
+  command findNext
+
+  # Moves to the previous match for the query passed to the most recent
+  # findFirst() call.
+  command findPrev
+
+  # Ends the current find session, if any, and clears its highlighting.
+  command stop
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -8129,9 +8274,6 @@ domain Network
       UserPreferences
       # The cookie was blocked due to third-party cookie phaseout.
       ThirdPartyPhaseout
-      # The cookie was blocked by third-party cookie blocking between sites in
-      # the same First-Party Set.
-      ThirdPartyBlockedInFirstPartySet
       # The syntax of the Set-Cookie header of the response was invalid.
       SyntaxError
       # The scheme of the connection is not allowed to store cookies.
@@ -8198,9 +8340,6 @@ domain Network
       UserPreferences
       # The cookie was blocked due to third-party cookie phaseout.
       ThirdPartyPhaseout
-      # The cookie was blocked by third-party cookie blocking between sites in
-      # the same First-Party Set.
-      ThirdPartyBlockedInFirstPartySet
       # An unknown error was encountered when trying to send this cookie.
       UnknownError
       # The cookie had the "SameSite=Strict" attribute but came from a response
@@ -9200,6 +9339,9 @@ domain Network
       # The filterlist rule that matched, if any.
       optional string filterlistRule
       # The script ancestry that created the ad, if any.
+      # Note: depending on the context, this may represent the full ancestry up
+      # to the root script, or it may contain only one script representing the
+      # immediate ancestor.
       optional AdAncestry adScriptAncestry
 
   # Fired when additional information about a requestWillBeSent event is available from the
@@ -9664,6 +9806,7 @@ domain Network
         InvalidSessionParams
         RefreshFatalError
         DevTools
+        Replaced
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -9880,6 +10023,28 @@ experimental domain Overlay
       aaa
       apca
 
+  # Configuration for Inset-Modified Containing Block (IMCB) and CSS Anchor Positioning highlight.
+  type ImcbHighlightConfig extends object
+    properties
+      # Border color for the Inset-Modified Containing Block (default: transparent).
+      optional DOM.RGBA imcbBorderColor
+      # Background fill color for the Inset-Modified Containing Block (default: transparent).
+      optional DOM.RGBA imcbBackgroundColor
+      # Fill color for the inset modifiers area (difference between CB and IMCB).
+      optional DOM.RGBA insetsBackgroundColor
+      # Hatch color for the inset modifiers area.
+      optional DOM.RGBA insetsHatchColor
+      # Border color for the referenced target anchor element(s) (when element is anchor-positioned).
+      optional DOM.RGBA anchorBorderColor
+      # Background fill color for the referenced target anchor element(s) (when element is anchor-positioned).
+      optional DOM.RGBA anchorBackgroundColor
+      # Whether to render the 3x3 position-area grid lines when position-area is used.
+      optional boolean showPositionAreaGrid
+      # Line color for the 3x3 position-area grid lines.
+      optional DOM.RGBA positionAreaGridLineColor
+      # Fill color for the active region within the position-area grid.
+      optional DOM.RGBA positionAreaActiveRegionColor
+
   # Configuration data for the highlighting of page elements.
   type HighlightConfig extends object
     properties
@@ -9921,6 +10086,8 @@ experimental domain Overlay
       optional ContrastAlgorithm contrastAlgorithm
       # The container query container highlight configuration (default: all transparent).
       optional ContainerQueryContainerHighlightConfig containerQueryContainerHighlightConfig
+      # The IMCB highlight configuration (default: all transparent).
+      optional ImcbHighlightConfig imcbHighlightConfig
 
   type ColorFormat extends string
     enum
@@ -10594,6 +10761,7 @@ domain Page
       gamepad
       geolocation
       gyroscope
+      haptics
       hid
       identity-credentials-get
       idle-detection
@@ -10618,6 +10786,7 @@ domain Page
       private-state-token-redemption
       publickey-credentials-create
       publickey-credentials-get
+      publickey-credentials-remote-client-data-json
       rewriter
       screen-wake-lock
       serial
@@ -10854,6 +11023,8 @@ domain Page
       number scrollOffsetY
       # Frame swap timestamp.
       optional Network.TimeSinceEpoch timestamp
+      # Frame swap timestamp as monotonic time.
+      optional Network.MonotonicTime monotonicTimestamp
 
   # Javascript dialog type.
   type DialogType extends string
@@ -11270,7 +11441,18 @@ domain Page
     returns
       optional binary primaryIcon
 
-  # Returns the unique (PWA) app id.
+  type SubApp extends object
+    properties
+      # Display name of the sub-app.
+      string name
+      # Scope of the sub-app.
+      string scope
+      # Manifest id of the sub-app.
+      string manifestId
+      # Start URL of the sub-app.
+      string startUrl
+
+  # Returns the unique (PWA) app id, along with IWA bundle ID and parent app info.
   # Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
   experimental command getAppId
     returns
@@ -11278,6 +11460,20 @@ domain Page
       optional string appId
       # Recommendation for manifest's id attribute to match current id computed from start_url
       optional string recommendedId
+      # The bundle ID for an Isolated Web App (IWA)
+      optional string bundleId
+      # The name of the parent app if this app is a Sub-App
+      optional string parentAppName
+
+  # Returns the list of installed child Sub-Apps for the inspected parent app.
+  experimental command getSubApps
+    returns
+      array of SubApp subApps
+
+  # Returns the list of sibling Sub-Apps sharing the same parent app if the inspected context is a Sub-App.
+  experimental command getSiblingSubApps
+    returns
+      array of SubApp subApps
 
   experimental command getAdScriptAncestry
     parameters
@@ -11637,8 +11833,16 @@ domain Page
       optional integer maxWidth
       # Maximum screenshot height.
       optional integer maxHeight
-      # Send every n-th frame.
+      # Send every n-th frame. Must be a positive integer.
       optional integer everyNthFrame
+      # Maximum number of frames sent until screencastFrameAck is required.
+      # Defaults to 3. Must be a positive integer.
+      optional integer maxFramesInFlight
+      # By default, after screencastFrameAck arrives, the next produced frame is sent.
+      # Passing this flag enables storing the last produced frame in memory, which is
+      # immediately sent upon screencastFrameAck. This way, overall performance is
+      # traded for a better latency.
+      optional boolean sendLastFrame
 
   # Starts screencast video recording.
   experimental command startScreenRecording
@@ -12668,6 +12872,10 @@ experimental domain Preload
       PreloadingAttemptKey key
       PreloadPipelineId pipelineId
       PreloadingStatus status
+      # The action currently performed by this attempt. This differs from
+      # `key.action` after a prerender-until-script attempt is upgraded in place
+      # to a full prerender.
+      optional SpeculationAction effectiveAction
       optional PrerenderFinalStatus prerenderStatus
       # This is used to give users more information about the name of Mojo interface
       # that is incompatible with prerender and has caused the cancellation of the attempt.
@@ -12911,6 +13119,52 @@ experimental domain ServiceWorker
       activated
       redundant
 
+  # Mostly corresponds to `RouterCondition` in ServiceWorker spec
+  # (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
+  type ServiceWorkerRouterCondition extends object
+    properties
+      # Plain text, or JSON serialization of URLPatternInit or URLPattern
+      optional string urlPattern
+      optional string requestMethod
+      optional string requestMode
+      optional string requestDestination
+      optional ServiceWorkerVersionRunningStatus runningStatus
+      optional array of ServiceWorkerRouterCondition or
+      optional ServiceWorkerRouterCondition not
+
+  type ServiceWorkerRouterSourceType extends string
+    enum
+      # https://www.w3.org/TR/service-workers/#enumdef-routersourceenum
+      cache
+      fetchEvent
+      network
+      raceNetworkAndFetchHandler
+      raceNetworkAndCache
+      # Tag for https://www.w3.org/TR/service-workers/#dictdef-routersourcedict
+      sourceDict
+
+  # https://www.w3.org/TR/service-workers/#dictdef-routersourcedict
+  type ServiceWorkerRouterSourceDict extends object
+    properties
+      string cacheName
+
+  # Corresponds to `RouterSource` in the spec while the representation is different as follows.
+  # (https://www.w3.org/TR/service-workers/#typedefdef-routersource)
+  # - `RouterSourceEnum`: `type` equals `cache`, `sourceDict` is null.
+  # - `RouterSourceDict`: `type` equals `sourceDict`, `sourceDict` has valid value.
+  type ServiceWorkerRouterSource extends object
+    properties
+      ServiceWorkerRouterSourceType type
+      # Non-empty iff `type` equals "sourceDict".
+      optional ServiceWorkerRouterSourceDict sourceDict
+
+  type ServiceWorkerRouterRule extends object
+    properties
+      ServiceWorkerRouterCondition condition
+      ServiceWorkerRouterSource source
+      # Rule ID assigned by the browser. Unique within each ServiceWorkerVersion.
+      integer id
+
   # ServiceWorker version.
   type ServiceWorkerVersion extends object
     properties
@@ -12926,7 +13180,11 @@ experimental domain ServiceWorker
       optional number scriptResponseTime
       optional array of Target.TargetID controlledClients
       optional Target.TargetID targetId
+      # Migration to `typedRouterRules` is in progress. The browser sends either
+      # `routerRules` or `typedRouterRules`.
+      # TODO(crbug.com/540469610): Remove `routerRules` after the migration.
       optional string routerRules
+      optional array of ServiceWorkerRouterRule typedRouterRules
 
   # ServiceWorker error message.
   type ServiceWorkerErrorMessage extends object
@@ -13427,7 +13685,6 @@ experimental domain Storage
       websql
       service_workers
       cache_storage
-      shared_storage
       storage_buckets
       all
       other
@@ -13447,147 +13704,33 @@ experimental domain Storage
       string issuerOrigin
       number count
 
-
-  # Enum of shared storage access scopes.
-  type SharedStorageAccessScope extends string
-    enum
-      window
-      sharedStorageWorklet
-      header
-
-  # Enum of shared storage access methods.
-  type SharedStorageAccessMethod extends string
-    enum
-      addModule
-      createWorklet
-      selectURL
-      run
-      batchUpdate
-      set
-      append
-      delete
-      clear
-      get
-      keys
-      values
-      entries
-      length
-      remainingBudget
-
-  # Struct for a single key-value pair in an origin's shared storage.
-  type SharedStorageEntry extends object
+  # Details of a stored Private Verification Token.
+  experimental type PrivateVerificationToken extends object
     properties
-      string key
-      string value
-
-  # Details for an origin's shared storage.
-  type SharedStorageMetadata extends object
-    properties
-      # Time when the origin's shared storage was last created.
+      # Unique identifier of the token in the database.
+      string id
+      # Origin of the token issuer.
+      string issuerOrigin
+      # Public key ID used to issue the token.
+      integer keyId
+      # Expiration timestamp in seconds since the epoch.
+      Network.TimeSinceEpoch expiration
+      # Token creation timestamp in seconds since the epoch.
       Network.TimeSinceEpoch creationTime
-      # Number of key-value pairs stored in origin's shared storage.
-      integer length
-      # Current amount of bits of entropy remaining in the navigation budget.
-      number remainingBudget
-      # Total number of bytes stored as key-value pairs in origin's shared
-      # storage.
-      integer bytesUsed
+      # Token protocol version.
+      integer version
+      # Base64-encoded serialized token.
+      string token
 
-  # Represents a dictionary object passed in as privateAggregationConfig to
-  # run or selectURL.
-  type SharedStoragePrivateAggregationConfig extends object
+  # Configuration for a Private Verification Tokens issuer.
+  experimental type PrivateVerificationTokensIssuerConfig extends object
     properties
-      # The chosen aggregation service deployment.
-      optional string aggregationCoordinatorOrigin
-      # The context ID provided.
-      optional string contextId
-      # Configures the maximum size allowed for filtering IDs.
-      integer filteringIdMaxBytes
-      # The limit on the number of contributions in the final report.
-      optional integer maxContributions
+      # Origin of the token issuer.
+      string issuerOrigin
+      # Origins authorized to redeem tokens from this issuer.
+      array of string redeemerOrigins
 
-  # Pair of reporting metadata details for a candidate URL for `selectURL()`.
-  type SharedStorageReportingMetadata extends object
-    properties
-      string eventType
-      string reportingUrl
 
-  # Bundles a candidate URL with its reporting metadata.
-  type SharedStorageUrlWithMetadata extends object
-    properties
-      # Spec of candidate URL.
-      string url
-      # Any associated reporting metadata.
-      array of SharedStorageReportingMetadata reportingMetadata
-
-  # Bundles the parameters for shared storage access events whose
-  # presence/absence can vary according to SharedStorageAccessType.
-  type SharedStorageAccessParams extends object
-    properties
-      # Spec of the module script URL.
-      # Present only for SharedStorageAccessMethods: addModule and
-      # createWorklet.
-      optional string scriptSourceUrl
-      # String denoting "context-origin", "script-origin", or a custom
-      # origin to be used as the worklet's data origin.
-      # Present only for SharedStorageAccessMethod: createWorklet.
-      optional string dataOrigin
-      # Name of the registered operation to be run.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional string operationName
-      # ID of the operation call.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional string operationId
-      # Whether or not to keep the worket alive for future run or selectURL
-      # calls.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional boolean keepAlive
-      # Configures the private aggregation options.
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      optional SharedStoragePrivateAggregationConfig privateAggregationConfig
-      # The operation's serialized data in bytes (converted to a string).
-      # Present only for SharedStorageAccessMethods: run and selectURL.
-      # TODO(crbug.com/401011862): Consider updating this parameter to binary.
-      optional string serializedData
-      # Array of candidate URLs' specs, along with any associated metadata.
-      # Present only for SharedStorageAccessMethod: selectURL.
-      optional array of SharedStorageUrlWithMetadata urlsWithMetadata
-      # Spec of the URN:UUID generated for a selectURL call.
-      # Present only for SharedStorageAccessMethod: selectURL.
-      optional string urnUuid
-      # Key for a specific entry in an origin's shared storage.
-      # Present only for SharedStorageAccessMethods: set, append, delete, and
-      # get.
-      optional string key
-      # Value for a specific entry in an origin's shared storage.
-      # Present only for SharedStorageAccessMethods: set and append.
-      optional string value
-      # Whether or not to set an entry for a key if that key is already present.
-      # Present only for SharedStorageAccessMethod: set.
-      optional boolean ignoreIfPresent
-      # A number denoting the (0-based) order of the worklet's
-      # creation relative to all other shared storage worklets created by
-      # documents using the current storage partition.
-      # Present only for SharedStorageAccessMethods: addModule, createWorklet.
-      optional integer workletOrdinal
-      # Hex representation of the DevTools token used as the TargetID for the
-      # associated shared storage worklet.
-      # Present only for SharedStorageAccessMethods: addModule, createWorklet,
-      # run, selectURL, and any other SharedStorageAccessMethod when the
-      # SharedStorageAccessScope is sharedStorageWorklet.
-      optional Target.TargetID workletTargetId
-      # Name of the lock to be acquired, if present.
-      # Optionally present only for SharedStorageAccessMethods: batchUpdate,
-      # set, append, delete, and clear.
-      optional string withLock
-      # If the method has been called as part of a batchUpdate, then this
-      # number identifies the batch to which it belongs.
-      # Optionally present only for SharedStorageAccessMethods:
-      # batchUpdate (required), set, append, delete, and clear.
-      optional string batchUpdateId
-      # Number of modifier methods sent in batch.
-      # Present only for SharedStorageAccessMethod: batchUpdate.
-      optional integer batchSize
 
   type StorageBucketsDurability extends string
     enum
@@ -13757,48 +13900,30 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
-  # Gets metadata for an origin's shared storage.
-  experimental command getSharedStorageMetadata
-    parameters
-      string ownerOrigin
+  # Returns all stored Private Verification Tokens for the current browsing
+  # context.
+  experimental command getPrivateVerificationTokens
     returns
-      SharedStorageMetadata metadata
+      array of PrivateVerificationToken tokens
 
-  # Gets the entries in an given origin's shared storage.
-  experimental command getSharedStorageEntries
-    parameters
-      string ownerOrigin
+  # Returns the configured Private Verification Tokens issuers and their redeemer
+  # origins.
+  experimental command getPrivateVerificationTokensIssuerConfigs
     returns
-      array of SharedStorageEntry entries
+      array of PrivateVerificationTokensIssuerConfig configs
 
-  # Sets entry with `key` and `value` for a given origin's shared storage.
-  experimental command setSharedStorageEntry
+  # Removes all Private Verification Tokens issued by the provided issuerOrigin.
+  experimental command clearPrivateVerificationTokens
     parameters
-      string ownerOrigin
-      string key
-      string value
-      # If `ignoreIfPresent` is included and true, then only sets the entry if
-      # `key` doesn't already exist.
-      optional boolean ignoreIfPresent
+      string issuerOrigin
 
-  # Deletes entry for `key` (if it exists) for a given origin's shared storage.
-  experimental command deleteSharedStorageEntry
+  # Removes a specific Private Verification Token by its ID.
+  experimental command deletePrivateVerificationToken
     parameters
-      string ownerOrigin
-      string key
+      string tokenId
 
-  # Clears all entries for a given origin's shared storage.
-  experimental command clearSharedStorageEntries
-    parameters
-      string ownerOrigin
-
-  # Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
-  experimental command resetSharedStorageBudget
-    parameters
-      string ownerOrigin
-
-  # Enables/disables issuing of sharedStorageAccessed events.
-  experimental command setSharedStorageTracking
+  # Set tracking for Private Verification Tokens.
+  experimental command setPrivateVerificationTokensTracking
     parameters
       boolean enable
 
@@ -13864,47 +13989,6 @@ experimental domain Storage
       # Storage bucket to update.
       string bucketId
 
-  # Shared storage was accessed by the associated page.
-  # The following parameters are included in all events.
-  event sharedStorageAccessed
-    parameters
-      # Time of the access.
-      Network.TimeSinceEpoch accessTime
-      # Enum value indicating the access scope.
-      SharedStorageAccessScope scope
-      # Enum value indicating the Shared Storage API method invoked.
-      SharedStorageAccessMethod method
-      # DevTools Frame Token for the primary frame tree's root.
-      Page.FrameId mainFrameId
-      # Serialization of the origin owning the Shared Storage data.
-      string ownerOrigin
-      # Serialization of the site owning the Shared Storage data.
-      string ownerSite
-      # The sub-parameters wrapped by `params` are all optional and their
-      # presence/absence depends on `type`.
-      SharedStorageAccessParams params
-
-  # A shared storage run or selectURL operation finished its execution.
-  # The following parameters are included in all events.
-  event sharedStorageWorkletOperationExecutionFinished
-    parameters
-      # Time that the operation finished.
-      Network.TimeSinceEpoch finishedTime
-      # Time, in microseconds, from start of shared storage JS API call until
-      # end of operation execution in the worklet.
-      integer executionTime
-      # Enum value indicating the Shared Storage API method invoked.
-      SharedStorageAccessMethod method
-      # ID of the operation call.
-      string operationId
-      # Hex representation of the DevTools token used as the TargetID for the
-      # associated shared storage worklet.
-      Target.TargetID workletTargetId
-      # DevTools Frame Token for the primary frame tree's root.
-      Page.FrameId mainFrameId
-      # Serialization of the origin owning the Shared Storage data.
-      string ownerOrigin
-
   event storageBucketCreatedOrUpdated
     parameters
       StorageBucketInfo bucketInfo
@@ -13913,21 +13997,8 @@ experimental domain Storage
     parameters
       string bucketId
 
-  # A single Related Website Set object.
-  experimental type RelatedWebsiteSet extends object
-    properties
-      # The primary site of this set, along with the ccTLDs if there is any.
-      array of string primarySites
-      # The associated sites of this set, along with the ccTLDs if there is any.
-      array of string associatedSites
-      # The service sites of this set, along with the ccTLDs if there is any.
-      array of string serviceSites
-
-  # Returns the effective Related Website Sets in use by this profile for the browser
-  # session. The effective Related Website Sets will not change during a browser session.
-  experimental command getRelatedWebsiteSets
-    returns
-      array of RelatedWebsiteSet sets
+  # Private Verification Tokens have been stored or deleted.
+  experimental event privateVerificationTokensUpdated
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -14935,7 +15006,7 @@ experimental domain WebAuthn
       # If -1, the credential won't have an associated signature counter, and
       # every assertion operation will report a value of 0.
       # See https://w3c.github.io/webauthn/#signature-counter
-      integer signCount
+      number signCount
       # The large blob associated with the credential.
       # See https://w3c.github.io/webauthn/#sctn-large-blob-extension
       optional binary largeBlob
@@ -15062,7 +15133,7 @@ experimental domain WebAuthn
       # If -1, the signature counter is removed from the credential, and every
       # assertion operation will report a value of 0.
       # See https://w3c.github.io/webauthn/#signature-counter
-      optional integer signCount
+      optional number signCount
 
   # Triggered when a credential is added to an authenticator.
   event credentialAdded
@@ -15109,6 +15180,10 @@ experimental domain WebMCP
       optional boolean readOnly
       # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
       optional boolean untrustedContent
+      # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+      optional boolean consequential
+      # If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
+      optional boolean debugging
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
 
