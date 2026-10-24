@@ -166,5 +166,68 @@ module Selenium
           .to raise_error(Error::UnsupportedOperationError, /BiDi.*web_socket_url/)
       end
     end
+
+    describe AccessibilitySnapshotter do
+      # A stand-in for the BiDi connection of a window with one child frame: the top-level
+      # document answers "no such node" for the root, as Chromium does for a shared id another
+      # document owns, and the documents in `owners` answer with a generic node.
+      let(:connection) do
+        Class.new do
+          attr_reader :calls
+
+          def initialize(owners)
+            @owners = owners
+            @calls = []
+          end
+
+          def send_cmd(method, **params)
+            @calls << [method, params]
+            case method
+            when 'script.addPreloadScript' then {'script' => 'preload'}
+            when 'browsingContext.getTree'
+              {'contexts' => [{'context' => 'top', 'children' => [{'context' => 'child', 'children' => []}]}]}
+            when 'script.callFunction' then call_function(params)
+            end
+          end
+
+          private
+
+          def call_function(params)
+            raise Error::WebDriverError, 'no such node: unknown node' unless @owners.include?(params[:target][:context])
+
+            {'type' => 'success',
+             'result' => {'type' => 'object',
+                          'value' => [['role', {'type' => 'string', 'value' => 'generic'}],
+                                      ['name', {'type' => 'string', 'value' => ''}],
+                                      ['description', {'type' => 'string', 'value' => ''}],
+                                      ['states', {'type' => 'object', 'value' => []}],
+                                      ['children', {'type' => 'array', 'value' => []}]]}}
+          end
+        end
+      end
+
+      def bridge_over(connection)
+        instance_double(Remote::BiDiBridge, bidi: connection, window_handle: 'top')
+      end
+
+      it 'tries each browsing context of the window until one owns the root' do
+        connection = self.connection.new(%w[child])
+        bridge = bridge_over(connection)
+
+        tree = described_class.new(bridge).snapshot(Element.new(bridge, 'shared-1'))
+
+        expect(tree.role).to eq 'generic'
+        calls = connection.calls.select { |call| call.first == 'script.callFunction' }
+        contexts = calls.map { |_, params| params[:target][:context] }
+        expect(contexts).to eq %w[top child]
+      end
+
+      it 'raises the stale element error when no context owns the root' do
+        bridge = bridge_over(connection.new([]))
+
+        expect { described_class.new(bridge).snapshot(Element.new(bridge, 'shared-1')) }
+          .to raise_error(Error::StaleElementReferenceError)
+      end
+    end
   end
 end

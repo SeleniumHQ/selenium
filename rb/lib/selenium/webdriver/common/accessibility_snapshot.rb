@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Error::NoSuchNodeError, the BiDi error the frame search rescues, is registered from the
+# generated error codes.
+require 'selenium/webdriver/bidi/error'
+
 module Selenium
   module WebDriver
     #
