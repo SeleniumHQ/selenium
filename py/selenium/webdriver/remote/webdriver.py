@@ -776,6 +776,11 @@ class WebDriver(BaseWebDriver):
         return self._accessibility().snapshot(None)
 
     def _accessibility(self) -> AccessibilitySnapshotter:
+        if not self.caps.get("webSocketUrl"):
+            raise WebDriverException(
+                "accessibility_snapshot() requires a WebDriver BiDi session; "
+                "enable it with options.enable_bidi = True before starting the driver"
+            )
         if self._accessibility_snapshotter is None:
             self._accessibility_snapshotter = AccessibilitySnapshotter(self)
         return self._accessibility_snapshotter

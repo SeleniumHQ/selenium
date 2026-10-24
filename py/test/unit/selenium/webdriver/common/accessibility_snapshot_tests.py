@@ -25,7 +25,12 @@ from pathlib import Path
 
 import pytest
 
-from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode, node_from_remote_value
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.remote.accessibility_snapshot import (
+    AccessibilityNode,
+    AccessibilitySnapshotter,
+    node_from_remote_value,
+)
 
 CORPUS = Path(__file__).parents[6] / "common" / "src" / "web" / "accessibility"
 
@@ -150,3 +155,37 @@ def test_node_from_remote_value_decodes_the_wire_shape():
     assert heading.states == {"level": 2}
     assert isinstance(heading.states["level"], int)
     assert made == ["f.1.e.42", "f.1.e.43"]
+
+
+class _Script:
+    """A stand-in for driver.script whose preload fails until told otherwise."""
+
+    def __init__(self):
+        self.calls = 0
+        self.failing = True
+
+    def add_preload_script(self, **kwargs):
+        self.calls += 1
+        if self.failing:
+            raise WebDriverException("unknown command: script.addPreloadScript")
+        return "preload-1"
+
+
+class _Driver:
+    def __init__(self):
+        self.script = _Script()
+
+
+def test_a_failed_preload_is_tried_again_on_the_next_snapshot():
+    driver = _Driver()
+    snapshotter = AccessibilitySnapshotter(driver)
+
+    snapshotter._ensure_preload()
+    assert driver.script.calls == 1
+    snapshotter._ensure_preload()
+    assert driver.script.calls == 2, "a failure must not count as preloaded"
+
+    driver.script.failing = False
+    snapshotter._ensure_preload()
+    snapshotter._ensure_preload()
+    assert driver.script.calls == 3, "a success is remembered"

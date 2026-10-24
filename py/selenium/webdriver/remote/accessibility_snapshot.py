@@ -224,14 +224,8 @@ class AccessibilitySnapshotter:
             its ``iframe`` node.
 
         Raises:
-            WebDriverException: When the session has no BiDi connection.
             StaleElementReferenceException: When ``root`` no longer belongs to a document.
         """
-        if not self._driver.caps.get("webSocketUrl"):
-            raise WebDriverException(
-                "accessibility_snapshot() requires a WebDriver BiDi session; "
-                "enable it with options.enable_bidi = True before starting the driver"
-            )
         self._ensure_preload()
         top = self._driver.current_window_handle
         if root is None:
@@ -252,13 +246,15 @@ class AccessibilitySnapshotter:
         # the preload install it on first use, in _call.
         if self._preloaded:
             return
-        self._preloaded = True
         try:
             self._driver.script.add_preload_script(
                 function_declaration=f"() => {{ globalThis.{_GLOBAL} = ({_atom()}); }}", sandbox=_SANDBOX
             )
         except WebDriverException as e:
+            # Left unset, so the next snapshot tries again.
             logger.debug("accessibility snapshot: preload not installed, falling back to on-demand install: %s", e)
+            return
+        self._preloaded = True
 
     def _snapshot_context(self, context: str, root: WebElement | None) -> AccessibilityNode:
         arguments = [{"sharedId": root.id}] if root is not None else []
