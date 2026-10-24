@@ -76,6 +76,9 @@ module Selenium
 
       STALE_MESSAGE: String
 
+      class NotOwnedError < Error::WebDriverError
+      end
+
       @bridge: Remote::Bridge
 
       @bidi: BiDi

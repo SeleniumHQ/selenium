@@ -17,10 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Error::NoSuchNodeError, the BiDi error the frame search rescues, is registered from the
-# generated error codes.
-require 'selenium/webdriver/bidi/error'
-
 module Selenium
   module WebDriver
     #
@@ -204,6 +200,13 @@ module Selenium
       SERIALIZATION_OPTIONS = {maxDomDepth: 0}.freeze
       STALE_MESSAGE = 'the snapshot root is no longer attached to a document'
 
+      # The document of the targeted context does not own the root: the BiDi "no such node"
+      # error, or the script's null answer to a root another document owns. Internal to the
+      # search over the window's contexts, so it is not one of the registered BiDi errors.
+      #
+      # @api private
+      class NotOwnedError < Error::WebDriverError; end
+
       def initialize(bridge)
         @bridge = bridge
         @bidi = bridge.bidi
@@ -231,7 +234,7 @@ module Selenium
         # context is tried until the owner is found.
         contexts(top).each do |context|
           return snapshot_context(context, root)
-        rescue Error::NoSuchNodeError
+        rescue NotOwnedError
           next
         end
         raise Error::StaleElementReferenceError, STALE_MESSAGE
@@ -261,7 +264,7 @@ module Selenium
         result ||= call(context, declaration("(globalThis.#{GLOBAL} = (#{atom}))", root), arguments, final: true)
         raise Error::WebDriverError, 'accessibility snapshot: the script returned nothing' if result.nil?
         # Another document owns the root (Firefox resolves shared ids group-wide).
-        raise Error::NoSuchNodeError, 'the root belongs to another document' if result['type'] == 'null'
+        raise NotOwnedError, 'the root belongs to another document' if result['type'] == 'null'
 
         node = AccessibilityNode.from_remote_value(result) { |shared_id| Element.new(@bridge, shared_id) }
         stitch(context, node)
@@ -300,7 +303,7 @@ module Selenium
         # The BiDi "no such node" error: the document of this context does not own the
         # root's shared id, either because the root lives in another frame or because
         # its document is gone.
-        raise Error::NoSuchNodeError, e.message if e.message.include?('no such node')
+        raise NotOwnedError, e.message if e.message.include?('no such node')
 
         raise
       end
@@ -359,7 +362,7 @@ module Selenium
 
       # Whether an error says a frame or its document is gone, rather than that a command failed.
       def frame_unreachable?(error)
-        return true if error.is_a?(Error::NoSuchNodeError)
+        return true if error.is_a?(NotOwnedError)
 
         error.message.include?('no such frame') || error.message.include?('no such node')
       end
