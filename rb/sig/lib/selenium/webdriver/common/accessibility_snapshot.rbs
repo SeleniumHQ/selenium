@@ -105,6 +105,8 @@ module Selenium
 
       def stitch: (String context, AccessibilityNode node) -> void
 
+      def element: (String shared_id) -> Element
+
       def frame_context: (String context, Element frame) -> String?
 
       def contexts: (String top) -> Array[String]

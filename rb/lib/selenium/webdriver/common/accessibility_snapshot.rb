@@ -267,7 +267,7 @@ module Selenium
         # Another document owns the root (Firefox resolves shared ids group-wide).
         raise NotOwnedError, 'the root belongs to another document' if result['type'] == 'null'
 
-        node = AccessibilityNode.from_remote_value(result) { |shared_id| Element.new(@bridge, shared_id) }
+        node = AccessibilityNode.from_remote_value(result) { |shared_id| element(shared_id) }
         stitch(context, node)
         node
       end
@@ -332,6 +332,11 @@ module Selenium
       end
 
       # The browsing context id of a frame element, from its WindowProxy; nil when it has none.
+      # Through the bridge's configured element class, as every other element lookup.
+      def element(shared_id)
+        Remote::Bridge.element_class.new(@bridge, shared_id)
+      end
+
       def frame_context(context, frame)
         raw = call_function(context, '(frame) => frame.contentWindow', [{sharedId: frame.ref.last}])
         return nil unless raw['type'] == 'success'

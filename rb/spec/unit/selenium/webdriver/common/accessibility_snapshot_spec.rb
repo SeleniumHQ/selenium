@@ -207,6 +207,7 @@ module Selenium
                                       ['name', {'type' => 'string', 'value' => ''}],
                                       ['description', {'type' => 'string', 'value' => ''}],
                                       ['states', {'type' => 'object', 'value' => []}],
+                                      ['element', {'type' => 'node', 'sharedId' => 'shared-1'}],
                                       ['children', {'type' => 'array', 'value' => []}]]}}
           end
         end
@@ -242,6 +243,19 @@ module Selenium
         snapshotter.snapshot
         snapshotter.snapshot
         expect(preloads.call).to eq(3), 'a success is remembered'
+      end
+
+      it 'builds element references with the configured element class' do
+        custom = Class.new(Element)
+        Remote::Bridge.element_class = custom
+        bridge = bridge_over(connection.new(%w[top]))
+
+        tree = described_class.new(bridge).snapshot
+
+        expect(tree.element).to be_an_instance_of(custom)
+        expect(tree.element.ref).to eq [:element, 'shared-1']
+      ensure
+        Remote::Bridge.element_class = nil
       end
 
       it 'raises the stale element error when no context owns the root' do
