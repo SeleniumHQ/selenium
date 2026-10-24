@@ -29,6 +29,7 @@ from io import BytesIO
 from selenium.common.exceptions import JavascriptException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
+from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 
@@ -427,6 +428,23 @@ class WebElement(BaseWebElement):
             element_png = element.screenshot_as_png
         """
         return b64decode(self.screenshot_as_base64.encode("ascii"))
+
+    def accessibility_snapshot(self) -> AccessibilityNode:
+        """Snapshot the accessibility tree of this element's subtree.
+
+        The root node is always this element, whatever its role; if the element
+        is hidden, by itself or by an ancestor, that node has no children. Child
+        frames are attached under their ``iframe`` nodes. See
+        :meth:`WebDriver.accessibility_snapshot`.
+
+        Returns:
+            The node for this element, with its subtree.
+
+        Raises:
+            WebDriverException: When the session has no WebDriver BiDi connection.
+            StaleElementReferenceException: When the element is no longer attached.
+        """
+        return self._parent._accessibility().snapshot(self)
 
     def screenshot(self, filename) -> bool:
         """Save a PNG screenshot of the current element to a file.
