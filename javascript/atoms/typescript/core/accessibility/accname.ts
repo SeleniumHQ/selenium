@@ -250,11 +250,22 @@ function endOfFunction(content: string, start: number): number {
   return i
 }
 
+// An attr() token in computed `content`: Chromium resolves it to a string
+// before serialising, Firefox keeps the function, so the attribute is read
+// from the originating element here. Only the attribute name is read; a
+// fallback or type argument is ignored, as the attribute's string value is
+// what both engines render.
+function readAttrToken(element: Element, token: string): string {
+  const match = /^attr\(\s*([^\s,)]+)/.exec(token)
+  return match ? element.getAttribute(match[1]) || '' : ''
+}
+
 // The computed `content` is a list of strings and other tokens; only the
-// strings are text, and a bare slash introduces alternative text that
-// replaces everything before it. A slash inside a quoted string is just a
-// character, and a quoted string inside a function (the URL of an image)
-// is not text. A pseudo-element that is not rendered has no text at all.
+// strings and attr() references are text, and a bare slash introduces
+// alternative text that replaces everything before it. A slash inside a
+// quoted string is just a character, and a quoted string inside a function
+// (the URL of an image) is not text. A pseudo-element that is not rendered
+// has no text at all.
 function readPseudoContent(element: Element, pseudo: string, t: Traversal): string {
   const style = styleOf(element, t.context, pseudo)
   if (!style || style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse') {
@@ -273,7 +284,10 @@ function readPseudoContent(element: Element, pseudo: string, t: Traversal): stri
       text += content.slice(i + 1, end - 1).replace(/\\(.)/g, '$1')
       i = end
     } else if (char === '(') {
-      i = endOfFunction(content, i)
+      const end = endOfFunction(content, i)
+      const start = content.lastIndexOf(' ', i) + 1
+      text += readAttrToken(element, content.slice(start, end))
+      i = end
     } else if (char === '/') {
       text = ''
       i++

@@ -52,21 +52,30 @@ function isAriaHidden(element: Element): boolean {
 
 // The UA stylesheet gives every area display: none; what renders it is the
 // image whose usemap points at its map. So an area is as hidden as that image.
+// The document-wide image lookup is done once per map name and snapshot, since
+// every area of a map shares the answer.
 function areaState(area: Element, context: SnapshotContext): HiddenState {
   const map = area.closest('map')
   const name = map ? map.getAttribute('name') : null
   if (!name) {
     return 'subtree'
   }
+  const known = context.imageMaps.get(name)
+  if (known !== undefined) {
+    return known
+  }
+  let state: HiddenState = 'subtree'
   const images = area.ownerDocument.querySelectorAll('img[usemap]')
   for (let i = 0; i < images.length; i++) {
     const image = images[i]
     const usemap = (image.getAttribute('usemap') || '').replace(/^#/, '')
     if (usemap === name && hiddenState(image, context) === 'rendered' && !isHiddenByAncestor(image, context)) {
-      return 'rendered'
+      state = 'rendered'
+      break
     }
   }
-  return 'subtree'
+  context.imageMaps.set(name, state)
+  return state
 }
 
 export function isClosedDetails(element: Element): boolean {

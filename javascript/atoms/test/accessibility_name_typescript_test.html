@@ -29,6 +29,8 @@ under the License.
   <script src="../typescript/accessibility-snapshot-global.js"></script>
   <style>
     .star::before { content: "★ "; }
+    .attr::before { content: attr(data-label) " "; }
+    .attr-missing::before { content: attr(data-missing); }
     .slash::before { content: "1 / 2 "; }
     .alt::before { content: "★ " / "star "; }
     @media (min-width: 1px) { .nested::before { content: "Nested "; } }
@@ -215,6 +217,10 @@ under the License.
       assertNames(assert, { 'pseudo-before': '★ Save', 'pseudo-after': 'Save (more)' });
     });
 
+    QUnit.test('an attr() in generated content is the attribute of the element, whether or not the engine resolves it first', function (assert) {
+      assertNames(assert, { 'pseudo-attr': 'Star Save', 'pseudo-attr-missing': 'Save' });
+    });
+
     QUnit.test('a slash inside generated content is text; a bare slash introduces the alternative text', function (assert) {
       assertNames(assert, { 'pseudo-slash': '1 / 2 Save', 'pseudo-alt': 'star Save' });
     });
@@ -352,6 +358,8 @@ under the License.
   <div id="embedded-textbox" role="heading" aria-level="2">Count <input type="text" value="7"> items</div>
   <div id="embedded-select" role="heading" aria-level="2">Pick <select><option>Alpha</option><option selected>Beta</option></select> please</div>
   <button id="pseudo-before" class="star">Save</button>
+  <button id="pseudo-attr" class="attr" data-label="Star">Save</button>
+  <button id="pseudo-attr-missing" class="attr-missing">Save</button>
   <button id="pseudo-slash" class="slash">Save</button>
   <button id="pseudo-nested" class="nested">Save</button>
   <div id="pseudo-host" role="heading" aria-level="2">Light</div>

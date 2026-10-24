@@ -32,6 +32,8 @@ import { computeRole } from './roles.js'
 export interface SnapshotContext {
   readonly roles: Map<Element, string>
   readonly hidden: Map<Element, HiddenState>
+  /** Whether an image map, by name, is rendered through some image that uses it; shared by all its areas. */
+  readonly imageMaps: Map<string, HiddenState>
   readonly styles: Map<Element, Map<string, CSSStyleDeclaration | null>>
   readonly names: Map<Element, NameResult>
   readonly descriptions: Map<Element, string>
@@ -65,6 +67,7 @@ export function createContext(): SnapshotContext {
   return {
     roles: new Map(),
     hidden: new Map(),
+    imageMaps: new Map(),
     styles: new Map(),
     names: new Map(),
     descriptions: new Map(),
