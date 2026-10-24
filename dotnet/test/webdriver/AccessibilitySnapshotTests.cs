@@ -17,31 +17,27 @@
 // under the License.
 // </copyright>
 
-using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
 /// <summary>
 /// driver.GetAccessibilitySnapshotAsync() and element.GetAccessibilitySnapshotAsync() over BiDi.
 /// The shared corpus in common/src/web/accessibility is the cross-binding contract: every page is
-/// snapshotted whole and compared with its recorded tree and text.
+/// snapshotted whole and compared with its recorded tree and text. The fixture's one driver is
+/// created with the WebSocket URL, since the snapshot runs over BiDi.
 /// </summary>
-[Parallelizable(ParallelScope.All)]
-[FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-public class AccessibilitySnapshotTests
+[TestFixture]
+public class AccessibilitySnapshotTests : DriverTestFixture
 {
     // The atom records frames as leaves; the binding fills them in, so this page has its own tests.
     private const string FramesPage = "014-iframe";
 
-    private static readonly string Corpus = Path.Combine(FindWebContentRoot(), "accessibility");
-
-    private IWebDriver driver;
-
-    private static UrlBuilder Urls => EnvironmentManager.Instance.WebServer.Urls;
+    private static readonly HttpClient Http = new HttpClient();
 
     public static IEnumerable<string> CorpusPages()
     {
@@ -55,27 +51,13 @@ public class AccessibilitySnapshotTests
         }
     }
 
-    [SetUp]
-    public void CreateBiDiDriver()
+    protected override void ConfigureDriverOptions(DriverOptions options)
     {
-        var driverFactory = new DriverFactory(EnvironmentManager.Instance);
-        this.driver = driverFactory.CreateDriver(configureOptions: options =>
-        {
-            options.UseWebSocketUrl = true;
+        options.UseWebSocketUrl = true;
 
-            if (options is Safari.SafariOptions safariOptions)
-            {
-                safariOptions.AddAdditionalOption("safari:experimentalWebSocketUrl", true);
-            }
-        });
-    }
-
-    [TearDown]
-    public async Task QuitDriver()
-    {
-        if (this.driver is not null)
+        if (options is Safari.SafariOptions safariOptions)
         {
-            await this.driver.DisposeAsync();
+            safariOptions.AddAdditionalOption("safari:experimentalWebSocketUrl", true);
         }
     }
 
@@ -84,7 +66,7 @@ public class AccessibilitySnapshotTests
     {
         this.Load(page);
 
-        AccessibilityNode tree = await this.Driver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         JsonNode actual = JsonNode.Parse(Serialize(tree).ToJsonString())!;
         JsonNode expected = JsonNode.Parse(this.Expected(page, "json"))!;
@@ -97,7 +79,7 @@ public class AccessibilitySnapshotTests
     {
         this.Load("001-headings-and-landmarks");
 
-        AccessibilityNode tree = await this.Driver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         Assert.That(tree.Role, Is.EqualTo("document"));
         Assert.That(tree.Element, Is.Not.Null);
@@ -109,7 +91,7 @@ public class AccessibilitySnapshotTests
     {
         this.Load("003-links-and-buttons");
 
-        AccessibilityNode tree = await this.Driver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         AccessibilityNode button = Walk(tree).First(node => node.Role == "button");
         Assert.That(button.Element!.TagName, Is.AnyOf("button", "input", "a"));
@@ -120,7 +102,7 @@ public class AccessibilitySnapshotTests
     public async Task SubtreeSnapshotAlwaysProducesANodeForItsRoot()
     {
         this.Load("005-lists");
-        WebElement root = (WebElement)this.driver.FindElement(By.TagName("body"));
+        WebElement root = (WebElement)this.Driver.FindElement(By.TagName("body"));
 
         AccessibilityNode tree = await root.GetAccessibilitySnapshotAsync();
 
@@ -133,7 +115,7 @@ public class AccessibilitySnapshotTests
     public async Task SubtreeSnapshotOfANodeFromAnEarlierSnapshot()
     {
         this.Load("005-lists");
-        AccessibilityNode firstList = Walk(await this.Driver.GetAccessibilitySnapshotAsync()).First(node => node.Role == "list");
+        AccessibilityNode firstList = Walk(await this.BiDiDriver.GetAccessibilitySnapshotAsync()).First(node => node.Role == "list");
 
         AccessibilityNode tree = await ((WebElement)firstList.Element!).GetAccessibilitySnapshotAsync();
 
@@ -146,7 +128,7 @@ public class AccessibilitySnapshotTests
     {
         this.Load(FramesPage);
 
-        AccessibilityNode tree = await this.Driver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         List<AccessibilityNode> frames = Walk(tree).Where(node => node.Role == "iframe").ToList();
         Assert.That(frames.Select(frame => frame.Name), Is.EqualTo(new[] { "Embedded content", "" }));
@@ -161,14 +143,14 @@ public class AccessibilitySnapshotTests
         Assert.That(tree.ToText().Split("- document"), Has.Length.EqualTo(4));
 
         // A reference inside a frame works through classic commands once that frame is current.
-        this.driver.SwitchTo().Frame(frames[0].Element!);
+        this.Driver.SwitchTo().Frame(frames[0].Element!);
         try
         {
             Assert.That(frames[0].Children[0].Element!.TagName, Is.EqualTo("html"));
         }
         finally
         {
-            this.driver.SwitchTo().DefaultContent();
+            this.Driver.SwitchTo().DefaultContent();
         }
     }
 
@@ -176,7 +158,7 @@ public class AccessibilitySnapshotTests
     public async Task SubtreeSnapshotOfAnIframeElementCarriesItsDocument()
     {
         this.Load(FramesPage);
-        WebElement frame = (WebElement)this.driver.FindElement(By.Id("frame"));
+        WebElement frame = (WebElement)this.Driver.FindElement(By.Id("frame"));
 
         AccessibilityNode tree = await frame.GetAccessibilitySnapshotAsync();
 
@@ -189,10 +171,10 @@ public class AccessibilitySnapshotTests
     public async Task SubtreeSnapshotInsideAFrame()
     {
         this.Load(FramesPage);
-        this.driver.SwitchTo().Frame("frame");
+        this.Driver.SwitchTo().Frame("frame");
         try
         {
-            WebElement body = (WebElement)this.driver.FindElement(By.TagName("body"));
+            WebElement body = (WebElement)this.Driver.FindElement(By.TagName("body"));
             AccessibilityNode tree = await body.GetAccessibilitySnapshotAsync();
 
             // The root is the frame's body, not the top document that owns the window.
@@ -202,7 +184,7 @@ public class AccessibilitySnapshotTests
         }
         finally
         {
-            this.driver.SwitchTo().DefaultContent();
+            this.Driver.SwitchTo().DefaultContent();
         }
     }
 
@@ -210,15 +192,15 @@ public class AccessibilitySnapshotTests
     public async Task WholePageSnapshotIgnoresTheFrameTheDriverSwitchedTo()
     {
         this.Load(FramesPage);
-        this.driver.SwitchTo().Frame("frame");
+        this.Driver.SwitchTo().Frame("frame");
         AccessibilityNode tree;
         try
         {
-            tree = await this.Driver.GetAccessibilitySnapshotAsync();
+            tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
         }
         finally
         {
-            this.driver.SwitchTo().DefaultContent();
+            this.Driver.SwitchTo().DefaultContent();
         }
 
         Assert.That(tree.Name, Is.EqualTo("Frames"));
@@ -228,7 +210,7 @@ public class AccessibilitySnapshotTests
     public void AStaleRootRaisesTheStaleElementError()
     {
         this.Load("005-lists");
-        WebElement root = (WebElement)this.driver.FindElement(By.TagName("body"));
+        WebElement root = (WebElement)this.Driver.FindElement(By.TagName("body"));
         this.Load("001-headings-and-landmarks");
 
         Assert.That(async () => await root.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<StaleElementReferenceException>());
@@ -238,8 +220,8 @@ public class AccessibilitySnapshotTests
     public void ADetachedRootRaisesTheStaleElementError()
     {
         this.Load("005-lists");
-        WebElement item = (WebElement)this.driver.FindElement(By.TagName("li"));
-        ((IJavaScriptExecutor)this.driver).ExecuteScript("arguments[0].remove()", item);
+        WebElement item = (WebElement)this.Driver.FindElement(By.TagName("li"));
+        ((IJavaScriptExecutor)this.Driver).ExecuteScript("arguments[0].remove()", item);
 
         Assert.That(async () => await item.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<StaleElementReferenceException>());
     }
@@ -248,25 +230,25 @@ public class AccessibilitySnapshotTests
     public async Task ASnapshotIsACopy()
     {
         this.Load("005-lists");
-        AccessibilityNode before = await this.Driver.GetAccessibilitySnapshotAsync();
-        ((IJavaScriptExecutor)this.driver).ExecuteScript("document.querySelector('li').textContent = 'changed'");
+        AccessibilityNode before = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.querySelector('li').textContent = 'changed'");
 
-        AccessibilityNode after = await this.Driver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode after = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         Assert.That(after.ToText(), Is.Not.EqualTo(before.ToText()));
         Assert.That(after.ToText(), Does.Contain("changed"));
     }
 
-    private WebDriver Driver => (WebDriver)this.driver;
+    private WebDriver BiDiDriver => (WebDriver)this.Driver;
 
     private void Load(string page)
     {
-        this.driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
+        this.Driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
     }
 
     private string Engine()
     {
-        string name = (((IHasCapabilities)this.driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
+        string name = (((IHasCapabilities)this.Driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
         if (name.Contains("firefox"))
         {
             return "firefox";
@@ -283,8 +265,7 @@ public class AccessibilitySnapshotTests
     // The engine-specific expectation when one is recorded, else the shared one.
     private string Expected(string page, string suffix)
     {
-        string specific = Path.Combine(Corpus, page + ".expected." + this.Engine() + "." + suffix);
-        return File.Exists(specific) ? File.ReadAllText(specific, Encoding.UTF8) : Read(page + ".expected." + suffix);
+        return Fetch(page + ".expected." + this.Engine() + "." + suffix) ?? Read(page + ".expected." + suffix);
     }
 
     // The corpus JSON form: every field written, `element` as the element's id.
@@ -347,24 +328,20 @@ public class AccessibilitySnapshotTests
 
     private static string Read(string file)
     {
-        return File.ReadAllText(Path.Combine(Corpus, file), Encoding.UTF8);
+        return Fetch(file) ?? throw new InvalidOperationException("the corpus has no " + file);
     }
 
-    // The shared test pages, found the way the test web server finds them.
-    private static string FindWebContentRoot()
+    // The corpus is read from the test web server, as the pages are, so nothing is read from the
+    // source tree; null when the server has no such file.
+    private static string? Fetch(string file)
     {
-        var info = new DirectoryInfo(AppContext.BaseDirectory);
-        while (info is not null && info != info.Root)
+        using HttpResponseMessage response = Http.GetAsync(Urls.WhereIs("accessibility/" + file)).GetAwaiter().GetResult();
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            string webPath = Path.Combine(info.FullName, "common", "src", "web");
-            if (Directory.Exists(webPath))
-            {
-                return webPath;
-            }
-
-            info = info.Parent;
+            return null;
         }
 
-        throw new DirectoryNotFoundException("common/src/web was not found above " + AppContext.BaseDirectory);
+        response.EnsureSuccessStatusCode();
+        return Encoding.UTF8.GetString(response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult());
     }
 }
