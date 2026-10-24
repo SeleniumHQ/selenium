@@ -141,6 +141,8 @@ public sealed class AccessibilityNode
     {
         if (builder.Length > 0)
         {
+            // Always LF: the text form is compared byte for byte with the corpus and the other
+            // bindings, whatever the platform.
             builder.Append('\n');
         }
 

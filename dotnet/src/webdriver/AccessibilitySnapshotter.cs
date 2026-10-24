@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Internal.Logging;
-using System.Text.Json;
 using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 using BrowsingContextInfo = OpenQA.Selenium.BiDi.BrowsingContext.Info;
 using GetTreeOptions = OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions;
