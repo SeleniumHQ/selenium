@@ -41,9 +41,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private static readonly ILogger _logger = Log.GetLogger<WebDriver>();
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
+    // Serialises the connection attempt against the close. It is never disposed: a waiter queued
+    // behind the close must wake to see that the driver is gone.
     private readonly SemaphoreSlim bidiConnecting = new SemaphoreSlim(1, 1);
     private IBiDi? bidi;
-    private bool bidiClosed;
+    private int bidiClosed;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -243,7 +245,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         await this.bidiConnecting.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (this.bidiClosed)
+            if (Volatile.Read(ref this.bidiClosed) != 0)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
@@ -861,22 +863,30 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         this.CommandExecutor.Dispose();
     }
 
-    // Waits for a connection attempt in flight, so a BiDi call that overlaps the driver's disposal
-    // cannot leave its connection open, and never lets a close failure escape: the driver still has
-    // its own session to quit.
+    // Only the first disposal closes the connection. It waits for a connection attempt in flight,
+    // so a BiDi call that overlaps the driver's disposal cannot leave its connection open, and never
+    // lets a close failure escape: the driver still has its own session to quit.
     private async ValueTask CloseBiDiAsync()
     {
-        if (this.bidiClosed)
+        if (Interlocked.Exchange(ref this.bidiClosed, 1) != 0)
         {
             return;
         }
 
-        this.bidiClosed = true;
         try
         {
+            IBiDi? connection;
             await this.bidiConnecting.WaitAsync().ConfigureAwait(false);
-            IBiDi? connection = this.bidi;
-            this.bidi = null;
+            try
+            {
+                connection = this.bidi;
+                this.bidi = null;
+            }
+            finally
+            {
+                this.bidiConnecting.Release();
+            }
+
             if (connection is not null)
             {
                 await connection.DisposeAsync().ConfigureAwait(false);
@@ -885,10 +895,6 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         catch (Exception e)
         {
             _logger.Debug("closing the BiDi connection failed: " + e.Message);
-        }
-        finally
-        {
-            this.bidiConnecting.Dispose();
         }
     }
 
