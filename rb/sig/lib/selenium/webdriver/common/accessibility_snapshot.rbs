@@ -42,14 +42,16 @@ module Selenium
 
       def to_text: () -> String
 
-      def self.from_remote_value: (remote_value value) { (String shared_id) -> Element } -> AccessibilityNode
+      def self.from_wire: (Hash[String, untyped] data, Array[Element] elements) { (Integer frame) -> Array[AccessibilityNode] } -> AccessibilityNode
 
       module Wire
         def self?.object_fields: (AccessibilityNode::remote_value value) -> Hash[String, AccessibilityNode::remote_value]
 
         def self?.string: (AccessibilityNode::remote_value value) -> String
 
-        def self?.state: (AccessibilityNode::remote_value value) -> AccessibilityNode::state
+        def self?.shared_id: (AccessibilityNode::remote_value node) -> String
+
+        def self?.context_of: (AccessibilityNode::remote_value window) -> String?
       end
 
       def lines: (String indent) -> Array[String]
@@ -70,8 +72,6 @@ module Selenium
 
       SANDBOX: String
 
-      GLOBAL: String
-
       SERIALIZATION_OPTIONS: Hash[Symbol, Integer]
 
       STALE_MESSAGE: String
@@ -83,8 +83,6 @@ module Selenium
 
       @bidi: BiDi
 
-      @preloaded: bool
-
       @atom: String?
 
       def initialize: (Remote::Bridge bridge) -> void
@@ -93,21 +91,13 @@ module Selenium
 
       private
 
-      def ensure_preload: () -> void
+      def snapshot_context: (String context, String? root_id) -> AccessibilityNode?
 
-      def snapshot_context: (String context, Element? root) -> AccessibilityNode
+      def call: (String context, Array[Hash[Symbol, String]] arguments) -> AccessibilityNode::remote_value
 
-      def declaration: (String atom, Element? root) -> String
-
-      def call: (String context, String declaration, Array[Hash[Symbol, String]] arguments, ?final: bool) -> AccessibilityNode::remote_value?
-
-      def call_function: (String context, String declaration, Array[Hash[Symbol, String]] arguments, **untyped) -> Hash[String, untyped]
-
-      def stitch: (String context, AccessibilityNode node) -> void
+      def stitch: (String? context) -> Array[AccessibilityNode]
 
       def element: (String shared_id) -> Element
-
-      def frame_context: (String context, Element frame) -> String?
 
       def contexts: (String top) -> Array[String]
 

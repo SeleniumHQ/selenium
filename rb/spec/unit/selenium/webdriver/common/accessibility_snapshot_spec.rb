@@ -43,16 +43,6 @@ module Selenium
         )
       end
 
-      def remote(type, value = nil, **extra)
-        out = {'type' => type}
-        out['value'] = value unless value.nil?
-        out.merge(extra.transform_keys(&:to_s))
-      end
-
-      def remote_object(**fields)
-        remote('object', fields.map { |key, value| [key.to_s, value] })
-      end
-
       describe '#to_text' do
         # Every expected.txt is the reference renderer's output over its expected.json; the port must agree.
         pages = File.expand_path('../../../../../../common/src/web/accessibility/index.json', __dir__)
@@ -100,60 +90,51 @@ module Selenium
         end
       end
 
-      describe '.from_remote_value' do
-        # A script.callFunction result: objects as key/value pairs, arrays, nodes with a sharedId.
-        it 'decodes the wire shape' do
-          wire = remote_object(
-            role: remote('string', 'button'),
-            name: remote('string', 'Save'),
-            description: remote('string', 'Saves the form'),
-            states: remote_object(pressed: remote('string', 'mixed'), disabled: remote('boolean', true)),
-            element: remote('node', {'nodeType' => 1}, sharedId: 'f.1.e.42'),
-            children: remote('array', [
-                               remote_object(
-                                 role: remote('string', 'text'),
-                                 name: remote('string', 'Save'),
-                                 description: remote('string', ''),
-                                 states: remote_object,
-                                 children: remote('array', [])
-                               ),
-                               remote_object(
-                                 role: remote('string', 'heading'),
-                                 name: remote('string', 'H'),
-                                 description: remote('string', ''),
-                                 value: remote('string', 'v'),
-                                 states: remote_object(level: remote('number', 2)),
-                                 element: remote('node', {'nodeType' => 1}, sharedId: 'f.1.e.43'),
-                                 children: remote('array', [])
-                               )
-                             ])
-          )
-          made = []
+      describe '.from_wire' do
+        # The atom's wire form: element indices into the elements list, a frame index for frame nodes.
+        it 'builds the tree and resolves the indices' do
+          data = {
+            'role' => 'generic', 'name' => '', 'description' => '', 'states' => {}, 'element' => 0,
+            'children' => [
+              {'role' => 'text', 'name' => 'Intro', 'description' => '', 'states' => {}, 'children' => []},
+              {'role' => 'textbox', 'name' => 'Email', 'description' => 'Where to write', 'value' => 'a@b.c',
+               'states' => {'focused' => true, 'level' => 2, 'pressed' => 'mixed', 'selected' => false},
+               'element' => 1, 'children' => []},
+              {'role' => 'iframe', 'name' => 'Embedded', 'description' => '', 'states' => {}, 'element' => 2,
+               'frame' => 0, 'children' => []}
+            ]
+          }
+          stitched = []
 
-          node = described_class.from_remote_value(wire) do |shared_id|
-            made << shared_id
-            "element:#{shared_id}"
+          node = described_class.from_wire(data, %w[element:0 element:1 element:2]) do |index|
+            stitched << index
+            [described_class.new(role: 'document', name: 'Inner')]
           end
 
-          expect(node.role).to eq 'button'
-          expect(node.name).to eq 'Save'
-          expect(node.description).to eq 'Saves the form'
-          expect(node.value).to be_nil
-          expect(node.states).to eq('pressed' => 'mixed', 'disabled' => true)
-          expect(node.element).to eq 'element:f.1.e.42'
-          text, heading = node.children
+          expect(node.role).to eq 'generic'
+          expect(node.element).to eq 'element:0'
+          text, textbox, frame = node.children
           expect(text.role).to eq 'text'
           expect(text.element).to be_nil
           expect(text.children).to be_empty
-          expect(heading.value).to eq 'v'
-          expect(heading.states).to eq('level' => 2)
-          expect(heading.states['level']).to be_an(Integer)
-          expect(made).to eq %w[f.1.e.42 f.1.e.43]
+          expect(textbox.element).to eq 'element:1'
+          expect(textbox.value).to eq 'a@b.c'
+          expect(textbox.description).to eq 'Where to write'
+          expect(textbox.states).to eq('focused' => true, 'level' => 2, 'pressed' => 'mixed', 'selected' => false)
+          expect(frame.element).to eq 'element:2'
+          expect(frame.children.map(&:name)).to eq(['Inner']), "the frame's children come from the binding"
+          expect(stitched).to eq [0]
         end
 
-        it 'rejects a result that is not an object' do
-          expect { described_class.from_remote_value(remote('string', 'x')) { |id| id } }
-            .to raise_error(Error::WebDriverError, /expected an object remote value/)
+        it 'keeps absent fields absent' do
+          node = described_class.from_wire({'role' => 'list', 'name' => '', 'states' => {}, 'children' => []}, []) do
+            []
+          end
+
+          expect(node.description).to eq ''
+          expect(node.value).to be_nil
+          expect(node.element).to be_nil
+          expect(node.children).to be_empty
         end
       end
     end
@@ -175,21 +156,14 @@ module Selenium
         Class.new do
           attr_reader :calls
 
-          attr_accessor :preload_fails
-
           def initialize(owners)
             @owners = owners
             @calls = []
-            @preload_fails = false
           end
 
           def send_cmd(method, **params)
             @calls << [method, params]
             case method
-            when 'script.addPreloadScript'
-              raise Error::WebDriverError, 'unknown command: script.addPreloadScript' if preload_fails
-
-              {'script' => 'preload'}
             when 'browsingContext.getTree'
               {'contexts' => [{'context' => 'top', 'children' => [{'context' => 'child', 'children' => []}]}]}
             when 'script.callFunction' then call_function(params)
@@ -201,14 +175,14 @@ module Selenium
           def call_function(params)
             raise Error::WebDriverError, 'no such node: unknown node' unless @owners.include?(params[:target][:context])
 
+            json = {'role' => 'generic', 'name' => '', 'description' => '', 'states' => {}, 'element' => 0,
+                    'children' => []}.to_json
             {'type' => 'success',
              'result' => {'type' => 'object',
-                          'value' => [['role', {'type' => 'string', 'value' => 'generic'}],
-                                      ['name', {'type' => 'string', 'value' => ''}],
-                                      ['description', {'type' => 'string', 'value' => ''}],
-                                      ['states', {'type' => 'object', 'value' => []}],
-                                      ['element', {'type' => 'node', 'sharedId' => 'shared-1'}],
-                                      ['children', {'type' => 'array', 'value' => []}]]}}
+                          'value' => [['json', {'type' => 'string', 'value' => json}],
+                                      ['elements',
+                                       {'type' => 'array', 'value' => [{'type' => 'node', 'sharedId' => 'shared-1'}]}],
+                                      ['windows', {'type' => 'array', 'value' => []}]]}}
           end
         end
       end
@@ -229,20 +203,25 @@ module Selenium
         expect(contexts).to eq %w[top child]
       end
 
-      it 'tries a failed preload again on the next snapshot' do
-        connection = self.connection.new(%w[top])
-        connection.preload_fails = true
+      it 'reads a root another document owns as nil and a detached root as the stale error' do
+        answers = []
+        connection = Class.new {
+          def initialize(answers)
+            @answers = answers
+          end
+
+          def send_cmd(_method, **_params)
+            {'type' => 'success', 'result' => @answers.shift}
+          end
+        }.new(answers)
         snapshotter = described_class.new(bridge_over(connection))
-        preloads = -> { connection.calls.count { |method, _| method == 'script.addPreloadScript' } }
 
-        snapshotter.snapshot
-        snapshotter.snapshot
-        expect(preloads.call).to eq(2), 'a failure must not count as preloaded'
+        answers << {'type' => 'null'}
+        expect(snapshotter.send(:snapshot_context, 'ctx', 'shared-1')).to be_nil
 
-        connection.preload_fails = false
-        snapshotter.snapshot
-        snapshotter.snapshot
-        expect(preloads.call).to eq(3), 'a success is remembered'
+        answers << {'type' => 'object', 'value' => [['error', {'type' => 'string', 'value' => 'detached'}]]}
+        expect { snapshotter.send(:snapshot_context, 'ctx', 'shared-1') }
+          .to raise_error(Error::StaleElementReferenceError)
       end
 
       it 'builds element references with the configured element class' do

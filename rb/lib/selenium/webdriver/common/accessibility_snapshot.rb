@@ -87,34 +87,33 @@ module Selenium
       end
 
       #
-      # Decodes a snapshot from the +script.callFunction+ result that carries it: an
-      # +object+ remote value whose value is a list of [key, value] pairs, with arrays as
-      # +array+ and elements as +node+ values carrying a +sharedId+, which the block turns
-      # into an {Element}.
+      # Builds the node tree from the atom's wire form: the parsed JSON of the tree, in
+      # which +element+ is an index into +elements+ and, on a frame node, +frame+ an index
+      # the block resolves to the frame's own tree (its document, or nothing when it
+      # cannot be reached).
       #
       # @api private
       #
 
-      def self.from_remote_value(value, &element_factory)
-        fields = Wire.object_fields(value)
-        element_value = fields['element']
-        element = if element_value && element_value['type'] == 'node' && element_value.key?('sharedId')
-                    yield element_value['sharedId']
-                  end
-        value_field = fields['value']
-        children = fields.fetch('children').fetch('value', [])
+      def self.from_wire(data, elements, &frame_children)
+        children = if data.key?('frame')
+                     yield data['frame']
+                   else
+                     data.fetch('children').map { |child| from_wire(child, elements, &frame_children) }
+                   end
+        element_index = data['element']
         new(
-          role: Wire.string(fields.fetch('role')),
-          name: Wire.string(fields.fetch('name')),
-          description: Wire.string(fields.fetch('description', {})),
-          value: value_field && Wire.string(value_field),
-          states: Wire.object_fields(fields.fetch('states')).transform_values { |state| Wire.state(state) },
-          element: element,
-          children: children.map { |child| from_remote_value(child, &element_factory) }
+          role: data.fetch('role'),
+          name: data.fetch('name'),
+          description: data.fetch('description', ''),
+          value: data['value'],
+          states: data.fetch('states').dup,
+          element: element_index && elements.fetch(element_index),
+          children: children
         )
       end
 
-      # The BiDi remote value shapes the decoder reads.
+      # The BiDi remote value shapes the snapshotter reads around the JSON text.
       #
       # @api private
       module Wire
@@ -134,12 +133,20 @@ module Selenium
           value.fetch('value', '').to_s
         end
 
-        def state(value)
-          case value['type']
-          when 'boolean' then value['value'] ? true : false
-          when 'number' then value['value'].to_i
-          else value['value'].to_s
+        def shared_id(node)
+          shared_id = node['sharedId']
+          unless node['type'] == 'node' && shared_id
+            raise Error::WebDriverError, 'accessibility snapshot: expected a node reference in the elements list'
           end
+
+          shared_id.to_s
+        end
+
+        # The browsing context id of a window remote value; nil for a frame with no reachable context.
+        def context_of(window)
+          return nil unless window['type'] == 'window'
+
+          window.dig('value', 'context')
         end
       end
 
@@ -184,8 +191,8 @@ module Selenium
     end # AccessibilityNode
 
     #
-    # Takes accessibility snapshots for one BiDi session: installs the atom in the
-    # sandbox realm of each document and stitches child frames into the tree.
+    # Takes accessibility snapshots for one BiDi session: runs the atom's wire entry in
+    # the sandbox realm of each document and stitches child frames into the tree.
     #
     # @api private
     #
@@ -195,8 +202,6 @@ module Selenium
 
       # The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
       SANDBOX = 'selenium'
-      # Where the atom is kept inside the sandbox realm once installed.
-      GLOBAL = '__seleniumAccessibilitySnapshot'
       SERIALIZATION_OPTIONS = {maxDomDepth: 0}.freeze
       STALE_MESSAGE = 'the snapshot root is no longer attached to a document'
 
@@ -210,7 +215,6 @@ module Selenium
       def initialize(bridge)
         @bridge = bridge
         @bidi = bridge.bidi
-        @preloaded = false
       end
 
       #
@@ -224,16 +228,21 @@ module Selenium
       #
 
       def snapshot(root = nil)
-        ensure_preload
         top = @bridge.window_handle
-        return snapshot_context(top, nil) if root.nil?
+        if root.nil?
+          node = snapshot_context(top, nil)
+          raise Error::WebDriverError, 'accessibility snapshot: the script returned nothing' if node.nil?
+
+          return node
+        end
 
         # The element may live in any frame of the window. Chromium resolves its shared
         # id only in the document that owns it; Firefox resolves it in any document of
-        # the browsing context group, so the script checks ownership itself and each
+        # the browsing context group, so the atom checks ownership itself and each
         # context is tried until the owner is found.
         contexts(top).each do |context|
-          return snapshot_context(context, root)
+          node = snapshot_context(context, root.ref.last)
+          return node unless node.nil?
         rescue NotOwnedError
           next
         end
@@ -242,64 +251,34 @@ module Selenium
 
       private
 
-      # New documents get the atom installed as they load; documents that predate the
-      # preload install it on first use, in #snapshot_context.
-      def ensure_preload
-        return if @preloaded
+      # The snapshot of +context+, or nil when another document owns the root.
+      def snapshot_context(context, root_id)
+        result = call(context, root_id ? [{sharedId: root_id}] : [])
+        return nil if result['type'] == 'null'
 
-        @bidi.send_cmd('script.addPreloadScript',
-                       functionDeclaration: "() => { globalThis.#{GLOBAL} = (#{atom}); }",
-                       sandbox: SANDBOX)
-        @preloaded = true
-      rescue Error::WebDriverError => e
-        # Left unset, so the next snapshot tries again.
-        WebDriver.logger.debug("accessibility snapshot: preload not installed, installing on demand: #{e.message}",
-                               id: :accessibility_snapshot)
+        fields = AccessibilityNode::Wire.object_fields(result)
+        # The only error the atom reports as data: the root left its document.
+        raise Error::StaleElementReferenceError, STALE_MESSAGE if fields.key?('error')
+
+        elements = fields.fetch('elements').fetch('value', []).map { |node| element(AccessibilityNode::Wire.shared_id(node)) }
+        windows = fields.fetch('windows').fetch('value', []).map { |window| AccessibilityNode::Wire.context_of(window) }
+        data = JSON.parse(AccessibilityNode::Wire.string(fields.fetch('json')))
+        AccessibilityNode.from_wire(data, elements) { |index| stitch(windows.fetch(index)) }
       end
 
-      def snapshot_context(context, root)
-        arguments = root ? [{sharedId: root.ref.last}] : []
-        result = call(context, declaration("globalThis.#{GLOBAL}", root), arguments)
-        # The realm has no atom yet (a document loaded before the preload, or a remote
-        # end without preload support): install it and run in one call.
-        result ||= call(context, declaration("(globalThis.#{GLOBAL} = (#{atom}))", root), arguments, final: true)
-        raise Error::WebDriverError, 'accessibility snapshot: the script returned nothing' if result.nil?
-        # Another document owns the root (Firefox resolves shared ids group-wide).
-        raise NotOwnedError, 'the root belongs to another document' if result['type'] == 'null'
-
-        node = AccessibilityNode.from_remote_value(result) { |shared_id| element(shared_id) }
-        stitch(context, node)
-        node
-      end
-
-      # The function to call: the whole page, or a root this document owns, else null.
-      def declaration(atom, root)
-        return "() => #{atom}()" if root.nil?
-
-        "(root) => root && root.ownerDocument === document ? #{atom}(root) : null"
-      end
-
-      # Runs +declaration+ in the sandbox of +context+; nil when it threw and a retry may help.
-      def call(context, declaration, arguments, final: false)
-        raw = call_function(context, declaration, arguments, serializationOptions: SERIALIZATION_OPTIONS)
-        return raw['result'] unless raw['type'] == 'exception'
+      # Runs the atom's wire entry in the sandbox of +context+ and returns the remote value of its result.
+      def call(context, arguments)
+        raw = @bidi.send_cmd('script.callFunction',
+                             functionDeclaration: "(root) => (#{atom})(root)",
+                             awaitPromise: false,
+                             target: {context: context, sandbox: SANDBOX},
+                             arguments: arguments,
+                             resultOwnership: 'none',
+                             serializationOptions: SERIALIZATION_OPTIONS)
+        return raw['result'] || {} unless raw['type'] == 'exception'
 
         details = raw['exceptionDetails'] || {}
-        text = (details['text'] || details).to_s
-        raise Error::StaleElementReferenceError, STALE_MESSAGE if text.include?('detached')
-        return nil unless final
-
-        raise Error::WebDriverError, "accessibility snapshot failed in the page: #{text}"
-      end
-
-      def call_function(context, declaration, arguments, **)
-        @bidi.send_cmd('script.callFunction',
-                       functionDeclaration: declaration,
-                       awaitPromise: false,
-                       target: {context: context, sandbox: SANDBOX},
-                       arguments: arguments,
-                       resultOwnership: 'none',
-                       **)
+        raise Error::WebDriverError, "accessibility snapshot failed in the page: #{details['text'] || details}"
       rescue Error::WebDriverError => e
         # The BiDi "no such node" error: the document of this context does not own the
         # root's shared id, either because the root lives in another frame or because
@@ -309,48 +288,25 @@ module Selenium
         raise
       end
 
-      # Replaces an +iframe+ node's children, here or below, with its document's tree where reachable.
-      def stitch(context, node)
-        unless node.role == 'iframe' && node.element
-          node.children.each { |child| stitch(context, child) }
-          return
-        end
+      # The document of a frame as the frame node's one child, or no children when unreachable.
+      def stitch(context)
+        return [] if context.nil?
 
-        child_context = frame_context(context, node.element)
-        return if child_context.nil?
+        document = snapshot_context(context, nil)
+        document.nil? ? [] : [document]
+      rescue Error::WebDriverError => e
+        # Gone between discovery and the call, or mid-navigation: the frame stays a
+        # leaf (ADR §1). Anything else is a real failure.
+        raise unless frame_unreachable?(e)
 
-        begin
-          node.children = [snapshot_context(child_context, nil)]
-        rescue Error::WebDriverError => e
-          # Gone between discovery and the call, or mid-navigation: the frame stays a
-          # leaf (ADR §1). Anything else is a real failure.
-          raise unless frame_unreachable?(e)
-
-          WebDriver.logger.debug("accessibility snapshot: frame #{child_context} not reachable: #{e.message}",
-                                 id: :accessibility_snapshot)
-        end
+        WebDriver.logger.debug("accessibility snapshot: frame #{context} not reachable: #{e.message}",
+                               id: :accessibility_snapshot)
+        []
       end
 
-      # The browsing context id of a frame element, from its WindowProxy; nil when it has none.
       # Through the bridge's configured element class, as every other element lookup.
       def element(shared_id)
         Remote::Bridge.element_class.new(@bridge, shared_id)
-      end
-
-      def frame_context(context, frame)
-        raw = call_function(context, '(frame) => frame.contentWindow', [{sharedId: frame.ref.last}])
-        return nil unless raw['type'] == 'success'
-
-        window = raw['result'] || {}
-        return nil unless window['type'] == 'window'
-
-        window.dig('value', 'context')
-      rescue Error::WebDriverError => e
-        raise unless frame_unreachable?(e)
-
-        WebDriver.logger.debug("accessibility snapshot: no browsing context for frame: #{e.message}",
-                               id: :accessibility_snapshot)
-        nil
       end
 
       # The window's browsing contexts, top-level first, then each frame depth-first.
@@ -373,7 +329,7 @@ module Selenium
         error.message.include?('no such frame') || error.message.include?('no such node')
       end
 
-      # The atom's source, a JavaScript function expression, read once from the gem.
+      # The atom's wire entry, a JavaScript function expression, read once from the gem.
       def atom
         @atom ||= read_atom(:accessibilitySnapshot)
       end
