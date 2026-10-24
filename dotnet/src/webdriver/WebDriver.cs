@@ -38,6 +38,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
+    private AccessibilitySnapshotter? accessibility;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -194,6 +195,36 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     internal INetwork Network => this.network ??= new NetworkManager(this);
+
+    /// <summary>
+    /// Takes an accessibility snapshot of the whole page: the tree of roles, names, states and values
+    /// computed from the DOM, rooted at the document of the current window's top-level browsing
+    /// context whatever frame the driver has switched to, with every reachable child frame's tree
+    /// attached under its <c>iframe</c> node. The snapshot is a copy taken at one point in time.
+    /// </summary>
+    /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
+    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <seealso cref="AccessibilityNode.ToText()"/>
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    {
+        return this.Accessibility.SnapshotAsync(null, cancellationToken);
+    }
+
+    // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
+    internal AccessibilitySnapshotter Accessibility
+    {
+        get
+        {
+            if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
+            {
+                throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
+            }
+
+            return this.accessibility ??= new AccessibilitySnapshotter(this);
+        }
+    }
 
     /// <summary>
     /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
@@ -519,6 +550,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     /// <param name="response">Response from the browser</param>
     /// <returns>Element from the page, or <see langword="null"/> if the response does not contain a dictionary.</returns>
+    internal WebElement CreateElementFromReference(string elementId)
+    {
+        return this.elementFactory.CreateElement(new Dictionary<string, object?> { [WebElement.ElementReferencePropertyName] = elementId });
+    }
+
     internal IWebElement? GetElementFromResponse(Response response)
     {
         if (response.Value is Dictionary<string, object?> elementDictionary)
@@ -734,6 +770,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         if (disposing)
         {
+            this.accessibility?.Dispose();
+            this.accessibility = null;
+
             if (this.SessionId is not null)
             {
                 try
@@ -767,6 +806,12 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A task representing the asynchronous dispose operation.</returns>
     protected virtual async ValueTask DisposeAsyncCore()
     {
+        if (this.accessibility is not null)
+        {
+            await this.accessibility.DisposeAsync().ConfigureAwait(false);
+            this.accessibility = null;
+        }
+
         if (this.SessionId is not null)
         {
             try
