@@ -99,27 +99,6 @@ public class InternetExplorerOptions : DriverOptions
     {
         this.BrowserName = BrowserNameValue;
         this.PlatformName = "windows";
-        this.AddKnownCapabilityName(Capability, "current InterentExplorerOptions class instance");
-        this.AddKnownCapabilityName(IgnoreProtectedModeSettingsCapability, "IntroduceInstabilityByIgnoringProtectedModeSettings property");
-        this.AddKnownCapabilityName(IgnoreZoomSettingCapability, "IgnoreZoomLevel property");
-        this.AddKnownCapabilityName(CapabilityType.HasNativeEvents, "EnableNativeEvents property");
-        this.AddKnownCapabilityName(InitialBrowserUrlCapability, "InitialBrowserUrl property");
-        this.AddKnownCapabilityName(ElementScrollBehaviorCapability, "ElementScrollBehavior property");
-        this.AddKnownCapabilityName(CapabilityType.UnexpectedAlertBehavior, "UnhandledPromptBehavior property");
-        this.AddKnownCapabilityName(EnablePersistentHoverCapability, "EnablePersistentHover property");
-        this.AddKnownCapabilityName(RequireWindowFocusCapability, "RequireWindowFocus property");
-        this.AddKnownCapabilityName(BrowserAttachTimeoutCapability, "BrowserAttachTimeout property");
-        this.AddKnownCapabilityName(ForceCreateProcessApiCapability, "ForceCreateProcessApi property");
-        this.AddKnownCapabilityName(ForceShellWindowsApiCapability, "ForceShellWindowsApi property");
-        this.AddKnownCapabilityName(BrowserCommandLineSwitchesCapability, "BrowserComaandLineArguments property");
-        this.AddKnownCapabilityName(UsePerProcessProxyCapability, "UsePerProcessProxy property");
-        this.AddKnownCapabilityName(EnsureCleanSessionCapability, "EnsureCleanSession property");
-        this.AddKnownCapabilityName(FileUploadDialogTimeoutCapability, "FileUploadDialogTimeout property");
-        this.AddKnownCapabilityName(EnableFullPageScreenshotCapability, "EnableFullPageScreenshot property");
-        this.AddKnownCapabilityName(LegacyFileUploadDialogHandlingCapability, "LegacyFileUploadDialogHanlding property");
-        this.AddKnownCapabilityName(AttachToEdgeChromeCapability, "AttachToEdgeChrome property");
-        this.AddKnownCapabilityName(EdgeExecutablePathCapability, "EdgeExecutablePath property");
-        this.AddKnownCapabilityName(IgnoreProcessMatchCapability, "IgnoreProcessMatch property");
     }
 
     /// <summary>
