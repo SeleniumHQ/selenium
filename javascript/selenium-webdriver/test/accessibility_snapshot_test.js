@@ -25,7 +25,7 @@
 const assert = require('node:assert')
 const fs = require('node:fs')
 const path = require('node:path')
-const { By, error, WebElement } = require('selenium-webdriver')
+const { Browser, By, error, WebElement } = require('selenium-webdriver')
 const { AccessibilityNode } = require('selenium-webdriver')
 const { suite, whereIs } = require('../lib/test')
 const { locate } = require('../lib/test/resources')
@@ -69,167 +69,171 @@ function* walk(node) {
   for (const child of node.children) yield* walk(child)
 }
 
-suite(function (env) {
-  let driver
+suite(
+  function (env) {
+    let driver
 
-  before(async function () {
-    driver = await env.builder().build()
-  })
+    before(async function () {
+      driver = await env.builder().build()
+    })
 
-  after(function () {
-    return driver.quit()
-  })
+    after(function () {
+      return driver.quit()
+    })
 
-  describe('getAccessibilitySnapshot', function () {
-    for (const page of PAGES) {
-      it(`matches the corpus for ${page}`, async function () {
-        await driver.get(whereIs(`accessibility/${page}.html`))
-        const engine = engineOf((await driver.getCapabilities()).getBrowserName())
+    describe('getAccessibilitySnapshot', function () {
+      for (const page of PAGES) {
+        it(`matches the corpus for ${page}`, async function () {
+          await driver.get(whereIs(`accessibility/${page}.html`))
+          const engine = engineOf((await driver.getCapabilities()).getBrowserName())
+
+          const tree = await driver.getAccessibilitySnapshot()
+
+          assert.deepStrictEqual(await serialize(tree), JSON.parse(expected(engine, page, 'json')))
+          assert.strictEqual(tree.toText() + '\n', expected(engine, page, 'txt'))
+        })
+      }
+
+      it('is rooted at the document', async function () {
+        await driver.get(whereIs('accessibility/001-headings-and-landmarks.html'))
 
         const tree = await driver.getAccessibilitySnapshot()
 
-        assert.deepStrictEqual(await serialize(tree), JSON.parse(expected(engine, page, 'json')))
-        assert.strictEqual(tree.toText() + '\n', expected(engine, page, 'txt'))
+        assert.ok(tree instanceof AccessibilityNode)
+        assert.strictEqual(tree.role, 'document')
+        assert.ok(tree.element instanceof WebElement)
+        assert.strictEqual(await tree.element.getTagName(), 'html')
       })
-    }
 
-    it('is rooted at the document', async function () {
-      await driver.get(whereIs('accessibility/001-headings-and-landmarks.html'))
+      it('returns element references usable for further commands', async function () {
+        await driver.get(whereIs('accessibility/003-links-and-buttons.html'))
 
-      const tree = await driver.getAccessibilitySnapshot()
-
-      assert.ok(tree instanceof AccessibilityNode)
-      assert.strictEqual(tree.role, 'document')
-      assert.ok(tree.element instanceof WebElement)
-      assert.strictEqual(await tree.element.getTagName(), 'html')
-    })
-
-    it('returns element references usable for further commands', async function () {
-      await driver.get(whereIs('accessibility/003-links-and-buttons.html'))
-
-      const tree = await driver.getAccessibilitySnapshot()
-
-      const button = [...walk(tree)].find((node) => node.role === 'button')
-      assert.ok(button, 'the page has buttons')
-      assert.ok(['button', 'input', 'a'].includes(await button.element.getTagName()))
-      assert.strictEqual(await button.element.getDomAttribute('id'), (await serialize(button)).element)
-    })
-
-    it('always produces a node for a subtree root', async function () {
-      await driver.get(whereIs('accessibility/005-lists.html'))
-      const body = await driver.findElement(By.css('body'))
-
-      const tree = await body.getAccessibilitySnapshot()
-
-      assert.strictEqual(tree.role, 'generic')
-      assert.strictEqual(await tree.element.getTagName(), 'body')
-      assert.ok([...walk(tree)].some((node) => node.role === 'list'))
-    })
-
-    it('snapshots the subtree of a node from an earlier snapshot', async function () {
-      await driver.get(whereIs('accessibility/005-lists.html'))
-      const firstList = [...walk(await driver.getAccessibilitySnapshot())].find((node) => node.role === 'list')
-
-      const tree = await firstList.element.getAccessibilitySnapshot()
-
-      assert.strictEqual(tree.role, 'list')
-      assert.deepStrictEqual(
-        tree.children.map((child) => child.role),
-        firstList.children.map((child) => child.role),
-      )
-    })
-
-    it('stitches frames in', async function () {
-      await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
-
-      const tree = await driver.getAccessibilitySnapshot()
-
-      const frames = [...walk(tree)].filter((node) => node.role === 'iframe')
-      assert.deepStrictEqual(
-        frames.map((frame) => frame.name),
-        ['Embedded content', ''],
-      )
-      for (const frame of frames) {
-        assert.strictEqual(frame.children.length, 1, 'a reachable frame carries its document as the one child')
-        assert.strictEqual(frame.children[0].role, 'document')
-        assert.ok(frame.children[0].element instanceof WebElement)
-      }
-      // The text form renders the stitched tree; the atom-level expectation stops at the leaves.
-      assert.strictEqual(tree.toText().split('- document').length - 1, 3)
-      // A reference inside a frame works through classic commands once that frame is current.
-      await driver.switchTo().frame(frames[0].element)
-      try {
-        assert.strictEqual(await frames[0].children[0].element.getTagName(), 'html')
-      } finally {
-        await driver.switchTo().defaultContent()
-      }
-    })
-
-    it('carries the document of an iframe taken as the root', async function () {
-      await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
-      const frame = await driver.findElement(By.id('frame'))
-
-      const tree = await frame.getAccessibilitySnapshot()
-
-      assert.strictEqual(tree.role, 'iframe')
-      assert.strictEqual(tree.name, 'Embedded content')
-      assert.deepStrictEqual(
-        tree.children.map((child) => child.role),
-        ['document'],
-      )
-    })
-
-    it('snapshots an element inside a frame', async function () {
-      await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
-      await driver.switchTo().frame('frame')
-      try {
-        const body = await driver.findElement(By.css('body'))
-        const tree = await body.getAccessibilitySnapshot()
-        // The root is the frame's body, not the top document that owns the window.
-        assert.strictEqual(tree.role, 'generic')
-        assert.strictEqual(tree.name, '')
-        assert.strictEqual(await tree.element.getTagName(), 'body')
-      } finally {
-        await driver.switchTo().defaultContent()
-      }
-    })
-
-    it('snapshots the whole page whatever frame the driver switched to', async function () {
-      await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
-      await driver.switchTo().frame('frame')
-      try {
         const tree = await driver.getAccessibilitySnapshot()
-        assert.strictEqual(tree.name, 'Frames')
-      } finally {
-        await driver.switchTo().defaultContent()
-      }
+
+        const button = [...walk(tree)].find((node) => node.role === 'button')
+        assert.ok(button, 'the page has buttons')
+        assert.ok(['button', 'input', 'a'].includes(await button.element.getTagName()))
+        assert.strictEqual(await button.element.getDomAttribute('id'), (await serialize(button)).element)
+      })
+
+      it('always produces a node for a subtree root', async function () {
+        await driver.get(whereIs('accessibility/005-lists.html'))
+        const body = await driver.findElement(By.css('body'))
+
+        const tree = await body.getAccessibilitySnapshot()
+
+        assert.strictEqual(tree.role, 'generic')
+        assert.strictEqual(await tree.element.getTagName(), 'body')
+        assert.ok([...walk(tree)].some((node) => node.role === 'list'))
+      })
+
+      it('snapshots the subtree of a node from an earlier snapshot', async function () {
+        await driver.get(whereIs('accessibility/005-lists.html'))
+        const firstList = [...walk(await driver.getAccessibilitySnapshot())].find((node) => node.role === 'list')
+
+        const tree = await firstList.element.getAccessibilitySnapshot()
+
+        assert.strictEqual(tree.role, 'list')
+        assert.deepStrictEqual(
+          tree.children.map((child) => child.role),
+          firstList.children.map((child) => child.role),
+        )
+      })
+
+      it('stitches frames in', async function () {
+        await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
+
+        const tree = await driver.getAccessibilitySnapshot()
+
+        const frames = [...walk(tree)].filter((node) => node.role === 'iframe')
+        assert.deepStrictEqual(
+          frames.map((frame) => frame.name),
+          ['Embedded content', ''],
+        )
+        for (const frame of frames) {
+          assert.strictEqual(frame.children.length, 1, 'a reachable frame carries its document as the one child')
+          assert.strictEqual(frame.children[0].role, 'document')
+          assert.ok(frame.children[0].element instanceof WebElement)
+        }
+        // The text form renders the stitched tree; the atom-level expectation stops at the leaves.
+        assert.strictEqual(tree.toText().split('- document').length - 1, 3)
+        // A reference inside a frame works through classic commands once that frame is current.
+        await driver.switchTo().frame(frames[0].element)
+        try {
+          assert.strictEqual(await frames[0].children[0].element.getTagName(), 'html')
+        } finally {
+          await driver.switchTo().defaultContent()
+        }
+      })
+
+      it('carries the document of an iframe taken as the root', async function () {
+        await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
+        const frame = await driver.findElement(By.id('frame'))
+
+        const tree = await frame.getAccessibilitySnapshot()
+
+        assert.strictEqual(tree.role, 'iframe')
+        assert.strictEqual(tree.name, 'Embedded content')
+        assert.deepStrictEqual(
+          tree.children.map((child) => child.role),
+          ['document'],
+        )
+      })
+
+      it('snapshots an element inside a frame', async function () {
+        await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
+        await driver.switchTo().frame('frame')
+        try {
+          const body = await driver.findElement(By.css('body'))
+          const tree = await body.getAccessibilitySnapshot()
+          // The root is the frame's body, not the top document that owns the window.
+          assert.strictEqual(tree.role, 'generic')
+          assert.strictEqual(tree.name, '')
+          assert.strictEqual(await tree.element.getTagName(), 'body')
+        } finally {
+          await driver.switchTo().defaultContent()
+        }
+      })
+
+      it('snapshots the whole page whatever frame the driver switched to', async function () {
+        await driver.get(whereIs(`accessibility/${FRAMES_PAGE}.html`))
+        await driver.switchTo().frame('frame')
+        try {
+          const tree = await driver.getAccessibilitySnapshot()
+          assert.strictEqual(tree.name, 'Frames')
+        } finally {
+          await driver.switchTo().defaultContent()
+        }
+      })
+
+      it('raises the stale element error for a root from a previous document', async function () {
+        await driver.get(whereIs('accessibility/005-lists.html'))
+        const body = await driver.findElement(By.css('body'))
+        await driver.get(whereIs('accessibility/001-headings-and-landmarks.html'))
+
+        await assert.rejects(body.getAccessibilitySnapshot(), error.StaleElementReferenceError)
+      })
+
+      it('raises the stale element error for a detached root', async function () {
+        await driver.get(whereIs('accessibility/005-lists.html'))
+        const item = await driver.findElement(By.css('li'))
+        await driver.executeScript('arguments[0].remove()', item)
+
+        await assert.rejects(item.getAccessibilitySnapshot(), error.StaleElementReferenceError)
+      })
+
+      it('is a copy taken at one point in time', async function () {
+        await driver.get(whereIs('accessibility/005-lists.html'))
+        const before = await driver.getAccessibilitySnapshot()
+        await driver.executeScript("document.querySelector('li').textContent = 'changed'")
+
+        const after = await driver.getAccessibilitySnapshot()
+
+        assert.notStrictEqual(before.toText(), after.toText())
+        assert.ok(after.toText().includes('changed'))
+      })
     })
-
-    it('raises the stale element error for a root from a previous document', async function () {
-      await driver.get(whereIs('accessibility/005-lists.html'))
-      const body = await driver.findElement(By.css('body'))
-      await driver.get(whereIs('accessibility/001-headings-and-landmarks.html'))
-
-      await assert.rejects(body.getAccessibilitySnapshot(), error.StaleElementReferenceError)
-    })
-
-    it('raises the stale element error for a detached root', async function () {
-      await driver.get(whereIs('accessibility/005-lists.html'))
-      const item = await driver.findElement(By.css('li'))
-      await driver.executeScript('arguments[0].remove()', item)
-
-      await assert.rejects(item.getAccessibilitySnapshot(), error.StaleElementReferenceError)
-    })
-
-    it('is a copy taken at one point in time', async function () {
-      await driver.get(whereIs('accessibility/005-lists.html'))
-      const before = await driver.getAccessibilitySnapshot()
-      await driver.executeScript("document.querySelector('li').textContent = 'changed'")
-
-      const after = await driver.getAccessibilitySnapshot()
-
-      assert.notStrictEqual(before.toText(), after.toText())
-      assert.ok(after.toText().includes('changed'))
-    })
-  })
-})
+  },
+  // The snapshot needs BiDi, which the test environment enables for these browsers only.
+  { browsers: [Browser.CHROME, Browser.EDGE, Browser.FIREFOX] },
+)
