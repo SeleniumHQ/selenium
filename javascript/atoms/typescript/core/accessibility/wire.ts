@@ -88,14 +88,20 @@ export function encodeWire(tree: AccessibilityNode): Encoded {
 }
 
 /**
- * The snapshot of this document, or of the subtree under `root`, in the wire
- * shape. Answers `null` for a root another document owns (Firefox resolves a
- * shared id in any document of the browsing context group, so a binding tries
- * each document until one answers) and `{ error: 'detached' }` for a root no
- * longer in its document, so a binding never has to read an exception's text.
+ * The snapshot of this document (no `root`), or of the subtree under `root`,
+ * in the wire shape. Answers `null` for a root this document does not own,
+ * so a binding tries each document until one answers: Firefox hands a shared
+ * id of another document's node to the called function as `null`, and may
+ * resolve one to the node itself in any document of the browsing context
+ * group, which the ownership check catches. Answers `{ error: 'detached' }`
+ * for a root no longer in its document, so a binding never has to read an
+ * exception's text.
  */
 function accessibilitySnapshotWire(root?: Element | null): WireSnapshot | WireError | null {
-  if (root !== undefined && root !== null) {
+  if (root === null) {
+    return null
+  }
+  if (root !== undefined) {
     if (!isElement(root)) {
       throw new Error('accessibilitySnapshotWire: root must be an Element')
     }

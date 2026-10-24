@@ -91,9 +91,11 @@ shape the Selenium bindings fetch over WebDriver BiDi: `{ json, elements,
 windows }`, the tree as JSON text with each `element` replaced by an index into
 `elements` and each frame node given a `frame` index into `windows` (the
 frame's content window), so a binding parses one string and maps two arrays
-instead of decoding a nested remote value. It answers `null` for a root owned by
-another document and `{ error: 'detached' }` for a root no longer in its
-document. Page scripts have no reason to use it over `accessibilitySnapshot`.
+instead of decoding a nested remote value. It answers `null` for a root this
+document does not own (one owned by another document, or a `null` root, which
+is how Firefox hands over a shared id of another document's node) and
+`{ error: 'detached' }` for a root no longer in its document. Page scripts have
+no reason to use it over `accessibilitySnapshot`.
 
 The atoms operate on the DOM of the document they are evaluated in, so they must
 run in the page rather than in the driver process — for example via

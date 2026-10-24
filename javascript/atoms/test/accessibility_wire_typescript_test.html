@@ -116,6 +116,12 @@ under the License.
       assert.strictEqual(snapshotWire(foreign), null);
     });
 
+    QUnit.test('a null root is answered with null, not with the whole document', function (assert) {
+      // Firefox hands a shared id of another document's node to the called function as null.
+      assert.strictEqual(snapshotWire(null), null);
+      assert.strictEqual(JSON.parse(snapshotWire(undefined).json).role, 'document');
+    });
+
     QUnit.test('a detached root is answered with an error value, not an exception', function (assert) {
       var detached = document.createElement('button');
       detached.textContent = 'Gone';
