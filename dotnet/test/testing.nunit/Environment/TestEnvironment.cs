@@ -21,11 +21,11 @@ namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 internal class TestEnvironment
 {
-    public bool CaptureWebServerOutput { get; set; }
-
     public string DriverServiceLocation { get; set; }
 
-    public bool HideWebServerCommandPrompt { get; set; }
+    public string BrowserLocation { get; set; }
+
+    public bool Headless { get; set; }
 
     public string ActiveDriverConfig { get; set; }
 

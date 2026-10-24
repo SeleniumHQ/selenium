@@ -66,12 +66,13 @@ impl IExplorerManager {
         let mut config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let default_insecure = config.insecure;
         config.os = WINDOWS.to_str_vector().first().unwrap().to_string();
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: create_http_client(default_timeout, default_proxy, default_insecure)?,
             config,
             log: Logger::new(),
             tx,

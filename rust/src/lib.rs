@@ -1580,10 +1580,28 @@ pub trait SeleniumManager {
         Ok(())
     }
 
+    fn is_insecure(&self) -> bool {
+        self.get_config().insecure
+    }
+
+    fn set_insecure(&mut self, insecure: bool) -> Result<(), Error> {
+        if insecure && !self.is_insecure() {
+            self.get_config_mut().insecure = true;
+            self.update_http_client()?;
+        }
+        if self.is_insecure() {
+            self.get_logger().warn(
+                "TLS certificate validation is disabled (insecure mode). Downloaded drivers and browsers cannot be verified",
+            );
+        }
+        Ok(())
+    }
+
     fn update_http_client(&mut self) -> Result<(), Error> {
         let proxy = self.get_proxy();
         let timeout = self.get_timeout();
-        let http_client = create_http_client(timeout, proxy)?;
+        let insecure = self.is_insecure();
+        let http_client = create_http_client(timeout, proxy, insecure)?;
         self.set_http_client(http_client);
         Ok(())
     }
@@ -1842,17 +1860,18 @@ fn delete_cached_asset(log: &Logger, cache: &Path, asset_name: &str, asset_versi
     }
 }
 
-pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
+pub fn create_http_client(timeout: u64, proxy: &str, insecure: bool) -> Result<Client, Error> {
     // Ensure the ring provider is installed. Returns Err if already set, which
     // is fine — we just need it present before ClientBuilder::build() runs.
     let _ = rustls::crypto::ring::default_provider().install_default();
-    let mut client_builder = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .timeout(Duration::from_secs(timeout));
+    let mut client_builder = Client::builder().timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
-    Ok(client_builder.build().unwrap_or_default())
+    if insecure {
+        client_builder = client_builder.danger_accept_invalid_certs(true);
+    }
+    Ok(client_builder.build()?)
 }
 
 #[cfg(test)]

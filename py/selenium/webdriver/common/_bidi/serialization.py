@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import math
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -98,6 +99,10 @@ class _Wire:
     primitive: str | None = None
     scalar: str | list[str] | None = None
     fixed: Any = UNSET
+    min: float | None = None
+    max: float | None = None
+    exclusive_min: bool = False
+    exclusive_max: bool = False
 
 
 _META_KEY = "bidi"
@@ -114,6 +119,10 @@ def meta(
     primitive: str | None = None,
     scalar: str | list[str] | None = None,
     fixed: Any = UNSET,
+    min: float | None = None,
+    max: float | None = None,
+    exclusive_min: bool = False,
+    exclusive_max: bool = False,
 ) -> dict:
     """Dataclass field metadata carrying one field's BiDi wire facts.
 
@@ -124,6 +133,9 @@ def meta(
     ``scalar`` marks a map field (a ``[key, value]`` list whose value type is an
     object-only union): the union's string keys pass through when they match this
     primitive, rather than being rejected as non-objects.
+
+    ``min``/``max`` bound a numeric value (each element, for a list), inclusively unless
+    ``exclusive_min``/``exclusive_max`` is set.
     """
     descriptor = _Wire(
         wire=name,
@@ -135,6 +147,10 @@ def meta(
         primitive=primitive,
         scalar=scalar,
         fixed=fixed,
+        min=min,
+        max=max,
+        exclusive_min=exclusive_min,
+        exclusive_max=exclusive_max,
     )
     return {_META_KEY: descriptor}
 
@@ -398,6 +414,21 @@ _PRIMITIVE_CHECKS = {
 }
 
 
+def _out_of_bounds(w: _Wire, value: Any) -> str | None:
+    """The bound a numeric value violates (e.g. ``">= 1"``), or None when it is in range."""
+    if w.min is None and w.max is None:
+        return None
+    # NaN compares false against every bound, and an infinity escapes a one-sided range; neither
+    # is a JSON number, so a bounded field holds them out explicitly.
+    if isinstance(value, float) and not math.isfinite(value):
+        return "a finite number"
+    if w.min is not None and (value <= w.min if w.exclusive_min else value < w.min):
+        return f"{'>' if w.exclusive_min else '>='} {w.min}"
+    if w.max is not None and (value >= w.max if w.exclusive_max else value > w.max):
+        return f"{'<' if w.exclusive_max else '<='} {w.max}"
+    return None
+
+
 def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
     if w.fixed is not UNSET:
         # A nullable constant (a non-nullable one is baked and never read): the wire value must be
@@ -430,6 +461,9 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
         if check and not check(raw):
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected {w.primitive}, got {got} {raw!r}")
+        bound = _out_of_bounds(w, raw)
+        if bound:
+            raise BiDiSerializationError(f"{cls.__name__}.{name}: {raw!r} is out of range (must be {bound})")
         if w.primitive == "int" and isinstance(raw, float):
             # A whole number is exact in both types, so the declared type is held with nothing lost.
             return int(raw)
@@ -510,6 +544,9 @@ def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> No
             raise BiDiSerializationError(
                 f"{owner}.{name}: expected {w.primitive}, got {type(value).__name__} {value!r}"
             )
+        bound = _out_of_bounds(w, value)
+        if bound:
+            raise BiDiSerializationError(f"{owner}.{name}: {value!r} is out of range (must be {bound})")
 
 
 class Union:

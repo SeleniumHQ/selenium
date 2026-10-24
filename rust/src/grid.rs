@@ -61,11 +61,12 @@ impl GridManager {
         config.driver_version = driver_version;
         let default_timeout = config.timeout.to_owned();
         let default_proxy = &config.proxy;
+        let default_insecure = config.insecure;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(GridManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: create_http_client(default_timeout, default_proxy, default_insecure)?,
             config,
             log: Logger::new(),
             tx,

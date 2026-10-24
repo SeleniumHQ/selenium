@@ -6,7 +6,6 @@ on:
     paths:
       - 'version.bzl'
       - 'py/selenium/__init__.py'
-      - 'javascript/selenium-webdriver/package.json'
   workflow_dispatch:
     inputs:
       tag:

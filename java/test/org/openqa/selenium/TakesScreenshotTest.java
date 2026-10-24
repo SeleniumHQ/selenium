@@ -219,26 +219,48 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
+  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws IOException {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
-    byte[] pageScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
+    waitForFramesToPaint("frame1", "frame2");
+    BufferedImage pageScreenshot = getImage();
 
     driver.switchTo().frame(driver.findElement(By.id("frame2")));
-    byte[] frameScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
+    BufferedImage frameScreenshot = getImage();
 
-    assertThat(frameScreenshot).isEqualTo(pageScreenshot);
+    assertSamePixels(frameScreenshot, pageScreenshot);
   }
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
+  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws IOException {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
-    byte[] pageScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
+    waitForFramesToPaint("iframe1", "iframe2");
+    BufferedImage pageScreenshot = getImage();
 
     driver.switchTo().frame(driver.findElement(By.id("iframe2")));
-    byte[] frameScreenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
+    BufferedImage frameScreenshot = getImage();
 
-    assertThat(frameScreenshot).isEqualTo(pageScreenshot);
+    assertSamePixels(frameScreenshot, pageScreenshot);
+  }
+
+  private void waitForFramesToPaint(String... frameIds) {
+    for (String frameId : frameIds) {
+      wait.until(frameToBeAvailableAndSwitchToIt(By.id(frameId)));
+      wait.until(
+          d ->
+              !"rgba(0, 0, 0, 0)"
+                  .equals(d.findElement(By.id("cell11")).getCssValue("background-color")));
+      driver.switchTo().defaultContent();
+    }
+  }
+
+  private void assertSamePixels(BufferedImage actual, BufferedImage expected) {
+    assertThat(actual.getWidth()).isEqualTo(expected.getWidth());
+    assertThat(actual.getHeight()).isEqualTo(expected.getHeight());
+    int width = expected.getWidth();
+    int height = expected.getHeight();
+    assertThat(actual.getRGB(0, 0, width, height, null, 0, width))
+        .isEqualTo(expected.getRGB(0, 0, width, height, null, 0, width));
   }
 
   /**

@@ -1,76 +1,93 @@
 {
-  "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
+  "Headless": false,
+  "DriverServiceLocation": null,
+  "BrowserLocation": null,
   "DriverConfigs": {
     "Chrome": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.StableChannelChromeDriver",
-      "BrowserValue": "Chrome",
-      "RemoteCapabilities": "chrome",
-      "Logging": false
+      "Browser": "Chrome",
+      "RemoteCapabilities": "chrome"
     },
 
     "ChromeDev": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.DevChannelChromeDriver",
-      "BrowserValue": "Chrome",
-      "RemoteCapabilities": "chrome",
-      "Logging": false
+      "Browser": "Chrome",
+      "Options": {
+        "Chrome": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "chrome"
     },
 
     "EdgeIEMode": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.EdgeInternetExplorerModeDriver",
-      "BrowserValue": "IE",
-      "RemoteCapabilities": "internet explorer",
-      "Logging": false
+      "Browser": "IE",
+      "Options": {
+        "InternetExplorer": {
+          "RequireWindowFocus": true,
+          "UsePerProcessProxy": true,
+          "AttachToEdgeChrome": true
+        }
+      },
+      "RemoteCapabilities": "internet explorer"
     },
 
     "Edge": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.StableChannelEdgeDriver",
-      "BrowserValue": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge",
-      "Logging": false
+      "Browser": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "EdgeDev": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.DevChannelEdgeDriver",
-      "BrowserValue": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge",
-      "Logging": false
+      "Browser": "Edge",
+      "Options": {
+        "Edge": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "Firefox": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.StableChannelFirefoxDriver",
-      "BrowserValue": "Firefox",
-      "RemoteCapabilities": "firefox",
-      "Logging": false
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox"
     },
 
     "FirefoxNightly": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.NightlyChannelFirefoxDriver",
-      "BrowserValue": "Firefox",
-      "RemoteCapabilities": "firefox",
-      "Logging": false
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "BrowserVersion": "nightly",
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox"
     },
 
     "Safari": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.DefaultSafariDriver",
-      "BrowserValue": "Safari",
-      "RemoteCapabilities": "safari",
-      "Logging": false
+      "Browser": "Safari",
+      "RemoteCapabilities": "safari"
     },
 
     "SafariTechPreview": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.SafariTechnologyPreviewDriver",
-      "BrowserValue": "Safari",
-      "RemoteCapabilities": "safari",
-      "Logging": false
+      "Browser": "Safari",
+      "Options": {
+        "Safari": {
+          "UseTechnologyPreview": true
+        }
+      },
+      "RemoteCapabilities": "safari"
     },
 
     "Remote": {
-      "DriverTypeName": "OpenQA.Selenium.Testing.NUnit.DriverConfigs.StableChannelRemoteChromeDriver",
-      "BrowserValue": "Remote",
+      "Browser": "Remote",
       "RemoteCapabilities": "chrome",
-      "AutoStartRemoteServer": true,
-      "Logging": false
+      "AutoStartRemoteServer": true
     }
   }
 }

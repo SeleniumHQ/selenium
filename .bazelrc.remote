@@ -54,8 +54,8 @@ build:rbe --experimental_output_paths=strip
 # A small hint that we're running our tests remotely
 test:rbe --test_env=REMOTE_BUILD=1
 
-# Wait for up to 5 minutes for a test to pass
-test:rbe --test_timeout=600
+# Limit large tests to 600s instead of 900s, otherwise use Bazel defaults
+test:rbe --test_timeout=-1,-1,600,-1
 
 # Extend the remote config for CI
 build:rbe-ci --config=rbe

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>find_element_typescript_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <style>
+    /* qunit.css moves the fixture off-screen, which the link text locators
+       treat as hidden. */
+    #qunit-fixture { position: static; }
+  </style>
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="/filez/_main/javascript/atoms/typescript/find-element-global.js"></script>
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture">
+  <div id="outer">
+    <p id="para1" class="myclass">First paragraph</p>
+    <p id="para2" class="myclass otherclass">Second paragraph</p>
+    <p id="para3">Third paragraph</p>
+    <a id="link1" href="#" name="anchor1">Click me</a>
+    <a id="link2" href="#">Partial match link</a>
+    <input id="input1" name="myinput" type="text">
+    <span id="span1" class="myclass">A span</span>
+  <b id="punctuated-class" class="a#b[c]"></b>
+  </div>
+</div>
+<!-- Two elements share the id "dup-id". The one in #dup-scope is "inside";
+     the one at top level is "outside". Used to test id.single containment. -->
+<span id="dup-id" style="position: absolute; top: 200px; left: 0; width: 40px; height: 20px;">outside</span>
+<div id="dup-scope" style="position: absolute; top: 0; left: 0; width: 100px; height: 80px;">
+  <!-- dup-id at top:0; dup-below at top:40. Used for relative locator tests. -->
+  <span id="dup-id" style="position: absolute; top: 0; left: 0; width: 40px; height: 20px;">inside</span>
+  <p id="dup-below" style="position: absolute; top: 40px; left: 0; width: 40px; height: 20px; margin: 0;">below</p>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var findElement = window.bot.locators.typescript.findElement;
+
+  // QUnit replaces #qunit-fixture with a fresh clone before every test, so a
+  // reference taken once would point at a detached element that is never shown.
+  var fixture;
+  QUnit.hooks.beforeEach(function() {
+    fixture = document.getElementById('qunit-fixture');
+  });
+
+  // ── css selector ─────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by css selector', function(assert) {
+    var el = findElement({'css selector': 'p'}, fixture);
+    assert.ok(el !== null, 'element found');
+    assert.equal(el.tagName.toLowerCase(), 'p');
+  });
+
+  QUnit.test('returns null when css selector matches nothing', function(assert) {
+    var el = findElement({'css selector': 'table'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('finds element by css alias', function(assert) {
+    var el = findElement({'css': '#para2'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'para2');
+  });
+
+  QUnit.test('throws INVALID_SELECTOR for empty css selector', function(assert) {
+    assert.throws(function() {
+      findElement({'css selector': ''}, fixture);
+    });
+  });
+
+  // ── id ───────────────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by id', function(assert) {
+    var el = findElement({'id': 'para1'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'para1');
+  });
+
+  QUnit.test('returns null when id not found', function(assert) {
+    var el = findElement({'id': 'nonexistent'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('finds element by id with newline in value', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'my\nid');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'id': 'my\nid'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds element by id containing a NUL character', function(assert) {
+    var el = document.createElement('div');
+    el.setAttribute('id', 'nul\u0000id');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'id': 'nul\u0000id'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('returns null (not a throw) when id is absent', function(assert) {
+    // findElement must return null for a no-match, never throw.
+    var el = findElement({'id': 'this-does-not-exist'});
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('id containment: element outside root is not returned', function(assert) {
+    // The document contains two elements with id "dup-id". One is inside
+    // #dup-scope; the other is at the top level. When root is #dup-scope,
+    // only the element INSIDE the root should be returned.
+    // locators/id.js:57-67 – containment check in id.single.
+    var scope = document.getElementById('dup-scope');
+    var el = findElement({'id': 'dup-id'}, scope);
+    assert.ok(el !== null, 'an element is found');
+    assert.equal(el.textContent.trim(), 'inside', 'returned the element inside the root');
+  });
+
+  QUnit.test('uses document as default root', function(assert) {
+    var el = findElement({'id': 'para1'});
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'para1');
+  });
+
+  // ── class name ───────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by class name', function(assert) {
+    var el = findElement({'class name': 'myclass'}, fixture);
+    assert.ok(el !== null);
+    assert.ok(el.classList.contains('myclass'));
+  });
+
+  QUnit.test('finds element by className alias', function(assert) {
+    var el = findElement({'className': 'otherclass'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'para2');
+  });
+
+  QUnit.test('finds a class name containing selector punctuation', function(assert) {
+    var el = findElement({'class name': 'a#b[c]'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el && el.id, 'punctuated-class');
+  });
+
+  QUnit.test('returns null when class name matches nothing', function(assert) {
+    var el = findElement({'class name': 'no-such-class'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('throws for empty class name', function(assert) {
+    assert.throws(function() {
+      findElement({'class name': ''}, fixture);
+    });
+  });
+
+  QUnit.test('throws for compound class name', function(assert) {
+    assert.throws(function() {
+      findElement({'class name': 'foo bar'}, fixture);
+    });
+  });
+
+  // ── name ─────────────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by name attribute', function(assert) {
+    var el = findElement({'name': 'myinput'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'input1');
+  });
+
+  QUnit.test('returns null when name attribute matches nothing', function(assert) {
+    var el = findElement({'name': 'no-such-name'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('finds element by name with newline in value', function(assert) {
+    var el = document.createElement('input');
+    el.setAttribute('name', 'my\ninput');
+    fixture.appendChild(el);
+    assert.strictEqual(findElement({'name': 'my\ninput'}, fixture), el);
+    fixture.removeChild(el);
+  });
+
+  QUnit.test('finds element scoped to a root element', function(assert) {
+    var outer = document.getElementById('outer');
+    var el = findElement({'name': 'myinput'}, outer);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'input1');
+  });
+
+  // ── tag name ─────────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by tag name', function(assert) {
+    var el = findElement({'tag name': 'p'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.tagName.toLowerCase(), 'p');
+  });
+
+  QUnit.test('finds element by tagName alias', function(assert) {
+    var el = findElement({'tagName': 'a'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.tagName.toLowerCase(), 'a');
+  });
+
+  QUnit.test('returns null when tag name matches nothing', function(assert) {
+    var el = findElement({'tag name': 'table'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('throws for empty tag name', function(assert) {
+    assert.throws(function() {
+      findElement({'tag name': ''}, fixture);
+    });
+  });
+
+  // ── link text ────────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by link text', function(assert) {
+    var el = findElement({'link text': 'Click me'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'link1');
+  });
+
+  QUnit.test('finds element by linkText alias', function(assert) {
+    var el = findElement({'linkText': 'Click me'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'link1');
+  });
+
+  QUnit.test('returns null when link text matches nothing', function(assert) {
+    var el = findElement({'link text': 'No such link'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  QUnit.test('finds element by link text with non-breaking spaces', function(assert) {
+    var a = document.createElement('a');
+    a.innerHTML = 'Hello&nbsp;World';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'Hello World'}, fixture), a);
+    assert.strictEqual(findElement({'partial link text': 'lo Wo'}, fixture), a);
+    fixture.removeChild(a);
+  });
+
+  QUnit.test('does not find a hidden link by link text', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.display = 'none';
+    a.textContent = 'Hidden link';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'Hidden link'}, fixture), null);
+    assert.strictEqual(findElement({'partial link text': 'idden li'}, fixture), null);
+    fixture.removeChild(a);
+  });
+
+  QUnit.test('finds a hidden link by the text of a visible child', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.visibility = 'hidden';
+    a.innerHTML = 'Hidden <span style="visibility:visible">shown child</span>';
+    fixture.appendChild(a);
+    assert.strictEqual(findElement({'link text': 'shown child'}, fixture), a);
+    assert.strictEqual(findElement({'partial link text': 'Hidden'}, fixture), null);
+    fixture.removeChild(a);
+  });
+
+  // ── partial link text ────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by partial link text', function(assert) {
+    var el = findElement({'partial link text': 'match'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'link2');
+  });
+
+  QUnit.test('finds element by partialLinkText alias', function(assert) {
+    var el = findElement({'partialLinkText': 'Partial'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'link2');
+  });
+
+  QUnit.test('returns null when partial link text matches nothing', function(assert) {
+    var el = findElement({'partial link text': 'xyzzy-no-match'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  // ── xpath ────────────────────────────────────────────────────────────────────
+
+  QUnit.test('finds element by xpath', function(assert) {
+    var el = findElement({'xpath': './/p'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.tagName.toLowerCase(), 'p');
+    // Should be the first <p> in document order.
+    assert.equal(el.getAttribute('id'), 'para1');
+  });
+
+  QUnit.test('finds element by xpath with predicate', function(assert) {
+    var el = findElement({'xpath': './/p[@id="para3"]'}, fixture);
+    assert.ok(el !== null);
+    assert.equal(el.getAttribute('id'), 'para3');
+  });
+
+  QUnit.test('returns null when xpath matches nothing', function(assert) {
+    var el = findElement({'xpath': './/table'}, fixture);
+    assert.strictEqual(el, null);
+  });
+
+  // ── relative ─────────────────────────────────────────────────────────────────
+  //
+  // Relative-locator tests use explicitly-positioned elements in #dup-scope so
+  // getBoundingClientRect returns reliable, non-zero values:
+  //   span#dup-id  top:0  height:20  (the anchor)
+  //   p#dup-below  top:40 height:20  (below the anchor)
+
+  QUnit.test('finds element via relative locator (below)', function(assert) {
+    var scope = document.getElementById('dup-scope');
+    // p#dup-below is at top:40; dup-id anchor is at top:0 height:20.
+    // "below" means c.top >= a.top + a.height → 40 >= 0+20 ✓
+    var el = findElement({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'below', args: [{id: 'dup-id'}]}]
+      }
+    }, scope);
+    assert.ok(el !== null, 'a match was found');
+    assert.equal(el.getAttribute('id'), 'dup-below');
+  });
+
+  QUnit.test('returns null when relative locator matches nothing', function(assert) {
+    // p#dup-below is at top:40; dup-id anchor is at top:0.
+    // "above" means c.top + c.height <= a.top → 40+20=60 <= 0 ✗
+    // No p inside #dup-scope can be above the element at top:0.
+    var scope = document.getElementById('dup-scope');
+    var el = findElement({
+      relative: {
+        root: {'tag name': 'p'},
+        filters: [{kind: 'above', args: [{id: 'dup-id'}]}]
+      }
+    }, scope);
+    assert.strictEqual(el, null);
+  });
+
+  // ── error cases ───────────────────────────────────────────────────────────────
+
+  QUnit.test('throws for unsupported strategy', function(assert) {
+    assert.throws(function() {
+      findElement({'unsupported': 'value'}, fixture);
+    });
+  });
+
+  QUnit.test('throws for empty target object', function(assert) {
+    assert.throws(function() {
+      findElement({}, fixture);
+    });
+  });
+})();
+</script>
+</body>
+</html>

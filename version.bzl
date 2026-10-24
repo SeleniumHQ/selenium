@@ -4,5 +4,6 @@
 VERSIONS = {
     "dotnet": "4.52.0-nightly",
     "java": "4.52.0-SNAPSHOT",
+    "javascript": "4.52.0-nightly",
     "ruby": "4.52.0.nightly",
 }

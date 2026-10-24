@@ -76,6 +76,20 @@ class Scalars(Record):
     name: str = field(metadata=meta("name", required=True, primitive="str"))
 
 
+@register("test.Bounded")
+@dataclass(frozen=True)
+class Bounded(Record):
+    # Mirrors the generated shape of `js-uint .ge 1`, `float .gt 0.0`, and `(0.0...360.0)`.
+    count: int = field(metadata=meta("count", required=True, primitive="int", min=1, max=9007199254740991))
+    ratio: float | UnsetType = field(
+        default=UNSET, metadata=meta("ratio", primitive="float", min=0, exclusive_min=True)
+    )
+    heading: float | UnsetType = field(
+        default=UNSET, metadata=meta("heading", primitive="float", min=0, max=360, exclusive_max=True)
+    )
+    sizes: list[int] | UnsetType = field(default=UNSET, metadata=meta("sizes", is_list=True, primitive="int", min=0))
+
+
 @register("test.Painted")
 @dataclass(frozen=True)
 class Painted(Record):
@@ -483,6 +497,82 @@ def test_bool_accepts_a_bool_but_rejects_an_int():
 def test_string_rejects_a_number():
     with pytest.raises(BiDiSerializationError, match=r"expected str"):
         Scalars.from_json({"count": 1, "ratio": 1.0, "flag": True, "name": 3})
+
+
+# --- numeric bounds ---
+
+
+def test_as_json_accepts_values_on_inclusive_bounds():
+    assert Bounded(count=1, heading=0).as_json() == {"count": 1, "heading": 0}
+    assert Bounded(count=9007199254740991).as_json() == {"count": 9007199254740991}
+
+
+def test_as_json_rejects_a_value_below_an_inclusive_min():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.count: 0 is out of range \(must be >= 1\)"):
+        Bounded(count=0).as_json()
+
+
+def test_as_json_rejects_a_value_above_an_inclusive_max():
+    with pytest.raises(BiDiSerializationError, match=r"must be <= 9007199254740991"):
+        Bounded(count=9007199254740992).as_json()
+
+
+def test_as_json_rejects_an_integer_too_large_for_a_float_as_out_of_range():
+    with pytest.raises(BiDiSerializationError, match=r"must be <= 9007199254740991"):
+        Bounded(count=10**400).as_json()
+
+
+def test_as_json_rejects_a_value_equal_to_an_exclusive_min():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.ratio: 0 is out of range \(must be > 0\)"):
+        Bounded(count=1, ratio=0).as_json()
+    assert Bounded(count=1, ratio=0.01).as_json() == {"count": 1, "ratio": 0.01}
+
+
+def test_as_json_rejects_a_value_equal_to_an_exclusive_max():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.heading: 360 is out of range \(must be < 360\)"):
+        Bounded(count=1, heading=360).as_json()
+    assert Bounded(count=1, heading=359.9).as_json() == {"count": 1, "heading": 359.9}
+
+
+def test_as_json_checks_bounds_on_each_list_element():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.sizes: -1 is out of range"):
+        Bounded(count=1, sizes=[0, -1]).as_json()
+
+
+def test_from_json_rejects_an_out_of_range_value():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.count: 0 is out of range \(must be >= 1\)"):
+        Bounded.from_json({"count": 0})
+
+
+def test_from_json_rejects_a_value_equal_to_an_exclusive_bound():
+    with pytest.raises(BiDiSerializationError, match=r"must be > 0"):
+        Bounded.from_json({"count": 1, "ratio": 0.0})
+    with pytest.raises(BiDiSerializationError, match=r"must be < 360"):
+        Bounded.from_json({"count": 1, "heading": 360})
+
+
+def test_from_json_checks_bounds_on_each_list_element():
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.sizes: -2 is out of range"):
+        Bounded.from_json({"count": 1, "sizes": [1, -2]})
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_as_json_rejects_a_non_finite_value_on_a_bounded_field(value):
+    with pytest.raises(BiDiSerializationError, match=r"Bounded.ratio: .* is out of range \(must be a finite number\)"):
+        Bounded(count=1, ratio=value).as_json()
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf")])
+def test_from_json_rejects_a_non_finite_value_on_a_bounded_field(value):
+    with pytest.raises(
+        BiDiSerializationError, match=r"Bounded.heading: .* is out of range \(must be a finite number\)"
+    ):
+        Bounded.from_json({"count": 1, "heading": value})
+
+
+def test_from_json_accepts_in_range_values():
+    parsed = Bounded.from_json({"count": 1.0, "ratio": 0.5, "heading": 0, "sizes": [0]})
+    assert parsed == Bounded(count=1, ratio=0.5, heading=0, sizes=[0])
 
 
 # --- list vs scalar shape ---

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>storage_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/clear-local-storage-global.js"></script>
+  <script src="../typescript/get-local-storage-item-global.js"></script>
+  <script src="../typescript/get-local-storage-key-global.js"></script>
+  <script src="../typescript/get-local-storage-keys-global.js"></script>
+  <script src="../typescript/get-local-storage-size-global.js"></script>
+  <script src="../typescript/remove-local-storage-item-global.js"></script>
+  <script src="../typescript/set-local-storage-item-global.js"></script>
+  <script src="../typescript/clear-session-storage-global.js"></script>
+  <script src="../typescript/get-session-storage-item-global.js"></script>
+  <script src="../typescript/get-session-storage-key-global.js"></script>
+  <script src="../typescript/get-session-storage-keys-global.js"></script>
+  <script src="../typescript/get-session-storage-size-global.js"></script>
+  <script src="../typescript/remove-session-storage-item-global.js"></script>
+  <script src="../typescript/set-session-storage-item-global.js"></script>
+  <script type="text/javascript">
+    // Assertions ported from webdriver/test/atoms/storage/local_storage_test.html
+    // and its session twin, which are the behaviour spec for these atoms. Both
+    // Closure pages run the same five cases, so they run here once per store
+    // rather than being copied out twice.
+    //
+    // QUnit stores failed-test names in sessionStorage to reorder them on the
+    // next run. These tests clear sessionStorage, so that bookkeeping has to be
+    // off or QUnit would be reading back what the tests just wiped.
+    QUnit.config.reorder = false;
+
+    var ts = window.bot.storage.typescript;
+
+    var STORES = [
+      {
+        name: 'localStorage',
+        clear: ts.clearLocalStorage,
+        getItem: ts.getLocalStorageItem,
+        setItem: ts.setLocalStorageItem,
+        removeItem: ts.removeLocalStorageItem,
+        keySet: ts.getLocalStorageKeys,
+        size: ts.getLocalStorageSize,
+        key: ts.getLocalStorageKey,
+      },
+      {
+        name: 'sessionStorage',
+        clear: ts.clearSessionStorage,
+        getItem: ts.getSessionStorageItem,
+        setItem: ts.setSessionStorageItem,
+        removeItem: ts.removeSessionStorageItem,
+        keySet: ts.getSessionStorageKeys,
+        size: ts.getSessionStorageSize,
+        key: ts.getSessionStorageKey,
+      },
+    ];
+
+    QUnit.testDone(function () {
+      ts.clearLocalStorage();
+      ts.clearSessionStorage();
+    });
+
+    STORES.forEach(function (store) {
+      QUnit.test(store.name + ': clear', function (assert) {
+        store.clear();
+        assert.strictEqual(store.size(), 0);
+
+        store.setItem('first', 'one');
+        store.setItem('second', 'two');
+        store.setItem('third', 'two');
+        store.clear();
+        assert.strictEqual(store.size(), 0);
+        assert.strictEqual(store.getItem('first'), null);
+        assert.strictEqual(store.getItem('second'), null);
+        assert.strictEqual(store.getItem('third'), null);
+      });
+
+      QUnit.test(store.name + ': set and get a simple item', function (assert) {
+        store.clear();
+
+        store.setItem('first', 'one');
+        assert.strictEqual(store.getItem('first'), 'one');
+
+        store.setItem('first', '1');
+        assert.strictEqual(store.getItem('first'), '1', 'setting again replaces');
+      });
+
+      QUnit.test(store.name + ': removeItem returns the removed value', function (assert) {
+        store.clear();
+
+        store.setItem('first', 'one');
+        assert.strictEqual(store.removeItem('first'), 'one');
+
+        assert.strictEqual(store.removeItem('first'), null, 'already removed');
+        assert.strictEqual(store.removeItem('foo'), null, 'never present');
+      });
+
+      QUnit.test(store.name + ': size', function (assert) {
+        store.clear();
+
+        store.setItem('first', 'one');
+        store.setItem('second', 'two');
+        store.setItem('third', 'three');
+        assert.strictEqual(store.size(), 3);
+      });
+
+      QUnit.test(store.name + ': keySet', function (assert) {
+        store.clear();
+
+        store.setItem('third', 'three');
+        store.setItem('first', 'one');
+        store.setItem('second', 'two');
+
+        var keys = store.keySet();
+        assert.deepEqual(keys.sort(), ['first', 'second', 'third']);
+      });
+
+      // Not covered by the Closure pages, but part of the wire contract: the
+      // bindings parse what comes back, so an Array is not interchangeable
+      // with anything array-like.
+      QUnit.test(store.name + ': keySet returns a real Array', function (assert) {
+        store.clear();
+        store.setItem('only', 'one');
+
+        var keys = store.keySet();
+        assert.ok(Array.isArray(keys), 'must be an Array');
+        assert.strictEqual(keys.length, 1);
+      });
+
+      QUnit.test(store.name + ': getItem is null for a missing key', function (assert) {
+        store.clear();
+        assert.strictEqual(store.getItem('never-set'), null);
+      });
+
+      // Storage order is unspecified, so this checks the index round-trips
+      // rather than which key lands where.
+      QUnit.test(store.name + ': key returns the key at an index', function (assert) {
+        store.clear();
+        store.setItem('only', 'one');
+
+        assert.strictEqual(store.key(0), 'only');
+        assert.strictEqual(store.key(1), null, 'out of range');
+      });
+
+      // Values are coerced with `value + ''`. Browsers disagreed about what a
+      // null round-trips as, so the atom makes them agree on "null".
+      QUnit.test(store.name + ': coerces values to strings', function (assert) {
+        store.clear();
+
+        store.setItem('nulled', null);
+        assert.strictEqual(store.getItem('nulled'), 'null');
+
+        store.setItem('numbered', 42);
+        assert.strictEqual(store.getItem('numbered'), '42');
+
+        store.setItem('booled', false);
+        assert.strictEqual(store.getItem('booled'), 'false');
+      });
+    });
+
+    // The two stores are separate: writing one must not be visible in the other.
+    QUnit.test('local and session storage are independent', function (assert) {
+      ts.clearLocalStorage();
+      ts.clearSessionStorage();
+
+      ts.setLocalStorageItem('shared-key', 'from-local');
+      ts.setSessionStorageItem('shared-key', 'from-session');
+
+      assert.strictEqual(ts.getLocalStorageItem('shared-key'), 'from-local');
+      assert.strictEqual(ts.getSessionStorageItem('shared-key'), 'from-session');
+
+      ts.clearLocalStorage();
+      assert.strictEqual(ts.getSessionStorageItem('shared-key'), 'from-session',
+        'clearing local storage must not touch session storage');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+</body>
+
+</html>
