@@ -39,6 +39,7 @@ under the License.
     // expectation files (see the corpus README).
     var snapshot = window.bot.accessibility.typescript.snapshot;
     var toText = window.bot.accessibility.typescript.testing.toText;
+    var encodeWire = window.bot.accessibility.typescript.testing.encodeWire;
 
     var CORPUS = '/filez/_main/common/src/web/accessibility/';
     var RECORD = /[?&]record=1/.test(location.search);
@@ -73,6 +74,25 @@ under the License.
       return out;
     }
 
+    // The wire form the bindings receive, decoded the way a binding decodes it:
+    // the JSON text parsed, each element index replaced by the element's id.
+    function decodeWire(tree) {
+      var wire = encodeWire(tree);
+      function substitute(node) {
+        var out = { role: node.role, name: node.name, description: node.description };
+        if (node.value !== undefined) {
+          out.value = node.value;
+        }
+        out.states = node.states;
+        if (node.element !== undefined) {
+          out.element = wire.elements[node.element].id;
+        }
+        out.children = node.children.map(substitute);
+        return out;
+      }
+      return substitute(JSON.parse(JSON.stringify(wire.node)));
+    }
+
     function load(url) {
       return fetch(url).then(function (response) {
         return response.ok ? response.text() : Promise.reject(new Error(response.status + ' for ' + url));
@@ -94,7 +114,7 @@ under the License.
             var tree = snapshot(frame.contentDocument);
             var json = JSON.stringify(serialize(tree, problems), null, 2);
             var text = toText(tree);
-            resolve({ json: json, text: text, problems: problems });
+            resolve({ json: json, text: text, wire: decodeWire(tree), problems: problems });
           } catch (e) {
             reject(e);
           } finally {
@@ -156,6 +176,7 @@ under the License.
               var expectedText = results[3] !== null ? results[3] : results[4];
               assert.deepEqual(actual.problems, [], name + ': every node has an id');
               assert.deepEqual(JSON.parse(actual.json), JSON.parse(expectedJson), name + ': tree');
+              assert.deepEqual(actual.wire, JSON.parse(expectedJson), name + ': wire form decodes to the tree');
               assert.strictEqual(actual.text, expectedText.replace(/\n$/, ''), name + ': text');
             });
           });

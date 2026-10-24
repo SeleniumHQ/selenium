@@ -31,13 +31,13 @@ import fs from 'node:fs'
 import { test } from 'node:test'
 import vm from 'node:vm'
 
-const [bundlePath, atomPath] = process.argv.slice(2)
-if (!bundlePath || !atomPath) {
-  throw new Error('Expected the paths of the testing bundle and the atom bundle')
+const [bundlePath, atomPath, wirePath] = process.argv.slice(2)
+if (!bundlePath || !atomPath || !wirePath) {
+  throw new Error('Expected the paths of the testing bundle, the atom bundle and the wire bundle')
 }
 const sandbox = { module: { exports: undefined } }
 vm.runInNewContext(`module.exports = ${fs.readFileSync(bundlePath, 'utf8').trim()};`, sandbox, { filename: bundlePath })
-const { toText } = sandbox.module.exports
+const { encodeWire, toText } = sandbox.module.exports
 
 const node = (role, name, extra = {}) => ({ role, name, description: '', states: {}, children: [], ...extra })
 const text = (content) => node('text', content)
@@ -86,4 +86,62 @@ test('the atom bundle stays under 64 KiB', () => {
   assert.ok(size < 64 * 1024, `accessibility-snapshot.generated.js is ${size} bytes`)
   // Printed so the size is in the log of every run, not only when it fails.
   console.log(`# accessibility-snapshot.generated.js: ${size} bytes`)
+})
+
+test('the wire bundle, which the bindings send with every call, stays under 64 KiB', () => {
+  const size = fs.statSync(wirePath).size
+  assert.ok(size < 64 * 1024, `accessibility-snapshot-wire.generated.js is ${size} bytes`)
+  console.log(`# accessibility-snapshot-wire.generated.js: ${size} bytes`)
+})
+
+// The wire encoder is pure: elements and windows are whatever objects the tree
+// holds, so plain objects stand in for them here.
+test('the wire form replaces element references with indices, in first-mention order', () => {
+  const body = { id: 'body' }
+  const link = { id: 'link' }
+  const tree = node('generic', '', {
+    element: body,
+    children: [text('intro'), node('link', 'More', { element: link, children: [text('More')] })],
+  })
+
+  const wire = encodeWire(tree)
+
+  // The encoder runs in its own vm realm, so arrays are compared by content, not prototype.
+  assert.strictEqual(wire.elements.length, 2)
+  assert.strictEqual(wire.elements[0], body)
+  assert.strictEqual(wire.elements[1], link)
+  assert.strictEqual(wire.windows.length, 0)
+  const parsed = JSON.parse(JSON.stringify(wire.node))
+  assert.equal(parsed.element, 0)
+  assert.equal(parsed.children[0].element, undefined, 'a text leaf has no element')
+  assert.equal(parsed.children[1].element, 1)
+  assert.deepEqual(parsed.children[1].children[0], { role: 'text', name: 'More', description: '', states: {}, children: [] })
+})
+
+test('a frame node points at its content window; a frame without one has no frame index', () => {
+  const win = { name: 'child' }
+  const framed = { id: 'frame', contentWindow: win }
+  const empty = { id: 'frame2', contentWindow: null }
+  const tree = node('document', 'Frames', {
+    element: { id: 'root' },
+    children: [node('iframe', 'Embedded', { element: framed }), node('iframe', '', { element: empty })],
+  })
+
+  const wire = encodeWire(tree)
+
+  assert.strictEqual(wire.windows.length, 1)
+  assert.strictEqual(wire.windows[0], win)
+  assert.equal(wire.node.children[0].frame, 0)
+  assert.equal(wire.node.children[1].frame, undefined)
+  assert.equal(wire.node.children[1].element, 2)
+})
+
+test('the wire node keeps value and states exactly, and drops an absent value', () => {
+  const tree = node('textbox', 'Email', { element: { id: 'e' }, value: 'a@b.c', states: { focused: true, level: 2, pressed: 'mixed' } })
+
+  const parsed = JSON.parse(JSON.stringify(encodeWire(tree).node))
+
+  assert.equal(parsed.value, 'a@b.c')
+  assert.deepEqual(parsed.states, { focused: true, level: 2, pressed: 'mixed' })
+  assert.equal('value' in JSON.parse(JSON.stringify(encodeWire(node('list', '')).node)), false)
 })

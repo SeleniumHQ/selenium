@@ -89,12 +89,14 @@ js_test(
     size = "small",
     data = [
         ":typescript/accessibility-snapshot.generated.js",
+        ":typescript/accessibility-snapshot-wire.generated.js",
         ":typescript/testing/accessibility.generated.js",
     ],
     entry_point = "typescript/testing/accessibility-unit-tests.mjs",
     fixed_args = [
         "$(rootpath :typescript/testing/accessibility.generated.js)",
         "$(rootpath :typescript/accessibility-snapshot.generated.js)",
+        "$(rootpath :typescript/accessibility-snapshot-wire.generated.js)",
     ],
 )
 

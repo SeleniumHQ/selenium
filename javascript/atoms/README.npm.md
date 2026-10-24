@@ -86,6 +86,15 @@ reach; callers that can reach it stitch its snapshot in. Keys in `states` are
 recognise. A password field's `value` is masked, one bullet per character, as
 the browser's own tree exposes it.
 
+`accessibilitySnapshotWire(root?: Element)` returns the same snapshot in the
+shape the Selenium bindings fetch over WebDriver BiDi: `{ json, elements,
+windows }`, the tree as JSON text with each `element` replaced by an index into
+`elements` and each frame node given a `frame` index into `windows` (the
+frame's content window), so a binding parses one string and maps two arrays
+instead of decoding a nested remote value. It answers `null` for a root owned by
+another document and `{ error: 'detached' }` for a root no longer in its
+document. Page scripts have no reason to use it over `accessibilitySnapshot`.
+
 The atoms operate on the DOM of the document they are evaluated in, so they must
 run in the page rather than in the driver process — for example via
 `Runtime.evaluate` over CDP, `script.callFunction` over WebDriver BiDi, or

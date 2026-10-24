@@ -20,11 +20,13 @@
 // directly. Not in the ATOMS registry and never published.
 import { createContext } from '../core/accessibility/context.js'
 import { hiddenState, isCollapsedDetailsContent, isHidden } from '../core/accessibility/hidden.js'
+import { encodeWire } from '../core/accessibility/wire.js'
 import { toText } from './accessibility-text.js'
 
 // The hidden page asks about one element at a time, so each call gets the
 // fresh per-call context a snapshot would have.
 export default {
+  encodeWire,
   hiddenState: (element: Element) => hiddenState(element, createContext()),
   isCollapsedDetailsContent,
   isHidden: (element: Element) => isHidden(element, createContext()),

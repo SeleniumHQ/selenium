@@ -311,6 +311,15 @@ ATOMS = [
         "global": "bot.accessibility.typescript.snapshot",
         "aliases": [],
     },
+    # The shape the language bindings fetch over BiDi: the same snapshot as JSON
+    # text beside the element and frame references, so no binding decodes a
+    # nested remote value (docs/decisions/18205-accessibility-tree-snapshot.md).
+    {
+        "name": "accessibility-snapshot-wire",
+        "export": "accessibilitySnapshotWire",
+        "global": "bot.accessibility.typescript.snapshotWire",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):
