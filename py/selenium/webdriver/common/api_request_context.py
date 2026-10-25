@@ -131,7 +131,7 @@ def _cookie_matches(cookie: dict, url: str, default_domain: str = "") -> bool:
             return False
     else:
         # Strip optional leading dot per RFC 6265 section 5.1.3
-        norm_domain = cookie_domain[1:] if cookie_domain.startswith(".") else cookie_domain
+        norm_domain = cookie_domain.removeprefix(".")
         if not (hostname == norm_domain or hostname.endswith("." + norm_domain)):
             return False
 
