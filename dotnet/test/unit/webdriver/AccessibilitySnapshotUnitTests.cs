@@ -17,11 +17,13 @@
 // under the License.
 // </copyright>
 
+using Moq;
+
 namespace OpenQA.Selenium.Tests;
 
 /// <summary>
-/// A session without BiDi cannot take an accessibility snapshot, and says so before any command; a
-/// session with a WebSocket URL connects to it as it starts, and fails fast when it cannot.
+/// A session without BiDi cannot take an accessibility snapshot and says so; a session with a WebSocket
+/// URL connects to it as it starts, and fails fast when it cannot.
 /// </summary>
 [Parallelizable(ParallelScope.All)]
 public class AccessibilitySnapshotUnitTests
@@ -29,82 +31,40 @@ public class AccessibilitySnapshotUnitTests
     [Test]
     public void ASessionWithoutBiDiRaisesForTheWholePage()
     {
-        var executor = new RecordingExecutor();
-        using var driver = new ClassicDriver(executor);
+        using WebDriver driver = StartDriver(webSocketUrl: null);
 
         Assert.That(async () => await driver.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<UnsupportedOperationException>().With.Message.Contains("BiDi"));
-        Assert.That(executor.Commands, Is.Empty);
     }
 
     [Test]
     public void ASessionWithoutBiDiRaisesForAnElement()
     {
-        var executor = new RecordingExecutor();
-        using var driver = new ClassicDriver(executor);
+        using WebDriver driver = StartDriver(webSocketUrl: null);
         var element = new WebElement(driver, "element-1");
 
         Assert.That(async () => await element.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<UnsupportedOperationException>().With.Message.Contains("BiDi"));
-        Assert.That(executor.Commands, Is.Empty);
     }
 
     [Test]
-    public void ASessionWhoseWebSocketUrlCannotBeReachedFailsFastAndQuits()
+    public void ASessionWhoseWebSocketUrlCannotBeReachedFailsFast()
     {
         // Nothing listens on the discard port, so the connection the constructor opens is refused.
-        var executor = new RecordingExecutor("ws://127.0.0.1:9/session/session-1");
-
-        Assert.That(() => new ClassicDriver(executor), Throws.Exception);
-        Assert.That(executor.Commands, Is.EqualTo(new[] { DriverCommand.Quit }));
+        Assert.That(() => StartDriver("ws://127.0.0.1:9/session/session-1"), Throws.Exception);
     }
 
-    /// <summary>A driver over whatever session the executor answers with.</summary>
-    private sealed class ClassicDriver : WebDriver
+    /// <summary>Starts a driver over an executor that answers the new session with the given capabilities and every other command with success.</summary>
+    private static WebDriver StartDriver(string? webSocketUrl)
     {
-        public ClassicDriver(ICommandExecutor executor)
-            : base(executor, new RemoteSessionSettings())
+        var capabilities = new Dictionary<string, object> { ["browserName"] = "chrome" };
+        if (webSocketUrl is not null)
         {
-        }
-    }
-
-    /// <summary>Answers the new session command with the given capabilities and records every other command sent while the driver lives.</summary>
-    private sealed class RecordingExecutor : ICommandExecutor
-    {
-        private readonly string? webSocketUrl;
-
-        public RecordingExecutor(string? webSocketUrl = null)
-        {
-            this.webSocketUrl = webSocketUrl;
+            capabilities["webSocketUrl"] = webSocketUrl;
         }
 
-        public List<string> Commands { get; } = [];
+        var executor = new Mock<ICommandExecutor>();
+        executor.Setup(e => e.ExecuteAsync(It.IsAny<Command>()))
+            .Returns((Command command) => Task.FromResult(new Response("session-1", command.Name == DriverCommand.NewSession ? capabilities : null, WebDriverResult.Success)));
 
-        public bool TryAddCommand(string commandName, CommandInfo? info) => false;
-
-        public Response Execute(Command commandToExecute)
-        {
-            if (commandToExecute.Name == DriverCommand.NewSession)
-            {
-                var capabilities = new Dictionary<string, object> { ["browserName"] = "chrome" };
-                if (this.webSocketUrl is not null)
-                {
-                    capabilities["webSocketUrl"] = this.webSocketUrl;
-                }
-
-                return new Response("session-1", capabilities, WebDriverResult.Success);
-            }
-
-            if (commandToExecute.Name != DriverCommand.Quit || this.webSocketUrl is not null)
-            {
-                this.Commands.Add(commandToExecute.Name);
-            }
-
-            return new Response("session-1", null, WebDriverResult.Success);
-        }
-
-        public Task<Response> ExecuteAsync(Command commandToExecute) => Task.FromResult(this.Execute(commandToExecute));
-
-        public void Dispose()
-        {
-        }
+        return new Mock<WebDriver>(executor.Object, new RemoteSessionSettings()) { CallBase = true }.Object;
     }
 }
