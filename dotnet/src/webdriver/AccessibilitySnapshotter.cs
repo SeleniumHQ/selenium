@@ -32,8 +32,9 @@ namespace OpenQA.Selenium;
 /// Takes accessibility snapshots over a BiDi connection: runs the atom's wire entry in the sandbox
 /// realm of each document and stitches child frames into the tree. The atom hands the tree back as
 /// one JSON string beside the element and frame references, so this class only maps references and
-/// recurses into frames; it holds no connection of its own and knows nothing of the driver beyond
-/// the window to snapshot and how to turn a node reference into an element.
+/// recurses into frames. It holds no state of its own, so one instance serves a driver for its life;
+/// it knows nothing of the driver beyond how to find the current window and how to turn a node
+/// reference into an element.
 /// </summary>
 internal sealed class AccessibilitySnapshotter
 {
@@ -45,19 +46,19 @@ internal sealed class AccessibilitySnapshotter
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
 
     private readonly IBiDi bidi;
-    private readonly string windowHandle;
+    private readonly Func<string> currentWindowHandle;
     private readonly Func<string, IWebElement> createElement;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccessibilitySnapshotter"/> class.
     /// </summary>
     /// <param name="bidi">The BiDi connection to run the atom over.</param>
-    /// <param name="windowHandle">The handle of the window whose page is snapshotted: the id of its top-level browsing context.</param>
+    /// <param name="currentWindowHandle">Gives the handle of the current window, the id of the top-level browsing context a snapshot is taken in, at the time of each snapshot.</param>
     /// <param name="createElement">Turns the shared id of a node into the element the snapshot references.</param>
-    public AccessibilitySnapshotter(IBiDi bidi, string windowHandle, Func<string, IWebElement> createElement)
+    public AccessibilitySnapshotter(IBiDi bidi, Func<string> currentWindowHandle, Func<string, IWebElement> createElement)
     {
         this.bidi = bidi;
-        this.windowHandle = windowHandle;
+        this.currentWindowHandle = currentWindowHandle;
         this.createElement = createElement;
     }
 
@@ -71,7 +72,7 @@ internal sealed class AccessibilitySnapshotter
     public async Task<AccessibilityNode> SnapshotAsync(string? rootId, CancellationToken cancellationToken)
     {
         IBiDi session = this.bidi;
-        BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.windowHandle);
+        BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.currentWindowHandle());
 
         if (rootId is null)
         {

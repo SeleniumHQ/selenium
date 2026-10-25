@@ -42,6 +42,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
     private IBiDi? bidi;
+    private Lazy<AccessibilitySnapshotter>? accessibility;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -217,19 +218,10 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one, and says so
-    // before anything is sent.
-    internal AccessibilitySnapshotter Accessibility
-    {
-        get
-        {
-            if (this.bidi is null)
-            {
-                throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
-            }
-
-            return new AccessibilitySnapshotter(this.bidi, this.CurrentWindowHandle, this.CreateElementFromReference);
-        }
-    }
+    // before anything is sent. The snapshotter is stateless, so one instance, created on first use,
+    // serves the driver for its life.
+    internal AccessibilitySnapshotter Accessibility =>
+        (this.accessibility ?? throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver")).Value;
 
     /// <summary>
     /// Gets the driver's BiDi connection, opened as the session started when it carries a WebSocket
@@ -248,7 +240,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
             return;
         }
 
-        this.bidi = this.AsBiDiAsync().GetAwaiter().GetResult();
+        IBiDi connection = this.AsBiDiAsync().GetAwaiter().GetResult();
+        this.bidi = connection;
+        this.accessibility = new Lazy<AccessibilitySnapshotter>(() => new AccessibilitySnapshotter(connection, () => this.CurrentWindowHandle, this.CreateElementFromReference));
     }
 
     /// <summary>
@@ -862,6 +856,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         IBiDi? connection = this.bidi;
         this.bidi = null;
+        this.accessibility = null;
         if (connection is null)
         {
             return;
