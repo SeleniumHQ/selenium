@@ -166,8 +166,8 @@ js_library(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.microsoft.com/156.0.4314.36/edgedriver_linux64.zip",
-        sha256 = "32997f990673502931d5ee9f985bf1dd5c225b715c496131c549937855eb3599",
+        url = "https://msedgedriver.microsoft.com/156.0.4314.42/edgedriver_linux64.zip",
+        sha256 = "c87136898b51176cb142d6aad0ab026d95bc30af8b42ebab8c935bed253ff65d",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
