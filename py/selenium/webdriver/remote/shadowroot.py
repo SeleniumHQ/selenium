@@ -23,12 +23,12 @@ from typing import TYPE_CHECKING
 from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 if TYPE_CHECKING:
     # we only import these when the module is analyzed for type annotations
     # to avoid a circular import when it is run normally
     from selenium.webdriver.remote.webelement import WebElement
-    from selenium.webdriver.support.relative_locator import RelativeBy
 
 
 class ShadowRoot:
@@ -74,9 +74,6 @@ class ShadowRoot:
         Example:
             >>> element = driver.find_element(By.ID, "foo")
         """
-        # imported here because relative_locator imports webelement, which imports this module
-        from selenium.webdriver.support.relative_locator import RelativeBy
-
         if isinstance(by, RelativeBy):
             elements = self.find_elements(by)
             if not elements:
@@ -118,8 +115,6 @@ class ShadowRoot:
         Example:
             >>> element = driver.find_elements(By.ID, "foo")
         """
-        from selenium.webdriver.support.relative_locator import RelativeBy
-
         if isinstance(by, RelativeBy):
             return self.session._find_elements_relative(by, root=self)
 

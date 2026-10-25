@@ -14,15 +14,19 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
+
 import warnings
-from typing import NoReturn, overload
+from typing import TYPE_CHECKING, NoReturn, overload
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By, ByType
-from selenium.webdriver.remote.webelement import WebElement
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
 
 
-def with_tag_name(tag_name: str) -> "RelativeBy":
+def with_tag_name(tag_name: str) -> RelativeBy:
     """Start searching for relative objects using a tag name.
 
     Args:
@@ -44,7 +48,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     return RelativeBy({By.CSS_SELECTOR: tag_name})
 
 
-def locate_with(by: ByType, using: str) -> "RelativeBy":
+def locate_with(by: ByType, using: str) -> RelativeBy:
     """Start searching for relative objects your search criteria with By.
 
     Args:
@@ -91,12 +95,12 @@ class RelativeBy:
         self.filters = filters or []
 
     @overload
-    def above(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def above(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def above(self, element_or_locator: None = None) -> "NoReturn": ...
+    def above(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def above(self, element_or_locator: WebElement | LocatorType | None = None) -> "RelativeBy":
+    def above(self, element_or_locator: WebElement | LocatorType | None = None) -> RelativeBy:
         """Add a filter to look for elements above.
 
         Args:
@@ -120,12 +124,12 @@ class RelativeBy:
         return self
 
     @overload
-    def below(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def below(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def below(self, element_or_locator: None = None) -> "NoReturn": ...
+    def below(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def below(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def below(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements below.
 
         Args:
@@ -148,12 +152,12 @@ class RelativeBy:
         return self
 
     @overload
-    def to_left_of(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def to_left_of(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def to_left_of(self, element_or_locator: None = None) -> "NoReturn": ...
+    def to_left_of(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def to_left_of(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def to_left_of(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements to the left of.
 
         Args:
@@ -176,12 +180,12 @@ class RelativeBy:
         return self
 
     @overload
-    def to_right_of(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def to_right_of(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def to_right_of(self, element_or_locator: None = None) -> "NoReturn": ...
+    def to_right_of(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def to_right_of(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def to_right_of(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements right of.
 
         Args:
@@ -204,12 +208,12 @@ class RelativeBy:
         return self
 
     @overload
-    def straight_above(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def straight_above(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def straight_above(self, element_or_locator: None = None) -> "NoReturn": ...
+    def straight_above(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def straight_above(self, element_or_locator: WebElement | LocatorType | None = None) -> "RelativeBy":
+    def straight_above(self, element_or_locator: WebElement | LocatorType | None = None) -> RelativeBy:
         """Add a filter to look for elements above.
 
         Args:
@@ -222,12 +226,12 @@ class RelativeBy:
         return self
 
     @overload
-    def straight_below(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def straight_below(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def straight_below(self, element_or_locator: None = None) -> "NoReturn": ...
+    def straight_below(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def straight_below(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def straight_below(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements below.
 
         Args:
@@ -240,12 +244,12 @@ class RelativeBy:
         return self
 
     @overload
-    def straight_left_of(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def straight_left_of(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def straight_left_of(self, element_or_locator: None = None) -> "NoReturn": ...
+    def straight_left_of(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def straight_left_of(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def straight_left_of(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements to the left of.
 
         Args:
@@ -258,12 +262,12 @@ class RelativeBy:
         return self
 
     @overload
-    def straight_right_of(self, element_or_locator: WebElement | LocatorType) -> "RelativeBy": ...
+    def straight_right_of(self, element_or_locator: WebElement | LocatorType) -> RelativeBy: ...
 
     @overload
-    def straight_right_of(self, element_or_locator: None = None) -> "NoReturn": ...
+    def straight_right_of(self, element_or_locator: None = None) -> NoReturn: ...
 
-    def straight_right_of(self, element_or_locator: WebElement | dict | None = None) -> "RelativeBy":
+    def straight_right_of(self, element_or_locator: WebElement | dict | None = None) -> RelativeBy:
         """Add a filter to look for elements right of.
 
         Args:
@@ -276,12 +280,12 @@ class RelativeBy:
         return self
 
     @overload
-    def near(self, element_or_locator: WebElement | LocatorType, distance: int = 50) -> "RelativeBy": ...
+    def near(self, element_or_locator: WebElement | LocatorType, distance: int = 50) -> RelativeBy: ...
 
     @overload
-    def near(self, element_or_locator: None = None, distance: int = 50) -> "NoReturn": ...
+    def near(self, element_or_locator: None = None, distance: int = 50) -> NoReturn: ...
 
-    def near(self, element_or_locator: WebElement | LocatorType | None = None, distance: int = 50) -> "RelativeBy":
+    def near(self, element_or_locator: WebElement | LocatorType | None = None, distance: int = 50) -> RelativeBy:
         """Add a filter to look for elements near.
 
         Args:

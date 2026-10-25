@@ -25,16 +25,13 @@ from abc import ABCMeta
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
-from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import JavascriptException, NoSuchElementException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.shadowroot import ShadowRoot
-
-if TYPE_CHECKING:
-    from selenium.webdriver.support.relative_locator import RelativeBy
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 # TODO: Use built in importlib_resources.files.
 getAttribute_js = None
@@ -528,9 +525,6 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_element(By.ID, "foo")
         """
-        # imported here because relative_locator imports this module
-        from selenium.webdriver.support.relative_locator import RelativeBy
-
         by, value = self._parent.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
@@ -562,8 +556,6 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_elements(By.ID, "foo")
         """
-        from selenium.webdriver.support.relative_locator import RelativeBy
-
         by, value = self._parent.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
