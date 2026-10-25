@@ -37,7 +37,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     // The atom records frames as leaves; the binding fills them in, so this page has its own tests.
     private const string FramesPage = "014-iframe";
 
-    public static IEnumerable<string> CorpusPages()
+    public static IEnumerable<string> ListCorpusPages()
     {
         foreach (JsonNode? page in JsonNode.Parse(Read("index.json"))!.AsArray())
         {
@@ -59,7 +59,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         }
     }
 
-    [TestCaseSource(nameof(CorpusPages))]
+    [TestCaseSource(nameof(ListCorpusPages))]
     public async Task WholePageSnapshotMatchesTheCorpus(string page)
     {
         this.Load(page);
@@ -67,9 +67,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         JsonNode actual = JsonNode.Parse(Serialize(tree).ToJsonString())!;
-        JsonNode expected = JsonNode.Parse(this.Expected(page, "json"))!;
+        JsonNode expected = JsonNode.Parse(this.ReadExpected(page, "json"))!;
         Assert.That(JsonNode.DeepEquals(actual, expected), Is.True, () => "snapshot differs from the corpus:\n" + actual.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-        Assert.That(tree.ToText() + "\n", Is.EqualTo(this.Expected(page, "txt")));
+        Assert.That(tree.ToText() + "\n", Is.EqualTo(this.ReadExpected(page, "txt")));
     }
 
     [Test]
@@ -118,7 +118,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         AccessibilityNode tree = await ((WebElement)firstList.Element!).GetAccessibilitySnapshotAsync();
 
         Assert.That(tree.Role, Is.EqualTo("list"));
-        Assert.That(Roles(tree.Children), Is.EqualTo(Roles(firstList.Children)));
+        Assert.That(ListRoles(tree.Children), Is.EqualTo(ListRoles(firstList.Children)));
     }
 
     [Test]
@@ -162,7 +162,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
 
         Assert.That(tree.Role, Is.EqualTo("iframe"));
         Assert.That(tree.Name, Is.EqualTo("Embedded content"));
-        Assert.That(Roles(tree.Children), Is.EqualTo(new[] { "document" }));
+        Assert.That(ListRoles(tree.Children), Is.EqualTo(new[] { "document" }));
     }
 
     [Test]
@@ -244,7 +244,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         this.Driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
     }
 
-    private string Engine()
+    private string DetectEngine()
     {
         string name = (((IHasCapabilities)this.Driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
         if (name.Contains("firefox"))
@@ -261,9 +261,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     }
 
     // The engine-specific expectation when one is recorded, else the shared one.
-    private string Expected(string page, string suffix)
+    private string ReadExpected(string page, string suffix)
     {
-        return Fetch(page + ".expected." + this.Engine() + "." + suffix) ?? Read(page + ".expected." + suffix);
+        return Fetch(page + ".expected." + this.DetectEngine() + "." + suffix) ?? Read(page + ".expected." + suffix);
     }
 
     // The corpus JSON form: every field written, `element` as the element's id.
@@ -319,7 +319,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         }
     }
 
-    private static List<string> Roles(IEnumerable<AccessibilityNode> nodes)
+    private static List<string> ListRoles(IEnumerable<AccessibilityNode> nodes)
     {
         return nodes.Select(node => node.Role).ToList();
     }

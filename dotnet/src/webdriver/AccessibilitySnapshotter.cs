@@ -74,7 +74,7 @@ internal sealed class AccessibilitySnapshotter
         // the document that owns it; Firefox resolves it in any document of the browsing context
         // group, so the atom checks ownership itself and each context is tried until the owner is
         // found.
-        foreach (BiDiBrowsingContext context in await ContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
+        foreach (BiDiBrowsingContext context in await ListContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
         {
             AccessibilityNode? node = await this.SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
             if (node is not null)
@@ -100,7 +100,7 @@ internal sealed class AccessibilitySnapshotter
             return null;
         }
 
-        Dictionary<string, RemoteValue> fields = ObjectFields(result);
+        Dictionary<string, RemoteValue> fields = ReadObjectFields(result);
         if (fields.ContainsKey("error"))
         {
             // The only error the atom reports as data: the root left its document.
@@ -108,19 +108,19 @@ internal sealed class AccessibilitySnapshotter
         }
 
         List<IWebElement> elements = new List<IWebElement>();
-        foreach (RemoteValue node in Items(Required(fields, "elements")))
+        foreach (RemoteValue node in ReadItems(GetRequired(fields, "elements")))
         {
-            elements.Add(this.driver.CreateElementFromReference(SharedId(node)));
+            elements.Add(this.driver.CreateElementFromReference(ReadSharedId(node)));
         }
 
         List<BiDiBrowsingContext?> windows = new List<BiDiBrowsingContext?>();
-        foreach (RemoteValue window in Items(Required(fields, "windows")))
+        foreach (RemoteValue window in ReadItems(GetRequired(fields, "windows")))
         {
-            windows.Add(ContextOf(window));
+            windows.Add(ReadContext(window));
         }
 
-        using JsonDocument document = JsonDocument.Parse(StringOf(Required(fields, "json")));
-        return await this.FromWireAsync(
+        using JsonDocument document = JsonDocument.Parse(ReadString(GetRequired(fields, "json")));
+        return await this.BuildNodeAsync(
             document.RootElement,
             elements,
             index => this.StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
@@ -129,7 +129,7 @@ internal sealed class AccessibilitySnapshotter
     // Builds the node tree from the atom's wire form: the node's fields, with "element" an index
     // into the elements and, on a frame node, "frame" an index the frame children callback
     // resolves to the frame's own tree.
-    private async Task<AccessibilityNode> FromWireAsync(JsonElement data, IReadOnlyList<IWebElement> elements, Func<int, Task<IReadOnlyList<AccessibilityNode>>> frameChildren)
+    private async Task<AccessibilityNode> BuildNodeAsync(JsonElement data, IReadOnlyList<IWebElement> elements, Func<int, Task<IReadOnlyList<AccessibilityNode>>> frameChildren)
     {
         List<AccessibilityNode> children = new List<AccessibilityNode>();
         if (data.TryGetProperty("frame", out JsonElement frame))
@@ -140,14 +140,14 @@ internal sealed class AccessibilitySnapshotter
         {
             foreach (JsonElement child in data.GetProperty("children").EnumerateArray())
             {
-                children.Add(await this.FromWireAsync(child, elements, frameChildren).ConfigureAwait(false));
+                children.Add(await this.BuildNodeAsync(child, elements, frameChildren).ConfigureAwait(false));
             }
         }
 
         Dictionary<string, object> states = new Dictionary<string, object>();
         foreach (JsonProperty state in data.GetProperty("states").EnumerateObject())
         {
-            states[state.Name] = StateOf(state.Value);
+            states[state.Name] = ReadState(state.Value);
         }
 
         return new AccessibilityNode(
@@ -181,7 +181,7 @@ internal sealed class AccessibilitySnapshotter
                 options,
                 cancellationToken).ConfigureAwait(false);
         }
-        catch (BiDiException e) when (Mentions(e, "no such node"))
+        catch (BiDiException e) when (!arguments.IsEmpty && Mentions(e, "no such node"))
         {
             // The root lives in another frame, or its document is gone.
             return null;
@@ -219,19 +219,19 @@ internal sealed class AccessibilitySnapshotter
     }
 
     // The window's browsing contexts, top-level first, then each frame depth-first.
-    private static async Task<List<BiDiBrowsingContext>> ContextsAsync(IBiDi session, BiDiBrowsingContext top, CancellationToken cancellationToken)
+    private static async Task<List<BiDiBrowsingContext>> ListContextsAsync(IBiDi session, BiDiBrowsingContext top, CancellationToken cancellationToken)
     {
         var tree = await session.BrowsingContext.GetTreeAsync(new GetTreeOptions { Root = top }, cancellationToken).ConfigureAwait(false);
         List<BiDiBrowsingContext> contexts = new List<BiDiBrowsingContext> { top };
         foreach (BrowsingContextInfo info in tree.Contexts)
         {
-            Collect(info, top, contexts);
+            CollectContexts(info, top, contexts);
         }
 
         return contexts;
     }
 
-    private static void Collect(BrowsingContextInfo info, BiDiBrowsingContext top, List<BiDiBrowsingContext> contexts)
+    private static void CollectContexts(BrowsingContextInfo info, BiDiBrowsingContext top, List<BiDiBrowsingContext> contexts)
     {
         if (info.Context.Id != top.Id)
         {
@@ -240,7 +240,7 @@ internal sealed class AccessibilitySnapshotter
 
         foreach (BrowsingContextInfo child in info.Children ?? ImmutableArray<BrowsingContextInfo>.Empty)
         {
-            Collect(child, top, contexts);
+            CollectContexts(child, top, contexts);
         }
     }
 
@@ -249,7 +249,7 @@ internal sealed class AccessibilitySnapshotter
         return e.Message is not null && e.Message.Contains(text);
     }
 
-    private static Dictionary<string, RemoteValue> ObjectFields(RemoteValue value)
+    private static Dictionary<string, RemoteValue> ReadObjectFields(RemoteValue value)
     {
         if (value is not ObjectRemoteValue obj)
         {
@@ -265,13 +265,13 @@ internal sealed class AccessibilitySnapshotter
             }
 
             // A property name is written as a plain string, or as a string remote value.
-            fields[StringOf(pair[0])] = pair[1];
+            fields[ReadString(pair[0])] = pair[1];
         }
 
         return fields;
     }
 
-    private static ImmutableArray<RemoteValue> Items(RemoteValue value)
+    private static ImmutableArray<RemoteValue> ReadItems(RemoteValue value)
     {
         if (value is not ArrayRemoteValue array)
         {
@@ -281,7 +281,7 @@ internal sealed class AccessibilitySnapshotter
         return array.Value ?? ImmutableArray<RemoteValue>.Empty;
     }
 
-    private static RemoteValue Required(Dictionary<string, RemoteValue> fields, string name)
+    private static RemoteValue GetRequired(Dictionary<string, RemoteValue> fields, string name)
     {
         if (!fields.TryGetValue(name, out RemoteValue? value))
         {
@@ -291,7 +291,7 @@ internal sealed class AccessibilitySnapshotter
         return value;
     }
 
-    private static string SharedId(RemoteValue value)
+    private static string ReadSharedId(RemoteValue value)
     {
         if (value is not NodeRemoteValue node || string.IsNullOrEmpty(node.SharedId))
         {
@@ -302,12 +302,12 @@ internal sealed class AccessibilitySnapshotter
     }
 
     // The browsing context of a window remote value; null for a frame with no reachable context.
-    private static BiDiBrowsingContext? ContextOf(RemoteValue value)
+    private static BiDiBrowsingContext? ReadContext(RemoteValue value)
     {
         return value is WindowProxyRemoteValue window ? window.Value.Context : null;
     }
 
-    private static string StringOf(RemoteValue value)
+    private static string ReadString(RemoteValue value)
     {
         return value switch
         {
@@ -317,7 +317,7 @@ internal sealed class AccessibilitySnapshotter
         };
     }
 
-    private static object StateOf(JsonElement value)
+    private static object ReadState(JsonElement value)
     {
         return value.ValueKind switch
         {

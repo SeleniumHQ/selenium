@@ -146,14 +146,14 @@ public sealed class AccessibilityNode
             builder.Append('\n');
         }
 
-        builder.Append(indent).Append(this.Line());
+        builder.Append(indent).Append(this.FormatLine());
         foreach (AccessibilityNode child in this.Children)
         {
             child.AppendLines(indent + "  ", builder);
         }
     }
 
-    private string Line()
+    private string FormatLine()
     {
         if (this.Role == "text")
         {
@@ -188,7 +188,7 @@ public sealed class AccessibilityNode
 
         if (!string.IsNullOrEmpty(this.Value))
         {
-            line.Append(": ").Append(OneLine(this.Value!));
+            line.Append(": ").Append(EscapeLineBreaks(this.Value!));
         }
 
         return line.ToString();
@@ -199,7 +199,7 @@ public sealed class AccessibilityNode
         return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
     }
 
-    private static string OneLine(string text)
+    private static string EscapeLineBreaks(string text)
     {
         return text.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n");
     }

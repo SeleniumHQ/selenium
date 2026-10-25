@@ -40,15 +40,15 @@ public class AccessibilityNodeUnitTests
         var node = new AccessibilityNode("textbox", "Say \"hi\" \\ bye", "", "line one\nline two\\", states, null, []);
 
         Assert.That(node.ToText(), Is.EqualTo("- textbox \"Say \\\"hi\\\" \\\\ bye\" [pressed=mixed] [level=2] [disabled] [focused]: line one\\nline two\\\\"));
-        Assert.That(Node("list", "").ToText(), Is.EqualTo("- list"));
-        Assert.That(Node("text", "plain words").ToText(), Is.EqualTo("- text: plain words"));
+        Assert.That(MakeNode("list", "").ToText(), Is.EqualTo("- list"));
+        Assert.That(MakeNode("text", "plain words").ToText(), Is.EqualTo("- text: plain words"));
         Assert.That(new AccessibilityNode("textbox", "Empty", "", "", new Dictionary<string, object>(), null, []).ToText(), Is.EqualTo("- textbox \"Empty\""));
     }
 
     [Test]
     public void IndentsChildrenTwoSpacesPerLevel()
     {
-        var tree = Node("list", "", Node("listitem", "", Node("text", "one"), Node("link", "more")));
+        var tree = MakeNode("list", "", MakeNode("listitem", "", MakeNode("text", "one"), MakeNode("link", "more")));
 
         Assert.That(tree.ToText(), Is.EqualTo("- list\n  - listitem\n    - text: one\n    - link \"more\""));
     }
@@ -57,7 +57,7 @@ public class AccessibilityNodeUnitTests
     public void ExposesItsFieldsAsReadOnlyCopies()
     {
         var states = new Dictionary<string, object> { ["checked"] = true };
-        var children = new List<AccessibilityNode> { Node("text", "Agree") };
+        var children = new List<AccessibilityNode> { MakeNode("text", "Agree") };
         var node = new AccessibilityNode("checkbox", "Agree", "Terms", null, states, null, children);
         states["checked"] = false;
         children.Clear();
@@ -79,7 +79,7 @@ public class AccessibilityNodeUnitTests
         Assert.That(() => new AccessibilityNode("button", "", "", null, null!, null, []), Throws.ArgumentNullException);
     }
 
-    private static AccessibilityNode Node(string role, string name, params AccessibilityNode[] children)
+    private static AccessibilityNode MakeNode(string role, string name, params AccessibilityNode[] children)
     {
         return new AccessibilityNode(role, name, "", null, new Dictionary<string, object>(), null, children);
     }
