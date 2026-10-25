@@ -41,19 +41,10 @@ public class AppServer : IAsyncDisposable
     private readonly string _webContentRoot = FindWebContentRoot();
     private readonly ConcurrentDictionary<string, string> _pages = new();
 
-    private (string HttpUrl, string HttpsUrl) _urls;
-
     public UrlBuilder Urls { get; private set; } = null!;
 
     public async Task<(string HttpUrl, string HttpsUrl)> StartAsync()
     {
-        // The environment manager starts the server as it is created and the assembly fixture
-        // starts it again; the second call must not leave the first listener running.
-        if (_app is not null)
-        {
-            return _urls;
-        }
-
         var builder = WebApplication.CreateSlimBuilder();
 
         var certificate = GenerateSelfSignedCertificate();
@@ -111,9 +102,8 @@ public class AppServer : IAsyncDisposable
         var httpsUrl = $"https://localhost:{httpsPort}";
 
         Urls = new UrlBuilder(httpUrl, httpsUrl);
-        _urls = (httpUrl, httpsUrl);
 
-        return _urls;
+        return (httpUrl, httpsUrl);
     }
 
     public async Task StopAsync()
