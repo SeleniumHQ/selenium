@@ -25,12 +25,16 @@ from abc import ABCMeta
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
+from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import JavascriptException, WebDriverException
+from selenium.common.exceptions import JavascriptException, NoSuchElementException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.support.relative_locator import RelativeBy
 
 # TODO: Use built in importlib_resources.files.
 getAttribute_js = None
@@ -503,7 +507,7 @@ class WebElement(BaseWebElement):
         params["id"] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -524,10 +528,20 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_element(By.ID, "foo")
         """
+        # imported here because relative_locator imports this module
+        from selenium.webdriver.support.relative_locator import RelativeBy
+
         by, value = self._parent.locator_converter.convert(by, value)
+
+        if isinstance(by, RelativeBy):
+            elements = self.find_elements(by=by, value=value)
+            if not elements:
+                raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
+            return elements[0]
+
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -548,7 +562,13 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_elements(By.ID, "foo")
         """
+        from selenium.webdriver.support.relative_locator import RelativeBy
+
         by, value = self._parent.locator_converter.convert(by, value)
+
+        if isinstance(by, RelativeBy):
+            return self._parent._find_elements_relative(by, root=self)
+
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
     def __hash__(self) -> int:

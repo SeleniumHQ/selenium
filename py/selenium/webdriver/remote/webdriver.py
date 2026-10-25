@@ -992,17 +992,23 @@ class WebDriver(BaseWebDriver):
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
-            _pkg = ".".join(__name__.split(".")[:-1])
-            raw_data = pkgutil.get_data(_pkg, "findElements.js")
-            if raw_data is None:
-                raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
-            raw_function = raw_data.decode("utf8")
-            find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
-            return self.execute_script(find_element_js, by.to_dict())
+            return self._find_elements_relative(by)
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
+
+    def _find_elements_relative(self, by: RelativeBy, root: WebElement | ShadowRoot | None = None) -> list[WebElement]:
+        """Find elements with a relative locator, searching from root, or the document when root is None."""
+        _pkg = ".".join(__name__.split(".")[:-1])
+        raw_data = pkgutil.get_data(_pkg, "findElements.js")
+        if raw_data is None:
+            raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
+        raw_function = raw_data.decode("utf8")
+        find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
+        if root is None:
+            return self.execute_script(find_element_js, by.to_dict())
+        return self.execute_script(find_element_js, by.to_dict(), root)
 
     @property
     def capabilities(self) -> dict:

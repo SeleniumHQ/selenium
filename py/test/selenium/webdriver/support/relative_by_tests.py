@@ -297,3 +297,68 @@ def test_should_find_elements_straight_right_of_another(driver, pages):
     assert len(ids) == 2
     assert "right" in ids
     assert "center" in ids
+
+
+def test_should_only_search_within_the_context_element(driver):
+    driver.get(
+        "data:text/html,"
+        "<div id='scope'><a id='anchor'>anchor</a><p id='inside'>inside</p></div>"
+        "<p id='outside'>outside</p>"
+    )
+    scope = driver.find_element(By.ID, "scope")
+    anchor = driver.find_element(By.ID, "anchor")
+
+    from_scope = scope.find_elements(with_tag_name("p").below(anchor))
+    from_driver = driver.find_elements(with_tag_name("p").below(anchor))
+
+    assert [el.get_attribute("id") for el in from_scope] == ["inside"]
+    assert sorted(el.get_attribute("id") for el in from_driver) == ["inside", "outside"]
+
+
+def test_should_find_first_relative_element_within_the_context_element(driver):
+    driver.get(
+        "data:text/html,"
+        "<div id='scope'><a id='anchor'>anchor</a><p id='inside'>inside</p></div>"
+        "<p id='outside'>outside</p>"
+    )
+    scope = driver.find_element(By.ID, "scope")
+
+    el = scope.find_element(with_tag_name("p").below({By.ID: "anchor"}))
+
+    assert el.get_attribute("id") == "inside"
+    with pytest.raises(NoSuchElementException):
+        scope.find_element(with_tag_name("p").above({By.ID: "anchor"}))
+
+
+def _load_page_with_shadow_root(driver):
+    driver.get(
+        "data:text/html,"
+        "<div id='host'></div>"
+        "<p id='outside' style='position:absolute; top:80px'>outside</p>"
+        "<script>"
+        "const root = document.getElementById('host').attachShadow({mode: 'open'});"
+        "root.innerHTML = \"<div id='shadow-anchor'>anchor</div><p id='inside'>inside</p>\";"
+        "</script>"
+    )
+    return driver.find_element(By.ID, "host").shadow_root
+
+
+def test_should_only_search_within_the_shadow_root(driver):
+    shadow_root = _load_page_with_shadow_root(driver)
+    anchor = shadow_root.find_element(By.CSS_SELECTOR, "#shadow-anchor")
+
+    from_driver = driver.find_elements(with_tag_name("p").below(anchor))
+    from_shadow_root = shadow_root.find_elements(with_tag_name("p").below(anchor))
+
+    assert [el.get_attribute("id") for el in from_driver] == ["outside"]
+    assert [el.get_attribute("id") for el in from_shadow_root] == ["inside"]
+
+
+def test_should_find_relative_element_in_shadow_root_by_anchor_locator(driver):
+    shadow_root = _load_page_with_shadow_root(driver)
+
+    el = shadow_root.find_element(with_tag_name("p").below({By.ID: "shadow-anchor"}))
+
+    assert el.get_attribute("id") == "inside"
+    with pytest.raises(NoSuchElementException):
+        shadow_root.find_element(with_tag_name("p").above({By.ID: "shadow-anchor"}))
