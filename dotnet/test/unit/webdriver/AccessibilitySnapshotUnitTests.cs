@@ -25,11 +25,10 @@ namespace OpenQA.Selenium.Tests;
 /// A session without BiDi cannot take an accessibility snapshot and says so; a session with a WebSocket
 /// URL connects to it as it starts, and fails fast when it cannot.
 /// </summary>
-[Parallelizable(ParallelScope.All)]
 public class AccessibilitySnapshotUnitTests
 {
     [Test]
-    public void ASessionWithoutBiDiRaisesForTheWholePage()
+    public void GetAccessibilitySnapshotAsync_DriverWithoutBiDi_ThrowsUnsupportedOperationException()
     {
         using WebDriver driver = StartDriver(webSocketUrl: null);
 
@@ -37,7 +36,7 @@ public class AccessibilitySnapshotUnitTests
     }
 
     [Test]
-    public void ASessionWithoutBiDiRaisesForAnElement()
+    public void GetAccessibilitySnapshotAsync_ElementWithoutBiDi_ThrowsUnsupportedOperationException()
     {
         using WebDriver driver = StartDriver(webSocketUrl: null);
         var element = new WebElement(driver, "element-1");
@@ -46,7 +45,7 @@ public class AccessibilitySnapshotUnitTests
     }
 
     [Test]
-    public void ASessionWhoseWebSocketUrlCannotBeReachedFailsFast()
+    public void Constructor_UnreachableWebSocketUrl_Throws()
     {
         // Nothing listens on the discard port, so the connection the constructor opens is refused.
         Assert.That(() => StartDriver("ws://127.0.0.1:9/session/session-1"), Throws.Exception);

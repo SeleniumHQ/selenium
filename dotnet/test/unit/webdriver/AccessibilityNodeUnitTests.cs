@@ -23,11 +23,10 @@ namespace OpenQA.Selenium.Tests;
 /// The text form of a snapshot: the line grammar every binding renders. The browser suite holds
 /// it to the shared corpus; these cases pin the grammar's edges without a page.
 /// </summary>
-[Parallelizable(ParallelScope.All)]
 public class AccessibilityNodeUnitTests
 {
     [Test]
-    public void WritesTheLineGrammarWithItsEscapes()
+    public void ToText_NameStatesAndValue_RendersOneLineWithEscapes()
     {
         var states = new Dictionary<string, object>
         {
@@ -40,13 +39,30 @@ public class AccessibilityNodeUnitTests
         var node = new AccessibilityNode("textbox", "Say \"hi\" \\ bye", "", "line one\nline two\\", states, null, []);
 
         Assert.That(node.ToText(), Is.EqualTo("- textbox \"Say \\\"hi\\\" \\\\ bye\" [pressed=mixed] [level=2] [disabled] [focused]: line one\\nline two\\\\"));
-        Assert.That(MakeNode("list", "").ToText(), Is.EqualTo("- list"));
-        Assert.That(MakeNode("text", "plain words").ToText(), Is.EqualTo("- text: plain words"));
-        Assert.That(new AccessibilityNode("textbox", "Empty", "", "", new Dictionary<string, object>(), null, []).ToText(), Is.EqualTo("- textbox \"Empty\""));
     }
 
     [Test]
-    public void IndentsChildrenTwoSpacesPerLevel()
+    public void ToText_RoleOnly_RendersTheRole()
+    {
+        Assert.That(MakeNode("list", "").ToText(), Is.EqualTo("- list"));
+    }
+
+    [Test]
+    public void ToText_TextNode_RendersTheContentAfterAColon()
+    {
+        Assert.That(MakeNode("text", "plain words").ToText(), Is.EqualTo("- text: plain words"));
+    }
+
+    [Test]
+    public void ToText_EmptyValue_OmitsTheValue()
+    {
+        var node = new AccessibilityNode("textbox", "Empty", "", "", new Dictionary<string, object>(), null, []);
+
+        Assert.That(node.ToText(), Is.EqualTo("- textbox \"Empty\""));
+    }
+
+    [Test]
+    public void ToText_NestedChildren_IndentsTwoSpacesPerLevel()
     {
         var tree = MakeNode("list", "", MakeNode("listitem", "", MakeNode("text", "one"), MakeNode("link", "more")));
 
@@ -54,11 +70,12 @@ public class AccessibilityNodeUnitTests
     }
 
     [Test]
-    public void ExposesItsFieldsAsReadOnlyCopies()
+    public void Constructor_StatesAndChildrenChangedAfterwards_KeepsItsOwnCopies()
     {
         var states = new Dictionary<string, object> { ["checked"] = true };
         var children = new List<AccessibilityNode> { MakeNode("text", "Agree") };
         var node = new AccessibilityNode("checkbox", "Agree", "Terms", null, states, null, children);
+
         states["checked"] = false;
         children.Clear();
 
@@ -69,13 +86,25 @@ public class AccessibilityNodeUnitTests
         Assert.That(node.States["checked"], Is.EqualTo(true));
         Assert.That(node.Element, Is.Null);
         Assert.That(node.Children, Has.Count.EqualTo(1));
+    }
+
+    [Test]
+    public void ToString_NodeWithName_ShowsRoleAndName()
+    {
+        var node = new AccessibilityNode("checkbox", "Agree", "Terms", null, new Dictionary<string, object>(), null, []);
+
         Assert.That(node.ToString(), Is.EqualTo("AccessibilityNode{role=checkbox, name=\"Agree\"}"));
     }
 
     [Test]
-    public void RejectsMissingRequiredFields()
+    public void Constructor_NullRole_ThrowsArgumentNullException()
     {
         Assert.That(() => new AccessibilityNode(null!, "", "", null, new Dictionary<string, object>(), null, []), Throws.ArgumentNullException);
+    }
+
+    [Test]
+    public void Constructor_NullStates_ThrowsArgumentNullException()
+    {
         Assert.That(() => new AccessibilityNode("button", "", "", null, null!, null, []), Throws.ArgumentNullException);
     }
 
