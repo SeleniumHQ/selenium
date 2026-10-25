@@ -52,6 +52,12 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
+    /// <remarks>
+    /// When the session the driver starts carries a WebSocket URL (see <see cref="DriverOptions.UseWebSocketUrl"/>),
+    /// the constructor also opens the driver's BiDi connection, shared by every component that works
+    /// over BiDi and closed with the driver. A connection that cannot be made fails the constructor,
+    /// which quits the session it started before rethrowing.
+    /// </remarks>
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
     {
         this.CommandExecutor = executor;
@@ -210,14 +216,16 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
-    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
+    /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <seealso cref="AccessibilityNode.ToText()"/>
     public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
     {
         return this.Accessibility.SnapshotAsync(null, cancellationToken);
     }
 
-    // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one, and says so
+    // The snapshot runs in a BiDi sandbox realm; a session started without a WebSocket URL cannot take
+    // one, and says so
     // before anything is sent. The snapshotter is stateless, so one instance, created on first use,
     // serves the driver for its life.
     internal AccessibilitySnapshotter Accessibility =>
@@ -227,7 +235,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// Gets the driver's BiDi connection, opened as the session started when it carries a WebSocket
     /// URL and shared by every component that works over BiDi; it is closed with the driver.
     /// </summary>
-    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <exception cref="UnsupportedOperationException">If the session was started without a WebSocket URL.</exception>
     internal IBiDi BiDi => this.bidi ?? throw new UnsupportedOperationException("This session has no WebDriver BiDi connection; enable it with options.UseWebSocketUrl = true before starting the driver");
 
     // A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily

@@ -249,7 +249,8 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task whose result is the node for this element, with its subtree.</returns>
-    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
+    /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <exception cref="StaleElementReferenceException">If the element no longer belongs to a document.</exception>
     /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/>
     public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
