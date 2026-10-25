@@ -29,10 +29,11 @@ using GetTreeOptions = OpenQA.Selenium.BiDi.BrowsingContext.GetTreeOptions;
 namespace OpenQA.Selenium;
 
 /// <summary>
-/// Takes accessibility snapshots over the driver's BiDi connection: runs the atom's wire entry in
-/// the sandbox realm of each document and stitches child frames into the tree. The atom hands the
-/// tree back as one JSON string beside the element and frame references, so this class only maps
-/// references and recurses into frames; it holds no connection of its own.
+/// Takes accessibility snapshots over a BiDi connection: runs the atom's wire entry in the sandbox
+/// realm of each document and stitches child frames into the tree. The atom hands the tree back as
+/// one JSON string beside the element and frame references, so this class only maps references and
+/// recurses into frames; it holds no connection of its own and knows nothing of the driver beyond
+/// the window to snapshot and how to turn a node reference into an element.
 /// </summary>
 internal sealed class AccessibilitySnapshotter
 {
@@ -43,13 +44,21 @@ internal sealed class AccessibilitySnapshotter
 
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
 
-    private readonly WebDriver driver;
     private readonly IBiDi bidi;
+    private readonly string windowHandle;
+    private readonly Func<string, IWebElement> createElement;
 
-    public AccessibilitySnapshotter(WebDriver driver, IBiDi bidi)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AccessibilitySnapshotter"/> class.
+    /// </summary>
+    /// <param name="bidi">The BiDi connection to run the atom over.</param>
+    /// <param name="windowHandle">The handle of the window whose page is snapshotted: the id of its top-level browsing context.</param>
+    /// <param name="createElement">Turns the shared id of a node into the element the snapshot references.</param>
+    public AccessibilitySnapshotter(IBiDi bidi, string windowHandle, Func<string, IWebElement> createElement)
     {
-        this.driver = driver;
         this.bidi = bidi;
+        this.windowHandle = windowHandle;
+        this.createElement = createElement;
     }
 
     /// <summary>
@@ -62,7 +71,7 @@ internal sealed class AccessibilitySnapshotter
     public async Task<AccessibilityNode> SnapshotAsync(string? rootId, CancellationToken cancellationToken)
     {
         IBiDi session = this.bidi;
-        BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.driver.CurrentWindowHandle);
+        BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.windowHandle);
 
         if (rootId is null)
         {
@@ -110,7 +119,7 @@ internal sealed class AccessibilitySnapshotter
         List<IWebElement> elements = new List<IWebElement>();
         foreach (RemoteValue node in ReadItems(GetRequired(fields, "elements")))
         {
-            elements.Add(this.driver.CreateElementFromReference(ReadSharedId(node)));
+            elements.Add(this.createElement(ReadSharedId(node)));
         }
 
         List<BiDiBrowsingContext?> windows = new List<BiDiBrowsingContext?>();

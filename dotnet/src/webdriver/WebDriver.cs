@@ -227,7 +227,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
                 throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
             }
 
-            return new AccessibilitySnapshotter(this, this.bidi);
+            return new AccessibilitySnapshotter(this.bidi, this.CurrentWindowHandle, this.CreateElementFromReference);
         }
     }
 
