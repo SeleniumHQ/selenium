@@ -20,7 +20,8 @@
 namespace OpenQA.Selenium.Tests;
 
 /// <summary>
-/// A session without BiDi cannot take an accessibility snapshot, and says so before any command.
+/// A session without BiDi cannot take an accessibility snapshot, and says so before any command; a
+/// session with a WebSocket URL connects to it as it starts, and fails fast when it cannot.
 /// </summary>
 [Parallelizable(ParallelScope.All)]
 public class AccessibilitySnapshotUnitTests
@@ -46,7 +47,17 @@ public class AccessibilitySnapshotUnitTests
         Assert.That(executor.Commands, Is.Empty);
     }
 
-    /// <summary>A driver over a session whose capabilities carry no webSocketUrl.</summary>
+    [Test]
+    public void ASessionWhoseWebSocketUrlCannotBeReachedFailsFastAndQuits()
+    {
+        // Nothing listens on the discard port, so the connection the constructor opens is refused.
+        var executor = new RecordingExecutor("ws://127.0.0.1:9/session/session-1");
+
+        Assert.That(() => new ClassicDriver(executor), Throws.Exception);
+        Assert.That(executor.Commands, Is.EqualTo(new[] { DriverCommand.Quit }));
+    }
+
+    /// <summary>A driver over whatever session the executor answers with.</summary>
     private sealed class ClassicDriver : WebDriver
     {
         public ClassicDriver(ICommandExecutor executor)
@@ -55,9 +66,16 @@ public class AccessibilitySnapshotUnitTests
         }
     }
 
-    /// <summary>Answers the new session command with classic capabilities and records every other command.</summary>
+    /// <summary>Answers the new session command with the given capabilities and records every other command sent while the driver lives.</summary>
     private sealed class RecordingExecutor : ICommandExecutor
     {
+        private readonly string? webSocketUrl;
+
+        public RecordingExecutor(string? webSocketUrl = null)
+        {
+            this.webSocketUrl = webSocketUrl;
+        }
+
         public List<string> Commands { get; } = [];
 
         public bool TryAddCommand(string commandName, CommandInfo? info) => false;
@@ -66,10 +84,16 @@ public class AccessibilitySnapshotUnitTests
         {
             if (commandToExecute.Name == DriverCommand.NewSession)
             {
-                return new Response("session-1", new Dictionary<string, object> { ["browserName"] = "chrome" }, WebDriverResult.Success);
+                var capabilities = new Dictionary<string, object> { ["browserName"] = "chrome" };
+                if (this.webSocketUrl is not null)
+                {
+                    capabilities["webSocketUrl"] = this.webSocketUrl;
+                }
+
+                return new Response("session-1", capabilities, WebDriverResult.Success);
             }
 
-            if (commandToExecute.Name != DriverCommand.Quit)
+            if (commandToExecute.Name != DriverCommand.Quit || this.webSocketUrl is not null)
             {
                 this.Commands.Add(commandToExecute.Name);
             }

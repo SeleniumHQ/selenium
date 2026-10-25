@@ -41,11 +41,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private static readonly ILogger _logger = Log.GetLogger<WebDriver>();
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
-    // Serialises the connection attempt against the close. It is never disposed: a waiter queued
-    // behind the close must wake to see that the driver is gone.
-    private readonly SemaphoreSlim bidiConnecting = new SemaphoreSlim(1, 1);
     private IBiDi? bidi;
-    private int bidiClosed;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -72,6 +68,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         try
         {
             this.StartSession(capabilities);
+            this.ConnectBiDi();
         }
         catch (Exception)
         {
@@ -214,48 +211,44 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
     /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
     /// <seealso cref="AccessibilityNode.ToText()"/>
-    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
     {
-        AccessibilitySnapshotter snapshotter = await this.AccessibilityAsync(cancellationToken).ConfigureAwait(false);
-        return await snapshotter.SnapshotAsync(null, cancellationToken).ConfigureAwait(false);
+        return this.Accessibility.SnapshotAsync(null, cancellationToken);
     }
 
     // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one, and says so
     // before anything is sent.
-    internal async Task<AccessibilitySnapshotter> AccessibilityAsync(CancellationToken cancellationToken)
+    internal AccessibilitySnapshotter Accessibility
     {
-        if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
+        get
         {
-            throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
-        }
+            if (this.bidi is null)
+            {
+                throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver");
+            }
 
-        return new AccessibilitySnapshotter(this, await this.BiDiAsync(cancellationToken).ConfigureAwait(false));
+            return new AccessibilitySnapshotter(this, this.bidi);
+        }
     }
 
     /// <summary>
-    /// Gets the driver's own BiDi connection, opened on first use and shared by every component
-    /// that works over BiDi; it is closed with the driver.
+    /// Gets the driver's BiDi connection, opened as the session started when it carries a WebSocket
+    /// URL and shared by every component that works over BiDi; it is closed with the driver.
     /// </summary>
-    /// <param name="cancellationToken">A token to cancel the connection attempt.</param>
-    /// <returns>A task whose result is the connection.</returns>
-    /// <exception cref="BiDiException">If the session has no WebSocket URL.</exception>
-    /// <exception cref="ObjectDisposedException">If the driver has been disposed.</exception>
-    internal async Task<IBiDi> BiDiAsync(CancellationToken cancellationToken)
-    {
-        await this.bidiConnecting.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            if (Volatile.Read(ref this.bidiClosed) != 0)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+    /// <exception cref="UnsupportedOperationException">If the session has no BiDi connection.</exception>
+    internal IBiDi BiDi => this.bidi ?? throw new UnsupportedOperationException("This session has no WebDriver BiDi connection; enable it with options.UseWebSocketUrl = true before starting the driver");
 
-            return this.bidi ??= await this.AsBiDiAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        finally
+    // A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily
+    // and no caller has to wait on another's connection attempt. A connection that cannot be made
+    // fails the constructor, which then quits the session it started.
+    private void ConnectBiDi()
+    {
+        if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
         {
-            this.bidiConnecting.Release();
+            return;
         }
+
+        this.bidi = this.AsBiDiAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -863,34 +856,20 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         this.CommandExecutor.Dispose();
     }
 
-    // Only the first disposal closes the connection. It waits for a connection attempt in flight,
-    // so a BiDi call that overlaps the driver's disposal cannot leave its connection open, and never
-    // lets a close failure escape: the driver still has its own session to quit.
+    // Closes the connection the constructor opened, once, and never lets a close failure escape: the
+    // driver still has its own session to quit.
     private async ValueTask CloseBiDiAsync()
     {
-        if (Interlocked.Exchange(ref this.bidiClosed, 1) != 0)
+        IBiDi? connection = this.bidi;
+        this.bidi = null;
+        if (connection is null)
         {
             return;
         }
 
         try
         {
-            IBiDi? connection;
-            await this.bidiConnecting.WaitAsync().ConfigureAwait(false);
-            try
-            {
-                connection = this.bidi;
-                this.bidi = null;
-            }
-            finally
-            {
-                this.bidiConnecting.Release();
-            }
-
-            if (connection is not null)
-            {
-                await connection.DisposeAsync().ConfigureAwait(false);
-            }
+            await connection.DisposeAsync().ConfigureAwait(false);
         }
         catch (Exception e)
         {
