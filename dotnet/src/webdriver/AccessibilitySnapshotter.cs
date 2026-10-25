@@ -76,32 +76,26 @@ internal sealed class AccessibilitySnapshotter
         // found.
         foreach (BiDiBrowsingContext context in await ContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
         {
-            try
+            AccessibilityNode? node = await this.SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
+            if (node is not null)
             {
-                AccessibilityNode? node = await this.SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
-                if (node is not null)
-                {
-                    return node;
-                }
-            }
-            catch (NotOwnedException)
-            {
-                // Try the next context.
+                return node;
             }
         }
 
         throw new StaleElementReferenceException(StaleMessage);
     }
 
-    // The snapshot of a context, or null when another document owns the root.
+    // The snapshot of a context, or null when the document of that context does not own the root:
+    // either the remote end refused the shared id, or the atom answered null for it.
     private async Task<AccessibilityNode?> SnapshotContextAsync(IBiDi session, BiDiBrowsingContext context, string? rootId, CancellationToken cancellationToken)
     {
         ImmutableArray<LocalValue> arguments = rootId is null
             ? ImmutableArray<LocalValue>.Empty
             : ImmutableArray.Create<LocalValue>(new SharedReferenceLocalValue(rootId));
 
-        RemoteValue result = await CallAsync(session, context, arguments, cancellationToken).ConfigureAwait(false);
-        if (result is NullRemoteValue)
+        RemoteValue? result = await CallAsync(session, context, arguments, cancellationToken).ConfigureAwait(false);
+        if (result is null || result is NullRemoteValue)
         {
             return null;
         }
@@ -166,8 +160,9 @@ internal sealed class AccessibilitySnapshotter
             children);
     }
 
-    // Runs the atom's wire entry in the sandbox of the context; the remote value of its result.
-    private static async Task<RemoteValue> CallAsync(IBiDi session, BiDiBrowsingContext context, ImmutableArray<LocalValue> arguments, CancellationToken cancellationToken)
+    // Runs the atom's wire entry in the sandbox of the context; the remote value of its result, or
+    // null when the document of the context does not own the root's shared id.
+    private static async Task<RemoteValue?> CallAsync(IBiDi session, BiDiBrowsingContext context, ImmutableArray<LocalValue> arguments, CancellationToken cancellationToken)
     {
         CallFunctionOptions options = new CallFunctionOptions
         {
@@ -188,9 +183,8 @@ internal sealed class AccessibilitySnapshotter
         }
         catch (BiDiException e) when (Mentions(e, "no such node"))
         {
-            // The document of this context does not own the root's shared id, either because the
-            // root lives in another frame or because its document is gone.
-            throw new NotOwnedException(e);
+            // The root lives in another frame, or its document is gone.
+            return null;
         }
 
         if (result is EvaluateResultSuccess success)
@@ -215,7 +209,7 @@ internal sealed class AccessibilitySnapshotter
             AccessibilityNode? document = await this.SnapshotContextAsync(session, context, null, cancellationToken).ConfigureAwait(false);
             return document is null ? Array.Empty<AccessibilityNode>() : new[] { document };
         }
-        catch (Exception e) when (FrameUnreachable(e))
+        catch (BiDiException e) when (Mentions(e, "no such frame"))
         {
             // Gone between discovery and the call, or mid-navigation: the frame stays a leaf.
             // Anything else is a real failure.
@@ -248,12 +242,6 @@ internal sealed class AccessibilitySnapshotter
         {
             Collect(child, top, contexts);
         }
-    }
-
-    // Whether an error says a frame or its document is gone, rather than that a command failed.
-    private static bool FrameUnreachable(Exception e)
-    {
-        return e is NotOwnedException || (e is BiDiException && (Mentions(e, "no such frame") || Mentions(e, "no such node")));
     }
 
     private static bool Mentions(Exception e, string text)
@@ -338,14 +326,5 @@ internal sealed class AccessibilitySnapshotter
             JsonValueKind.Number => value.GetInt64(),
             _ => value.GetString() ?? string.Empty,
         };
-    }
-
-    // A shared id that the targeted document does not own.
-    private sealed class NotOwnedException : Exception
-    {
-        public NotOwnedException(Exception cause)
-            : base(cause.Message, cause)
-        {
-        }
     }
 }
