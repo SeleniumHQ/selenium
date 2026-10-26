@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Net.WebSockets;
+using System.Reflection;
 using Moq;
 
 namespace OpenQA.Selenium.Tests.BiDi;
@@ -28,9 +30,10 @@ namespace OpenQA.Selenium.Tests.BiDi;
 public class WebDriverConnectionTests
 {
     [Test]
-    public void Constructor_UnreachableWebSocketUrl_Throws()
+    public void Constructor_UnreachableWebSocketUrl_ThrowsWebSocketException()
     {
-        // Nothing listens on the discard port, so the connection the constructor opens is refused.
+        // Nothing listens on the discard port, so the connection the constructor opens is refused;
+        // the mocked driver's proxy wraps what its base constructor throws.
         var capabilities = new Dictionary<string, object>
         {
             ["browserName"] = "chrome",
@@ -41,6 +44,6 @@ public class WebDriverConnectionTests
         executor.Setup(e => e.ExecuteAsync(It.IsAny<Command>()))
             .Returns((Command command) => Task.FromResult(new Response("session-1", command.Name == DriverCommand.NewSession ? capabilities : null, WebDriverResult.Success)));
 
-        Assert.That(() => new Mock<WebDriver>(executor.Object, new RemoteSessionSettings()) { CallBase = true }.Object, Throws.Exception);
+        Assert.That(() => new Mock<WebDriver>(executor.Object, new RemoteSessionSettings()) { CallBase = true }.Object, Throws.TypeOf<TargetInvocationException>().With.InnerException.TypeOf<WebSocketException>());
     }
 }
