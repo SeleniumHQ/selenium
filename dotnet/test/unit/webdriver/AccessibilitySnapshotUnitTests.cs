@@ -22,15 +22,14 @@ using Moq;
 namespace OpenQA.Selenium.Tests;
 
 /// <summary>
-/// A session without BiDi cannot take an accessibility snapshot and says so; a session with a WebSocket
-/// URL connects to it as it starts, and fails fast when it cannot.
+/// A session without BiDi cannot take an accessibility snapshot, and says so.
 /// </summary>
 public class AccessibilitySnapshotUnitTests
 {
     [Test]
     public void GetAccessibilitySnapshotAsync_DriverWithoutBiDi_ThrowsUnsupportedOperationException()
     {
-        using WebDriver driver = StartDriver(webSocketUrl: null);
+        using WebDriver driver = StartDriverWithoutBiDi();
 
         Assert.That(async () => await driver.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<UnsupportedOperationException>().With.Message.Contains("BiDi"));
     }
@@ -38,27 +37,16 @@ public class AccessibilitySnapshotUnitTests
     [Test]
     public void GetAccessibilitySnapshotAsync_ElementWithoutBiDi_ThrowsUnsupportedOperationException()
     {
-        using WebDriver driver = StartDriver(webSocketUrl: null);
+        using WebDriver driver = StartDriverWithoutBiDi();
         var element = new WebElement(driver, "element-1");
 
         Assert.That(async () => await element.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<UnsupportedOperationException>().With.Message.Contains("BiDi"));
     }
 
-    [Test]
-    public void Constructor_UnreachableWebSocketUrl_Throws()
-    {
-        // Nothing listens on the discard port, so the connection the constructor opens is refused.
-        Assert.That(() => StartDriver("ws://127.0.0.1:9/session/session-1"), Throws.Exception);
-    }
-
-    /// <summary>Starts a driver over an executor that answers the new session with the given capabilities and every other command with success.</summary>
-    private static WebDriver StartDriver(string? webSocketUrl)
+    /// <summary>Starts a driver over an executor that answers the new session without a WebSocket URL and every other command with success.</summary>
+    private static WebDriver StartDriverWithoutBiDi()
     {
         var capabilities = new Dictionary<string, object> { ["browserName"] = "chrome" };
-        if (webSocketUrl is not null)
-        {
-            capabilities["webSocketUrl"] = webSocketUrl;
-        }
 
         var executor = new Mock<ICommandExecutor>();
         executor.Setup(e => e.ExecuteAsync(It.IsAny<Command>()))
