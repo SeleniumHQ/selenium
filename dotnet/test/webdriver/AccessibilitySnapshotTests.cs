@@ -37,11 +37,17 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     // The atom records frames as leaves; the binding fills them in, so this page has its own tests.
     private const string FramesPage = "014-iframe";
 
+    // NUnit discovers test cases synchronously, so the case list is the one corpus read that cannot
+    // await; it uses the client's synchronous Send rather than blocking on a task.
     public static IEnumerable<string> ListCorpusPages()
     {
-        foreach (JsonNode? page in JsonNode.Parse(Read("index.json"))!.AsArray())
+        using var client = new HttpClient();
+        using HttpResponseMessage response = client.Send(new HttpRequestMessage(HttpMethod.Get, Urls.WhereIs("accessibility/index.json")));
+        response.EnsureSuccessStatusCode();
+        using JsonDocument index = JsonDocument.Parse(response.Content.ReadAsStream());
+        foreach (JsonElement page in index.RootElement.EnumerateArray())
         {
-            string name = page!.GetValue<string>();
+            string name = page.GetString()!;
             if (name != FramesPage)
             {
                 yield return name;
@@ -67,9 +73,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
 
         JsonNode actual = JsonNode.Parse(Serialize(tree).ToJsonString())!;
-        JsonNode expected = JsonNode.Parse(this.ReadExpected(page, "json"))!;
+        JsonNode expected = JsonNode.Parse(await this.ReadExpectedAsync(page, "json"))!;
         Assert.That(JsonNode.DeepEquals(actual, expected), Is.True, () => "snapshot differs from the corpus:\n" + actual.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-        Assert.That(tree.ToText() + "\n", Is.EqualTo(this.ReadExpected(page, "txt")));
+        Assert.That(tree.ToText() + "\n", Is.EqualTo(await this.ReadExpectedAsync(page, "txt")));
     }
 
     [Test]
@@ -261,9 +267,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     }
 
     // The engine-specific expectation when one is recorded, else the shared one.
-    private string ReadExpected(string page, string suffix)
+    private async Task<string> ReadExpectedAsync(string page, string suffix)
     {
-        return Fetch(page + ".expected." + this.DetectEngine() + "." + suffix) ?? Read(page + ".expected." + suffix);
+        return await FetchAsync(page + ".expected." + this.DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected." + suffix);
     }
 
     // The corpus JSON form: every field written, `element` as the element's id.
@@ -324,24 +330,24 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         return nodes.Select(node => node.Role).ToList();
     }
 
-    private static string Read(string file)
+    private static async Task<string> ReadAsync(string file)
     {
-        return Fetch(file) ?? throw new InvalidOperationException("the corpus has no " + file);
+        return await FetchAsync(file) ?? throw new InvalidOperationException("the corpus has no " + file);
     }
 
     // The corpus is read from the test web server, as the pages are, so nothing is read from the
     // source tree; null when the server has no such file. A client per read keeps the fixture free
-    // of anything to dispose, since the case list is read at discovery time.
-    private static string Fetch(string file)
+    // of anything to dispose.
+    private static async Task<string> FetchAsync(string file)
     {
         using var client = new HttpClient();
-        using HttpResponseMessage response = client.GetAsync(Urls.WhereIs("accessibility/" + file)).GetAwaiter().GetResult();
+        using HttpResponseMessage response = await client.GetAsync(Urls.WhereIs("accessibility/" + file));
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
         }
 
         response.EnsureSuccessStatusCode();
-        return Encoding.UTF8.GetString(response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult());
+        return Encoding.UTF8.GetString(await response.Content.ReadAsByteArrayAsync());
     }
 }
