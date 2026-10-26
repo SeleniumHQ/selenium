@@ -97,7 +97,8 @@ module Selenium
           end
 
           def unverified_certificate_message(reason)
-            "Cannot verify the certificate for #{server_url} (#{reason}). " \
+            location = server_url.dup.tap { |url| url.user = nil }
+            "Cannot verify the certificate for #{location} (#{reason}). " \
               'Trust its issuer if it is self-signed or from a private CA, ' \
               'or skip verification with ignore_certificates: true on a ClientConfig passed to the driver constructor'
           end
