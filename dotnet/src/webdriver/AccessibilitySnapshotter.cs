@@ -38,7 +38,7 @@ namespace OpenQA.Selenium;
 /// </summary>
 internal sealed class AccessibilitySnapshotter
 {
-    private static readonly ILogger _logger = Log.GetLogger<AccessibilitySnapshotter>();
+    private static readonly ILogger s_logger = Log.GetLogger<AccessibilitySnapshotter>();
 
     /// <summary>
     /// The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
@@ -47,9 +47,9 @@ internal sealed class AccessibilitySnapshotter
 
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
 
-    private readonly IBiDi bidi;
-    private readonly Func<string> currentWindowHandle;
-    private readonly Func<string, IWebElement> createElement;
+    private readonly IBiDi _bidi;
+    private readonly Func<string> _currentWindowHandle;
+    private readonly Func<string, IWebElement> _createElement;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccessibilitySnapshotter"/> class.
@@ -59,9 +59,9 @@ internal sealed class AccessibilitySnapshotter
     /// <param name="createElement">Turns the shared id of a node into the element the snapshot references.</param>
     public AccessibilitySnapshotter(IBiDi bidi, Func<string> currentWindowHandle, Func<string, IWebElement> createElement)
     {
-        this.bidi = bidi;
-        this.currentWindowHandle = currentWindowHandle;
-        this.createElement = createElement;
+        _bidi = bidi;
+        _currentWindowHandle = currentWindowHandle;
+        _createElement = createElement;
     }
 
     /// <summary>
@@ -73,12 +73,12 @@ internal sealed class AccessibilitySnapshotter
     /// <exception cref="StaleElementReferenceException">When the root no longer belongs to a document.</exception>
     public async Task<AccessibilityNode> SnapshotAsync(string? rootId, CancellationToken cancellationToken)
     {
-        IBiDi session = this.bidi;
-        BiDiBrowsingContext top = new BiDiBrowsingContext(session, this.currentWindowHandle());
+        IBiDi session = _bidi;
+        BiDiBrowsingContext top = new BiDiBrowsingContext(session, _currentWindowHandle());
 
         if (rootId is null)
         {
-            return await this.SnapshotContextAsync(session, top, null, cancellationToken).ConfigureAwait(false)
+            return await SnapshotContextAsync(session, top, null, cancellationToken).ConfigureAwait(false)
                 ?? throw new WebDriverException("accessibility snapshot: the script returned nothing");
         }
 
@@ -88,7 +88,7 @@ internal sealed class AccessibilitySnapshotter
         // found.
         foreach (BiDiBrowsingContext context in await ListContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
         {
-            AccessibilityNode? node = await this.SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
+            AccessibilityNode? node = await SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
             if (node is not null)
             {
                 return node;
@@ -124,7 +124,7 @@ internal sealed class AccessibilitySnapshotter
         List<IWebElement> elements = new List<IWebElement>();
         foreach (RemoteValue node in ReadItems(GetRequired(fields, "elements")))
         {
-            elements.Add(this.createElement(ReadSharedId(node)));
+            elements.Add(_createElement(ReadSharedId(node)));
         }
 
         List<BiDiBrowsingContext?> windows = new List<BiDiBrowsingContext?>();
@@ -134,10 +134,10 @@ internal sealed class AccessibilitySnapshotter
         }
 
         using JsonDocument document = JsonDocument.Parse(ReadString(GetRequired(fields, "json")));
-        return await this.BuildNodeAsync(
+        return await BuildNodeAsync(
             document.RootElement,
             elements,
-            index => this.StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
+            index => StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ internal sealed class AccessibilitySnapshotter
         {
             foreach (JsonElement child in data.GetProperty("children").EnumerateArray())
             {
-                children.Add(await this.BuildNodeAsync(child, elements, frameChildren).ConfigureAwait(false));
+                children.Add(await BuildNodeAsync(child, elements, frameChildren).ConfigureAwait(false));
             }
         }
 
@@ -226,14 +226,14 @@ internal sealed class AccessibilitySnapshotter
 
         try
         {
-            AccessibilityNode? document = await this.SnapshotContextAsync(session, context, null, cancellationToken).ConfigureAwait(false);
+            AccessibilityNode? document = await SnapshotContextAsync(session, context, null, cancellationToken).ConfigureAwait(false);
             return document is null ? Array.Empty<AccessibilityNode>() : new[] { document };
         }
         catch (BiDiException e) when (Mentions(e, "no such frame"))
         {
             // Gone between discovery and the call, or mid-navigation: the frame stays a leaf.
             // Anything else is a real failure.
-            _logger.Debug("accessibility snapshot: frame " + context.Id + " not reachable: " + e.Message);
+            s_logger.Debug("accessibility snapshot: frame " + context.Id + " not reachable: " + e.Message);
             return Array.Empty<AccessibilityNode>();
         }
     }

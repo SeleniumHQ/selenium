@@ -72,22 +72,22 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [TestCaseSource(nameof(ListCorpusPages))]
     public async Task WholePageSnapshotMatchesTheCorpus(string page)
     {
-        this.Load(page);
+        Load(page);
 
-        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
 
         JsonNode actual = JsonNode.Parse(Serialize(tree).ToJsonString())!;
-        JsonNode expected = JsonNode.Parse(await this.ReadExpectedAsync(page, "json"))!;
+        JsonNode expected = JsonNode.Parse(await ReadExpectedAsync(page, "json"))!;
         Assert.That(JsonNode.DeepEquals(actual, expected), Is.True, () => "snapshot differs from the corpus:\n" + actual.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-        Assert.That(tree.ToText() + "\n", Is.EqualTo(await this.ReadExpectedAsync(page, "txt")));
+        Assert.That(tree.ToText() + "\n", Is.EqualTo(await ReadExpectedAsync(page, "txt")));
     }
 
     [Test]
     public async Task WholePageSnapshotIsRootedAtTheDocument()
     {
-        this.Load("001-headings-and-landmarks");
+        Load("001-headings-and-landmarks");
 
-        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
 
         Assert.That(tree.Role, Is.EqualTo("document"));
         Assert.That(tree.Element, Is.Not.Null);
@@ -97,9 +97,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task ElementReferencesAreUsable()
     {
-        this.Load("003-links-and-buttons");
+        Load("003-links-and-buttons");
 
-        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
 
         AccessibilityNode button = Walk(tree).First(node => node.Role == "button");
         Assert.That(button.Element!.TagName, Is.AnyOf("button", "input", "a"));
@@ -109,8 +109,8 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task SubtreeSnapshotAlwaysProducesANodeForItsRoot()
     {
-        this.Load("005-lists");
-        WebElement root = (WebElement)this.Driver.FindElement(By.TagName("body"));
+        Load("005-lists");
+        WebElement root = (WebElement)Driver.FindElement(By.TagName("body"));
 
         AccessibilityNode tree = await root.GetAccessibilitySnapshotAsync();
 
@@ -122,8 +122,8 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task SubtreeSnapshotOfANodeFromAnEarlierSnapshot()
     {
-        this.Load("005-lists");
-        AccessibilityNode firstList = Walk(await this.BiDiDriver.GetAccessibilitySnapshotAsync()).First(node => node.Role == "list");
+        Load("005-lists");
+        AccessibilityNode firstList = Walk(await BiDiDriver.GetAccessibilitySnapshotAsync()).First(node => node.Role == "list");
 
         AccessibilityNode tree = await ((WebElement)firstList.Element!).GetAccessibilitySnapshotAsync();
 
@@ -134,9 +134,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task FramesAreStitchedIn()
     {
-        this.Load(FramesPage);
+        Load(FramesPage);
 
-        AccessibilityNode tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
 
         List<AccessibilityNode> frames = Walk(tree).Where(node => node.Role == "iframe").ToList();
         Assert.That(frames.Select(frame => frame.Name), Is.EqualTo(new[] { "Embedded content", "" }));
@@ -151,22 +151,22 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         Assert.That(tree.ToText().Split("- document"), Has.Length.EqualTo(4));
 
         // A reference inside a frame works through classic commands once that frame is current.
-        this.Driver.SwitchTo().Frame(frames[0].Element!);
+        Driver.SwitchTo().Frame(frames[0].Element!);
         try
         {
             Assert.That(frames[0].Children[0].Element!.TagName, Is.EqualTo("html"));
         }
         finally
         {
-            this.Driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public async Task SubtreeSnapshotOfAnIframeElementCarriesItsDocument()
     {
-        this.Load(FramesPage);
-        WebElement frame = (WebElement)this.Driver.FindElement(By.Id("frame"));
+        Load(FramesPage);
+        WebElement frame = (WebElement)Driver.FindElement(By.Id("frame"));
 
         AccessibilityNode tree = await frame.GetAccessibilitySnapshotAsync();
 
@@ -178,11 +178,11 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task SubtreeSnapshotInsideAFrame()
     {
-        this.Load(FramesPage);
-        this.Driver.SwitchTo().Frame("frame");
+        Load(FramesPage);
+        Driver.SwitchTo().Frame("frame");
         try
         {
-            WebElement body = (WebElement)this.Driver.FindElement(By.TagName("body"));
+            WebElement body = (WebElement)Driver.FindElement(By.TagName("body"));
             AccessibilityNode tree = await body.GetAccessibilitySnapshotAsync();
 
             // The root is the frame's body, not the top document that owns the window.
@@ -192,23 +192,23 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         }
         finally
         {
-            this.Driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
     }
 
     [Test]
     public async Task WholePageSnapshotIgnoresTheFrameTheDriverSwitchedTo()
     {
-        this.Load(FramesPage);
-        this.Driver.SwitchTo().Frame("frame");
+        Load(FramesPage);
+        Driver.SwitchTo().Frame("frame");
         AccessibilityNode tree;
         try
         {
-            tree = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+            tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
         }
         finally
         {
-            this.Driver.SwitchTo().DefaultContent();
+            Driver.SwitchTo().DefaultContent();
         }
 
         Assert.That(tree.Name, Is.EqualTo("Frames"));
@@ -217,9 +217,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public void AStaleRootRaisesTheStaleElementError()
     {
-        this.Load("005-lists");
-        WebElement root = (WebElement)this.Driver.FindElement(By.TagName("body"));
-        this.Load("001-headings-and-landmarks");
+        Load("005-lists");
+        WebElement root = (WebElement)Driver.FindElement(By.TagName("body"));
+        Load("001-headings-and-landmarks");
 
         Assert.That(async () => await root.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<StaleElementReferenceException>());
     }
@@ -227,9 +227,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public void ADetachedRootRaisesTheStaleElementError()
     {
-        this.Load("005-lists");
-        WebElement item = (WebElement)this.Driver.FindElement(By.TagName("li"));
-        ((IJavaScriptExecutor)this.Driver).ExecuteScript("arguments[0].remove()", item);
+        Load("005-lists");
+        WebElement item = (WebElement)Driver.FindElement(By.TagName("li"));
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].remove()", item);
 
         Assert.That(async () => await item.GetAccessibilitySnapshotAsync(), Throws.InstanceOf<StaleElementReferenceException>());
     }
@@ -237,11 +237,11 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     [Test]
     public async Task ASnapshotIsACopy()
     {
-        this.Load("005-lists");
-        AccessibilityNode before = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
-        ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.querySelector('li').textContent = 'changed'");
+        Load("005-lists");
+        AccessibilityNode before = await BiDiDriver.GetAccessibilitySnapshotAsync();
+        ((IJavaScriptExecutor)Driver).ExecuteScript("document.querySelector('li').textContent = 'changed'");
 
-        AccessibilityNode after = await this.BiDiDriver.GetAccessibilitySnapshotAsync();
+        AccessibilityNode after = await BiDiDriver.GetAccessibilitySnapshotAsync();
 
         Assert.That(after.ToText(), Is.Not.EqualTo(before.ToText()));
         Assert.That(after.ToText(), Does.Contain("changed"));
@@ -250,14 +250,14 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     /// <summary>
     /// The fixture's driver as the class that exposes the snapshot API.
     /// </summary>
-    private WebDriver BiDiDriver => (WebDriver)this.Driver;
+    private WebDriver BiDiDriver => (WebDriver)Driver;
 
     /// <summary>
     /// Loads a corpus page from the test web server.
     /// </summary>
     private void Load(string page)
     {
-        this.Driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
+        Driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     /// </summary>
     private string DetectEngine()
     {
-        string name = (((IHasCapabilities)this.Driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
+        string name = (((IHasCapabilities)Driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
         if (name.Contains("firefox"))
         {
             return "firefox";
@@ -284,7 +284,7 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     /// </summary>
     private async Task<string> ReadExpectedAsync(string page, string suffix)
     {
-        return await FetchAsync(page + ".expected." + this.DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected." + suffix);
+        return await FetchAsync(page + ".expected." + DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected." + suffix);
     }
 
     /// <summary>

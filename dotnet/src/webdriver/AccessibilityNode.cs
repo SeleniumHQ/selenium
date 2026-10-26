@@ -36,7 +36,7 @@ public sealed class AccessibilityNode
     /// <summary>
     /// The order the text form writes states in.
     /// </summary>
-    private static readonly string[] StateOrder = { "checked", "pressed", "expanded", "selected", "level", "disabled", "focused" };
+    private static readonly string[] s_stateOrder = { "checked", "pressed", "expanded", "selected", "level", "disabled", "focused" };
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccessibilityNode"/> class.
@@ -64,13 +64,13 @@ public sealed class AccessibilityNode
         ArgumentNullException.ThrowIfNull(states);
         ArgumentNullException.ThrowIfNull(children);
 
-        this.Role = role;
-        this.Name = name;
-        this.Description = description;
-        this.Value = value;
-        this.States = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>(states.ToDictionary(pair => pair.Key, pair => pair.Value)));
-        this.Element = element;
-        this.Children = new ReadOnlyCollection<AccessibilityNode>(new List<AccessibilityNode>(children));
+        Role = role;
+        Name = name;
+        Description = description;
+        Value = value;
+        States = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>(states.ToDictionary(pair => pair.Key, pair => pair.Value)));
+        Element = element;
+        Children = new ReadOnlyCollection<AccessibilityNode>(new List<AccessibilityNode>(children));
     }
 
     /// <summary>
@@ -129,14 +129,14 @@ public sealed class AccessibilityNode
     public string ToText()
     {
         StringBuilder builder = new StringBuilder();
-        this.AppendLines(string.Empty, builder);
+        AppendLines(string.Empty, builder);
         return builder.ToString();
     }
 
     /// <inheritdoc/>
     public override string ToString()
     {
-        return "AccessibilityNode{role=" + this.Role + ", name=" + Quote(this.Name) + "}";
+        return "AccessibilityNode{role=" + Role + ", name=" + Quote(Name) + "}";
     }
 
     private void AppendLines(string indent, StringBuilder builder)
@@ -148,8 +148,8 @@ public sealed class AccessibilityNode
             builder.Append('\n');
         }
 
-        builder.Append(indent).Append(this.FormatLine());
-        foreach (AccessibilityNode child in this.Children)
+        builder.Append(indent).Append(FormatLine());
+        foreach (AccessibilityNode child in Children)
         {
             child.AppendLines(indent + "  ", builder);
         }
@@ -157,20 +157,20 @@ public sealed class AccessibilityNode
 
     private string FormatLine()
     {
-        if (this.Role == "text")
+        if (Role == "text")
         {
-            return "- text: " + this.Name;
+            return "- text: " + Name;
         }
 
-        StringBuilder line = new StringBuilder("- ").Append(this.Role);
-        if (this.Name.Length > 0)
+        StringBuilder line = new StringBuilder("- ").Append(Role);
+        if (Name.Length > 0)
         {
-            line.Append(' ').Append(Quote(this.Name));
+            line.Append(' ').Append(Quote(Name));
         }
 
-        foreach (string key in StateOrder)
+        foreach (string key in s_stateOrder)
         {
-            if (!this.States.TryGetValue(key, out object? state))
+            if (!States.TryGetValue(key, out object? state))
             {
                 continue;
             }
@@ -188,9 +188,9 @@ public sealed class AccessibilityNode
             }
         }
 
-        if (!string.IsNullOrEmpty(this.Value))
+        if (!string.IsNullOrEmpty(Value))
         {
-            line.Append(": ").Append(EscapeLineBreaks(this.Value!));
+            line.Append(": ").Append(EscapeLineBreaks(Value!));
         }
 
         return line.ToString();
