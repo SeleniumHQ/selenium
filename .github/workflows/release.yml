@@ -5,7 +5,6 @@ on:
     types: [closed]
     paths:
       - 'version.bzl'
-      - 'py/selenium/__init__.py'
   workflow_dispatch:
     inputs:
       tag:

@@ -19,6 +19,8 @@ import importlib
 import logging
 import os
 
+from selenium import __version__ as __version__
+
 # Enable debug logging if SE_DEBUG environment variable is set
 if os.environ.get("SE_DEBUG"):
     logger = logging.getLogger("selenium")
@@ -29,8 +31,6 @@ if os.environ.get("SE_DEBUG"):
         "Environment Variable `SE_DEBUG` is set; "
         "Selenium is forcing verbose logging which may override user-specified settings."
     )
-
-__version__ = "4.52.0.202610091837"
 
 # Lazy import mapping: name -> (module_path, attribute_name)
 _LAZY_IMPORTS = {

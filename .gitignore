@@ -70,6 +70,7 @@ __pycache__
 .tox
 *.pyc
 dist/
+py/selenium/_version.py
 py/selenium/webdriver/common/bidi/
 # Generated internal BiDi protocol modules; the hand-written runtime beside them stays tracked.
 py/selenium/webdriver/common/_bidi/*
