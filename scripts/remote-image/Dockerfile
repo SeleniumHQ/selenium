@@ -1,5 +1,5 @@
 # Our images must be for Linux x86_64
-FROM --platform=linux/amd64 ubuntu:jammy@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d
+FROM --platform=linux/amd64 ubuntu:jammy@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -qqy update && \
     apt-get install -qy --no-install-recommends \
       build-essential \
+      ca-certificates \
       libcrypt-dev \
       libnet1 \
       libyaml-dev \
@@ -17,6 +18,12 @@ RUN apt-get -qqy update && \
       zip \
       zlib1g && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+# eMudhra CA compromise (USN-8944-1): the trust store must not contain emSign ECC Root CA - G3.
+# Fixed in ca-certificates 20260816ubuntu0.22.04.1; fail the build if an older bundle slipped in.
+RUN dpkg --compare-versions "$(dpkg-query -W -f='${Version}' ca-certificates)" ge 20260816ubuntu0.22.04.1 && \
+    ! test -e /usr/share/ca-certificates/mozilla/emSign_ECC_Root_CA_-_G3.crt && \
+    ! grep -q "emSign ECC Root CA - G3" /etc/ca-certificates.conf
 
 # Make sure we have all the runtime libraries needed by Firefox and Chrome (and so also Edge, one hopes)
 RUN apt-get update -qqy && \
