@@ -42,7 +42,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
     private IBiDi? bidi;
-    private Lazy<AccessibilitySnapshotter>? accessibility;
+    private Lazy<AccessibilitySnapshotter>? accessibilitySnapshotter;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -230,7 +230,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// created on first use, serves the driver for its life.
     /// </summary>
     internal AccessibilitySnapshotter Accessibility =>
-        (this.accessibility ?? throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver")).Value;
+        (this.accessibilitySnapshotter ?? throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver")).Value;
 
     /// <summary>
     /// Gets the driver's BiDi connection, opened as the session started when it carries a WebSocket
@@ -253,7 +253,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
 
         IBiDi connection = this.AsBiDiAsync().GetAwaiter().GetResult();
         this.bidi = connection;
-        this.accessibility = new Lazy<AccessibilitySnapshotter>(() => new AccessibilitySnapshotter(connection, () => this.CurrentWindowHandle, this.CreateElementFromReference));
+        this.accessibilitySnapshotter = new Lazy<AccessibilitySnapshotter>(() => new AccessibilitySnapshotter(connection, () => this.CurrentWindowHandle, this.CreateElementFromReference));
     }
 
     /// <summary>
@@ -869,7 +869,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         IBiDi? connection = this.bidi;
         this.bidi = null;
-        this.accessibility = null;
+        this.accessibilitySnapshotter = null;
         if (connection is null)
         {
             return;
