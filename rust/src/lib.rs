@@ -2026,9 +2026,10 @@ mod tests {
 
     #[test]
     fn http_client_is_not_created_until_needed() {
-        let manager = crate::chrome::ChromeManager::new().unwrap();
+        let mut manager = crate::chrome::ChromeManager::new().unwrap();
         assert!(manager.get_http_client_cell().get().is_none());
 
+        manager.get_config_mut().insecure = true;
         manager.get_http_client().unwrap();
 
         assert!(manager.get_http_client_cell().get().is_some());
