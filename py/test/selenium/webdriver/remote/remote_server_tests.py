@@ -16,7 +16,6 @@
 # under the License.
 
 import os
-import sys
 
 import pytest
 
@@ -42,10 +41,6 @@ def remove_file(path):
 @pytest.mark.skipif(
     "REMOTE_BUILD" in os.environ,
     reason="Downloads the Selenium Server from the network, which is unavailable on RBE",
-)
-@pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="Selenium Manager's --grid lookup exits with code 65 on Windows CI since 2026-10-10",
 )
 def test_download_latest_server(standalone_server):
     server_path = standalone_server.download_if_needed()
