@@ -40,7 +40,9 @@ internal sealed class AccessibilitySnapshotter
 {
     private static readonly ILogger _logger = Log.GetLogger<AccessibilitySnapshotter>();
 
-    // The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
+    /// <summary>
+    /// The sandbox realm the atom runs in: page scripts cannot reach its prototypes.
+    /// </summary>
     private const string Sandbox = "selenium";
 
     private const string StaleMessage = "the snapshot root is no longer attached to a document";
@@ -96,8 +98,10 @@ internal sealed class AccessibilitySnapshotter
         throw new StaleElementReferenceException(StaleMessage);
     }
 
-    // The snapshot of a context, or null when the document of that context does not own the root:
-    // either the remote end refused the shared id, or the atom answered null for it.
+    /// <summary>
+    /// The snapshot of a context, or null when the document of that context does not own the root:
+    /// either the remote end refused the shared id, or the atom answered null for it.
+    /// </summary>
     private async Task<AccessibilityNode?> SnapshotContextAsync(IBiDi session, BiDiBrowsingContext context, string? rootId, CancellationToken cancellationToken)
     {
         ImmutableArray<LocalValue> arguments = rootId is null
@@ -136,9 +140,11 @@ internal sealed class AccessibilitySnapshotter
             index => this.StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
     }
 
-    // Builds the node tree from the atom's wire form: the node's fields, with "element" an index
-    // into the elements and, on a frame node, "frame" an index the frame children callback
-    // resolves to the frame's own tree.
+    /// <summary>
+    /// Builds the node tree from the atom's wire form: the node's fields, with "element" an index
+    /// into the elements and, on a frame node, "frame" an index the frame children callback
+    /// resolves to the frame's own tree.
+    /// </summary>
     private async Task<AccessibilityNode> BuildNodeAsync(JsonElement data, IReadOnlyList<IWebElement> elements, Func<int, Task<IReadOnlyList<AccessibilityNode>>> frameChildren)
     {
         List<AccessibilityNode> children = new List<AccessibilityNode>();
@@ -170,8 +176,10 @@ internal sealed class AccessibilitySnapshotter
             children);
     }
 
-    // Runs the atom's wire entry in the sandbox of the context; the remote value of its result, or
-    // null when the document of the context does not own the root's shared id.
+    /// <summary>
+    /// Runs the atom's wire entry in the sandbox of the context; the remote value of its result, or
+    /// null when the document of the context does not own the root's shared id.
+    /// </summary>
     private static async Task<RemoteValue?> CallAsync(IBiDi session, BiDiBrowsingContext context, ImmutableArray<LocalValue> arguments, CancellationToken cancellationToken)
     {
         CallFunctionOptions options = new CallFunctionOptions
@@ -206,7 +214,9 @@ internal sealed class AccessibilitySnapshotter
         throw new WebDriverException("accessibility snapshot failed in the page: " + text);
     }
 
-    // The document of a frame as the frame node's one child, or no children when unreachable.
+    /// <summary>
+    /// The document of a frame as the frame node's one child, or no children when unreachable.
+    /// </summary>
     private async Task<IReadOnlyList<AccessibilityNode>> StitchAsync(IBiDi session, BiDiBrowsingContext? context, CancellationToken cancellationToken)
     {
         if (context is null)
@@ -228,7 +238,9 @@ internal sealed class AccessibilitySnapshotter
         }
     }
 
-    // The window's browsing contexts, top-level first, then each frame depth-first.
+    /// <summary>
+    /// The window's browsing contexts, top-level first, then each frame depth-first.
+    /// </summary>
     private static async Task<List<BiDiBrowsingContext>> ListContextsAsync(IBiDi session, BiDiBrowsingContext top, CancellationToken cancellationToken)
     {
         var tree = await session.BrowsingContext.GetTreeAsync(new GetTreeOptions { Root = top }, cancellationToken).ConfigureAwait(false);
@@ -241,6 +253,9 @@ internal sealed class AccessibilitySnapshotter
         return contexts;
     }
 
+    /// <summary>
+    /// Adds every context below the top-level one to the list, depth-first; the top-level context is listed by the caller.
+    /// </summary>
     private static void CollectContexts(BrowsingContextInfo info, BiDiBrowsingContext top, List<BiDiBrowsingContext> contexts)
     {
         if (info.Context.Id != top.Id)
@@ -254,11 +269,17 @@ internal sealed class AccessibilitySnapshotter
         }
     }
 
+    /// <summary>
+    /// Whether the exception's message carries the text; the BiDi layer has no typed error for "no such node" yet.
+    /// </summary>
     private static bool Mentions(Exception e, string text)
     {
         return e.Message is not null && e.Message.Contains(text);
     }
 
+    /// <summary>
+    /// The properties of an object remote value, by name.
+    /// </summary>
     private static Dictionary<string, RemoteValue> ReadObjectFields(RemoteValue value)
     {
         if (value is not ObjectRemoteValue obj)
@@ -281,6 +302,9 @@ internal sealed class AccessibilitySnapshotter
         return fields;
     }
 
+    /// <summary>
+    /// The items of an array remote value.
+    /// </summary>
     private static ImmutableArray<RemoteValue> ReadItems(RemoteValue value)
     {
         if (value is not ArrayRemoteValue array)
@@ -291,6 +315,9 @@ internal sealed class AccessibilitySnapshotter
         return array.Value ?? ImmutableArray<RemoteValue>.Empty;
     }
 
+    /// <summary>
+    /// The named property, or a <see cref="WebDriverException"/> when the atom's result lacks it.
+    /// </summary>
     private static RemoteValue GetRequired(Dictionary<string, RemoteValue> fields, string name)
     {
         if (!fields.TryGetValue(name, out RemoteValue? value))
@@ -301,6 +328,9 @@ internal sealed class AccessibilitySnapshotter
         return value;
     }
 
+    /// <summary>
+    /// The shared id of a node remote value from the elements list.
+    /// </summary>
     private static string ReadSharedId(RemoteValue value)
     {
         if (value is not NodeRemoteValue node || string.IsNullOrEmpty(node.SharedId))
@@ -311,12 +341,17 @@ internal sealed class AccessibilitySnapshotter
         return node.SharedId;
     }
 
-    // The browsing context of a window remote value; null for a frame with no reachable context.
+    /// <summary>
+    /// The browsing context of a window remote value; null for a frame with no reachable context.
+    /// </summary>
     private static BiDiBrowsingContext? ReadContext(RemoteValue value)
     {
         return value is WindowProxyRemoteValue window ? window.Value.Context : null;
     }
 
+    /// <summary>
+    /// The text of a string remote value; empty for null or undefined.
+    /// </summary>
     private static string ReadString(RemoteValue value)
     {
         return value switch
@@ -327,6 +362,9 @@ internal sealed class AccessibilitySnapshotter
         };
     }
 
+    /// <summary>
+    /// A state value as the node exposes it: a <see cref="bool"/>, a <see cref="long"/> or a <see cref="string"/>.
+    /// </summary>
     private static object ReadState(JsonElement value)
     {
         return value.ValueKind switch

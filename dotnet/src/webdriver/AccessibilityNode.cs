@@ -33,7 +33,9 @@ namespace OpenQA.Selenium;
 /// </remarks>
 public sealed class AccessibilityNode
 {
-    // The order the text form writes states in.
+    /// <summary>
+    /// The order the text form writes states in.
+    /// </summary>
     private static readonly string[] StateOrder = { "checked", "pressed", "expanded", "selected", "level", "disabled", "focused" };
 
     /// <summary>

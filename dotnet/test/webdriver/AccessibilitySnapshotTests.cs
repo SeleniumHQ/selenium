@@ -34,11 +34,15 @@ namespace OpenQA.Selenium.Tests;
 [TestFixture]
 public class AccessibilitySnapshotTests : DriverTestFixture
 {
-    // The atom records frames as leaves; the binding fills them in, so this page has its own tests.
+    /// <summary>
+    /// The atom records frames as leaves; the binding fills them in, so this page has its own tests.
+    /// </summary>
     private const string FramesPage = "014-iframe";
 
-    // NUnit discovers test cases synchronously, so the case list is the one corpus read that cannot
-    // await; it uses the client's synchronous Send rather than blocking on a task.
+    /// <summary>
+    /// NUnit discovers test cases synchronously, so the case list is the one corpus read that cannot
+    /// await; it uses the client's synchronous Send rather than blocking on a task.
+    /// </summary>
     public static IEnumerable<string> ListCorpusPages()
     {
         using var client = new HttpClient();
@@ -243,13 +247,22 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         Assert.That(after.ToText(), Does.Contain("changed"));
     }
 
+    /// <summary>
+    /// The fixture's driver as the class that exposes the snapshot API.
+    /// </summary>
     private WebDriver BiDiDriver => (WebDriver)this.Driver;
 
+    /// <summary>
+    /// Loads a corpus page from the test web server.
+    /// </summary>
     private void Load(string page)
     {
         this.Driver.Url = Urls.WhereIs("accessibility/" + page + ".html");
     }
 
+    /// <summary>
+    /// The corpus name of the engine under test, which picks the engine-specific expectation when one is recorded.
+    /// </summary>
     private string DetectEngine()
     {
         string name = (((IHasCapabilities)this.Driver).Capabilities.GetCapability("browserName")?.ToString() ?? string.Empty).ToLowerInvariant();
@@ -266,13 +279,17 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         return "chromium";
     }
 
-    // The engine-specific expectation when one is recorded, else the shared one.
+    /// <summary>
+    /// The engine-specific expectation when one is recorded, else the shared one.
+    /// </summary>
     private async Task<string> ReadExpectedAsync(string page, string suffix)
     {
         return await FetchAsync(page + ".expected." + this.DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected." + suffix);
     }
 
-    // The corpus JSON form: every field written, `element` as the element's id.
+    /// <summary>
+    /// The corpus JSON form: every field written, `element` as the element's id.
+    /// </summary>
     private static JsonObject Serialize(AccessibilityNode node)
     {
         var states = new JsonObject();
@@ -313,6 +330,9 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         return json;
     }
 
+    /// <summary>
+    /// The node and every node below it, depth-first.
+    /// </summary>
     private static IEnumerable<AccessibilityNode> Walk(AccessibilityNode node)
     {
         yield return node;
@@ -325,19 +345,27 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         }
     }
 
+    /// <summary>
+    /// The roles of the nodes, in order.
+    /// </summary>
     private static List<string> ListRoles(IEnumerable<AccessibilityNode> nodes)
     {
         return nodes.Select(node => node.Role).ToList();
     }
 
+    /// <summary>
+    /// A corpus file the server must have.
+    /// </summary>
     private static async Task<string> ReadAsync(string file)
     {
         return await FetchAsync(file) ?? throw new InvalidOperationException("the corpus has no " + file);
     }
 
-    // The corpus is read from the test web server, as the pages are, so nothing is read from the
-    // source tree; null when the server has no such file. A client per read keeps the fixture free
-    // of anything to dispose.
+    /// <summary>
+    /// The corpus is read from the test web server, as the pages are, so nothing is read from the
+    /// source tree; null when the server has no such file. A client per read keeps the fixture free
+    /// of anything to dispose.
+    /// </summary>
     private static async Task<string> FetchAsync(string file)
     {
         using var client = new HttpClient();

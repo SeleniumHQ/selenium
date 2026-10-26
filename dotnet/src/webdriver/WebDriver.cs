@@ -224,10 +224,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         return this.Accessibility.SnapshotAsync(null, cancellationToken);
     }
 
-    // The snapshot runs in a BiDi sandbox realm; a session started without a WebSocket URL cannot take
-    // one, and says so
-    // before anything is sent. The snapshotter is stateless, so one instance, created on first use,
-    // serves the driver for its life.
+    /// <summary>
+    /// The snapshot runs in a BiDi sandbox realm; a session started without a WebSocket URL cannot
+    /// take one, and says so before anything is sent. The snapshotter is stateless, so one instance,
+    /// created on first use, serves the driver for its life.
+    /// </summary>
     internal AccessibilitySnapshotter Accessibility =>
         (this.accessibility ?? throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver")).Value;
 
@@ -238,9 +239,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="UnsupportedOperationException">If the session was started without a WebSocket URL.</exception>
     internal IBiDi BiDi => this.bidi ?? throw new UnsupportedOperationException("This session has no WebDriver BiDi connection; enable it with options.UseWebSocketUrl = true before starting the driver");
 
-    // A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily
-    // and no caller has to wait on another's connection attempt. A connection that cannot be made
-    // fails the constructor, which then quits the session it started.
+    /// <summary>
+    /// A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily
+    /// and no caller has to wait on another's connection attempt. A connection that cannot be made
+    /// fails the constructor, which then quits the session it started.
+    /// </summary>
     private void ConnectBiDi()
     {
         if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
@@ -858,8 +861,10 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         this.CommandExecutor.Dispose();
     }
 
-    // Closes the connection the constructor opened, once, and never lets a close failure escape: the
-    // driver still has its own session to quit.
+    /// <summary>
+    /// Closes the connection the constructor opened, once, and never lets a close failure escape: the
+    /// driver still has its own session to quit.
+    /// </summary>
     private async ValueTask CloseBiDiAsync()
     {
         IBiDi? connection = this.bidi;
