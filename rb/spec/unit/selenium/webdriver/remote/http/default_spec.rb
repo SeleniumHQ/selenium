@@ -108,17 +108,24 @@ module Selenium
               WebMock.enable!
             end
 
-            it 'rejects the certificate by default and names the remedies' do
+            it 'rejects the certificate by default and reports the reason' do
               expect { client.send :http }.to raise_error(
                 OpenSSL::SSL::SSLError,
-                /certificate verify failed.*ignore_certificates = true.*trusted CA bundle/
+                %r{Cannot verify the certificate for https://127\.0\.0\.1:\d+/ \(self.signed certificate\)}
+              )
+            end
+
+            it 'names the remedies' do
+              expect { client.send :http }.to raise_error(
+                OpenSSL::SSL::SSLError,
+                /Trust its issuer.*ignore_certificates: true on a ClientConfig/
               )
             end
 
             it 'rejects the certificate when the config requires verification' do
               client.client_config.ignore_certificates = false
 
-              expect { client.send :http }.to raise_error(OpenSSL::SSL::SSLError, /ignore_certificates/)
+              expect { client.send :http }.to raise_error(OpenSSL::SSL::SSLError, /ignore_certificates: true/)
             end
 
             it 'connects when the config ignores certificates' do
