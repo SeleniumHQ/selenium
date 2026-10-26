@@ -2108,7 +2108,7 @@ fn is_tls_certificate_error(err: &Error) -> bool {
         }
         matches!(
             current.downcast_ref::<rustls::Error>(),
-            Some(rustls::Error::InvalidCertificate(_) | rustls::Error::General(_))
+            Some(rustls::Error::InvalidCertificate(_))
         )
     })
 }
