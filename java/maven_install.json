@@ -13,7 +13,7 @@
     "com.google.auto.service:auto-service-annotations": -843120535,
     "com.google.closure-stylesheets:closure-stylesheets": -626365944,
     "com.google.code.findbugs:jsr305": 495355163,
-    "com.google.code.gson:gson": 2063056812,
+    "com.google.code.gson:gson": 266105453,
     "com.google.dagger:dagger-producers": 1903545965,
     "com.google.errorprone:error_prone_annotations": -1035138750,
     "com.google.googlejavaformat:google-java-format": -1055777895,
@@ -24,7 +24,7 @@
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
     "com.google.protobuf:protobuf-java": 130636446,
     "com.graphql-java:graphql-java": -795537954,
-    "com.uber.nullaway:nullaway": 590882514,
+    "com.uber.nullaway:nullaway": -1216571949,
     "dev.failsafe:failsafe": -1314791755,
     "io.fabric8:kubernetes-client": -1899964461,
     "io.fabric8:kubernetes-client-api": 276482022,
@@ -48,7 +48,7 @@
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -62380802,
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
     "junit:junit": -744267592,
-    "net.bytebuddy:byte-buddy": -515251038,
+    "net.bytebuddy:byte-buddy": 1972261795,
     "net.java.dev.javacc:javacc": 520686333,
     "org.assertj:assertj-core": -1145412507,
     "org.bouncycastle:bcpkix-jdk18on": 826697430,
@@ -115,7 +115,7 @@
     "com.github.docker-java:docker-java-transport:jar:sources": -1920988041,
     "com.github.javaparser:javaparser-core": 561213315,
     "com.github.javaparser:javaparser-core:jar:sources": -1181310143,
-    "com.github.spotbugs:spotbugs": -64659084,
+    "com.github.spotbugs:spotbugs": 435477139,
     "com.github.spotbugs:spotbugs-annotations": -1628657191,
     "com.github.spotbugs:spotbugs-annotations:jar:sources": 506172046,
     "com.github.spotbugs:spotbugs:jar:sources": 122229878,
@@ -127,12 +127,12 @@
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
     "com.google.auto:auto-common": 1373794017,
     "com.google.auto:auto-common:jar:sources": -542679945,
-    "com.google.closure-stylesheets:closure-stylesheets": -1849879814,
+    "com.google.closure-stylesheets:closure-stylesheets": 1165236560,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
-    "com.google.code.gson:gson": -1465758993,
-    "com.google.code.gson:gson:jar:sources": 935710753,
+    "com.google.code.gson:gson": -1393933128,
+    "com.google.code.gson:gson:jar:sources": 755669897,
     "com.google.dagger:dagger": -1865829880,
     "com.google.dagger:dagger-producers": 1719063702,
     "com.google.dagger:dagger-producers:jar:sources": -143178918,
@@ -150,7 +150,7 @@
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
     "com.google.javascript:closure-compiler": -757781731,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": -1612747063,
+    "com.google.javascript:closure-compiler-unshaded": -559349494,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
     "com.google.javascript:closure-compiler:jar:sources": 16484246,
     "com.google.jimfs:jimfs": -1815255605,
@@ -163,8 +163,8 @@
     "com.graphql-java:graphql-java:jar:sources": 250541727,
     "com.graphql-java:java-dataloader": -1517887665,
     "com.graphql-java:java-dataloader:jar:sources": -1676833358,
-    "com.uber.nullaway:nullaway": -93486471,
-    "com.uber.nullaway:nullaway:jar:sources": 192362682,
+    "com.uber.nullaway:nullaway": -2095883971,
+    "com.uber.nullaway:nullaway:jar:sources": 423253002,
     "commons-codec:commons-codec": 1545666683,
     "commons-codec:commons-codec:jar:sources": -1502704019,
     "commons-io:commons-io": 1072619124,
@@ -307,10 +307,10 @@
     "jaxen:jaxen:jar:sources": 1440924454,
     "junit:junit": -149895345,
     "junit:junit:jar:sources": 940567721,
-    "net.bytebuddy:byte-buddy": 1960806545,
+    "net.bytebuddy:byte-buddy": -1200721627,
     "net.bytebuddy:byte-buddy-agent": 1099087346,
     "net.bytebuddy:byte-buddy-agent:jar:sources": 1414786109,
-    "net.bytebuddy:byte-buddy:jar:sources": 1415952497,
+    "net.bytebuddy:byte-buddy:jar:sources": 1289377216,
     "net.java.dev.javacc:javacc": 1095796166,
     "net.java.dev.javacc:javacc:jar:sources": -1183405047,
     "net.java.dev.jna:jna": 154162148,
@@ -333,7 +333,7 @@
     "org.apache.logging.log4j:log4j-core:jar:sources": -625900064,
     "org.apiguardian:apiguardian-api": 1279798469,
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
-    "org.assertj:assertj-core": -567793304,
+    "org.assertj:assertj-core": -161271355,
     "org.assertj:assertj-core:jar:sources": -697161745,
     "org.bouncycastle:bcpkix-jdk18on": -287047843,
     "org.bouncycastle:bcpkix-jdk18on:jar:sources": -1855368494,
@@ -343,10 +343,10 @@
     "org.bouncycastle:bcutil-jdk18on:jar:sources": 1897597974,
     "org.checkerframework:checker-compat-qual": -1467856161,
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
-    "org.checkerframework:checker-qual": 414066769,
-    "org.checkerframework:checker-qual:jar:sources": 1695950529,
-    "org.checkerframework:dataflow-nullaway": 1855118375,
-    "org.checkerframework:dataflow-nullaway:jar:sources": -1205948234,
+    "org.checkerframework:checker-qual": -1543380368,
+    "org.checkerframework:checker-qual:jar:sources": 1584684922,
+    "org.checkerframework:dataflow-nullaway": 1153433772,
+    "org.checkerframework:dataflow-nullaway:jar:sources": -434420977,
     "org.commonmark:commonmark": 1007679894,
     "org.commonmark:commonmark-ext-gfm-tables": 906481356,
     "org.commonmark:commonmark-ext-gfm-tables:jar:sources": 1402309037,
@@ -355,7 +355,7 @@
     "org.dom4j:dom4j:jar:sources": 1794439119,
     "org.easymock:easymock": 1823521609,
     "org.easymock:easymock:jar:sources": 1100555462,
-    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": -1630476461,
+    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 456751666,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:sources": -1002647383,
     "org.hsqldb:hsqldb": 331478029,
     "org.hsqldb:hsqldb:jar:sources": -212896903,
@@ -385,7 +385,7 @@
     "org.junit.platform:junit-platform-launcher:jar:sources": 1409824250,
     "org.junit.platform:junit-platform-reporting": 1588112906,
     "org.junit.platform:junit-platform-reporting:jar:sources": 1717223596,
-    "org.mockito:mockito-core": -1354747843,
+    "org.mockito:mockito-core": -1721218332,
     "org.mockito:mockito-core:jar:sources": 1799409451,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
@@ -405,7 +405,7 @@
     "org.ow2.asm:asm:jar:sources": -213462900,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": -2004389176,
+    "org.redisson:redisson": 428288823,
     "org.redisson:redisson:jar:sources": 1741527651,
     "org.rnorth.duct-tape:duct-tape": 133152594,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
@@ -419,9 +419,9 @@
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
     "org.seleniumhq.selenium:selenium-os": -2127888353,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -473619999,
+    "org.seleniumhq.selenium:selenium-remote-driver": -1947872444,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": 1801951415,
+    "org.seleniumhq.selenium:selenium-support": 1585673425,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
     "org.slf4j:slf4j-api": -736053657,
     "org.slf4j:slf4j-api:jar:sources": -72528589,
@@ -442,9 +442,9 @@
     "org.zeromq:jeromq:jar:sources": -1982898923,
     "redis.clients.authentication:redis-authx-core": 735969453,
     "redis.clients.authentication:redis-authx-core:jar:sources": 698347100,
-    "uk.org.webcompere:system-stubs-core": 1716459425,
+    "uk.org.webcompere:system-stubs-core": -1010886018,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
-    "uk.org.webcompere:system-stubs-jupiter": 836748865,
+    "uk.org.webcompere:system-stubs-jupiter": 2089114837,
     "uk.org.webcompere:system-stubs-jupiter:jar:sources": 409043156
   },
   "artifacts": {
@@ -618,10 +618,10 @@
     },
     "com.google.code.gson:gson": {
       "shasums": {
-        "jar": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f",
-        "sources": "a4873f0ef88981cab520c3d7449cd89a68e605f15e9fe46e1aa2c77d5f87eb6f"
+        "jar": "96d3dd843dc2911de01cdabcd50064cb9e860353102a0a78c96fd833d396fc7d",
+        "sources": "e689856e33f12904741d481825ee582fa160f751c741836601bc16666dbc7249"
       },
-      "version": "2.14.0"
+      "version": "2.15.0"
     },
     "com.google.dagger:dagger": {
       "shasums": {
@@ -735,10 +735,10 @@
     },
     "com.uber.nullaway:nullaway": {
       "shasums": {
-        "jar": "eb02eb2da5ee30bcac4621a259a84153b20690078dc47ef920589b8371f456ed",
-        "sources": "33364b77d956541686ac2b421e0659c379bc5cd7541dbe86317db50987cad5eb"
+        "jar": "440d3217f6a74d3b8dab766b0c63dbfbb87bea36d798879865218249dc3f1604",
+        "sources": "7b99638b5ba715c88d2fbcd75fd9c595dadb4b367fe2d8343c353bc9c9c4e3dd"
       },
-      "version": "0.14.2"
+      "version": "0.14.3"
     },
     "commons-codec:commons-codec": {
       "shasums": {
@@ -1239,10 +1239,10 @@
     },
     "net.bytebuddy:byte-buddy": {
       "shasums": {
-        "jar": "e64ed8697df67cbce8158a6e926cbe841f97d01719d719b7b84784826a9b2b27",
-        "sources": "40a13c8039b9b7dc0d41432acf1c16c4946409e4310c9a36a44e3f47453d6cb9"
+        "jar": "666e4b302cea0baf5c43484675a15e1ad8537101c63cdfcc95fdbcfab35cf24a",
+        "sources": "aecb1ef6e16b5d0d3698601da0f8a4fa300f23e181ab6715310e30618c8191c7"
       },
-      "version": "1.18.15"
+      "version": "1.18.16"
     },
     "net.bytebuddy:byte-buddy-agent": {
       "shasums": {
@@ -1365,17 +1365,17 @@
     },
     "org.checkerframework:checker-qual": {
       "shasums": {
-        "jar": "f868f731f6e37db3e1c2140d06016477989959a2d13fc5bed9c46760cffd5ba0",
-        "sources": "e5eabf475945670430b9a939fc4d82859316f510e13a2e1cd18004a69878863e"
+        "jar": "66c061a19e20fb005c173169534aba7bf78e904a8a6da6fe8c6e97d277f6d347",
+        "sources": "ee3d29a2f533b222d3921f923403dd6c97835127272f18354cad37f3bc55df0f"
       },
-      "version": "4.2.3"
+      "version": "4.3.1"
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
-        "jar": "0524cc55673ac10f08d74ca659f7a12c9ce74fba1120a61950c5011b843fb25e",
-        "sources": "e469812d1c3afbc9afe2baae5fe2f37a384c3337c2cb4673968e51ee4b008d05"
+        "jar": "dc7b9ceddc9a68a1ffa9d66b5d62967ca3843712a671127c5a6c184f23a4f940",
+        "sources": "10d4f8003daf33e77c4d084a16294f4a58083b02147e00572875204d12ba0cbe"
       },
-      "version": "4.2.3"
+      "version": "4.3.1"
     },
     "org.commonmark:commonmark": {
       "shasums": {
@@ -4317,6 +4317,7 @@
       "org.checkerframework.checker.initialization.qual",
       "org.checkerframework.checker.interning.qual",
       "org.checkerframework.checker.lock.qual",
+      "org.checkerframework.checker.modifiability.qual",
       "org.checkerframework.checker.mustcall.qual",
       "org.checkerframework.checker.nonempty.qual",
       "org.checkerframework.checker.nullness.qual",

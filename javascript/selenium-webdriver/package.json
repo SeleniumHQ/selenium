@@ -44,7 +44,7 @@
     "jsdoc": "^4.0.5",
     "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
-    "multer": "^2.4.0",
+    "multer": "^2.5.0",
     "prettier": "^3.9.10",
     "serve-index": "^1.9.2",
     "sinon": "^22.1.0",
