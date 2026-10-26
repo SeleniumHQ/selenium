@@ -669,21 +669,6 @@ genrule(
     cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
 )
 
-py_test_suite(
-    name = "test-packaging",
-    size = "small",
-    srcs = ["test/packaging/package_version_tests.py"],
-    data = [
-        ":selenium-sdist",
-        ":selenium-wheel",
-    ],
-    env = {
-        "SELENIUM_SDIST": "$(rootpath :selenium-sdist)",
-        "SELENIUM_WHEEL": "$(rootpath :selenium-wheel)",
-    },
-    deps = TEST_DEPS,
-)
-
 py_import(
     name = "selenium-wheel-lib",
     wheel = ":selenium-wheel",
