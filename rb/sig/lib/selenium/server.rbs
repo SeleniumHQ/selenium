@@ -49,6 +49,8 @@ module Selenium
 
     def self.download: (Symbol | String required_version) -> String
 
+    def self.latest: () -> String
+
     attr_accessor role: untyped
 
     attr_accessor host: untyped

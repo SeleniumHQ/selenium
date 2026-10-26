@@ -100,6 +100,16 @@ module Selenium
       rescue WebDriver::Error::WebDriverError => e
         raise Error, e.message
       end
+
+      #
+      # Download the latest selenium-server jar with Selenium Manager and return its version
+      #
+      # @return [String] X.Y.Z
+      #
+
+      def latest
+        download[/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
+      end
     end
 
     #

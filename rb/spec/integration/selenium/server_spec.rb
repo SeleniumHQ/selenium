@@ -41,6 +41,14 @@ module Selenium
       expect(@location).to match(/\Aselenium-server-\d+\.\d+\.\d+\.jar\z/)
     end
 
+    it 'reports the latest version' do
+      version = described_class.latest
+      @location = "selenium-server-#{version}.jar"
+
+      expect(version).to match(/\A\d+\.\d+\.\d+\z/)
+      expect(File.exist?(@location)).to be true
+    end
+
     it 'downloads specified version' do
       @location = described_class.download('4.9.0')
 

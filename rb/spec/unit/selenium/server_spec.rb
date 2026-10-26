@@ -165,6 +165,14 @@ module Selenium
         end
       end
 
+      describe '.latest' do
+        it 'downloads the latest server and reports its version' do
+          expect(described_class.latest).to eq('10.0.1')
+
+          expect(File).to exist('selenium-server-10.0.1.jar')
+        end
+      end
+
       describe '.get' do
         it 'builds a server for the downloaded jar with the given options' do
           server = described_class.get('10.0.1', port: port)
