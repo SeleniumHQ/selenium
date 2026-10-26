@@ -576,10 +576,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     /// <summary>
-    /// Find the element in the response
+    /// Creates the element a reference identifies, through the element factory, so a configured
+    /// custom factory applies to elements that arrive outside a command response.
     /// </summary>
-    /// <param name="response">Response from the browser</param>
-    /// <returns>Element from the page, or <see langword="null"/> if the response does not contain a dictionary.</returns>
+    /// <param name="elementId">The element's reference id.</param>
+    /// <returns>The element the reference identifies.</returns>
     internal WebElement CreateElementFromReference(string elementId)
     {
         return this.elementFactory.CreateElement(new Dictionary<string, object?> { [WebElement.ElementReferencePropertyName] = elementId });
