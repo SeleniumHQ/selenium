@@ -302,6 +302,15 @@ ATOMS = [
         "global": "bot.action.typescript.submit",
         "aliases": [],
     },
+    # Unlike the other atoms, quiescence is not called per command: it installs
+    # the pending-work ledger and DOM observer, so it has to run as a preload
+    # script before any page script, and its queries live on window.__quiescence.
+    {
+        "name": "quiescence",
+        "export": "installQuiescence",
+        "global": "bot.quiescence.typescript.install",
+        "aliases": [],
+    },
 ]
 
 def typescript_atom(name, global_name, srcs, visibility = None):

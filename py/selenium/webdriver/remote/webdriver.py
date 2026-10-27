@@ -147,22 +147,25 @@ def import_cdp() -> None:
 
 
 def _quiescence_source() -> str:
-    """Return the quiescence polyfill source (a self-installing IIFE), cached."""
+    """Return a script that installs the quiescence polyfill, cached.
+
+    The atom evaluates to its install function rather than running itself,
+    like every TypeScript atom, so the script calls it with the page's window.
+    """
     global _quiescence_source_cache
     if _quiescence_source_cache is None:
         data = pkgutil.get_data("selenium.webdriver.common", "quiescence.js")
         if data is None:
             raise WebDriverException("Failed to load quiescence.js preload script")
-        _quiescence_source_cache = data.decode("utf-8")
+        _quiescence_source_cache = "(" + data.decode("utf-8") + ")(window);"
     return _quiescence_source_cache
 
 
 def _load_quiescence_preload() -> str:
-    """Wrap the polyfill as a BiDi preload declaration.
+    """Wrap the install script as a BiDi preload declaration.
 
-    ``script.addPreloadScript`` expects a function declaration, whereas the
-    polyfill ships as a self-installing IIFE, so it is wrapped in an arrow
-    function.
+    ``script.addPreloadScript`` expects a function declaration, so the install
+    script is wrapped in an arrow function.
     """
     return "() => {\n" + _quiescence_source() + "\n}"
 

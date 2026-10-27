@@ -176,7 +176,7 @@ copy_file(
 
 copy_file(
     name = "quiescence",
-    src = "//javascript/atoms:quiescence.js",
+    src = "//javascript/atoms:typescript/quiescence.generated.js",
     out = "selenium/webdriver/common/quiescence.js",
 )
 

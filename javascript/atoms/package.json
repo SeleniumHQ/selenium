@@ -181,6 +181,10 @@
     "./submit": {
       "types": "./dist/typescript/submit.d.ts",
       "default": "./dist/typescript/submit.js"
+    },
+    "./quiescence": {
+      "types": "./dist/typescript/quiescence.d.ts",
+      "default": "./dist/typescript/quiescence.js"
     }
   },
   "typesVersions": {
@@ -227,7 +231,8 @@
       "click": ["./dist/typescript/click.d.ts"],
       "type": ["./dist/typescript/type.d.ts"],
       "clear": ["./dist/typescript/clear.d.ts"],
-      "submit": ["./dist/typescript/submit.d.ts"]
+      "submit": ["./dist/typescript/submit.d.ts"],
+      "quiescence": ["./dist/typescript/quiescence.d.ts"]
     }
   },
   "engines": {
