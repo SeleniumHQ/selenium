@@ -16,7 +16,7 @@ ASSEMBLY_COPYRIGHT = "Copyright © Software Freedom Conservancy 2023"
 # Only stamped (release) builds compile the real version into the assemblies,
 # so a version bump does not invalidate every assembly and test.
 ASSEMBLY_INFORMATIONAL_VERSION = select({
-    "//dotnet/private:stamp_enabled": SE_VERSION,
+    "//common:stamp": SE_VERSION,
     "//conditions:default": "VERSION_STUB",
 })
 ASSEMBLY_PRODUCT = "Selenium"
