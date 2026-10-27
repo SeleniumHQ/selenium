@@ -177,7 +177,6 @@ fixable = ["ALL"]
 extend-ignore = [
     "B007", # Loop control variable not used within loop body
     "B024", # Abstract base class without abstract methods
-    "B028", # No explicit `stacklevel` keyword argument found
     "D100", # Missing docstring in public module
     "D101", # Missing docstring in public class
     "D102", # Missing docstring in public method
