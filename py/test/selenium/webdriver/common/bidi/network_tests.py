@@ -203,6 +203,7 @@ def test_fail_requests_matching_url_pattern(driver, pages):
             _navigate(driver, pages.url("formPage.html"))
     finally:
         driver.network.clear_request_handlers()
+        pages.load("blank.html")
 
 
 def test_provide_stubbed_response(driver, pages):
@@ -213,10 +214,6 @@ def test_provide_stubbed_response(driver, pages):
             "<html><head><title>Stubbed</title></head><body><p id='stubbed'>stubbed response</p></body></html>",
         )
 
-    # Chromium drivers check document.readyState after forwarding a navigate; if the previous page is
-    # still loading, that check waits on the paused request and the driver deadlocks before it reads
-    # provideResponse, so let the browser settle before intercepting.
-    _navigate(driver, "about:blank")
     handler_id = driver.network.add_request_handler(["**/formPage.html"], stub_response)
     try:
         _navigate(driver, pages.url("formPage.html"))
@@ -268,6 +265,7 @@ def test_fail_wins_when_multiple_handlers_disagree(driver, pages):
             _navigate(driver, pages.url("formPage.html"))
     finally:
         driver.network.clear_request_handlers()
+        pages.load("blank.html")
 
 
 def test_url_patterns_scope_handlers(driver, pages):
