@@ -82,6 +82,18 @@ js_test(
     ],
 )
 
+# npm consumers install quiescence by sending installQuiescence.toString() to
+# the browser as a preload, so the function must not reach outside its own body.
+js_test(
+    name = "quiescence-portable",
+    data = [
+        "package.json",
+        ":atoms-npm-compiled",
+    ],
+    entry_point = "typescript/quiescence-portable.mjs",
+    fixed_args = ["javascript/atoms/dist/typescript/quiescence.js"],
+)
+
 # ── test-only bundles ────────────────────────────────────────────────────────
 
 # Shared modules that no atom reaches yet still need a QUnit page. Each entry
