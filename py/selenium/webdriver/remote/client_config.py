@@ -18,6 +18,7 @@
 import base64
 import os
 import socket
+import warnings
 from enum import Enum
 from urllib import parse
 
@@ -69,6 +70,12 @@ class _ClientConfigDescriptor:
         return obj.__dict__[self.name]
 
     def __set__(self, obj, value) -> None:
+        if self.name == "_websocket_interval":
+            warnings.warn(
+                "websocket_interval does nothing and will be removed",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         obj.__dict__[self.name] = value
 
 
@@ -102,7 +109,7 @@ class ClientConfig:
     websocket_timeout = _ClientConfigDescriptor("_websocket_timeout")
     """Gets and Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser."""
     websocket_interval = _ClientConfigDescriptor("_websocket_interval")
-    """Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser."""
+    """Does nothing and will be removed."""
     websocket_max_message_size = _ClientConfigDescriptor("_websocket_max_message_size")
     """Gets and Sets the maximum WebSocket message size in bytes for CDP connections.
 
@@ -127,7 +134,7 @@ class ClientConfig:
         user_agent: str | None = None,
         extra_headers: dict | None = None,
         websocket_timeout: float | None = 30.0,
-        websocket_interval: float | None = 0.1,
+        websocket_interval: float | None = None,
         websocket_max_message_size: int | None = None,
     ) -> None:
         self.remote_server_addr = remote_server_addr
@@ -145,7 +152,13 @@ class ClientConfig:
         self.user_agent = user_agent
         self.extra_headers = dict(extra_headers) if extra_headers is not None else None
         self.websocket_timeout = websocket_timeout
-        self.websocket_interval = websocket_interval
+        if websocket_interval is not None:
+            warnings.warn(
+                "websocket_interval does nothing and will be removed",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        self._websocket_interval = websocket_interval
         self.websocket_max_message_size = websocket_max_message_size
 
         self.ca_certs = (

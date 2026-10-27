@@ -1230,11 +1230,7 @@ class WebDriver(BaseWebDriver):
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         if not isinstance(self.command_executor, RemoteConnection):
             raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
-        self._websocket_connection = WebSocketConnection(
-            ws_url,
-            self.command_executor.client_config.websocket_timeout,
-            self.command_executor.client_config.websocket_interval,
-        )
+        self._websocket_connection = WebSocketConnection(ws_url, self.command_executor.client_config.websocket_timeout)
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
         for target in targets:
             if target.target_id == self.current_window_handle:
@@ -1291,11 +1287,7 @@ class WebDriver(BaseWebDriver):
         if not isinstance(self.command_executor, RemoteConnection):
             raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
 
-        self._websocket_connection = WebSocketConnection(
-            ws_url,
-            self.command_executor.client_config.websocket_timeout,
-            self.command_executor.client_config.websocket_interval,
-        )
+        self._websocket_connection = WebSocketConnection(ws_url, self.command_executor.client_config.websocket_timeout)
 
     @property
     def network(self) -> Network:

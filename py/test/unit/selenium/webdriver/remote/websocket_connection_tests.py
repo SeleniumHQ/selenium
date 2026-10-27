@@ -25,12 +25,6 @@ from selenium.common import WebDriverException
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
-@pytest.mark.parametrize("interval", [-0.1, 0])
-def test_rejects_non_positive_response_wait_interval(interval):
-    with pytest.raises(WebDriverException, match="interval must be a positive number"):
-        WebSocketConnection("ws://localhost", timeout=1, interval=interval)
-
-
 class FakeSocket:
     """Stands in for ``WebSocketApp``; ``reply`` decides what the browser sends back for each frame."""
 
@@ -58,17 +52,11 @@ def connect(monkeypatch, timeout=5, **socket_options):
         self._started.set()
 
     monkeypatch.setattr(WebSocketConnection, "_start_ws", start_ws)
-    return WebSocketConnection("ws://localhost", timeout=timeout, interval=0.1)
+    return WebSocketConnection("ws://localhost", timeout=timeout)
 
 
 def echo(payload):
     return {"id": payload["id"], "type": "success", "result": {"echo": payload["params"]}}
-
-
-def test_accepts_positive_response_wait_interval(monkeypatch):
-    connection = connect(monkeypatch, timeout=1)
-    assert connection.response_wait_timeout == 1
-    assert connection.response_wait_interval == 0.1
 
 
 def test_returns_reply_without_waiting_for_poll_interval(monkeypatch):
@@ -143,6 +131,6 @@ def test_closes_socket_when_connection_does_not_start(monkeypatch):
     monkeypatch.setattr(WebSocketConnection, "_start_ws", start_ws)
 
     with pytest.raises(WebDriverException, match="Timed out waiting for connection to start"):
-        WebSocketConnection("ws://localhost", timeout=0.05, interval=0.1)
+        WebSocketConnection("ws://localhost", timeout=0.05)
 
     assert sockets[0].closed
