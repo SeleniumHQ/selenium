@@ -17,7 +17,7 @@
 
 """Integration tests for the native element-actionability layer.
 
-Complements the DOM-mutation quiescence oracle (``bidi_dom_quiescence_tests.py``)
+Complements the DOM-mutation quiescence oracle (``dom_quiescence_tests.py``)
 with an element-level layer: is *this element* visible, enabled, editable,
 in view, unobstructed, and not moving. Built natively in
 ``window.__quiescence`` rather than vendoring a third-party library (see

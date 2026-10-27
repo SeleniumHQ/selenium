@@ -17,7 +17,7 @@
 
 """Integration tests for subresource-loading quiescence.
 
-The pending-work ledger (``bidi_quiescence_tests.py``) tracks timers and
+The pending-work ledger (``quiescence_tests.py``) tracks timers and
 script-initiated network (fetch/XHR/WebSocket), but a page is not "done" while
 an ``<img>``, ``<iframe>``, ``<script src>``, stylesheet, or media element is
 still fetching. These tests cover the ``resource`` blocker class: outstanding
