@@ -21,7 +21,6 @@ import logging
 import threading
 from ssl import CERT_NONE
 from threading import Thread
-from time import sleep
 
 from websocket import WebSocketApp
 
@@ -96,10 +95,15 @@ class WebSocketConnection:
         self._id = 0
         self._id_lock = threading.Lock()
         self._messages = {}
-        self._started = False
+        self._started = threading.Event()
+        self._events = {}
+        self._events_lock = threading.Lock()
 
         self._start_ws()
-        self._wait_until(lambda: self._started)
+        if not self._started.wait(timeout=self.response_wait_timeout):
+            # Stop the listener thread so a failed connection doesn't keep retrying in the background
+            self.close()
+            raise WebDriverException("Timed out waiting for connection to start")
 
     def close(self):
         # Close the socket first so ``run_forever`` returns; only then join the
@@ -112,7 +116,7 @@ class WebSocketConnection:
                 logger.debug(f"Error while closing websocket connection: {e}")
         if self._ws_thread is not None:
             self._ws_thread.join(timeout=self.response_wait_timeout)
-        self._started = False
+        self._started.clear()
         self._ws = None
 
     def _round_trip(self, payload):
@@ -124,18 +128,32 @@ class WebSocketConnection:
         with self._id_lock:
             self._id += 1
             current_id = self._id
+
         payload["id"] = current_id
         if self.session_id:
             payload["sessionId"] = self.session_id
-
         data = json.dumps(payload, cls=_BiDiEncoder)
-        logger.debug(f"-> {data}"[: self._max_log_message_size])
-        self._ws.send(data)
 
-        self._wait_until(lambda: current_id in self._messages)
-        if current_id not in self._messages:
-            raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
-        return self._messages.pop(current_id)
+        event = threading.Event()
+        with self._events_lock:
+            self._events[current_id] = event
+        try:
+            logger.debug(f"-> {data}"[: self._max_log_message_size])
+            self._ws.send(data)
+
+            if not event.wait(timeout=self.response_wait_timeout):
+                raise WebDriverException(f"Timed out waiting for response to BiDi command {current_id}")
+            with self._events_lock:
+                response = self._messages.pop(current_id, None)
+            if response is None:
+                raise WebDriverException(
+                    f"WebSocket connection closed while waiting for response to BiDi command {current_id}"
+                )
+            return response
+        finally:
+            with self._events_lock:
+                self._events.pop(current_id, None)
+                self._messages.pop(current_id, None)
 
     def send_cmd(self, method, params):
         """Send one command and return its raw reply (``result`` or ``error`` left intact).
@@ -192,7 +210,7 @@ class WebSocketConnection:
 
     def _start_ws(self):
         def on_open(ws):
-            self._started = True
+            self._started.set()
 
         def on_message(ws, message):
             self._process_message(message)
@@ -202,12 +220,16 @@ class WebSocketConnection:
             ws.close()
 
         def run_socket():
-            if self.url.startswith("wss://"):
-                self._ws.run_forever(sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True)
-            else:
-                self._ws.run_forever(suppress_origin=True)
+            try:
+                if self.url.startswith("wss://"):
+                    ws.run_forever(sslopt={"cert_reqs": CERT_NONE}, suppress_origin=True)
+                else:
+                    ws.run_forever(suppress_origin=True)
+            finally:
+                self._release_pending()
 
-        self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
+        ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
+        self._ws = ws
         self._ws_thread = Thread(target=run_socket, daemon=True)
         self._ws_thread.start()
 
@@ -216,21 +238,21 @@ class WebSocketConnection:
         logger.debug(f"<- {message}"[: self._max_log_message_size])
 
         if "id" in message:
-            self._messages[message["id"]] = message
+            msg_id = message["id"]
+            # Replies to commands that already timed out are dropped so they don't accumulate
+            with self._events_lock:
+                event = self._events.get(msg_id)
+                if event is not None:
+                    self._messages[msg_id] = message
+                    event.set()
 
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
 
-    def _wait_until(self, condition):
-        timeout = self.response_wait_timeout
-        interval = self.response_wait_interval
-
-        while timeout > 0:
-            result = condition()
-            if result:
-                return result
-            else:
-                timeout -= interval
-                sleep(interval)
+    def _release_pending(self):
+        # Once the socket is gone no reply can arrive, so wake waiters instead of letting them run out the timeout
+        with self._events_lock:
+            for event in self._events.values():
+                event.set()
