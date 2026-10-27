@@ -15,7 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-@NullMarked
-package org.openqa.selenium.devtools.v153;
+package org.openqa.selenium.devtools.v156;
 
-import org.jspecify.annotations.NullMarked;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
+
+@AutoService(CdpInfo.class)
+public class v156CdpInfo extends CdpInfo {
+
+  public v156CdpInfo() {
+    super(156, v156Domains::new);
+  }
+}

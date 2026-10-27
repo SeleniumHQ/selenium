@@ -141,10 +141,8 @@ end
 
 desc 'Install Ruby gem locally'
 task :install do
-  Bazel.execute('build', [], '//rb:selenium-webdriver')
-  Dir.glob('bazel-bin/rb/selenium-webdriver-*.gem').each do |gem|
-    sh 'gem', 'install', gem
-  end
+  Bazel.execute('build', ['--stamp'], '//rb:selenium-webdriver')
+  sh 'gem', 'install', 'bazel-bin/rb/selenium-webdriver.gem'
 end
 
 desc 'Regenerate the BiDi protocol classes from the pinned CDDL schema'

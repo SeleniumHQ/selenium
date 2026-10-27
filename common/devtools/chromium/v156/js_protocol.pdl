@@ -143,6 +143,12 @@ domain Debugger
       optional Location startLocation
       # Location in the source code where scope ends
       optional Location endLocation
+      # True if the scope does not declare any variables.
+      # Only present if true.
+      # Empty scopes are retained in the scope chain because
+      # they can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or
+      # matched against scopes in source maps.
+      experimental optional boolean empty
 
   # Search match for resource.
   type SearchMatch extends object
@@ -1138,6 +1144,7 @@ domain Runtime
         dataview
         webassemblymemory
         wasmvalue
+        deferredmodule
         # blink's subtypes.
         trustedtype
       # Object class (constructor) name. Specified for `object` type values only.
@@ -1201,6 +1208,7 @@ domain Runtime
         dataview
         webassemblymemory
         wasmvalue
+        deferredmodule
         # blink's subtypes.
         trustedtype
       # String representation of the object.
@@ -1252,6 +1260,7 @@ domain Runtime
         dataview
         webassemblymemory
         wasmvalue
+        deferredmodule
         # blink's subtypes.
         trustedtype
 
