@@ -3,9 +3,7 @@
 require 'find'
 
 def python_version
-  File.foreach('py/BUILD.bazel') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('python')
 end
 
 desc 'Build Python wheel and sdist with optional arguments'
@@ -37,6 +35,8 @@ task :release do |_task, arguments|
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one is dev0
+    SeleniumRake.write_version('python', python_version.sub(/dev0$/, "dev#{Time.now.strftime('%Y%m%d%H%M')}"))
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
@@ -52,7 +52,9 @@ end
 
 desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
 task :local_dev, [:all] do |_task, arguments|
-  Bazel.execute('build', [], '//py:selenium-wheel')
+  Bazel.execute('build', [], %w[//py:selenium-wheel //py:version-py-release])
+  FileUtils.rm_f('py/selenium/_version.py')
+  FileUtils.cp(File.realpath('bazel-bin/py/release/selenium/_version.py'), 'py/selenium/_version.py')
 
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
@@ -98,7 +100,7 @@ end
 
 desc 'Generate and stage Python documentation'
 task :docs do |_task, arguments|
-  if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/) && !arguments.to_a.include?('force')
+  if python_version.include?('dev') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
@@ -147,25 +149,9 @@ end
 desc 'Update Python version'
 task :version, [:version] do |_task, arguments|
   old_version = python_version
-  nightly = ".#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '.dev0')
   puts "Updating Python from #{old_version} to #{new_version}"
-
-  ['py/pyproject.toml',
-   'py/BUILD.bazel',
-   'py/selenium/__init__.py',
-   'py/selenium/webdriver/__init__.py',
-   'py/docs/source/conf.py'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, 'w') { |f| f.puts text }
-  end
-
-  old_short_version = old_version.split('.')[0..1].join('.')
-  new_short_version = new_version.split('.')[0..1].join('.')
-
-  conf = 'py/docs/source/conf.py'
-  text = File.read(conf).gsub(old_short_version, new_short_version)
-  File.open(conf, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('python', new_version)
 end
 
 desc 'Format Python code with ruff'

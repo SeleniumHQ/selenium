@@ -26,8 +26,13 @@ class ScriptKey:
     def id(self):
         return self._id
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, ScriptKey):
+            return self._id == other._id
         return self._id == other
+
+    def __hash__(self) -> int:
+        return hash(self._id)
 
     def __repr__(self) -> str:
         return f"ScriptKey(id={self.id})"
