@@ -26,8 +26,8 @@ def test_client_config_is_applied_to_local_driver(clean_driver, clean_options, c
     driver = clean_driver(options=clean_options, service=clean_service, client_config=client_config)
     try:
         executor = driver.command_executor
-        assert executor.client_config is client_config
-        assert client_config.remote_server_addr == clean_service.service_url
+        assert executor.client_config.remote_server_addr == clean_service.service_url
+        assert client_config.remote_server_addr == "http://unused:1"
         assert executor._conn.connection_pool_kw["timeout"] == 90
     finally:
         driver.quit()
@@ -40,5 +40,19 @@ def test_keep_alive_warns_and_is_applied(clean_driver, clean_options, clean_serv
     try:
         assert record[0].filename == __file__
         assert driver.command_executor.client_config.keep_alive is False
+    finally:
+        driver.quit()
+
+
+@pytest.mark.no_driver_after_test
+def test_keep_alive_warning_is_attributed_to_a_driver_subclass(clean_driver, clean_options, clean_service):
+    class SubclassedDriver(clean_driver):
+        def __init__(self, **kwargs):
+            super().__init__(keep_alive=False, **kwargs)
+
+    with pytest.warns(DeprecationWarning, match="keep_alive") as record:
+        driver = SubclassedDriver(options=clean_options, service=clean_service)
+    try:
+        assert record[0].filename == __file__
     finally:
         driver.quit()

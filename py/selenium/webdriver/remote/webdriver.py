@@ -169,7 +169,6 @@ def get_remote_connection(
     client_config: ClientConfig | None = None,
 ) -> RemoteConnection:
     client_config = client_config or ClientConfig(remote_server_addr=command_executor)
-    client_config.remote_server_addr = command_executor
 
     browser_name = capabilities.get("browserName")
     handler: type[RemoteConnection]
@@ -193,6 +192,7 @@ def get_remote_connection(
         handler = RemoteConnection
 
     if handler is RemoteConnection:
+        client_config = RemoteConnection._resolve_client_config(command_executor, None, client_config)
         return RemoteConnection(client_config=client_config, ignore_proxy=ignore_local_proxy)
     return handler(
         remote_server_addr=command_executor,

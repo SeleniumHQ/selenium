@@ -647,10 +647,10 @@ def test_get_remote_connection_applies_address_to_given_client_config():
     conn = get_remote_connection(
         ChromeOptions().to_capabilities(), command_executor="http://localhost:4444", client_config=client_config
     )
-    assert conn.client_config is client_config
-    assert client_config.remote_server_addr == "http://localhost:4444"
-    assert client_config.keep_alive is False
-    assert client_config.timeout == 7
+    assert conn.client_config.remote_server_addr == "http://localhost:4444"
+    assert conn.client_config.keep_alive is False
+    assert conn.client_config.timeout == 7
+    assert client_config.remote_server_addr == "http://other:1"
 
 
 BROWSER_CONNECTIONS = [ChromeRemoteConnection, EdgeRemoteConnection, FirefoxRemoteConnection, SafariRemoteConnection]
@@ -668,10 +668,11 @@ def test_browser_connection_builds_default_client_config(connection_class):
 def test_browser_connection_applies_address_and_keep_alive_to_client_config(connection_class):
     client_config = ClientConfig(remote_server_addr="http://other:1", timeout=5)
     conn = connection_class("http://localhost:4444", keep_alive=False, client_config=client_config)
-    assert conn.client_config is client_config
-    assert client_config.remote_server_addr == "http://localhost:4444"
-    assert client_config.keep_alive is False
-    assert client_config.timeout == 5
+    assert conn.client_config.remote_server_addr == "http://localhost:4444"
+    assert conn.client_config.keep_alive is False
+    assert conn.client_config.timeout == 5
+    assert client_config.remote_server_addr == "http://other:1"
+    assert client_config.keep_alive is True
 
 
 @pytest.mark.parametrize("connection_class", BROWSER_CONNECTIONS)
@@ -686,6 +687,16 @@ def test_browser_connection_explicit_keep_alive_overrides_client_config(connecti
     client_config = ClientConfig(remote_server_addr="http://localhost:4444", keep_alive=False)
     conn = connection_class(keep_alive=True, client_config=client_config)
     assert conn.client_config.keep_alive is True
+
+
+def test_browser_connections_sharing_a_client_config_keep_their_own_settings():
+    client_config = ClientConfig(remote_server_addr="http://other:1", keep_alive=False)
+    first = ChromeRemoteConnection("http://localhost:1", client_config=client_config)
+    second = ChromeRemoteConnection("http://localhost:2", keep_alive=True, client_config=client_config)
+    assert first.client_config.remote_server_addr == "http://localhost:1"
+    assert first.client_config.keep_alive is False
+    assert second.client_config.remote_server_addr == "http://localhost:2"
+    assert second.client_config.keep_alive is True
 
 
 def test_browser_connection_requires_address_or_client_config():

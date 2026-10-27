@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import inspect
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -33,7 +34,14 @@ class LocalWebDriver(RemoteWebDriver):
         return object.__new__(cls)
 
     @staticmethod
-    def _warn_keep_alive_deprecated(stacklevel: int = 3) -> None:
+    def _warn_keep_alive_deprecated() -> None:
+        # Python only shows DeprecationWarning attributed to the caller's own code, and the
+        # number of selenium frames above here varies by driver class and subclassing.
+        stacklevel = 1
+        frame = inspect.currentframe()
+        while frame is not None and frame.f_globals.get("__name__", "").startswith("selenium."):
+            frame = frame.f_back
+            stacklevel += 1
         warnings.warn(
             "keep_alive is deprecated, set keep_alive on a ClientConfig and pass it as client_config instead",
             DeprecationWarning,
