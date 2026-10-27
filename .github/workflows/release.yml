@@ -206,6 +206,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Download release packages
         uses: actions/download-artifact@v8
@@ -213,6 +215,14 @@ jobs:
           pattern: release-packages-*
           merge-multiple: true
           path: "build/dist/"
+      - name: Generate checksums
+        working-directory: build/dist
+        run: sha256sum -- * > ../SHA256SUMS && mv ../SHA256SUMS .
+      - name: Attest build provenance
+        uses: actions/attest@v4
+        continue-on-error: true
+        with:
+          subject-path: build/dist/*
       - name: Upload to GitHub release
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
@@ -220,7 +230,7 @@ jobs:
           VERSION: ${{ needs.parse-tag.outputs.version }}
         run: |
           BASE_VERSION="${VERSION%.*}.0"
-          gh release upload "selenium-$BASE_VERSION" build/dist/*.* --clobber
+          gh release upload "selenium-$BASE_VERSION" build/dist/* --clobber
           gh release edit "selenium-$BASE_VERSION" --draft=false
 
   generate-docs:
