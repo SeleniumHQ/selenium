@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import copy
 import functools
 import logging
 import string
@@ -185,6 +186,7 @@ class RemoteConnection:
             if remote_server_addr is None:
                 raise TypeError("either remote_server_addr or client_config is required")
             return ClientConfig(remote_server_addr=remote_server_addr, keep_alive=keep_alive is not False, timeout=120)
+        client_config = copy.copy(client_config)
         if remote_server_addr:
             client_config.remote_server_addr = remote_server_addr
         if keep_alive is not None:
