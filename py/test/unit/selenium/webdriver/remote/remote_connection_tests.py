@@ -46,7 +46,7 @@ from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 @pytest.fixture
 def remote_connection():
     """Fixture to create a RemoteConnection instance."""
-    return RemoteConnection("http://localhost:4444")
+    return RemoteConnection(ClientConfig("http://localhost:4444"))
 
 
 def test_add_command(remote_connection):
@@ -103,7 +103,7 @@ def test_get_remote_connection_headers_adds_keep_alive_if_requested():
 
 def test_get_proxy_url_http(mock_proxy_settings):
     proxy = "http://http_proxy.com:8080"
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False))
     proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url == proxy
 
@@ -116,7 +116,7 @@ def test_get_auth_header_if_client_config_pass_basic_auth():
         password="pass",
         auth_type=AuthType.BASIC,
     )
-    remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
+    remote_connection = RemoteConnection(client_config=custom_config)
     headers = remote_connection.client_config.get_auth_header()
     assert headers.get("Authorization") == "Basic dXNlcjpwYXNz"
 
@@ -125,7 +125,7 @@ def test_get_auth_header_if_client_config_pass_bearer_token():
     custom_config = ClientConfig(
         remote_server_addr="http://localhost:4444", keep_alive=True, auth_type=AuthType.BEARER, token="dXNlcjpwYXNz"
     )
-    remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
+    remote_connection = RemoteConnection(client_config=custom_config)
     headers = remote_connection.client_config.get_auth_header()
     assert headers.get("Authorization") == "Bearer dXNlcjpwYXNz"
 
@@ -137,14 +137,14 @@ def test_get_auth_header_if_client_config_pass_x_api_key():
         auth_type=AuthType.X_API_KEY,
         token="abcdefgh123456789",
     )
-    remote_connection = RemoteConnection(custom_config.remote_server_addr, client_config=custom_config)
+    remote_connection = RemoteConnection(client_config=custom_config)
     headers = remote_connection.client_config.get_auth_header()
     assert headers.get("X-API-Key") == "abcdefgh123456789"
 
 
 def test_get_proxy_url_https(mock_proxy_settings):
     proxy = "http://https_proxy.com:8080"
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("https://remote", keep_alive=False))
     proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url == proxy
 
@@ -205,13 +205,13 @@ def test_get_proxy_system_matches_no_proxy_via_client_config():
 
 
 def test_get_proxy_url_none(mock_proxy_settings_missing):
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("https://remote", keep_alive=False))
     proxy_url = remote_connection.client_config.get_proxy_url()
     assert proxy_url is None
 
 
 def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False))
     proxy_url = remote_connection.client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "http://user:password@http_proxy.com:8080"
@@ -220,7 +220,7 @@ def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
 
 
 def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
-    remote_connection = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("https://remote", keep_alive=False))
     proxy_url = remote_connection.client_config.get_proxy_url()
     raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "https://user:password@https_proxy.com:8080"
@@ -229,7 +229,7 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 
 
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False))
     conn = remote_connection._get_connection_manager()
     # ProxyManager and SOCKSProxyManager both subclass PoolManager, so isinstance
     # cannot tell a direct connection from a proxied one.
@@ -237,9 +237,7 @@ def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
 
 
 def test_get_connection_manager_for_certs_and_timeout():
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
-    remote_connection.set_timeout(10)
-    assert remote_connection.get_timeout() == 10
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False, timeout=10))
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
@@ -247,13 +245,13 @@ def test_get_connection_manager_for_certs_and_timeout():
 
 
 def test_default_socket_timeout_is_correct():
-    remote_connection = RemoteConnection("http://remote", keep_alive=True)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=True))
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] is None
 
 
 def test_get_connection_manager_with_http_proxy(mock_proxy_settings):
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False))
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
@@ -262,7 +260,7 @@ def test_get_connection_manager_with_http_proxy(mock_proxy_settings):
 
 
 def test_get_connection_manager_with_https_proxy(mock_proxy_settings):
-    remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection_https = RemoteConnection(ClientConfig("https://remote", keep_alive=False))
     conn = remote_connection_https._get_connection_manager()
     assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
@@ -272,7 +270,7 @@ def test_get_connection_manager_with_https_proxy(mock_proxy_settings):
 
 def test_get_connection_manager_with_auth_http_proxy(mock_proxy_auth_settings):
     proxy_auth_header = make_headers(proxy_basic_auth="user:password")
-    remote_connection = RemoteConnection("http://remote", keep_alive=False)
+    remote_connection = RemoteConnection(ClientConfig("http://remote", keep_alive=False))
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "http"
@@ -283,7 +281,7 @@ def test_get_connection_manager_with_auth_http_proxy(mock_proxy_auth_settings):
 
 def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
     proxy_auth_header = make_headers(proxy_basic_auth="user:password")
-    remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
+    remote_connection_https = RemoteConnection(ClientConfig("https://remote", keep_alive=False))
     conn = remote_connection_https._get_connection_manager()
     assert isinstance(conn, ProxyManager)
     assert conn.proxy.scheme == "https"
@@ -307,7 +305,7 @@ def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
     ],
 )
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
-    remote_connection = RemoteConnection(url)
+    remote_connection = RemoteConnection(ClientConfig(url))
     assert remote_connection.client_config.get_proxy_url() is None
     assert type(remote_connection._get_connection_manager()) is PoolManager
 
@@ -322,19 +320,19 @@ def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
 )
 def test_get_connection_manager_when_no_proxy_does_not_match(mock_no_proxy_settings, url):
     """A host that no_proxy does not cover must still be reached through the proxy."""
-    remote_connection = RemoteConnection(url)
+    remote_connection = RemoteConnection(ClientConfig(url))
     assert remote_connection.client_config.get_proxy_url() == "http://http_proxy.com:8080"
     assert isinstance(remote_connection._get_connection_manager(), ProxyManager)
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
-    remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
+    remote_connection = RemoteConnection(ClientConfig("http://remote"), ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
     assert type(conn) is PoolManager
 
 
 def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
-    remote_connection = RemoteConnection("http://remote")
+    remote_connection = RemoteConnection(ClientConfig("http://remote"))
     conn = remote_connection._get_connection_manager()
 
     assert isinstance(conn, SOCKSProxyManager)
@@ -491,45 +489,11 @@ def test_register_extra_headers_via_client_config():
     assert sent[0]["Credential"] == "abc/20200618/us-east-1/execute-api/aws4_request"
 
 
-def test_backwards_compatibility_with_appium_connection():
-    # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
-    client_config = ClientConfig(
-        remote_server_addr="http://localhost:4444", ca_certs="/path/to/cacert.pem", timeout=300
-    )
-    remote_connection = RemoteConnection(client_config=client_config)
-    assert remote_connection._ca_certs == "/path/to/cacert.pem"
-    assert remote_connection._timeout == 300
-    assert remote_connection._client_config == client_config
-    remote_connection.set_timeout(120)
-    assert remote_connection.get_timeout() == 120
-    remote_connection.set_certificate_bundle_path("/path/to/cacert2.pem")
-    assert remote_connection.get_certificate_bundle_path() == "/path/to/cacert2.pem"
-
-
-def test_get_connection_manager_with_timeout_from_client_config():
-    remote_connection = RemoteConnection(remote_server_addr="http://localhost:4444", keep_alive=False)
-    remote_connection.set_timeout(10)
-    conn = remote_connection._get_connection_manager()
-    assert remote_connection.get_timeout() == 10
-    assert conn.connection_pool_kw["timeout"] == 10
-    assert isinstance(conn, PoolManager)
-
-
 def test_connection_manager_with_timeout_via_client_config():
     client_config = ClientConfig("http://remote", timeout=300)
     remote_connection = RemoteConnection(client_config=client_config)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 300
-    assert isinstance(conn, PoolManager)
-
-
-def test_get_connection_manager_with_ca_certs():
-    remote_connection = RemoteConnection(remote_server_addr="http://localhost:4444")
-    remote_connection.set_certificate_bundle_path("/path/to/cacert.pem")
-    conn = remote_connection._get_connection_manager()
-    assert conn.connection_pool_kw["timeout"] is None
-    assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
-    assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
     assert isinstance(conn, PoolManager)
 
 
@@ -541,19 +505,6 @@ def test_connection_manager_with_ca_certs_via_client_config():
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
     assert conn.connection_pool_kw["ca_certs"] == "/path/to/cacert.pem"
     assert isinstance(conn, PoolManager)
-
-
-def test_get_connection_manager_ignores_certificates():
-    remote_connection = RemoteConnection(
-        remote_server_addr="http://localhost:4444", keep_alive=False, ignore_certificates=True
-    )
-    remote_connection.set_timeout(10)
-    conn = remote_connection._get_connection_manager()
-    assert conn.connection_pool_kw["timeout"] == 10
-    assert conn.connection_pool_kw["cert_reqs"] == "CERT_NONE"
-    assert isinstance(conn, PoolManager)
-    remote_connection.reset_timeout()
-    assert remote_connection.get_timeout() is None
 
 
 def test_connection_manager_ignores_certificates_via_client_config():
@@ -569,7 +520,7 @@ def test_get_connection_manager_with_custom_args():
     custom_args = {"init_args_for_pool_manager": {"retries": 3, "block": True}}
 
     remote_connection = RemoteConnection(
-        remote_server_addr="http://localhost:4444", keep_alive=False, init_args_for_pool_manager=custom_args
+        ClientConfig("http://localhost:4444", keep_alive=False, init_args_for_pool_manager=custom_args)
     )
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, PoolManager)
@@ -686,10 +637,60 @@ def test_get_remote_connection_selects_browser_specific_handler(
     conn = get_remote_connection(
         options.to_capabilities(),
         command_executor="http://localhost:4444",
-        keep_alive=True,
         ignore_local_proxy=True,
     )
     assert type(conn) is expected_handler
+
+
+def test_get_remote_connection_applies_address_to_given_client_config():
+    client_config = ClientConfig(remote_server_addr="http://other:1", keep_alive=False, timeout=7)
+    conn = get_remote_connection(
+        ChromeOptions().to_capabilities(), command_executor="http://localhost:4444", client_config=client_config
+    )
+    assert conn.client_config is client_config
+    assert client_config.remote_server_addr == "http://localhost:4444"
+    assert client_config.keep_alive is False
+    assert client_config.timeout == 7
+
+
+BROWSER_CONNECTIONS = [ChromeRemoteConnection, EdgeRemoteConnection, FirefoxRemoteConnection, SafariRemoteConnection]
+
+
+@pytest.mark.parametrize("connection_class", BROWSER_CONNECTIONS)
+def test_browser_connection_builds_default_client_config(connection_class):
+    conn = connection_class("http://localhost:4444")
+    assert conn.client_config.remote_server_addr == "http://localhost:4444"
+    assert conn.client_config.keep_alive is True
+    assert conn.client_config.timeout == 120
+
+
+@pytest.mark.parametrize("connection_class", BROWSER_CONNECTIONS)
+def test_browser_connection_applies_address_and_keep_alive_to_client_config(connection_class):
+    client_config = ClientConfig(remote_server_addr="http://other:1", timeout=5)
+    conn = connection_class("http://localhost:4444", keep_alive=False, client_config=client_config)
+    assert conn.client_config is client_config
+    assert client_config.remote_server_addr == "http://localhost:4444"
+    assert client_config.keep_alive is False
+    assert client_config.timeout == 5
+
+
+@pytest.mark.parametrize("connection_class", BROWSER_CONNECTIONS)
+def test_browser_connection_keeps_client_config_keep_alive_by_default(connection_class):
+    client_config = ClientConfig(remote_server_addr="http://localhost:4444", keep_alive=False)
+    conn = connection_class(client_config=client_config)
+    assert conn.client_config.keep_alive is False
+
+
+@pytest.mark.parametrize("connection_class", BROWSER_CONNECTIONS)
+def test_browser_connection_explicit_keep_alive_overrides_client_config(connection_class):
+    client_config = ClientConfig(remote_server_addr="http://localhost:4444", keep_alive=False)
+    conn = connection_class(keep_alive=True, client_config=client_config)
+    assert conn.client_config.keep_alive is True
+
+
+def test_browser_connection_requires_address_or_client_config():
+    with pytest.raises(TypeError):
+        FirefoxRemoteConnection()
 
 
 def test_client_config_headers_do_not_leak_across_connections(monkeypatch):
