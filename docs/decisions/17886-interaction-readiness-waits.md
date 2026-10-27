@@ -207,7 +207,7 @@ type PendingWork = {
   quiet: boolean;
   observed: boolean;   // false when no preload script ran: history is unavailable (decision 9)
   active: { timers: number; intervals: number; animationFrames: number;
-            requests: number; sockets: number; animations: number };
+            requests: number; sockets: number; resources: number; animations: number };
   inert:  { timers: number; intervals: number; animationFrames: number };
 };
 
@@ -217,6 +217,7 @@ type Settledness = {
   pendingWork: PendingWork;
   mutating: Array<{ path: string; sinceMs: number;
                     reason: 'mutation' | 'animation' | 'transition' }>;
+  unobservable: Array<'closed-shadow'>;   // subtrees whose mutations could not be seen
 };
 
 type Actionability = {
@@ -225,8 +226,14 @@ type Actionability = {
                  boolean | null>;   // null where the check does not apply to this interaction
   interactionPoint: { x: number; y: number } | null;
   obstructedBy: Element | null;
+  unobservable: Array<'cross-origin-ancestor'>;   // checks that could not be made, as opposed to null
+  perpetualMotion: Element | null;   // set when `stable` was waived for an endlessly animated node
 };
 ```
+
+`unobservable` separates a check that was not made from one that passed or does not apply: a
+caller that sees `unobstructed: true` alongside `cross-origin-ancestor` knows the overlay check
+stopped at a frame boundary script cannot read.
 
 `Settledness` nests `PendingWork` because the ledger is its input (decision 1); `Actionability`
 nests neither, which is what makes the interaction path cheap. Every export is synchronous and
