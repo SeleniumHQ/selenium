@@ -24,6 +24,10 @@ in view, unobstructed, and not moving. Built natively in
 ``.local/plans/acquiescence-gap-analysis.md``).
 """
 
+import contextlib
+
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -871,3 +875,179 @@ def test_element_inside_a_display_contents_wrapper_is_actionable(driver, pages):
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1000)
 
     assert result["ready"] is True
+
+
+# ---------------------------------------------------------------------------
+# Frame boundaries. A user sees the top-level page, so "in view" and
+# "unobstructed" are only true if they hold in every ancestor document, not
+# just the element's own. Where an ancestor cannot be read (cross-origin) the
+# check is reported unobservable rather than silently passed.
+# ---------------------------------------------------------------------------
+
+FRAME_AT_100 = "position:absolute;top:100px;left:100px;width:300px;height:150px;border:5px solid black"
+BUTTON_AT_20 = (
+    '<button id="t" style="position:absolute;top:20px;left:20px;width:60px;height:30px;'
+    'margin:0;padding:0;border:0">go</button>'
+)
+
+
+def _other_origin(url):
+    for here, there in (("//localhost:", "//127.0.0.1:"), ("//127.0.0.1:", "//localhost:")):
+        if here in url:
+            return url.replace(here, there)
+    pytest.skip("test server host has no alternate origin to frame from")
+
+
+@pytest.fixture
+def framed(driver, pages):
+    """Builds parent page + iframe, switches into the frame, returns the frame's #t."""
+
+    def build(
+        frame_style=FRAME_AT_100,
+        frame_body=BUTTON_AT_20,
+        parent_extra="",
+        cross_origin=False,
+        nested=False,
+        wrap="{}",
+    ):
+        _navigate(driver, pages, "blank.html")
+        src = pages.url("blank.html")
+        if cross_origin:
+            src = _other_origin(src)
+        driver.execute_script(
+            "document.body.style.margin = '0';"
+            "document.body.innerHTML = arguments[0];",
+            wrap.format(f'<iframe id="f" src="{src}" style="{frame_style}"></iframe>') + parent_extra,
+        )
+        _enter_frame(driver, "f")
+        if nested:
+            driver.execute_script(
+                "document.body.style.margin = '0';"
+                "document.body.innerHTML = arguments[0];",
+                # A frame whose URL already appears twice among its ancestors is
+            # never loaded (nested-navigation recursion guard), so vary it.
+            f'<iframe id="f2" src="{src}?depth=2" style="{FRAME_AT_100}"></iframe>',
+            )
+            _enter_frame(driver, "f2")
+        driver.execute_script("document.body.style.margin = '0'; document.body.innerHTML = arguments[0];", frame_body)
+        return driver.find_element(By.ID, "t")
+
+    yield build
+    # A failed test has already had its driver quit by conftest, leaving no
+    # frame selection to restore.
+    with contextlib.suppress(Exception):
+        driver.switch_to.default_content()
+
+
+def _enter_frame(driver, frame_id):
+    driver.switch_to.frame(driver.find_element(By.ID, frame_id))
+    WebDriverWait(driver, 5).until(
+        lambda d: d.execute_script(
+            "return location.href !== 'about:blank' && document.readyState === 'complete'"
+            " && !!window.__quiescence;"
+        )
+    )
+
+
+def _parent_rect_of_frame(driver, frame_id="f"):
+    driver.switch_to.default_content()
+    return driver.execute_script(
+        "const r = document.getElementById(arguments[0]).getBoundingClientRect();"
+        "return {top: r.top, bottom: r.bottom, viewport: innerHeight};",
+        frame_id,
+    )
+
+
+def test_element_in_frame_with_nothing_over_it_is_not_obstructed(framed, driver):
+    """Guard: the hit test must translate into the parent's coordinates, or the
+    parent's own body is mistaken for an obstruction."""
+    result = _interaction_point(driver, framed())
+
+    assert result["reason"] is None
+    assert result["obstructedBy"] is None
+
+
+def test_element_in_frame_under_parent_overlay_is_obstructed(framed, driver):
+    overlay = '<div id="overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:10"></div>'
+
+    result = _interaction_point(driver, framed(parent_extra=overlay))
+
+    assert result["reason"] == "obstructed"
+    assert result["obstructedBy"] == "div#overlay"
+
+
+def test_frame_border_is_counted_when_hit_testing_in_the_parent(framed, driver):
+    """Button centre lands at parent (155, 140) only if the 5px frame border is
+    added; a 4px strip at x=153..157 is hit there and missed at x=150."""
+    strip = '<div id="strip" style="position:absolute;top:120px;left:153px;width:4px;height:40px;z-index:10"></div>'
+
+    result = _interaction_point(driver, framed(parent_extra=strip))
+
+    assert result["obstructedBy"] == "div#strip"
+
+
+def test_element_in_nested_frame_under_top_level_overlay_is_obstructed(framed, driver):
+    overlay = '<div id="overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:10"></div>'
+
+    result = _interaction_point(driver, framed(parent_extra=overlay, nested=True))
+
+    assert result["obstructedBy"] == "div#overlay"
+
+
+def test_element_in_frame_under_parent_overlay_is_not_ready(framed, driver):
+    overlay = '<div id="overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:10"></div>'
+
+    result = _wait_for_interaction_ready(driver, framed(parent_extra=overlay), timeout_ms=500)
+
+    assert result["ready"] is False
+    assert result["reason"] == "obstructed by div#overlay"
+
+
+def test_element_in_frame_scrolled_out_of_parent_view_is_not_in_viewport(framed, driver):
+    low_frame = "position:absolute;top:3000px;left:0;width:300px;height:150px"
+
+    state = _element_state(driver, framed(frame_style=low_frame, parent_extra='<div style="height:4000px"></div>'))
+
+    assert state["inViewport"] is False
+
+
+def test_element_in_frame_clipped_by_parent_overflow_is_not_in_viewport(framed, driver):
+    clipped_frame = "position:absolute;top:200px;left:0;width:300px;height:150px"
+    clipper = '<div style="position:relative;height:50px;overflow:hidden">{}</div>'
+
+    state = _element_state(driver, framed(frame_style=clipped_frame, wrap=clipper))
+
+    assert state["inViewport"] is False
+
+
+def test_element_in_frame_out_of_parent_view_is_scrolled_into_view(framed, driver):
+    """Before frame-aware clipping this resolved ready without scrolling at all,
+    because the element was in its own frame's viewport."""
+    low_frame = "position:absolute;top:3000px;left:0;width:300px;height:150px"
+    element = framed(frame_style=low_frame, parent_extra='<div style="height:4000px"></div>')
+
+    result = _wait_for_interaction_ready(driver, element, timeout_ms=3000)
+    frame = _parent_rect_of_frame(driver)
+
+    assert result["ready"] is True
+    assert frame["top"] < frame["viewport"]
+
+
+def test_element_in_same_origin_frame_reports_nothing_unobservable(framed, driver):
+    result = _interaction_point(driver, framed())
+
+    assert result["unobservable"] == []
+
+
+def test_element_in_cross_origin_frame_reports_ancestors_unobservable(framed, driver):
+    result = _interaction_point(driver, framed(cross_origin=True))
+
+    assert result["reason"] is None
+    assert result["unobservable"] == ["cross-origin-ancestor"]
+
+
+def test_cross_origin_frame_readiness_says_ancestors_were_not_checked(framed, driver):
+    result = _wait_for_interaction_ready(driver, framed(cross_origin=True), timeout_ms=1000)
+
+    assert result["ready"] is True
+    assert result["unobservable"] == ["cross-origin-ancestor"]
