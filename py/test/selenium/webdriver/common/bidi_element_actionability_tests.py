@@ -768,9 +768,7 @@ def test_require_stable_false_skips_the_motion_check(driver, pages):
         "d.getBoundingClientRect(); d.style.transform = 'translateX(400px)';",
     )
 
-    result = _wait_for_interaction_ready(
-        driver, driver.find_element(By.ID, "t"), timeout_ms=1000, require_stable=False
-    )
+    result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=1000, require_stable=False)
 
     assert result["ready"] is True
 
@@ -854,9 +852,7 @@ def test_zero_area_element_is_not_actionable(driver, pages):
 
 def test_display_contents_element_is_not_actionable(driver, pages):
     _navigate(driver, pages, "blank.html")
-    driver.execute_script(
-        "document.body.innerHTML = '<div id=\"t\" style=\"display:contents\"><span>x</span></div>';"
-    )
+    driver.execute_script('document.body.innerHTML = \'<div id="t" style="display:contents"><span>x</span></div>\';')
 
     result = _wait_for_interaction_ready(driver, driver.find_element(By.ID, "t"), timeout_ms=500)
 
@@ -915,18 +911,16 @@ def framed(driver, pages):
         if cross_origin:
             src = _other_origin(src)
         driver.execute_script(
-            "document.body.style.margin = '0';"
-            "document.body.innerHTML = arguments[0];",
+            "document.body.style.margin = '0';document.body.innerHTML = arguments[0];",
             wrap.format(f'<iframe id="f" src="{src}" style="{frame_style}"></iframe>') + parent_extra,
         )
         _enter_frame(driver, "f")
         if nested:
             driver.execute_script(
-                "document.body.style.margin = '0';"
-                "document.body.innerHTML = arguments[0];",
+                "document.body.style.margin = '0';document.body.innerHTML = arguments[0];",
                 # A frame whose URL already appears twice among its ancestors is
-            # never loaded (nested-navigation recursion guard), so vary it.
-            f'<iframe id="f2" src="{src}?depth=2" style="{FRAME_AT_100}"></iframe>',
+                # never loaded (nested-navigation recursion guard), so vary it.
+                f'<iframe id="f2" src="{src}?depth=2" style="{FRAME_AT_100}"></iframe>',
             )
             _enter_frame(driver, "f2")
         driver.execute_script("document.body.style.margin = '0'; document.body.innerHTML = arguments[0];", frame_body)
@@ -943,8 +937,7 @@ def _enter_frame(driver, frame_id):
     driver.switch_to.frame(driver.find_element(By.ID, frame_id))
     WebDriverWait(driver, 5).until(
         lambda d: d.execute_script(
-            "return location.href !== 'about:blank' && document.readyState === 'complete'"
-            " && !!window.__quiescence;"
+            "return location.href !== 'about:blank' && document.readyState === 'complete' && !!window.__quiescence;"
         )
     )
 
@@ -959,8 +952,11 @@ def _parent_rect_of_frame(driver, frame_id="f"):
 
 
 def test_element_in_frame_with_nothing_over_it_is_not_obstructed(framed, driver):
-    """Guard: the hit test must translate into the parent's coordinates, or the
-    parent's own body is mistaken for an obstruction."""
+    """Guard: an unobscured element in a frame is not obstructed.
+
+    The hit test must translate into the parent's coordinates, or the parent's
+    own body is mistaken for an obstruction.
+    """
     result = _interaction_point(driver, framed())
 
     assert result["reason"] is None
@@ -977,8 +973,11 @@ def test_element_in_frame_under_parent_overlay_is_obstructed(framed, driver):
 
 
 def test_frame_border_is_counted_when_hit_testing_in_the_parent(framed, driver):
-    """Button centre lands at parent (155, 140) only if the 5px frame border is
-    added; a 4px strip at x=153..157 is hit there and missed at x=150."""
+    """The frame's border offsets the point hit-tested in the parent.
+
+    Button centre lands at parent (155, 140) only if the 5px frame border is
+    added; a 4px strip at x=153..157 is hit there and missed at x=150.
+    """
     strip = '<div id="strip" style="position:absolute;top:120px;left:153px;width:4px;height:40px;z-index:10"></div>'
 
     result = _interaction_point(driver, framed(parent_extra=strip))
@@ -1021,8 +1020,11 @@ def test_element_in_frame_clipped_by_parent_overflow_is_not_in_viewport(framed, 
 
 
 def test_element_in_frame_out_of_parent_view_is_scrolled_into_view(framed, driver):
-    """Before frame-aware clipping this resolved ready without scrolling at all,
-    because the element was in its own frame's viewport."""
+    """A frame scrolled out of the parent's view is scrolled back into it.
+
+    Before frame-aware clipping this resolved ready without scrolling at all,
+    because the element was in its own frame's viewport.
+    """
     low_frame = "position:absolute;top:3000px;left:0;width:300px;height:150px"
     element = framed(frame_style=low_frame, parent_extra='<div style="height:4000px"></div>')
 

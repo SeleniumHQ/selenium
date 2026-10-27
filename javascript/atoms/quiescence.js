@@ -58,6 +58,12 @@
  *    completion state, so tracking them could produce a never-settling
  *    entry); media settles at first renderable data or `suspend`, not full
  *    buffering.
+ *  - Frames: viewport clipping and obstruction are checked in every ancestor
+ *    document up to the first cross-origin one, which script cannot read.
+ *    Past that point an overlay or a scrolled-away frame goes undetected, and
+ *    the result lists `cross-origin-ancestor` in `unobservable` to say so.
+ *    Frame offsets are border + padding; a transformed (scaled or rotated)
+ *    frame is mapped by its bounding box only.
  *
  * Must run before any page script (BiDi script.addPreloadScript, or CDP
  * Page.addScriptToEvaluateOnNewDocument).
@@ -926,22 +932,67 @@
       || cs.overflowX === 'hidden' || cs.overflowX === 'auto' || cs.overflowX === 'scroll'
       || cs.overflowY === 'hidden' || cs.overflowY === 'auto' || cs.overflowY === 'scroll';
   }
-  function visibleRectOf(el) {
-    if (!isShown(el)) return null;
-    const rect = el.getBoundingClientRect();
-    let box = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
-    box = rectIntersect(box, { left: 0, top: 0, right: global.innerWidth, bottom: global.innerHeight });
-    if (!box) return null;
-    let node = composedParent(el);
-    while (node && node.nodeType === 1) {
-      const cs = global.getComputedStyle(node);
-      if (isClippingAncestor(cs)) {
+  /**
+   * Frame elements from `win` up to the top-level document. A user sees the
+   * top-level page, so "in view" and "unobstructed" only hold if they hold in
+   * every ancestor. A cross-origin (or opaque-origin) parent hides
+   * `frameElement`; the walk stops there and says so, rather than treating
+   * the unread ancestors as clear.
+   */
+  function ancestorFrames(win) {
+    const frames = [];
+    let w = win;
+    while (w.parent && w.parent !== w) {
+      let frameEl = null;
+      try { frameEl = w.frameElement; } catch (_) { /* cross-origin parent */ }
+      if (!frameEl) return { frames, crossOrigin: true };
+      frames.push(frameEl);
+      w = w.parent;
+    }
+    return { frames, crossOrigin: false };
+  }
+  /** Where the frame's viewport starts, in its parent document's coordinates. */
+  function frameContentOrigin(frameEl) {
+    const r = frameEl.getBoundingClientRect();
+    const cs = frameEl.ownerDocument.defaultView.getComputedStyle(frameEl);
+    return {
+      x: r.left + frameEl.clientLeft + (parseFloat(cs.paddingLeft) || 0),
+      y: r.top + frameEl.clientTop + (parseFloat(cs.paddingTop) || 0),
+    };
+  }
+  function translateBox(box, dx, dy) {
+    return { left: box.left + dx, top: box.top + dy, right: box.right + dx, bottom: box.bottom + dy };
+  }
+  /** Clips `box` to `win`'s viewport and every clipping ancestor from `node` up. */
+  function clipInDocument(box, node, win) {
+    box = rectIntersect(box, { left: 0, top: 0, right: win.innerWidth, bottom: win.innerHeight });
+    while (box && node && node.nodeType === 1) {
+      if (isClippingAncestor(win.getComputedStyle(node))) {
         const ar = node.getBoundingClientRect();
         box = rectIntersect(box, { left: ar.left, top: ar.top, right: ar.right, bottom: ar.bottom });
-        if (!box) return null;
       }
       node = composedParent(node);
     }
+    return box;
+  }
+  function visibleRectOf(el) {
+    if (!isShown(el)) return null;
+    const rect = el.getBoundingClientRect();
+    let box = clipInDocument(
+      { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }, composedParent(el), global);
+    // Clip again in each ancestor document's coordinates, then map back.
+    let dx = 0;
+    let dy = 0;
+    for (const frameEl of ancestorFrames(global).frames) {
+      if (!box) return null;
+      const origin = frameContentOrigin(frameEl);
+      dx += origin.x;
+      dy += origin.y;
+      box = clipInDocument(
+        translateBox(box, origin.x, origin.y), composedParent(frameEl), frameEl.ownerDocument.defaultView);
+    }
+    if (!box) return null;
+    box = translateBox(box, -dx, -dy);
     return { x: box.left, y: box.top, width: box.right - box.left, height: box.bottom - box.top };
   }
   function rectOf(el) {
@@ -1033,20 +1084,37 @@
    * pierces open shadow trees. Closed shadow targets are an out-of-scope,
    * documented limitation (same posture as the DOM-mutation observer's
    * closed-shadow handling).
+   *
+   * In a frame, the same point is hit-tested again in every readable ancestor
+   * document, where the frame element itself must be what is hit: an overlay
+   * in the parent intercepts the click even though the frame's own document
+   * cannot see it.
    */
   function interactionPoint(el) {
+    const ancestry = ancestorFrames(global);
+    const unobservable = ancestry.crossOrigin ? ['cross-origin-ancestor'] : [];
     const rect = visibleRectOf(el);
-    if (!rect) return { point: null, obstructedBy: null, reason: 'notinview' };
+    if (!rect) return { point: null, obstructedBy: null, reason: 'notinview', unobservable };
     const point = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
-    if (!global.document.elementsFromPoint) return { point, obstructedBy: null, reason: null };
-    const hits = global.document.elementsFromPoint(point.x, point.y);
-    const top = hits[0];
-    if (!top || top === el || composedContains(top, el) || composedContains(el, top)) {
-      return { point, obstructedBy: null, reason: null };
+    let blocker = obstructionAt(global.document, point.x, point.y, el);
+    let x = point.x;
+    let y = point.y;
+    for (let i = 0; !blocker && i < ancestry.frames.length; i++) {
+      const frameEl = ancestry.frames[i];
+      const origin = frameContentOrigin(frameEl);
+      x += origin.x;
+      y += origin.y;
+      blocker = obstructionAt(frameEl.ownerDocument, x, y, frameEl);
     }
-    const pointerBlocked = global.getComputedStyle(top).pointerEvents === 'none';
-    if (pointerBlocked) return { point, obstructedBy: null, reason: null };
-    return { point, obstructedBy: nodePreview(top), reason: 'obstructed' };
+    if (!blocker) return { point, obstructedBy: null, reason: null, unobservable };
+    return { point, obstructedBy: nodePreview(blocker), reason: 'obstructed', unobservable };
+  }
+  function obstructionAt(doc, x, y, target) {
+    if (!doc.elementsFromPoint) return null;
+    const top = doc.elementsFromPoint(x, y)[0];
+    if (!top || top === target || composedContains(top, target) || composedContains(target, top)) return null;
+    if (doc.defaultView.getComputedStyle(top).pointerEvents === 'none') return null;
+    return top;
   }
   const INTERACTION_BACKOFF_MS = [0, 0, 20, 50, 100, 100, 500];
   const SCROLL_RETRY_MS = 250;
@@ -1078,12 +1146,14 @@
     return new Promise((resolve) => {
       let attempt = 0;
       let lastScrollAt = 0;
+      let unobservable = [];
       function done(ready, point, reason, perpetualMotion) {
         resolve({
           ready,
           interactionPoint: point,
           reason: reason || null,
           perpetualMotion: perpetualMotion || null,
+          unobservable,
           elapsedMs: native.now() - started,
         });
       }
@@ -1093,6 +1163,7 @@
         state.requiresEditable = requiresEditable;
         state.requiresEnabled = requiresEnabled;
         const hit = interactionPoint(el);
+        unobservable = hit.unobservable;
         // Retried, not one-shot: a layout that restores its own scroll
         // position puts the element straight back out of view, and one scroll
         // then buys nothing. The cooldown keeps this from fighting a smooth
