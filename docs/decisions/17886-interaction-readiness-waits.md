@@ -75,16 +75,23 @@ than as a blessed pair of wait methods.
 
 - *Page settledness* — no *meaningful* DOM mutation for a settle window, with a pending-work ledger
   as its input rather than a peer signal. The ledger tracks timers, intervals, animation frames,
-  `fetch`, `XMLHttpRequest` and WebSocket activity for the document; long-delay timers, long-period
-  intervals, and periodic tasks observed to complete repeated invocations with no DOM mutation, no
-  network dispatch and no storage write are classified inert and do not block, so clocks and
-  keep-alive polls do not prevent settling. Meaningful mutation excludes attribute churn that cannot
-  affect layout, and mutation confined to a region annotated inert or detected as periodic noise.
-  Running CSS animations and transitions count as activity. Settling can be scoped to a subtree.
+  `fetch`, `XMLHttpRequest`, WebSocket activity and outstanding subresource loads (images, media,
+  frames, objects, and dynamically inserted scripts and stylesheets) for the document; long-delay
+  timers, long-period intervals, and periodic tasks observed to complete repeated invocations with
+  no DOM mutation, no network dispatch and no storage write are classified inert and do not block,
+  so clocks and keep-alive polls do not prevent settling. Meaningful mutation excludes attribute
+  churn that cannot affect layout, and mutation confined to a region annotated inert or detected as
+  periodic noise. Running CSS animations and transitions count as activity. Settling can be scoped
+  to a subtree.
 - *Element actionability* — visible, enabled (including `aria-disabled` and the `fieldset`/`legend`
   exception), editable when the planned interaction writes, in the viewport, not obstructed at its
   interaction point, and not moving. Which checks apply depends on the interaction: `type` and
-  `clear` additionally require editable; `drop` and `screenshot` do not require enabled.
+  `clear` additionally require editable; `drop` and `screenshot` do not require enabled. Viewport
+  and obstruction are checked in the element's own document and in every ancestor document up to
+  the first cross-origin one; a boundary that cannot be checked is reported as unobservable rather
+  than as clear. "Not moving" tolerates sub-pixel motion, and an element moved by an
+  infinite-iteration animation is reported actionable with the animated node named, because waiting
+  for it to stop provably never terminates.
 
 Actionability does not depend on settledness and is not derived from it. That independence is what
 makes decision 2 affordable: the interaction path consults actionability only. An application that
@@ -241,7 +248,15 @@ pending-work history cannot be observed and the record says so rather than silen
 the browser does not expose the answer. The implementation is written as a reference for a proposed
 BiDi `quiescence` module and its limits are documented, not hidden: effects performed
 asynchronously by a periodic callback are misattributed, and workers, `MessageChannel`,
-server-sent events, WebTransport, IndexedDB and canvas-only animation frames are not tracked.
+server-sent events, WebTransport, IndexedDB, canvas-only animation frames and promise reactions
+are not tracked. Subresource tracking does not see lazy-loaded images, which fetch on viewport
+proximity with no observable start edge, nor scripts, stylesheets and cross-origin frames already
+in flight before the observer's first sweep, where a pending state that cannot be introspected
+would produce an entry that never clears; media settles at first renderable data rather than full
+buffering, so a stream cannot hold quiescence open indefinitely. Obstruction and viewport checks
+stop at the first cross-origin ancestor document, and a transformed frame is mapped by its bounding
+box only. An element moved by an infinite-iteration animation is reported actionable rather than
+waited on, so the interaction may land while it is moving.
 Selenium takes this to the WebDriver BiDi working group; if it lands, the bindings keep their API,
 and drop the polyfill.
 
@@ -429,12 +444,15 @@ driver.find_element(By.ID, "refresh").click(wait="settled")
 ## Appendix
 
 A working reference implementation exists for Python: the oracle registered as a BiDi preload script
-and exposed as `driver.wait_for_dom_settled` and `driver.wait_until_actionable`, with roughly 1,500
+and exposed as `driver.wait_for_dom_settled` and `driver.wait_until_actionable`, with roughly 2,200
 lines of behavioral tests covering mutation classification, periodic-noise detection, shadow DOM and
 frame boundaries, obstruction hit-testing, motion stability, and the per-interaction check matrix. It
 is linked from this record's PR as evidence that the semantics above are implementable and testable,
 not as the proposed API shape — decisions 4 and 5 replace its two driver-level wait methods, and
 decision 8 keeps its single atom while requiring narrow named exports in place of its combined
-entry point. The capability, the implicit-wait
+entry point. It already satisfies decisions 9 and 12: the interaction path consults actionability
+alone, settle-then-act is opt-in per call, and an oracle injected into an already-loaded document
+reports that its pending-work history is unobservable rather than reporting quiet. The capability,
+the implicit-wait
 replacement, the client-side element-location retry, the error subclasses, and the `settled` page
 load strategy are proposed here and not yet built.
