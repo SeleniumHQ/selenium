@@ -70,7 +70,9 @@ module Selenium
 
     it 'starts and stops server' do
       @location = described_class.download
-      @server = described_class.new(@location, background: true, java: environment.bazel_java)
+      chrome_slot = ['--driver-configuration', 'display-name=chrome', 'stereotype={"browserName":"chrome"}']
+      args = ['--detect-drivers', 'false', *chrome_slot]
+      @server = described_class.new(@location, background: true, java: environment.bazel_java, args: args)
       @server.start
       status = server_status("http://#{@server.host}:#{@server.port}")
       expect(status.code).to eq 200
