@@ -10,13 +10,6 @@ load("//javascript/atoms:typescript/defs.bzl", "ATOMS", "typescript_atom")
 
 package(default_visibility = ["//visibility:public"])
 
-# Standalone preload scripts (not compiled through Closure) consumed by the
-# language bindings, e.g. the BiDi quiescence polyfill injected by the Python
-# binding via script.addPreloadScript.
-exports_files([
-    "quiescence.js",
-])
-
 VERSION = VERSIONS["javascript"]
 
 # These build tools are CommonJS; the .cjs extension keeps that true regardless

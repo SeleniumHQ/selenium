@@ -16,7 +16,7 @@
 // under the License.
 
 /**
- * quiescence.js
+ * quiescence.ts
  *
  * Prototype of a proposed WebDriver BiDi `quiescence` module, implemented as a
  * preload script. Maintains a live pending-work ledger for the document and
@@ -68,8 +68,7 @@
  * Must run before any page script (BiDi script.addPreloadScript, or CDP
  * Page.addScriptToEvaluateOnNewDocument).
  */
-(function quiescenceInstall(global) {
-  'use strict';
+export default function installQuiescence(global: any = globalThis): void {
   if (global.__quiescence) return; // idempotent
 
   // ---- Untracked native references (our own internals must not self-block) --
@@ -123,11 +122,11 @@
   let nextId = 1;
   /** Map<ledgerId, entry> — entry: {id, type, meta, createdAt, inert, ignored} */
   const ledger = new Map();
-  const listeners = new Set();
+  const listeners = new Set<(payload: any) => void>();
   let lastQuiet = null;
   let emitScheduled = false;
 
-  function add(type, meta, flags) {
+  function add(type, meta?, flags?) {
     const id = nextId++;
     ledger.set(id, {
       id, type, meta: meta || {},
@@ -453,7 +452,7 @@
         return false;
     }
   }
-  function trackResource(el, atSweep) {
+  function trackResource(el, atSweep?) {
     if (!policy.countResourceLoads) return;
     const kind = el.tagName && RESOURCE_KIND_BY_TAG[el.tagName];
     if (!kind) return;
@@ -556,7 +555,7 @@
   if (global.document && global.document.readyState !== 'loading') {
     domState.unobservable.push({ reason: 'late-install', ts: native.now() });
   }
-  function stableTargetPath(node, maxDepth) {
+  function stableTargetPath(node, maxDepth?) {
     maxDepth = maxDepth || 6;
     const parts = [];
     let n = node;
@@ -753,7 +752,7 @@
     // scoped `root` must not reset that root's settle window.
     const pollMs = Math.min(settleMs, 50);
     ensureDomObserver();
-    return new Promise((resolve) => {
+    return new Promise<any>((resolve) => {
       let pollHandle = null;
       let deadlineHandle = null;
       function settledNow() {
@@ -1019,7 +1018,7 @@
   function isStable(el, opts) {
     const o = opts || {};
     const frames = o.frames || 2;
-    return new Promise((resolve) => {
+    return new Promise<any>((resolve) => {
       if (!native.requestAnimationFrame) { resolve(true); return; }
       const rects = [rectOf(el)];
       function sample(remaining) {
@@ -1143,11 +1142,11 @@
     const requiresEnabled = interaction !== 'drop' && interaction !== 'screenshot';
     const requireStable = o.requireStable !== false;
     const started = native.now();
-    return new Promise((resolve) => {
+    return new Promise<any>((resolve) => {
       let attempt = 0;
       let lastScrollAt = 0;
       let unobservable = [];
-      function done(ready, point, reason, perpetualMotion) {
+      function done(ready, point, reason, perpetualMotion?) {
         resolve({
           ready,
           interactionPoint: point,
@@ -1158,7 +1157,7 @@
         });
       }
       function tick() {
-        const state = elementState(el);
+        const state: any = elementState(el);
         state.el = el;
         state.requiresEditable = requiresEditable;
         state.requiresEnabled = requiresEnabled;
@@ -1257,7 +1256,7 @@
     const timeoutMs = o.timeoutMs != null ? o.timeoutMs : 10000;
     const settleMs = o.settleMs != null ? o.settleMs : 75;
     const started = native.now();
-    const pending = new Promise((resolve) => {
+    const pending = new Promise<any>((resolve) => {
       let settleHandle = null;
       let deadlineHandle = null;
       let unsub = null;
@@ -1371,4 +1370,4 @@
     writable: false, configurable: false,
   });
   scheduleEmit();
-}(typeof window !== 'undefined' ? window : globalThis));
+}
