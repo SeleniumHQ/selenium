@@ -80,15 +80,17 @@ module Selenium
       #
 
       def download(required_version = :latest)
-        download_file_name = "selenium-server-#{required_version}.jar"
-
-        return download_file_name if File.exist? download_file_name
-
         arguments = ['--grid']
-        arguments << required_version.to_s unless required_version == :latest
+        unless required_version == :latest
+          download_file_name = "selenium-server-#{required_version}.jar"
+          return download_file_name if File.exist? download_file_name
+
+          arguments << required_version.to_s
+        end
+
         cached_jar = WebDriver::SeleniumManager.binary_paths(*arguments)['driver_path']
         if cached_jar.to_s.empty?
-          offline_source = ENV.key?('SE_OFFLINE') ? 'SE_OFFLINE is set' : 'offline is set in se-config.toml'
+          offline_source = ENV['SE_OFFLINE'] == 'true' ? 'SE_OFFLINE is true' : 'offline is true in se-config.toml'
           message = "Selenium Manager is in offline mode (#{offline_source}) "
           raise Error, message + "and has no cached selenium-server #{required_version}"
         end
