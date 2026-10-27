@@ -58,6 +58,8 @@ jobs:
         bazel run //py:sphinx-autogen
         bazel build //py:docs
 
+  # Tests on 3.10.20 (earliest supported version) are run in smoke and RBE.
+  # This job covers the latest supported version.
   unit-tests:
     name: Unit Tests
     if: github.event_name == 'schedule' || !inputs.smoke

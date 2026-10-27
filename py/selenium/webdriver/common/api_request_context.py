@@ -119,29 +119,33 @@ def _cookie_matches(cookie: dict, url: str, default_domain: str = "") -> bool:
         return False
 
     parsed = urllib.parse.urlparse(url)
-    hostname = parsed.hostname or ""
+    hostname = (parsed.hostname or "").lower()
     path = parsed.path or "/"
     scheme = parsed.scheme or "http"
 
     # Domain matching (RFC 6265 section 5.1.3)
-    cookie_domain = cookie.get("domain", "")
+    cookie_domain = (cookie.get("domain") or "").lower()
     if not cookie_domain:
-        # Host-only cookie — must match the origin host exactly
-        if not default_domain or hostname != default_domain:
-            return False
-    elif cookie_domain.startswith("."):
-        # .example.com matches example.com and sub.example.com
-        if not (hostname == cookie_domain[1:] or hostname.endswith(cookie_domain)):
+        # Host-only cookie - must match the origin host exactly
+        if not default_domain or hostname != default_domain.lower():
             return False
     else:
-        if hostname != cookie_domain:
+        # Strip optional leading dot per RFC 6265 section 5.1.3
+        norm_domain = cookie_domain.removeprefix(".")
+        if not (hostname == norm_domain or hostname.endswith("." + norm_domain)):
             return False
 
     # Path matching (RFC 6265 section 5.1.4)
-    cookie_path = cookie.get("path", "/")
+    cookie_path = cookie.get("path") or "/"
     if cookie_path == "/":
         pass  # root path matches everything
-    elif path != cookie_path and not path.startswith(cookie_path + "/"):
+    elif path == cookie_path:
+        pass
+    elif cookie_path.endswith("/") and path.startswith(cookie_path):
+        pass
+    elif not cookie_path.endswith("/") and path.startswith(cookie_path + "/"):
+        pass
+    else:
         return False
 
     # Secure matching

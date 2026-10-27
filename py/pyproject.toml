@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.52.0.202610091837"
+dynamic = ["version"]
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -27,7 +27,7 @@ classifiers = [
     "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
-    "certifi>=2026.2.25",
+    "certifi>=2026.10.23",
     "trio>=0.31.0,<1.0",
     "trio-websocket>=0.12.2,<1.0",
     "typing_extensions>=4.15.0,<5.0",
@@ -45,6 +45,9 @@ issues = "https://github.com/SeleniumHQ/selenium/issues"
 
 [tool.setuptools]
 zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "selenium._version.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["selenium*"]
@@ -174,7 +177,6 @@ fixable = ["ALL"]
 extend-ignore = [
     "B007", # Loop control variable not used within loop body
     "B024", # Abstract base class without abstract methods
-    "B028", # No explicit `stacklevel` keyword argument found
     "D100", # Missing docstring in public module
     "D101", # Missing docstring in public class
     "D102", # Missing docstring in public method
