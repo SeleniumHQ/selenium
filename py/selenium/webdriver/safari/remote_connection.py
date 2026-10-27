@@ -26,14 +26,12 @@ class SafariRemoteConnection(RemoteConnection):
 
     def __init__(
         self,
-        remote_server_addr: str,
-        keep_alive: bool = True,
+        remote_server_addr: str | None = None,
+        keep_alive: bool | None = None,
         ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:
-        client_config = client_config or ClientConfig(
-            remote_server_addr=remote_server_addr, keep_alive=keep_alive, timeout=120
-        )
+        client_config = self._resolve_client_config(remote_server_addr, keep_alive, client_config)
         super().__init__(
             ignore_proxy=ignore_proxy,
             client_config=client_config,

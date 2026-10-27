@@ -20,6 +20,7 @@ from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnecti
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
 
 
@@ -32,7 +33,8 @@ class ChromiumDriver(LocalWebDriver):
         vendor_prefix: str,
         options: ChromiumOptions | None = None,
         service: ChromiumService | None = None,
-        keep_alive: bool = True,
+        keep_alive: bool | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Create a new WebDriver instance, start the service, and create new ChromiumDriver instance.
 
@@ -41,8 +43,11 @@ class ChromiumDriver(LocalWebDriver):
             vendor_prefix: Company prefix to apply to vendor-specific WebDriver extension commands.
             options: Instance of ChromiumOptions.
             service: Service object for handling the browser driver if you need to pass extra details.
-            keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+            keep_alive: (Deprecated) Set keep_alive on a ClientConfig passed as client_config instead.
+            client_config: Custom client configuration to use. Defaults to None.
         """
+        if keep_alive is not None:
+            self._warn_keep_alive_deprecated(stacklevel=4)
         self.service = service or ChromiumService()
         self.options = options or ChromiumOptions()
 
@@ -60,6 +65,7 @@ class ChromiumDriver(LocalWebDriver):
             vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
             ignore_proxy=self.options._ignore_local_proxy,
+            client_config=client_config,
         )
 
         try:
