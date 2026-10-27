@@ -27,7 +27,7 @@ bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.7.6")
 bazel_dep(name = "rules_oci", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "1.3.0")
-bazel_dep(name = "rules_python", version = "2.4.2")
+bazel_dep(name = "rules_python", version = "2.4.5")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.29.0")
 bazel_dep(name = "rules_rs", version = "0.1.0")
@@ -149,9 +149,8 @@ register_toolchains("@dotnet_toolchains//:all")
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
     is_default = True,
-    python_version = "3.10.20",
+    python_version = "3.11.15",
 )
-python.toolchain(python_version = "3.11.15")
 python.toolchain(python_version = "3.12.13")
 python.toolchain(python_version = "3.13.13")
 python.toolchain(python_version = "3.14.4")
@@ -168,7 +167,6 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
         use_hub_alias_dependencies = True,
     )
     for version in [
-        "3.10.20",
         "3.11.15",
         "3.12.13",
         "3.13.13",

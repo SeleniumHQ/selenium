@@ -12,7 +12,7 @@ RUN apt-get -qqy update && \
       libyaml-dev \
       libzip-dev \
       linux-libc-dev \
-      python3.10 \
+      python3.11 \
       python-is-python3 \
       zip \
       zlib1g && \

@@ -37,9 +37,7 @@ from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
-
-from typing_extensions import Self
+from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, Self, TypeVar, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,

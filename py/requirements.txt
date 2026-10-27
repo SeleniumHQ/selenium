@@ -6,20 +6,20 @@
 # === Direct dev tooling ===
 filetype~=1.2
 inflection~=0.5
-mypy~=2.1
-pydata-sphinx-theme~=0.19
-pytest~=9.0
+mypy~=2.4
+pydata-sphinx-theme~=0.23
+pytest~=9.1
 pytest-instafail~=0.5
-pytest-mock~=3.15
+pytest-mock~=3.17
 pytest-trio~=0.8
 rich~=15.0
-Sphinx~=8.1
-tox~=4.54
+Sphinx~=9.0
+tox~=4.67
 trio-typing~=0.10
-twine~=6.2
+twine~=7.0
 types-certifi~=2021.10
 types-PySocks~=1.7
-zipp~=3.23
+zipp~=4.1
 
 # === Platform-specific transitive deps ===
 # Listed explicitly so they appear in requirements_lock.txt regardless of
@@ -27,10 +27,10 @@ zipp~=3.23
 # macOS silently drops them and Linux/Windows CI breaks.
 
 # Linux keyring backend (twine -> keyring -> secretstorage -> cryptography):
-cffi~=2.0
-cryptography~=48.0
+cffi~=2.1
+cryptography~=50.0
 jeepney~=0.9
-pycparser~=3.0
+pycparser~=3.1
 secretstorage~=3.5
 
 # Windows keyring backend (twine -> keyring -> pywin32-ctypes):
