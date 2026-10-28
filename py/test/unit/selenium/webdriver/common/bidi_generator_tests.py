@@ -682,17 +682,17 @@ def test_a_vendor_field_is_folded_into_the_record_it_extends():
 
 
 def test_a_vendor_overlay_on_an_unknown_type_is_rejected():
-    with pytest.raises(ValueError, match="'moz' extends 'x.Gone', which is not a record"):
+    with pytest.raises(ValueError, match=re.escape("'moz' extends 'x.Gone', which is not a record")):
         _vendor_schema({"moz": {"extends": {"x.Gone": {"fields": [_scope_field()]}}}})
 
 
 def test_a_vendor_overlay_on_a_type_that_is_not_a_record_is_rejected():
     types = {"x.Level": {"kind": "enum", "values": ["a", "b"]}}
 
-    with pytest.raises(ValueError, match="'moz' extends 'x.Level', which is not a record"):
+    with pytest.raises(ValueError, match=re.escape("'moz' extends 'x.Level', which is not a record")):
         _vendor_schema({"moz": {"extends": {"x.Level": {"fields": [_scope_field()]}}}}, types)
 
 
 def test_a_vendor_overlay_may_not_redeclare_a_shared_field():
-    with pytest.raises(ValueError, match="'moz' redeclares 'url' on 'x.Info'"):
+    with pytest.raises(ValueError, match=re.escape("'moz' redeclares 'url' on 'x.Info'")):
         _vendor_schema({"moz": {"extends": {"x.Info": {"fields": [_scope_field("url")]}}}})
