@@ -20,6 +20,10 @@ class Copyright:
             with open(file, encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
+            # An interpreter only honours `#!` on the first line, so the notice goes after it.
+            shebang = lines[:1] if lines and lines[0].startswith("#!") else []
+            lines = lines[len(shebang) :]
+
             index = -1
             for i, line in enumerate(lines):
                 if line.startswith(self._comment_characters) or self.valid_copyright_notice_line(line, index, file):
@@ -28,11 +32,11 @@ class Copyright:
                     break
 
             if index == -1:
-                self.write_update_notice(file, lines)
+                self.write_update_notice(file, lines, shebang)
             else:
                 current = "".join(lines[: index + 1])
                 if current != self.copyright_notice(file):
-                    self.write_update_notice(file, lines[index + 1 :])
+                    self.write_update_notice(file, lines[index + 1 :], shebang)
 
     def valid_copyright_notice_line(self, line, index, file):
         return index + 1 < len(self.copyright_notice_lines(file)) and line.startswith(
@@ -55,9 +59,9 @@ class Copyright:
     def commented_notice_lines(self):
         return [f"{self._comment_characters} {line}".rstrip() + "\n" for line in self.NOTICE.split("\n")]
 
-    def write_update_notice(self, file, lines):
+    def write_update_notice(self, file, lines, shebang=()):
         # Build new content
-        new_content = self.copyright_notice(file) + "\n"
+        new_content = "".join(shebang) + self.copyright_notice(file) + "\n"
         if lines and lines[0] != "\n":
             new_content += "\n"
         new_content += "".join(line.rstrip() + "\n" for line in lines)

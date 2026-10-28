@@ -66,6 +66,48 @@ py_binary(
     ],
 )
 
+SELENIUM_MANAGER_WHEELS = [
+    "//py/selenium-manager:wheels",
+    "//py/selenium-manager-linux-aarch64:wheels",
+    "//py/selenium-manager-linux-x86-64:wheels",
+    "//py/selenium-manager-macos:wheels",
+    "//py/selenium-manager-windows-x86:wheels",
+]
+
+py_binary(
+    name = "selenium-manager-release",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "--skip-existing",
+    ] + ["$(locations %s)" % wheels for wheels in SELENIUM_MANAGER_WHEELS],
+    data = SELENIUM_MANAGER_WHEELS,
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
+py_binary(
+    name = "selenium-manager-release-nightly",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "--repository",
+        "testpypi",
+        "--skip-existing",
+    ] + ["$(locations %s)" % wheels for wheels in SELENIUM_MANAGER_WHEELS],
+    data = SELENIUM_MANAGER_WHEELS,
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
