@@ -19,6 +19,7 @@ import dataclasses
 import json
 import logging
 import threading
+import warnings
 from ssl import CERT_NONE
 from threading import Thread
 
@@ -80,11 +81,15 @@ logger = logging.getLogger(__name__)
 class WebSocketConnection:
     _max_log_message_size = 9999
 
-    def __init__(self, url, timeout, interval):
+    def __init__(self, url, timeout, interval=None):
         if not isinstance(timeout, (int, float)) or timeout < 0:
             raise WebDriverException("timeout must be a positive number")
-        if not isinstance(interval, (int, float)) or interval <= 0:
-            raise WebDriverException("interval must be a positive number")
+        if interval is not None:
+            warnings.warn(
+                "interval does nothing and will be removed",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self.url = url
         self.response_wait_timeout = timeout
