@@ -77,7 +77,7 @@ py_wheel(
         "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-macos",
         "Issues": "https://github.com/SeleniumHQ/selenium/issues",
     },
-    python_requires = ">=3.9",
+    python_requires = ">=3.10",
     python_tag = "py3",
     strip_path_prefixes = ["py/selenium-manager-macos/"],
     summary = "Selenium Manager binary for macOS (universal binary, x86-64 + aarch64)",

@@ -90,7 +90,7 @@ copy_file(
             "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-windows-x86",
             "Issues": "https://github.com/SeleniumHQ/selenium/issues",
         },
-        python_requires = ">=3.9",
+        python_requires = ">=3.10",
         python_tag = "py3",
         strip_path_prefixes = ["py/selenium-manager-windows-x86/"],
         summary = "Selenium Manager binary for Windows (i686, runs on x86, x64 and arm64)",

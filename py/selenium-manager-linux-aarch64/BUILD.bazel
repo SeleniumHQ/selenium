@@ -86,7 +86,7 @@ copy_file(
             "Source": "https://github.com/SeleniumHQ/selenium/tree/trunk/py/selenium-manager-linux-aarch64",
             "Issues": "https://github.com/SeleniumHQ/selenium/issues",
         },
-        python_requires = ">=3.9",
+        python_requires = ">=3.10",
         python_tag = "py3",
         strip_path_prefixes = ["py/selenium-manager-linux-aarch64/"],
         summary = "Selenium Manager binary for Linux aarch64",
