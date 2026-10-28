@@ -42,6 +42,9 @@ npm_package(
 js_test(
     name = "unit",
     size = "small",
-    data = ["index.js"],
+    data = [
+        "bin/selenium-manager.js",
+        "index.js",
+    ],
     entry_point = "test/index_test.js",
 )

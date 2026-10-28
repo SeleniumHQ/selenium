@@ -128,3 +128,34 @@ test('a platform package without its binary is reported', (t) => {
   assert.notEqual(result.status, 0)
   assert.match(result.error, /Binary not found at expected path: .*selenium-manager/)
 })
+
+const LAUNCHER = path.join(__dirname, '..', 'bin', 'selenium-manager.js')
+
+// Points SE_MANAGER_PATH at node itself, so the arguments decide what the
+// "manager" does and the launcher is exercised without a real binary.
+function launch(managerPath, args, env = {}) {
+  const childEnv = { ...process.env, SE_MANAGER_PATH: managerPath, ...env }
+  if (!('SE_AVOID_STATS' in env)) {
+    delete childEnv.SE_AVOID_STATS
+  }
+  const result = spawnSync(process.execPath, [LAUNCHER, ...args], { encoding: 'utf8', env: childEnv })
+  return { stdout: result.stdout, error: result.stderr, status: result.status }
+}
+
+test('the launcher passes through the manager exit code', () => {
+  const result = launch(process.execPath, ['-e', 'process.exit(3)'])
+  assert.equal(result.status, 3, result.error)
+})
+
+test('the launcher turns usage stats off unless asked', () => {
+  const script = 'process.stdout.write(process.env.SE_AVOID_STATS)'
+  assert.equal(launch(process.execPath, ['-e', script]).stdout, 'true')
+  assert.equal(launch(process.execPath, ['-e', script], { SE_AVOID_STATS: 'false' }).stdout, 'false')
+})
+
+test('a manager that cannot start is reported', () => {
+  const missing = path.join(os.tmpdir(), 'no-such-selenium-manager')
+  const result = launch(missing, ['--version'])
+  assert.equal(result.status, 1)
+  assert.match(result.error, /Failed to run .*no-such-selenium-manager: .*ENOENT/)
+})

@@ -39,5 +39,13 @@ if (!env.SE_AVOID_STATS) {
 try {
   execFileSync(binary, process.argv.slice(2), { stdio: 'inherit', env })
 } catch (err) {
-  process.exit(err.status ?? 1)
+  if (typeof err.status === 'number') {
+    process.exit(err.status)
+  }
+  // No status means the manager never ran (ENOENT, EACCES, ENOEXEC) or was
+  // killed by a signal; only the former leaves the user with nothing to go on.
+  if (!err.signal) {
+    console.error(`Failed to run ${binary}: ${err.message}`)
+  }
+  process.exit(1)
 }
