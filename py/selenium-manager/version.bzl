@@ -1,10 +1,11 @@
 # BUILD FILE SYNTAX: STARLARK
 
-# Single source of truth for every standalone Selenium Manager Python package.
-# Kept in lockstep with the `selenium` wheel so `selenium-manager==<x>` always
-# names the manager that shipped alongside `selenium==<x>`; `rake py:version`
-# bumps both together.
-SM_VERSION = "4.52.0.202610091837"
+load("//:version.bzl", "VERSIONS")
+
+# Every standalone Selenium Manager Python package takes the `selenium` wheel's
+# version, so `selenium-manager==<x>` always names the manager that shipped
+# alongside `selenium==<x>`.
+SM_VERSION = VERSIONS["python"]
 
 # The meta package pins the exact build of its platform package, so the pins are
 # derived from SM_VERSION here rather than restated in the BUILD file where they

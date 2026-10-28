@@ -34,25 +34,6 @@ rescue RuntimeError => e
   puts "#{target} version already published — skipping."
 end
 
-def manager_npm_version
-  File.foreach('javascript/selenium-manager/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.start_with?('SM_VERSION')
-  end
-end
-
-unless defined?(MANAGER_NPM_FILES)
-  # The BUILD files read SM_VERSION from version.bzl, so only the manifests npm
-  # itself parses need rewriting alongside it.
-  MANAGER_NPM_FILES = %w[
-    javascript/selenium-manager/version.bzl
-    javascript/selenium-manager/package.json
-    javascript/selenium-manager-darwin/package.json
-    javascript/selenium-manager-linux-x64/package.json
-    javascript/selenium-manager-linux-arm64/package.json
-    javascript/selenium-manager-win32-ia32/package.json
-  ].freeze
-end
-
 def setup_github_npm_auth
   token = ENV.fetch('GITHUB_TOKEN', nil)
   raise 'Missing GitHub token: set GITHUB_TOKEN for nightly npm publish' if token.nil? || token.empty?
@@ -223,21 +204,6 @@ task :version, [:version] do |_task, arguments|
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-nightly')
   puts "Updating Node from #{old_version} to #{new_version}"
   SeleniumRake.write_version('javascript', new_version)
-  Rake::Task['node:version_manager'].invoke(new_version)
-end
-
-desc 'Update @selenium/manager package versions'
-task :version_manager, [:new_version] do |_task, arguments|
-  new_version = arguments[:new_version]
-  raise 'new_version argument required' if new_version.nil? || new_version.empty?
-
-  old_version = manager_npm_version
-  puts "Updating @selenium/manager packages from #{old_version} to #{new_version}"
-
-  MANAGER_NPM_FILES.each do |file|
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, 'w') { |f| f.puts text }
-  end
 end
 
 desc 'Format JavaScript code with prettier'

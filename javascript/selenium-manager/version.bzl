@@ -1,7 +1,8 @@
 # BUILD FILE SYNTAX: STARLARK
 
-# Single source of truth for every @selenium/manager npm package. Kept in
-# lockstep with selenium-webdriver so `@selenium/manager@<x>` always names the
-# manager that shipped alongside `selenium-webdriver@<x>`; `rake node:version`
-# bumps both together.
-SM_VERSION = "4.52.0-nightly202610091837"
+load("//:version.bzl", "VERSIONS")
+
+# Every @selenium/manager npm package takes selenium-webdriver's version, so
+# `@selenium/manager@<x>` always names the manager that shipped alongside
+# `selenium-webdriver@<x>`.
+SM_VERSION = VERSIONS["javascript"]
