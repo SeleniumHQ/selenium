@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.common.proxy &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.common.proxy &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_common/selenium.webdriver.common.proxy';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -451,6 +451,11 @@ profile preference, ‘string’ is id of proxy type.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.sslProxy">
+<span class="sig-name descname"><span class="pre">sslProxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.sslProxy" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.socksProxy">
 <span class="sig-name descname"><span class="pre">socksProxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socksProxy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -471,12 +476,6 @@ profile preference, ‘string’ is id of proxy type.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.ssl_proxy">
-<span class="sig-name descname"><span class="pre">ssl_proxy</span></span><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.ssl_proxy" title="Link to this definition">#</a></dt>
-<dd><p>SSL proxy address.</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.http_proxy">
 <span class="sig-name descname"><span class="pre">http_proxy</span></span><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.http_proxy" title="Link to this definition">#</a></dt>
 <dd><p>HTTP proxy address.</p>
@@ -495,9 +494,10 @@ profile preference, ‘string’ is id of proxy type.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.sslProxy">
-<span class="sig-name descname"><span class="pre">sslProxy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.sslProxy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.ssl_proxy">
+<span class="sig-name descname"><span class="pre">ssl_proxy</span></span><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.ssl_proxy" title="Link to this definition">#</a></dt>
+<dd><p>SSL proxy address.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.proxy.Proxy.auto_detect">
@@ -608,15 +608,15 @@ profile preference, ‘string’ is id of proxy type.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.httpProxy"><code class="docutils literal notranslate"><span class="pre">Proxy.httpProxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.noProxy"><code class="docutils literal notranslate"><span class="pre">Proxy.noProxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.proxyAutoconfigUrl"><code class="docutils literal notranslate"><span class="pre">Proxy.proxyAutoconfigUrl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.sslProxy"><code class="docutils literal notranslate"><span class="pre">Proxy.sslProxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socksProxy"><code class="docutils literal notranslate"><span class="pre">Proxy.socksProxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socksUsername"><code class="docutils literal notranslate"><span class="pre">Proxy.socksUsername</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socksPassword"><code class="docutils literal notranslate"><span class="pre">Proxy.socksPassword</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socksVersion"><code class="docutils literal notranslate"><span class="pre">Proxy.socksVersion</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.ssl_proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.ssl_proxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.http_proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.http_proxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.no_proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.no_proxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.proxy_autoconfig_url"><code class="docutils literal notranslate"><span class="pre">Proxy.proxy_autoconfig_url</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.sslProxy"><code class="docutils literal notranslate"><span class="pre">Proxy.sslProxy</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.ssl_proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.ssl_proxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.auto_detect"><code class="docutils literal notranslate"><span class="pre">Proxy.auto_detect</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socks_proxy"><code class="docutils literal notranslate"><span class="pre">Proxy.socks_proxy</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.common.proxy.Proxy.socks_username"><code class="docutils literal notranslate"><span class="pre">Proxy.socks_username</span></code></a></li>

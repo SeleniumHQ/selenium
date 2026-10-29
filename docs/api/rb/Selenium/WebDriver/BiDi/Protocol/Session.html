@@ -174,6 +174,32 @@
   <span class='label'>ignore:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ignore</span><span class='tstring_end'>&#39;</span></span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
+        <dt id="CAPABILITY_REQUEST_FIREFOX_OPTIONS_LEVEL-constant" class="">CAPABILITY_REQUEST_FIREFOX_OPTIONS_LEVEL =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>trace:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>trace</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>debug:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>debug</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>config:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>config</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>info:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>info</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>warn:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>warn</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>error:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>fatal:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>fatal</span><span class='tstring_end'>&#39;</span></span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
         <dt id="CapabilitiesRequest-constant" class="">CapabilitiesRequest =
           <div class="docstring">
   <div class="discussion">
@@ -239,6 +265,11 @@
     <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unhandledPromptBehavior</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
     <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
     <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Session::UserPromptHandler</span><span class='tstring_end'>&#39;</span></span>
+  <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>moz_firefox_options:</span> <span class='lbrace'>{</span>
+    <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:firefoxOptions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Session::CapabilityRequestFirefoxOptions</span><span class='tstring_end'>&#39;</span></span>
   <span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>extensible:</span> <span class='kw'>true</span>
 <span class='rparen'>)</span></pre></dd>
@@ -375,8 +406,8 @@
   <span class='label'>http_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>httpProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>ssl_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sslProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>socks_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>socks_version:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksVersion</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>no_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>socks_version:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksVersion</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>255</span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>no_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>extensible:</span> <span class='kw'>true</span>
 <span class='rparen'>)</span></pre></dd>
       
@@ -407,7 +438,7 @@
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
   <span class='label'>socks_proxy:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>socks_version:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksVersion</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+  <span class='label'>socks_version:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socksVersion</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>255</span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="PacProxyConfiguration-constant" class="">PacProxyConfiguration =
@@ -531,9 +562,9 @@
 </div>
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
-  <span class='label'>events:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>contexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='comma'>,</span>
-  <span class='label'>user_contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span>
+  <span class='label'>events:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>contexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>user_contexts:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>userContexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
 <span class='rparen'>)</span></pre></dd>
       
         <dt id="UnsubscribeByIDRequest-constant" class="">UnsubscribeByIDRequest =
@@ -561,7 +592,9 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>subscriptions:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>subscriptions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>subscriptions:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>subscriptions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="UnsubscribeByAttributesRequest-constant" class="">UnsubscribeByAttributesRequest =
           <div class="docstring">
@@ -588,7 +621,9 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>events:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>events:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
       
         <dt id="StatusResult-constant" class="">StatusResult =
           <div class="docstring">
@@ -706,6 +741,53 @@
         </dt>
         <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span><span class='label'>subscription:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>subscription</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span></pre></dd>
       
+        <dt id="CapabilityRequestFirefoxOptions-constant" class="">CapabilityRequestFirefoxOptions =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>android_package:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>androidPackage</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>android_activity:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>androidActivity</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>android_device_serial:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>androidDeviceSerial</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>android_intent_arguments:</span> <span class='lbrace'>{</span>
+    <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>androidIntentArguments</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span>
+  <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>args:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>args</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>list:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>binary:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>binary</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>env:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>env</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>map:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>log:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>log</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Session::CapabilityRequestFirefoxOptions::Log</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>prefs:</span> <span class='lbrace'>{</span>
+    <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prefs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    <span class='label'>map:</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>string</span><span class='words_sep'> </span><span class='tstring_content'>boolean</span><span class='words_sep'> </span><span class='tstring_content'>integer</span><span class='tstring_end'>]</span></span><span class='comma'>,</span>
+    <span class='label'>min:</span> <span class='op'>-</span><span class='int'>9_007_199_254_740_991</span><span class='comma'>,</span>
+    <span class='label'>max:</span> <span class='int'>9_007_199_254_740_991</span>
+  <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>profile:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>profile</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
+      
     </dl>
   
 
@@ -771,6 +853,50 @@
   <span class="summary_signature">
     
       <a href="#capability_request-instance_method" title="#capability_request (instance method)">#<strong>capability_request</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#capability_request_firefox_options-instance_method" title="#capability_request_firefox_options (instance method)">#<strong>capability_request_firefox_options</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#capability_request_firefox_options_log-instance_method" title="#capability_request_firefox_options_log (instance method)">#<strong>capability_request_firefox_options_log</strong>  &#x21d2; Object </a>
     
 
     
@@ -1131,10 +1257,10 @@
       <pre class="lines">
 
 
-237</pre>
+288</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 237</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 288</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_autodetect_proxy_configuration'>autodetect_proxy_configuration</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#AutodetectProxyConfiguration-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::AutodetectProxyConfiguration (constant)">AutodetectProxyConfiguration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1170,10 +1296,10 @@
       <pre class="lines">
 
 
-234</pre>
+285</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 234</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 285</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capabilities_request'>capabilities_request</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CapabilitiesRequest-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::CapabilitiesRequest (constant)">CapabilitiesRequest</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1209,12 +1335,90 @@
       <pre class="lines">
 
 
-235</pre>
+286</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 235</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 286</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capability_request'>capability_request</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CapabilityRequest-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequest (constant)">CapabilityRequest</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="capability_request_firefox_options-instance_method">
+  
+    #<strong>capability_request_firefox_options</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+296</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 296</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_capability_request_firefox_options'>capability_request_firefox_options</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CapabilityRequestFirefoxOptions-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions (constant)">CapabilityRequestFirefoxOptions</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="capability_request_firefox_options_log-instance_method">
+  
+    #<strong>capability_request_firefox_options_log</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+297</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 297</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_capability_request_firefox_options_log'>capability_request_firefox_options_log</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#CapabilityRequestFirefoxOptions-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::CapabilityRequestFirefoxOptions (constant)">CapabilityRequestFirefoxOptions</a></span></span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -1248,10 +1452,10 @@
       <pre class="lines">
 
 
-238</pre>
+289</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 238</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 289</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_direct_proxy_configuration'>direct_proxy_configuration</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#DirectProxyConfiguration-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::DirectProxyConfiguration (constant)">DirectProxyConfiguration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1296,12 +1500,12 @@
       <pre class="lines">
 
 
-249
-250
-251</pre>
+302
+303
+304</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 302</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_end_'>end_</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.end</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1339,10 +1543,10 @@
       <pre class="lines">
 
 
-239</pre>
+290</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 239</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 290</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manual_proxy_configuration'>manual_proxy_configuration</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#ManualProxyConfiguration-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::ManualProxyConfiguration (constant)">ManualProxyConfiguration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1387,13 +1591,13 @@
       <pre class="lines">
 
 
-256
-257
-258
-259</pre>
+309
+310
+311
+312</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 256</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 309</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>capabilities:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#NewParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::NewParameters (constant)">NewParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>capabilities:</span> <span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
@@ -1432,10 +1636,10 @@
       <pre class="lines">
 
 
-240</pre>
+291</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 240</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 291</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pac_proxy_configuration'>pac_proxy_configuration</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#PacProxyConfiguration-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::PacProxyConfiguration (constant)">PacProxyConfiguration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1471,10 +1675,10 @@
       <pre class="lines">
 
 
-236</pre>
+287</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 236</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 287</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy_configuration'>proxy_configuration</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Session/ProxyConfiguration.html" title="Selenium::WebDriver::BiDi::Protocol::Session::ProxyConfiguration (class)">ProxyConfiguration</a></span></span></pre>
     </td>
@@ -1519,12 +1723,12 @@
       <pre class="lines">
 
 
-264
-265
-266</pre>
+317
+318
+319</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 264</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_status'>status</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.status</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::BiDi::Protocol::Session (class)">Session</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="#StatusResult-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::StatusResult (constant)">StatusResult</a></span></span><span class='rparen'>)</span>
@@ -1571,13 +1775,13 @@
       <pre class="lines">
 
 
-271
-272
-273
-274</pre>
+324
+325
+326
+327</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 271</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subscribe'>subscribe</span><span class='lparen'>(</span><span class='label'>events:</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#SubscribeParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::SubscribeParameters (constant)">SubscribeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>events:</span> <span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_contexts'>contexts</span><span class='comma'>,</span> <span class='label'>user_contexts:</span> <span class='id identifier rubyid_user_contexts'>user_contexts</span><span class='rparen'>)</span>
@@ -1616,10 +1820,10 @@
       <pre class="lines">
 
 
-241</pre>
+292</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 292</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_system_proxy_configuration'>system_proxy_configuration</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#SystemProxyConfiguration-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::SystemProxyConfiguration (constant)">SystemProxyConfiguration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1664,13 +1868,13 @@
       <pre class="lines">
 
 
-279
-280
-281
-282</pre>
+332
+333
+334
+335</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 279</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 332</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe'>unsubscribe</span><span class='lparen'>(</span><span class='label'>events:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>subscriptions:</span> <span class='const'><span class='object_link'><a href="../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Session/UnsubscribeParameters.html" title="Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeParameters (class)">UnsubscribeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_build'><span class='object_link'><a href="../Serialization/Union.html#build-class_method" title="Selenium::WebDriver::BiDi::Serialization::Union.build (method)">build</a></span></span><span class='lparen'>(</span><span class='label'>events:</span> <span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='label'>subscriptions:</span> <span class='id identifier rubyid_subscriptions'>subscriptions</span><span class='rparen'>)</span>
@@ -1709,10 +1913,10 @@
       <pre class="lines">
 
 
-244</pre>
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 244</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 295</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe_by_attributes_request'>unsubscribe_by_attributes_request</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#UnsubscribeByAttributesRequest-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByAttributesRequest (constant)">UnsubscribeByAttributesRequest</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1748,10 +1952,10 @@
       <pre class="lines">
 
 
-243</pre>
+294</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 243</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 294</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe_by_id_request'>unsubscribe_by_id_request</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#UnsubscribeByIDRequest-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::UnsubscribeByIDRequest (constant)">UnsubscribeByIDRequest</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1787,10 +1991,10 @@
       <pre class="lines">
 
 
-242</pre>
+293</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 242</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/session.rb', line 293</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_prompt_handler'>user_prompt_handler</span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#UserPromptHandler-constant" title="Selenium::WebDriver::BiDi::Protocol::Session::UserPromptHandler (constant)">UserPromptHandler</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Session#new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='rparen'>)</span></pre>
     </td>
@@ -1803,9 +2007,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Oct  9 19:27:51 2026 by
+  Generated on Thu Oct 29 13:10:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.12).
 </div>
 
     </div>

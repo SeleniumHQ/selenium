@@ -264,7 +264,9 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
  <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Creates a driver and starts a new session through the given executor.</div>
+</div>
 </div>
 </section>
 </li>
@@ -675,6 +677,21 @@ URL.</div>
  <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
  <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
  <a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</span></div>
+<div class="block">Creates a driver and starts a new session through the given executor.
+
+<p>Before the session starts, the current Selenium debug switches (<code>selenium.debug</code>,
+<code>selenium.webdriver.verbose</code> and <code>SE_DEBUG</code>) are applied to Selenium's logger, so a
+switch set after this class was loaded still takes effect for this driver.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>executor</code> - the executor that sends commands to the remote end</dd>
+<dd><code>capabilities</code> - the capabilities requested for the new session</dd>
+<dd><code>clientFactory</code> - the factory used to create HTTP clients for this driver</dd>
+<dd><code>clientConfig</code> - the HTTP client configuration used by this driver</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if any argument is <code>null</code></dd>
+<dd><code><a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></code> - if the remote end cannot start a session</dd>
+</dl>
 </div>
 </section>
 </li>

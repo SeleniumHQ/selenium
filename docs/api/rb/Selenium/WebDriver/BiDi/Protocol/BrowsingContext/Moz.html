@@ -119,9 +119,57 @@ Construct Moz.new(source) for a matching session; other sessions use BrowsingCon
   
 
 </div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="GetTreeParameters-constant" class="">GetTreeParameters =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
 
 
-  <h2>Constant Summary</h2>
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-browsingcontextgettreeparameters</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>max_depth:</span> <span class='lbrace'>{</span>
+    <span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>maxDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>integer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+    <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span>
+    <span class='label'>max:</span> <span class='int'>9_007_199_254_740_991</span>
+  <span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>root:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>root</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>string</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>scope:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:scope</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>enum:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>BrowsingContext::MOZ_SCOPE</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+  
   
   <h3 class="inherited">Constants inherited
      from <span class='object_link'><a href="../../BrowsingContext.html" title="Selenium::WebDriver::BiDi::BrowsingContext (class)">BrowsingContext</a></span></h3>
@@ -226,22 +274,18 @@ Construct Moz.new(source) for a matching session; other sessions use BrowsingCon
       <pre class="lines">
 
 
-857
-858
-859
-860
-861
-862
-863</pre>
+929
+930
+931
+932
+933</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 857</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/browsing_context.rb', line 929</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get_tree'>get_tree</span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>root:</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_extensions'>extensions</span> <span class='op'>=</span> <span class='lbrace'>{</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:scope</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_scope'>scope</span>
-  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../BrowsingContext.html#GetTreeParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeParameters (constant)">GetTreeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='id identifier rubyid_max_depth'>max_depth</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../../../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='label'>extensions:</span> <span class='id identifier rubyid_extensions'>extensions</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='period'>.</span><span class='id identifier rubyid_validate!'><span class='object_link'><a href="../../Serialization.html#validate!-class_method" title="Selenium::WebDriver::BiDi::Serialization.validate! (method)">validate!</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:scope</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_scope'>scope</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="../BrowsingContext.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../BrowsingContext.html#MOZ_SCOPE-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::MOZ_SCOPE (constant)">MOZ_SCOPE</a></span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#GetTreeParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::Moz::GetTreeParameters (constant)">GetTreeParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../../BrowsingContext.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::BrowsingContext#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>max_depth:</span> <span class='id identifier rubyid_max_depth'>max_depth</span><span class='comma'>,</span> <span class='label'>root:</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../../../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='label'>scope:</span> <span class='id identifier rubyid_scope'>scope</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.getTree</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="../BrowsingContext.html" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext (class)">BrowsingContext</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../BrowsingContext.html#GetTreeResult-constant" title="Selenium::WebDriver::BiDi::Protocol::BrowsingContext::GetTreeResult (constant)">GetTreeResult</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -254,9 +298,9 @@ Construct Moz.new(source) for a matching session; other sessions use BrowsingCon
 </div>
 
       <div id="footer">
-  Generated on Fri Oct  9 19:27:52 2026 by
+  Generated on Thu Oct 29 13:10:59 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.12).
 </div>
 
     </div>

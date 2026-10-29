@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../../../../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/webdriver';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -362,6 +362,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pkgutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
@@ -373,6 +374,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">asynccontextmanager</span><span class="p">,</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Concatenate</span><span class="p">,</span> <span class="n">ParamSpec</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span>
@@ -384,6 +386,12 @@
     <span class="n">NoSuchElementException</span><span class="p">,</span>
     <span class="n">WebDriverException</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common._bidi.web_extension</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExtensionBase64Encoded</span><span class="p">,</span>
+    <span class="n">ExtensionDataValue</span><span class="p">,</span>
+    <span class="n">ExtensionPath</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common._bidi.web_extension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span> <span class="k">as</span> <span class="n">WebExtensionProtocol</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.browser</span><span class="w"> </span><span class="kn">import</span> <span class="n">Browser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.browsing_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrowsingContext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.emulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Emulation</span>
@@ -393,9 +401,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">Script</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.webextension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.webextension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span> <span class="k">as</span> <span class="n">BidiWebExtension</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.by</span><span class="w"> </span><span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgOptions</span><span class="p">,</span> <span class="n">BaseOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.web_extension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.bidi_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BidiConnection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.client_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
@@ -413,6 +422,57 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.support.relative_locator</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelativeBy</span>
 
 <span class="n">cdp</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Remote ends that do not implement a command answer in one of these shapes.</span>
+<span class="n">_UNSUPPORTED_COMMAND_MARKERS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"Unrecognized command: POST"</span><span class="p">,</span>
+    <span class="s2">"Command not found: POST "</span><span class="p">,</span>
+    <span class="s1">'{"status":405,"value":["GET","HEAD","DELETE"]}'</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_unsupported_command</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">marker</span> <span class="ow">in</span> <span class="n">message</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">_UNSUPPORTED_COMMAND_MARKERS</span><span class="p">)</span>
+
+
+<span class="c1"># Mirrors FirefoxRemoteConnection, which only a `webdriver.Firefox` session gets.</span>
+<span class="n">_FIREFOX_ADDON_COMMANDS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"INSTALL_ADDON"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"POST"</span><span class="p">,</span> <span class="s2">"/session/$sessionId/moz/addon/install"</span><span class="p">),</span>
+    <span class="s2">"UNINSTALL_ADDON"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"POST"</span><span class="p">,</span> <span class="s2">"/session/$sessionId/moz/addon/uninstall"</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_zip_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Zip `directory` recursively and return the archive base64-encoded.</span>
+
+<span class="sd">    Entry names are relative to `root`: passing the directory itself puts its</span>
+<span class="sd">    contents at the archive root, passing the parent keeps the directory as the</span>
+<span class="sd">    archive's single top-level entry.</span>
+<span class="sd">    """</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">strict_timestamps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">archive</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">archive</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">root</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_encode_extension</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the extension at `path` as a base64-encoded archive.</span>
+
+<span class="sd">    A directory is zipped with its contents at the archive root, a file is read</span>
+<span class="sd">    as-is, and anything else is assumed to already be base64-encoded bytes.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_zip_directory</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">extension</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">extension</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span>
 
 
 <div class="viewcode-block" id="import_cdp">
@@ -655,7 +715,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_browsing_context</span><span class="p">:</span> <span class="n">BrowsingContext</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">:</span> <span class="n">Storage</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span><span class="p">:</span> <span class="n">WebExtension</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span><span class="p">:</span> <span class="n">BidiWebExtension</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_permissions</span><span class="p">:</span> <span class="n">Permissions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_emulation</span><span class="p">:</span> <span class="n">Emulation</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="p">:</span> <span class="n">Input</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1650,11 +1710,7 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"CDP support for Firefox has been removed. Please switch to WebDriver BiDi."</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">RemoteConnection</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"command_executor must be a RemoteConnection instance for CDP support"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span>
-            <span class="n">ws_url</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_interval</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">)</span>
         <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devtools</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">get_targets</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">target_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_window_handle</span><span class="p">:</span>
@@ -1715,11 +1771,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">RemoteConnection</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"command_executor must be a RemoteConnection instance for BiDi support"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span>
-            <span class="n">ws_url</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_interval</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Network</span><span class="p">:</span>
@@ -1836,7 +1888,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permissions</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">webextension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebExtension</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">webextension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BidiWebExtension</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Get a webextension module object for BiDi webextension commands.</span>
 
 <span class="sd">        Returns:</span>
@@ -1851,9 +1903,156 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span> <span class="o">=</span> <span class="n">WebExtension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span> <span class="o">=</span> <span class="n">BidiWebExtension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span>
+
+<div class="viewcode-block" id="WebDriver.install_web_extension">
+<a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.install_web_extension">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">install_web_extension</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">permanent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">allow_private_browsing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebExtension</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Install a web extension into the running session.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: An unpacked extension directory, a packed extension archive</span>
+<span class="sd">                (`.xpi`, `.crx` or `.zip`), or the base64-encoded bytes of such</span>
+<span class="sd">                an archive. Chromium installs unpacked directories only.</span>
+<span class="sd">            permanent: Firefox only. Install the extension permanently rather</span>
+<span class="sd">                than for the lifetime of the session. When omitted, the default</span>
+<span class="sd">                depends on the protocol: BiDi installs temporarily, while the</span>
+<span class="sd">                WebDriver-Classic fallback installs permanently. Firefox installs</span>
+<span class="sd">                only a packed, signed extension permanently; a directory is</span>
+<span class="sd">                rejected.</span>
+<span class="sd">            allow_private_browsing: Firefox only. Let the extension run in</span>
+<span class="sd">                private browsing windows. On Android it additionally requires</span>
+<span class="sd">                `permanent=True`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `WebExtension` wrapping the id the browser assigned. Pass it to</span>
+<span class="sd">            `uninstall_web_extension` to remove the extension again.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If a Firefox-only option is given for another browser.</span>
+<span class="sd">            WebDriverException: If the session cannot install extensions, such as</span>
+<span class="sd">                a Chromium session started without BiDi.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            extension = driver.install_web_extension("/path/to/extension")</span>
+<span class="sd">            driver.uninstall_web_extension(extension)</span>
+<span class="sd">        """</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"permanent"</span><span class="p">:</span> <span class="n">permanent</span><span class="p">,</span> <span class="s2">"allow_private_browsing"</span><span class="p">:</span> <span class="n">allow_private_browsing</span><span class="p">}</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_firefox</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">options</span><span class="p">))</span><span class="si">}</span><span class="s2"> is only supported on Firefox, not </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'browserName'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_enabled</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_firefox</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">WebExtension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_install_addon_over_classic</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Installing a web extension on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'browserName'</span><span class="p">)</span><span class="si">}</span><span class="s2"> needs a WebDriver BiDi session; "</span>
+                <span class="s2">"enable it with `options.enable_bidi = True`."</span>
+            <span class="p">)</span>
+
+        <span class="c1"># The generated vendor arguments carry the namespace the wire keys spell as</span>
+        <span class="c1"># `moz:permanent` / `moz:allowPrivateBrowsing`, so the classic names map straight over.</span>
+        <span class="n">vendor</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">"moz_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">WebExtensionProtocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_web_extension_data</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="o">**</span><span class="n">vendor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">WebExtension</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WebDriver.uninstall_web_extension">
+<a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.uninstall_web_extension">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uninstall_web_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="n">WebExtension</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Uninstall a web extension installed with `install_web_extension`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            extension: The `WebExtension` returned by `install_web_extension`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If something other than a `WebExtension` is given.</span>
+<span class="sd">            WebDriverException: If the session cannot uninstall extensions, such</span>
+<span class="sd">                as a Chromium session started without BiDi.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extension</span><span class="p">,</span> <span class="n">WebExtension</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"uninstall_web_extension takes the WebExtension returned by "</span>
+                <span class="sa">f</span><span class="s2">"install_web_extension, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_enabled</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_firefox</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_register_classic_addon_commands</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"UNINSTALL_ADDON"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">extension</span><span class="o">.</span><span class="n">id</span><span class="p">})</span>
+                <span class="k">return</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Uninstalling a web extension on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'browserName'</span><span class="p">)</span><span class="si">}</span><span class="s2"> needs a WebDriver BiDi session; "</span>
+                <span class="s2">"enable it with `options.enable_bidi = True`."</span>
+            <span class="p">)</span>
+
+        <span class="n">WebExtensionProtocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">uninstall</span><span class="p">(</span><span class="n">extension</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bidi_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"webSocketUrl"</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_firefox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"browserName"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"firefox"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_web_extension_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExtensionDataValue</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Resolve `path` into the `webExtension.install` extension data for it."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ExtensionBase64Encoded</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">_encode_extension</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="c1"># A directory only resolves on the machine running the browser, so a remote session</span>
+        <span class="c1"># uploads it first and installs from the path the remote end hands back.</span>
+        <span class="k">return</span> <span class="n">ExtensionPath</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_web_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="k">else</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_web_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Upload `directory` to the remote end and return the path it unpacked to."""</span>
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">_zip_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">directory</span><span class="p">)))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span> <span class="p">{</span><span class="s2">"file"</span><span class="p">:</span> <span class="n">archive</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_is_unsupported_command</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                    <span class="s2">"Could not upload the extension directory to the remote end. Installing an "</span>
+                    <span class="s2">"unpacked extension over a remote session needs a remote end that accepts "</span>
+                    <span class="s2">"file uploads, such as the Selenium Grid."</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+            <span class="k">raise</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_classic_addon_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Teach the command executor the Firefox-classic addon endpoints.</span>
+
+<span class="sd">        `webdriver.Firefox` registers these in its own connection, but a Grid session</span>
+<span class="sd">        driven through `webdriver.Remote` uses the plain one, which does not have them.</span>
+<span class="sd">        """</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">RemoteConnection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_FIREFOX_ADDON_COMMANDS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">executor</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">executor</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_install_addon_over_classic</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">permanent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">allow_private_browsing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Install through the Firefox-classic endpoint and return the extension id."""</span>
+        <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"addon"</span><span class="p">:</span> <span class="n">_encode_extension</span><span class="p">(</span><span class="n">path</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">permanent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">"temporary"</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">permanent</span>
+        <span class="k">if</span> <span class="n">allow_private_browsing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">"allowPrivateBrowsing"</span><span class="p">]</span> <span class="o">=</span> <span class="n">allow_private_browsing</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Installing web extension over the WebDriver-Classic endpoint"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_classic_addon_commands</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"INSTALL_ADDON"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">emulation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>

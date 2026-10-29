@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../../../../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/errorhandler';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -539,43 +539,45 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">""</span> <span class="ow">and</span> <span class="s2">"message"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"message"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">""</span> <span class="ow">and</span> <span class="s2">"message"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"message"</span><span class="p">]</span>
 
-        <span class="n">screen</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
-        <span class="k">if</span> <span class="s2">"screen"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">screen</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"screen"</span><span class="p">]</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+            <span class="k">if</span> <span class="s2">"screen"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"screen"</span><span class="p">]</span>
 
-        <span class="n">stacktrace</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">st_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stackTrace"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stacktrace"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">st_value</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">st_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">stacktrace</span> <span class="o">=</span> <span class="n">st_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">stacktrace</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">st_value</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lineNumber"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-                        <span class="n">file</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fileName"</span><span class="p">,</span> <span class="s2">"&lt;anonymous&gt;"</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
-                            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span>
-                        <span class="n">meth</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"methodName"</span><span class="p">,</span> <span class="s2">"&lt;anonymous&gt;"</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="s2">"className"</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">:</span>
-                            <span class="n">meth</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">frame</span><span class="p">[</span><span class="s1">'className'</span><span class="p">]</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">meth</span><span class="si">}</span><span class="s2">"</span>
-                        <span class="n">msg</span> <span class="o">=</span> <span class="s2">"    at </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span>
-                        <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">meth</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-                        <span class="n">stacktrace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+            <span class="n">stacktrace</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">st_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stackTrace"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stacktrace"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">st_value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">st_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">stacktrace</span> <span class="o">=</span> <span class="n">st_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">stacktrace</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">st_value</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"lineNumber"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+                            <span class="n">file</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fileName"</span><span class="p">,</span> <span class="s2">"&lt;anonymous&gt;"</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                                <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span>
+                            <span class="n">meth</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"methodName"</span><span class="p">,</span> <span class="s2">"&lt;anonymous&gt;"</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="s2">"className"</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">:</span>
+                                <span class="n">meth</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">frame</span><span class="p">[</span><span class="s1">'className'</span><span class="p">]</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">meth</span><span class="si">}</span><span class="s2">"</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="s2">"    at </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">meth</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                            <span class="n">stacktrace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="k">pass</span>
         <span class="k">if</span> <span class="n">exception_class</span> <span class="o">==</span> <span class="n">UnexpectedAlertPresentException</span><span class="p">:</span>
             <span class="n">alert_text</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="s2">"data"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-                <span class="n">alert_text</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="s2">"alert"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-                <span class="n">alert_text</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"alert"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">"data"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">alert_text</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">"alert"</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">alert_text</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"alert"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">,</span> <span class="n">alert_text</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 </div>

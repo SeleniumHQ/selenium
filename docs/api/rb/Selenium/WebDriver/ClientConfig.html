@@ -201,6 +201,31 @@
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#ignore_certificates-instance_method" title="#ignore_certificates (instance method)">#<strong>ignore_certificates</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute ignore_certificates.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#max_redirects-instance_method" title="#max_redirects (instance method)">#<strong>max_redirects</strong>  &#x21d2; Object </a>
     
 
@@ -364,7 +389,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(open_timeout: 60, read_timeout: 120, max_redirects: 20, proxy: nil, extra_headers: nil, user_agent: nil, server_url: nil)  &#x21d2; ClientConfig </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(open_timeout: 60, read_timeout: 120, max_redirects: 20, proxy: nil, ignore_certificates: false, extra_headers: nil, user_agent: nil, server_url: nil)  &#x21d2; ClientConfig </a>
     
 
     
@@ -395,7 +420,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(open_timeout: 60, read_timeout: 120, max_redirects: 20, proxy: nil, extra_headers: nil, user_agent: nil, server_url: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::ClientConfig (class)">ClientConfig</a></span></tt> 
+    #<strong>initialize</strong>(open_timeout: 60, read_timeout: 120, max_redirects: 20, proxy: nil, ignore_certificates: false, extra_headers: nil, user_agent: nil, server_url: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::ClientConfig (class)">ClientConfig</a></span></tt> 
   
 
   
@@ -477,6 +502,22 @@
   
     <li>
       
+        <span class='name'>ignore_certificates</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Skip verifying the server certificate (unsafe outside a trusted network).</p></div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>extra_headers</span>
       
       
@@ -532,7 +573,6 @@
       <pre class="lines">
 
 
-51
 52
 53
 54
@@ -546,15 +586,19 @@
 62
 63
 64
-65</pre>
+65
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>open_timeout:</span> <span class='int'>60</span><span class='comma'>,</span>
                <span class='label'>read_timeout:</span> <span class='int'>120</span><span class='comma'>,</span>
                <span class='label'>max_redirects:</span> <span class='int'>20</span><span class='comma'>,</span>
                <span class='label'>proxy:</span> <span class='kw'>nil</span><span class='comma'>,</span>
+               <span class='label'>ignore_certificates:</span> <span class='kw'>false</span><span class='comma'>,</span>
                <span class='label'>extra_headers:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                <span class='label'>user_agent:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                <span class='label'>server_url:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
@@ -562,6 +606,7 @@
   <span class='ivar'>@read_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_read_timeout'>read_timeout</span>
   <span class='ivar'>@max_redirects</span> <span class='op'>=</span> <span class='id identifier rubyid_max_redirects'>max_redirects</span>
   <span class='ivar'>@proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>||</span> <span class='id identifier rubyid_proxy_from_environment'>proxy_from_environment</span>
+  <span class='ivar'>@ignore_certificates</span> <span class='op'>=</span> <span class='id identifier rubyid_ignore_certificates'>ignore_certificates</span>
   <span class='ivar'>@extra_headers</span> <span class='op'>=</span> <span class='id identifier rubyid_extra_headers'>extra_headers</span>
   <span class='ivar'>@user_agent</span> <span class='op'>=</span> <span class='id identifier rubyid_user_agent'>user_agent</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_server_url'>server_url</span> <span class='op'>=</span> <span class='id identifier rubyid_server_url'>server_url</span>
@@ -671,15 +716,56 @@
       <pre class="lines">
 
 
-71
-72
-73</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extra_headers'>extra_headers</span>
   <span class='ivar'>@extra_headers</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_default_extra_headers'>default_extra_headers</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="ignore_certificates=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="ignore_certificates-instance_method">
+  
+    #<strong>ignore_certificates</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute ignore_certificates.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 38</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ignore_certificates'>ignore_certificates</span>
+  <span class='ivar'>@ignore_certificates</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -908,12 +994,12 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/client_config.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_agent'>user_agent</span>
   <span class='ivar'>@user_agent</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_default_user_agent'>default_user_agent</span>
@@ -929,9 +1015,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Oct  9 19:27:50 2026 by
+  Generated on Thu Oct 29 13:10:55 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.12).
 </div>
 
     </div>

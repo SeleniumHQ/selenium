@@ -119,6 +119,48 @@ Construct Moz.new(source) for a matching session; other sessions use WebExtensio
   
 
 </div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="InstallParameters-constant" class="">InstallParameters =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://www.selenium.dev/documentation/warnings/bidi-implementation/" target="_parent" title="https://www.selenium.dev/documentation/warnings/bidi-implementation/">https://www.selenium.dev/documentation/warnings/bidi-implementation/</a></li>
+    
+      <li><a href="https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters" target="_parent" title="https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters">https://w3c.github.io/webdriver-bidi/#cddl-type-webextensioninstallparameters</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization/Record.html" title="Selenium::WebDriver::BiDi::Serialization::Record (class)">Record</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define'><span class='object_link'><a href="../../Serialization/Record.html#define-class_method" title="Selenium::WebDriver::BiDi::Serialization::Record.define (method)">define</a></span></span><span class='lparen'>(</span>
+  <span class='label'>extension_data:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>extensionData</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>ref:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>WebExtension::ExtensionData</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>allow_private_browsing:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:allowPrivateBrowsing</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span>
+  <span class='label'>permanent:</span> <span class='lbrace'>{</span><span class='label'>wire_key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:permanent</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>required:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>primitive:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>boolean</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span>
+<span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
 
 
 
@@ -247,24 +289,24 @@ Construct Moz.new(source) for a matching session; other sessions use WebExtensio
       <pre class="lines">
 
 
-149
-150
-151
-152
-153
-154
-155
-156</pre>
+157
+158
+159
+160
+161
+162
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/web_extension.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/web_extension.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_install'>install</span><span class='lparen'>(</span><span class='label'>extension_data:</span><span class='comma'>,</span> <span class='label'>allow_private_browsing:</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='comma'>,</span> <span class='label'>permanent:</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_extensions'>extensions</span> <span class='op'>=</span> <span class='lbrace'>{</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:allowPrivateBrowsing</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_allow_private_browsing'>allow_private_browsing</span><span class='comma'>,</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:permanent</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_permanent'>permanent</span>
-  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="../../Serialization.html" title="Selenium::WebDriver::BiDi::Serialization (module)">Serialization</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Serialization.html#UNSET-constant" title="Selenium::WebDriver::BiDi::Serialization::UNSET (constant)">UNSET</a></span></span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../WebExtension.html#InstallParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallParameters (constant)">InstallParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Domain.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Protocol::Domain#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>extension_data:</span> <span class='id identifier rubyid_extension_data'>extension_data</span><span class='comma'>,</span> <span class='label'>extensions:</span> <span class='id identifier rubyid_extensions'>extensions</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#InstallParameters-constant" title="Selenium::WebDriver::BiDi::Protocol::WebExtension::Moz::InstallParameters (constant)">InstallParameters</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../../../WebExtension.html#initialize-instance_method" title="Selenium::WebDriver::WebExtension#initialize (method)">new</a></span></span><span class='lparen'>(</span>
+    <span class='label'>extension_data:</span> <span class='id identifier rubyid_extension_data'>extension_data</span><span class='comma'>,</span>
+    <span class='label'>allow_private_browsing:</span> <span class='id identifier rubyid_allow_private_browsing'>allow_private_browsing</span><span class='comma'>,</span>
+    <span class='label'>permanent:</span> <span class='id identifier rubyid_permanent'>permanent</span>
+  <span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webExtension.install</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="../WebExtension.html" title="Selenium::WebDriver::BiDi::Protocol::WebExtension (class)">WebExtension</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WebExtension.html#InstallResult-constant" title="Selenium::WebDriver::BiDi::Protocol::WebExtension::InstallResult (constant)">InstallResult</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -307,12 +349,12 @@ Construct Moz.new(source) for a matching session; other sessions use WebExtensio
       <pre class="lines">
 
 
-160
-161
-162</pre>
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/web_extension.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/protocol/web_extension.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_list_extensions'>list_extensions</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webExtension.moz:listExtensions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>result:</span> <span class='const'><span class='object_link'><a href="../WebExtension.html" title="Selenium::WebDriver::BiDi::Protocol::WebExtension (class)">WebExtension</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WebExtension.html#MozListExtensionsResult-constant" title="Selenium::WebDriver::BiDi::Protocol::WebExtension::MozListExtensionsResult (constant)">MozListExtensionsResult</a></span></span><span class='rparen'>)</span>
@@ -327,9 +369,9 @@ Construct Moz.new(source) for a matching session; other sessions use WebExtensio
 </div>
 
       <div id="footer">
-  Generated on Fri Oct  9 19:27:52 2026 by
+  Generated on Thu Oct 29 13:10:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.12).
 </div>
 
     </div>

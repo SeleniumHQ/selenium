@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_ie/selenium.webdriver.ie.webdriver';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -1075,6 +1075,47 @@ driver.input.release_actions(driver.current_window_handle)
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.install_web_extension">
+<span class="sig-name descname"><span class="pre">install_web_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permanent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_private_browsing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.install_web_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.install_web_extension" title="Link to this definition">#</a></dt>
+<dd><p>Install a web extension into the running session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – An unpacked extension directory, a packed extension archive
+(<cite>.xpi</cite>, <cite>.crx</cite> or <cite>.zip</cite>), or the base64-encoded bytes of such
+an archive. Chromium installs unpacked directories only.</p></li>
+<li><p><strong>permanent</strong> (<em>bool</em><em> | </em><em>None</em>) – Firefox only. Install the extension permanently rather
+than for the lifetime of the session. When omitted, the default
+depends on the protocol: BiDi installs temporarily, while the
+WebDriver-Classic fallback installs permanently. Firefox installs
+only a packed, signed extension permanently; a directory is
+rejected.</p></li>
+<li><p><strong>allow_private_browsing</strong> (<em>bool</em><em> | </em><em>None</em>) – Firefox only. Let the extension run in
+private browsing windows. On Android it additionally requires
+<cite>permanent=True</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>WebExtension</cite> wrapping the id the browser assigned. Pass it to
+<cite>uninstall_web_extension</cite> to remove the extension again.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If a Firefox-only option is given for another browser.</p></li>
+<li><p><a class="reference internal" href="../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><strong>WebDriverException</strong></a> – If the session cannot install extensions, such as
+    a Chromium session started without BiDi.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../selenium_webdriver_common/selenium.webdriver.common.web_extension.html#selenium.webdriver.common.web_extension.WebExtension" title="selenium.webdriver.common.web_extension.WebExtension"><em>WebExtension</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>extension = driver.install_web_extension(“/path/to/extension”)
+driver.uninstall_web_extension(extension)</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.maximize_window">
 <span class="sig-name descname"><span class="pre">maximize_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.maximize_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.maximize_window" title="Link to this definition">#</a></dt>
 <dd><p>Maximizes the current window that webdriver is using.</p>
@@ -1524,6 +1565,27 @@ behavior.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.uninstall_web_extension">
+<span class="sig-name descname"><span class="pre">uninstall_web_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.uninstall_web_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.uninstall_web_extension" title="Link to this definition">#</a></dt>
+<dd><p>Uninstall a web extension installed with <cite>install_web_extension</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>extension</strong> (<a class="reference internal" href="../selenium_webdriver_common/selenium.webdriver.common.web_extension.html#selenium.webdriver.common.web_extension.WebExtension" title="selenium.webdriver.common.web_extension.WebExtension"><em>WebExtension</em></a>) – The <cite>WebExtension</cite> returned by <cite>install_web_extension</cite>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If something other than a <cite>WebExtension</cite> is given.</p></li>
+<li><p><a class="reference internal" href="../selenium_common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><strong>WebDriverException</strong></a> – If the session cannot uninstall extensions, such
+    as a Chromium session started without BiDi.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.unpin">
 <span class="sig-name descname"><span class="pre">unpin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.unpin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.unpin" title="Link to this definition">#</a></dt>
 <dd><p>Remove a pinned script from storage.</p>
@@ -1648,6 +1710,7 @@ behavior.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.get_window_size"><code class="docutils literal notranslate"><span class="pre">WebDriver.get_window_size()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.implicitly_wait"><code class="docutils literal notranslate"><span class="pre">WebDriver.implicitly_wait()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.input"><code class="docutils literal notranslate"><span class="pre">WebDriver.input</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.install_web_extension"><code class="docutils literal notranslate"><span class="pre">WebDriver.install_web_extension()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.maximize_window"><code class="docutils literal notranslate"><span class="pre">WebDriver.maximize_window()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.minimize_window"><code class="docutils literal notranslate"><span class="pre">WebDriver.minimize_window()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.mobile"><code class="docutils literal notranslate"><span class="pre">WebDriver.mobile</span></code></a></li>
@@ -1681,6 +1744,7 @@ behavior.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.switch_to"><code class="docutils literal notranslate"><span class="pre">WebDriver.switch_to</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.timeouts"><code class="docutils literal notranslate"><span class="pre">WebDriver.timeouts</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.title"><code class="docutils literal notranslate"><span class="pre">WebDriver.title</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.uninstall_web_extension"><code class="docutils literal notranslate"><span class="pre">WebDriver.uninstall_web_extension()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.unpin"><code class="docutils literal notranslate"><span class="pre">WebDriver.unpin()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.virtual_authenticator_id"><code class="docutils literal notranslate"><span class="pre">WebDriver.virtual_authenticator_id</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.webextension"><code class="docutils literal notranslate"><span class="pre">WebDriver.webextension</span></code></a></li>

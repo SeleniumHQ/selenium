@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common._bidi.serialization &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.common._bidi.serialization &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../../../../../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/_bidi/serialization';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -372,6 +372,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
@@ -442,6 +443,10 @@
     <span class="n">primitive</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">scalar</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fixed</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">UNSET</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">exclusive_min</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">exclusive_max</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="n">_META_KEY</span> <span class="o">=</span> <span class="s2">"bidi"</span>
@@ -460,6 +465,10 @@
     <span class="n">primitive</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">scalar</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fixed</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">exclusive_min</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclusive_max</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Dataclass field metadata carrying one field's BiDi wire facts.</span>
 
@@ -470,6 +479,9 @@
 <span class="sd">    ``scalar`` marks a map field (a ``[key, value]`` list whose value type is an</span>
 <span class="sd">    object-only union): the union's string keys pass through when they match this</span>
 <span class="sd">    primitive, rather than being rejected as non-objects.</span>
+
+<span class="sd">    ``min``/``max`` bound a numeric value (each element, for a list), inclusively unless</span>
+<span class="sd">    ``exclusive_min``/``exclusive_max`` is set.</span>
 <span class="sd">    """</span>
     <span class="n">descriptor</span> <span class="o">=</span> <span class="n">_Wire</span><span class="p">(</span>
         <span class="n">wire</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
@@ -481,6 +493,10 @@
         <span class="n">primitive</span><span class="o">=</span><span class="n">primitive</span><span class="p">,</span>
         <span class="n">scalar</span><span class="o">=</span><span class="n">scalar</span><span class="p">,</span>
         <span class="n">fixed</span><span class="o">=</span><span class="n">fixed</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="nb">max</span><span class="p">,</span>
+        <span class="n">exclusive_min</span><span class="o">=</span><span class="n">exclusive_min</span><span class="p">,</span>
+        <span class="n">exclusive_max</span><span class="o">=</span><span class="n">exclusive_max</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">_META_KEY</span><span class="p">:</span> <span class="n">descriptor</span><span class="p">}</span></div>
 
@@ -760,6 +776,21 @@
 <span class="p">}</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_out_of_bounds</span><span class="p">(</span><span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The bound a numeric value violates (e.g. ``"&gt;= 1"``), or None when it is in range."""</span>
+    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">w</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># NaN compares false against every bound, and an infinity escapes a one-sided range; neither</span>
+    <span class="c1"># is a JSON number, so a bounded field holds them out explicitly.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"a finite number"</span>
+    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">min</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">exclusive_min</span> <span class="k">else</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">w</span><span class="o">.</span><span class="n">min</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'&gt;'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">w</span><span class="o">.</span><span class="n">exclusive_min</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'&gt;='</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">min</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">max</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">exclusive_max</span> <span class="k">else</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">w</span><span class="o">.</span><span class="n">max</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'&lt;'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">w</span><span class="o">.</span><span class="n">exclusive_max</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'&lt;='</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">max</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_scalar</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">fixed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">UNSET</span><span class="p">:</span>
         <span class="c1"># A nullable constant (a non-nullable one is baked and never read): the wire value must be</span>
@@ -787,11 +818,14 @@
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected an object, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">klass</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
-    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">check</span> <span class="o">=</span> <span class="n">_PRIMITIVE_CHECKS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>
             <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">bound</span> <span class="o">=</span> <span class="n">_out_of_bounds</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bound</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw</span><span class="si">!r}</span><span class="s2"> is out of range (must be </span><span class="si">{</span><span class="n">bound</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="o">==</span> <span class="s2">"int"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="c1"># A whole number is exact in both types, so the declared type is held with nothing lost.</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
@@ -860,7 +894,18 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_outbound_scalar</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">_Wire</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span>  <span class="c1"># null is handled upstream</span>
+        <span class="n">got</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">primitive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">ref</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">enum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">enum_cls</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">enum</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">enum_cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enum_cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">enum_cls</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected a value, got </span><span class="si">{</span><span class="n">got</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">enum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>  <span class="c1"># enum membership is validated at construction (__post_init__)</span>
     <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -872,6 +917,9 @@
             <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: expected </span><span class="si">{</span><span class="n">w</span><span class="o">.</span><span class="n">primitive</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
+        <span class="n">bound</span> <span class="o">=</span> <span class="n">_out_of_bounds</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bound</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BiDiSerializationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> is out of range (must be </span><span class="si">{</span><span class="n">bound</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Union">

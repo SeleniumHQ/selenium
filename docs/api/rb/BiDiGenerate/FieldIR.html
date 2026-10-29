@@ -129,6 +129,31 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#bounds-instance_method" title="#bounds (instance method)">#<strong>bounds</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the value of attribute bounds.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#const-instance_method" title="#const (instance method)">#<strong>const</strong>  &#x21d2; Object </a>
     
 
@@ -442,6 +467,50 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#bound_facts-instance_method" title="#bound_facts (instance method)">#<strong>bound_facts</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>The numeric bounds every value the field carries is held to (for a list or map, each numeric one).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#primitive_literal-instance_method" title="#primitive_literal (instance method)">#<strong>primitive_literal</strong>(value)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>A single primitive string, or an array when a value may match several: a union of scalars (<code>primitive</code>), a scalar-tolerant union position (<code>scalar</code>), or a map's union of values (<code>map</code>).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#rbs_arg-instance_method" title="#rbs_arg (instance method)">#<strong>rbs_arg</strong>  &#x21d2; Object </a>
     
 
@@ -486,29 +555,7 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#scalar_literal-instance_method" title="#scalar_literal (instance method)">#<strong>scalar_literal</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'><p>The <code>scalar</code> primitive(s) a bare non-object wire value must match at a scalar-tolerant union position: a single primitive string, or an array when the union's scalar arms differ.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#spec_entry-instance_method" title="#spec_entry (instance method)">#<strong>spec_entry</strong>(indent = 0)  &#x21d2; Object </a>
+      <a href="#spec_entry-instance_method" title="#spec_entry (instance method)">#<strong>spec_entry</strong>(indent = 0, trailing: 0)  &#x21d2; Object </a>
     
 
     
@@ -581,9 +628,66 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
     <h2>Instance Attribute Details</h2>
     
       
-      <span id="const=-instance_method"></span>
+      <span id="bounds=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id="const-instance_method">
+  <h3 class="signature first" id="bounds-instance_method">
+  
+    #<strong>bounds</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the value of attribute bounds</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>the current value of bounds</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+324
+325
+326</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_bounds'>bounds</span>
+  <span class='ivar'>@bounds</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="const=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="const-instance_method">
   
     #<strong>const</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -622,12 +726,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_const'>const</span>
   <span class='ivar'>@const</span>
@@ -679,12 +783,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enum'>enum</span>
   <span class='ivar'>@enum</span>
@@ -736,12 +840,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_list'>list</span>
   <span class='ivar'>@list</span>
@@ -793,12 +897,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_map_of'>map_of</span>
   <span class='ivar'>@map_of</span>
@@ -850,12 +954,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_nullable'>nullable</span>
   <span class='ivar'>@nullable</span>
@@ -907,12 +1011,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_primitive'>primitive</span>
   <span class='ivar'>@primitive</span>
@@ -964,12 +1068,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rbs'>rbs</span>
   <span class='ivar'>@rbs</span>
@@ -1021,12 +1125,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='ivar'>@ref</span>
@@ -1078,12 +1182,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_required'>required</span>
   <span class='ivar'>@required</span>
@@ -1135,12 +1239,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ruby_name'>ruby_name</span>
   <span class='ivar'>@ruby_name</span>
@@ -1192,12 +1296,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scalar'>scalar</span>
   <span class='ivar'>@scalar</span>
@@ -1249,12 +1353,12 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
       <pre class="lines">
 
 
-357
-358
-359</pre>
+324
+325
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wire_key'>wire_key</span>
   <span class='ivar'>@wire_key</span>
@@ -1272,7 +1376,94 @@ JSON payload key (the schema's <code>wire</code> name, baked verbatim).</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="rbs_arg-instance_method">
+  <h3 class="signature first" id="bound_facts-instance_method">
+  
+    #<strong>bound_facts</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>The numeric bounds every value the field carries is held to (for a list or map, each numeric one).</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+363
+364
+365</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 363</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_bound_facts'>bound_facts</span>
+  <span class='id identifier rubyid_bounds'>bounds</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_camel_to_snake'><span class='object_link'><a href="../BiDiGenerate.html#camel_to_snake-class_method" title="BiDiGenerate.camel_to_snake (method)">camel_to_snake</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_numeric_literal'><span class='object_link'><a href="../BiDiGenerate.html#numeric_literal-class_method" title="BiDiGenerate.numeric_literal (method)">numeric_literal</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="primitive_literal-instance_method">
+  
+    #<strong>primitive_literal</strong>(value)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>A single primitive string, or an array when a value may match several: a union of scalars
+(<code>primitive</code>), a scalar-tolerant union position (<code>scalar</code>), or a map's union of values (<code>map</code>).</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+369
+370
+371</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 369</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_primitive_literal'>primitive_literal</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_word_array'><span class='object_link'><a href="../BiDiGenerate.html#word_array-class_method" title="BiDiGenerate.word_array (method)">word_array</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rbs_arg-instance_method">
   
     #<strong>rbs_arg</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -1301,12 +1492,12 @@ the schema's nullability, so nil is admitted only for a nullable field.</p>
       <pre class="lines">
 
 
-403
-404
-405</pre>
+376
+377
+378</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 403</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 376</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rbs_arg'>rbs_arg</span>
   <span class='id identifier rubyid_required'>required</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rbs'>rbs</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>?</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_rbs'>rbs</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1345,12 +1536,12 @@ the UNSET sentinel, which a value type can't capture, so optionals stay <code>un
       <pre class="lines">
 
 
-409
-410
-411</pre>
+382
+383
+384</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 409</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 382</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rbs_reader'>rbs_reader</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_required'>required</span> <span class='op'>?</span> <span class='id identifier rubyid_rbs'>rbs</span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>untyped</span><span class='tstring_end'>&#39;</span></span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1361,53 +1552,9 @@ the UNSET sentinel, which a value type can't capture, so optionals stay <code>un
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="scalar_literal-instance_method">
-  
-    #<strong>scalar_literal</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>The <code>scalar</code> primitive(s) a bare non-object wire value must match at a scalar-tolerant
-union position: a single primitive string, or an array when the union's scalar arms differ.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-396
-397
-398</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 396</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_scalar_literal'>scalar_literal</span>
-  <span class='id identifier rubyid_scalar'>scalar</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_scalar'>scalar</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_s'>s</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_scalar'>scalar</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
   <h3 class="signature " id="spec_entry-instance_method">
   
-    #<strong>spec_entry</strong>(indent = 0)  &#x21d2; <tt>Object</tt> 
+    #<strong>spec_entry</strong>(indent = 0, trailing: 0)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1434,23 +1581,23 @@ enum carries the allowed-values constant path, validated at construction.</p>
       <pre class="lines">
 
 
-362
-363
-364
-365
-366
-367
-368</pre>
+329
+330
+331
+332
+333
+334
+335</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 362</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 329</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_spec_entry'>spec_entry</span><span class='lparen'>(</span><span class='id identifier rubyid_indent'>indent</span> <span class='op'>=</span> <span class='int'>0</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_spec_entry'>spec_entry</span><span class='lparen'>(</span><span class='id identifier rubyid_indent'>indent</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>trailing:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_meta'>meta</span> <span class='op'>=</span> <span class='id identifier rubyid_value_facts'>value_facts</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_wire_key'>wire_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_meta'>meta</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 
   <span class='id identifier rubyid_meta'>meta</span><span class='period'>.</span><span class='id identifier rubyid_unshift'>unshift</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wire_key: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_wire_key'>wire_key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_wrap_call'><span class='object_link'><a href="../BiDiGenerate.html#wrap_call-class_method" title="BiDiGenerate.wrap_call (method)">wrap_call</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_meta'>meta</span><span class='comma'>,</span> <span class='id identifier rubyid_indent'>indent</span><span class='comma'>,</span> <span class='label'>open:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>{</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>close:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>}</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../BiDiGenerate.html" title="BiDiGenerate (module)">BiDiGenerate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_wrap_call'><span class='object_link'><a href="../BiDiGenerate.html#wrap_call-class_method" title="BiDiGenerate.wrap_call (method)">wrap_call</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ruby_name'>ruby_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_meta'>meta</span><span class='comma'>,</span> <span class='id identifier rubyid_indent'>indent</span><span class='comma'>,</span> <span class='label'>open:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>{</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>close:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>}</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>trailing:</span> <span class='id identifier rubyid_trailing'>trailing</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1473,7 +1620,8 @@ enum carries the allowed-values constant path, validated at construction.</p>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 <p>The facts describing the value's type and shape: what the runtime reads it as and checks
-it against. <code>map_of</code> is the value primitive of a string-keyed map (<code>{*text =&gt; text}</code>).</p>
+it against. For a list, ref/scalar/enum/primitive describe each element. <code>map_of</code> is the
+value primitive(s) of a string-keyed map (<code>{*text =&gt; text}</code>).</p>
 
   </div>
 </div>
@@ -1486,29 +1634,29 @@ it against. <code>map_of</code> is the value primitive of a string-keyed map (<c
       <pre class="lines">
 
 
-383
-384
-385
-386
-387
-388
-389
-390
-391
-392</pre>
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 383</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 351</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type_facts'>type_facts</span>
   <span class='id identifier rubyid_facts'>facts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ref: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ref'>ref</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>list: true</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_list'>list</span>
-  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>scalar: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_scalar_literal'>scalar_literal</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_scalar'>scalar</span>
+  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>scalar: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_primitive_literal'>primitive_literal</span><span class='lparen'>(</span><span class='id identifier rubyid_scalar'>scalar</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_scalar'>scalar</span>
   <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>enum: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_enum'>enum</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_enum'>enum</span>
-  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>primitive: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_primitive'>primitive</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_primitive'>primitive</span>
-  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>map: &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_map_of'>map_of</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_map_of'>map_of</span>
-  <span class='id identifier rubyid_facts'>facts</span>
+  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>primitive: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_primitive_literal'>primitive_literal</span><span class='lparen'>(</span><span class='id identifier rubyid_primitive'>primitive</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_primitive'>primitive</span>
+  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>map: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_primitive_literal'>primitive_literal</span><span class='lparen'>(</span><span class='id identifier rubyid_map_of'>map_of</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_map_of'>map_of</span>
+  <span class='id identifier rubyid_facts'>facts</span> <span class='op'>+</span> <span class='id identifier rubyid_bound_facts'>bound_facts</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1545,16 +1693,16 @@ is neither the literal nor null; <code>const.nil?</code> means the field has no 
       <pre class="lines">
 
 
-373
-374
-375
-376
-377
-378
-379</pre>
+340
+341
+342
+343
+344
+345
+346</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 373</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/support/bidi_generate.rb', line 340</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_value_facts'>value_facts</span>
   <span class='id identifier rubyid_facts'>facts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1573,9 +1721,9 @@ is neither the literal nor null; <code>const.nil?</code> means the field has no 
 </div>
 
       <div id="footer">
-  Generated on Fri Oct  9 19:27:51 2026 by
+  Generated on Thu Oct 29 13:10:57 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-3.3.11).
+  0.9.45 (ruby-3.3.12).
 </div>
 
     </div>

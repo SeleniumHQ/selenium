@@ -1,0 +1,12 @@
+selenium.webdriver.common.web\_extension
+========================================
+
+.. automodule:: selenium.webdriver.common.web_extension
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      WebExtension
+   

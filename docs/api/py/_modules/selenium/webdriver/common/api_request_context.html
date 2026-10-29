@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.51.0 documentation</title>
+    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.52.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=a832c7d9"></script>
+    <script src="../../../../_static/documentation_options.js?v=3a4d1932"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/api_request_context';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.51" />
+  <meta name="docsearch:version" content="4.52" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.51.0 documentation</p>
+    <p class="title logo__title">Selenium 4.52.0 documentation</p>
   
 </a></div>
     
@@ -475,29 +475,33 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">hostname</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="p">(</span><span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">path</span> <span class="ow">or</span> <span class="s2">"/"</span>
     <span class="n">scheme</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">or</span> <span class="s2">"http"</span>
 
     <span class="c1"># Domain matching (RFC 6265 section 5.1.3)</span>
-    <span class="n">cookie_domain</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">cookie_domain</span> <span class="o">=</span> <span class="p">(</span><span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie_domain</span><span class="p">:</span>
-        <span class="c1"># Host-only cookie — must match the origin host exactly</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">default_domain</span> <span class="ow">or</span> <span class="n">hostname</span> <span class="o">!=</span> <span class="n">default_domain</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="n">cookie_domain</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span>
-        <span class="c1"># .example.com matches example.com and sub.example.com</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">cookie_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">or</span> <span class="n">hostname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">cookie_domain</span><span class="p">)):</span>
+        <span class="c1"># Host-only cookie - must match the origin host exactly</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">default_domain</span> <span class="ow">or</span> <span class="n">hostname</span> <span class="o">!=</span> <span class="n">default_domain</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">hostname</span> <span class="o">!=</span> <span class="n">cookie_domain</span><span class="p">:</span>
+        <span class="c1"># Strip optional leading dot per RFC 6265 section 5.1.3</span>
+        <span class="n">norm_domain</span> <span class="o">=</span> <span class="n">cookie_domain</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">norm_domain</span> <span class="ow">or</span> <span class="n">hostname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"."</span> <span class="o">+</span> <span class="n">norm_domain</span><span class="p">)):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="c1"># Path matching (RFC 6265 section 5.1.4)</span>
-    <span class="n">cookie_path</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
+    <span class="n">cookie_path</span> <span class="o">=</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"/"</span>
     <span class="k">if</span> <span class="n">cookie_path</span> <span class="o">==</span> <span class="s2">"/"</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># root path matches everything</span>
-    <span class="k">elif</span> <span class="n">path</span> <span class="o">!=</span> <span class="n">cookie_path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">cookie_path</span> <span class="o">+</span> <span class="s2">"/"</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">path</span> <span class="o">==</span> <span class="n">cookie_path</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">cookie_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">cookie_path</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">cookie_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">cookie_path</span> <span class="o">+</span> <span class="s2">"/"</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="c1"># Secure matching</span>
