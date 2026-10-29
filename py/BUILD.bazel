@@ -376,6 +376,7 @@ py_library(
             "selenium/webdriver/common/actions/**",
             "selenium/webdriver/common/alert.py",
             "selenium/webdriver/common/api_request_context.py",
+            "selenium/webdriver/common/cookie.py",
             "selenium/webdriver/common/_bidi/**",
             "selenium/webdriver/common/bidi/**",
             "selenium/webdriver/common/devtools/**",
@@ -436,10 +437,16 @@ py_library(
 
 py_library(
     name = "common_api_request_context",
-    srcs = ["selenium/webdriver/common/api_request_context.py"],
+    srcs = [
+        "selenium/webdriver/common/api_request_context.py",
+        "selenium/webdriver/common/cookie.py",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
-    deps = [":exceptions"],
+    deps = [
+        ":exceptions",
+        requirement("typing_extensions"),
+    ],
 )
 
 py_library(
