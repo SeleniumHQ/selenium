@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
@@ -75,23 +74,6 @@ public abstract class DriverOptions
 {
     private readonly Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
     private readonly Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
-    private readonly Dictionary<string, string> knownCapabilityNames = new Dictionary<string, string>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DriverOptions"/> class.
-    /// </summary>
-    protected DriverOptions()
-    {
-        this.AddKnownCapabilityName(CapabilityType.BrowserName, "BrowserName property");
-        this.AddKnownCapabilityName(CapabilityType.BrowserVersion, "BrowserVersion property");
-        this.AddKnownCapabilityName(CapabilityType.PlatformName, "PlatformName property");
-        this.AddKnownCapabilityName(CapabilityType.Proxy, "Proxy property");
-        this.AddKnownCapabilityName(CapabilityType.UnhandledPromptBehavior, "UnhandledPromptBehavior property");
-        this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
-        this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
-        this.AddKnownCapabilityName(CapabilityType.WebSocketUrl, "UseWebSocketUrl property");
-        this.AddKnownCapabilityName(CapabilityType.EnableDownloads, "EnableDownloads property");
-    }
 
     /// <summary>
     /// Gets or sets the name of the browser.
@@ -316,73 +298,8 @@ public abstract class DriverOptions
     {
         if (capabilityName is null || string.IsNullOrEmpty(capabilityName))
         {
-            throw new ArgumentException("Capability name may not be null an empty string.", nameof(capabilityName));
+            throw new ArgumentException("Capability name may not be null or an empty string.", nameof(capabilityName));
         }
-
-        if (this.TryGetKnownCapability(capabilityName!, out string? typeSafeOptionName))
-        {
-            string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-            throw new ArgumentException(message, nameof(capabilityName));
-        }
-    }
-
-    /// <summary>
-    /// Adds a known capability to the list of known capabilities and associates it
-    /// with the type-safe property name of the options class to be used instead.
-    /// </summary>
-    /// <param name="capabilityName">The name of the capability.</param>
-    /// <param name="typeSafeOptionName">The name of the option property or method to be used instead.</param>
-    protected void AddKnownCapabilityName(string capabilityName, string typeSafeOptionName)
-    {
-        this.knownCapabilityNames[capabilityName] = typeSafeOptionName;
-    }
-
-    /// <summary>
-    /// Remove a capability from the list of known capabilities
-    /// </summary>
-    /// <param name="capabilityName">The name of the capability to be removed.</param>
-    protected void RemoveKnownCapabilityName(string? capabilityName)
-    {
-        if (capabilityName is not null)
-        {
-            this.knownCapabilityNames.Remove(capabilityName);
-        }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.
-    /// </summary>
-    /// <param name="capabilityName">The name of the capability to check.</param>
-    /// <returns><see langword="true"/> if the capability name is known; otherwise <see langword="false"/>.</returns>
-    protected bool IsKnownCapabilityName(string capabilityName)
-    {
-        return this.knownCapabilityNames.ContainsKey(capabilityName);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.
-    /// </summary>
-    /// <param name="capabilityName">The name of the capability to check.</param>
-    /// <param name="typeSafeOptionName">The name of the type-safe option for the given capability name, or <see langword="null"/> if not found.</param>
-    /// <returns><see langword="true"/> if the capability name is known; otherwise <see langword="false"/>.</returns>
-    protected bool TryGetKnownCapability(string capabilityName, [NotNullWhen(true)] out string? typeSafeOptionName)
-    {
-        return this.knownCapabilityNames.TryGetValue(capabilityName, out typeSafeOptionName);
-    }
-
-    /// <summary>
-    /// Gets the name of the type-safe option for a given capability name.
-    /// </summary>
-    /// <param name="capabilityName">The name of the capability to check.</param>
-    /// <returns>The name of the type-safe option for the given capability name.</returns>
-    protected string GetTypeSafeOptionName(string capabilityName)
-    {
-        if (!this.IsKnownCapabilityName(capabilityName))
-        {
-            return string.Empty;
-        }
-
-        return this.knownCapabilityNames[capabilityName];
     }
 
     /// <summary>
