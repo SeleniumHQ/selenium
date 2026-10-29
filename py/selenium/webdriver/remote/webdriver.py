@@ -192,14 +192,8 @@ def get_remote_connection(
     else:
         handler = RemoteConnection
 
-    if handler is RemoteConnection:
-        client_config = RemoteConnection._resolve_client_config(command_executor, None, client_config)
-        return RemoteConnection(client_config=client_config, ignore_proxy=ignore_local_proxy)
-    return handler(
-        remote_server_addr=command_executor,
-        ignore_proxy=ignore_local_proxy,
-        client_config=client_config,
-    )
+    client_config = RemoteConnection._resolve_client_config(command_executor, None, client_config)
+    return handler(client_config=client_config, ignore_proxy=ignore_local_proxy)
 
 
 def create_matches(options: list[BaseOptions]) -> dict:
@@ -326,7 +320,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(
                 capabilities,
-                command_executor=command_executor,
+                command_executor=self.command_executor,
                 ignore_local_proxy=_ignore_local_proxy,
                 client_config=client_config,
             )
