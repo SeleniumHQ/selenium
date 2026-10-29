@@ -86,6 +86,22 @@ class W3CHttpCommandCodecTest {
   }
 
   @Test
+  void ensureNameContainingNewlinesIsHexEscapedInCssAttribute() {
+    Map<String, Object> params = encodeFindElement("name", "a\nb\rc\fd");
+
+    assertThat(params)
+        .containsEntry("using", "css selector")
+        .containsEntry("value", "*[name='a\\a b\\d c\\c d']");
+  }
+
+  @Test
+  void ensureIdContainingNewlineIsHexEscaped() {
+    Map<String, Object> params = encodeFindElement("id", "a\nb");
+
+    assertThat(params).containsEntry("using", "css selector").containsEntry("value", "#a\\a b");
+  }
+
+  @Test
   void ensureNameWithLeadingDigitAndPercentIsEscapedInCssAttribute() {
     Map<String, Object> params = encodeFindElement("name", "50%off");
 
