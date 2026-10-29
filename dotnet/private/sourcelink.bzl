@@ -117,7 +117,7 @@ _csharp_sourcelink_library = rule(
 def csharp_sourcelink_library(name, stamp = None, **kwargs):
     if stamp == None:
         stamp = select({
-            "//dotnet/private:stamp_enabled": True,
+            "//common:stamp": True,
             "//conditions:default": False,
         })
     _csharp_sourcelink_library(

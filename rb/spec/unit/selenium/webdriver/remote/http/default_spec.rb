@@ -109,9 +109,11 @@ module Selenium
             end
 
             it 'rejects the certificate by default and reports the reason' do
+              reason = Platform.jruby? ? 'certificate verify failed' : 'self.signed certificate'
+
               expect { client.send :http }.to raise_error(
                 OpenSSL::SSL::SSLError,
-                %r{Cannot verify the certificate for https://127\.0\.0\.1:\d+/ \(self.signed certificate\)}
+                %r{Cannot verify the certificate for https://127\.0\.0\.1:\d+/ \(#{reason}\)}
               )
             end
 

@@ -333,6 +333,16 @@ def test_as_json_rejects_a_wrong_typed_item_in_a_list_of_records():
         Path(points=[Point(x=1, y=2), {"x": 3, "y": 4}]).as_json()
 
 
+def test_as_json_rejects_a_null_item_in_a_list_of_records():
+    with pytest.raises(BiDiSerializationError, match=r"Path.points: expected Point, got NoneType None"):
+        Path(points=[Point(x=1, y=2), None]).as_json()
+
+
+def test_as_json_rejects_a_null_item_in_a_list_of_primitives():
+    with pytest.raises(BiDiSerializationError, match=r"Tags.tags: expected str, got NoneType None"):
+        Tags(tags=["a", None]).as_json()
+
+
 def test_as_json_serializes_a_valid_map():
     assert StringMap(value=[["k", Cat(meow="hi")]]).as_json() == {"value": [["k", {"meow": "hi", "kind": "cat"}]]}
 
@@ -590,6 +600,16 @@ def test_a_list_for_a_scalar_field_raises():
 
 def test_a_list_of_primitives_round_trips():
     assert Tags.from_json({"tags": ["a", "b"]}).tags == ["a", "b"]
+
+
+def test_a_null_item_in_a_list_of_primitives_inbound_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Tags.tags: expected str, got NoneType None"):
+        Tags.from_json({"tags": ["a", None]})
+
+
+def test_a_null_item_in_a_list_of_records_inbound_raises():
+    with pytest.raises(BiDiSerializationError, match=r"Path.points: expected an object, got NoneType None"):
+        Path.from_json({"points": [{"x": 1, "y": 2}, None]})
 
 
 # --- nested refs ---

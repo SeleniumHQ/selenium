@@ -456,7 +456,7 @@ def _read_scalar(cls: type, name: str, w: _Wire, raw: Any) -> Any:
             got = type(raw).__name__
             raise BiDiSerializationError(f"{cls.__name__}.{name}: expected an object, got {got} {raw!r}")
         return klass.from_json(raw)  # type: ignore[attr-defined]
-    if w.primitive is not None and raw is not None:
+    if w.primitive is not None:
         check = _PRIMITIVE_CHECKS.get(w.primitive)
         if check and not check(raw):
             got = type(raw).__name__
@@ -532,7 +532,18 @@ def _validate_outbound_map_entry(owner: str, name: str, w: _Wire, element: Any) 
 
 def _validate_outbound_scalar(owner: str, name: str, w: _Wire, value: Any) -> None:
     if value is None:
-        return  # null is handled upstream
+        got = type(value).__name__
+        if w.primitive is not None:
+            raise BiDiSerializationError(f"{owner}.{name}: expected {w.primitive}, got {got} {value!r}")
+        if w.ref is not None:
+            klass = resolve(w.ref)
+            target = klass.__name__ if isinstance(klass, type) else str(klass)
+            raise BiDiSerializationError(f"{owner}.{name}: expected {target}, got {got} {value!r}")
+        if w.enum is not None:
+            enum_cls = resolve(w.enum)
+            target = enum_cls.__name__ if isinstance(enum_cls, type) else str(enum_cls)
+            raise BiDiSerializationError(f"{owner}.{name}: expected {target}, got {got} {value!r}")
+        raise BiDiSerializationError(f"{owner}.{name}: expected a value, got {got} {value!r}")
     if w.enum is not None:
         return  # enum membership is validated at construction (__post_init__)
     if w.ref is not None:

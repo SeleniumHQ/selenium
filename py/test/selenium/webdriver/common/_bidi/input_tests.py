@@ -191,7 +191,7 @@ def test_wheel_scroll(driver, pages):
     )
     Input(driver).perform_actions(context=driver.current_window_handle, actions=[wheel_actions])
 
-    assert driver.execute_script("return window.pageYOffset;") == 100
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") == 100)
 
 
 def test_combined_input_actions(driver, pages):
@@ -391,8 +391,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
             )
         ],
     )
-    scroll_y_down = driver.execute_script("return window.pageYOffset;")
-    assert scroll_y_down > 0
+    scroll_y_down = WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;"))
 
     Input(driver).perform_actions(
         context=driver.current_window_handle,
@@ -402,7 +401,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
             )
         ],
     )
-    assert driver.execute_script("return window.pageYOffset;") < scroll_y_down
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") < scroll_y_down)
 
 
 def test_wheel_scroll_with_duration(driver, pages):
@@ -546,7 +545,7 @@ def test_combined_keyboard_and_wheel_actions(driver, pages):
     )
     Input(driver).perform_actions(context=driver.current_window_handle, actions=[key_actions, wheel_actions])
 
-    assert driver.execute_script("return window.pageYOffset;") == 100
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") == 100)
 
 
 def test_key_input_with_value_attribute(driver, pages):

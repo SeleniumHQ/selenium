@@ -6,6 +6,18 @@ def python_version
   SeleniumRake.version('python')
 end
 
+unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+  # Each package fans out to one wheel per platform tag it supports, so build the
+  # `wheels` filegroup rather than naming individual wheels here.
+  MANAGER_PYTHON_WHEEL_TARGETS = %w[
+    //py/selenium-manager-linux-x86-64:wheels
+    //py/selenium-manager-linux-aarch64:wheels
+    //py/selenium-manager-macos:wheels
+    //py/selenium-manager-windows-x86:wheels
+    //py/selenium-manager:wheels
+  ].freeze
+end
+
 desc 'Build Python wheel and sdist with optional arguments'
 task :build do |_task, arguments|
   args = arguments.to_a
@@ -152,6 +164,37 @@ task :version, [:version] do |_task, arguments|
   new_version = SeleniumRake.updated_version(old_version, arguments[:version], '.dev0')
   puts "Updating Python from #{old_version} to #{new_version}"
   SeleniumRake.write_version('python', new_version)
+end
+
+desc 'Release selenium-manager Python packages to PyPI (use dry-run to build without uploading)'
+task :release_manager do |_task, arguments|
+  args = arguments.to_a
+  nightly = args.include?('nightly')
+  dry_run = args.include?('dry-run')
+  config = args.include?('rbe') ? 'rbe_release' : 'release'
+  Rake::Task['py:check_credentials'].invoke(*args) unless dry_run
+
+  if nightly
+    # The manager wheels take the binding's version. Reuse a nightly version that
+    # py:release already stamped, so the manager matches the selenium wheel beside it.
+    unless python_version.match?(/dev\d{12}$/)
+      Rake::Task['py:version'].invoke('nightly')
+      SeleniumRake.write_version('python', python_version.sub(/dev0$/, "dev#{Time.now.strftime('%Y%m%d%H%M')}"))
+    end
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
+  end
+
+  if dry_run
+    MANAGER_PYTHON_WHEEL_TARGETS.each do |target|
+      puts "Dry-run: #{target}"
+      Bazel.execute('build', ["--config=#{config}"], target)
+    end
+    next
+  end
+
+  command = nightly ? '//py:selenium-manager-release-nightly' : '//py:selenium-manager-release'
+  puts "Running selenium-manager Python release command: #{command}"
+  Bazel.execute('run', ["--config=#{config}"], command)
 end
 
 desc 'Format Python code with ruff'
