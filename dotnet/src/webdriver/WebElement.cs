@@ -253,9 +253,9 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <exception cref="StaleElementReferenceException">If the element no longer belongs to a document.</exception>
     /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/>
-    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
     {
-        return await this.driver.Accessibility.SnapshotAsync(this.Id, cancellationToken).ConfigureAwait(false);
+        return this.driver.Accessibility.SnapshotAsync(this.Id, cancellationToken);
     }
 
     /// <summary>
