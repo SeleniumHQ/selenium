@@ -47,7 +47,7 @@ class ChromiumDriver(LocalWebDriver):
             client_config: Custom client configuration to use. Defaults to None.
         """
         if keep_alive is not None:
-            self._warn_keep_alive_deprecated()
+            self._warn_keep_alive_deprecated(stacklevel=3)
         self.service = service or ChromiumService()
         self.options = options or ChromiumOptions()
 
