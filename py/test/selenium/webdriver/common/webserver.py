@@ -25,6 +25,9 @@ import contextlib
 import logging
 import os
 import re
+import socket
+import ssl
+import sys
 import threading
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -45,6 +48,8 @@ DEFAULT_HOST = "localhost"
 DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
 HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
+CERT_FILE = os.path.join(WEBDRIVER, "../../../../common/certificates/localhost.crt")
+KEY_FILE = os.path.join(WEBDRIVER, "../../../../common/certificates/localhost.key")
 
 # Credentials accepted by the /basic-auth endpoint. Tests that exercise
 # authentication handlers must provide these to be considered authenticated.
@@ -203,11 +208,11 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
         """Override default to avoid trashing stderr."""
-        pass
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    pass
+    # On Windows SO_REUSEADDR lets a parallel test session bind the port this one is already listening on
+    allow_reuse_address = sys.platform != "win32"
 
 
 class SimpleWebServer:
@@ -215,8 +220,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = host if host else DEFAULT_HOST_IP
-        port = port
+        host = host or DEFAULT_HOST_IP
         while True:
             try:
                 self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)
@@ -227,31 +231,41 @@ class SimpleWebServer:
                 LOGGER.debug(f"port {port} is in use, trying to next one")
                 port += 1
 
-        self.thread = threading.Thread(target=self._run_web_server)
+        self.secure_server = ThreadedHTTPServer((self.host, 0), HtmlOnlyHandler)
+        self.secure_port = self.secure_server.server_address[1]
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(CERT_FILE, KEY_FILE)
+        self.secure_server.socket = context.wrap_socket(self.secure_server.socket, server_side=True)
 
-    def _run_web_server(self):
+        self.thread = threading.Thread(target=self._run_web_server, args=(self.server,), daemon=True)
+        self.secure_thread = threading.Thread(target=self._run_web_server, args=(self.secure_server,), daemon=True)
+
+    def _run_web_server(self, server):
         """Runs the server loop."""
         LOGGER.debug("web server started")
         while not self.stop_serving:
-            self.server.handle_request()
-        self.server.server_close()
+            server.handle_request()
+        server.server_close()
 
     def start(self):
-        """Starts the server."""
+        """Starts the servers."""
         self.thread.start()
+        self.secure_thread.start()
 
     def stop(self):
-        """Stops the server."""
+        """Stops the servers."""
         self.stop_serving = True
         with contextlib.suppress(IOError):
             _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
+        with contextlib.suppress(OSError):
+            socket.create_connection((self.host, self.secure_port), timeout=1).close()
 
-    def where_is(self, path, localhost=False) -> str:
+    def where_is(self, path, localhost=False, secure=False) -> str:
+        scheme, port = ("https", self.secure_port) if secure else ("http", self.port)
         # True force serve the page from localhost
         # 0.0.0.0 shouldn't be used as a destination address, so fallback to localhost
-        if localhost or self.host == "0.0.0.0":
-            return f"http://{DEFAULT_HOST}:{self.port}/{path}"
-        return f"http://{self.host}:{self.port}/{path}"
+        host = DEFAULT_HOST if localhost or self.host == "0.0.0.0" else self.host
+        return f"{scheme}://{host}:{port}/{path}"
 
 
 def main(argv=None):
@@ -259,8 +273,6 @@ def main(argv=None):
     from time import sleep
 
     if argv is None:
-        import sys
-
         argv = sys.argv
 
     parser = OptionParser("%prog [options]")
@@ -274,7 +286,7 @@ def main(argv=None):
 
     server = SimpleWebServer(port=opts.port)
     server.start()
-    print(f"Server started on port {opts.port}, hit CTRL-C to quit")
+    print(f"Server started on port {server.port} (https on {server.secure_port}), hit CTRL-C to quit")
     try:
         while 1:
             sleep(0.1)

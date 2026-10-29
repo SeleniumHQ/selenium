@@ -191,42 +191,44 @@ class ErrorHandler:
             exception_class = WebDriverException
 
         if not value:
-            value = response["value"]
+            value = response.get("value")
         if isinstance(value, str):
             raise exception_class(value)
-        if message == "" and "message" in value:
-            message = value["message"]
+        if isinstance(value, dict):
+            if message == "" and "message" in value:
+                message = value["message"]
 
-        screen = None  # type: ignore[assignment]
-        if "screen" in value:
-            screen = value["screen"]
+            screen = None  # type: ignore[assignment]
+            if "screen" in value:
+                screen = value["screen"]
 
-        stacktrace = None
-        st_value = value.get("stackTrace") or value.get("stacktrace")
-        if st_value:
-            if isinstance(st_value, str):
-                stacktrace = st_value.split("\n")
-            else:
-                stacktrace = []
-                try:
-                    for frame in st_value:
-                        line = frame.get("lineNumber", "")
-                        file = frame.get("fileName", "<anonymous>")
-                        if line:
-                            file = f"{file}:{line}"
-                        meth = frame.get("methodName", "<anonymous>")
-                        if "className" in frame:
-                            meth = f"{frame['className']}.{meth}"
-                        msg = "    at %s (%s)"
-                        msg = msg % (meth, file)
-                        stacktrace.append(msg)
-                except TypeError:
-                    pass
+            stacktrace = None
+            st_value = value.get("stackTrace") or value.get("stacktrace")
+            if st_value:
+                if isinstance(st_value, str):
+                    stacktrace = st_value.split("\n")
+                else:
+                    stacktrace = []
+                    try:
+                        for frame in st_value:
+                            line = frame.get("lineNumber", "")
+                            file = frame.get("fileName", "<anonymous>")
+                            if line:
+                                file = f"{file}:{line}"
+                            meth = frame.get("methodName", "<anonymous>")
+                            if "className" in frame:
+                                meth = f"{frame['className']}.{meth}"
+                            msg = "    at %s (%s)"
+                            msg = msg % (meth, file)
+                            stacktrace.append(msg)
+                    except TypeError:
+                        pass
         if exception_class == UnexpectedAlertPresentException:
             alert_text = None
-            if "data" in value:
-                alert_text = value["data"].get("text")
-            elif "alert" in value:
-                alert_text = value["alert"].get("text")
+            if isinstance(value, dict):
+                if "data" in value:
+                    alert_text = value["data"].get("text")
+                elif "alert" in value:
+                    alert_text = value["alert"].get("text")
             raise exception_class(message, screen, stacktrace, alert_text)
         raise exception_class(message, screen, stacktrace)

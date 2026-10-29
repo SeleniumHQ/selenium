@@ -106,6 +106,6 @@ class GridSupplier implements Supplier<WebDriver> {
   public static void main(String[] args) {
     System.setProperty("selenium.browser.grid", "true");
     WebDriver driver = new GridSupplier(new FirefoxOptions()).get();
-    driver.get("http://www.google.com");
+    driver.get("https://www.example.com");
   }
 }

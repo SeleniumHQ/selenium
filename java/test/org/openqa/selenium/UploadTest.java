@@ -24,6 +24,8 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.io.File;
@@ -162,6 +164,12 @@ class UploadTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   @NoDriverAfterTest
+  @Ignore(
+      value = CHROME,
+      reason = "Chrome 153+ raises a JavaScript focus error instead of ElementNotInteractable")
+  @Ignore(
+      value = EDGE,
+      reason = "Edge 153+ raises a JavaScript focus error instead of ElementNotInteractable")
   public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {
     createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
 

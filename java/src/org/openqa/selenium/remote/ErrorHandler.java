@@ -99,9 +99,10 @@ public class ErrorHandler {
       throw new RuntimeException(throwable);
     }
 
-    int responseStatus = requireNonNullElse(response.getStatus(), -1);
+    String responseState = response.getState();
+    // ErrorCodes subclasses (e.g. Appium's ErrorCodesMobile) may return null for unknown states
     Class<? extends WebDriverException> outerErrorType =
-        errorCodes.getExceptionType(responseStatus);
+        requireNonNullElse(errorCodes.getExceptionType(responseState), WebDriverException.class);
 
     Object value = response.getValue();
     String message = null;
@@ -123,7 +124,7 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      Throwable serverError = rebuildServerError(rawErrorData, responseStatus);
+      Throwable serverError = rebuildServerError(rawErrorData, responseState);
 
       // If serverError is null, then the server did not provide a className (only expected if
       // the server is a Java process) or a stack trace. The lack of a className is OK, but
@@ -160,14 +161,6 @@ public class ErrorHandler {
 
     if (outerErrorType.equals(UnhandledAlertException.class) && value instanceof Map) {
       toThrow = createUnhandledAlertException(value);
-    }
-
-    if (toThrow == null) {
-      toThrow =
-          createThrowable(
-              outerErrorType,
-              new Class<?>[] {String.class, Throwable.class, Integer.class},
-              new Object[] {message, cause, response.getStatus()});
     }
 
     if (toThrow == null) {
@@ -232,7 +225,8 @@ public class ErrorHandler {
   }
 
   @Nullable
-  private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
+  private Throwable rebuildServerError(
+      Map<String, Object> rawErrorData, @Nullable String responseState) {
 
     if (rawErrorData.get(CLASS) == null && rawErrorData.get(STACK_TRACE) == null) {
       // Not enough information for us to try to rebuild an error.
@@ -253,9 +247,9 @@ public class ErrorHandler {
       }
     }
 
-    // If the above fails, map Response Status to Exception class
+    // If the above fails, map the W3C state to an exception class
     if (null == clazz) {
-      clazz = errorCodes.getExceptionType(responseStatus);
+      clazz = errorCodes.getExceptionType(responseState);
     }
 
     if (UnhandledAlertException.class.equals(clazz)) {

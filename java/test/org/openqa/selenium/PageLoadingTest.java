@@ -78,14 +78,14 @@ class PageLoadingTest extends JupiterTestBase {
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
-    assertThatCode(() -> driver.get("http://www.thisurldoesnotexist.comx/"))
+    assertThatCode(() -> driver.get("http://www.thisurldoesnotexist.invalid/"))
         .doesNotThrowAnyException();
   }
 
   @Test
   void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> driver.get("www.test.com"));
+        .isThrownBy(() -> driver.get("www.example.test"));
   }
 
   @Test

@@ -295,22 +295,6 @@ public class RemoteWebDriverBuilder {
               public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
                 return handler.execute(req);
               }
-
-              @Override
-              public <T>
-                  java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>>
-                      sendAsyncNative(
-                          java.net.http.HttpRequest request,
-                          java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendAsyncNative is not supported");
-              }
-
-              @Override
-              public <T> java.net.http.HttpResponse<T> sendNative(
-                  java.net.http.HttpRequest request,
-                  java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendNative is not supported");
-              }
             };
           }
         };
@@ -413,7 +397,7 @@ public class RemoteWebDriverBuilder {
                 new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
                     .andThen(new DumpHttpExchangeFilter())
-                    .andThen(new CloseHttpClientFilter(clientFactory, client)));
+                    .andThen(new CloseHttpClientFilter(client)));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
@@ -556,11 +540,9 @@ public class RemoteWebDriverBuilder {
 
   private static class CloseHttpClientFilter implements Filter {
 
-    private final HttpClient.Factory factory;
     private final HttpClient client;
 
-    CloseHttpClientFilter(HttpClient.Factory factory, HttpClient client) {
-      this.factory = Require.nonNull("Http client factory", factory);
+    CloseHttpClientFilter(HttpClient client) {
       this.client = Require.nonNull("Http client", client);
     }
 
@@ -580,7 +562,6 @@ public class RemoteWebDriverBuilder {
                         } catch (Exception e) {
                           LOG.log(WARNING, "Exception swallowed while closing http client", e);
                         }
-                        factory.cleanupIdleClients();
                       }
                     });
           }

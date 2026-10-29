@@ -1,172 +1,174 @@
-load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library", "js_test")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//:version.bzl", "VERSIONS")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
+load("//javascript/atoms:typescript/defs.bzl", "ATOMS", "typescript_atom")
 
 package(default_visibility = ["//visibility:public"])
 
-js_binary(
-    name = "strip_trailing_semicolon",
-    data = ["typescript/strip-trailing-semicolon.js"],
-    entry_point = "typescript/strip-trailing-semicolon.js",
-)
+VERSION = VERSIONS["javascript"]
 
-js_binary(
-    name = "wrap_get_attribute_as_global",
-    data = ["typescript/wrap-get-attribute-as-global.js"],
-    entry_point = "typescript/wrap-get-attribute-as-global.js",
-)
-
-js_run_binary(
-    name = "get-attribute-typescript-compiled",
-    srcs = ["typescript/get-attribute.ts"],
-    outs = ["typescript/get-attribute.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/get-attribute.compiled.js)",
-        "$(rootpath :typescript/get-attribute.ts)",
-    ],
-    tool = "@npm_typescript//:tsc",
-)
-
-js_run_binary(
-    name = "get-attribute-typescript-generated",
-    srcs = [":get-attribute-typescript-compiled"],
-    outs = ["typescript/get-attribute.generated.js"],
-    args = [
-        "$(rootpath :get-attribute-typescript-compiled)",
-        "$(rootpath :typescript/get-attribute.generated.js)",
-    ],
-    tool = ":strip_trailing_semicolon",
-)
-
-js_run_binary(
-    name = "get-attribute-global",
-    srcs = [":get-attribute-typescript-compiled"],
-    outs = ["typescript/get-attribute-global.js"],
-    args = [
-        "$(rootpath :get-attribute-typescript-compiled)",
-        "$(rootpath :typescript/get-attribute-global.js)",
-    ],
-    tool = ":wrap_get_attribute_as_global",
-)
-
+# These build tools are CommonJS; the .cjs extension keeps that true regardless
+# of the "type": "module" declared by the @selenium/atoms package.json above
+# them in this directory.
 js_binary(
     name = "wrap_as_global",
-    data = ["typescript/wrap-as-global.js"],
-    entry_point = "typescript/wrap-as-global.js",
+    data = ["typescript/wrap-as-global.cjs"],
+    entry_point = "typescript/wrap-as-global.cjs",
 )
 
-js_binary(
-    name = "wrap_find_elements_as_global",
-    data = ["typescript/wrap-find-elements-as-global.js"],
-    entry_point = "typescript/wrap-find-elements-as-global.js",
+js_library(
+    name = "esbuild-atom-config",
+    srcs = ["typescript/esbuild.atom.config.mjs"],
 )
 
-js_run_binary(
-    name = "find-elements-typescript-compiled",
-    srcs = ["typescript/find-elements.ts"],
-    outs = ["typescript/find-elements.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/find-elements.compiled.js)",
-        "$(rootpath :typescript/find-elements.ts)",
+write_file(
+    name = "atom-registry",
+    out = "typescript/atoms.json",
+    content = [json.encode(ATOMS)],
+)
+
+# Adding an atom without extending the published surface is the drift this
+# guards against; the failure prints the blocks to paste into package.json.
+js_test(
+    name = "exports-up-to-date",
+    data = [
+        "package.json",
+        ":atom-registry",
     ],
-    tool = "@npm_typescript//:tsc",
+    entry_point = "typescript/generate-exports.cjs",
+    fixed_args = [
+        "$(rootpath :atom-registry)",
+        "$(rootpath package.json)",
+        "--check",
+    ],
 )
 
-js_run_binary(
-    name = "find-elements-typescript-generated",
-    srcs = [":find-elements-typescript-compiled"],
-    outs = ["typescript/find-elements.generated.js"],
-    args = [
-        "$(rootpath :find-elements-typescript-compiled)",
-        "$(rootpath :typescript/find-elements.generated.js)",
+# Every atom can reach every shared module, so the bundler gets the whole set
+# and tree-shakes down to what each entry point actually imports.
+ATOM_SRCS = glob([
+    "typescript/*.ts",
+    "typescript/core/*.ts",
+])
+
+# ── the atoms ────────────────────────────────────────────────────────────────
+
+[
+    typescript_atom(
+        name = atom["name"],
+        srcs = ATOM_SRCS,
+        global_name = atom["global"],
+    )
+    for atom in ATOMS
+]
+
+# Node consumers run each atom's body when they load it: selenium-webdriver's
+# lib/http.js require()s its atoms at import time, and npm consumers import the
+# barrel. An atom that touches a DOM global while loading breaks both.
+js_test(
+    name = "atoms-load-in-node",
+    data = [
+        "package.json",
+        ":atoms-npm-compiled",
+    ] + [":typescript/%s.generated.js" % atom["name"] for atom in ATOMS],
+    entry_point = "typescript/load-in-node.mjs",
+    fixed_args = ["javascript/atoms/dist/index.js"] + [
+        "$(rootpath :typescript/%s.generated.js)" % atom["name"]
+        for atom in ATOMS
     ],
-    tool = ":strip_trailing_semicolon",
 )
 
-js_run_binary(
-    name = "find-elements-global",
-    srcs = [":find-elements-typescript-compiled"],
-    outs = ["typescript/find-elements-global.js"],
-    args = [
-        "$(rootpath :find-elements-typescript-compiled)",
-        "$(rootpath :typescript/find-elements-global.js)",
-    ],
-    tool = ":wrap_find_elements_as_global",
+# ── test-only bundles ────────────────────────────────────────────────────────
+
+# Shared modules that no atom reaches yet still need a QUnit page. Each entry
+# under typescript/testing/ default-exports what its page drives. These are not
+# in ATOMS, so they are never published and never reach a binding.
+TEST_BUNDLES = {
+    "events": "bot.events.typescript",
+    "keyboard": "bot.keyboard.typescript",
+    "mouse": "bot.mouse.typescript",
+}
+
+[
+    typescript_atom(
+        name = "testing/%s" % bundle,
+        srcs = ATOM_SRCS + ["typescript/testing/%s.ts" % bundle],
+        global_name = global_name,
+        visibility = ["//visibility:private"],
+    )
+    for bundle, global_name in TEST_BUNDLES.items()
+]
+
+# ── @selenium/atoms npm package ──────────────────────────────────────────────
+
+# esbuild only strips types, so this is also what type-checks the atoms: it is
+# the one target that runs tsc over them.
+ts_project(
+    name = "atoms-npm-compiled",
+    srcs = ["index.ts"] + ATOM_SRCS,
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    source_map = True,
+    tsconfig = "tsconfig.json",
 )
 
-js_run_binary(
-    name = "is-displayed-typescript-compiled",
-    srcs = ["typescript/is-displayed.ts"],
-    outs = ["typescript/is-displayed.compiled.js"],
-    args = [
-        "--target",
-        "ES2017",
-        "--module",
-        "none",
-        "--moduleResolution",
-        "node",
-        "--removeComments",
-        "--pretty",
-        "false",
-        "--outFile",
-        "$(rootpath :typescript/is-displayed.compiled.js)",
-        "$(rootpath typescript/is-displayed.ts)",
+# npm_package does not pick up filegroup sources.
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
     ],
-    tool = "@npm_typescript//:tsc",
+    cmd = "cp $(locations //:license) $(@D)",
 )
 
-js_run_binary(
-    name = "is-displayed-typescript-generated",
-    srcs = [":is-displayed-typescript-compiled"],
-    outs = ["typescript/is-displayed.generated.js"],
-    args = [
-        "$(rootpath :is-displayed-typescript-compiled)",
-        "$(rootpath :typescript/is-displayed.generated.js)",
-    ],
-    tool = ":strip_trailing_semicolon",
+jq(
+    name = "package-json-stamped",
+    srcs = ["package.json"],
+    out = "stamped/package.json",
+    filter = '.version = "%s"' % VERSION,
 )
 
-js_run_binary(
-    name = "is-displayed-global",
-    srcs = [":is-displayed-typescript-compiled"],
-    outs = ["typescript/is-displayed-global.js"],
-    args = [
-        "$(rootpath :is-displayed-typescript-compiled)",
-        "$(rootpath :typescript/is-displayed-global.js)",
-    ],
-    tool = ":wrap_as_global",
+npm_package(
+    name = "selenium-atoms-package",
+    srcs = [
+        # README.md in this directory is the contributor guide; the npm page
+        # gets its own file, renamed into place below.
+        "README.npm.md",
+        # Published so the emitted .d.ts.map / .js.map resolve for consumers.
+        "index.ts",
+        ":atoms-npm-compiled",
+        ":license",
+        ":package-json-stamped",
+    ] + ATOM_SRCS,
+    package = "@selenium/atoms",
+    publishable = True,
+    replace_prefixes = {
+        "README.npm.md": "README.md",
+        "stamped/": "",
+    },
+    tags = ["release-artifact"],
+    version = VERSION,
+    visibility = ["//visibility:public"],
 )
 
 filegroup(
     name = "atoms",
     srcs = glob([
+        "**/*.cjs",
         "**/*.html",
         "**/*.jpg",
         "**/*.js",
         "**/*.png",
         "**/*.svg",
         "**/*.ts",
-    ]) + [":get-attribute-global"] + [":is-displayed-global"] + [":find-elements-global"],
+    ]) + [":%s-global" % atom["name"] for atom in ATOMS],
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
@@ -562,5 +564,5 @@ closure_test_suite(
     data = [
         ":atoms",
         ":deps",
-    ],
+    ] + [":testing/%s-global" % bundle for bundle in TEST_BUNDLES],
 )

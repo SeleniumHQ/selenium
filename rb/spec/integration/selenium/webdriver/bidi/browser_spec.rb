@@ -61,7 +61,7 @@ module Selenium
           browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('default')
-          }.to raise_error(Error::WebDriverError, /user context cannot be removed/)
+          }.to raise_error(Error::WebDriverError, /\Ainvalid argument: /)
         end
 
         it 'throws an error when removing a non-existent user context',
@@ -70,7 +70,7 @@ module Selenium
           browser = described_class.new(bidi)
           expect {
             browser.remove_user_context('fake_context')
-          }.to raise_error(Error::WebDriverError)
+          }.to raise_error(Error::WebDriverError, /\Ano such user context: /)
         end
 
         it 'gets windows',

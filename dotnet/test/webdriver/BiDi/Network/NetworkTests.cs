@@ -208,7 +208,7 @@ internal class NetworkTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox)]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);
@@ -227,7 +227,7 @@ internal class NetworkTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox)]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
         var result = await bidi.Network.AddInterceptAsync([InterceptPhase.AuthRequired]);

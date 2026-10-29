@@ -24,121 +24,81 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed partial class NetworkModule : Module, INetworkModule
 {
-
-    private static readonly Command<AddDataCollectorParameters, AddDataCollectorResult> AddDataCollectorCommand = new(
-        "network.addDataCollector", Default.AddDataCollectorParameters, Default.AddDataCollectorResult);
-
-    private static readonly Command<AddInterceptParameters, AddInterceptResult> AddInterceptCommand = new(
-        "network.addIntercept", Default.AddInterceptParameters, Default.AddInterceptResult);
-
-    private static readonly Command<RemoveDataCollectorParameters, RemoveDataCollectorResult> RemoveDataCollectorCommand = new(
-        "network.removeDataCollector", Default.RemoveDataCollectorParameters, Default.RemoveDataCollectorResult);
-
-    private static readonly Command<RemoveInterceptParameters, RemoveInterceptResult> RemoveInterceptCommand = new(
-        "network.removeIntercept", Default.RemoveInterceptParameters, Default.RemoveInterceptResult);
-
-    private static readonly Command<SetCacheBehaviorParameters, SetCacheBehaviorResult> SetCacheBehaviorCommand = new(
-        "network.setCacheBehavior", Default.SetCacheBehaviorParameters, Default.SetCacheBehaviorResult);
-
-    private static readonly Command<SetExtraHeadersParameters, SetExtraHeadersResult> SetExtraHeadersCommand = new(
-        "network.setExtraHeaders", Default.SetExtraHeadersParameters, Default.SetExtraHeadersResult);
-
-    private static readonly Command<ContinueRequestParameters, ContinueRequestResult> ContinueRequestCommand = new(
-        "network.continueRequest", Default.ContinueRequestParameters, Default.ContinueRequestResult);
-
-    private static readonly Command<ContinueResponseParameters, ContinueResponseResult> ContinueResponseCommand = new(
-        "network.continueResponse", Default.ContinueResponseParameters, Default.ContinueResponseResult);
-
-    private static readonly Command<FailRequestParameters, FailRequestResult> FailRequestCommand = new(
-        "network.failRequest", Default.FailRequestParameters, Default.FailRequestResult);
-
-    private static readonly Command<DisownDataParameters, DisownDataResult> DisownDataCommand = new(
-        "network.disownData", Default.DisownDataParameters, Default.DisownDataResult);
-
-    private static readonly Command<GetDataParameters, GetDataResult> GetDataCommand = new(
-        "network.getData", Default.GetDataParameters, Default.GetDataResult);
-
-    private static readonly Command<ProvideResponseParameters, ProvideResponseResult> ProvideResponseCommand = new(
-        "network.provideResponse", Default.ProvideResponseParameters, Default.ProvideResponseResult);
-
-    private static readonly Command<ContinueWithAuthParameters, ContinueWithAuthResult> ContinueWithAuthCommand = new(
-        "network.continueWithAuth", Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult);
-
     public async Task<AddDataCollectorResult> AddDataCollectorAsync(ImmutableArray<DataType> dataTypes, int maxEncodedDataSize, AddDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddDataCollectorParameters(dataTypes, maxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteAsync(AddDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.addDataCollector", @params, Default.AddDataCollectorParameters, Default.AddDataCollectorResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<AddInterceptResult> AddInterceptAsync(ImmutableArray<InterceptPhase> phases, AddInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
-        return await ExecuteAsync(AddInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.addIntercept", @params, Default.AddInterceptParameters, Default.AddInterceptResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveDataCollectorParameters(collector);
 
-        return await ExecuteAsync(RemoveDataCollectorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.removeDataCollector", @params, Default.RemoveDataCollectorParameters, Default.RemoveDataCollectorResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RemoveInterceptResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new RemoveInterceptParameters(intercept);
 
-        return await ExecuteAsync(RemoveInterceptCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.removeIntercept", @params, Default.RemoveInterceptParameters, Default.RemoveInterceptResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, SetCacheBehaviorOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetCacheBehaviorParameters(behavior, options?.Contexts);
 
-        return await ExecuteAsync(SetCacheBehaviorCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.setCacheBehavior", @params, Default.SetCacheBehaviorParameters, Default.SetCacheBehaviorResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<SetExtraHeadersResult> SetExtraHeadersAsync(ImmutableArray<Header> headers, SetExtraHeadersOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
 
-        return await ExecuteAsync(SetExtraHeadersCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.setExtraHeaders", @params, Default.SetExtraHeadersParameters, Default.SetExtraHeadersResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueRequestResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueRequestParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);
 
-        return await ExecuteAsync(ContinueRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.continueRequest", @params, Default.ContinueRequestParameters, Default.ContinueRequestResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueResponseResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new ContinueResponseParameters(request, options?.Cookies, options?.Credentials, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteAsync(ContinueResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.continueResponse", @params, Default.ContinueResponseParameters, Default.ContinueResponseResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<FailRequestResult> FailRequestAsync(Request request, FailRequestOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new FailRequestParameters(request);
 
-        return await ExecuteAsync(FailRequestCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.failRequest", @params, Default.FailRequestParameters, Default.FailRequestResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<DisownDataResult> DisownDataAsync(DataType dataType, Collector collector, Request request, DisownDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new DisownDataParameters(dataType, collector, request);
 
-        return await ExecuteAsync(DisownDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.disownData", @params, Default.DisownDataParameters, Default.DisownDataResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null, CancellationToken cancellationToken = default)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
 
-        var result = await ExecuteAsync(GetDataCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        var result = await ExecuteAsync("network.getData", @params, Default.GetDataParameters, Default.GetDataResult, options, cancellationToken).ConfigureAwait(false);
 
         return result.Bytes;
     }
@@ -147,7 +107,7 @@ internal sealed partial class NetworkModule : Module, INetworkModule
     {
         var @params = new ProvideResponseParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await ExecuteAsync(ProvideResponseCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.provideResponse", @params, Default.ProvideResponseParameters, Default.ProvideResponseResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<ContinueWithAuthResult> ContinueWithAuthAsync(Request request, ContinueWithAuth auth, ContinueWithAuthOptions? options = null, CancellationToken cancellationToken = default)
@@ -160,7 +120,7 @@ internal sealed partial class NetworkModule : Module, INetworkModule
             _ => throw new ArgumentException($"Unknown action type: {auth.GetType()}", nameof(auth))
         };
 
-        return await ExecuteAsync(ContinueWithAuthCommand, @params, options, cancellationToken).ConfigureAwait(false);
+        return await ExecuteAsync("network.continueWithAuth", @params, Default.ContinueWithAuthParameters, Default.ContinueWithAuthResult, options, cancellationToken).ConfigureAwait(false);
     }
 
     public IEventSource<BeforeRequestSentEventArgs> BeforeRequestSent => _beforeRequestSent ?? Interlocked.CompareExchange(ref _beforeRequestSent, CreateEventSource(NetworkEvent.BeforeRequestSent), null) ?? _beforeRequestSent;

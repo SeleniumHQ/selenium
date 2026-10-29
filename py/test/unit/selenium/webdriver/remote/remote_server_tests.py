@@ -89,7 +89,7 @@ def test_server_with_invalid_version():
 
 
 def test_server_with_invalid_log_level():
-    msg = ", ".join(("SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"))
+    msg = "SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST"
     with pytest.raises(TypeError, match=f"log_level must be one of: {msg}"):
         Server(log_level="BAD")
 

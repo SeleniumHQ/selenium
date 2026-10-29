@@ -23,9 +23,9 @@ internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Paramet
 
 public sealed record NewOptions : CommandOptions;
 
-public sealed record NewResult(string SessionId, Capabilities Capabilities) : EmptyResult;
+public sealed record NewResult(string SessionId, CapabilityResponse Capabilities) : EmptyResult;
 
-public sealed record Capabilities(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+public sealed record CapabilityResponse(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
 {
     public ProxyConfiguration? Proxy { get; init; }
 

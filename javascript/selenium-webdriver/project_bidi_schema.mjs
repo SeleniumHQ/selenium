@@ -22,7 +22,7 @@
  * straight mapping into a small vocabulary:
  *
  *   type node:  { kind: 'record', fields: [field], map?, extensible?, specHref? }
- *             | { kind: 'enum',   values: [string], specHref? }
+ *             | { kind: 'enum',   values: [scalar], primitive?, specHref? }
  *             | { kind: 'union',  variants: [ref], selector, objectOnly?, specHref? }
  *             | { kind: 'alias',  type, specHref? }
  *   selector:   { by, variants: [{ value, ref }], default? }   // discriminated
@@ -33,6 +33,9 @@
  *               any ref may also carry `nullable: true` (a `/ null` alternative). On a
  *               record node, `map` is the value type of `* key => value` entries and
  *               `extensible: true` marks an open `* text => any` record.
+ *               A numeric `primitive`, or a `ref` to an alias of one, may carry `min` / `max`, with
+ *               `exclusiveMin` / `exclusiveMax: true` for an exclusive bound. On a `ref` they narrow
+ *               the alias's own bounds, so a value must satisfy both.
  *
  * `specHref` (present only when known) is the URL of the element's definition in the
  * live spec — a binding can render it as a doc-comment link. It is carried on each
@@ -68,6 +71,16 @@
  * carry `{ synthetic: true, owner, label }`: `owner` is the type the construct
  * was lifted out of and `label` is the member name within it, so a binding can
  * keep the flat name or nest it (e.g. `Owner::Label`) without parsing the key.
+ *
+ * Everything a vendor grammar (Firefox's `moz:` CDDL) contributes lands in `vendor.<namespace>`:
+ *   extends  — `{ <sharedType>: { via, fields } }`, the fields a `<Type>Extension` group adds to
+ *              that shared record (under their wire names), `via` naming the group.
+ *   commands — the vendor's own modules' commands and events, in the top-level shape; `domain`
+ *   events      keeps its wire prefix (`moz:debugging`), as every wire-derived value does.
+ *   types    — the vendor's own types (a module's params and results, a helper record an
+ *              extension field references, a synthetic lifted out of one), shaped like `types`.
+ * Refs cross from the vendor section into the shared `types`, never the other way; a binding
+ * that reads only the shared sections never sees vendor content.
  */
 
 import { pathToFileURL } from 'node:url'
@@ -77,14 +90,6 @@ import { normalizeAst } from './normalize_bidi_ast.mjs'
 // mutual-exclusivity case (e.g. session.unsubscribe) is a CDDL choice, which the
 // normalizer turns into a `union`. A scan of all spec comments confirms none, so
 // no separate constraint representation is carried.
-
-// Events that parse into the AST but are not wired into the model because the
-// upstream bluetooth spec does not fully define them. This is an external spec
-// issue, not a Selenium/buildModel bug, and is intentionally not fixed here.
-// Allowlisted so it does not fail the build; checkCompleteness() flags an entry
-// as stale once it becomes emitted (e.g. after the spec is fixed upstream), so
-// this list cannot silently rot.
-const KNOWN_INCOMPLETE = new Set(['bluetooth.characteristicEventGenerated', 'bluetooth.descriptorEventGenerated'])
 
 const PRIMITIVES = {
   text: 'string',
@@ -183,12 +188,47 @@ function projectRef(type) {
   return node
 }
 
+const BOUND_OPERATORS = {
+  ge: { side: 'min', exclusive: false },
+  gt: { side: 'min', exclusive: true },
+  le: { side: 'max', exclusive: false },
+  lt: { side: 'max', exclusive: true },
+}
+const BOUND_KEYS = ['min', 'max', 'exclusiveMin', 'exclusiveMax']
+
+// Only a numeric literal is carried; a named constant (`0..max-len`) is not resolved, so the
+// caller fails closed instead of silently dropping the bound.
+const boundValue = (b) => (typeof b?.Value === 'number' ? b.Value : undefined)
+
+// The tighter bound wins: `(0..10) .ge 5` raises the minimum, `(0..10) .ge -1` leaves it.
+function narrow(node, { side, exclusive }, value) {
+  const flag = side === 'min' ? 'exclusiveMin' : 'exclusiveMax'
+  const current = node[side]
+  if (current !== undefined && (side === 'min' ? current > value : current < value)) return node
+  if (current === value && node[flag]) return node
+  const narrowed = { ...node, [side]: value }
+  if (exclusive) narrowed[flag] = true
+  else delete narrowed[flag]
+  return narrowed
+}
+
+// The parser hangs a control operator on a type entry, a field, or a definition. A numeric one
+// bounds the projected node; any other (`.default` …) does not change the type.
+function withOperator(node, operator) {
+  const bound = BOUND_OPERATORS[operator?.Type]
+  if (!bound) return node
+  const value = boundValue(operator.Value)
+  return value === undefined ? { primitive: 'unknown' } : narrow(node, bound, value)
+}
+
 function projectEntry(e) {
   if (typeof e === 'string') return { primitive: PRIMITIVES[e] ?? e }
   if (!e || typeof e !== 'object') return { primitive: 'unknown' }
-  // A control operator (`.ge` / `.default` / `.le` …) wraps the real type as
-  // `{ Type: <innerType>, Operator: {...} }`; the constraint does not change the
-  // type, so project the inner type.
+  if (e.Operator) {
+    const { Operator, ...inner } = e
+    return withOperator(projectEntry(inner), Operator)
+  }
+  // A parenthesized type, or an operator's operand, is `{ Type: <innerType> }`: project the inner type.
   if (e.Type && typeof e.Type === 'object') return projectEntry(e.Type)
   if (e.Type === 'literal') return { const: e.Value }
   if (e.Type === 'group' && e.Value) return e.Value in PRELUDE ? { primitive: PRELUDE[e.Value] } : { ref: e.Value }
@@ -206,27 +246,48 @@ function projectEntry(e) {
   if (e.Type === 'array') return { list: projectRef(e.Values?.[0]?.Type) }
   if (e.Type === 'map') return { map: projectRef(e.ValueType ?? e.Values?.[0]?.Type), extensible: true }
   if (e.Type === 'range') {
+    const min = boundValue(e.Value?.Min)
+    const max = boundValue(e.Value?.Max)
+    if (min === undefined || max === undefined) return { primitive: 'unknown' }
     // A bound written as a float (`1.0`) parses to an integer `Value` carrying an `IsFloat`
     // marker; consult it so `(0.0..1.0)` is a number range, not — as its integral bounds alone
     // would read — an integer one. A bound with no marker falls back to its value's integralness.
-    const intBound = (b) => b && !b.IsFloat && Number.isInteger(b.Value)
-    const intRange = intBound(e.Value?.Min) && intBound(e.Value?.Max)
-    return { primitive: intRange ? 'integer' : 'number' } // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
+    const intBound = (b) => !b.IsFloat && Number.isInteger(b.Value)
+    const intRange = intBound(e.Value.Min) && intBound(e.Value.Max) // e.g. js-uint (0..MAX) vs latitude (-90.0..90.0)
+    const node = { primitive: intRange ? 'integer' : 'number', min, max }
+    // The parser's `Inclusive: false` is the `...` form, which excludes only the upper bound.
+    if (e.Value.Inclusive === false) node.exclusiveMax = true
+    return node
   }
   return { primitive: PRIMITIVES[e.Type] ?? 'unknown' }
 }
 
+// A wire key that is already an identifier is kept verbatim, so `namespaceURI` stays
+// wire-faithful; a quoted CDDL key that is not (`prefers-color-scheme`) is camelCased so
+// every binding derives an identifier from `name` without re-solving punctuation itself.
+const IDENTIFIER = /^[A-Za-z][A-Za-z0-9]*$/
+
+function fieldName(wire) {
+  if (IDENTIFIER.test(wire)) return wire
+  const [head, ...rest] = wire.split(/[^A-Za-z0-9]+/).filter(Boolean)
+  if (!head) return wire
+  return head + rest.map((part) => part[0].toUpperCase() + part.slice(1)).join('')
+}
+
 function projectField(prop) {
+  // A vendor-prefixed key (moz:allowPrivateBrowsing) keeps its wire form: extractVendor
+  // routes it out of the shared types, and the vendor pipeline drops the namespace itself.
+  const vendor = prop['x-selenium-vendor']
   const field = {
-    name: prop.Name,
+    name: vendor ? prop.Name : fieldName(prop.Name),
     wire: prop.Name,
     required: (prop.Occurrence?.n ?? 1) >= 1,
-    type: projectRef(prop.Type),
+    type: withOperator(projectRef(prop.Type), prop.Operator),
   }
   // Provenance stamped by a vendor overlay (generate_bidi.mjs). Carried on the field so
   // extractVendor can route it out of the shared schema; stripped there before it ships.
-  if (prop['x-selenium-vendor']) {
-    field.vendor = prop['x-selenium-vendor']
+  if (vendor) {
+    field.vendor = vendor
     field.via = prop['x-selenium-vendor-via']
   }
   return field
@@ -252,12 +313,19 @@ function unionMemberRefs(def) {
 function projectType(def) {
   if (def.Type === 'variable') {
     const pt = def.PropertyType ?? []
-    if (pt.length && pt.every(isLiteral)) return { kind: 'enum', values: pt.map((e) => e.Value) }
+    if (pt.length && pt.every(isLiteral)) {
+      // Carry the literals' shared primitive so every binding reads the value type
+      // rather than re-deriving it from the JSON values (which arrive differently typed
+      // per language). Matches what enumNode does for an un-hoisted inline choice.
+      const values = pt.map((e) => e.Value)
+      const primitive = literalPrimitive(values)
+      return primitive ? { kind: 'enum', values, primitive } : { kind: 'enum', values }
+    }
     // A union of refs is a union even when some arms are inline groups wrapping a
     // ref (e.g. script.LocalValue's date/regexp arms): projectRef resolves those to
     // refs, so promote the all-ref result to a first-class union (it gets a selector)
     // rather than leaving it an alias-to-union the bindings would have to re-detect.
-    const projected = projectRef(def.PropertyType)
+    const projected = withOperator(projectRef(def.PropertyType), def.Operator)
     if (projected.union?.every((m) => m.ref) && !projected.nullable)
       return { kind: 'union', variants: projected.union.map((m) => m.ref) }
     return { kind: 'alias', type: projected }
@@ -475,6 +543,12 @@ function correlatedUnions(types) {
     const root = envelopeResultUnion(t, types)
     if (root) roots.add(root)
   }
+  // An extension module (an adjacent spec or a vendor module) declares its result grouping as
+  // a bare `<Module>Result` union that the core `ResultData` never references — the same
+  // convention the model builder relies on for `<Module>Command` — so seed those too. A dotted
+  // `<domain>.<Name>Result` is a payload type (script.EvaluateResult) and is not one.
+  for (const [name, t] of Object.entries(types))
+    if (t.kind === 'union' && !name.includes('.') && name.endsWith('Result')) roots.add(name)
   // A union is payload-dispatched — and so must keep its selector — when it has a
   // discriminator OR a structural selector that can actually distinguish its arms
   // (matching the validity the gate enforces). The result groupings fail this
@@ -595,9 +669,12 @@ function reachableTypes(roots, types) {
  * @param {{types?:object,commands?:object,events?:object,domains?:object}} [links] Optional
  *   spec-link maps (see buildSpecLinks). When given, each type/command/event with a known URL
  *   carries it as `specHref`, and linked domains are collected in the schema's `domains` map.
- * @returns {{schemaVersion: number, commands: object[], events: object[], types: object, domains: object}} The schema.
+ * @param {object} [vendorModel] The model built from the vendor-overlaid AST. Only its
+ *   `vendor`-tagged commands and events are used (the rest duplicates `model`), each filed
+ *   under `vendor.<namespace>`. Omit it (or pass a vendor-free model) for no vendor modules.
+ * @returns {{schemaVersion: number, generatedBy: string, regenerateWith: string, commands: object[], events: object[], types: object, domains: object, vendor?: object}} The schema.
  */
-export function projectSchema(ast, model, links = {}) {
+export function projectSchema(ast, model, links = {}, vendorModel = null) {
   const types = {}
   for (const def of normalizeAst(ast)) {
     if (!def?.Name) continue
@@ -611,6 +688,9 @@ export function projectSchema(ast, model, links = {}) {
       node.owner = def['x-selenium-owner']
       node.label = def['x-selenium-label']
     }
+    // A vendor's own type (generate_bidi.mjs tags the def). Carried on the node only until
+    // extractVendor routes it into the `vendor` section.
+    if (def['x-selenium-vendor']) node.vendor = def['x-selenium-vendor']
     // Link to the type's definition in the live spec, when the index covers it —
     // the readable prose section where one exists, else the CDDL production.
     // Synthetic types have no spec definition and are (correctly) never in it.
@@ -629,39 +709,56 @@ export function projectSchema(ast, model, links = {}) {
   for (const node of Object.values(types))
     if (node.kind === 'union' && node.variants.every((v) => variantIsObject(v, types))) node.objectOnly = true
 
-  const commands = []
-  const events = []
   const envelopeParams = commandEnvelopeParams(types)
   // Commands and events link to their own prose section (`#command-*` / `#event-*`),
   // keyed by the wire method; domains to their `#module-*` section. Present-only-when-known.
   const link = (map, key) => (typeof key === 'string' ? map?.[key.toLowerCase()] : undefined)
-  for (const [domain, entry] of Object.entries(model)) {
-    for (const c of entry.commands ?? []) {
-      const cmd = {
-        domain,
-        method: c.method,
-        name: c.name,
-        // Prefer the envelope's params (it captures inline params the model drops).
-        params: typeRef(envelopeParams.get(c.method) ?? c.params),
-        result: typeRef(c.result),
+  const projectMessages = (modelEntries) => {
+    const commands = []
+    const events = []
+    for (const [domain, entry] of modelEntries) {
+      for (const c of entry.commands ?? []) {
+        const cmd = {
+          domain,
+          method: c.method,
+          name: c.name,
+          // Prefer the envelope's params (it captures inline params the model drops).
+          params: typeRef(envelopeParams.get(c.method) ?? c.params),
+          result: typeRef(c.result),
+        }
+        const href = link(links.commands, c.method)
+        if (href) cmd.specHref = href
+        if (c.vendor) cmd.vendor = c.vendor
+        commands.push(cmd)
       }
-      const href = link(links.commands, c.method)
-      if (href) cmd.specHref = href
-      commands.push(cmd)
+      for (const e of entry.events ?? []) {
+        const ev = {
+          domain,
+          method: e.method,
+          name: e.name,
+          params: typeRef(envelopeParams.get(e.method) ?? e.params),
+        }
+        const href = link(links.events, e.method)
+        if (href) ev.specHref = href
+        if (e.vendor) ev.vendor = e.vendor
+        events.push(ev)
+      }
     }
-    for (const e of entry.events ?? []) {
-      const ev = { domain, method: e.method, name: e.name, params: typeRef(envelopeParams.get(e.method) ?? e.params) }
-      const href = link(links.events, e.method)
-      if (href) ev.specHref = href
-      events.push(ev)
-    }
+    return { commands, events }
   }
+  const { commands, events } = projectMessages(Object.entries(model))
+  const vendorMessages = projectMessages(vendorModelEntries(vendorModel))
 
   // Per-type directionality (see the header block): reachable from a command's params
   // (outbound) vs from a command's result or an event's params (inbound), closed over
-  // the same ref edges the integrity check walks — no name heuristics.
-  const outboundRoots = commands.map((c) => c.params?.ref).filter(Boolean)
-  const inboundRoots = [...commands.map((c) => c.result?.ref), ...events.map((e) => e.params?.ref)].filter(Boolean)
+  // the same ref edges the integrity check walks — no name heuristics. Vendor messages
+  // count too: a type a vendor command sends is outbound for that vendor.
+  const allCommands = [...commands, ...vendorMessages.commands]
+  const allEvents = [...events, ...vendorMessages.events]
+  const outboundRoots = allCommands.map((c) => c.params?.ref).filter(Boolean)
+  const inboundRoots = [...allCommands.map((c) => c.result?.ref), ...allEvents.map((e) => e.params?.ref)].filter(
+    Boolean,
+  )
   const outboundReach = reachableTypes(outboundRoots, types)
   const inboundReach = reachableTypes(inboundRoots, types)
   for (const [name, node] of Object.entries(types))
@@ -680,27 +777,44 @@ export function projectSchema(ast, model, links = {}) {
   // Partition vendor-tagged fields out of the shared, browser-neutral schema into a namespaced
   // `vendor` section. The shared `types` are then exactly what upstream emits (spec-only); a
   // binding that reads only `types`/`commands`/`events` never sees vendor fields.
-  const vendor = extractVendor(types)
-  const schema = { schemaVersion: 1, commands, events, types, domains }
+  const vendor = extractVendor(types, vendorMessages)
+  const schema = {
+    schemaVersion: 1,
+    generatedBy: 'javascript/selenium-webdriver/project_bidi_schema.mjs',
+    regenerateWith: 'bazel run //common/bidi:update-schema',
+    commands,
+    events,
+    types,
+    domains,
+  }
   if (Object.keys(vendor).length) schema.vendor = vendor
   return schema
 }
 
 /**
- * Move every vendor-tagged field out of the shared `types` and into a `{ <namespace>: { extends:
- * { <targetType>: { via, fields } } } }` structure. A field's `via` names the spec extension point
- * it flowed through; the field having resolved into a real shared record (via the `//=` fold and
- * group flatten) is what proves the merge happened — this only re-routes the output. The pure
- * extension-point anchor type (e.g. `webExtension.InstallParametersExtension`), left with no
- * spec fields once its vendor fields move out, is dropped from the shared schema.
+ * Move everything vendor-tagged out of the shared `types` into the `vendor` section (see the
+ * header block). A field's `via` names the extension group it flowed through; the field having
+ * resolved into a real shared record (the extension-group splice and group flatten) is what
+ * proves the merge happened — this only re-routes the output. The pure extension-group anchor
+ * type (e.g. `webExtension.InstallParametersExtension`), left with no spec fields once its
+ * vendor fields move out, is dropped. A vendor-tagged type moves whole into `types`.
  * With no vendor tags present this returns `{}` and mutates nothing, so output is unchanged.
  * @param {object} types The projected `types` map (mutated in place).
- * @returns {object} The vendor section, empty when there are no vendor fields.
+ * @returns {object} The vendor section, empty when there is no vendor content.
  */
-function extractVendor(types) {
+function extractVendor(types, messages) {
   const vendor = {}
   const anchors = new Set()
+  const section = (ns) => (vendor[ns] ??= { extends: {}, commands: [], events: [], types: {} })
+  for (const kind of ['commands', 'events'])
+    for (const { vendor: ns, ...clean } of messages[kind]) section(ns)[kind].push(clean)
   for (const [typeName, node] of Object.entries(types)) {
+    if (node.vendor) {
+      const { vendor: ns, ...clean } = node
+      section(ns).types[typeName] = clean
+      delete types[typeName]
+      continue
+    }
     if (node.kind !== 'record' || !Array.isArray(node.fields)) continue
     const kept = []
     for (const field of node.fields) {
@@ -713,8 +827,7 @@ function extractVendor(types) {
       // itself is removed below) and route only the copy that resolved into a real target type.
       if (field.via === typeName) continue
       const { vendor: ns, via, ...clean } = field
-      const bucket = (vendor[ns] ??= { extends: {} })
-      const entry = (bucket.extends[typeName] ??= { via, fields: [] })
+      const entry = (section(ns).extends[typeName] ??= { via, fields: [] })
       entry.fields.push(clean)
     }
     node.fields = kept
@@ -726,6 +839,30 @@ function extractVendor(types) {
   return vendor
 }
 
+// The vendor model's `vendor`-tagged commands and events, as model entries. The untagged
+// rest duplicates the shared model (the vendor AST is the base AST plus overlays).
+function vendorModelEntries(vendorModel) {
+  const entries = []
+  for (const [domain, entry] of Object.entries(vendorModel ?? {})) {
+    const commands = (entry.commands ?? []).filter((c) => c.vendor)
+    const events = (entry.events ?? []).filter((e) => e.vendor)
+    if (commands.length || events.length) entries.push([domain, { commands, events }])
+  }
+  return entries
+}
+
+// The shared sections with every vendor section folded in: what the validators check, since
+// vendor refs resolve into the shared types and vendor messages need the same guarantees.
+function withVendor(schema) {
+  const sections = Object.values(schema.vendor ?? {})
+  return {
+    ...schema,
+    commands: [...schema.commands, ...sections.flatMap((s) => s.commands ?? [])],
+    events: [...schema.events, ...sections.flatMap((s) => s.events ?? [])],
+    types: Object.assign({}, schema.types, ...sections.map((s) => s.types ?? {})),
+  }
+}
+
 /**
  * Fail-closed validation: every type reference resolves, and no type projects to
  * `unknown` (which would mean an unhandled CDDL form) — across command/event
@@ -733,9 +870,11 @@ function extractVendor(types) {
  * @param {object} schema The projected schema (`{commands, events, types}`).
  * @returns {string[]} One message per problem; empty when valid.
  */
-export function checkSchema(schema) {
+export function checkSchema(source) {
+  const schema = withVendor(source)
+  const allTypes = schema.types
   const errors = []
-  const has = (name) => Object.hasOwn(schema.types, name)
+  const has = (name) => Object.hasOwn(allTypes, name)
   const hasUnknown = (node) =>
     !node
       ? false
@@ -762,10 +901,21 @@ export function checkSchema(schema) {
             : node.union
               ? node.union.some(hasEmptyInlineRecord)
               : false
+  const isNumeric = (node, seen = new Set()) => {
+    if (node.primitive !== undefined) return node.primitive === 'integer' || node.primitive === 'number'
+    if (node.ref === undefined || seen.has(node.ref)) return false
+    seen.add(node.ref)
+    const target = allTypes[node.ref]
+    return target?.kind === 'alias' && isNumeric(target.type, seen)
+  }
+  const nestedTypes = (node) => [node.list, node.map, ...(node.union ?? []), ...(node.record ?? []).map((f) => f.type)]
+  const hasMisplacedBound = (node) =>
+    !!node && ((BOUND_KEYS.some((k) => k in node) && !isNumeric(node)) || nestedTypes(node).some(hasMisplacedBound))
   const report = (where, node) => {
     for (const r of refsInType(node)) if (!has(r)) errors.push(`${where}: unresolved type ${r}`)
     if (hasUnknown(node)) errors.push(`${where}: projected to an unknown primitive (unhandled CDDL type)`)
     if (hasEmptyInlineRecord(node)) errors.push(`${where}: projected an empty inline record (dropped type reference)`)
+    if (hasMisplacedBound(node)) errors.push(`${where}: carries a numeric bound on a non-numeric type`)
   }
 
   for (const c of [...schema.commands, ...schema.events]) {
@@ -781,10 +931,26 @@ export function checkSchema(schema) {
     if (expected && c.params?.ref !== expected)
       errors.push(`${c.method}: params ${c.params?.ref ?? 'null'} does not match required envelope params ${expected}`)
   }
-  for (const [name, node] of Object.entries(schema.types)) {
+  // A vendor extension adds fields to a shared record: the record must exist as a record, and
+  // its fields resolve like any other. Vendor types get the same per-type checks as shared ones.
+  for (const [ns, sec] of Object.entries(schema.vendor ?? {}))
+    for (const [target, entry] of Object.entries(sec.extends ?? {})) {
+      if (source.types[target]?.kind !== 'record') errors.push(`${ns}: extends ${target}, which is not a shared record`)
+      for (const f of entry.fields) report(`${ns}:${target}.${f.name}`, f.type)
+    }
+  for (const [name, node] of Object.entries(allTypes)) {
     if (node.synthetic && !has(node.owner)) errors.push(`${name}: synthetic owner ${node.owner} does not resolve`)
     if (node.kind === 'record') {
-      for (const f of node.fields) report(`${name}.${f.name}`, f.type)
+      const wireByName = new Map()
+      for (const f of node.fields) {
+        report(`${name}.${f.name}`, f.type)
+        // Two wire keys that camelCase to one name would collapse into a single
+        // attribute downstream, silently keeping whichever the binding wrote last.
+        const prior = wireByName.get(f.name)
+        if (prior !== undefined && prior !== f.wire)
+          errors.push(`${name}: wire keys ${prior} and ${f.wire} both project to field name ${f.name}`)
+        wireByName.set(f.name, f.wire)
+      }
       if (node.map) report(`${name}.*`, node.map)
     } else if (node.kind === 'union') {
       for (const v of node.variants) if (!has(v)) errors.push(`${name}: unresolved variant ${v}`)
@@ -891,12 +1057,15 @@ async function main() {
       // The core spec's prose-anchor index (see extract_bidi_anchors.mjs). Optional;
       // upgrades type links to prose sections and adds command/event/domain links.
       anchors: { type: 'string' },
+      // The model built from the vendor-overlaid AST; its vendor-tagged messages are filed
+      // under `vendor.<namespace>`. Optional.
+      'vendor-model': { type: 'string' },
     },
   })
   if (!args.ast || !args.model || !args['dump-schema']) {
     console.error(
       'Usage: project_bidi_schema.mjs --ast <ast.json> --model <model.json> --dump-schema <out.json>' +
-        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>]',
+        ' [--dfns <dfns.json> ...] [--anchors <anchors.json>] [--vendor-model <model.json>]',
     )
     process.exit(1)
   }
@@ -905,7 +1074,8 @@ async function main() {
   const model = JSON.parse(readFileSync(resolveInput(args.model), 'utf8'))
   const dfnsDocs = (args.dfns ?? []).map((p) => JSON.parse(readFileSync(resolveInput(p), 'utf8')))
   const anchors = args.anchors ? JSON.parse(readFileSync(resolveInput(args.anchors), 'utf8')) : {}
-  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors))
+  const vendorModel = args['vendor-model'] ? JSON.parse(readFileSync(resolveInput(args['vendor-model']), 'utf8')) : null
+  const schema = projectSchema(ast, model, buildSpecLinks(dfnsDocs, anchors), vendorModel)
 
   // Generation is the gate: a broken or incomplete schema fails the build.
   const errors = [...checkSchema(schema), ...checkCompleteness(ast, schema)]
@@ -923,6 +1093,11 @@ async function main() {
     `  ${schema.commands.length} commands, ${schema.events.length} events, ${Object.keys(schema.types).length} types` +
       ` (${linkedTypes.length} spec-linked, ${proseTypes} prose) → ${args['dump-schema']}`,
   )
+  for (const [ns, section] of Object.entries(schema.vendor ?? {}))
+    console.log(
+      `  vendor ${ns}: extends ${Object.keys(section.extends).length} types; ${section.commands.length} commands,` +
+        ` ${section.events.length} events, ${Object.keys(section.types).length} types`,
+    )
 }
 
 // Run main() when invoked as the entry module. Uses an argv comparison rather
@@ -944,20 +1119,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
  * @param {object} schema The projected schema to check against.
  * @returns {string[]} One message per dropped or stale-allowlisted method; empty when complete.
  */
-export function checkCompleteness(rawAst, schema) {
+export function checkCompleteness(rawAst, source) {
+  const schema = withVendor(source)
   const emitted = new Set([...schema.commands, ...schema.events].map((c) => c.method))
   const errors = []
   for (const def of rawAst) {
     const methodProp = (def.Properties ?? []).flat().find((p) => p?.Name === 'method')
     const literal = methodProp && (Array.isArray(methodProp.Type) ? methodProp.Type[0] : methodProp.Type)
     if (literal?.Type !== 'literal') continue
-    if (!emitted.has(literal.Value) && !KNOWN_INCOMPLETE.has(literal.Value))
-      errors.push(`dropped from schema: ${literal.Value}`)
-  }
-  // Self-cleaning: if a known-incomplete method is now emitted, the entry is
-  // stale and must be removed — so the allowlist cannot silently rot.
-  for (const known of KNOWN_INCOMPLETE) {
-    if (emitted.has(known)) errors.push(`stale KNOWN_INCOMPLETE entry (now emitted, remove it): ${known}`)
+    if (!emitted.has(literal.Value)) errors.push(`dropped from schema: ${literal.Value}`)
   }
   // Every structured type must carry both directionality flags — a missing one means
   // the pass skipped a node. `(false, false)` is a valid combination (a type in no

@@ -10,15 +10,16 @@ from pathlib import Path
 import urllib3
 from packaging.version import parse
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 
 def get_chrome_milestone():
     """Get the Chrome milestone from the channel.
 
-    This is the same method from pinned_browser. Use --chrome_channel=Beta if
-    using early stable release.
+    This is the same method from pinned_browser.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("--chrome_channel", default="Stable", help="Set the Chrome channel")
@@ -36,14 +37,21 @@ def get_chrome_milestone():
     )
     versions = json.loads(r.data)["versions"]
 
-    return sorted(
+    return max(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
-    )[-1]
+    )
+
+
+def github_get(url):
+    headers = {"Accept": "application/vnd.github.raw+json"}
+    if "GITHUB_TOKEN" in os.environ:
+        headers["Authorization"] = f"Bearer {os.environ['GITHUB_TOKEN']}"
+    return http.request("GET", url, headers=headers)
 
 
 def fetch_and_save(url, file_path):
-    response = http.request("GET", url)
+    response = github_get(url)
     if response.status != 200:
         raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
     with open(file_path, "wb") as file:
@@ -71,11 +79,13 @@ def flatten_browser_pdl(file_path, chrome_version):
     version_block = version_match.group(1) + "\n\n" if version_match else ""
     # Find all include lines
     includes = re.findall(r"include domains/([A-Za-z0-9_]+\.pdl)", content)
-    base_url = f"https://raw.githubusercontent.com/chromium/chromium/{chrome_version}/third_party/blink/public/devtools_protocol/domains/"
+    base_url = (
+        "https://api.github.com/repos/chromium/chromium/contents/third_party/blink/public/devtools_protocol/domains/"
+    )
     concatenated = ""
     for domain_file in includes:
-        url = base_url + domain_file
-        response = http.request("GET", url)
+        url = f"{base_url}{domain_file}?ref={chrome_version}"
+        response = github_get(url)
         if response.status != 200:
             raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
         concatenated += response.data.decode("utf-8") + "\n"
@@ -98,22 +108,21 @@ def add_pdls(chrome_milestone):
             shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
 
         fetch_and_save(
-            f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/third_party/blink/public/devtools_protocol/browser_protocol.pdl",
+            f"https://api.github.com/repos/chromium/chromium/contents/third_party/blink/public/devtools_protocol/browser_protocol.pdl?ref={chrome_milestone['version']}",
             f"{target_dir}/browser_protocol.pdl",
         )
 
         flatten_browser_pdl(f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"])
 
-        deps_content = http.request(
-            "GET",
-            f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/DEPS",
+        deps_content = github_get(
+            f"https://api.github.com/repos/chromium/chromium/contents/DEPS?ref={chrome_milestone['version']}"
         ).data.decode("utf-8")
         v8_revision_line = next((line for line in deps_content.split("\n") if "v8_revision" in line), None)
         if v8_revision_line is None:
             raise ValueError(f"No v8_revision found in DEPS for Chrome {chrome_milestone['version']}")
         v8_revision = v8_revision_line.split(": ")[1].strip("',")
         fetch_and_save(
-            f"https://raw.githubusercontent.com/v8/v8/{v8_revision}/include/js_protocol.pdl",
+            f"https://api.github.com/repos/v8/v8/contents/include/js_protocol.pdl?ref={v8_revision}",
             f"{target_dir}/js_protocol.pdl",
         )
 
@@ -181,11 +190,10 @@ def update_dotnet(chrome_milestone):
     for file in files:
         replace_in_file(file, old_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
-    files = [root_dir / "dotnet/test/webdriver/Infrastructure/DriverConfigs/StableChannelChromeDriver.cs"]
     dir_path = root_dir / "dotnet/test/webdriver/DevTools"
-    files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
-    for file in files:
-        replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
+    for file in dir_path.glob("*"):
+        if file.is_file():
+            replace_in_file(file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone))
 
 
 def update_ruby(chrome_milestone):

@@ -26,35 +26,42 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 [JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(
-    BrowsingContext Context)
-    : EventArgs;
+    BrowsingContext Context,
+    Navigation? Navigation,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : EventArgs, IBaseNavigationInfo;
 
 public sealed record DownloadCanceledEventArgs(
     Download Download,
     BrowsingContext Context,
     Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
 public sealed record DownloadCompleteEventArgs(
     Download Download,
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
 internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArgs>
 {
     public override DownloadEndEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return reader.GetDiscriminator("status") switch
+        var status = reader.GetDiscriminator("status");
+        return status switch
         {
             "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventArgs>()),
             "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventArgs>()),
-            _ => null,
+            _ => throw new JsonException($"Unknown download status '{status}'."),
         };
     }
 

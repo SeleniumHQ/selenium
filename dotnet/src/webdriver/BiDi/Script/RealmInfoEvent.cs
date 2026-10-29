@@ -79,7 +79,7 @@ internal class RealmCreatedEventArgsConverter : JsonConverter<RealmCreatedEventA
             "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmCreatedEventArgs>()),
             "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmCreatedEventArgs>()),
             "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmCreatedEventArgs>()),
-            _ => throw new BiDiException($"Unknown realm type '{type}'")
+            _ => throw new JsonException($"Unknown realm type '{type}'.")
         };
     }
 

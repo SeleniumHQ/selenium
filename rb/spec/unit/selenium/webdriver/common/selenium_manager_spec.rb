@@ -51,11 +51,21 @@ module Selenium
         end
 
         it 'detects Linux' do
-          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('/linux/selenium-manager'))
+          allow(Platform).to receive(:assert_executable).with(a_string_ending_with('/linux-x86_64/selenium-manager'))
                                                         .and_return(true)
           allow(Platform).to receive_messages(windows?: false, mac?: false, linux?: true)
+          allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('x86_64')
 
-          expect(described_class.send(:binary)).to match(%r{/linux/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{/linux-x86_64/selenium-manager$})
+        end
+
+        it 'detects Linux arm64' do
+          allow(Platform).to receive(:assert_executable)
+            .with(a_string_ending_with('/linux-arm64/selenium-manager')).and_return(true)
+          allow(Platform).to receive_messages(windows?: false, mac?: false, linux?: true)
+          allow(RbConfig::CONFIG).to receive(:[]).with('host_cpu').and_return('aarch64')
+
+          expect(described_class.send(:binary)).to match(%r{/linux-arm64/selenium-manager$})
         end
 
         it 'errors if cannot find' do

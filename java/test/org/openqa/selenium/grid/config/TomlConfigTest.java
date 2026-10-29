@@ -61,11 +61,11 @@ class TomlConfigTest {
 
     List<String> expected =
         List.of(
-            "default=\"brie\"",
             "name=\"soft cheese\"",
+            "default=\"brie\"",
             Config.DELIMITER,
-            "default=\"Emmental\"",
             "name=\"Medium-hard cheese\"",
+            "default=\"Emmental\"",
             Config.DELIMITER);
     assertThat(config.getAll("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
@@ -99,7 +99,7 @@ class TomlConfigTest {
     List<String> expected =
         List.of(
             "display-name=\"htmlunit\"",
-            "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}",
+            "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
             Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
     assertThat(content).contains(expected);
@@ -122,8 +122,8 @@ class TomlConfigTest {
 
     List<List<String>> expected =
         List.of(
-            List.of("default=\"brie\"", "name=\"soft cheese\""),
-            List.of("default=\"Emmental\"", "name=\"Medium-hard cheese\""));
+            List.of("name=\"soft cheese\"", "default=\"brie\""),
+            List.of("name=\"Medium-hard cheese\"", "default=\"Emmental\""));
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))

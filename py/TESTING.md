@@ -43,6 +43,12 @@ bazel test //py:test/selenium/webdriver/common/window_tests-chrome
 # With BiDi protocol
 bazel test //py:test-chrome-bidi
 
+# Against a Grid server (chrome and firefox only). The suite starts its own
+# Selenium standalone server and talks to it with webdriver.Remote.
+bazel test //py:test-chrome-remote
+bazel test //py:test-chrome-grid     # only the Grid-specific tests
+bazel test //py:test-remote          # every remote suite
+
 # Test filters
 bazel test //py/... --test_tag_filters=chrome
 
@@ -53,13 +59,23 @@ bazel test //py/... --test_output=streamed  # Live output for debugging
 bazel test //py:test-chrome --headless
 
 # Run a specific test in a test file
-bazel test //py:test/selenium/webdriver/common/bidi_browsing_context_tests-chrome-bidi \
+bazel test //py:test/selenium/webdriver/common/bidi/browsing_context_tests-chrome-bidi \
   --test_arg=-k \
   --test_arg=test_get_tree_with_child \
 
 # View all targets
 bazel query //py/...
 ```
+
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ## Running Tests Without Bazel (using pytest)
 
@@ -96,6 +112,14 @@ pytest py/test/selenium/webdriver/chrome/ --driver chrome --headless -v
 ```
 > **Note:**
 > For running BiDi tests, use the `--bidi` flag.
+>
+> To run against a Grid server, add `--remote`. It starts a Selenium standalone
+> server and runs the tests through `webdriver.Remote`, so it needs the Grid jar
+> built first (`bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar`).
+>
+> A BiDi test file with Grid-specific behavior can be listed in `REMOTE_BIDI_TESTS`
+> in `py/BUILD.bazel`; it then also runs with `--bidi --remote` as part of
+> `test-<browser>-remote`.
 
 ## Skipping Tests
 
@@ -146,6 +170,7 @@ modules, you will find the main fixtures in `conftest.py`:
 | `webserver` | Test HTTP server reference |
 | `clean_driver` | Fresh driver without parametrization |
 | `clean_options` | Fresh browser options instance |
+| `headless` | Whether the browser was started headless, for tests asserting on behavior a headless browser does not model (e.g. window focus) |
 
 ## Test Organization
 

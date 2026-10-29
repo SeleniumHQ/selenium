@@ -63,7 +63,7 @@ module Selenium
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
             text: {wire_key: 'text', nullable: true, primitive: 'string'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 
@@ -74,7 +74,7 @@ module Selenium
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
             text: {wire_key: 'text', nullable: true, primitive: 'string'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             type: {wire_key: 'type', primitive: 'string'}
           )
@@ -87,7 +87,7 @@ module Selenium
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
             text: {wire_key: 'text', nullable: true, primitive: 'string'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'},
             method_: {wire_key: 'method', primitive: 'string'},
             args: {wire_key: 'args', ref: 'Script::RemoteValue', list: true}
@@ -101,7 +101,7 @@ module Selenium
             level: {wire_key: 'level', enum: 'Log::LEVEL'},
             source: {wire_key: 'source', ref: 'Script::Source'},
             text: {wire_key: 'text', nullable: true, primitive: 'string'},
-            timestamp: {wire_key: 'timestamp', primitive: 'integer'},
+            timestamp: {wire_key: 'timestamp', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             stack_trace: {wire_key: 'stackTrace', required: false, ref: 'Script::StackTrace'}
           )
 

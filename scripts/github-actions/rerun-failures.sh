@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Parse Bazel console log for failures and optionally rerun with debug.
+# Transient download failures are handled first by retry-transient-download.sh.
 
 set -euo pipefail
 
@@ -8,8 +9,8 @@ RERUN_WITH_DEBUG="${2:-false}"
 
 mkdir -p build/failures
 awk '$1 ~ /^\/\// && $2 ~ /(FAILED|TIMEOUT|INCOMPLETE)/ && $3 == "in" { print $1 }' build/bazel-console.log > build/failures/_run1.txt
-# Strip ANSI color codes (bazel runs with --color=yes) before anchoring on the ERROR: prefix.
-errors=$(awk '{ gsub(/\033\[[0-9;]*m/, "") } /^ERROR: / { print }' build/bazel-console.log)
+# Strip ANSI color codes (--color=yes) and the "(HH:MM:SS) " prefix (--show_timestamps) before anchoring on ERROR:.
+errors=$(awk '{ gsub(/\033\[[0-9;]*m/, ""); sub(/^\([0-9:]+\) /, "") } /^ERROR: / { print }' build/bazel-console.log)
 
 if [ -n "$errors" ]; then
   echo "::error::This step failed because the 'Run Bazel' step above failed with a build/analysis error — reruns will not help. See that step's log for full context; the ERROR lines are reproduced below."

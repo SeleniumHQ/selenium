@@ -132,7 +132,8 @@ test.suite(
 
     describe('Edge options', function () {
       it('can start edge with custom args', async function () {
-        const options = new edge.Options().addArguments('user-agent=foo;bar')
+        const options = env.builder().getEdgeOptions() || new edge.Options()
+        options.addArguments('user-agent=foo;bar')
 
         driver = await env.builder().setEdgeOptions(options).build()
 
@@ -160,7 +161,8 @@ test.suite(
       })
 
       it('can install an extension from path', async function () {
-        let options = new edge.Options().addExtensions(WEBEXTENSION_CRX)
+        let options = env.builder().getEdgeOptions() || new edge.Options()
+        options.addExtensions(WEBEXTENSION_CRX)
 
         driver = await env.builder().setEdgeOptions(options).build()
 
@@ -169,7 +171,8 @@ test.suite(
       })
 
       it('can install an extension from Buffer', async function () {
-        let options = new edge.Options().addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
+        let options = env.builder().getEdgeOptions() || new edge.Options()
+        options.addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
 
         driver = await env.builder().setEdgeOptions(options).build()
 

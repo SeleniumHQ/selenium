@@ -319,6 +319,8 @@ class ConstructorCoercerTest {
   }
 
   private static List<LogRecord> captureLogRecords(Runnable action) {
+    // UnknownFieldsWarning logs under ConstructorCoercer's own category, preserving that
+    // pre-existing logger name across the extraction — see UnknownFieldsWarning's class javadoc.
     Logger logger = Logger.getLogger(ConstructorCoercer.class.getName());
     List<LogRecord> records = new ArrayList<>();
     Handler handler =

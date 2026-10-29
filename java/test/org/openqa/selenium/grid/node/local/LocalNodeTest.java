@@ -316,7 +316,7 @@ class LocalNodeTest {
   void seVncCdpUrlCapabilityWhenGridUrlWithTrailingSlash() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
-    URI uri = new URI("https://my.domain.com/");
+    URI uri = new URI("https://my.domain.test/");
     Capabilities stereotype =
         new ImmutableCapabilities(
             "se:vncLocalAddress", "ws://localhost:7900",
@@ -339,11 +339,11 @@ class LocalNodeTest {
     Capabilities capabilities = sessionResponse.getSession().getCapabilities();
     Object seVnc = capabilities.getCapability("se:vnc");
     assertThat(seVnc).isNotNull();
-    assertThat(seVnc.toString().contains("wss://my.domain.com/session")).isTrue();
+    assertThat(seVnc.toString().contains("wss://my.domain.test/session")).isTrue();
 
     Object seCdp = capabilities.getCapability("se:cdp");
     assertThat(seCdp).isNotNull();
-    assertThat(seCdp.toString().contains("wss://my.domain.com/session")).isTrue();
+    assertThat(seCdp.toString().contains("wss://my.domain.test/session")).isTrue();
   }
 
   @Test
@@ -426,13 +426,6 @@ class LocalNodeTest {
     Object bidiEnabled = capabilities.getCapability("se:bidiEnabled");
     assertThat(bidiEnabled).isNotNull();
     assertThat(Boolean.parseBoolean(bidiEnabled.toString())).isFalse();
-  }
-
-  @Test
-  void extractsFileNameFromRequestUri() {
-    assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
-    assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
-        .isEqualTo("файл+with+tähtedega.png");
   }
 
   @Test

@@ -29,7 +29,9 @@ module Selenium
         class Bluetooth < Domain
           EVENTS = {
             request_device_prompt_updated: 'bluetooth.requestDevicePromptUpdated',
-            gatt_connection_attempted: 'bluetooth.gattConnectionAttempted'
+            gatt_connection_attempted: 'bluetooth.gattConnectionAttempted',
+            characteristic_event_generated: 'bluetooth.characteristicEventGenerated',
+            descriptor_event_generated: 'bluetooth.descriptorEventGenerated'
           }.freeze
 
           SIMULATE_ADAPTER_PARAMETERS_STATE = {
@@ -80,7 +82,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothbluetoothmanufacturerdata
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothbluetoothmanufacturerdata
           BluetoothManufacturerData = Serialization::Record.define(
             key: {wire_key: 'key', primitive: 'integer'},
             data: {wire_key: 'data', primitive: 'string'}
@@ -88,7 +90,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcharacteristicproperties
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristicproperties
           CharacteristicProperties = Serialization::Record.define(
             broadcast: {wire_key: 'broadcast', required: false, primitive: 'boolean'},
             read: {wire_key: 'read', required: false, primitive: 'boolean'},
@@ -102,7 +104,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdeviceinfo
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdeviceinfo
           RequestDeviceInfo = Serialization::Record.define(
             id: {wire_key: 'id', primitive: 'string'},
             name: {wire_key: 'name', nullable: true, primitive: 'string'}
@@ -110,10 +112,10 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothscanrecord
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothscanrecord
           ScanRecord = Serialization::Record.define(
             name: {wire_key: 'name', required: false, primitive: 'string'},
-            uuids: {wire_key: 'uuids', required: false, list: true},
+            uuids: {wire_key: 'uuids', required: false, list: true, primitive: 'string'},
             appearance: {wire_key: 'appearance', required: false, primitive: 'number'},
             manufacturer_data: {
               wire_key: 'manufacturerData',
@@ -125,7 +127,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothhandlerequestdevicepromptparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothhandlerequestdevicepromptparameters
           class HandleRequestDevicePromptParameters < Serialization::Union
             discriminator 'accept'
             variants(
@@ -157,7 +159,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadapterparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadapterparameters
           SimulateAdapterParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             le_supported: {wire_key: 'leSupported', required: false, primitive: 'boolean'},
@@ -166,25 +168,25 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdisablesimulationparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdisablesimulationparameters
           DisableSimulationParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatepreconnectedperipheralparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatepreconnectedperipheralparameters
           SimulatePreconnectedPeripheralParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
             name: {wire_key: 'name', primitive: 'string'},
             manufacturer_data: {wire_key: 'manufacturerData', ref: 'Bluetooth::BluetoothManufacturerData', list: true},
-            known_service_uuids: {wire_key: 'knownServiceUuids', list: true}
+            known_service_uuids: {wire_key: 'knownServiceUuids', list: true, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadvertisementparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadvertisementparameters
           SimulateAdvertisementParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             scan_entry: {wire_key: 'scanEntry', ref: 'Bluetooth::SimulateAdvertisementScanEntryParameters'}
@@ -192,7 +194,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateadvertisementscanentryparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateadvertisementscanentryparameters
           SimulateAdvertisementScanEntryParameters = Serialization::Record.define(
             device_address: {wire_key: 'deviceAddress', primitive: 'string'},
             rssi: {wire_key: 'rssi', primitive: 'number'},
@@ -201,7 +203,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattconnectionresponseparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattconnectionresponseparameters
           SimulateGattConnectionResponseParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -210,7 +212,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulategattdisconnectionparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulategattdisconnectionparameters
           SimulateGattDisconnectionParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'}
@@ -218,7 +220,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulateserviceparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulateserviceparameters
           SimulateServiceParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -228,7 +230,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristicparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristicparameters
           SimulateCharacteristicParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -244,7 +246,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatecharacteristicresponseparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatecharacteristicresponseparameters
           SimulateCharacteristicResponseParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -252,12 +254,12 @@ module Selenium
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptorparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptorparameters
           SimulateDescriptorParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -269,7 +271,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothsimulatedescriptorresponseparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothsimulatedescriptorresponseparameters
           SimulateDescriptorResponseParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -278,12 +280,12 @@ module Selenium
             descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothrequestdevicepromptupdatedparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothrequestdevicepromptupdatedparameters
           RequestDevicePromptUpdatedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             prompt: {wire_key: 'prompt', primitive: 'string'},
@@ -292,7 +294,7 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothgattconnectionattemptedparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothgattconnectionattemptedparameters
           GattConnectionAttemptedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'}
@@ -300,19 +302,19 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothcharacteristiceventgeneratedparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothcharacteristiceventgeneratedparameters
           CharacteristicEventGeneratedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
             service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          # @see https://webbluetoothcg.github.io/web-bluetooth/#cddl-type-bluetoothdescriptoreventgeneratedparameters
+          # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothdescriptoreventgeneratedparameters
           DescriptorEventGeneratedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             address: {wire_key: 'address', primitive: 'string'},
@@ -320,12 +322,14 @@ module Selenium
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           EVENT_TYPES = {
             'bluetooth.requestDevicePromptUpdated' => Bluetooth::RequestDevicePromptUpdatedParameters,
-            'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters
+            'bluetooth.gattConnectionAttempted' => Bluetooth::GattConnectionAttemptedParameters,
+            'bluetooth.characteristicEventGenerated' => Bluetooth::CharacteristicEventGeneratedParameters,
+            'bluetooth.descriptorEventGenerated' => Bluetooth::DescriptorEventGeneratedParameters
           }.freeze
 
           def bluetooth_manufacturer_data(**) = BluetoothManufacturerData.new(**)

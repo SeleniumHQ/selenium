@@ -1,0 +1,42 @@
+diff --git a/rs/private/toolchains_repository.bzl b/rs/private/toolchains_repository.bzl
+--- a/rs/private/toolchains_repository.bzl
++++ b/rs/private/toolchains_repository.bzl
+@@ -11,7 +11,7 @@
+ exports_files(["component_labels.bzl"])
+ 
+ declare_rustc_toolchains(
+-    name = "default",
++    name = "def",
+     version = {version},
+     edition = {edition},
+     extra_rustc_flags = {extra_rustc_flags},
+diff --git a/rs/toolchains/declare_rustc_toolchains.bzl b/rs/toolchains/declare_rustc_toolchains.bzl
+--- a/rs/toolchains/declare_rustc_toolchains.bzl
++++ b/rs/toolchains/declare_rustc_toolchains.bzl
+@@ -121,7 +121,7 @@
+         clippy_repo_label = "@clippy_{}_{}//:".format(triple_suffix, version_key)
+         lld_label = _component(rust_lld, triple, rustc_repo_label + "rust-lld")
+ 
+-        rust_toolchain_name = name + "_" + triple_suffix + "_" + version_key + "_rust_toolchain"
++        rust_toolchain_name = name + "_" + triple_suffix + "_" + version_key + "_rust_tc"
+ 
+         rust_toolchain_kwargs = dict(
+             rust_doc = _component(rust_doc, triple, rustc_repo_label + "rustdoc"),
+@@ -209,7 +209,7 @@
+         )
+ 
+         rust_toolchain(
+-            name = rust_toolchain_name + "_bootstrap",
++            name = rust_toolchain_name + "_bs",
+             bootstrapping = True,
+             process_wrapper = "@rules_rust//util/process_wrapper:bootstrap_process_wrapper",
+             rust_std = rust_std_label,
+@@ -236,7 +236,7 @@
+             (True, False),
+         ]:
+             target_kind = "bpf" if is_bpf else "non_bpf"
+-            bootstrap_suffix = "_bootstrap" if bootstrapping else ""
++            bootstrap_suffix = "_bs" if bootstrapping else ""
+             bootstrap_setting = "@rules_rust//rust/private:" + ("bootstrapping" if bootstrapping else "bootstrapped")
+             toolchain_suffix = "_bpf" if is_bpf else bootstrap_suffix
+             native.toolchain(

@@ -292,6 +292,28 @@ limitations under the License.
       assert.strictEqual(text, 'Test_text');
     });
 
+    QUnit.test('getVisibleText should capitalize non-Latin scripts', function(assert) {
+      var text = getVisibleTextByElementId("capitalized-cyrillic");
+      assert.strictEqual(text, 'Привет Мир');
+      text = getVisibleTextByElementId("capitalized-cyrillic-underscore");
+      assert.strictEqual(text, 'Привет_мир');
+      text = getVisibleTextByElementId("capitalized-cyrillic-hyphen");
+      assert.strictEqual(text, 'Привет-Мир');
+      text = getVisibleTextByElementId("capitalized-greek");
+      assert.strictEqual(text, 'Γειά Σου Κόσμε');
+      text = getVisibleTextByElementId("capitalized-armenian");
+      assert.strictEqual(text, 'Բարեւ Աշխարհ');
+      text = getVisibleTextByElementId("capitalized-mixed-scripts");
+      assert.strictEqual(text, 'Привет World Γειά');
+
+      // Scripts without case are left alone, and a script change mid-word is
+      // not a word boundary.
+      text = getVisibleTextByElementId("capitalized-uncased-script");
+      assert.strictEqual(text, 'שלום עולם');
+      text = getVisibleTextByElementId("capitalized-cyrillic-then-latin");
+      assert.strictEqual(text, 'Приветworld');
+    });
+
     function getVisibleTextByElementId(id) {
       var e = bot.locators.findElement({id: id});
       return bot.dom.getVisibleText(e);
@@ -447,6 +469,14 @@ limitations under the License.
     <a id="capitalized-7" style="text-transform: capitalize">(this) "is" [a] –short– -test- «for» *the* _css_ ¿capitalize? ?¡transfor</a><br/>
     <a id="capitalized-8" style="text-transform: capitalize">The Dutch word: "ijsland" starts with a digraph</a><br/>
     <a id="capitalized-9" style="text-transform: capitalize">test_text</a><br/>
+    <a id="capitalized-cyrillic" style="text-transform: capitalize">привет мир</a><br/>
+    <a id="capitalized-cyrillic-underscore" style="text-transform: capitalize">привет_мир</a><br/>
+    <a id="capitalized-cyrillic-hyphen" style="text-transform: capitalize">привет-мир</a><br/>
+    <a id="capitalized-greek" style="text-transform: capitalize">γειά σου κόσμε</a><br/>
+    <a id="capitalized-armenian" style="text-transform: capitalize">բարեւ աշխարհ</a><br/>
+    <a id="capitalized-mixed-scripts" style="text-transform: capitalize">привет world γειά</a><br/>
+    <a id="capitalized-uncased-script" style="text-transform: capitalize">שלום עולם</a><br/>
+    <a id="capitalized-cyrillic-then-latin" style="text-transform: capitalize">приветworld</a><br/>
   </div>
 
 </body>

@@ -1,3 +1,49 @@
+Selenium 4.52.0
+* Support CDP versions: v154, v155, v156
+* Install web extensions from the driver (#17970)
+* Adopt all Ruff FURB rules (#18168)
+* Adopt ruff PYI041 and G201 from the new default rule set (#18154)
+* cleanup for ruff rule sim102 . part of the tranche 3 stage (#18034)
+* bound Service.start() by time so Windows fails fast (#18213)
+* hold generated BiDi numbers to their declared ranges (#18230)
+* Prevent TypeError and KeyError in ErrorHandler when value is None or missing (#18239)
+* Align _cookie_matches domain and path matching with RFC 6265 (#18238)
+* generate the Python version from version.bzl so tests do not read it (#18158)
+* Add explicit stacklevel=2 to remaining warnings.warn calls (#18244)
+* Use ssl_proxy descriptor when initializing Proxy from raw dict (#18237)
+* [bidi] Eliminate sleep-based polling for websocket command response (#18231)
+* Implement __hash__ and explicit ScriptKey equality comparison (#18243)
+* deprecate websocket_interval now that websocket responses are not polled (#18252)
+* Reject null list elements in BiDi serialization inbound and outbound (#18240)
+
+Selenium 4.51.0
+* Support CDP versions: v153, v154, v155
+* Validate WebSocket response interval correctly (#17984)
+
+Selenium 4.50.0
+* Support CDP versions: v152, v153, v154
+* cleanup for ruff b904 raise from  (#18030)
+* Apply ClientConfig `user_agent` and `extra_headers` per connection (#17944)
+* Type BaseOptions.set_capability parameters (#18027)
+* Type WebElement.get_attribute name (#18028)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* declare Firefox default preferences in each binding (#18070)
+
+Selenium 4.49.0
+* Support CDP versions: v151, v152, v153
+* derive BiDi field names and enum value types in the schema (#17966)
+* chore fix for unreachable mypy warnings (#17969)
+* chore: enable mypy disallow untyped decorators and update type hints (#17974)
+* raise typed WebDriver errors for BiDi wire error codes (#17952)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* adopt the worthwhile ruff 0.16 rule families (tranches 1 and 2) (#17992)
+
+Selenium 4.48.0
+* Support CDP versions: v150, v151, v152
+* fix W3C capabilities built from a list of options (create_matches) (#17897)
+* generate the internal BiDi protocol layer from the shared binding-neutral schema (#17761)
+* update new BiDi layer generation to conform to latest proposed ADR (#17942)
+
 Selenium 4.47.0
 * Support CDP versions: v149, v150, v151
 * Fix default command_executor URL in RemoteWebDriver docstring (#17803)

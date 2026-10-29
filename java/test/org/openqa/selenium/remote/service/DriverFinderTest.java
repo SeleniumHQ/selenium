@@ -251,6 +251,56 @@ class DriverFinderTest {
     verifyNoMoreInteractions(seleniumManager);
   }
 
+  @Test
+  void omitsManagerProxyWhenOnlySocksIsSet() throws IOException {
+    Proxy proxy = new Proxy().setSocksProxy("localhost:1080");
+    assertManagerArguments(proxy, null);
+  }
+
+  @Test
+  void omitsManagerProxyWhenOnlyNoProxyIsSet() throws IOException {
+    Proxy proxy = new Proxy().setNoProxy("localhost");
+    assertManagerArguments(proxy, null);
+  }
+
+  @Test
+  void passesPacUrlToManagerWhenNoHttpOrSslProxyIsSet() throws IOException {
+    Proxy proxy = new Proxy().setProxyAutoconfigUrl("http://example.com/proxy.pac");
+    assertManagerArguments(proxy, "http://example.com/proxy.pac");
+  }
+
+  private void assertManagerArguments(Proxy proxy, String expectedProxyUrl) throws IOException {
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.selenium.manager.empty");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
+
+    Capabilities capabilities =
+        new ImmutableCapabilities(
+            "browserName",
+            "chrome",
+            "goog:chromeOptions",
+            Map.of("binary", browserFile.toString()),
+            "proxy",
+            proxy);
+    DriverFinder finder = new DriverFinder(service, capabilities, seleniumManager);
+
+    List<String> arguments = new ArrayList<>();
+    arguments.add("--browser");
+    arguments.add("chrome");
+    arguments.add("--browser-path");
+    arguments.add(browserFile.toString());
+    if (expectedProxyUrl != null) {
+      arguments.add("--proxy");
+      arguments.add(expectedProxyUrl);
+    }
+    Result result = new Result(0, "", driverFile.toString(), browserFile.toString());
+    doReturn(result).when(seleniumManager).getBinaryPaths(arguments);
+
+    assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
+    verify(seleniumManager).getBinaryPaths(arguments);
+  }
+
   @SuppressWarnings("unchecked")
   void electronOptionsPassesElectronBrowserNameToSeleniumManager() throws IOException {
     when(service.getExecutable()).thenReturn(null);

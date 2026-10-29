@@ -94,7 +94,7 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
             "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmInfo>()),
             "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmInfo>()),
             "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmInfo>()),
-            _ => throw new BiDiException($"Unknown realm type '{type}'")
+            _ => throw new JsonException($"Unknown realm type '{type}'.")
         };
     }
 

@@ -43,6 +43,8 @@ module Selenium
       def self.run: (String | Array[String] command) -> Hash[String, Array[String]]
 
       def self.platform_location: -> String
+
+      def self.linux_directory: -> String
     end
   end
 end

@@ -18,10 +18,6 @@
 
 module Selenium
   class Server
-    self.@latest: untyped
-
-    self.@available_assets: untyped
-
     @jar: String
 
     @host: String
@@ -49,19 +45,11 @@ module Selenium
     class Error < StandardError
     end
 
-    CL_RESET: untyped
-
     def self.get: (Symbol | String required_version, ?Hash[untyped, untyped] opts) -> Server
 
     def self.download: (Symbol | String required_version) -> String
 
-    def self.latest: () -> untyped
-
-    def self.available_assets: () -> untyped
-
-    def self.net_http_start: (untyped address) { () -> untyped } -> untyped
-
-    def self.download_server: (untyped uri, untyped destination) -> untyped
+    def self.latest: () -> String
 
     attr_accessor role: untyped
 

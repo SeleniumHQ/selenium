@@ -294,6 +294,21 @@ def test_missing_path_defaults_root():
     assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com"}, "http://example.com/anything")
 
 
+def test_domain_without_leading_dot_matches_subdomain():
+    assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com"}, "http://sub.example.com/")
+
+
+def test_domain_matching_is_case_insensitive():
+    assert _cookie_matches({"name": "a", "value": "1", "domain": "EXAMPLE.COM"}, "http://example.com/")
+    assert _cookie_matches({"name": "a", "value": "1", "domain": "example.com"}, "http://EXAMPLE.COM/")
+
+
+def test_path_with_trailing_slash_matches_subpath():
+    assert _cookie_matches(
+        {"name": "a", "value": "1", "domain": "example.com", "path": "/docs/"}, "http://example.com/docs/page"
+    )
+
+
 # --- Secure ---
 
 

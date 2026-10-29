@@ -60,7 +60,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
     Capabilities capabilities = ((EdgeDriver) localDriver).getCapabilities();
 
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
-    assertThat(capabilities.getCapability("browserName")).isEqualTo("msedge");
+    assertThat(capabilities.getBrowserName()).isIn("msedge", "MicrosoftEdge");
   }
 
   @Test

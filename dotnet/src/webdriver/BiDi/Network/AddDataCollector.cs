@@ -43,7 +43,9 @@ public sealed record ContextAddDataCollectorOptions : CommandOptions
     {
         Contexts = [context],
         CollectorType = options?.CollectorType,
-        UserContexts = options?.UserContexts
+        UserContexts = options?.UserContexts,
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

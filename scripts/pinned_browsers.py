@@ -15,7 +15,9 @@ from scripts.generated_note import generated_note
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def calculate_hash(url):
@@ -41,10 +43,10 @@ def get_chrome_info_for_channel(channel):
     )
     versions = json.loads(r.data)["versions"]
 
-    return sorted(
+    return max(
         filter(lambda v: v["version"].split(".")[0] == str(milestone), versions),
         key=lambda v: parse(v["version"]),
-    )[-1]
+    )
 
 
 def chromedriver(selected_version, workspace_prefix=""):

@@ -1,0 +1,46 @@
+name: Scheduled - Update Dependencies
+
+on:
+  schedule:
+    - cron: 0 7 * * 1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: Update Dependencies
+    uses: ./.github/workflows/update-pr.yml
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    with:
+      run: ./go update
+      branch: automated-dependency-updates
+      title: "[build] Automated Dependency Update"
+      body: |
+        This is an automated pull request to update each binding's dependencies, the Rust
+        crates, and the pinned multitool binaries.
+
+        Merge after verifying the new versions are properly passing the tests.
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  on-failure:
+    name: On Dependency Update Failure
+    runs-on: ubuntu-latest
+    needs: update
+    if: failure() || cancelled()
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: "Needs investigation: unable to create the weekly Updates PR. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

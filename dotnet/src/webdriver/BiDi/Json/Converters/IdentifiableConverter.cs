@@ -31,7 +31,7 @@ public abstract class IdentifiableConverter<T> : JsonConverter<T>
     {
         var id = reader.GetString() ?? throw new JsonException($"Expected a non-null string for {typeof(T).Name}.");
 
-        return Create(BiDiContext.Current.BiDi, id);
+        return Create(BiDiContext.Current, id);
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)

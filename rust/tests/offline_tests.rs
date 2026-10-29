@@ -15,28 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{get_selenium_manager, get_stdout, is_linux_arm64};
+use crate::common::{get_selenium_manager, get_stdout};
 
 mod common;
 
 #[test]
 fn offline_test() {
     let mut cmd = get_selenium_manager();
-    cmd.args([
-        "--debug",
-        "--browser",
-        if is_linux_arm64() {
-            "firefox"
-        } else {
-            "chrome"
-        },
-        "--offline",
-    ])
-    .assert()
-    .success()
-    .code(0);
+    cmd.args(["--debug", "--browser", "chrome", "--offline"])
+        .assert()
+        .success()
+        .code(0);
 
     let stdout = get_stdout(&mut cmd);
 
     assert!(stdout.contains("offline mode"));
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn offline_without_ca_certificates_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.env("SSL_CERT_FILE", "/dev/null")
+        .env_remove("SSL_CERT_DIR")
+        .args(["--browser", "chrome", "--offline"])
+        .assert()
+        .success()
+        .code(0);
 }
