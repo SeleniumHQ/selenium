@@ -57,8 +57,8 @@ end
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
   base = 'https://api.nuget.org/v3/registration5-semver1'
-  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json")
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json", timeout: 900)
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json", timeout: 900)
 end
 
 desc 'Generate and stage .NET documentation'
