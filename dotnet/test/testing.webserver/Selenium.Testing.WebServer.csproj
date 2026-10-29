@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <AssemblyName>Testing.WebServer</AssemblyName>
+    <AssemblyName>Selenium.Testing.WebServer</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Testing.WebServer</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
