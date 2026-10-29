@@ -152,6 +152,7 @@ module Selenium
           # Mimic a thread switch inside the increment, as happens on JRuby
           last_id = 0
           allow(connection).to receive(:next_id) do
+            expect(connection.instance_variable_get(:@messages_mtx)).to be_owned
             current = last_id
             Thread.pass
             last_id = current + 1
