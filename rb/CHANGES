@@ -1,3 +1,18 @@
+4.52.0 (2026-10-29)
+=========================
+* Support CDP versions: v154, v155, v156
+* Do not pass a bare --proxy to Selenium Manager (#18150)
+* [build] Automated CDDL Spec Update (#18144)
+* deprecate current behavior of ignoring Grid certificates on HTTPS connections (#18153)
+* generate version.rb from the root version.bzl so tests do not read the version (#18164)
+* fix atoms outside Bazel and add local_dev for using a local checkout (#18183)
+* type vendor-declared BiDi fields instead of making extended types extensible (#18190)
+* check each BiDi list element against its declared type (#18196)
+* hold BiDi numbers to their declared ranges (#18198)
+* [build] Automated Browser Version Update (major) with CDP (#18214)
+* raise on unverified Grid certificates instead of falling back to VERIFY_NONE (#18223)
+* [bidi] Eliminate sleep-based polling for websocket command response (#18231)
+
 4.51.0 (2026-10-09)
 =========================
 * Support CDP versions: v153, v154, v155

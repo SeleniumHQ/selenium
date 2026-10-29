@@ -1,3 +1,8 @@
+v4.52.0
+======
+* Support CDP versions: v154, v155, v156
+* [build] Automated Browser Version Update (major) with CDP (#18214)
+
 v4.51.0
 ======
 * Support CDP versions: v153, v154, v155

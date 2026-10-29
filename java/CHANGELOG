@@ -1,3 +1,15 @@
+v4.52.0
+======
+* Support CDP versions: v154, v155, v156
+* add test to ensure shipped bytecode supports Java 11 (#18166)
+* Add BiDi generator tests (#18162)
+* Make selenium.debug/webdriver.verbose configure the real logger (Mechanism Only) (#17841)
+* [grid] Throw ConfigException for a null stereotype in node configs (#18185)
+* stop delivering BiDi events to a listener once it is cleared (#18189)
+* stop shipping annotation-only jars as POM dependencies (#18212)
+* [build] Automated Browser Version Update (major) with CDP (#18214)
+* stop waiting for process output once it is silent (#18211)
+
 v4.51.0
 ======
 * Support CDP versions: v153, v154, v155
