@@ -951,6 +951,9 @@ public class BiDiGenerator {
         if (fields.isEmpty() && !needsExtrasSend) {
           sb.append(m).append("  return Collections.emptyMap();\n");
         } else {
+          for (FieldInfo f : fields) {
+            if (containsListUnion(f.typeRef)) appendCollectionValidation(sb, f, m + "  ");
+          }
           sb.append(m).append("  Map<String, Object> map = new LinkedHashMap<>();\n");
           for (FieldInfo f : required) {
             String serExpr = serializeExpr(f.name, f.typeRef, domain, f.wire);
@@ -1036,7 +1039,18 @@ public class BiDiGenerator {
       // has no notion of "collect whatever's left over."
       boolean needsFromJson =
           fields.stream().anyMatch(f -> !f.name.equals(f.wire)) || needsExtrasCapture;
-      if (needsFromJson) {
+      if (fields.stream().anyMatch(f -> containsListUnion(f.typeRef))) {
+        appendCollectionFromJson(
+            sb,
+            cls,
+            fields,
+            domain,
+            m,
+            needsBuilder,
+            nullableOptional,
+            needsExtrasCapture,
+            isReceivable && !extensible);
+      } else if (needsFromJson) {
         appendFromJson(
             sb,
             cls,
@@ -1309,6 +1323,265 @@ public class BiDiGenerator {
       }
     }
 
+    private Map<String, Object> expandAlias(Map<String, Object> node) {
+      if (node == null || !node.containsKey("ref")) return node;
+      Map<String, Object> named = types.get(str(node, "ref"));
+      if (named == null || !"alias".equals(str(named, "kind")) || isScalarUnionAlias(named)) {
+        return node;
+      }
+      Map<String, Object> expanded = new LinkedHashMap<>(expandAlias(mapField(named, "type")));
+      if (isNullable(node)) expanded.put("nullable", true);
+      return expanded;
+    }
+
+    private boolean containsListUnion(Map<String, Object> node) {
+      node = expandAlias(node);
+      if (node == null) return false;
+      if (node.containsKey("list")) {
+        Map<String, Object> element = expandAlias(mapField(node, "list"));
+        return element.containsKey("union") || containsListUnion(element);
+      }
+      return false;
+    }
+
+    private void appendCollectionValidation(StringBuilder sb, FieldInfo field, String indent) {
+      Map<String, Object> node = expandAlias(field.typeRef);
+      if (node == null || !node.containsKey("list")) return;
+      String guard = field.name + " != null";
+      String value = field.name;
+      if (!field.required) {
+        guard += " && " + field.name + ".isPresent()";
+        value += ".get()";
+      }
+      sb.append(indent).append("if (").append(guard).append(") {\n");
+      appendElementValidation(sb, value, node, field.wire, "", indent + "  ", 0);
+      sb.append(indent).append("}\n");
+    }
+
+    private void appendElementValidation(
+        StringBuilder sb,
+        String value,
+        Map<String, Object> node,
+        String wire,
+        String domain,
+        String indent,
+        int depth) {
+      node = expandAlias(node);
+      if (node.containsKey("list")) {
+        String element = "element" + depth;
+        sb.append(indent)
+            .append("for (Object ")
+            .append(element)
+            .append(" : (java.util.List<?>) ")
+            .append(value)
+            .append(") {\n");
+        Map<String, Object> child = mapField(node, "list");
+        sb.append(indent).append("  if (").append(element).append(" == null) {\n");
+        if (isNullable(child)) {
+          sb.append(indent).append("    continue;\n");
+        } else {
+          sb.append(indent)
+              .append("    throw new BiDiException(\"")
+              .append(wire)
+              .append(" element must not be null\");\n");
+        }
+        sb.append(indent).append("  }\n");
+        Map<String, Object> expanded = expandAlias(child);
+        if (expanded.containsKey("list")) {
+          sb.append(indent)
+              .append("  if (!(")
+              .append(element)
+              .append(" instanceof java.util.List)) throw new BiDiException(\"")
+              .append(wire)
+              .append(" element must be a list\");\n");
+        }
+        appendElementValidation(sb, element, child, wire, domain, indent + "  ", depth + 1);
+        sb.append(indent).append("}\n");
+      } else if (node.containsKey("union")) {
+        sb.append(indent)
+            .append("if (!(")
+            .append(unionCondition(value, node, domain))
+            .append(")) throw new BiDiException(\"")
+            .append(wire)
+            .append(" element must match a declared union arm\");\n");
+      }
+    }
+
+    @SuppressWarnings("unchecked")
+    private String unionCondition(String value, Map<String, Object> node, String domain) {
+      if (node.containsKey("ref")) {
+        String ref = str(node, "ref");
+        Map<String, Object> named = types.get(ref);
+        if (named != null && "alias".equals(str(named, "kind")) && !isScalarUnionAlias(named)) {
+          Map<String, Object> inner = mapField(named, "type");
+          Map<String, Object> combined = new LinkedHashMap<>(inner);
+          for (String side : List.of("min", "max")) {
+            String flag = "min".equals(side) ? "exclusiveMin" : "exclusiveMax";
+            if (!node.containsKey(side)) continue;
+            int comparison =
+                inner.containsKey(side)
+                    ? new java.math.BigDecimal(node.get(side).toString())
+                        .compareTo(new java.math.BigDecimal(inner.get(side).toString()))
+                    : 0;
+            boolean tighter =
+                !inner.containsKey(side)
+                    || ("min".equals(side) ? comparison > 0 : comparison < 0)
+                    || (comparison == 0 && Boolean.TRUE.equals(node.get(flag)));
+            if (tighter) {
+              combined.put(side, node.get(side));
+              combined.remove(flag);
+              if (Boolean.TRUE.equals(node.get(flag))) combined.put(flag, true);
+            }
+          }
+          return unionCondition(value, combined, domain);
+        }
+        return value + " instanceof " + resolveRefToJavaClass(ref, domain);
+      }
+      if (node.containsKey("union")) {
+        return ((List<Map<String, Object>>) node.get("union"))
+            .stream()
+                .map(arm -> "(" + unionCondition(value, arm, domain) + ")")
+                .collect(Collectors.joining(" || "));
+      }
+      if (node.containsKey("const")) {
+        return "Objects.equals(" + value + ", " + new Json().toJson(node.get("const")) + ")";
+      }
+      String primitive = str(node, "primitive");
+      if ("integer".equals(primitive)) {
+        String min = node.containsKey("min") ? "\"" + node.get("min") + "\"" : "null";
+        String max = node.containsKey("max") ? "\"" + node.get("max") + "\"" : "null";
+        return "ConverterFunctions.isInteger("
+            + value
+            + ", "
+            + min
+            + ", "
+            + max
+            + ", "
+            + Boolean.TRUE.equals(node.get("exclusiveMin"))
+            + ", "
+            + Boolean.TRUE.equals(node.get("exclusiveMax"))
+            + ")";
+      }
+      if (primitive != null) return value + " instanceof " + primitiveToJava(primitive, true);
+      throw new IllegalArgumentException("Unsupported list union arm: " + node);
+    }
+
+    @SuppressWarnings("unchecked")
+    private String collectionReadExpr(
+        String input, Map<String, Object> node, String domain, int depth) {
+      node = expandAlias(node);
+      if (node.containsKey("list")) {
+        String reader = "reader" + depth;
+        return "ConverterFunctions.readList("
+            + input
+            + ", "
+            + reader
+            + " -> "
+            + collectionReadExpr(reader, mapField(node, "list"), domain, depth + 1)
+            + ")";
+      }
+      if (node.containsKey("union")) {
+        List<Map<String, Object>> arms = (List<Map<String, Object>>) node.get("union");
+        return "ConverterFunctions.readUnion("
+            + input
+            + ", "
+            + arms.stream()
+                .map(arm -> resolveJavaType(arm, domain, true) + ".class")
+                .collect(Collectors.joining(", "))
+            + ")";
+      }
+      return input
+          + ".read(new TypeToken<"
+          + resolveJavaType(node, domain, true)
+          + ">() {}.getType())";
+    }
+
+    private void appendCollectionFromJson(
+        StringBuilder sb,
+        String cls,
+        List<FieldInfo> fields,
+        String domain,
+        String indent,
+        boolean needsBuilder,
+        List<FieldInfo> nullableOptional,
+        boolean extras,
+        boolean warn) {
+      sb.append("\n")
+          .append(indent)
+          .append("private static ")
+          .append(cls)
+          .append(" fromJson(org.openqa.selenium.json.JsonInput input) {\n");
+      String body = indent + "  ";
+      sb.append(body).append("Map<String, Object> seen = new LinkedHashMap<>();\n");
+      for (FieldInfo f : fields) {
+        String type =
+            f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);
+        sb.append(body)
+            .append(type)
+            .append(" ")
+            .append(f.name)
+            .append(" = ")
+            .append(f.required ? "null" : "Optional.empty()")
+            .append(";\n");
+      }
+      sb.append(body).append("input.beginObject();\n");
+      sb.append(body).append("while (input.hasNext()) {\n");
+      sb.append(body).append("  String name = input.nextName();\n");
+      sb.append(body).append("  seen.put(name, null);\n");
+      sb.append(body).append("  switch (name) {\n");
+      for (FieldInfo f : fields) {
+        String read =
+            containsListUnion(f.typeRef)
+                ? collectionReadExpr("input", f.typeRef, domain, 0)
+                : "input.read(new TypeToken<"
+                    + resolveJavaType(f.typeRef, domain, true)
+                    + ">() {}.getType())";
+        if (!f.required) read = "Optional.ofNullable(" + read + ")";
+        sb.append(body)
+            .append("    case \"")
+            .append(f.wire)
+            .append("\": ")
+            .append(f.name)
+            .append(" = ")
+            .append(read)
+            .append("; break;\n");
+      }
+      sb.append(body).append("    default: seen.put(name, input.read(Object.class));\n");
+      sb.append(body).append("  }\n").append(body).append("}\n");
+      sb.append(body).append("input.endObject();\n");
+      for (FieldInfo f : fields) {
+        if (f.required)
+          sb.append(body)
+              .append("if (!seen.containsKey(\"")
+              .append(f.wire)
+              .append("\")) throw new BiDiException(\"Missing required field: ")
+              .append(f.wire)
+              .append("\");\n");
+      }
+      if (warn)
+        sb.append(body)
+            .append("org.openqa.selenium.json.UnknownFieldsWarning.warnOnUnknownFields(")
+            .append(cls)
+            .append(".class, Set.of(")
+            .append(
+                fields.stream().map(f -> "\"" + f.wire + "\"").collect(Collectors.joining(", ")))
+            .append("), seen);\n");
+      List<String> args =
+          fields.stream().map(f -> f.name).collect(Collectors.toCollection(ArrayList::new));
+      if (needsBuilder) nullableOptional.forEach(f -> args.add("Optional.empty()"));
+      if (extras) {
+        sb.append(body).append("seen.keySet().removeAll(DEFINED_FIELDS);\n");
+        args.add("seen");
+      }
+      sb.append(body)
+          .append("return new ")
+          .append(cls)
+          .append("(")
+          .append(String.join(", ", args))
+          .append(");\n");
+      sb.append(indent).append("}\n");
+    }
+
     private void appendConstructorAssignment(
         StringBuilder sb, FieldInfo f, String domain, String bodyIndent) {
       // Only ever called for the sender-only (never receivable) constructor — see its call site
@@ -1442,6 +1715,7 @@ public class BiDiGenerator {
         String bodyIndent,
         boolean supportsSetOverride,
         boolean isReceivable) {
+      appendCollectionValidation(sb, f, bodyIndent);
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
@@ -2110,6 +2384,22 @@ public class BiDiGenerator {
         }
         return varName;
       }
+      if (depth > 0 && typeRef.containsKey("union")) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> arms = (List<Map<String, Object>>) typeRef.get("union");
+        String expression = varName;
+        for (Map<String, Object> arm : arms) {
+          if (!arm.containsKey("ref")) continue;
+          String kind = resolvedKindOf(str(arm, "ref"));
+          if (!List.of("record", "union", "enum", "scalarUnion").contains(kind)) continue;
+          String cls = resolveJavaType(arm, domain, true);
+          String serialized =
+              serializeExpr("((" + cls + ") " + varName + ")", arm, domain, wire, depth);
+          expression =
+              "(" + varName + " instanceof " + cls + " ? " + serialized + " : " + expression + ")";
+        }
+        return expression;
+      }
       if (typeRef.containsKey("list")) {
         // Recurse on the element's own type ref — not just its one-level "kind" — so a
         // record/union/enum/scalarUnion nested arbitrarily deep (List<List<Record>>,
@@ -2135,7 +2425,11 @@ public class BiDiGenerator {
                 + ", \""
                 + wire
                 + " element must not be null\")";
-        String elemExpr = serializeExpr(checkedElem, elem, domain, wire, depth + 1);
+        String elemExpr =
+            serializeExpr(isNullable(elem) ? e : checkedElem, elem, domain, wire, depth + 1);
+        if (isNullable(elem) && !elemExpr.equals(e)) {
+          elemExpr = e + " == null ? null : " + elemExpr;
+        }
         return varName
             + ".stream().map("
             + e
