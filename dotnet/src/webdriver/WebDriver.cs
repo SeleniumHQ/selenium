@@ -219,9 +219,9 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
     /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <seealso cref="AccessibilityNode.ToText()"/>
-    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
     {
-        return this.Accessibility.SnapshotAsync(null, cancellationToken);
+        return await this.Accessibility.SnapshotAsync(null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
