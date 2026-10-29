@@ -75,7 +75,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         try
         {
             this.StartSession(capabilities);
-            this.ConnectBiDi();
+            Task.Run(() => this.ConnectBiDiAsync()).GetAwaiter().GetResult();
         }
         catch (Exception)
         {
@@ -242,16 +242,18 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <summary>
     /// A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily
     /// and no caller has to wait on another's connection attempt. A connection that cannot be made
-    /// fails the constructor, which then quits the session it started.
+    /// fails the constructor, which then quits the session it started. The constructor bridges to
+    /// this on the thread pool, as <see cref="Execute"/> does, so a caller with a synchronization
+    /// context does not deadlock on the connection.
     /// </summary>
-    private void ConnectBiDi()
+    private async Task ConnectBiDiAsync()
     {
         if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
         {
             return;
         }
 
-        IBiDi connection = this.AsBiDiAsync().GetAwaiter().GetResult();
+        IBiDi connection = await this.AsBiDiAsync().ConfigureAwait(false);
         this.bidi = connection;
         this.accessibilitySnapshotter = new Lazy<AccessibilitySnapshotter>(() => new AccessibilitySnapshotter(connection, () => this.CurrentWindowHandle, this.CreateElementFromReference));
     }
@@ -801,7 +803,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         if (disposing)
         {
-            this.CloseBiDiAsync().AsTask().GetAwaiter().GetResult();
+            Task.Run(() => this.CloseBiDiAsync().AsTask()).GetAwaiter().GetResult();
 
             if (this.SessionId is not null)
             {
