@@ -270,20 +270,42 @@ jobs:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   verify:
-    name: Verify Published Packages
+    name: Verify ${{ matrix.language }}
     needs: [parse-tag, create-tag, publish, publish-python]
     if: >-
       always() && !cancelled() &&
       needs.create-tag.result == 'success' &&
       needs.publish.result == 'success' &&
       (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Verify packages
-      use-cache: false
-      ref: ${{ needs.parse-tag.outputs.tag }}
-      run: ./go ${{ needs.parse-tag.outputs.language }}:verify
-    secrets: inherit
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ${{ fromJSON(needs.parse-tag.outputs.languages) }}
+    runs-on: ubuntu-latest
+    env:
+      SEL_M2_USER: ${{ secrets.SEL_M2_USER }}
+      SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.parse-tag.outputs.tag }}
+      - name: Verify the registry serves the release
+        run: ./go ${{ matrix.language }}:verify
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ':rotating_light:'
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: |
+            Could not verify ${{ matrix.language }} ${{ needs.parse-tag.outputs.version }} on its registry. Check the Verify job, then the registry.
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   reset-version:
     name: Generate Nightly Versions
@@ -363,7 +385,7 @@ jobs:
   on-release-complete:
     name: On Release Complete
     runs-on: ubuntu-latest
-    needs: [extract-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid-publish, mirror, verify, unrestrict-trunk]
+    needs: [extract-tag, check-authorization, publish, publish-python, generate-docs, docs, create-tag, github-release-draft, github-release-publish, reset-version, update-version, nightly-grid-publish, mirror, unrestrict-trunk]
     if: always() && !cancelled() && needs.extract-tag.result != 'skipped' && needs.check-authorization.result != 'failure'
     steps:
       - uses: actions/checkout@v6
@@ -385,7 +407,6 @@ jobs:
             • Nightly Version Updated: ${{ needs.update-version.result }}
             • Nightly Grid: ${{ needs.nightly-grid-publish.result }}
             • Mirror Updated: ${{ needs.mirror.result }}
-            • Packages Verified: ${{ needs.verify.result }}
             • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
             <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>
           MSG_MINIMAL: true
