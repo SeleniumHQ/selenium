@@ -38,7 +38,11 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
         This method is deprecated and may be removed in future versions.
         Please use `locate_with` instead.
     """
-    warnings.warn("This method is deprecated and may be removed in future versions. Please use `locate_with` instead.")
+    warnings.warn(
+        "This method is deprecated and may be removed in future versions. Please use `locate_with` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
     return RelativeBy({By.CSS_SELECTOR: tag_name})

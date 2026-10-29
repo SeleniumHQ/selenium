@@ -86,12 +86,22 @@ module BiDiGenerate
     value.is_a?(String) ? "'#{value}'" : value.to_s
   end
 
+  # Source literal for a bound (a number, or an exclusive flag's `true`), grouping a long integer's
+  # digits as RuboCop's NumericLiterals expects.
+  def self.numeric_literal(value)
+    return value.to_s unless value.is_a?(Integer) && value.abs >= 10_000
+
+    grouped = value.abs.to_s.reverse.scan(/\d{1,3}/).join('_').reverse
+    value.negative? ? "-#{grouped}" : grouped
+  end
+
   # Renders `prefix(args)` on one line, or one argument per line when it would exceed
   # LINE_LIMIT at the given indent. open/close default to parentheses (pass {} for a
-  # hash literal) so emitted calls and literals stay within RuboCop's length limit.
-  def self.wrap_call(prefix, args, indent, open: '(', close: ')')
+  # hash literal) so emitted calls and literals stay within RuboCop's length limit. trailing
+  # counts what the caller appends to the last line (an entry's separating comma).
+  def self.wrap_call(prefix, args, indent, open: '(', close: ')', trailing: 0)
     one_line = "#{prefix}#{open}#{args.join(', ')}#{close}"
-    return one_line if args.empty? || indent + one_line.length <= LINE_LIMIT
+    return one_line if args.empty? || indent + one_line.length + trailing <= LINE_LIMIT
 
     pad = ' ' * (indent + 2)
     "#{prefix}#{open}\n#{pad}#{args.join(",\n#{pad}")}\n#{' ' * indent}#{close}"
@@ -251,65 +261,14 @@ module BiDiGenerate
     end
   end
 
-  # A browser-specific extension to a command, kept out of the shared class so a
-  # non-matching browser never sees it. shared_params are the base command's own
-  # (required) params, forwarded verbatim; vendor_params are the typed extra fields,
-  # composed into the extensible params record's passthrough bag under their exact
-  # wire keys. params_class/result_ref/wire_name mirror the base command.
-  VendorCommand = Struct.new(:method_name, :wire_name, :result_ref, :params_class,
-                             :shared_params, :vendor_params, :spec_href, keyword_init: true) do
-    def def_header(indent)
-      BiDiGenerate.wrap_call("def #{method_name}", shared_params.map(&:sig_part) + vendor_params.map(&:sig_part),
-                             indent)
-    end
-
-    # The full `def … end` method block, fully indented from `indent`. Optional vendor
-    # fields are placed into the passthrough bag only when set (UNSET stays omitted), so
-    # they serialize exactly like a field on the extensible record.
-    def render_lines(indent)
-      body = ' ' * (indent + 2)
-      [*doc_lines(' ' * indent), "#{' ' * indent}#{def_header(indent)}", *extensions_lines(body, indent),
-       params_line(body, indent), execute_line(body, indent), "#{' ' * indent}end"]
-    end
-
-    def doc_lines(pad)
-      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
-      lines << "#{pad}# @see #{spec_href}" if spec_href
-      lines
-    end
-
-    # The extensible passthrough bag, carrying each set vendor field under its exact wire key.
-    def extensions_lines(body, indent)
-      inner = ' ' * (indent + 4)
-      entries = vendor_params.map { |p| "#{inner}'#{p.wire_name}' => #{p.ruby_name}" }.join(",\n")
-      ["#{body}extensions = {", entries, "#{body}}.reject { |_, value| Serialization::UNSET.equal?(value) }"]
-    end
-
-    def params_line(body, indent)
-      kwargs = shared_params.map { |p| "#{p.ruby_name}: #{p.ruby_name}" } + ['extensions: extensions']
-      "#{body}#{BiDiGenerate.wrap_call("params = #{params_class}.new", kwargs, indent + 2)}"
-    end
-
-    def execute_line(body, indent)
-      args = ["cmd: '#{wire_name}'", 'params: params']
-      args << "result: #{result_ref}" if result_ref
-      "#{body}#{BiDiGenerate.wrap_call('execute', args, indent + 2)}"
-    end
-
-    def rbs_signature
-      params = (shared_params.map(&:rbs_part) + vendor_params.map(&:rbs_part)).join(', ')
-      ret = result_ref ? "::Selenium::WebDriver::BiDi::Protocol::#{result_ref}" : 'untyped'
-      "(#{params}) -> #{ret}"
-    end
-  end
-
   # A namespaced group of browser-specific commands (e.g. Firefox's), emitted as a subclass of
   # the domain: it overrides the commands a vendor extends with `moz:` fields and adds the
   # commands a vendor defines in the domain (`webExtension.moz:listExtensions`).
   # A subclass (rather than a runtime-mixed module) keeps the vendor signatures statically
   # visible to type checkers, and is constructed directly (`<Name>.new(source)`) for a
-  # matching session — no factory or runtime mix-in.
-  VendorModule = Struct.new(:name, :namespace, :parent, :commands, keyword_init: true) do
+  # matching session — no factory or runtime mix-in. types are the variant's own params
+  # records, which shadow the shared ones so its overriding commands build them by bare name.
+  VendorModule = Struct.new(:name, :namespace, :parent, :types, :commands, keyword_init: true) do
     def render(indent)
       pad = ' ' * indent
       lines = [
@@ -318,12 +277,20 @@ module BiDiGenerate
         "#{pad}# Construct #{name}.new(source) for a matching session; other sessions use #{parent}.",
         "#{pad}class #{name} < #{parent}"
       ]
+      types.each { |type| lines.concat(type_lines(type, indent + 2)) << '' }
       commands.each_with_index do |cmd, index|
         lines << '' unless index.zero?
         lines.concat(cmd.render_lines(indent + 2))
       end
       lines << "#{pad}end"
       lines.join("\n")
+    end
+
+    def type_lines(type, indent)
+      pad = ' ' * indent
+      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
+      lines << "#{pad}# @see #{type.spec_href}" if type.spec_href
+      lines << "#{pad}#{type.define_assignment(type.ruby_name, indent)}"
     end
   end
 
@@ -355,16 +322,16 @@ module BiDiGenerate
   # for a scalar/opaque field); list wraps it in an array. wire_key is the exact
   # JSON payload key (the schema's `wire` name, baked verbatim).
   FieldIR = Struct.new(:ruby_name, :wire_key, :required, :nullable, :ref, :list, :enum, :primitive, :scalar, :const,
-                       :rbs, keyword_init: true) do
+                       :map_of, :bounds, :rbs, keyword_init: true) do
     # A `Serialization::Record.define` spec entry: `name: 'jsonKey'` shorthand, or
     # `name: {wire_key:, …}` when the field carries JSON facts beyond its name.
     # enum carries the allowed-values constant path, validated at construction.
-    def spec_entry(indent = 0)
+    def spec_entry(indent = 0, trailing: 0)
       meta = value_facts
       return "#{ruby_name}: '#{wire_key}'" if meta.empty?
 
       meta.unshift("wire_key: '#{wire_key}'")
-      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}')
+      BiDiGenerate.wrap_call("#{ruby_name}: ", meta, indent, open: '{', close: '}', trailing: trailing)
     end
 
     # The JSON facts beyond the field's name, in the order Record.define reads them. A
@@ -375,18 +342,32 @@ module BiDiGenerate
       facts << 'required: false' unless required
       facts << 'nullable: true' if nullable
       facts << "const: #{BiDiGenerate.ruby_literal(const)}" unless const.nil?
-      facts << "ref: '#{ref}'" if ref
-      facts << 'list: true' if list
-      facts << "scalar: #{scalar_literal}" if scalar
-      facts << "enum: '#{enum}'" if enum
-      facts << "primitive: '#{primitive}'" if primitive
-      facts
+      facts + type_facts
     end
 
-    # The `scalar` primitive(s) a bare non-object wire value must match at a scalar-tolerant
-    # union position: a single primitive string, or an array when the union's scalar arms differ.
-    def scalar_literal
-      scalar.is_a?(::Array) ? "[#{scalar.map { |s| "'#{s}'" }.join(', ')}]" : "'#{scalar}'"
+    # The facts describing the value's type and shape: what the runtime reads it as and checks
+    # it against. For a list, ref/scalar/enum/primitive describe each element. `map_of` is the
+    # value primitive(s) of a string-keyed map (`{*text => text}`).
+    def type_facts
+      facts = []
+      facts << "ref: '#{ref}'" if ref
+      facts << 'list: true' if list
+      facts << "scalar: #{primitive_literal(scalar)}" if scalar
+      facts << "enum: '#{enum}'" if enum
+      facts << "primitive: #{primitive_literal(primitive)}" if primitive
+      facts << "map: #{primitive_literal(map_of)}" if map_of
+      facts + bound_facts
+    end
+
+    # The numeric bounds every value the field carries is held to (for a list or map, each numeric one).
+    def bound_facts
+      bounds.map { |key, value| "#{BiDiGenerate.camel_to_snake(key)}: #{BiDiGenerate.numeric_literal(value)}" }
+    end
+
+    # A single primitive string, or an array when a value may match several: a union of scalars
+    # (`primitive`), a scalar-tolerant union position (`scalar`), or a map's union of values (`map`).
+    def primitive_literal(value)
+      value.is_a?(::Array) ? BiDiGenerate.word_array(value) : "'#{value}'"
     end
 
     # The `self.new` keyword for this field — a user-supplied input carrying the field's
@@ -417,7 +398,8 @@ module BiDiGenerate
     def define_entries(entry_indent)
       entries = []
       entries << discriminator_entry if discriminator
-      entries.concat(fields.map { |f| f.spec_entry(entry_indent) })
+      last = fields.last unless extensible
+      entries.concat(fields.map { |f| f.spec_entry(entry_indent, trailing: f.equal?(last) ? 0 : 1) })
       entries << 'extensible: true' if extensible
       entries
     end
@@ -578,10 +560,61 @@ module BiDiGenerate
       @events = schema['events'] + vendor_events
       @domains = schema['domains'] || {}
       promote_command_params_records!
+      @vendor_params = fold_vendor_extensions!
     end
 
     # A vendor module's domain keeps its wire prefix (`moz:debugging`); a spec domain has none.
     def vendor_domain?(domain) = domain.include?(':')
+
+    # A vendor's fields on a spec type are declared fields (ADR 17786), so they are typed and never ride
+    # the extensions map. Fields on a spec command's params go to a record of the vendor variant's own (see
+    # vendor_modules_for), returned per namespace; fields on any other type join it as optional fields.
+    def fold_vendor_extensions!
+      @vendor_field_refs = []
+      @vendor.to_h do |namespace, section|
+        params = {}
+        (section['extends'] || {}).each do |type_name, entry|
+          fields = vendor_extension_fields(namespace, type_name, entry)
+          if params_command(type_name)
+            params[type_name] = fields
+          else
+            optional = fields.map { |field| field.merge('required' => false) }
+            @types[type_name] = @types[type_name].merge('fields' => @types[type_name]['fields'] + optional)
+          end
+        end
+        [namespace, params]
+      end
+    end
+
+    # Also records the vendor types the fields reference, so vendor_types_reached emits them.
+    def vendor_extension_fields(namespace, type_name, entry)
+      type = @types[type_name] || raise("vendor #{namespace} extends unknown type #{type_name}")
+      raise "vendor #{namespace} extends #{type_name}, which is not a record" unless type['kind'] == 'record'
+
+      fields = entry['fields'].map { |field| hoist_vendor_enum(type_name, field) }
+      @vendor_field_refs.concat(fields.flat_map { |field| refs_in_type(field['type']) })
+      fields
+    end
+
+    # The projector leaves a vendor field's enum inline (`moz:scope`), so name it after the field in the
+    # extended type's domain (`browsingContext.MozScope`) to emit and validate it like a spec enum.
+    def hoist_vendor_enum(type_name, field)
+      values = field['type']['enum']
+      return field unless values
+
+      domain = type_name.split('.', 2).first
+      name = "#{domain}.#{BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(field['name']))}"
+      enum = {'kind' => 'enum', 'values' => values, 'primitive' => field['type']['primitive']}
+      raise "vendor enum #{name} conflicts with an existing type" if @types.key?(name) && @types[name] != enum
+
+      @types[name] = enum
+      field.merge('type' => field['type'].slice('nullable').merge('ref' => name))
+    end
+
+    # The spec command that sends a type as its params, or nil.
+    def params_command(type_name)
+      @commands.find { |c| c.dig('params', 'ref') == type_name && !vendor_domain?(c['domain']) }
+    end
 
     def vendor_messages(kind)
       @vendor.values.flat_map { |section| section[kind] || [] }
@@ -673,24 +706,23 @@ module BiDiGenerate
       ruby_path(name).sub(/\A#{Regexp.escape(prefix)}/, '')
     end
 
-    # The vendor modules a domain carries, one per namespace (`moz` → module `Moz`). The
-    # schema's `vendor` section names, per namespace, which shared type each vendor extends;
-    # we map that type back to the command that sends it, so the vendor method mirrors the
+    # The vendor modules a domain carries, one per namespace (`moz` → module `Moz`). Each
+    # command whose params a vendor extends is overridden there with a closed params record of
+    # the variant's own (the shared fields plus the vendor's), so the vendor method mirrors the
     # base command's wire method and result while adding the typed vendor fields. Empty for
     # any domain (or schema) with no vendor extensions, so non-vendor output is unaffected.
     def vendor_modules_for(domain)
       parent = BiDiGenerate.snake_to_class_name(BiDiGenerate.camel_to_snake(domain))
-      @vendor.filter_map do |namespace, spec|
-        overrides = (spec['extends'] || {}).filter_map do |type_name, entry|
-          cmd = @commands.find { |c| c.dig('params', 'ref') == type_name }
-          build_vendor_command(cmd, type_name, entry, namespace) if cmd && cmd['domain'] == domain
+      @vendor_params.filter_map do |namespace, extended|
+        overrides = extended.filter_map do |type_name, fields|
+          cmd = params_command(type_name)
+          build_vendor_override(cmd, type_name, fields, namespace) if cmd['domain'] == domain
         end
         added = vendor_added_commands(domain, namespace).map { |cmd| build_added_command(cmd, namespace, domain) }
-        commands = overrides + added
-        next if commands.empty?
+        next if overrides.empty? && added.empty?
 
         VendorModule.new(name: BiDiGenerate.snake_to_class_name(namespace), namespace: namespace, parent: parent,
-                         commands: commands)
+                         types: overrides.map(&:first), commands: overrides.map(&:last) + added)
       end
     end
 
@@ -708,35 +740,27 @@ module BiDiGenerate
       command
     end
 
-    def build_vendor_command(cmd, type_name, entry, namespace)
-      shared = record_params(@types[type_name]['fields'], extensible_record?(type_name))
-      taken = shared.map(&:ruby_name)
-      VendorCommand.new(
-        method_name: BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(cmd['name'])),
-        wire_name: cmd['method'],
-        result_ref: cmd['result'] && structured_ref(cmd['result']['ref']),
-        params_class: BiDiGenerate.type_class_name(type_name),
-        shared_params: shared,
-        vendor_params: entry['fields'].map { |field| vendor_param(field, namespace, taken) },
-        spec_href: cmd['specHref']
-      )
+    # The vendor variant's params record and the command that builds it, as [record, command].
+    def build_vendor_override(cmd, type_name, fields, namespace)
+      shared = @types[type_name]['fields']
+      taken = shared.map { |field| field_name(field, false) }
+      type = @types[type_name].merge('fields' => shared + fields.map { |f| vendor_field(f, namespace, taken) })
+      record = record_class(type_name, type)
+      command = Command.new(wire_name: cmd['method'],
+                            method_name: BiDiGenerate.safe_method_name(BiDiGenerate.camel_to_snake(cmd['name'])),
+                            params: record_params(type['fields'], false),
+                            result_ref: cmd['result'] && structured_ref(cmd['result']['ref']),
+                            params_class: record.ruby_name, union_params: false, spec_href: cmd['specHref'])
+      [record, command]
     end
 
     # A vendor field's ruby name drops its namespace prefix (`moz:permanent` → permanent): the
     # module already scopes it, so re-encoding the namespace in every identifier is redundant. The
     # wire key is untouched. Falls back to the prefixed name only if stripping would collide with a
-    # shared param on the same command.
-    def vendor_param(field, namespace, taken)
-      stripped = field['name'].sub(/\A#{Regexp.escape(namespace)}:/, '')
-      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(stripped))
-      ruby_name = BiDiGenerate.safe_field_name(BiDiGenerate.camel_to_snake(field['name'])) if taken.include?(ruby_name)
-      Param.new(
-        ruby_name: ruby_name,
-        wire_name: field['wire'],
-        required: field['required'],
-        enum: enum_const(field['type']),
-        rbs: rbs_type(field['type'])
-      )
+    # shared field on the same record.
+    def vendor_field(field, namespace, taken)
+      stripped = field.merge('name' => field['name'].delete_prefix("#{namespace}:"))
+      taken.include?(field_name(stripped, false)) ? field : stripped
     end
 
     def type_kind(ref)
@@ -790,10 +814,11 @@ module BiDiGenerate
     end
 
     # The vendor types a vendor-added command in this spec domain reaches through its params and
-    # result, so they are emitted in the domain's module beside the command that returns them.
+    # result, or a vendor field folded onto a spec type references, so they are emitted in the
+    # domain's module beside what uses them.
     def vendor_types_reached(domain)
       commands = @vendor.keys.flat_map { |namespace| vendor_added_commands(domain, namespace) }
-      pending = commands.flat_map { |c| [c.dig('params', 'ref'), c.dig('result', 'ref')] }.compact
+      pending = commands.flat_map { |c| [c.dig('params', 'ref'), c.dig('result', 'ref')] }.compact + @vendor_field_refs
       reached = Set.new
       until pending.empty?
         name = pending.pop
@@ -913,33 +938,61 @@ module BiDiGenerate
     # Frozen because it is shared across callers.
     OPAQUE = {ref: nil, list: false, rbs: 'untyped'}.freeze
 
-    # Projects a schema type node to {ref:, list:, nullable:, rbs:}. Deriving the
+    # Projects a schema type node to {ref:, list:, nullable:, primitive:, bounds:, rbs:}. Deriving the
     # serialization facts and the RBS signature from one walk keeps them from drifting
     # apart when the schema shape changes.
     def resolve(node)
       nullable = node['nullable'] ? true : false
       if node.key?('list')
-        element = resolve(node['list'])
-        return {ref: element[:ref], list: true, nullable: nullable, scalar: element[:scalar],
-                rbs: nilable("Array[#{element[:rbs]}]", nullable)}
+        list = resolve_list(node['list'])
+        return list.merge(nullable: nullable, rbs: nilable(list[:rbs], nullable))
       end
       if node.key?('ref')
-        named = resolve_named(node['ref'])
+        named = narrowed(resolve_named(node['ref']), node)
         return {ref: named[:ref], list: named[:list], nullable: nullable, scalar: named[:scalar],
+                map: named[:map], primitive: named[:primitive], bounds: named[:bounds],
                 rbs: nilable(named[:rbs], nullable)}
       end
       return resolve_union(node, nullable) if node.key?('union')
 
-      {ref: nil, list: false, nullable: nullable, rbs: nilable(scalar_rbs(node), nullable)}
+      {ref: nil, list: false, nullable: nullable, primitive: checkable_primitive(node),
+       bounds: node.slice(*BOUND_KEYS), rbs: nilable(scalar_rbs(node), nullable)}
+    end
+
+    # A ref's own bounds narrow those of the alias it names (`js-uint .ge 1` is 1..2**53-1).
+    def narrowed(named, node)
+      own = node.slice(*BOUND_KEYS)
+      own.empty? ? named : named.merge(bounds: narrow_bounds(named[:bounds] || {}, own))
+    end
+
+    # A list's facts describe its element, so `primitive` (like `ref`) is the element's. A nested
+    # list's elements are lists, so no primitive check applies to them.
+    def resolve_list(element_node)
+      element = resolve(element_node)
+      # Record checks every element as non-null, so a nullable one would reject valid wire data.
+      raise "nullable list element #{element_node.inspect} is not supported by Record" if element[:nullable]
+
+      primitive, bounds = element.values_at(:primitive, :bounds) unless element[:list]
+      {ref: element[:ref], list: true, scalar: element[:scalar], primitive: primitive, bounds: bounds,
+       rbs: "Array[#{element[:rbs]}]"}
+    end
+
+    # Reached through alias chains too (resolve_named), so js-uint is checked as an integer.
+    def checkable_primitive(node)
+      node['primitive'] if CHECKABLE_PRIMITIVES.include?(node['primitive'])
     end
 
     # An inline union of one union-typed arm plus scalars (e.g. a MappingRemoteValue entry,
     # RemoteValue / string) is carried as that union ref so nested entries are typed. Because
     # the union is object_only, a bare-scalar sibling would raise there — so the projector's
     # `scalar` signal (a bare-scalar arm is present) is forwarded, and the runtime passes a
-    # non-object leaf through instead (the map's string keys). Any other shape (a record arm,
-    # multiple structured arms, all scalars) stays opaque.
+    # non-object leaf through instead (the map's string keys). A union of scalars carries their
+    # primitives; any other shape (a record arm, multiple structured arms, a scalar beside an
+    # enum) stays opaque.
     def resolve_union(node, nullable)
+      primitives = union_primitives(node['union'])
+      return scalar_union(primitives, nullable).merge(bounds: union_bounds(node['union'])) if primitives
+
       refs = node['union'].select { |arm| arm.key?('ref') }
       opaque = {ref: nil, list: false, nullable: nullable, rbs: nilable('untyped', nullable)}
       return opaque unless refs.one? && union_ref?(refs.first['ref'])
@@ -947,6 +1000,33 @@ module BiDiGenerate
       named = resolve_named(refs.first['ref'])
       {ref: named[:ref], list: named[:list], nullable: nullable, scalar: node['scalar'],
        rbs: nilable('untyped', nullable)}
+    end
+
+    # The primitives a union of scalars admits (pageRanges' `js-uint / text`), or nil when any arm
+    # is something else (an enum, a const, a ref), which no primitive check can admit.
+    def union_primitives(arms)
+      primitives = arms.map do |arm|
+        resolved = resolve(arm)
+        resolved[:primitive] unless arm.key?('const') || resolved[:list] || resolved[:nullable]
+      end
+      primitives.flatten.uniq unless primitives.include?(nil)
+    end
+
+    # The runtime holds every numeric value a field carries to one set of bounds, so numeric arms
+    # that disagree (`js-uint / float`) would be checked wrongly; fail generation instead.
+    def union_bounds(arms)
+      numeric = arms.map { |arm| resolve(arm) }.select { |arm| NUMERIC_PRIMITIVES.include?(arm[:primitive]) }
+      bounds = numeric.map { |arm| arm[:bounds] || {} }.uniq
+      raise "numeric union arms #{arms} have different bounds: #{bounds}" if bounds.size > 1
+
+      bounds.first
+    end
+
+    def scalar_union(primitives, nullable)
+      rbs = primitives.map { |primitive| PRIMITIVE_RBS.fetch(primitive) }.join(' | ')
+      rbs = "(#{rbs})" if nullable && primitives.size > 1
+      {ref: nil, list: false, nullable: nullable, primitive: primitives.one? ? primitives.first : primitives,
+       rbs: nilable(rbs, nullable)}
     end
 
     # True when a ref (following aliases) is a union — the only arm whose from_json tolerates a
@@ -972,12 +1052,31 @@ module BiDiGenerate
       return OPAQUE unless type
 
       case type['kind']
-      when 'record' then type['fields'].empty? ? OPAQUE : named_type(name)
+      when 'record' then type['fields'].empty? ? map_record(type) : named_type(name)
       when 'union' then named_union(name)
       when 'enum' then {ref: nil, list: false, rbs: 'Symbol'}
       when 'alias' then resolve_named_alias(name, type['type'], seen)
       else OPAQUE
       end
+    end
+
+    # A field-less record is either a genuinely empty one (EmptyParams, Extensible — opaque)
+    # or the projector's stand-in for an inline map (`{*text => text}` is hoisted to a record
+    # with no fields and the value type under `map`, e.g. script.NodePropertiesAttributes).
+    # A map whose values are a primitive, or a union of primitives (Firefox `prefs`), becomes a
+    # `map` descriptor the runtime checks and a typed Hash; a ref-valued one stays opaque for now.
+    def map_record(type)
+      primitives = map_value_primitives(type['map'])
+      return OPAQUE unless primitives
+
+      rbs = primitives.map { |primitive| PRIMITIVE_RBS.fetch(primitive) }.join(' | ')
+      {ref: nil, list: false, map: primitives.one? ? primitives.first : primitives,
+       bounds: union_bounds(type['map']['union'] || [type['map']]), rbs: "Hash[String, #{rbs}]"}
+    end
+
+    # Each arm's checkable primitive, following aliases (js-int is an integer); nil if any arm has none.
+    def map_value_primitives(node)
+      union_primitives(node['union'] || [node]) if node
     end
 
     # A named structured type's serialization ref (nil for a dotless/global type, never
@@ -1005,14 +1104,11 @@ module BiDiGenerate
 
     def resolve_named_alias(name, inner, seen)
       return named_union(name) if inner.key?('union')
-      return resolve_named(inner['ref'], seen) if inner.key?('ref')
+      return narrowed(resolve_named(inner['ref'], seen), inner) if inner.key?('ref')
+      return resolve_list(inner['list']) if inner.key?('list')
 
-      if inner.key?('list')
-        element = resolve(inner['list'])
-        return {ref: element[:ref], list: true, scalar: element[:scalar], rbs: "Array[#{element[:rbs]}]"}
-      end
-
-      {ref: nil, list: false, rbs: scalar_rbs(inner)}
+      {ref: nil, list: false, primitive: checkable_primitive(inner), bounds: inner.slice(*BOUND_KEYS),
+       rbs: scalar_rbs(inner)}
     end
 
     def nilable(type, flag)
@@ -1035,9 +1131,7 @@ module BiDiGenerate
       fields = type['fields'].reject { |f| baked_discriminator?(f) }.map { |f| field_ir(f, extensible) }
       # Every extensible type gets the extensions store: an undeclared wire key is preserved
       # and echoed back on any type the spec marks extensible, whether or not it is re-sendable.
-      # Extensibility alone is the signal; send-reachability does not enter into it. A type a
-      # vendor extends is open too: its vendor variant composes the vendor fields through that
-      # store (see VendorCommand), which a closed record would reject.
+      # Extensibility alone is the signal; send-reachability does not enter into it.
       TypeClass.new(ruby_name: BiDiGenerate.type_class_name(name), fields: fields,
                     discriminator: discriminator, extensible: extensible,
                     schema_name: name, synthetic: type['synthetic'] ? true : false,
@@ -1045,12 +1139,8 @@ module BiDiGenerate
                     **directionality(name))
     end
 
-    def vendor_extended?(name)
-      @vendor.values.any? { |spec| (spec['extends'] || {}).key?(name) }
-    end
-
     def extensible_record?(name)
-      @types.dig(name, 'extensible') || vendor_extended?(name) ? true : false
+      @types.dig(name, 'extensible') ? true : false
     end
 
     def field_name(field, extensible)
@@ -1071,8 +1161,9 @@ module BiDiGenerate
       FieldIR.new(ruby_name: ruby_name, wire_key: field['wire'],
                   required: field['required'], nullable: resolved[:nullable],
                   ref: resolved[:ref], list: resolved[:list], enum: enum_const(field['type']),
-                  primitive: leaf_primitive(field['type']), scalar: resolved[:scalar],
-                  const: leaf_const(field['type']), rbs: resolved[:rbs])
+                  primitive: resolved[:primitive], scalar: resolved[:scalar],
+                  const: leaf_const(field['type']), map_of: resolved[:map], bounds: resolved[:bounds] || {},
+                  rbs: resolved[:rbs])
     end
 
     # The literal value of a const field, following alias chains, so the runtime can reject a
@@ -1091,21 +1182,24 @@ module BiDiGenerate
       leaf_const(type['type'], seen)
     end
 
-    # The runtime-checkable scalar primitive of a field, following alias chains so a
-    # scalar hidden behind a named alias (js-uint -> integer, browsingContext.BrowsingContext
-    # -> string) is typed rather than opaque. The projector carries the primitive on the
-    # alias node; this surfaces it onto the field. Nil for a list (its elements are not
-    # scalar-checked), a record/union ref, an enum, a const, or an opaque value.
-    def leaf_primitive(node, seen = {})
-      return node['primitive'] if node.key?('primitive') && CHECKABLE_PRIMITIVES.include?(node['primitive'])
-      return nil unless node.key?('ref')
+    # A value must satisfy both, so each side keeps the tighter bound, and at an equal value the exclusive one.
+    def narrow_bounds(bounds, narrowing)
+      result = bounds.dup
+      {'min' => 'exclusiveMin', 'max' => 'exclusiveMax'}.each do |side, flag|
+        next unless narrowing.key?(side) && tighter_bound?(side, flag, narrowing, bounds)
 
-      name = node['ref']
-      type = @types[name]
-      return nil if seen[name] || type.nil? || type['kind'] != 'alias'
+        result[side] = narrowing[side]
+        result.delete(flag)
+        result[flag] = true if narrowing[flag]
+      end
+      result.slice(*BOUND_KEYS)
+    end
 
-      seen[name] = true
-      leaf_primitive(type['type'], seen)
+    def tighter_bound?(side, flag, candidate, current)
+      return true unless current.key?(side)
+      return candidate[flag] && !current[flag] if candidate[side] == current[side]
+
+      side == 'min' ? candidate[side] > current[side] : candidate[side] < current[side]
     end
 
     def union_class(name)
@@ -1218,6 +1312,10 @@ module BiDiGenerate
     # const, or opaque value) gets no descriptor and is left unchecked — lenient, so a missed
     # check fails open rather than a wrong strict default rejecting valid data.
     CHECKABLE_PRIMITIVES = %w[string number integer boolean].freeze
+    NUMERIC_PRIMITIVES = %w[number integer].freeze
+
+    # The schema's numeric bound keys, in the order the field facts render them.
+    BOUND_KEYS = %w[min max exclusiveMin exclusiveMax].freeze
 
     # The leaf of +resolve+: the bare scalar type, before any nullable wrap. An alias's
     # own nullable is intentionally left off — only the referencing node's is applied.

@@ -7,7 +7,9 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
+load("//:version.bzl", "VERSIONS")
 load("//common:defs.bzl", "copy_file")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load("//py:defs.bzl", "generate_devtools", "generate_devtools_latest", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 load("//py/private:generate_bidi.bzl", "generate_bidi")
@@ -27,6 +29,7 @@ py_binary(
     ],
     args = [
         "upload",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -49,6 +52,7 @@ py_binary(
         "upload",
         "--repository",
         "testpypi",
+        "--skip-existing",
         "$(location :selenium-wheel)",
         "$(location :selenium-sdist)",
     ],
@@ -62,9 +66,52 @@ py_binary(
     ],
 )
 
+SELENIUM_MANAGER_WHEELS = [
+    "//py/selenium-manager:wheels",
+    "//py/selenium-manager-linux-aarch64:wheels",
+    "//py/selenium-manager-linux-x86-64:wheels",
+    "//py/selenium-manager-macos:wheels",
+    "//py/selenium-manager-windows-x86:wheels",
+]
+
+py_binary(
+    name = "selenium-manager-release",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "--skip-existing",
+    ] + ["$(locations %s)" % wheels for wheels in SELENIUM_MANAGER_WHEELS],
+    data = SELENIUM_MANAGER_WHEELS,
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
+py_binary(
+    name = "selenium-manager-release-nightly",
+    srcs = [
+        "release-selenium.py",
+    ],
+    args = [
+        "upload",
+        "--repository",
+        "testpypi",
+        "--skip-existing",
+    ] + ["$(locations %s)" % wheels for wheels in SELENIUM_MANAGER_WHEELS],
+    data = SELENIUM_MANAGER_WHEELS,
+    main = "release-selenium.py",
+    deps = [
+        requirement("twine"),
+    ],
+)
+
 compile_pip_requirements(
     # base name for generated targets, typically "requirements"
     name = "requirements",
+    timeout = "moderate",  # resolution over the network requires additional time
     srcs = [
         "pyproject.toml",
         "requirements.txt",
@@ -76,11 +123,11 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.51.0.202609302012"
+SE_VERSION = VERSIONS["python"]
 
 BROWSER_VERSIONS = [
-    "v152",
-    "v153",
+    "v155",
+    "v156",
     "v154",
 ]
 
@@ -251,11 +298,29 @@ copy_file(
 # Module Targets (following Ruby's modular pattern)
 # ==============================================================================
 
+_VERSION_PY_CMD = "sed -e 's/^/# /' -e 's/ *$$//' $< > $@ && printf '\\n__version__ = \"%s\"\\n' >> $@"
+
+# Tests get a fixed placeholder so a version bump does not invalidate them; packages get the real version.
+genrule(
+    name = "version-py",
+    srcs = [":license_header_local"],
+    outs = ["selenium/_version.py"],
+    cmd = _VERSION_PY_CMD % "VERSION_STUB",
+)
+
+genrule(
+    name = "version-py-release",
+    srcs = [":license_header_local"],
+    outs = ["release/selenium/_version.py"],
+    cmd = _VERSION_PY_CMD % SE_VERSION,
+)
+
 # Exceptions and package init (no deps - foundational)
 py_library(
     name = "exceptions",
     srcs = [
         "selenium/__init__.py",
+        "selenium/_version.py",
         "selenium/webdriver/__init__.py",
     ] + glob(["selenium/common/**/*.py"]),
     data = ["selenium/webdriver/__init__.pyi"],
@@ -311,6 +376,7 @@ py_library(
             "selenium/webdriver/common/actions/**",
             "selenium/webdriver/common/alert.py",
             "selenium/webdriver/common/api_request_context.py",
+            "selenium/webdriver/common/cookie.py",
             "selenium/webdriver/common/_bidi/**",
             "selenium/webdriver/common/bidi/**",
             "selenium/webdriver/common/devtools/**",
@@ -332,6 +398,10 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         ":bidi",
+        # webdriver.py installs web extensions through the generated protocol layer, so it
+        # rides along with :bidi rather than only reaching the targets that test BiDi.
+        # :remote cannot carry it: the generator depends on :remote, so that would cycle.
+        ":bidi_protocol",
         ":exceptions",
         ":latest",
         ":remote",
@@ -367,10 +437,16 @@ py_library(
 
 py_library(
     name = "common_api_request_context",
-    srcs = ["selenium/webdriver/common/api_request_context.py"],
+    srcs = [
+        "selenium/webdriver/common/api_request_context.py",
+        "selenium/webdriver/common/cookie.py",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
-    deps = [":exceptions"],
+    deps = [
+        ":exceptions",
+        requirement("typing_extensions"),
+    ],
 )
 
 py_library(
@@ -603,9 +679,11 @@ pkg_files(
         ":notice",
         ":selenium-pkg",
         ":selenium-pkginfo",
+        ":version-py-release",
         "//rust:selenium_manager_srcs",
     ],
     excludes = [
+        ":version-py",
         ":manager-linux-x86_64",
         ":manager-linux-arm64",
         ":manager-macos",
@@ -613,7 +691,15 @@ pkg_files(
         ":manager-sbom",
         ":manager-windows",
     ],
+    renames = {":version-py-release": "selenium/_version.py"},
     strip_prefix = strip_prefix.from_pkg(),
+)
+
+pkg_files(
+    name = "selenium-wheel-srcs",
+    srcs = [":selenium-pkg"],
+    excludes = [":version-py"],
+    strip_prefix = strip_prefix.from_root(),
 )
 
 pkg_tar(
@@ -653,6 +739,7 @@ py_wheel(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
     ],
     description_file = "README.rst",
     distribution = "selenium",
@@ -661,7 +748,7 @@ py_wheel(
     python_requires = ">=3.10",
     python_tag = "py3",
     requires = [
-        "certifi>=2026.2.25",
+        "certifi>=2026.10.23",
         "trio>=0.31.0,<1.0",
         "trio-websocket>=0.12.2,<1.0",
         "typing_extensions>=4.15.0,<5.0",
@@ -669,6 +756,7 @@ py_wheel(
         "websocket-client>=1.8.0,<2.0",
     ],
     strip_path_prefixes = [
+        "py/release/",
         "py/",
     ],
     summary = "Official Python bindings for Selenium WebDriver",
@@ -680,7 +768,8 @@ py_wheel(
     deps = [
         ":license-wheel",
         ":notice-wheel",
-        ":selenium-pkg",
+        ":selenium-wheel-srcs",
+        ":version-py-release",
     ],
 )
 
@@ -826,6 +915,18 @@ py_library(
     deps = [":exceptions"],
 )
 
+# The generator as an importable library so its helpers and emitters can be unit tested.
+# The binaries above list the source directly because they are the entry point; this target
+# exists only for the tests, which is why it is testonly and private.
+py_library(
+    name = "bidi_protocol_generator",
+    testonly = True,
+    srcs = ["generate_bidi_protocol.py"],
+    imports = ["."],
+    visibility = ["//visibility:private"],
+    deps = [":remote"],
+)
+
 py_test_suite(
     name = "unit",
     size = "small",
@@ -835,7 +936,9 @@ py_test_suite(
     args = [
         "--instafail",
     ],
+    tags = ["unit"],
     deps = [
+        ":bidi_protocol_generator",
         ":init-tree",
         ":selenium",
     ] + TEST_DEPS,
@@ -849,6 +952,7 @@ py_library(
         "test/selenium/webdriver/common/webserver.py",
     ],
     data = [
+        "//common/certificates",
         "//common/src/web",
     ],
     deps = [],
@@ -864,7 +968,11 @@ BIDI_IMPLEMENTATIONS = []
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
-REMOTE_BIDI_TESTS = []
+REMOTE_BIDI_TESTS = [
+    # install_web_extension uploads an unpacked extension to the remote end and
+    # installs from the path it hands back, which only happens over Grid.
+    "test/selenium/webdriver/common/bidi/driver_web_extension_tests.py",
+]
 
 GRID_TESTS = glob(["test/selenium/webdriver/remote/**/*.py"])
 
@@ -1018,7 +1126,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
         deps = [
@@ -1041,7 +1149,6 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
         tags = [
-            "no-sandbox",
             "os-sensitive",
         ] + BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1076,7 +1183,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-%s" % (browser, feature),
         deps = [
@@ -1098,6 +1205,7 @@ FEATURE_SUITE_DEFS = {
     ] + [":test-%s-%s" % (browser, f) for f in FEATURE_SUITE_DEFS],
 ) for browser in DEFAULT_BROWSER_TESTS]
 
+# The driver-finder tests exercise Selenium Manager.
 [
     py_test_suite(
         name = "test-%s-driver-finder" % browser,
@@ -1105,9 +1213,12 @@ FEATURE_SUITE_DEFS = {
         srcs = DRIVER_FINDER_TESTS,
         args = [
             "--instafail",
-        ] + BROWSERS[browser]["args"],
-        data = BROWSERS[browser]["data"],
+            "--driver=" + browser,
+        ],
+        data = SE_MANAGER_TEST_DATA,
+        env = SE_MANAGER_TEST_ENV,
         env_inherit = ["DISPLAY"],
+        exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES,
         flaky = True,
         tags = BROWSERS[browser]["tags"] + ["se-manager"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1132,7 +1243,7 @@ FEATURE_SUITE_DEFS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-bidi" % browser,
         deps = [
@@ -1167,7 +1278,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1213,7 +1324,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1248,7 +1359,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1284,7 +1395,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1320,7 +1431,7 @@ FEATURE_SUITE_DEFS = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
         },
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"] + [
+        tags = BROWSERS[browser]["tags"] + [
             "remote",
             "%s-remote" % browser,
         ],
@@ -1401,6 +1512,7 @@ sphinx_docs(
     name = "docs",
     srcs = glob(["docs/source/**/*.rst"]),
     config = "docs/source/conf.py",
+    release = SE_VERSION,
     sphinx = ":sphinx-build",
 )
 

@@ -19,8 +19,8 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using Bazel;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
@@ -28,50 +28,62 @@ public class EnvironmentManager
 {
     private static readonly Lazy<EnvironmentManager> instance = new(() => new EnvironmentManager());
 
+    private static readonly Dictionary<Browser, string> driverPathEnvironmentVariables = new()
+    {
+        [Browser.Chrome] = "SE_CHROMEDRIVER",
+        [Browser.Edge] = "SE_EDGEDRIVER",
+        [Browser.Firefox] = "SE_GECKODRIVER",
+        [Browser.IE] = "SE_IEDRIVER",
+        [Browser.Safari] = "SE_SAFARIDRIVER",
+    };
+
     private EnvironmentManager()
     {
-        string dataFilePath;
+        string appConfigFilePath;
         Runfiles runfiles = null;
         try
         {
             runfiles = Runfiles.Create();
-            dataFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
+            appConfigFilePath = runfiles.Rlocation("_main/dotnet/test/testing.nunit/appconfig.json");
         }
         catch (FileNotFoundException)
         {
-            dataFilePath = "appconfig.json";
+            appConfigFilePath = "appconfig.json";
         }
         string currentDirectory = this.CurrentDirectory;
 
-        string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
-        string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
-
-        string browserLocation = System.Environment.GetEnvironmentVariable("BROWSER_LOCATION") ?? TestContext.Parameters.Get("BrowserLocation", string.Empty);
-
-        string headless = System.Environment.GetEnvironmentVariable("HEADLESS") ?? TestContext.Parameters.Get("Headless", string.Empty);
+        string configurationPath = Path.GetFullPath(appConfigFilePath);
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Path.GetDirectoryName(configurationPath))
+            .AddJsonFile(Path.GetFileName(configurationPath), optional: false, reloadOnChange: false)
+            .AddEnvironmentVariables()
+            .AddNUnitParameters()
+            .Build();
+        TestEnvironment env = new();
+        configuration.Bind(env);
 
         // Bazel's $(location ...) expands to a runfiles-relative path (e.g.
         // "../+pin_browsers_extension+mac_chrome/Chrome.app/Contents/MacOS/Chrome")
         // which is relative to <runfiles>/_main. The driver process runs from a
         // different cwd and cannot resolve that, so absolutize through TEST_SRCDIR.
-        driverServiceLocation = ResolveRunfilesPath(driverServiceLocation);
-        browserLocation = ResolveRunfilesPath(browserLocation);
+        string driverServiceLocation = ResolveRunfilesPath(env.DriverServiceLocation);
+        string browserLocation = ResolveRunfilesPath(env.BrowserLocation);
 
-        DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
+        DriverConfig driverConfig = env.DriverConfigs[env.ActiveDriverConfig];
 
-        Headless = bool.TryParse(headless, out bool isHeadless) && isHeadless;
-        DriverServiceLocation = driverServiceLocation;
+        Configuration = env;
+        env.DriverServiceLocation = driverServiceLocation;
         BrowserLocation = browserLocation;
-        DriverTypeName = driverConfig.DriverTypeName;
 
         Browser = driverConfig.BrowserValue;
         RemoteCapabilities = driverConfig.RemoteCapabilities;
+
+        // Services the tests build themselves then resolve the pinned driver instead of invoking Selenium Manager.
+        if (!string.IsNullOrEmpty(driverServiceLocation)
+            && driverPathEnvironmentVariables.TryGetValue(Browser, out string driverVariable))
+        {
+            System.Environment.SetEnvironmentVariable(driverVariable, driverServiceLocation);
+        }
 
         WebServer = new AppServer();
         WebServer.StartAsync().GetAwaiter().GetResult();
@@ -132,11 +144,7 @@ public class EnvironmentManager
 
     public Browser Browser { get; }
 
-    public bool Headless { get; }
-
-    public string DriverTypeName { get; }
-
-    public string DriverServiceLocation { get; }
+    internal TestEnvironment Configuration { get; }
 
     public string BrowserLocation { get; }
 

@@ -15,7 +15,9 @@ from scripts.generated_note import generated_note
 # support and the sha256 of these. That's useful for
 # updating `//common:repositories.bzl`
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
 def calculate_hash(url):

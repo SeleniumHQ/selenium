@@ -4,7 +4,11 @@ load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_selenium_test_suit
 java_test_suite(
     name = "small-tests",
     size = "small",
-    srcs = ["ConnectionTest.java"],
+    srcs = [
+        "BiDiUnsubscribeTest.java",
+        "ConnectionTest.java",
+        "ConverterFunctionsTest.java",
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/bidi",
@@ -20,7 +24,11 @@ java_selenium_test_suite(
     size = "large",
     srcs = glob(
         ["*Test.java"],
-        exclude = ["ConnectionTest.java"],
+        exclude = [
+            "BiDiUnsubscribeTest.java",
+            "ConnectionTest.java",
+            "ConverterFunctionsTest.java",
+        ],
     ),
     browsers = BIDI_BROWSERS,
     tags = [
@@ -28,6 +36,7 @@ java_selenium_test_suite(
     ],
     deps = [
         "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi:bidi-generated",
         "//java/src/org/openqa/selenium/bidi/browsingcontext",
         "//java/src/org/openqa/selenium/bidi/log",
         "//java/src/org/openqa/selenium/bidi/module",

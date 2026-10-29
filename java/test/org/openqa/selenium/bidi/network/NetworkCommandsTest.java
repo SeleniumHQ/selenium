@@ -230,13 +230,15 @@ class NetworkCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canContinueWithoutAuthCredentials() {
+  void canContinueWithoutAuthCredentials() throws InterruptedException {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
+      CountDownLatch continued = new CountDownLatch(1);
       network.onAuthRequired(
           responseDetails -> {
             if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
               network.continueWithAuthNoCredentials(responseDetails.getRequest().getRequestId());
+              continued.countDown();
             }
           });
       page = appServer.whereIs("basicAuth");
@@ -244,6 +246,10 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE, Duration.ofMillis(200)))
           .isInstanceOf(WebDriverException.class);
+
+      // chromedriver holds classic commands behind the pending navigation, so the next command
+      // must not race the continuation that releases it.
+      assertThat(continued.await(10, TimeUnit.SECONDS)).isTrue();
 
       // "default" hands authentication back to the browser: Firefox raises its own credential
       // prompt, Chrome and Edge block the navigation without exposing one. Dismiss it so the

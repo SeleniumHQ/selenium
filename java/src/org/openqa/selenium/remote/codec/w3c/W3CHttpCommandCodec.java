@@ -191,7 +191,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               return amendLocatorToCssSelector(parameters, "#" + cssEscape(stringValue));
 
             case "name":
-              return amendLocatorToCssSelector(parameters, "*[name='" + stringValue + "']");
+              return amendLocatorToCssSelector(
+                  parameters, "*[name='" + cssEscape(stringValue) + "']");
 
             default:
               // Do nothing
@@ -389,6 +390,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private String cssEscape(String using) {
     using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
+    // CSS drops a backslash followed by a newline, so newlines need hex escapes instead.
+    using = using.replace("\\\n", "\\a ").replace("\\\r", "\\d ").replace("\\\f", "\\c ");
     // CSS only requires the leading-digit escape for ASCII 0-9; non-ASCII Unicode digits
     // (e.g. Arabic-Indic, fullwidth) are already valid identifier-start code points and must
     // be left untouched, or they collide with the escape for a different ASCII digit.

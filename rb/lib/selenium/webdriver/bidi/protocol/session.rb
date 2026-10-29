@@ -35,6 +35,16 @@ module Selenium
             ignore: 'ignore'
           }.freeze
 
+          CAPABILITY_REQUEST_FIREFOX_OPTIONS_LEVEL = {
+            trace: 'trace',
+            debug: 'debug',
+            config: 'config',
+            info: 'info',
+            warn: 'warn',
+            error: 'error',
+            fatal: 'fatal'
+          }.freeze
+
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-CapabilitiesRequest
@@ -57,6 +67,31 @@ module Selenium
               required: false,
               ref: 'Session::UserPromptHandler'
             },
+            moz_firefox_options: {
+              wire_key: 'moz:firefoxOptions',
+              required: false,
+              ref: 'Session::CapabilityRequestFirefoxOptions'
+            },
+            extensible: true
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/webdriver-bidi/#type-session-CapabilityResponse
+          CapabilityResponse = Serialization::Record.define(
+            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', primitive: 'boolean'},
+            browser_name: {wire_key: 'browserName', primitive: 'string'},
+            browser_version: {wire_key: 'browserVersion', primitive: 'string'},
+            platform_name: {wire_key: 'platformName', primitive: 'string'},
+            set_window_rect: {wire_key: 'setWindowRect', primitive: 'boolean'},
+            user_agent: {wire_key: 'userAgent', primitive: 'string'},
+            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
+            unhandled_prompt_behavior: {
+              wire_key: 'unhandledPromptBehavior',
+              required: false,
+              ref: 'Session::UserPromptHandler'
+            },
+            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
             extensible: true
           )
 
@@ -111,8 +146,8 @@ module Selenium
             http_proxy: {wire_key: 'httpProxy', required: false, primitive: 'string'},
             ssl_proxy: {wire_key: 'sslProxy', required: false, primitive: 'string'},
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'},
-            no_proxy: {wire_key: 'noProxy', required: false, list: true},
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255},
+            no_proxy: {wire_key: 'noProxy', required: false, list: true, primitive: 'string'},
             extensible: true
           )
 
@@ -121,7 +156,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsocksproxyconfiguration
           SocksProxyConfiguration = Serialization::Record.define(
             socks_proxy: {wire_key: 'socksProxy', primitive: 'string'},
-            socks_version: {wire_key: 'socksVersion', primitive: 'integer'}
+            socks_version: {wire_key: 'socksVersion', primitive: 'integer', min: 0, max: 255}
           )
 
           # @api private
@@ -157,20 +192,24 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionsubscribeparameters
           SubscribeParameters = Serialization::Record.define(
-            events: {wire_key: 'events', list: true},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            events: {wire_key: 'events', list: true, primitive: 'string'},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByIDRequest
-          UnsubscribeByIDRequest = Serialization::Record.define(subscriptions: {wire_key: 'subscriptions', list: true})
+          UnsubscribeByIDRequest = Serialization::Record.define(
+            subscriptions: {wire_key: 'subscriptions', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           # @see https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByAttributesRequest
-          UnsubscribeByAttributesRequest = Serialization::Record.define(events: {wire_key: 'events', list: true})
+          UnsubscribeByAttributesRequest = Serialization::Record.define(
+            events: {wire_key: 'events', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -192,26 +231,7 @@ module Selenium
           # @see https://w3c.github.io/webdriver-bidi/#cddl-type-sessionnewresult
           NewResult = Serialization::Record.define(
             session_id: {wire_key: 'sessionId', primitive: 'string'},
-            capabilities: {wire_key: 'capabilities', ref: 'Session::NewResult::Capabilities'}
-          )
-
-          # @api private
-          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          NewResult::Capabilities = Serialization::Record.define(
-            accept_insecure_certs: {wire_key: 'acceptInsecureCerts', primitive: 'boolean'},
-            browser_name: {wire_key: 'browserName', primitive: 'string'},
-            browser_version: {wire_key: 'browserVersion', primitive: 'string'},
-            platform_name: {wire_key: 'platformName', primitive: 'string'},
-            set_window_rect: {wire_key: 'setWindowRect', primitive: 'boolean'},
-            user_agent: {wire_key: 'userAgent', primitive: 'string'},
-            proxy: {wire_key: 'proxy', required: false, ref: 'Session::ProxyConfiguration'},
-            unhandled_prompt_behavior: {
-              wire_key: 'unhandledPromptBehavior',
-              required: false,
-              ref: 'Session::UserPromptHandler'
-            },
-            web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
-            extensible: true
+            capabilities: {wire_key: 'capabilities', ref: 'Session::CapabilityResponse'}
           )
 
           # @api private
@@ -230,6 +250,38 @@ module Selenium
             object_only
           end
 
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          CapabilityRequestFirefoxOptions = Serialization::Record.define(
+            android_package: {wire_key: 'androidPackage', required: false, primitive: 'string'},
+            android_activity: {wire_key: 'androidActivity', required: false, primitive: 'string'},
+            android_device_serial: {wire_key: 'androidDeviceSerial', required: false, primitive: 'string'},
+            android_intent_arguments: {
+              wire_key: 'androidIntentArguments',
+              required: false,
+              list: true,
+              primitive: 'string'
+            },
+            args: {wire_key: 'args', required: false, list: true, primitive: 'string'},
+            binary: {wire_key: 'binary', required: false, primitive: 'string'},
+            env: {wire_key: 'env', required: false, map: 'string'},
+            log: {wire_key: 'log', required: false, ref: 'Session::CapabilityRequestFirefoxOptions::Log'},
+            prefs: {
+              wire_key: 'prefs',
+              required: false,
+              map: %w[string boolean integer],
+              min: -9_007_199_254_740_991,
+              max: 9_007_199_254_740_991
+            },
+            profile: {wire_key: 'profile', required: false, primitive: 'string'}
+          )
+
+          # @api private
+          # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          CapabilityRequestFirefoxOptions::Log = Serialization::Record.define(
+            level: {wire_key: 'level', required: false, enum: 'Session::CAPABILITY_REQUEST_FIREFOX_OPTIONS_LEVEL'}
+          )
+
           def capabilities_request(**) = CapabilitiesRequest.new(**)
           def capability_request(**) = CapabilityRequest.new(**)
           def proxy_configuration = ProxyConfiguration
@@ -241,6 +293,8 @@ module Selenium
           def user_prompt_handler(**) = UserPromptHandler.new(**)
           def unsubscribe_by_id_request(**) = UnsubscribeByIDRequest.new(**)
           def unsubscribe_by_attributes_request(**) = UnsubscribeByAttributesRequest.new(**)
+          def capability_request_firefox_options(**) = CapabilityRequestFirefoxOptions.new(**)
+          def capability_request_firefox_options_log(**) = CapabilityRequestFirefoxOptions::Log.new(**)
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/

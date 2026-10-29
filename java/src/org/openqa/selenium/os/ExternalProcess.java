@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
@@ -41,6 +42,12 @@ import org.openqa.selenium.io.MultiOutputStream;
 
 public class ExternalProcess {
   private static final Logger LOG = Logger.getLogger(ExternalProcess.class.getName());
+
+  /**
+   * How long the forwarded output may stay silent after the process exited before {@link
+   * #waitFor(Duration)} and {@link #shutdown(Duration)} stop waiting for the end of the stream.
+   */
+  private static final long OUTPUT_QUIET_PERIOD_MS = 500;
 
   public static class Builder {
 
@@ -205,11 +212,14 @@ public class ExternalProcess {
           buffer = new ByteArrayOutputStream();
         }
 
+        ForwardingProgress forwarded = new ForwardingProgress();
         Thread worker =
             new Thread(
                 () -> {
                   // copyOutputTo might be system.out or system.err, do not to close
-                  OutputStream output = new MultiOutputStream(buffer, copyOutputTo);
+                  OutputStream output =
+                      new CountingOutputStream(
+                          new MultiOutputStream(buffer, copyOutputTo), forwarded);
                   // closing the InputStream does somehow disturb the process, do not to close
                   InputStream input = process.getInputStream();
                   // use the CircularOutputStream as mandatory, we know it will never raise a
@@ -220,6 +230,13 @@ public class ExternalProcess {
                   } catch (IOException ex) {
                     LOG.log(
                         Level.WARNING, "failed to copy the output of process " + process.pid(), ex);
+                    // e.g. copyOutputTo was closed, while a child of the process still writes to
+                    // the pipe; keep reading, so the child does not block on a full pipe
+                    try {
+                      input.transferTo(OutputStream.nullOutputStream());
+                    } catch (IOException ignored) {
+                      // the pipe is gone, nobody can block on it anymore
+                    }
                   }
                   LOG.log(Level.FINE, "completed to copy the output of process " + process.pid());
                 },
@@ -229,7 +246,7 @@ public class ExternalProcess {
         worker.setDaemon(true);
         worker.start();
 
-        return new ExternalProcess(process, buffer, worker);
+        return new ExternalProcess(process, buffer, worker, forwarded);
       } catch (Throwable t) {
         // ensure we do not leak a process in case of failures
         try {
@@ -249,11 +266,22 @@ public class ExternalProcess {
   private final Process process;
   private final OutputStream outputStream;
   private final Thread worker;
+  // how far the worker has forwarded the output, null when the worker was not started by Builder
+  private final @Nullable ForwardingProgress forwarded;
 
   public ExternalProcess(Process process, OutputStream outputStream, Thread worker) {
+    this(process, outputStream, worker, null);
+  }
+
+  private ExternalProcess(
+      Process process,
+      OutputStream outputStream,
+      Thread worker,
+      @Nullable ForwardingProgress forwarded) {
     this.process = process;
     this.outputStream = outputStream;
     this.worker = worker;
+    this.forwarded = forwarded;
   }
 
   /**
@@ -292,21 +320,7 @@ public class ExternalProcess {
     boolean exited = process.waitFor(duration.toMillis(), TimeUnit.MILLISECONDS);
 
     if (exited) {
-      try {
-        // the worker might not stop even when process.destroyForcibly is called
-        worker.join(8000);
-      } catch (InterruptedException ex) {
-        Thread.interrupted();
-      } finally {
-        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
-        worker.interrupt();
-        try {
-          // now we might be able to join
-          worker.join(2000);
-        } catch (InterruptedException ex) {
-          Thread.interrupted();
-        }
-      }
+      awaitWorker();
     }
 
     return exited;
@@ -355,14 +369,41 @@ public class ExternalProcess {
         Thread.interrupted();
       }
     } finally {
-      try {
-        // the worker might not stop even when process.destroyForcibly is called
+      awaitWorker();
+    }
+  }
+
+  /**
+   * Waits for the worker to forward the output of the exited process.
+   *
+   * <p>The worker reads until the end of the stream. A child of the process that inherited its
+   * stdout or stderr, e.g. a browser started by a driver, keeps the stream open after the process
+   * itself exited. So the end of the stream may not arrive for a long time, while all output the
+   * process wrote has already been forwarded. Stop waiting once the output was silent for {@link
+   * #OUTPUT_QUIET_PERIOD_MS}, but keep waiting as long as output still arrives.
+   */
+  private void awaitWorker() {
+    ForwardingProgress progress = forwarded;
+    boolean quiet = false;
+    try {
+      // the worker might not stop even when process.destroyForcibly is called
+      if (progress == null) {
         worker.join(8000);
-      } catch (InterruptedException ex) {
-        Thread.interrupted();
-      } finally {
-        // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
-        worker.interrupt();
+      } else {
+        quiet = joinUntilQuiet(progress, 8000);
+      }
+    } catch (InterruptedException ex) {
+      Thread.interrupted();
+    } finally {
+      // if already stopped interrupt is ignored, otherwise raises I/O exceptions in the worker
+      worker.interrupt();
+      if (quiet) {
+        LOG.log(
+            Level.FINE,
+            "the output of process "
+                + process.pid()
+                + " is still open, but silent; stopped waiting for its end");
+      } else {
         try {
           // now we might be able to join
           worker.join(2000);
@@ -370,6 +411,89 @@ public class ExternalProcess {
           Thread.interrupted();
         }
       }
+    }
+  }
+
+  /**
+   * Joins the worker until it stopped, the timeout elapsed, or no output was forwarded for {@link
+   * #OUTPUT_QUIET_PERIOD_MS}. A write that is still in progress, e.g. to a slow {@code
+   * copyOutputTo} stream, does not count as silence.
+   *
+   * @return true when the worker is still running, but did not forward any output in the last
+   *     {@link #OUTPUT_QUIET_PERIOD_MS}
+   */
+  private boolean joinUntilQuiet(ForwardingProgress progress, long timeoutMs)
+      throws InterruptedException {
+    long deadline = System.nanoTime() + MILLISECONDS.toNanos(timeoutMs);
+    long last = -1;
+
+    while (worker.isAlive()) {
+      // read the flag before the count: a write that ends between the two reads has already
+      // advanced the count, so it cannot pass for silence
+      boolean writing = progress.writing;
+      long count = progress.bytes.get();
+      if (count == last && !writing) {
+        return true;
+      }
+      last = count;
+
+      long remaining = TimeUnit.NANOSECONDS.toMillis(deadline - System.nanoTime());
+      if (remaining <= 0) {
+        return false;
+      }
+      worker.join(Math.min(remaining, OUTPUT_QUIET_PERIOD_MS));
+    }
+
+    return false;
+  }
+
+  /** How far the worker has forwarded the output, read by a thread waiting for it. */
+  private static class ForwardingProgress {
+    private final AtomicLong bytes = new AtomicLong();
+    private volatile boolean writing;
+  }
+
+  /** Records the progress of the writes through it, so a waiting thread can see output flowing. */
+  private static class CountingOutputStream extends OutputStream {
+
+    private final OutputStream delegate;
+    private final ForwardingProgress progress;
+
+    private CountingOutputStream(OutputStream delegate, ForwardingProgress progress) {
+      this.delegate = delegate;
+      this.progress = progress;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      progress.writing = true;
+      try {
+        delegate.write(b);
+        progress.bytes.incrementAndGet();
+      } finally {
+        progress.writing = false;
+      }
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      progress.writing = true;
+      try {
+        delegate.write(b, off, len);
+        progress.bytes.addAndGet(len);
+      } finally {
+        progress.writing = false;
+      }
+    }
+
+    @Override
+    public void flush() throws IOException {
+      delegate.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+      delegate.close();
     }
   }
 }

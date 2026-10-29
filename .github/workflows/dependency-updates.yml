@@ -11,60 +11,27 @@ permissions:
 jobs:
   update:
     name: Update Dependencies
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Update Dependencies
-      run: ./go update
-      artifact-name: dependency-updates
-
-  create-pr:
-    name: Create Pull Request
-    if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
-    needs: update
+    uses: ./.github/workflows/update-pr.yml
     permissions:
       contents: write
       pull-requests: write
       actions: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: Download patch
-        uses: actions/download-artifact@v8
-        with:
-          pattern: dependency-updates
-          merge-multiple: true
-      - name: Apply patch
-        id: apply
-        run: |
-          if [ -s changes.patch ]; then
-            git apply --index changes.patch
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-          rm -f changes.patch
-      - name: Create Pull Request
-        if: steps.apply.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          commit-message: "update dependencies and pinned binaries"
-          author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
-          base: trunk
-          title: "[build] Automated Dependency Update"
-          body: |
-            This is an automated pull request to update each binding's dependencies, the Rust
-            crates, and the pinned multitool binaries.
+    with:
+      run: ./go update
+      branch: automated-dependency-updates
+      title: "[build] Automated Dependency Update"
+      body: |
+        This is an automated pull request to update each binding's dependencies, the Rust
+        crates, and the pinned multitool binaries.
 
-            Merge after verifying the new versions are properly passing the tests.
-          branch: automated-dependency-updates
-          labels: C-build
+        Merge after verifying the new versions are properly passing the tests.
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   on-failure:
     name: On Dependency Update Failure
     runs-on: ubuntu-latest
-    needs: [update, create-pr]
+    needs: update
     if: failure() || cancelled()
     steps:
       - name: Slack Notification
@@ -74,7 +41,6 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Needs Investigation
-          SLACK_MESSAGE: "Unable to create the weekly Updates PR: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          SLACK_MESSAGE: "Needs investigation: unable to create the weekly Updates PR. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

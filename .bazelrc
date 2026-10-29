@@ -17,6 +17,10 @@ common --legacy_external_runfiles
 startup --windows_enable_symlinks
 build --enable_runfiles
 
+# For Python, use a venv site-packages layout on to avoid MAX_PATH failures
+# when loading native extensions.
+build:windows --@rules_python//python/config_settings:venvs_site_packages=yes
+
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 build --flag_alias=manager=//common:manager
@@ -90,7 +94,6 @@ common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUIL
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 common --incompatible_enable_proto_toolchain_resolution
-build --incompatible_enable_cc_toolchain_resolution
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
@@ -148,7 +151,9 @@ test:windows --test_env=PROCESSOR_ARCHITECTURE
 test:windows --test_env=PROGRAMFILES="C:\\Program Files"
 test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 
-test --test_timeout=1800
+# Browser tests claim one `browser` each, and Bazel fails every action of a target that claims an
+# undeclared resource, so `build` (which `test` inherits) must declare it. CI lowers this to 1.
+build --local_resources=browser=HOST_CPUS
 
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"

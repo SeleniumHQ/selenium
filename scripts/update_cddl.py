@@ -46,7 +46,9 @@ from pathlib import Path
 
 import urllib3
 
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
 WEBREF_REPO = "w3c/webref"

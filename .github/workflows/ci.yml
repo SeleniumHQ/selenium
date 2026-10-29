@@ -13,8 +13,8 @@ on:
   workflow_call:
 
 concurrency:
-  group: ci-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name }}-${{ github.event_name == 'push' && github.sha || github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
   wait-for-unlock:
     name: Wait for Trunk Unlock
-    if: ${{ !startsWith(github.head_ref, 'release-preparation-') }}
+    if: ${{ !(startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-latest
     steps:
       - env:
@@ -50,7 +50,7 @@ jobs:
         run: |
           if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
             mode=none
-          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') }}" = "true" ]; then
+          elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository }}" = "true" ]; then
             mode=all
           else
             mode=check
@@ -133,13 +133,13 @@ jobs:
               echo "$lang_targets" > "bazel-targets-${tag}.txt"
             fi
           }
-          check_binding "//java" "java"
+          process_binding "//java" "java"
           check_binding "openqa/selenium/grid" "grid"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
-          check_binding "//javascript" "js"
           process_binding "//rb" "rb"
           process_binding "//py" "py"
+          process_binding "//javascript" "js"
       - name: Upload target files
         uses: actions/upload-artifact@v7
         with:
@@ -151,12 +151,16 @@ jobs:
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-dotnet.yml
     if: "!cancelled() && needs.read-targets.outputs.dotnet != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   java:
     name: Java
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-java.yml
     if: "!cancelled() && needs.read-targets.outputs.java != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   grid:
     name: Grid
@@ -171,6 +175,7 @@ jobs:
     if: "!cancelled() && needs.read-targets.outputs.py != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
+      smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   ruby:
     name: Ruby
@@ -179,6 +184,7 @@ jobs:
     if: "!cancelled() && needs.read-targets.outputs.rb != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
+      smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   rust:
     name: Rust
@@ -191,6 +197,8 @@ jobs:
     needs: [read-targets, wait-for-unlock]
     uses: ./.github/workflows/ci-javascript.yml
     if: "!cancelled() && needs.read-targets.outputs.js != ''"
+    with:
+      compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
 
   merge-flaky-results:
     name: Merge Flaky Results

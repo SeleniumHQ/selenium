@@ -109,7 +109,7 @@ java_test_suite(
     size = "large",
     srcs = glob(["**/*Test.java"]),
     data = firefox["data"],
-    jvm_flags = firefox["jvm_flags"],
+    jvm_flags = firefox["jvm_flags"] + firefox["pinned_jvm_flags"],
     tags = [
         "firefox",
     ] + firefox["tags"],

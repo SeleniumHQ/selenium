@@ -17,9 +17,6 @@ java_test_suite(
         "--release",
         TOOLS_JAVA_VERSION,
     ],
-    tags = [
-        "no-sandbox",
-    ],
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
@@ -37,6 +34,8 @@ java_test_suite(
         artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.mockito:mockito-core"),
         artifact("org.jspecify:jspecify"),
+        artifact("uk.org.webcompere:system-stubs-core"),
+        artifact("uk.org.webcompere:system-stubs-jupiter"),
     ] + JUNIT5_DEPS,
 )
 

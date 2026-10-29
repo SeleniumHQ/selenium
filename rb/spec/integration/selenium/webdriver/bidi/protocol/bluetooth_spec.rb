@@ -131,7 +131,7 @@ module Selenium
               await_promise: await_promise,
               user_activation: user_activation
             )
-            if result.is_a?(Script::EvaluateResultException)
+            if result.is_a?(Script::EvaluationResultException)
               raise Error::WebDriverError, "script.evaluate raised: #{result.exception_details.text}"
             end
 

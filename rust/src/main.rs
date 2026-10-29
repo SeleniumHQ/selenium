@@ -23,15 +23,14 @@ use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
-use selenium_manager::jre::ensure_jre;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
-    CACHE_TTL_DAYS, SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
-    prune_old_cache_entries,
+    CACHE_TTL_DAYS, SeleniumManager, clear_cache, format_error, get_manager_by_browser,
+    get_manager_by_driver, prune_old_cache_entries,
 };
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
@@ -101,6 +100,11 @@ struct Cli {
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
     #[clap(long, value_parser)]
     proxy: Option<String>,
+
+    /// Disable TLS certificate validation for network requests (not recommended; use only when
+    /// the required CA cannot be added to the system trust store)
+    #[clap(long)]
+    insecure: bool,
 
     /// Timeout for network requests (in seconds)
     #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
@@ -297,31 +301,10 @@ fn main() {
     }
     prune_old_cache_entries(selenium_manager.get_logger(), &cache_path, CACHE_TTL_DAYS);
 
-    let proxy = cli.proxy.clone().unwrap_or_default();
-
     selenium_manager
         .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(proxy.clone()))
-        .and_then(|_| {
-            if selenium_manager.is_grid() {
-                ensure_jre(
-                    Some(cache_path.as_str()),
-                    cli.timeout,
-                    Some(proxy.as_str()),
-                    selenium_manager.is_offline(),
-                    selenium_manager.get_logger(),
-                )
-                .map(|runtime| {
-                    selenium_manager.get_logger().debug(format!(
-                        "Java runtime resolved from {}: {}",
-                        runtime.source,
-                        runtime.java_path.display()
-                    ));
-                })
-            } else {
-                Ok(())
-            }
-        })
+        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
@@ -345,7 +328,7 @@ fn main() {
                     format!(
                         "There was an error managing {} ({}); using driver found in the cache",
                         selenium_manager.get_driver_name(),
-                        err
+                        format_error(&err)
                     ),
                     selenium_manager.is_offline(),
                 );
@@ -362,12 +345,7 @@ fn main() {
                 log_browser_path(&log, &browser_path);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                let error_msg = if log.is_debug_enabled() {
-                    format!("{:?}", err)
-                } else {
-                    err.to_string()
-                };
-                log.error(error_msg);
+                log.error(format_error(&err));
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });

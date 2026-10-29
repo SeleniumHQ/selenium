@@ -66,6 +66,8 @@ jobs:
               gh api -X POST "repos/$GH_REPO/rulesets" --input "$f"
             fi
           done
+          # GitHub merges the release PR itself once the rulesets are satisfied
+          gh api -X PATCH "repos/$GH_REPO" -F allow_auto_merge=true --silent
       - name: Delete release rulesets
         if: inputs.unlock
         shell: bash
@@ -79,6 +81,7 @@ jobs:
               gh api -X DELETE "repos/$GH_REPO/rulesets/$id"
             done < <(jq -r --arg n "$name" '.[] | select(.name==$n) | .id' <<<"$existing")
           done
+          gh api -X PATCH "repos/$GH_REPO" -F allow_auto_merge=false --silent
 
   notify:
     name: Send Notification
@@ -93,7 +96,6 @@ jobs:
           SLACK_COLOR: ${{ inputs.unlock && 'good' || 'danger' }}
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: ${{ inputs.unlock && 'Trunk unlocked' || 'Trunk locked' }}
-          SLACK_MESSAGE: "${{ inputs.message != '' && inputs.message || (inputs.unlock && 'Trunk has been unlocked.' || 'Trunk has been locked.') }} <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          SLACK_MESSAGE: "${{ inputs.unlock && 'Trunk unlocked' || 'Trunk locked' }}${{ inputs.message != '' && format(': {0}', inputs.message) || '.' }} <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

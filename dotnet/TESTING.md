@@ -5,19 +5,19 @@ This guide helps contributors write tests in the Selenium .NET codebase.
 ## Test Framework
 
 * Tests use NUnit.
-* All tests inherit from `DriverTestFixture`.
-* Test HTML pages accessed via properties like `simpleTestPage`, `javascriptPage`.
-* `WaitFor<T>()` provides waiting with 5-second default timeout.
+* Browser-backed WebDriver tests inherit from `DriverTestFixture`; unit tests do not.
+* Browser test pages are accessed through `Urls`, for example `Urls.SimpleTestPage` and `Urls.JavascriptPage`.
+* `WaitFor<T>()` provides waiting with a 5-second default timeout.
 
 ```csharp
 [TestFixture]
-public class MyFeatureTest : DriverTestFixture
+public class MyFeatureTests : DriverTestFixture
 {
     [Test]
     public void ShouldFindElement()
     {
-        driver.Url = simpleTestPage;
-        IWebElement element = driver.FindElement(By.Id("foo"));
+        Driver.Url = Urls.SimpleTestPage;
+        IWebElement element = Driver.FindElement(By.Id("foo"));
         Assert.That(element.Text, Is.EqualTo("expected"));
     }
 
@@ -32,45 +32,51 @@ public class MyFeatureTest : DriverTestFixture
 
 ## Running Tests
 
-Tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then
-generates a target per test class, plus a per-browser variant for each supported browser. The
-bare class target runs on the default browser (Firefox, the first entry in the `browsers` list in
-[`BUILD.bazel`](test/webdriver/BUILD.bazel)). Always use `--pin_browsers`.
+### Unit Tests
+
+In-process unit tests are organized under `dotnet/test/unit`; WebDriver unit tests live in `dotnet/test/unit/webdriver` in the `Selenium.WebDriver.UnitTests` project. Keep these tests isolated from browser launches, real filesystem and network access, and child processes; use in-process fakes for dependencies when needed, such as the BiDi `FakeTransport`. This project has no browser setup fixture, test web server, or browser configuration.
 
 ```shell
-bazel test //dotnet/test/webdriver/... --pin_browsers=true            # All tests, all browsers
-bazel test //dotnet/test/webdriver:ElementFindingTests --pin_browsers=true        # One class, default browser
-bazel test //dotnet/test/webdriver:ElementFindingTests-chrome --pin_browsers=true # One class on Chrome
-bazel test //dotnet/test/webdriver:ElementFindingTests-edge --pin_browsers=true   # One class on Edge
+bazel test //dotnet/test/unit/...                       # All unit tests, no browser variants
+bazel test //dotnet/test/unit/webdriver/...            # WebDriver unit tests
+bazel test //dotnet/test/unit/webdriver:BiDi/SessionUnitTests # One fixture
+bazel test //dotnet/test/unit/... --test_output=all --cache_test_results=no
+```
+
+Unit targets are tagged `unit` and sized `small`. CI runs them in a separate job with one test attempt. Preserve fixture-specific isolation attributes: telemetry tests that register process-wide activity listeners must remain nonparallel.
+
+### Browser Tests
+
+WebDriver browser tests live in `//dotnet/test/webdriver`. The suite compiles once into a single binary; Bazel then generates targets for test fixtures, with browser-specific variants for the generated browser targets. Name fixture files `*Tests.cs` to follow the project convention. The bare fixture target runs on the default browser (Firefox, the first entry in the `browsers` list in [`BUILD.bazel`](test/webdriver/BUILD.bazel)).
+
+```shell
+bazel test //dotnet/test/webdriver/...                        # All generated tests and browser variants
+bazel test //dotnet/test/webdriver:ElementFindingTests        # One class, default browser
+bazel test //dotnet/test/webdriver:ElementFindingTests-chrome # One class on Chrome
+bazel test //dotnet/test/webdriver:ElementFindingTests-edge   # One class on Edge
 
 # Additional Arguments
-bazel test //dotnet/test/webdriver/... --flaky_test_attempts=3 --pin_browsers=true
-bazel test //dotnet/test/webdriver/... --test_output=all --pin_browsers=true
+bazel test //dotnet/test/webdriver/... --flaky_test_attempts=3
+bazel test //dotnet/test/webdriver/... --test_output=all
 ```
 
-To avoid passing `--pin_browsers=true` on every invocation, set it once in `.bazelrc.local`:
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not depend on what the machine has installed. To have Selenium Manager handle browser and driver discovery instead, pass `--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present; to force a browser download and ignore drivers on `PATH`, pass `--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
 
-```
-build --//common:pin_browsers
-```
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for the Rust and Selenium Manager tests. We use GitHub Actions runners for checks that RBE cannot cover, such as OS-specific behavior and Selenium Manager on other platforms.
 
 ### Running Tests in an IDE
 
-Bazel is the source of truth for CI and release verification, but for day-to-day inner-loop
-development you can open `dotnet/Selenium.slnx` in [Rider](https://www.jetbrains.com/rider/) or
-[Visual Studio](https://visualstudio.microsoft.com/) and run tests through the built-in NUnit
-runner. This gives the same results as Bazel, modulo any build differences between `bazel build`
-and `dotnet build`, so it is worth confirming a change with `bazel test` before pushing.
+Bazel is the source of truth for CI and release verification, but for day-to-day development you can open `Selenium.slnx` in [Rider](https://www.jetbrains.com/rider/) or [Visual Studio](https://visualstudio.microsoft.com/) and run tests through the IDE's NUnit runner. IDE test runs can differ from Bazel in build configuration, browser selection, and environment, so use the Bazel commands above to verify changes against CI.
 
 ## Skipping Tests
 
-Skips use NUnit attributes. Browser values: `Browser.Chrome`, `Browser.Firefox`, `Browser.Edge`, `Browser.Safari`, `Browser.IE`, `Browser.Remote`, `Browser.All`.
+Skips use NUnit attributes. Browser values are `Browser.Chrome`, `Browser.Firefox`, `Browser.Edge`, `Browser.Safari`, `Browser.IE`, `Browser.Remote`, and `Browser.All`.
 
 | Attribute | When to Use |
 |-----------|-------------|
 | `[IgnoreBrowser(Browser.X, "reason")]` | Skip test for specific browser |
 | `[IgnorePlatform("windows", "reason")]` | Skip test on specific OS |
-| `[IgnoreTarget("net48", "reason")]` | Skip test on a specific .NET target framework |
+| `[IgnoreTarget("net10", "reason")]` | Skip test on the .NET 10 target framework |
 | `[Ignore("reason")]` | Skip test entirely (NUnit built-in) |
 
 ```csharp
@@ -83,7 +89,7 @@ public void TestWithMultipleDrivers()
 
 [Test]
 [IgnorePlatform("windows", "Thread time not supported")]
-public void TestLinuxOnly()
+public void TestNotOnWindows()
 {
 }
 ```
@@ -92,8 +98,8 @@ public void TestLinuxOnly()
 
 | Attribute | When to Use |
 |-----------|-------------|
-| `[NeedsFreshDriver(IsCreatedBeforeTest = true)]` | Fresh driver before test |
-| `[NeedsFreshDriver(IsCreatedAfterTest = true)]` | Fresh driver after test |
+| `[NeedsFreshDriver(IsCreatedBeforeTest = true)]` | Close and replace the fixture driver before the test |
+| `[NeedsFreshDriver(IsCreatedAfterTest = true)]` | Close and replace the fixture driver after the test |
 
 ```csharp
 [Test]
@@ -101,7 +107,7 @@ public void TestLinuxOnly()
 [IgnoreBrowser(Browser.Safari, "Safari doesn't support multiple instances")]
 public void TestRequiringFreshDriver()
 {
-    IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+    IWebDriver driver2 = CreateDriverInstance();
     try
     {
         // Test with multiple drivers
@@ -119,40 +125,40 @@ From `DriverTestFixture`:
 
 | Member | Description |
 |--------|-------------|
-| `driver` | Current WebDriver instance |
-| `simpleTestPage`, `javascriptPage`, etc. | Test page URLs |
-| `WaitFor<T>(condition, timeout)` | Wait for condition (default 5s) |
-| `CreateFreshDriver()` | Create new driver instance |
+| `Driver` | Current WebDriver instance |
+| `Urls` | Test page URLs, such as `Urls.SimpleTestPage` and `Urls.JavascriptPage` |
+| `WaitFor<T>(condition, timeoutMessage)` | Wait for a condition (default timeout: 5 seconds) |
+| `CreateDriverInstance(options)` | Create an additional driver instance |
+| `CreateFreshDriver()` | Replace the fixture's current driver |
 
 From `EnvironmentManager.Instance`:
 
 | Member | Description |
 |--------|-------------|
-| `CreateDriverInstance()` | Create additional driver |
-| `CreateDriverInstance(options)` | Create driver with custom options |
 | `Browser` | Current browser enum value |
 
 ## Test Organization
 
 ```
 dotnet/test/
-├── testing.nunit/                  # Shared NUnit infrastructure (library used by all test projects)
+├── unit/                           # In-process unit projects grouped by production library
+│   └── webdriver/                  # WebDriver unit project; no browser/server infrastructure
+│       └── BiDi/                   # BiDi unit tests and fake transport
+├── testing.nunit/                  # Shared browser-test NUnit infrastructure
 │   ├── DriverTestFixture.cs        # Base class
 │   ├── AssemblyFixtureBase.cs      # Base for each project's [SetUpFixture]
 │   ├── appconfig.json              # Driver configurations
 │   ├── IgnoreBrowserAttribute.cs
 │   ├── NeedsFreshDriverAttribute.cs
-│   ├── DriverConfigs/              # Browser-specific driver types
-│   └── Environment/                # EnvironmentManager, DriverFactory
+│   └── Environment/                # EnvironmentManager, DriverConfig, DriverFactory
 ├── testing.webserver/              # Web server hosting test pages
 ├── webdriver/                      # WebDriver tests
-│   └── *Tests.cs                   # Test files
+│   └── *Tests.cs                   # Test fixture files
 ├── remote/                         # Remote/Grid tests
 └── support/                        # Support library tests
 ```
 
 ## Build Files
 
-* Adding tests shouldn't require Bazel changes—the suite globs `**/*.cs`.
-* Make sure new `*Tests.cs` files are under `dotnet/test/webdriver`, which has the
-  `dotnet_nunit_test_suite` declaration in `BUILD.bazel`.
+* Adding a test source to an existing suite usually does not require a Bazel change because each suite globs `**/*.cs` and generates per-fixture targets; name fixture files `*Tests.cs` to follow the project convention.
+* Put WebDriver in-process unit tests in `dotnet/test/unit/webdriver` and browser-backed WebDriver tests in `dotnet/test/webdriver`. Both have a `dotnet_nunit_test_suite` declaration in `BUILD.bazel`. Add future unit projects under `dotnet/test/unit/<library>` with their own project and build files to keep source discovery and dependencies separate.

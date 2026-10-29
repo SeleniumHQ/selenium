@@ -1190,6 +1190,7 @@ def test_no_event_after_handler_removal(driver):
     context = driver.browsing_context.create(type=WindowTypes.TAB)
     driver.browsing_context.close(context)
 
+    WebDriverWait(driver, 5).until(lambda d: len(helper.events_received) == len(helper.callback_ids))
     events_before = len(helper.events_received)
 
     for i, callback_id in enumerate(helper.callback_ids):

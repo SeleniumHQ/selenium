@@ -66,11 +66,6 @@ on:
         required: false
         type: boolean
         default: false
-      gpg-sign:
-        description: Import GPG key for signing (Java releases)
-        required: false
-        type: boolean
-        default: false
       cache-name:
         description: Name for cache restore (restores {name}.gz with key {name}-)
         required: false
@@ -81,6 +76,11 @@ on:
         required: false
         type: boolean
         default: false
+      use-cache:
+        description: Restore the Bazel repository cache
+        required: false
+        type: boolean
+        default: true
       gem-trusted-publishing:
         description: Exchange GitHub OIDC token for a RubyGems API token (requires trusted publisher configured on rubygems.org)
         required: false
@@ -105,6 +105,8 @@ jobs:
       TWINE_NIGHTLY_PASSWORD: ${{ secrets.TWINE_NIGHTLY_PASSWORD }}
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       MSYS_NO_PATHCONV: 1
       MSYS2_ARG_CONV_EXCL: "*"
     steps:
@@ -194,16 +196,8 @@ jobs:
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
           external-cache: false
-          repository-cache: |
-            - MODULE.bazel
-            - multitool.lock.json
-            - pnpm-lock.yaml
-            - rust/Cargo.lock
-            - java/maven_install.json
-            - py/requirements_lock.txt
-            - rb/Gemfile.lock
-            - dotnet/paket.lock
-            - common/selenium_manager.bzl
+          # Keep the key files in sync with the paths filter in gh-cache.yml
+          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, common/selenium_manager.bzl]' || 'false' }}
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
@@ -241,12 +235,6 @@ jobs:
           brew update --quiet
           brew install --cask safari-technology-preview
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
-      - name: Import GPG key
-        if: inputs.gpg-sign
-        uses: crazy-max/ghaction-import-gpg@v7
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
         uses: rubygems/configure-rubygems-credentials@main
@@ -259,9 +247,15 @@ jobs:
           {
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
+      - name: Retry transient download failure
+        id: retry-transient
+        if: steps.run-bazel.outcome == 'failure'
+        continue-on-error: true
+        shell: bash
+        run: ./scripts/github-actions/retry-transient-download.sh '${{ inputs.run }}'
       - name: Rerun failures with debug
         id: rerun-failures
-        if: steps.run-bazel.outcome == 'failure'
+        if: steps.run-bazel.outcome == 'failure' && (steps.retry-transient.outputs.retried != 'true' || steps.retry-transient.outcome == 'failure')
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed logs
@@ -272,7 +266,7 @@ jobs:
         if: always() && steps.run-bazel.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: build/failures/**
       - name: Parse flaky results
@@ -288,7 +282,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ github.run_attempt }}
+          name: flaky-${{ inputs.os }}-${{ inputs.name }}-${{ job.check_run_id }}-${{ github.run_attempt }}
           retention-days: 60
           path: build/failures/results.jsonl
       - name: Start SSH session

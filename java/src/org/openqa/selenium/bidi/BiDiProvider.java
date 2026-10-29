@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.ApiStatus;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Lazy;
@@ -38,6 +39,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(AugmenterProvider.class)
 @Beta
+@ApiStatus.Internal
 public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   private static final Logger LOG = Logger.getLogger(BiDiProvider.class.getName());
 

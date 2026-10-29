@@ -139,6 +139,7 @@ java_import(
 
 jest_test(
     name = "test",
+    size = "medium",
     config = "jest.config.cjs",
     data = glob(["src/**/*"]) + DEPS + TEST_DEPS + [
         "tsconfig.json",

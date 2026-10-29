@@ -27,8 +27,7 @@ use crate::metadata::{
 };
 use crate::{
     BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
-    SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
-    format_four_args,
+    SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, format_four_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -37,6 +36,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
 use std::path::{Path, PathBuf};
+use std::process::Command;
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -73,7 +74,7 @@ pub struct ChromeManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -87,13 +88,11 @@ impl ChromeManager {
         let browser_name = CHROME_NAME;
         let driver_name = CHROMEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(ChromeManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -155,7 +154,7 @@ impl ChromeManager {
             "Reading {} version from {}",
             &self.driver_name, driver_url
         ));
-        read_version_from_link(self.get_http_client(), driver_url, self.get_logger())
+        read_version_from_link(self.get_http_client()?, driver_url, self.get_logger())
     }
 
     fn request_versions_from_online<T>(&self, driver_url: &str) -> Result<T, Error>
@@ -164,7 +163,7 @@ impl ChromeManager {
     {
         self.log
             .debug(format!("Discovering versions from {}", driver_url));
-        parse_json_from_url::<T>(self.get_http_client(), driver_url)
+        parse_json_from_url::<T>(self.get_http_client()?, driver_url)
     }
 
     fn request_latest_driver_version_from_online(&mut self) -> Result<String, Error> {
@@ -266,6 +265,28 @@ impl ChromeManager {
 }
 
 impl SeleniumManager for ChromeManager {
+    // Chrome's sandboxed services need an AppContainer ACL on the install directory, which the
+    // installer normally grants; setup.exe ships in the CfT zip to grant it on an unpacked copy.
+    fn configure_browser_in_cache(&self, browser_path_in_cache: &Path) {
+        let setup = browser_path_in_cache.join("setup.exe");
+        if !WINDOWS.is(self.get_os()) || !setup.exists() {
+            return;
+        }
+        let argument = format!(
+            "--configure-browser-in-directory={}",
+            browser_path_in_cache.display()
+        );
+        self.get_logger()
+            .debug(format!("Running command: {} {}", setup.display(), argument));
+        let outcome = match Command::new(&setup).arg(&argument).status() {
+            Ok(status) if status.success() => return,
+            Ok(status) => format!("setup.exe exited with {status}"),
+            Err(err) => err.to_string(),
+        };
+        self.get_logger()
+            .warn(format!("Unable to configure the Chrome sandbox: {outcome}"));
+    }
+
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
@@ -287,12 +308,12 @@ impl SeleniumManager for ChromeManager {
         first_existing_path(CHROME_KNOWN_DIRS, CHROME_KNOWN_NAMES)
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {

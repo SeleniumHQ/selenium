@@ -48,8 +48,8 @@ class WebDriver(LocalWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
         """
-        self.service = service if service else Service()
-        self.options = options if options else Options()
+        self.service = service or Service()
+        self.options = options or Options()
 
         finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():
@@ -108,6 +108,10 @@ class WebDriver(LocalWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
+        .. deprecated:: 4.52
+            Use `install_web_extension` instead, which works on every browser
+            that supports web extensions and returns a `WebExtension` object.
+
         Args:
             path: Absolute path to the addon that will be installed.
             temporary: Allows you to load browser extensions temporarily during a session.
@@ -118,6 +122,11 @@ class WebDriver(LocalWebDriver):
         Example:
             driver.install_addon("/path/to/firebug.xpi")
         """
+        warnings.warn(
+            "install_addon is deprecated, use install_web_extension instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if os.path.isdir(path):
             fp = BytesIO()
             # filter all trailing slash found in path
@@ -140,12 +149,21 @@ class WebDriver(LocalWebDriver):
     def uninstall_addon(self, identifier) -> None:
         """Uninstalls Firefox addon using its identifier.
 
+        .. deprecated:: 4.52
+            Use `uninstall_web_extension` instead, which works on every browser
+            that supports web extensions.
+
         Args:
             identifier: The addon identifier to uninstall.
 
         Example:
             driver.uninstall_addon("addon@foo.com")
         """
+        warnings.warn(
+            "uninstall_addon is deprecated, use uninstall_web_extension instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
     def get_full_page_screenshot_as_file(self, filename) -> bool:
@@ -165,6 +183,7 @@ class WebDriver(LocalWebDriver):
             warnings.warn(
                 "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.get_full_page_screenshot_as_png()
         try:

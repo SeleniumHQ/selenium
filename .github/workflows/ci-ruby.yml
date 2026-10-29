@@ -30,6 +30,14 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    name: Build Gems
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build Gems
+      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
+
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
@@ -37,8 +45,8 @@ jobs:
       name: Lint
       run: ./go rb:lint
 
-  # jruby is run on RBE; minimum MRI is run by os-tests. This matrix
-  # covers truffleruby and the most recent MRI release.
+  # Tests on 3.3.12 (earliest supported version) are run in smoke and RBE.
+  # This job covers the latest supported version and alternate interpreters.
   unit-tests:
     name: Unit Tests
     if: github.event_name == 'schedule' || !inputs.smoke
@@ -47,7 +55,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 4.0.4
+          - ruby-version: 4.0.6
+            os: ubuntu
+          - ruby-version: jruby-10.1.0.0
             os: ubuntu
           - ruby-version: truffleruby-34.0.1
             os: ubuntu
@@ -68,12 +78,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows, macos]
+        os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
         include:
-          # Chrome has no linux-arm64 build before 153; Edge has none at all.
+          # Edge has no linux-arm64 build
           - os: ubuntu-24.04-arm
-            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-chrome,-edge"
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
     with:
       name: ${{ matrix.os }}
       needs-display: true
@@ -86,14 +99,14 @@ jobs:
         --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --skip_incompatible_explicit_targets
         --pin_browsers=false
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
+        ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
-        --test_tag_filters=${{ matrix.tag_filters }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-rb.txt
 
   os-tests-full:
@@ -122,7 +135,7 @@ jobs:
         --build_tests_only
         --keep_going
         --flaky_test_attempts 2
-        --local_test_jobs 1
+        --local_resources=browser=1
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true

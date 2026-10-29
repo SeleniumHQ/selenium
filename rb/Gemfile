@@ -7,3 +7,17 @@ end
 
 gem 'debug', '~> 1.7', require: false, platforms: %i[mri mingw x64_mingw]
 gem 'steep', '~> 2.0', require: false, platforms: %i[mri mingw x64_mingw]
+
+group :development do
+  gem 'git', '~> 1.19'
+  gem 'rack', '~> 2.0'
+  gem 'rake', '~> 13.0'
+  gem 'rspec', '~> 3.0'
+  gem 'rubocop', '~> 1.75'
+  gem 'rubocop-performance', '~> 1.25'
+  gem 'rubocop-rake', '~> 0.7'
+  gem 'rubocop-rspec', '~> 3.5'
+  gem 'webmock', '~> 3.5'
+  gem 'webrick', '~> 1.7'
+  gem 'yard', '~> 0.9.11', '>= 0.9.36'
+end

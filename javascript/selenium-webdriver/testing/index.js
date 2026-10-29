@@ -53,6 +53,11 @@ try {
   // Fall through
 }
 
+// Bazel hands over a runfiles path; the library needs one it can spawn.
+if (process.env.SE_MANAGER_PATH && !fs.existsSync(process.env.SE_MANAGER_PATH)) {
+  process.env.SE_MANAGER_PATH = locate(process.env.SE_MANAGER_PATH)
+}
+
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
  * @record
@@ -354,6 +359,14 @@ class Environment {
       options.enableBidi()
       options.setBinary(binary)
       builder.setFirefoxOptions(options)
+    }
+
+    if (browser.name === Browser.CHROME && !builder.getChromeOptions()) {
+      builder.setChromeOptions(new chrome.Options())
+    } else if (browser.name === Browser.EDGE && !builder.getEdgeOptions()) {
+      builder.setEdgeOptions(new edge.Options())
+    } else if (browser.name === Browser.FIREFOX && !builder.getFirefoxOptions()) {
+      builder.setFirefoxOptions(new firefox.Options())
     }
 
     builder.disableEnvironmentOverrides()
