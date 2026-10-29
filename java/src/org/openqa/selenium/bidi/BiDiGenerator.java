@@ -891,7 +891,7 @@ public class BiDiGenerator {
               .append(" ")
               .append(f.name)
               .append(") {\n");
-          appendJsRangeValidation(sb, f, f.name, true, m + "  ");
+          appendRangeValidation(sb, f, f.name, true, m + "  ");
           sb.append(m)
               .append("  this.")
               .append(f.name)
@@ -1346,14 +1346,69 @@ public class BiDiGenerator {
       return null;
     }
 
-    // js-int/js-uint (see resolveJavaType's alias comment) additionally restrict a plain
-    // "integer" (already resolved to Long/long) to JavaScript's safe-integer range: the browser's
-    // own numeric type is a double, so a value the wire can represent as a signed 64-bit integer
-    // may still be one BiDi itself declares invalid — js-uint further requires non-negative.
-    // Checked here, in the single constructor both directions (an outbound caller-built value and
-    // an inbound deserialized one) share, so a value outside the range is rejected identically
-    // either way, the same as appendConstValidation does for a spec'd const value.
-    private static final long JS_SAFE_INTEGER_MAX = 9007199254740991L; // 2^53 - 1
+    // The schema declares numeric bounds both on aliases (js-int/js-uint hold an "integer" to
+    // JavaScript's safe-integer range, since the browser's own numeric type is a double) and on
+    // the fields that use them (js-uint .ge 1). A field is held to both: the alias chain's bounds,
+    // narrowed by each referencing node's own. Checked in the single constructor both directions
+    // (an outbound caller-built value and an inbound deserialized one) share, so a value outside
+    // the range is rejected identically either way, the same as appendConstValidation does for a
+    // spec'd const value.
+    private static final class Bounds {
+      private java.math.BigDecimal min;
+      private boolean exclusiveMin;
+      private java.math.BigDecimal max;
+      private boolean exclusiveMax;
+
+      private boolean isEmpty() {
+        return min == null && max == null;
+      }
+    }
+
+    /** The "integer" or "number" a type ref resolves to through aliases, or null. */
+    private String numericPrimitive(Map<String, Object> typeRef) {
+      if (typeRef == null) return null;
+      String primitive = str(typeRef, "primitive");
+      if (primitive != null) {
+        return "integer".equals(primitive) || "number".equals(primitive) ? primitive : null;
+      }
+      String ref = str(typeRef, "ref");
+      Map<String, Object> named = ref != null ? types.get(ref) : null;
+      if (named == null || !"alias".equals(str(named, "kind"))) return null;
+      return numericPrimitive(mapField(named, "type"));
+    }
+
+    private Bounds bounds(Map<String, Object> typeRef) {
+      Bounds bounds = new Bounds();
+      if (typeRef == null || numericPrimitive(typeRef) == null) return bounds;
+      String ref = str(typeRef, "ref");
+      if (ref != null) {
+        bounds = bounds(mapField(types.get(ref), "type"));
+      }
+      narrow(bounds, typeRef);
+      return bounds;
+    }
+
+    // Each side keeps the tighter of the two; at a tie, the exclusive one.
+    private static void narrow(Bounds bounds, Map<String, Object> node) {
+      if (node.get("min") != null) {
+        java.math.BigDecimal min = new java.math.BigDecimal(node.get("min").toString());
+        boolean exclusive = Boolean.TRUE.equals(node.get("exclusiveMin"));
+        int comparison = bounds.min == null ? 1 : min.compareTo(bounds.min);
+        if (comparison > 0 || (comparison == 0 && exclusive)) {
+          bounds.min = min;
+          bounds.exclusiveMin = exclusive;
+        }
+      }
+      if (node.get("max") != null) {
+        java.math.BigDecimal max = new java.math.BigDecimal(node.get("max").toString());
+        boolean exclusive = Boolean.TRUE.equals(node.get("exclusiveMax"));
+        int comparison = bounds.max == null ? -1 : max.compareTo(bounds.max);
+        if (comparison < 0 || (comparison == 0 && exclusive)) {
+          bounds.max = max;
+          bounds.exclusiveMax = exclusive;
+        }
+      }
+    }
 
     // An inline union of a bare primitive arm and one or more ref arms — e.g.
     // script.NumberValue.value: a JSON number or a script.SpecialNumber — isn't a scalarUnion
@@ -1401,38 +1456,63 @@ public class BiDiGenerator {
       sb.append(bodyIndent).append("}\n");
     }
 
-    private void appendJsRangeValidation(
+    private void appendRangeValidation(
         StringBuilder sb, FieldInfo f, String varName, boolean nullGuard, String bodyIndent) {
-      String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
-      if (!"js-int".equals(ref) && !"js-uint".equals(ref)) return;
-      long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
-      sb.append(bodyIndent).append("if (");
-      if (nullGuard) {
-        sb.append(varName).append(" != null && (");
+      appendRangeValidation(sb, f, varName, nullGuard ? varName + " != null" : null, bodyIndent);
+    }
+
+    private void appendRangeValidation(
+        StringBuilder sb, FieldInfo f, String value, String guard, String bodyIndent) {
+      String primitive = numericPrimitive(f.typeRef);
+      Bounds bounds = bounds(f.typeRef);
+      if (primitive == null || bounds.isEmpty()) return;
+      boolean integer = "integer".equals(primitive);
+      // A Number is compared as a double, and a failed comparison is the out-of-range test, so
+      // NaN is rejected too; a long has no NaN, so its plain form reads more directly.
+      String operand = integer ? value : value + ".doubleValue()";
+      List<String> inRange = new ArrayList<>();
+      List<String> outOfRange = new ArrayList<>();
+      List<String> description = new ArrayList<>();
+      if (bounds.min != null) {
+        String limit = numericLiteral(bounds.min, integer, f);
+        inRange.add(operand + (bounds.exclusiveMin ? " > " : " >= ") + limit);
+        outOfRange.add(operand + (bounds.exclusiveMin ? " <= " : " < ") + limit);
+        description.add((bounds.exclusiveMin ? "> " : ">= ") + bounds.min.toPlainString());
       }
-      sb.append(varName)
-          .append(" < ")
-          .append(min)
-          .append("L || ")
-          .append(varName)
-          .append(" > ")
-          .append(JS_SAFE_INTEGER_MAX)
-          .append("L");
-      if (nullGuard) {
-        sb.append(")");
+      if (bounds.max != null) {
+        String limit = numericLiteral(bounds.max, integer, f);
+        inRange.add(operand + (bounds.exclusiveMax ? " < " : " <= ") + limit);
+        outOfRange.add(operand + (bounds.exclusiveMax ? " >= " : " > ") + limit);
+        description.add((bounds.exclusiveMax ? "< " : "<= ") + bounds.max.toPlainString());
+      }
+      String check =
+          integer ? String.join(" || ", outOfRange) : "!(" + String.join(" && ", inRange) + ")";
+      sb.append(bodyIndent).append("if (");
+      if (guard != null) {
+        sb.append(guard).append(" && ").append(integer ? "(" + check + ")" : check);
+      } else {
+        sb.append(check);
       }
       sb.append(") {\n");
       sb.append(bodyIndent)
           .append("  throw new BiDiException(\"")
           .append(f.wire)
-          .append(" must be between ")
-          .append(min)
-          .append(" and ")
-          .append(JS_SAFE_INTEGER_MAX)
+          .append(" must be ")
+          .append(String.join(" and ", description))
           .append(", got: \" + ")
-          .append(varName)
+          .append(value)
           .append(");\n");
       sb.append(bodyIndent).append("}\n");
+    }
+
+    private static String numericLiteral(java.math.BigDecimal bound, boolean integer, FieldInfo f) {
+      if (!integer) return bound.toPlainString() + "d";
+      try {
+        return bound.longValueExact() + "L";
+      } catch (ArithmeticException e) {
+        throw new IllegalArgumentException(
+            "Integer field " + f.wire + " has a non-integral bound: " + bound, e);
+      }
     }
 
     private void appendConstructorAssignment(
@@ -1445,7 +1525,8 @@ public class BiDiGenerator {
       if (f.required) {
         boolean nullable = f.typeRef != null && Boolean.TRUE.equals(f.typeRef.get("nullable"));
         appendConstValidation(sb, f, nullable, bodyIndent);
-        appendJsRangeValidation(sb, f, f.name, nullable, bodyIndent);
+        // A non-nullable Number is still a reference: leave a null to the required check below.
+        appendRangeValidation(sb, f, f.name, nullable || !isPrimitive(f.typeRef), bodyIndent);
         // Always null-guarded regardless of nullable/required: nullness itself is enforced right
         // below (Objects.requireNonNull, or simply allowed through for a nullable field) — this
         // only checks the value's shape when one is actually present, so a missing/null value
@@ -1480,35 +1561,12 @@ public class BiDiGenerator {
               .append(" is required\");\n");
         }
       } else {
-        String ref = f.typeRef != null ? str(f.typeRef, "ref") : null;
-        if ("js-int".equals(ref) || "js-uint".equals(ref)) {
-          long min = "js-uint".equals(ref) ? 0L : -JS_SAFE_INTEGER_MAX;
-          sb.append(bodyIndent)
-              .append("if (")
-              .append(f.name)
-              .append(" != null && ")
-              .append(f.name)
-              .append(".isPresent() && (")
-              .append(f.name)
-              .append(".get() < ")
-              .append(min)
-              .append("L || ")
-              .append(f.name)
-              .append(".get() > ")
-              .append(JS_SAFE_INTEGER_MAX)
-              .append("L)) {\n");
-          sb.append(bodyIndent)
-              .append("  throw new BiDiException(\"")
-              .append(f.wire)
-              .append(" must be between ")
-              .append(min)
-              .append(" and ")
-              .append(JS_SAFE_INTEGER_MAX)
-              .append(", got: \" + ")
-              .append(f.name)
-              .append(".get());\n");
-          sb.append(bodyIndent).append("}\n");
-        }
+        appendRangeValidation(
+            sb,
+            f,
+            f.name + ".get()",
+            f.name + " != null && " + f.name + ".isPresent()",
+            bodyIndent);
         String copyExpr = isReceivable ? immutableCopyExpr("v", f.typeRef) : null;
         if (copyExpr != null) {
           // A plain (a != null ? a : Optional.empty()).map(...) infers fine on its own, but once
