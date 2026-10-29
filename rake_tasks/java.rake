@@ -72,6 +72,8 @@ def verify_java_release_targets
 end
 
 module Sonatype
+  DEPLOYMENTS_URL = 'https://central.sonatype.com/publishing/deployments'
+
   module_function
 
   def load_credentials
@@ -205,6 +207,36 @@ module Sonatype
       return status if for_version?(status, version)
     end
     nil
+  end
+end
+
+# FAILED and VALIDATED never resolve on their own, so they fail fast whatever state is wanted
+def wait_for_sonatype_state(version, states, timeout:, interval:)
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+  loop do
+    begin
+      status = Sonatype.deployment_status(version)
+    rescue StandardError => e
+      puts "  #{e.class}: #{e.message}"
+      status = nil
+    end
+    state = status&.fetch('deploymentState', nil)
+    return state if states.include?(state)
+
+    case state
+    when 'FAILED'
+      raise "Sonatype rejected #{version}: #{status['errors'].to_json}; check #{Sonatype::DEPLOYMENTS_URL}"
+    when 'VALIDATED'
+      raise "#{version} validated but automatic publishing did not engage; publish it at #{Sonatype::DEPLOYMENTS_URL}"
+    end
+
+    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      raise "#{version} is still #{state || 'not visible'} at Sonatype after #{timeout / 60} minutes; " \
+            "check #{Sonatype::DEPLOYMENTS_URL}"
+    end
+
+    puts "  #{version} is #{state || 'not yet visible'} at Sonatype, retrying in #{interval}s"
+    sleep interval
   end
 end
 
@@ -380,6 +412,9 @@ task :release do |_task, arguments|
   next if nightly
 
   Sonatype.trigger_publish
+  # Validation is where a bad POM or signature surfaces, and it takes only a few minutes
+  wait_for_sonatype_state(java_version, %w[PUBLISHING PUBLISHED], timeout: 600, interval: 15)
+  puts "#{java_version} validated at Sonatype; publishing to Maven Central is in progress"
 end
 
 def load_pgp_signing_key
@@ -388,45 +423,11 @@ def load_pgp_signing_key
   ENV['PGP_SIGNING_PWD'] = ENV.fetch('GPG_PASSPHRASE', '')
 end
 
-def maven_central_pom_url
-  base = 'https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java'
-  "#{base}/#{java_version}/selenium-java-#{java_version}.pom"
-end
-
-desc 'Verify Sonatype accepted the Java deployment for Maven Central'
+desc 'Verify Sonatype has published the Java deployment to Maven Central'
 task :verify do
-  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 600
-  deployments = 'https://central.sonatype.com/publishing/deployments'
-
-  loop do
-    begin
-      status = Sonatype.deployment_status(java_version)
-    rescue StandardError => e
-      puts "  #{e.class}: #{e.message}"
-      status = nil
-    end
-    state = status&.fetch('deploymentState', nil)
-
-    case state
-    when 'PUBLISHED'
-      puts "#{java_version} is published on Maven Central"
-      break
-    when 'PUBLISHING'
-      puts "#{java_version} is accepted; Maven Central sync pending at #{maven_central_pom_url}"
-      break
-    when 'FAILED'
-      raise "Sonatype rejected #{java_version}: #{status['errors'].to_json}; check #{deployments}"
-    when 'VALIDATED'
-      raise "#{java_version} validated but automatic publishing did not engage; publish it at #{deployments}"
-    end
-
-    if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
-      raise "#{java_version} is still #{state || 'missing'} at Sonatype; check #{deployments}"
-    end
-
-    puts "  #{java_version} is #{state || 'not yet visible'} at Sonatype, retrying in 15s"
-    sleep 15
-  end
+  # GitHub cancels a job at 6 hours without running its failure steps, so give up just before that
+  wait_for_sonatype_state(java_version, %w[PUBLISHED], timeout: 350 * 60, interval: 60)
+  puts "#{java_version} is published on Maven Central"
 end
 
 desc 'Install jars to local m2 directory'
