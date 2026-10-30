@@ -58,6 +58,11 @@ class AccessibilitySnapshotter {
   /** The sandbox realm the atom runs in: page scripts cannot reach its prototypes. */
   private static final String SANDBOX = "selenium";
 
+  /** The BiDi error codes that say a node or a frame is gone, as they appear in the message. */
+  private static final String NO_SUCH_NODE = "no such node";
+
+  private static final String NO_SUCH_FRAME = "no such frame";
+
   private static final String STALE_MESSAGE =
       "the snapshot root is no longer attached to a document";
 
@@ -200,7 +205,7 @@ class AccessibilitySnapshotter {
     } catch (WebDriverException e) {
       // The BiDi "no such node" error: the document of this context does not own the root's
       // shared id, either because the root lives in another frame or because its document is gone.
-      if (mentions(e, "no such node")) {
+      if (mentions(e, NO_SUCH_NODE)) {
         throw new NotOwnedException(e);
       }
       throw e;
@@ -267,8 +272,8 @@ class AccessibilitySnapshotter {
   /** Whether an error says a frame or its document is gone, rather than that a command failed. */
   private static boolean frameUnreachable(RuntimeException e) {
     return e instanceof NotOwnedException
-        || mentions(e, "no such frame")
-        || mentions(e, "no such node");
+        || mentions(e, NO_SUCH_FRAME)
+        || mentions(e, NO_SUCH_NODE);
   }
 
   private static boolean mentions(Throwable e, String text) {
