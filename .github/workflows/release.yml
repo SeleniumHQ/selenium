@@ -247,8 +247,6 @@ jobs:
       tag: ${{ needs.parse-tag.outputs.tag }}
       language: ${{ matrix.language }}
       commit: false
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   docs:
     name: Update Documentation
@@ -266,8 +264,6 @@ jobs:
     with:
       tag: ${{ needs.parse-tag.outputs.tag }}
       generate: false
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
   verify:
     name: Verify ${{ matrix.language }}

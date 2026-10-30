@@ -44,9 +44,6 @@ on:
         description: Push the documentation to gh-pages
         type: boolean
         default: true
-    secrets:
-      SELENIUM_CI_TOKEN:
-        required: true
 
 permissions:
   contents: write
@@ -104,7 +101,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: gh-pages
-          token: ${{ secrets.SELENIUM_CI_TOKEN || github.token }}
       - name: Download documentation
         uses: actions/download-artifact@v8
         with:
