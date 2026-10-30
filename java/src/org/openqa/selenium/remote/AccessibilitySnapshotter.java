@@ -266,7 +266,9 @@ class AccessibilitySnapshotter {
 
   /** Whether an error says a frame or its document is gone, rather than that a command failed. */
   private static boolean frameUnreachable(RuntimeException e) {
-    return e instanceof NotOwnedException || mentions(e, "no such frame") || mentions(e, "no such node");
+    return e instanceof NotOwnedException
+        || mentions(e, "no such frame")
+        || mentions(e, "no such node");
   }
 
   private static boolean mentions(Throwable e, String text) {
