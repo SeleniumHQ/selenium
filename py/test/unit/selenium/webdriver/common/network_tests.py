@@ -408,6 +408,47 @@ def test_an_untranslatable_glob_intercepts_everything():
     assert "urlPatterns" not in conn.commands_named("network.addIntercept")[0]["params"]
 
 
+def test_a_query_string_is_not_mistaken_for_a_glob(recwarn):
+    """In a URL a '?' starts the query, which the remote end evaluates exactly."""
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+
+    network.add_request_handler("https://example.com/search?q=foo", lambda request: None)
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["urlPatterns"] == [{"type": "string", "pattern": "https://example.com/search?q=foo"}]
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def test_a_glob_mixed_with_other_patterns_still_reaches_their_traffic():
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
+        network.add_request_handler(
+            ["https://*.example.com/api/**", {"hostname": "cdn.example.org"}, "https://other.example.net/a?b=1"],
+            lambda request: seen.append(request.url),
+        )
+
+    for index, url in enumerate(
+        [
+            "https://shop.example.com/api/orders",
+            "https://cdn.example.org/app.js",
+            "https://other.example.net/a?b=1",
+            "https://other.example.net/aXb=1",
+            "https://shop.example.com/static/app.js",
+        ]
+    ):
+        dispatch_event(conn, make_before_request_event(url=url, request_id=f"req-{index}"))
+
+    assert seen == [
+        "https://shop.example.com/api/orders",
+        "https://cdn.example.org/app.js",
+        "https://other.example.net/a?b=1",
+    ]
+
+
 def test_a_pattern_without_wildcards_raises_no_deprecation_warning(recwarn):
     network = Network(FakeDriver(FakeConnection()))
 
