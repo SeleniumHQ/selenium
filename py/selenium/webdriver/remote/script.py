@@ -286,8 +286,8 @@ class Script:
     Obtain it with ``driver.script``; do not construct it directly.
     """
 
-    def __init__(self, implementation: Any, driver: WebDriver | None = None) -> None:
-        self._impl = implementation
+    def __init__(self, script: Any, driver: WebDriver | None = None) -> None:
+        self._script = script
         self._driver = driver
 
     def _context(self, context_id: str | None) -> str | None:
@@ -305,7 +305,7 @@ class Script:
         Returns:
             A ``PinnedScript`` to pass to ``execute()`` and ``unpin()``.
         """
-        return self._impl.pin(function_declaration)
+        return self._script.pin(function_declaration)
 
     def unpin(self, script_id: PinnedScript | str) -> None:
         """Remove a pinned script.
@@ -313,7 +313,7 @@ class Script:
         Args:
             script_id: The ``PinnedScript`` returned by ``pin()``.
         """
-        self._impl.unpin(script_id)
+        self._script.unpin(script_id)
 
     def execute(self, function_declaration: str | PinnedScript, *args: Any, context_id: str | None = None) -> Any:
         """Execute JavaScript in the current window and return its result.
@@ -343,11 +343,11 @@ class Script:
             `total = driver.script.execute("(a, b) => a + b", 1, 2)`
         """
         if isinstance(function_declaration, PinnedScript):
-            result = self._impl.execute(function_declaration, *args, context_id=context_id)
+            result = self._script.execute(function_declaration, *args, context_id=context_id)
             result.value = deserialize_result(result.value, self._driver)
             return result
         context = self._context(context_id)
-        raw = self._impl.call_function(
+        raw = self._script.call_function(
             function_declaration=function_declaration,
             await_promise=True,
             target={"context": context} if context else {},
@@ -367,15 +367,15 @@ class Script:
         Returns:
             An id for ``remove_console_handler()``.
         """
-        return self._impl.add_console_handler(callback)
+        return self._script.add_console_handler(callback)
 
     def remove_console_handler(self, callback_id: int) -> None:
         """Remove a handler added by ``add_console_handler()``."""
-        self._impl.remove_console_handler(callback_id)
+        self._script.remove_console_handler(callback_id)
 
     def clear_console_handlers(self) -> None:
         """Remove every console handler, including those added by ``add_console_message_handler()``."""
-        self._impl.clear_console_handlers()
+        self._script.clear_console_handlers()
 
     def add_console_message_handler(self, callback: Callable) -> int:
         """Add a handler called with a console log entry for each console message.
@@ -386,11 +386,11 @@ class Script:
         Returns:
             An id for ``remove_console_message_handler()``.
         """
-        return self._impl.add_console_message_handler(callback)
+        return self._script.add_console_message_handler(callback)
 
     def remove_console_message_handler(self, callback_id: int) -> None:
         """Remove a handler added by ``add_console_message_handler()``."""
-        self._impl.remove_console_message_handler(callback_id)
+        self._script.remove_console_message_handler(callback_id)
 
     def add_error_handler(self, callback: Callable[[ScriptError], Any]) -> int:
         """Add a handler called with a ``ScriptError`` for each uncaught JavaScript error.
@@ -398,15 +398,15 @@ class Script:
         Returns:
             An id for ``remove_error_handler()``.
         """
-        return self._impl.add_error_handler(callback)
+        return self._script.add_error_handler(callback)
 
     def remove_error_handler(self, callback_id: int) -> None:
         """Remove a handler added by ``add_error_handler()``."""
-        self._impl.remove_error_handler(callback_id)
+        self._script.remove_error_handler(callback_id)
 
     def clear_error_handlers(self) -> None:
         """Remove every JavaScript error handler, including those added by ``add_javascript_error_handler()``."""
-        self._impl.clear_error_handlers()
+        self._script.clear_error_handlers()
 
     def add_javascript_error_handler(self, callback: Callable) -> int:
         """Add a handler called with a JavaScript log entry for each uncaught JavaScript error.
@@ -417,11 +417,11 @@ class Script:
         Returns:
             An id for ``remove_javascript_error_handler()``.
         """
-        return self._impl.add_javascript_error_handler(callback)
+        return self._script.add_javascript_error_handler(callback)
 
     def remove_javascript_error_handler(self, callback_id: int) -> None:
         """Remove a handler added by ``add_javascript_error_handler()``."""
-        self._impl.remove_javascript_error_handler(callback_id)
+        self._script.remove_javascript_error_handler(callback_id)
 
     def add_dom_mutation_handler(
         self, callback: Callable[[DomMutation], Any], mutation_types: str | Iterable[str] | None = None
@@ -437,22 +437,22 @@ class Script:
         Returns:
             An id for ``remove_dom_mutation_handler()``.
         """
-        return self._impl.add_dom_mutation_handler(callback, mutation_types)
+        return self._script.add_dom_mutation_handler(callback, mutation_types)
 
     def remove_dom_mutation_handler(self, callback_id: int) -> None:
         """Remove a handler added by ``add_dom_mutation_handler()``."""
-        self._impl.remove_dom_mutation_handler(callback_id)
+        self._script.remove_dom_mutation_handler(callback_id)
 
     def clear_dom_mutation_handlers(self) -> None:
         """Remove every DOM mutation handler."""
-        self._impl.clear_dom_mutation_handlers()
+        self._script.clear_dom_mutation_handlers()
 
     def __getattr__(self, name: str) -> Any:
         # Only reached for names Script does not define: the protocol commands
         # (and helpers) driver.script used to expose. Keep them working while deprecated.
         if name.startswith("__"):
             raise AttributeError(name)
-        attribute = getattr(self._impl, name)
+        attribute = getattr(self._script, name)
         replacement = _REPLACEMENTS.get(name)
         if replacement:
             advice = f"use {replacement} instead"
