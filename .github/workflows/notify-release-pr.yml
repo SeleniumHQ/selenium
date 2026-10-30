@@ -2,7 +2,7 @@ name: Release - Notify PR Failure
 
 on:
   workflow_run:
-    workflows: ["CI", "CI - RBE", "CI - Lint"]
+    workflows: ["CI", "CI - RBE"]
     types: [completed]
     branches: ["release-preparation-*"]
 

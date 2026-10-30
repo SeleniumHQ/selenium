@@ -25,6 +25,29 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
+  actionlint:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate workflows
+        uses: raven-actions/actionlint@v2
+
+  format:
+    name: Format
+    if: startsWith(github.head_ref, 'renovate/') != true
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Format
+      run: |
+        ./go format
+        if ! git diff --quiet; then
+          echo "::error::Code needs formatting. Run './go format' locally and push changes."
+          git diff
+          exit 1
+        fi
+
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
   wait-for-unlock:
     name: Wait for Trunk Unlock
@@ -230,7 +253,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

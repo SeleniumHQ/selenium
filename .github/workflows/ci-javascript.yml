@@ -31,7 +31,7 @@ permissions:
 
 # RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
-  # Prettier is checked by ci-lint.yml.
+  # Prettier is checked by the Format job in ci.yml.
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
