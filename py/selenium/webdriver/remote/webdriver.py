@@ -1407,14 +1407,19 @@ class WebDriver(BaseWebDriver):
     def webextension(self) -> BidiWebExtension:
         """Get a webextension module object for BiDi webextension commands.
 
+        .. deprecated::
+            Use ``driver.install_web_extension()`` and
+            ``driver.uninstall_web_extension()`` instead.
+
         Returns:
             An object containing access to BiDi webextension commands.
-
-        Examples:
-            `extension_path = "/path/to/extension"`
-            `extension_result = driver.webextension.install(path=extension_path)`
-            `driver.webextension.uninstall(extension_result)`
         """
+        warnings.warn(
+            "driver.webextension is deprecated, use driver.install_web_extension() "
+            "and driver.uninstall_web_extension() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not self._websocket_connection:
             self._start_bidi()
 
