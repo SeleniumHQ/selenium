@@ -159,7 +159,7 @@ class AccessibilitySnapshotter {
         rootId == null
             ? List.of()
             : List.of(new RemoteReference(RemoteReference.Type.SHARED_ID, rootId));
-    RemoteValue result = call(context, arguments);
+    RemoteValue result = callAtom(context, arguments);
     if ("null".equals(result.getType())) {
       return null;
     }
@@ -183,7 +183,7 @@ class AccessibilitySnapshotter {
   /**
    * Runs the atom's wire entry in the sandbox of {@code context}; the remote value of its result.
    */
-  private RemoteValue call(String context, List<LocalValue> arguments) {
+  private RemoteValue callAtom(String context, List<LocalValue> arguments) {
     SerializationOptions options = new SerializationOptions();
     options.setMaxDomDepth(0);
     EvaluateResult result;
