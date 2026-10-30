@@ -28,6 +28,7 @@ from selenium.webdriver.remote.script import (
     deserialize_result,
     serialize_argument,
 )
+from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -36,6 +37,7 @@ def driver():
     driver = MagicMock()
     driver.current_window_handle = "context-1"
     driver.create_web_element.side_effect = lambda element_id: WebElement(driver, element_id)
+    driver._shadowroot_cls = ShadowRoot
     return driver
 
 
@@ -91,6 +93,22 @@ def test_deserialize_result_returns_elements_as_web_elements(driver):
 
     assert isinstance(element, WebElement)
     assert element.id == "element-1"
+
+
+def test_deserialize_result_returns_shadow_roots(driver):
+    node = {"type": "node", "sharedId": "shadow-1", "value": {"nodeType": 11, "mode": "open"}}
+
+    shadow_root = deserialize_result(node, driver)
+
+    assert isinstance(shadow_root, ShadowRoot)
+    assert shadow_root.id == "shadow-1"
+    assert serialize_argument(shadow_root) == {"sharedId": "shadow-1"}
+
+
+def test_deserialize_result_drops_plain_document_fragments(driver):
+    fragment = {"type": "node", "sharedId": "fragment-1", "value": {"nodeType": 11}}
+
+    assert deserialize_result(fragment, driver) is None
 
 
 def test_deserialize_result_drops_non_element_nodes(driver):
@@ -179,6 +197,17 @@ def test_pin_and_unpin_delegate(script, implementation):
     assert pinned.id == "preload-1"
     implementation.pin.assert_called_once_with("() => {}")
     implementation.unpin.assert_called_once_with(pinned)
+
+
+def test_keyword_arguments_keep_their_previous_names(script, implementation):
+    implementation.call_function.return_value = {"type": "success", "result": {"type": "number", "value": 1}}
+
+    script.pin(function_declaration="() => {}")
+    script.unpin(script_id="preload-1")
+    assert script.execute(function_declaration="() => 1") == 1
+
+    implementation.pin.assert_called_once_with("() => {}")
+    implementation.unpin.assert_called_once_with("preload-1")
 
 
 def test_pinned_script_repr_has_no_realm():

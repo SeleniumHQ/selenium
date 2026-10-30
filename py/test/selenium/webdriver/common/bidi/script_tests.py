@@ -23,6 +23,8 @@ from selenium.common.exceptions import JavascriptException
 from selenium.webdriver.common.bidi.log import LogLevel
 from selenium.webdriver.common.bidi.script import RealmType, ResultOwnership
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -884,6 +886,28 @@ def test_execute_script_accessing_dom(driver, pages):
     )
 
     assert result == "We Leave From Here"
+
+
+def test_execute_script_passes_and_returns_elements(driver, pages):
+    """Test that elements round-trip as WebElement, as with execute_script."""
+    pages.load("formPage.html")
+    element = driver.find_element(By.ID, "email")
+
+    result = driver.script.execute("(el) => el.parentElement", element)
+
+    assert isinstance(result, WebElement)
+    assert result == element.find_element(By.XPATH, "..")
+
+
+def test_execute_script_returns_shadow_root(driver, pages):
+    """Test that a shadow root comes back as ShadowRoot, as with execute_script."""
+    pages.load("shadowRootPage.html")
+    host = driver.find_element(By.TAG_NAME, "custom-checkbox-element")
+
+    shadow_root = driver.script.execute("(el) => el.shadowRoot", host)
+
+    assert isinstance(shadow_root, ShadowRoot)
+    assert shadow_root.find_element(By.CSS_SELECTOR, "input").get_attribute("type") == "checkbox"
 
 
 def test_execute_script_with_nested_objects(driver, pages):

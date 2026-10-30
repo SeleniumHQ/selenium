@@ -43,6 +43,7 @@ _MAX_SAFE_INTEGER = 9007199254740991
 _SPECIAL_NUMBERS = {"NaN": math.nan, "-0": -0.0, "Infinity": math.inf, "-Infinity": -math.inf}
 _LIST_TYPES = ("array", "set", "nodelist", "htmlcollection")
 _ELEMENT_NODE = 1
+_DOCUMENT_FRAGMENT_NODE = 11
 
 # Replacements named in the warning when a removed protocol command is called
 # through driver.script; anything not listed has no supported replacement.
@@ -202,8 +203,9 @@ def serialize_argument(value: Any) -> Any:
 
     Accepts what ``execute_script`` accepts: ``None``, ``bool``, ``int``,
     ``float`` (including ``NaN`` and infinities), ``str``, lists and tuples,
-    dicts, ``datetime.datetime`` and ``WebElement``.
+    dicts, ``datetime.datetime``, ``WebElement`` and ``ShadowRoot``.
     """
+    from selenium.webdriver.remote.shadowroot import ShadowRoot
     from selenium.webdriver.remote.webelement import WebElement
 
     if value is None:
@@ -228,7 +230,7 @@ def serialize_argument(value: Any) -> Any:
         return {"type": "array", "value": [serialize_argument(v) for v in value]}
     if isinstance(value, dict):
         return {"type": "object", "value": [[str(k), serialize_argument(v)] for k, v in value.items()]}
-    if isinstance(value, WebElement):
+    if isinstance(value, (WebElement, ShadowRoot)):
         return {"sharedId": value.id}
     return value
 
@@ -237,8 +239,8 @@ def deserialize_result(value: Any, driver: WebDriver | None = None) -> Any:
     """Convert a script result into the Python value ``execute_script`` would return.
 
     Primitives map to their Python types, arrays and sets to lists, objects
-    and maps to dicts, element nodes to ``WebElement`` (when a driver is
-    given) and windows to their window handle. Values with no JSON form, such
+    and maps to dicts, element nodes to ``WebElement`` and shadow roots to
+    ``ShadowRoot`` (when a driver is given) and windows to their window handle. Values with no JSON form, such
     as functions, promises and symbols, become ``None``.
     """
     if not isinstance(value, dict) or "type" not in value:
@@ -264,9 +266,14 @@ def deserialize_result(value: Any, driver: WebDriver | None = None) -> Any:
         return inner
     if kind == "node":
         shared_id = value.get("sharedId")
-        is_element = isinstance(inner, dict) and inner.get("nodeType") == _ELEMENT_NODE
-        if shared_id and is_element and driver is not None:
+        properties = inner if isinstance(inner, dict) else {}
+        if not shared_id or driver is None:
+            return None
+        if properties.get("nodeType") == _ELEMENT_NODE:
             return driver.create_web_element(shared_id)
+        # Only shadow roots carry a mode; other document fragments have no classic equivalent.
+        if properties.get("nodeType") == _DOCUMENT_FRAGMENT_NODE and "mode" in properties:
+            return driver._shadowroot_cls(driver, shared_id)
         return None
     if kind == "window":
         return inner.get("context") if isinstance(inner, dict) else None
@@ -288,27 +295,27 @@ class Script:
             return self._driver.current_window_handle
         return context_id
 
-    def pin(self, script: str) -> PinnedScript:
+    def pin(self, function_declaration: str) -> PinnedScript:
         """Pin a script so it runs in every new document and can be reused by ``execute()``.
 
         Args:
-            script: The JavaScript function declaration to pin,
+            function_declaration: The JavaScript function declaration to pin,
                 e.g. ``"() => { window.helper = () => 42 }"``.
 
         Returns:
             A ``PinnedScript`` to pass to ``execute()`` and ``unpin()``.
         """
-        return self._impl.pin(script)
+        return self._impl.pin(function_declaration)
 
-    def unpin(self, script: PinnedScript | str) -> None:
+    def unpin(self, script_id: PinnedScript | str) -> None:
         """Remove a pinned script.
 
         Args:
-            script: The ``PinnedScript`` returned by ``pin()``.
+            script_id: The ``PinnedScript`` returned by ``pin()``.
         """
-        self._impl.unpin(script)
+        self._impl.unpin(script_id)
 
-    def execute(self, script: str | PinnedScript, *args: Any, context_id: str | None = None) -> Any:
+    def execute(self, function_declaration: str | PinnedScript, *args: Any, context_id: str | None = None) -> Any:
         """Execute JavaScript in the current window and return its result.
 
         Arguments and return values are converted as by ``execute_script``:
@@ -316,16 +323,16 @@ class Script:
         elements in the result come back as ``WebElement``.
 
         Args:
-            script: The function to run, e.g. ``"(a, b) => a + b"``, or a
-                ``PinnedScript`` returned by ``pin()``.
-            *args: Arguments passed to the function. When ``script`` is a
+            function_declaration: The function to run, e.g. ``"(a, b) => a + b"``,
+                or a ``PinnedScript`` returned by ``pin()``.
+            *args: Arguments passed to the function. When ``function_declaration`` is a
                 ``PinnedScript``, the single argument is the code to run with
                 the pinned source in scope, e.g. ``"return helper();"``.
             context_id: The window handle to run in. Defaults to the current
                 window.
 
         Returns:
-            The function's return value. When ``script`` is a ``PinnedScript``,
+            The function's return value. When ``function_declaration`` is a ``PinnedScript``,
             a ``ScriptResult`` instead, which reports failures through
             ``ScriptResult.error`` rather than raising.
 
@@ -335,13 +342,13 @@ class Script:
         Example:
             `total = driver.script.execute("(a, b) => a + b", 1, 2)`
         """
-        if isinstance(script, PinnedScript):
-            result = self._impl.execute(script, *args, context_id=context_id)
+        if isinstance(function_declaration, PinnedScript):
+            result = self._impl.execute(function_declaration, *args, context_id=context_id)
             result.value = deserialize_result(result.value, self._driver)
             return result
         context = self._context(context_id)
         raw = self._impl.call_function(
-            function_declaration=script,
+            function_declaration=function_declaration,
             await_promise=True,
             target={"context": context} if context else {},
             arguments=[serialize_argument(a) for a in args] if args else None,
