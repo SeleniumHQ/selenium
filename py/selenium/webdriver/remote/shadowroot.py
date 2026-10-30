@@ -20,9 +20,10 @@ from __future__ import annotations
 from hashlib import md5 as md5_hash
 from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import InvalidSelectorException
+from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 if TYPE_CHECKING:
     # we only import these when the module is analyzed for type annotations
@@ -52,7 +53,7 @@ class ShadowRoot:
     def id(self) -> str:
         return self._id
 
-    def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element inside a shadow root given a By strategy and locator.
 
         Args:
@@ -73,6 +74,12 @@ class ShadowRoot:
         Example:
             >>> element = driver.find_element(By.ID, "foo")
         """
+        if isinstance(by, RelativeBy):
+            elements = self.find_elements(by)
+            if not elements:
+                raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
+            return elements[0]
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
@@ -87,7 +94,7 @@ class ShadowRoot:
 
         return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements inside a shadow root given a By strategy and locator.
 
         Args:
@@ -108,6 +115,9 @@ class ShadowRoot:
         Example:
             >>> element = driver.find_elements(By.ID, "foo")
         """
+        if isinstance(by, RelativeBy):
+            return self.session._find_elements_relative(by, root=self)
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
