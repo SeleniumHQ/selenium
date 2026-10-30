@@ -58,13 +58,13 @@ from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
 from selenium.webdriver.common.bidi.input import Input
-from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
 from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension as BidiWebExtension
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.network import Network
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.web_extension import WebExtension
 from selenium.webdriver.remote.bidi_connection import BidiConnection
@@ -1297,7 +1297,7 @@ class WebDriver(BaseWebDriver):
         assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
             assert self._websocket_connection is not None
-            self._network = Network(self._websocket_connection)
+            self._network = Network(self)
 
         return self._network
 
