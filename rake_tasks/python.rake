@@ -6,6 +6,12 @@ def python_version
   SeleniumRake.version('python')
 end
 
+def uv_pip_install(*args)
+  # uv --system ignores an active venv, so only fall back to it when there is none
+  args << '--system' unless ENV['VIRTUAL_ENV'] || ENV['CONDA_PREFIX'] || Dir.exist?('.venv')
+  Bazel.execute('run', ['--', 'pip', 'install', *args], '@multitool//tools/uv:cwd')
+end
+
 unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
   # Each package fans out to one wheel per platform tag it supports, so build the
   # `wheels` filegroup rather than naming individual wheels here.
@@ -62,8 +68,9 @@ task :verify do
   SeleniumRake.verify_package_published("https://pypi.org/pypi/selenium/#{python_version}/json")
 end
 
-desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
+desc 'Install dependencies and copy generated files for local development (`./go py:local_dev all` copies everything)'
 task :local_dev, [:all] do |_task, arguments|
+  uv_pip_install('-r', 'py/requirements_lock.txt')
   Bazel.execute('build', [], %w[//py:selenium-wheel //py:version-py-release])
   FileUtils.rm_f('py/selenium/_version.py')
   FileUtils.cp(File.realpath('bazel-bin/py/release/selenium/_version.py'), 'py/selenium/_version.py')
@@ -139,7 +146,10 @@ end
 desc 'Install Python wheel locally'
 task :install do
   Bazel.execute('build', [], '//py:selenium-wheel')
-  sh 'pip install bazel-bin/py/selenium-*.whl'
+  wheels = Dir.glob('bazel-bin/py/selenium-*.whl')
+  raise 'No Python wheel found in bazel-bin/py' if wheels.empty?
+
+  uv_pip_install(*wheels)
 end
 
 desc 'Pin Python dependencies'
