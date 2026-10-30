@@ -115,7 +115,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       java: ${{ steps.read.outputs.java }}
-      grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
       rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
@@ -158,7 +157,6 @@ jobs:
             fi
           }
           process_binding "//java" "java"
-          check_binding "openqa/selenium/grid" "grid"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
           process_binding "//rb" "rb"
@@ -185,12 +183,6 @@ jobs:
     if: "!cancelled() && needs.read-targets.outputs.java != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
-
-  grid:
-    name: Grid
-    needs: [read-targets, wait-for-unlock]
-    uses: ./.github/workflows/ci-grid.yml
-    if: "!cancelled() && needs.read-targets.outputs.grid != ''"
 
   python:
     name: Python
@@ -227,7 +219,7 @@ jobs:
   merge-flaky-results:
     name: Merge Flaky Results
     if: always() && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk'
-    needs: [dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -254,7 +246,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded
