@@ -96,15 +96,8 @@ jobs:
       run: >
         [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
-        --build_tests_only
-        --keep_going
-        --flaky_test_attempts 2
-        --local_resources=browser=1
-        --skip_incompatible_explicit_targets
-        --pin_browsers=false
+        --config=gh-browser
         ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
-        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_env=SKIP_PENDING=true
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-rb.txt
@@ -132,13 +125,6 @@ jobs:
       rerun-with-debug: true
       run: >
         bazel test
-        --build_tests_only
-        --keep_going
-        --flaky_test_attempts 2
-        --local_resources=browser=1
-        --pin_browsers=false
-        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_size_filters large
+        --config=gh-browser
         --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
         //rb/...

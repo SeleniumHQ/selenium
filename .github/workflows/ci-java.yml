@@ -44,14 +44,7 @@ jobs:
       run: >
         [ -s bazel-targets-java.txt ] || echo //java/... > bazel-targets-java.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
-        --build_tests_only
-        --keep_going
-        --flaky_test_attempts 2
-        --local_resources=browser=1
-        --skip_incompatible_explicit_targets
-        --pin_browsers=false
+        --config=gh-browser
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_SKIP_DRIVER_IN_PATH=true
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-java.txt
