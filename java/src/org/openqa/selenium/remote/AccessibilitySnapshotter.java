@@ -104,7 +104,7 @@ class AccessibilitySnapshotter {
         if (node != null) {
           return node;
         }
-      } catch (NotOwned ignored) {
+      } catch (NotOwnedException ignored) {
         // Try the next context.
       }
     }
@@ -201,7 +201,7 @@ class AccessibilitySnapshotter {
       // The BiDi "no such node" error: the document of this context does not own the root's
       // shared id, either because the root lives in another frame or because its document is gone.
       if (mentions(e, "no such node")) {
-        throw new NotOwned(e);
+        throw new NotOwnedException(e);
       }
       throw e;
     }
@@ -266,7 +266,7 @@ class AccessibilitySnapshotter {
 
   /** Whether an error says a frame or its document is gone, rather than that a command failed. */
   private static boolean frameUnreachable(RuntimeException e) {
-    return e instanceof NotOwned || mentions(e, "no such frame") || mentions(e, "no such node");
+    return e instanceof NotOwnedException || mentions(e, "no such frame") || mentions(e, "no such node");
   }
 
   private static boolean mentions(Throwable e, String text) {
@@ -355,8 +355,8 @@ class AccessibilitySnapshotter {
   }
 
   /** A shared id that the targeted document does not own. */
-  private static final class NotOwned extends RuntimeException {
-    NotOwned(Throwable cause) {
+  private static final class NotOwnedException extends RuntimeException {
+    NotOwnedException(Throwable cause) {
       super(cause.getMessage(), cause);
     }
   }
