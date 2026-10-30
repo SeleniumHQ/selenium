@@ -26,7 +26,9 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -41,6 +43,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -354,5 +360,93 @@ class RetryRequestTest {
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
     assertThat(count).hasValue(3);
+  }
+
+  @Test
+  void retryLogsAtFineWhenDebugIsSetBeforeClassInitialization() throws Exception {
+    Logger logger = Logger.getLogger("org.openqa.selenium.remote.http.RetryRequest");
+    Level previousLevel = logger.getLevel();
+    boolean previousUseParentHandlers = logger.getUseParentHandlers();
+    String previousDebug = System.getProperty("selenium.debug");
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    handler.setLevel(Level.ALL);
+    logger.setLevel(Level.ALL);
+    logger.setUseParentHandlers(false);
+    logger.addHandler(handler);
+    try {
+      // Isolated static init must observe selenium.debug=true. The parent Debug class reads the
+      // property live; a reverted LOG_LEVEL field would freeze INFO here.
+      System.setProperty("selenium.debug", "true");
+      Class<?> isolated = new IsolatedRetryRequestLoader().defineRetryRequest();
+      Object filter = isolated.getDeclaredConstructor().newInstance();
+      Method apply = isolated.getMethod("apply", HttpHandler.class);
+
+      records.clear();
+      HttpHandler unavailable = request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE);
+      HttpHandler serverError = (HttpHandler) apply.invoke(filter, unavailable);
+      serverError.execute(new HttpRequest(GET, "/"));
+      assertLoggedAtFine(records, "ServerError");
+
+      records.clear();
+      HttpHandler connectionFailure =
+          request -> {
+            throw new UncheckedIOException(new ConnectException());
+          };
+      HttpHandler retryingConnection = (HttpHandler) apply.invoke(filter, connectionFailure);
+      assertThatThrownBy(() -> retryingConnection.execute(new HttpRequest(GET, "/")))
+          .isInstanceOf(UncheckedIOException.class)
+          .hasCauseInstanceOf(ConnectException.class);
+      assertLoggedAtFine(records, "ConnectException");
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLevel);
+      logger.setUseParentHandlers(previousUseParentHandlers);
+      if (previousDebug == null) {
+        System.clearProperty("selenium.debug");
+      } else {
+        System.setProperty("selenium.debug", previousDebug);
+      }
+    }
+  }
+
+  private static void assertLoggedAtFine(List<LogRecord> records, String fragment) {
+    assertThat(records)
+        .filteredOn(record -> record.getMessage().contains(fragment))
+        .isNotEmpty()
+        .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+  }
+
+  /**
+   * Defines a second {@link RetryRequest} so its static initializer runs after {@code
+   * selenium.debug} is set. The already-loaded class is left untouched.
+   */
+  private static final class IsolatedRetryRequestLoader extends ClassLoader {
+
+    IsolatedRetryRequestLoader() {
+      super(RetryRequest.class.getClassLoader());
+    }
+
+    Class<?> defineRetryRequest() throws IOException {
+      try (InputStream in = RetryRequest.class.getResourceAsStream("RetryRequest.class")) {
+        if (in == null) {
+          throw new IOException("RetryRequest.class");
+        }
+        byte[] bytes = in.readAllBytes();
+        return defineClass("org.openqa.selenium.remote.http.RetryRequest", bytes, 0, bytes.length);
+      }
+    }
   }
 }
