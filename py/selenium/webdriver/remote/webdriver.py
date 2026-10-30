@@ -164,15 +164,11 @@ def _create_caps(caps) -> dict:
 
 def get_remote_connection(
     capabilities: dict,
-    command_executor: str | RemoteConnection,
-    keep_alive: bool,
-    ignore_local_proxy: bool,
+    command_executor: str,
+    ignore_local_proxy: bool = False,
     client_config: ClientConfig | None = None,
 ) -> RemoteConnection:
-    if isinstance(command_executor, str):
-        client_config = client_config or ClientConfig(remote_server_addr=command_executor)
-        client_config.remote_server_addr = command_executor
-        command_executor = RemoteConnection(client_config=client_config)
+    client_config = client_config or ClientConfig(remote_server_addr=command_executor)
 
     browser_name = capabilities.get("browserName")
     handler: type[RemoteConnection]
@@ -195,14 +191,11 @@ def get_remote_connection(
     else:
         handler = RemoteConnection
 
-    if hasattr(command_executor, "client_config") and command_executor.client_config:
-        remote_server_addr = command_executor.client_config.remote_server_addr
-    else:
-        remote_server_addr = command_executor
-
+    if handler is RemoteConnection:
+        client_config = RemoteConnection._resolve_client_config(command_executor, None, client_config)
+        return RemoteConnection(client_config=client_config, ignore_proxy=ignore_local_proxy)
     return handler(
-        remote_server_addr=remote_server_addr,
-        keep_alive=keep_alive,
+        remote_server_addr=command_executor,
         ignore_proxy=ignore_local_proxy,
         client_config=client_config,
     )
@@ -297,7 +290,6 @@ class WebDriver(BaseWebDriver):
     def __init__(
         self,
         command_executor: str | RemoteConnection = "http://127.0.0.1:4444",
-        keep_alive: bool = True,
         file_detector: FileDetector | None = None,
         options: BaseOptions | list[BaseOptions] | None = None,
         locator_converter: LocatorConverter | None = None,
@@ -310,9 +302,6 @@ class WebDriver(BaseWebDriver):
             command_executor: Either a string representing the URL of the remote
                 server or a custom remote_connection.RemoteConnection object.
                 Defaults to 'http://127.0.0.1:4444'.
-            keep_alive: (Deprecated) Whether to configure
-                remote_connection.RemoteConnection to use HTTP keep-alive.
-                Defaults to True.
             file_detector: Pass a custom file detector object during
                 instantiation. If None, the default LocalFileDetector() will be
                 used.
@@ -337,7 +326,6 @@ class WebDriver(BaseWebDriver):
             self.command_executor = get_remote_connection(
                 capabilities,
                 command_executor=command_executor,
-                keep_alive=keep_alive,
                 ignore_local_proxy=_ignore_local_proxy,
                 client_config=client_config,
             )
