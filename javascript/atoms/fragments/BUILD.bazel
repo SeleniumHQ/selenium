@@ -263,3 +263,29 @@ copy_file(
         "//rb/lib/selenium/webdriver/atoms:__pkg__",
     ],
 )
+
+copy_file(
+    name = "accessibility-snapshot-typescript",
+    src = "//javascript/atoms:typescript/accessibility-snapshot.generated.js",
+    out = "accessibility-snapshot-typescript.js",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
+    ],
+)
+
+copy_file(
+    name = "accessibility-snapshot-wire-typescript",
+    src = "//javascript/atoms:typescript/accessibility-snapshot-wire.generated.js",
+    out = "accessibility-snapshot-wire-typescript.js",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
+    ],
+)

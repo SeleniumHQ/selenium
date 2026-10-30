@@ -3,6 +3,7 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite
 load("//java:version.bzl", "TOOLS_JAVA_VERSION")
 
 SMALL_TESTS = [
+    "AccessibilityNodeTest.java",
     "ArchitectureTest.java",
     "ByTest.java",
     "CookieTest.java",
@@ -26,15 +27,18 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = SMALL_TESTS,
+    data = ["//common/src/web"],
     deps = [
         ":helpers",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/netty/server:test-server",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.mockito:mockito-core"),
         artifact("org.jspecify:jspecify"),
     ] + JUNIT5_DEPS,

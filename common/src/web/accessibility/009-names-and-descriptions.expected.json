@@ -1,0 +1,188 @@
+{
+  "role": "document",
+  "name": "Names and descriptions",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "text",
+      "name": "First",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Second",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "group",
+      "name": "First Second",
+      "description": "",
+      "states": {},
+      "element": "labelledby",
+      "children": [
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "lb-content",
+          "children": [
+            {
+              "role": "text",
+              "name": "Group content",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "button",
+      "name": "Close",
+      "description": "",
+      "states": {},
+      "element": "aria-label",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Opens a new window",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "link",
+      "name": "Documentation",
+      "description": "Opens a new window",
+      "states": {},
+      "element": "described",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Save",
+      "description": "Saves your work",
+      "states": {},
+      "element": "aria-description",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Save",
+      "description": "Keyboard: Ctrl+S",
+      "states": {},
+      "element": "title-desc",
+      "children": []
+    },
+    {
+      "role": "button",
+      "name": "Only a title",
+      "description": "",
+      "states": {},
+      "element": "title-name",
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Search terms",
+      "description": "",
+      "value": "",
+      "states": {},
+      "element": "placeholder",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "Quantity",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "",
+      "description": "",
+      "value": "2",
+      "states": {},
+      "element": "other",
+      "children": []
+    },
+    {
+      "role": "text",
+      "name": "items",
+      "description": "",
+      "states": {},
+      "children": []
+    },
+    {
+      "role": "textbox",
+      "name": "Quantity 2 items",
+      "description": "",
+      "value": "",
+      "states": {},
+      "element": "wrapped",
+      "children": []
+    },
+    {
+      "role": "generic",
+      "name": "Sidebar",
+      "description": "",
+      "states": {},
+      "element": "generic-named",
+      "children": [
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "gn-para",
+          "children": [
+            {
+              "role": "text",
+              "name": "Named generic survives",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "heading",
+      "name": "Heading X",
+      "description": "",
+      "states": {
+        "level": 2
+      },
+      "element": "heading-with-label",
+      "children": [
+        {
+          "role": "generic",
+          "name": "X",
+          "description": "",
+          "states": {},
+          "element": "x-label",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "button",
+      "name": "From a hidden label",
+      "description": "",
+      "states": {},
+      "element": "hidden-ref",
+      "children": []
+    }
+  ]
+}

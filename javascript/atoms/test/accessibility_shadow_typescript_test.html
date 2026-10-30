@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_shadow_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // The walk follows the flat tree, which is what gets rendered: a shadow
+    // host's children are its shadow root's children, a slot's children are
+    // the nodes assigned to it (or its fallback while empty), and light-DOM
+    // children that no slot takes are not rendered at all.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function strip(node) {
+      var out = { role: node.role, name: node.name };
+      if (node.description) {
+        out.description = node.description;
+      }
+      if (node.value !== undefined) {
+        out.value = node.value;
+      }
+      if (Object.keys(node.states).length) {
+        out.states = node.states;
+      }
+      if (node.element) {
+        out.element = node.element.id || node.element.tagName.toLowerCase();
+      }
+      out.children = node.children.map(strip);
+      return out;
+    }
+
+    function text(content) {
+      return { role: 'text', name: content, children: [] };
+    }
+
+    function leaf(role, id, name, extra) {
+      return node(role, id, [], name, extra);
+    }
+
+    function node(role, id, children, name, extra) {
+      var out = { role: role, name: name || '', element: id, children: children };
+      Object.keys(extra || {}).forEach(function (key) { out[key] = extra[key]; });
+      return out;
+    }
+
+    QUnit.module('shadow roots');
+
+    QUnit.test('a host renders its shadow tree, with slotted light children at the slot', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('host'))), node('generic', 'host', [
+        node('heading', 'shadow-heading', [], 'Shadow heading', { states: { level: 2 } }),
+        node('paragraph', 'light-para', [text('light para')]),
+      ]));
+    });
+
+    QUnit.test('order follows the shadow tree, not the light DOM', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('slot-first'))), node('generic', 'slot-first', [
+        node('paragraph', 'slot-first-para', [text('para')]),
+        node('heading', 'slot-first-heading', [], 'After', { states: { level: 2 } }),
+      ]));
+    });
+
+    QUnit.test('light children no slot takes are not in the tree', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('no-slot'))), node('generic', 'no-slot', [
+        node('heading', 'no-slot-heading', [], 'Only this', { states: { level: 2 } }),
+      ]));
+    });
+
+    QUnit.test('named slots place their assigned nodes; fallback shows only while a slot is empty', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('named'))), node('generic', 'named', [
+        node('paragraph', 'named-b', [text('b')]),
+        node('paragraph', 'named-a', [text('a')]),
+        node('paragraph', 'named-fallback', [text('fallback')]),
+      ]));
+    });
+
+    QUnit.test('text nodes assigned to a slot are text leaves', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('slotted-text'))), node('navigation', 'slotted-text', [text('loose light text')]));
+    });
+
+    QUnit.test('nested shadow roots are walked', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('outer'))), node('generic', 'outer', [
+        node('heading', 'inner-heading', [], 'Inner', { states: { level: 2 } }),
+      ]));
+    });
+
+    QUnit.test('a slot inside a hidden part of the shadow tree hides what is assigned to it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('hidden-slot-host'))), node('generic', 'hidden-slot-host', [
+        node('paragraph', 'visible-slotted', [text('shown')]),
+      ]));
+    });
+
+    QUnit.test('a closed shadow root cannot be seen, so light children are walked as a known limitation', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('closed-host'))), node('generic', 'closed-host', [
+        node('paragraph', 'closed-light', [text('light')]),
+      ]));
+    });
+
+    QUnit.module('names across the flat tree');
+
+    QUnit.test('the focused element inside a shadow root reports focused, not its host', function (assert) {
+      var host = byId('focus-host');
+      var input = host.shadowRoot.getElementById('shadow-input');
+      input.focus();
+      try {
+        assert.deepEqual(strip(snapshot(host)), node('generic', 'focus-host', [
+          node('textbox', 'shadow-input', [], '', { states: { focused: true }, value: '' }),
+        ]));
+      } finally {
+        input.blur();
+      }
+    });
+
+    QUnit.test('aria-disabled on a host reaches a control inside its shadow root, even as the snapshot root', function (assert) {
+      var button = byId('disabled-host').shadowRoot.getElementById('shadow-disabled-button');
+      assert.deepEqual(snapshot(button).states, { disabled: true });
+    });
+
+    QUnit.test('an element named slot outside HTML is not a slot', function (assert) {
+      var root = byId('foreign-slot-root');
+      root.querySelector('svg').appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'slot'));
+      assert.strictEqual(strip(snapshot(root)).children.length, 1, 'the svg is walked without throwing');
+    });
+
+    QUnit.test('a shadow sheet\'s :host::before names an open host, and a closed one while some sheet in scope defines generated content', function (assert) {
+      // The gate that skips pseudo-element reads cannot see a closed root's
+      // sheets. Here the document's QUnit stylesheet defines generated content,
+      // so the closed host is read too; in a document whose sheets define
+      // none, a closed host's :host::before would be missed (pinned limitation).
+      assert.strictEqual(snapshot(byId('open-pseudo-host')).name, 'Pre Light');
+      assert.strictEqual(snapshot(byId('closed-pseudo-host')).name, 'Pre Light');
+    });
+
+    QUnit.test('aria-labelledby resolves inside the shadow root that holds it', function (assert) {
+      var root = byId('labelled-host').shadowRoot;
+      assert.strictEqual(snapshot(root.getElementById('shadow-button')).name, 'Shadow label');
+    });
+
+    QUnit.test('name from content follows the flat tree', function (assert) {
+      assert.strictEqual(snapshot(byId('content-host')).name, 'Light suffix');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="host"><p id="light-para">light para</p></div>
+  <div id="slot-first"><p id="slot-first-para">para</p></div>
+  <div id="no-slot"><p id="unslotted-para">never</p></div>
+  <div id="named"><p id="named-a" slot="a">a</p><p id="named-b" slot="b">b</p></div>
+  <nav id="slotted-text">loose light text</nav>
+  <div id="outer"></div>
+  <div id="hidden-slot-host"><p id="hidden-slotted" slot="hidden">hidden</p><p id="visible-slotted">shown</p></div>
+  <div id="closed-host"><p id="closed-light">light</p></div>
+  <div id="labelled-host"></div>
+  <div id="focus-host"></div>
+  <div id="disabled-host" aria-disabled="true"></div>
+  <div id="foreign-slot-root"><svg width="10" height="10"><title>Pic</title></svg></div>
+  <div id="open-pseudo-host" role="heading" aria-level="2">Light</div>
+  <div id="closed-pseudo-host" role="heading" aria-level="2">Light</div>
+  <div id="content-host" role="heading" aria-level="2">Light</div>
+
+  <script type="text/javascript">
+    function attach(id, html, mode) {
+      document.getElementById(id).attachShadow({ mode: mode || 'open' }).innerHTML = html;
+    }
+    attach('host', '<h2 id="shadow-heading">Shadow heading</h2><slot></slot>');
+    attach('slot-first', '<slot></slot><h2 id="slot-first-heading">After</h2>');
+    attach('no-slot', '<h2 id="no-slot-heading">Only this</h2>');
+    attach('named', '<slot name="b"></slot><slot name="a"></slot><slot name="c"><p id="named-fallback">fallback</p></slot>');
+    attach('slotted-text', '<slot></slot>');
+    attach('outer', '<div id="inner"></div>');
+    document.getElementById('outer').shadowRoot.getElementById('inner').attachShadow({ mode: 'open' }).innerHTML =
+      '<h2 id="inner-heading">Inner</h2>';
+    attach('hidden-slot-host', '<div style="display: none"><slot name="hidden"></slot></div><slot></slot>');
+    attach('closed-host', '<h2>Shadow heading nobody can see</h2><slot></slot>', 'closed');
+    attach('open-pseudo-host', '<style>:host::before { content: "Pre "; }</style><slot></slot>');
+    attach('closed-pseudo-host', '<style>:host::before { content: "Pre "; }</style><slot></slot>', 'closed');
+    attach('disabled-host', '<button id="shadow-disabled-button">x</button>');
+    attach('focus-host', '<input id="shadow-input" type="text">');
+    attach('labelled-host', '<span id="shadow-label">Shadow label</span><button id="shadow-button" aria-labelledby="shadow-label">x</button>');
+    attach('content-host', '<slot></slot> suffix');
+  </script>
+</body>
+
+</html>

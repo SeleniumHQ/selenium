@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_robustness_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // Scale, timing and odd input. ADR 18205 asks the first implementation to
+    // measure large trees; the bounds here are generous enough for a loaded
+    // CI runner and exist to catch quadratic behaviour, not to benchmark. The
+    // measured durations are in the assertion messages.
+    //
+    // Interference from page scripts is not tested here: in the same realm
+    // the page's scripts run before the atom and can replace any prototype
+    // it relies on, so no in-page defence is complete. The bindings install
+    // the atom in a BiDi sandbox realm, whose prototypes the page cannot
+    // reach, and that is the design's answer (ADR §4).
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function timed(fn) {
+      var start = performance.now();
+      var result = fn();
+      return { result: result, ms: Math.round(performance.now() - start) };
+    }
+
+    function count(node) {
+      return 1 + node.children.reduce(function (sum, child) { return sum + count(child); }, 0);
+    }
+
+    function build() {
+      var areas = '';
+      for (var a = 0; a < 200; a++) {
+        areas += '<area href="#a' + a + '" shape="rect" coords="0,0,1,1" alt="Area ' + a + '">';
+      }
+      byId('many-areas').innerHTML = areas;
+      var big = byId('big');
+      var html = '';
+      for (var i = 0; i < 1000; i++) {
+        html += '<li><a href="#">Link ' + i + '</a> text ' + i + ' <span>in span</span><b>bold</b></li>';
+      }
+      big.innerHTML = '<ul>' + html + '</ul>';
+
+      var deep = byId('deep');
+      var open = '';
+      var close = '';
+      for (var d = 0; d < 1000; d++) {
+        open += '<div>';
+        close += '</div>';
+      }
+      deep.innerHTML = open + '<h2 id="deepest">Deepest</h2>' + close;
+
+      var rows = '';
+      for (var r = 0; r < 500; r++) {
+        rows += '<tr><td aria-labelledby="shared-header">' + r + '</td></tr>';
+      }
+      byId('fan-in').innerHTML = '<table><tbody>' + rows + '</tbody></table>';
+
+      var owned = '';
+      var ids = [];
+      for (var o = 0; o < 500; o++) {
+        ids.push('owned-' + o);
+        owned += '<div role="listitem" id="owned-' + o + '">item ' + o + '</div>';
+      }
+      byId('owned-pool').innerHTML = owned;
+      byId('owner').setAttribute('aria-owns', ids.join(' '));
+
+      var gridRows = '';
+      for (var g = 0; g < 200; g++) {
+        gridRows += '<tr><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td></tr>';
+      }
+      byId('role-probe-table').innerHTML = '<tbody>' + gridRows + '</tbody>';
+    }
+
+    QUnit.module('scale');
+
+    QUnit.test('a 5000-node subtree snapshots completely and in bounded time', function (assert) {
+      var run = timed(function () { return snapshot(byId('big')); });
+      var list = run.result.children[0];
+      assert.strictEqual(list.role, 'list');
+      assert.strictEqual(list.children.length, 1000, 'one listitem per li');
+      assert.deepEqual(list.children[999].children.map(function (c) { return c.role; }), ['link', 'text', 'text', 'text'],
+        'each item has its link and three text leaves: the inline span and b are generic and pruned, their text hoisted');
+      assert.ok(count(run.result) > 3000, 'node count: ' + count(run.result));
+      assert.ok(run.ms < 3000, 'snapshot of ' + count(run.result) + ' nodes took ' + run.ms + 'ms');
+    });
+
+    QUnit.test('a 1000-level deep tree is hoisted through without overflowing', function (assert) {
+      var run = timed(function () { return snapshot(byId('deep')); });
+      assert.deepEqual(run.result.children.map(function (c) { return c.role + ':' + c.name; }), ['heading:Deepest']);
+      assert.ok(run.ms < 3000, 'took ' + run.ms + 'ms');
+    });
+
+    QUnit.test('500 cells labelled by one header resolve it once per snapshot', function (assert) {
+      // The header holds a probe span whose aria-label is read every time the
+      // header's text alternative is computed; the reference cache makes that
+      // once per snapshot, plus the probe's own visit by the walk.
+      var probe = byId('probe');
+      var probeReads = 0;
+      var original = Element.prototype.getAttribute;
+      Element.prototype.getAttribute = function () {
+        if (this === probe) {
+          probeReads++;
+        }
+        return original.apply(this, arguments);
+      };
+      var run;
+      try {
+        run = timed(function () { return snapshot(byId('fan-in-root')); });
+      } finally {
+        Element.prototype.getAttribute = original;
+      }
+      var table = run.result.children.filter(function (c) { return c.role === 'table'; })[0];
+      var rows = table.children[0].children;
+      assert.strictEqual(rows.length, 500);
+      assert.ok(rows.every(function (row) { return row.children[0].name === 'Shared header'; }), 'every cell is named by the header');
+      assert.ok(probeReads < 20, 'the header was resolved once: its probe was read ' + probeReads + ' times for 500 referrers');
+      assert.ok(run.ms < 3000, 'took ' + run.ms + 'ms');
+    });
+
+    QUnit.test('1000 cells of one grid look up its role once per snapshot', function (assert) {
+      // Each cell's role depends on its table's role; the context caches the
+      // table's role so the cells share one lookup instead of each reading
+      // the attribute again.
+      var table = byId('role-probe-table');
+      var roleReads = 0;
+      var original = Element.prototype.getAttribute;
+      Element.prototype.getAttribute = function (name) {
+        if (this === table && name === 'role') {
+          roleReads++;
+        }
+        return original.apply(this, arguments);
+      };
+      var run;
+      try {
+        run = timed(function () { return snapshot(byId('role-probe-root')); });
+      } finally {
+        Element.prototype.getAttribute = original;
+      }
+      var grid = run.result.children[0];
+      assert.strictEqual(grid.role, 'grid');
+      var body = grid.children[0];
+      assert.strictEqual(body.role, 'rowgroup');
+      assert.strictEqual(body.children.length, 200, 'one row per tr');
+      assert.ok(body.children.every(function (row) { return row.children.length === 5 && row.children[0].role === 'gridcell'; }), 'every row has five gridcells');
+      assert.ok(roleReads < 10, 'the table\'s role attribute was read ' + roleReads + ' times for 1000 cells');
+    });
+
+    QUnit.test('200 areas of one image map look up its image once per snapshot', function (assert) {
+      // An area is as hidden as the image that uses its map, found with a
+      // document-wide query; the context caches the answer per map name so
+      // the areas share one query instead of each repeating it.
+      var queries = 0;
+      var original = Document.prototype.querySelectorAll;
+      Document.prototype.querySelectorAll = function (selector) {
+        if (selector === 'img[usemap]') {
+          queries++;
+        }
+        return original.apply(this, arguments);
+      };
+      var run;
+      try {
+        run = timed(function () { return snapshot(byId('map-root')); });
+      } finally {
+        Document.prototype.querySelectorAll = original;
+      }
+      var links = run.result.children.filter(function (c) { return c.role === 'link'; });
+      assert.strictEqual(links.length, 200, 'every area is rendered through the image');
+      assert.strictEqual(queries, 1, 'the image was looked up ' + queries + ' times for 200 areas');
+    });
+
+    QUnit.test('an owner of 500 elements places all of them', function (assert) {
+      var run = timed(function () { return snapshot(byId('owns-scale')); });
+      var list = run.result.children[0];
+      assert.strictEqual(list.role, 'list');
+      assert.strictEqual(list.children.length, 500);
+      assert.strictEqual(run.result.children.length, 1, 'the pool is empty once its items are owned');
+      assert.ok(run.ms < 3000, 'took ' + run.ms + 'ms');
+    });
+
+    QUnit.module('odd input');
+
+    QUnit.test('references to nothing never throw and leave names empty', function (assert) {
+      var node = snapshot(byId('broken-refs'));
+      assert.strictEqual(node.role, 'button');
+      assert.strictEqual(node.name, 'Content');
+      assert.strictEqual(node.description, '');
+    });
+
+    QUnit.test('role tokens survive surrounding whitespace and an empty attribute falls back', function (assert) {
+      assert.strictEqual(snapshot(byId('spaced-role')).role, 'button');
+      assert.strictEqual(snapshot(byId('empty-role')).role, 'heading');
+    });
+
+    QUnit.test('duplicate ids resolve to the first element, as getElementById does', function (assert) {
+      assert.strictEqual(snapshot(byId('dup-ref')).name, 'First of two');
+    });
+
+    QUnit.test('non-ASCII text is kept as is', function (assert) {
+      assert.strictEqual(snapshot(byId('emoji')).name, '🚀 Launch Zoë');
+      assert.strictEqual(snapshot(byId('rtl')).name, 'שלום');
+    });
+
+    QUnit.test('a huge aria-level and a negative one', function (assert) {
+      assert.deepEqual(snapshot(byId('huge-level')).states, { level: 99999999999 });
+      assert.deepEqual(snapshot(byId('negative-level')).states, { level: 2 }, 'invalid, so the ARIA default');
+    });
+
+    QUnit.test('two snapshots of the same tree are identical', function (assert) {
+      var strip = function (n) { return JSON.stringify(n, function (k, v) { return k === 'element' ? undefined : v; }); };
+      assert.strictEqual(strip(snapshot(byId('big'))), strip(snapshot(byId('big'))));
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="big"></div>
+  <div id="deep"></div>
+  <div id="fan-in-root"><span id="shared-header">Shared <span id="probe" aria-label="header">x</span></span><div id="fan-in"></div></div>
+  <div id="owns-scale"><ul id="owner"></ul><div id="owned-pool"></div></div>
+  <div id="role-probe-root"><table id="role-probe-table" role="grid"></table></div>
+  <div id="map-root"><img src="/testdata/map.png" usemap="#many-areas" alt="Map"><map id="many-areas" name="many-areas"></map></div>
+
+  <button id="broken-refs" aria-labelledby="nope nope2" aria-describedby="nada" aria-owns="zip" aria-controls="zap">Content</button>
+  <div id="spaced-role" role="
+      BUTTON
+  ">x</div>
+  <h2 id="empty-role" role="">x</h2>
+  <span id="dup">First of two</span><span id="dup">Second of two</span>
+  <button id="dup-ref" aria-labelledby="dup">x</button>
+  <button id="emoji">🚀 Launch Zoë</button>
+  <button id="rtl" dir="rtl">שלום</button>
+  <h2 id="huge-level" aria-level="99999999999">x</h2>
+  <div id="negative-level" role="heading" aria-level="-3">x</div>
+  <script type="text/javascript">build();</script>
+</body>
+
+</html>

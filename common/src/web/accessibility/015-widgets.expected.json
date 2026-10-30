@@ -1,0 +1,216 @@
+{
+  "role": "document",
+  "name": "ARIA widgets",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "tablist",
+      "name": "Views",
+      "description": "",
+      "states": {},
+      "element": "tablist",
+      "children": [
+        {
+          "role": "tab",
+          "name": "First",
+          "description": "",
+          "states": {
+            "selected": true
+          },
+          "element": "tab1",
+          "children": []
+        },
+        {
+          "role": "tab",
+          "name": "Second",
+          "description": "",
+          "states": {
+            "selected": false
+          },
+          "element": "tab2",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "tabpanel",
+      "name": "First",
+      "description": "",
+      "states": {},
+      "element": "panel1",
+      "children": [
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "panel-text",
+          "children": [
+            {
+              "role": "text",
+              "name": "First panel",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "tree",
+      "name": "Files",
+      "description": "",
+      "states": {},
+      "element": "tree",
+      "children": [
+        {
+          "role": "treeitem",
+          "name": "src index.ts",
+          "description": "",
+          "states": {
+            "expanded": true,
+            "selected": false,
+            "level": 1
+          },
+          "element": "folder",
+          "children": [
+            {
+              "role": "group",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "group",
+              "children": [
+                {
+                  "role": "treeitem",
+                  "name": "index.ts",
+                  "description": "",
+                  "states": {
+                    "selected": true,
+                    "level": 2
+                  },
+                  "element": "file",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "listbox",
+      "name": "Colours",
+      "description": "",
+      "states": {},
+      "element": "listbox",
+      "children": [
+        {
+          "role": "option",
+          "name": "Red",
+          "description": "",
+          "states": {
+            "selected": true
+          },
+          "element": "red",
+          "children": []
+        },
+        {
+          "role": "option",
+          "name": "Green",
+          "description": "",
+          "states": {
+            "selected": false
+          },
+          "element": "green",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "slider",
+      "name": "Zoom",
+      "description": "",
+      "value": "150 percent",
+      "states": {},
+      "element": "slider",
+      "children": []
+    },
+    {
+      "role": "progressbar",
+      "name": "Upload",
+      "description": "",
+      "value": "40",
+      "states": {},
+      "element": "progress",
+      "children": []
+    },
+    {
+      "role": "switch",
+      "name": "Notifications",
+      "description": "",
+      "states": {
+        "checked": true
+      },
+      "element": "switch",
+      "children": []
+    },
+    {
+      "role": "menubar",
+      "name": "Main",
+      "description": "",
+      "states": {},
+      "element": "menubar",
+      "children": [
+        {
+          "role": "menuitem",
+          "name": "File",
+          "description": "",
+          "states": {},
+          "element": "menuitem",
+          "children": []
+        },
+        {
+          "role": "menuitemcheckbox",
+          "name": "Wrap",
+          "description": "",
+          "states": {
+            "checked": "mixed"
+          },
+          "element": "menucheck",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "toolbar",
+      "name": "Format",
+      "description": "",
+      "states": {},
+      "element": "toolbar",
+      "children": [
+        {
+          "role": "button",
+          "name": "B",
+          "description": "",
+          "states": {
+            "pressed": false
+          },
+          "element": "bold",
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "tooltip",
+      "name": "Tooltip text",
+      "description": "",
+      "states": {},
+      "element": "tip",
+      "children": []
+    }
+  ]
+}

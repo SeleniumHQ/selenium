@@ -49,6 +49,8 @@ module Selenium
 
       def accessible_name: () -> String
 
+      def accessibility_snapshot: () -> AccessibilityNode
+
       def text: () -> String
 
       def send_keys: (*untyped args) -> untyped

@@ -21,8 +21,10 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.BiDi;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Internal.Logging;
 using OpenQA.Selenium.VirtualAuth;
 
 namespace OpenQA.Selenium;
@@ -36,8 +38,11 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
     /// </summary>
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
+    private static readonly ILogger _logger = Log.GetLogger<WebDriver>();
     private IFileDetector fileDetector = new DefaultFileDetector();
     private NetworkManager? network;
+    private IBiDi? bidi;
+    private Lazy<AccessibilitySnapshotter>? accessibilitySnapshotter;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();
@@ -47,6 +52,12 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     /// <param name="executor">The <see cref="ICommandExecutor"/> object used to execute commands.</param>
     /// <param name="capabilities">The <see cref="ICapabilities"/> object used to configure the driver session.</param>
+    /// <remarks>
+    /// When the session the driver starts carries a WebSocket URL (see <see cref="DriverOptions.UseWebSocketUrl"/>),
+    /// the constructor also opens the driver's BiDi connection, shared by every component that works
+    /// over BiDi and closed with the driver. A connection that cannot be made fails the constructor,
+    /// which quits the session it started before rethrowing.
+    /// </remarks>
     protected WebDriver(ICommandExecutor executor, ICapabilities capabilities)
     {
         this.CommandExecutor = executor;
@@ -64,6 +75,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         try
         {
             this.StartSession(capabilities);
+            Task.Run(() => this.ConnectBiDiAsync()).GetAwaiter().GetResult();
         }
         catch (Exception)
         {
@@ -194,6 +206,57 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     internal INetwork Network => this.network ??= new NetworkManager(this);
+
+    /// <summary>
+    /// Takes an accessibility snapshot of the whole page: the tree of roles, names, states and values
+    /// computed from the DOM, rooted at the document of the current window's top-level browsing
+    /// context whatever frame the driver has switched to, with every reachable child frame's tree
+    /// attached under its <c>iframe</c> node. The snapshot is a copy taken at one point in time.
+    /// </summary>
+    /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
+    /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
+    /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
+    /// <seealso cref="AccessibilityNode.ToText()"/>
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    {
+        return this.Accessibility.SnapshotAsync(null, cancellationToken);
+    }
+
+    /// <summary>
+    /// The snapshot runs in a BiDi sandbox realm; a session started without a WebSocket URL cannot
+    /// take one, and says so before anything is sent. The snapshotter is stateless, so one instance,
+    /// created on first use, serves the driver for its life.
+    /// </summary>
+    internal AccessibilitySnapshotter Accessibility =>
+        (this.accessibilitySnapshotter ?? throw new UnsupportedOperationException("GetAccessibilitySnapshotAsync() requires a WebDriver BiDi session; enable it with options.UseWebSocketUrl = true before starting the driver")).Value;
+
+    /// <summary>
+    /// Gets the driver's BiDi connection, opened as the session started when it carries a WebSocket
+    /// URL and shared by every component that works over BiDi; it is closed with the driver.
+    /// </summary>
+    /// <exception cref="UnsupportedOperationException">If the session was started without a WebSocket URL.</exception>
+    internal IBiDi BiDi => this.bidi ?? throw new UnsupportedOperationException("This session has no WebDriver BiDi connection; enable it with options.UseWebSocketUrl = true before starting the driver");
+
+    /// <summary>
+    /// A session started with a WebSocket URL connects to it here, once, so nothing is opened lazily
+    /// and no caller has to wait on another's connection attempt. A connection that cannot be made
+    /// fails the constructor, which then quits the session it started. The constructor bridges to
+    /// this on the thread pool, as <see cref="Execute"/> does, so a caller with a synchronization
+    /// context does not deadlock on the connection.
+    /// </summary>
+    private async Task ConnectBiDiAsync()
+    {
+        if (this.Capabilities.GetCapability(CapabilityType.WebSocketUrl) is null)
+        {
+            return;
+        }
+
+        IBiDi connection = await this.AsBiDiAsync().ConfigureAwait(false);
+        this.bidi = connection;
+        this.accessibilitySnapshotter = new Lazy<AccessibilitySnapshotter>(() => new AccessibilitySnapshotter(connection, () => this.CurrentWindowHandle, this.CreateElementFromReference));
+    }
 
     /// <summary>
     /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
@@ -515,10 +578,16 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     }
 
     /// <summary>
-    /// Find the element in the response
+    /// Creates the element a reference identifies, through the element factory, so a configured
+    /// custom factory applies to elements that arrive outside a command response.
     /// </summary>
-    /// <param name="response">Response from the browser</param>
-    /// <returns>Element from the page, or <see langword="null"/> if the response does not contain a dictionary.</returns>
+    /// <param name="elementId">The element's reference id.</param>
+    /// <returns>The element the reference identifies.</returns>
+    internal WebElement CreateElementFromReference(string elementId)
+    {
+        return this.elementFactory.CreateElement(new Dictionary<string, object?> { [WebElement.ElementReferencePropertyName] = elementId });
+    }
+
     internal IWebElement? GetElementFromResponse(Response response)
     {
         if (response.Value is Dictionary<string, object?> elementDictionary)
@@ -734,6 +803,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     {
         if (disposing)
         {
+            Task.Run(() => this.CloseBiDiAsync().AsTask()).GetAwaiter().GetResult();
+
             if (this.SessionId is not null)
             {
                 try
@@ -767,6 +838,8 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <returns>A task representing the asynchronous dispose operation.</returns>
     protected virtual async ValueTask DisposeAsyncCore()
     {
+        await this.CloseBiDiAsync().ConfigureAwait(false);
+
         if (this.SessionId is not null)
         {
             try
@@ -789,6 +862,30 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
         }
 
         this.CommandExecutor.Dispose();
+    }
+
+    /// <summary>
+    /// Closes the connection the constructor opened, once, and never lets a close failure escape: the
+    /// driver still has its own session to quit.
+    /// </summary>
+    private async ValueTask CloseBiDiAsync()
+    {
+        IBiDi? connection = this.bidi;
+        this.bidi = null;
+        this.accessibilitySnapshotter = null;
+        if (connection is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await connection.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _logger.Debug("closing the BiDi connection failed: " + e.Message);
+        }
     }
 
     private static void UnpackAndThrowOnError(Response errorResponse, string commandToExecute)

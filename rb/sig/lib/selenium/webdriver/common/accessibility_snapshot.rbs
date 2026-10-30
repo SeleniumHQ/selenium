@@ -1,0 +1,109 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+module Selenium
+  module WebDriver
+    class AccessibilityNode
+      type state = bool | Integer | String
+
+      type remote_value = Hash[String, untyped]
+
+      STATE_ORDER: Array[String]
+
+      attr_reader role: String
+
+      attr_reader name: String
+
+      attr_reader description: String
+
+      attr_reader value: String?
+
+      attr_reader states: Hash[String, state]
+
+      attr_reader element: Element?
+
+      attr_accessor children: Array[AccessibilityNode]
+
+      def initialize: (role: String, name: String, ?description: String, ?value: String?, ?states: Hash[String, state], ?element: Element?, ?children: Array[AccessibilityNode]) -> void
+
+      def to_text: () -> String
+
+      def self.from_wire: (Hash[String, untyped] data, Array[Element] elements) { (Integer frame) -> Array[AccessibilityNode] } -> AccessibilityNode
+
+      module Wire
+        def self?.object_fields: (AccessibilityNode::remote_value value) -> Hash[String, AccessibilityNode::remote_value]
+
+        def self?.string: (AccessibilityNode::remote_value value) -> String
+
+        def self?.shared_id: (AccessibilityNode::remote_value node) -> String
+
+        def self?.context_of: (AccessibilityNode::remote_value window) -> String?
+      end
+
+      def lines: (String indent) -> Array[String]
+
+      private
+
+      def line: () -> String
+
+      def state_tokens: () -> String
+
+      def quote: (String text) -> String
+
+      def one_line: (String text) -> String
+    end
+
+    class AccessibilitySnapshotter
+      include Atoms
+
+      SANDBOX: String
+
+      SERIALIZATION_OPTIONS: Hash[Symbol, Integer]
+
+      STALE_MESSAGE: String
+
+      class NotOwnedError < Error::WebDriverError
+      end
+
+      @bridge: Remote::Bridge
+
+      @bidi: BiDi
+
+      @atom: String?
+
+      def initialize: (Remote::Bridge bridge) -> void
+
+      def snapshot: (?Element? root) -> AccessibilityNode
+
+      private
+
+      def snapshot_context: (String context, String? root_id) -> AccessibilityNode?
+
+      def call: (String context, Array[Hash[Symbol, String]] arguments) -> AccessibilityNode::remote_value
+
+      def stitch: (String? context) -> Array[AccessibilityNode]
+
+      def element: (String shared_id) -> Element
+
+      def contexts: (String top) -> Array[String]
+
+      def frame_unreachable?: (Exception error) -> bool
+
+      def atom: () -> String
+    end
+  end
+end

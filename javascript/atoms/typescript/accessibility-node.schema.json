@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.selenium.dev/schemas/accessibility-node.json",
+  "title": "AccessibilityNode",
+  "description": "One node of the accessibility snapshot of ADR 18205 (docs/decisions/18205-accessibility-tree-snapshot.md), as the shared corpus records it: `element` is the element's id. Adding an optional field or a states key is additive; removing or renaming one, or changing a type, is a breaking change that needs a new decision record.",
+  "$ref": "#/$defs/node",
+  "$defs": {
+    "node": {
+      "type": "object",
+      "required": ["role", "name", "description", "states", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string", "minLength": 1, "description": "WAI-ARIA role token; \"text\" for text leaves, \"iframe\" for frame leaves." },
+        "name": { "type": "string", "description": "Computed accessible name; \"\" when there is none." },
+        "description": { "type": "string", "description": "Computed accessible description; \"\" when there is none." },
+        "value": { "type": "string", "description": "Current value; present only for textbox, searchbox, combobox and range roles." },
+        "states": { "$ref": "#/$defs/states" },
+        "element": { "type": "string", "minLength": 1, "description": "The id of the backing element; absent for text leaves." },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/node" } }
+      }
+    },
+    "states": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "checked": { "oneOf": [{ "type": "boolean" }, { "const": "mixed" }] },
+        "pressed": { "oneOf": [{ "type": "boolean" }, { "const": "mixed" }] },
+        "expanded": { "type": "boolean" },
+        "selected": { "type": "boolean" },
+        "level": { "type": "integer", "minimum": 1 },
+        "disabled": { "const": true },
+        "focused": { "const": true }
+      }
+    }
+  }
+}

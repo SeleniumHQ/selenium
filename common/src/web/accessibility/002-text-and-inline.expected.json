@@ -1,0 +1,286 @@
+{
+  "role": "document",
+  "name": "Text and inline semantics",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "p",
+      "children": [
+        {
+          "role": "text",
+          "name": "Plain,",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "emphasis",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "em",
+          "children": [
+            {
+              "role": "text",
+              "name": "emphasised",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ",",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "strong",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "strong",
+          "children": [
+            {
+              "role": "text",
+              "name": "strong",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ",",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "code",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "code",
+          "children": [
+            {
+              "role": "text",
+              "name": "code",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ", x",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "subscript",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "sub",
+          "children": [
+            {
+              "role": "text",
+              "name": "2",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ", x",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "superscript",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "sup",
+          "children": [
+            {
+              "role": "text",
+              "name": "2",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ",",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "deletion",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "del",
+          "children": [
+            {
+              "role": "text",
+              "name": "old",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "insertion",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "ins",
+          "children": [
+            {
+              "role": "text",
+              "name": "new",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ",",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "time",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "time",
+          "children": [
+            {
+              "role": "text",
+              "name": "today",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "text",
+          "name": ".",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "blockquote",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "quote",
+      "children": [
+        {
+          "role": "text",
+          "name": "A quotation.",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "spans",
+      "children": [
+        {
+          "role": "text",
+          "name": "Inline",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "wrappers",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "and",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "bold",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "text",
+          "name": "do not break the text.",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    },
+    {
+      "role": "separator",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "rule",
+      "children": []
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "ws",
+      "children": [
+        {
+          "role": "text",
+          "name": "Collapsed whitespace here",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.AccessibilityNode;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -159,6 +160,11 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   @Override
   public String getAccessibleName() {
     return stringValueOf(execute(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME(id)).getValue());
+  }
+
+  @Override
+  public AccessibilityNode getAccessibilitySnapshot() {
+    return parent.accessibility().snapshot(this);
   }
 
   private static String stringValueOf(Object o) {

@@ -37,6 +37,8 @@ module Selenium
 
       def network: -> Network
 
+      def accessibility_snapshot: () -> AccessibilityNode
+
       def status: () -> Hash[untyped, untyped]
 
       def bidi: () -> BiDi

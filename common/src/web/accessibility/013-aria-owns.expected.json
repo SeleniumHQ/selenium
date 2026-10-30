@@ -1,0 +1,130 @@
+{
+  "role": "document",
+  "name": "aria-owns",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "list",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "owner",
+      "children": [
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "own",
+          "children": [
+            {
+              "role": "text",
+              "name": "One",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "owned-after",
+          "children": [
+            {
+              "role": "text",
+              "name": "Two",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "listitem",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "owned-before",
+          "children": [
+            {
+              "role": "text",
+              "name": "Zero",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "combobox",
+      "name": "Fruit",
+      "description": "",
+      "value": "Apple",
+      "states": {
+        "expanded": true
+      },
+      "element": "combo-owner",
+      "children": [
+        {
+          "role": "text",
+          "name": "Apple",
+          "description": "",
+          "states": {},
+          "children": []
+        },
+        {
+          "role": "listbox",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "popup",
+          "children": [
+            {
+              "role": "option",
+              "name": "Apple",
+              "description": "",
+              "states": {
+                "selected": true
+              },
+              "element": "opt-a",
+              "children": []
+            },
+            {
+              "role": "option",
+              "name": "Banana",
+              "description": "",
+              "states": {
+                "selected": false
+              },
+              "element": "opt-b",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "paragraph",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "between",
+      "children": [
+        {
+          "role": "text",
+          "name": "Between",
+          "description": "",
+          "states": {},
+          "children": []
+        }
+      ]
+    }
+  ]
+}

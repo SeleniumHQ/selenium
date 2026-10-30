@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html id="root">
+<head>
+  <meta charset="utf-8">
+  <title>Generic wrappers and presentation</title>
+</head>
+<body>
+  <div><div><div><h2 id="deep">Hoisted through wrappers</h2><span>loose text</span></div></div></div>
+  <div id="role-none" role="none"><p id="inside-none">Paragraph inside role none</p></div>
+  <ul role="presentation"><li id="pres-li">Presentational list item text</li></ul>
+  <table role="none"><tr><td id="pres-td">Presentational cell text</td></tr></table>
+  <a id="pres-link" role="presentation" href="#">Focusable, so still a link</a>
+  <img id="pres-img" src="../map.png" alt="" role="none">
+  <div id="custom-generic" aria-label="Named div"></div>
+  <custom-element id="custom">Custom element text</custom-element>
+</body>
+</html>

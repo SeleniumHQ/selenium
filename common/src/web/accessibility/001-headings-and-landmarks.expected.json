@@ -1,0 +1,202 @@
+{
+  "role": "document",
+  "name": "Headings and landmarks",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "banner",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "header",
+      "children": [
+        {
+          "role": "heading",
+          "name": "Site title",
+          "description": "",
+          "states": {
+            "level": 1
+          },
+          "element": "h1",
+          "children": []
+        },
+        {
+          "role": "navigation",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "nav",
+          "children": [
+            {
+              "role": "link",
+              "name": "Home",
+              "description": "",
+              "states": {},
+              "element": "home",
+              "children": []
+            },
+            {
+              "role": "link",
+              "name": "Docs",
+              "description": "",
+              "states": {},
+              "element": "docs",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "main",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "main",
+      "children": [
+        {
+          "role": "heading",
+          "name": "Section",
+          "description": "",
+          "states": {
+            "level": 2
+          },
+          "element": "h2",
+          "children": []
+        },
+        {
+          "role": "region",
+          "name": "Updates",
+          "description": "",
+          "states": {},
+          "element": "region",
+          "children": [
+            {
+              "role": "heading",
+              "name": "Latest",
+              "description": "",
+              "states": {
+                "level": 3
+              },
+              "element": "h3",
+              "children": []
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "p1",
+              "children": [
+                {
+                  "role": "text",
+                  "name": "First paragraph.",
+                  "description": "",
+                  "states": {},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "p2",
+          "children": [
+            {
+              "role": "text",
+              "name": "Unlabelled section content.",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "complementary",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "aside",
+          "children": [
+            {
+              "role": "heading",
+              "name": "Related",
+              "description": "",
+              "states": {
+                "level": 4
+              },
+              "element": "h4",
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "heading",
+          "name": "ARIA heading",
+          "description": "",
+          "states": {
+            "level": 5
+          },
+          "element": "aria-heading",
+          "children": []
+        },
+        {
+          "role": "search",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "search",
+          "children": [
+            {
+              "role": "text",
+              "name": "Search",
+              "description": "",
+              "states": {},
+              "children": []
+            },
+            {
+              "role": "searchbox",
+              "name": "Search",
+              "description": "",
+              "value": "kittens",
+              "states": {},
+              "element": "q",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "contentinfo",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "footer",
+      "children": [
+        {
+          "role": "paragraph",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "p3",
+          "children": [
+            {
+              "role": "text",
+              "name": "Footer text",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

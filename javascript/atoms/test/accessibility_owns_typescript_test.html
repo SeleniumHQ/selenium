@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_owns_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // aria-owns re-parents: an owned element appears after the owner's own
+    // children and not at its DOM position. Accessibility parentage wins
+    // (ADR 18205 §3), and the element reference still identifies the element.
+    // listitem does not take its name from content, so each item is an
+    // unnamed node with a text leaf.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function strip(node) {
+      var out = { role: node.role, name: node.name };
+      if (node.description) {
+        out.description = node.description;
+      }
+      if (node.value !== undefined) {
+        out.value = node.value;
+      }
+      if (Object.keys(node.states).length) {
+        out.states = node.states;
+      }
+      if (node.element) {
+        out.element = node.element.id || node.element.tagName.toLowerCase();
+      }
+      out.children = node.children.map(strip);
+      return out;
+    }
+
+    function text(content) {
+      return { role: 'text', name: content, children: [] };
+    }
+
+    function leaf(role, id, name, extra) {
+      return node(role, id, [], name, extra);
+    }
+
+    function node(role, id, children, name, extra) {
+      var out = { role: role, name: name || '', element: id, children: children };
+      Object.keys(extra || {}).forEach(function (key) { out[key] = extra[key]; });
+      return out;
+    }
+
+    QUnit.test('an owned element is placed after the owner\'s children and removed from its DOM position', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-root'))), node('generic', 'owns-root', [
+        node('list', 'owner', [
+          node('listitem', 'own-child', [text('one')]),
+          node('listitem', 'owned-after', [text('two')]),
+          node('listitem', 'owned-before', [text('zero')]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('owning a descendant places it once, in its normal position', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-descendant'))), node('list', 'owns-descendant', [
+        node('listitem', 'desc-a', [text('a')]),
+        node('listitem', 'desc-b', [text('b')]),
+      ]));
+    });
+
+    QUnit.test('owning yourself, an ancestor, or a missing id changes nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-cycle-root'))), node('generic', 'owns-cycle-root', [
+        node('list', 'owns-ancestor', [node('listitem', 'cycle-item', [text('item')])]),
+      ]));
+    });
+
+    QUnit.test('a hidden owned element is not placed', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-hidden-root'))), node('generic', 'owns-hidden-root', [
+        node('list', 'owns-hidden', [node('listitem', 'shown-item', [text('shown')])]),
+      ]));
+    });
+
+    QUnit.test('a pruned owner hoists its owned elements where it would have been', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-generic-root'))), node('generic', 'owns-generic-root', [
+        node('heading', 'before-generic', [], 'Before', { states: { level: 2 } }),
+        node('heading', 'generic-child', [], 'Child', { states: { level: 2 } }),
+        node('heading', 'generic-owned', [], 'Owned', { states: { level: 2 } }),
+        node('heading', 'after-generic', [], 'After', { states: { level: 2 } }),
+      ]));
+    });
+
+    QUnit.test('a hidden owner takes its owned elements with it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-hidden-owner-root'))), node('generic', 'owns-hidden-owner-root', []));
+    });
+
+    QUnit.test('an owner inside the root can own an element outside it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-outside-root'))), node('generic', 'owns-outside-root', [
+        node('list', 'owner-of-outside', [node('listitem', 'outside-item', [text('outside')])]),
+      ]));
+    });
+
+    QUnit.test('an owner outside the root does not claim an element inside it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owned-from-outside-root'))), node('generic', 'owned-from-outside-root', [
+        node('listitem', 'claimed-from-outside', [text('claimed')]),
+      ]));
+    });
+
+    QUnit.test('two elements that own each other: the first owner in document order wins', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-mutual-root'))), node('generic', 'owns-mutual-root', [
+        node('list', 'mutual-a', [
+          node('listitem', 'mutual-a-item', [text('a')]),
+          node('list', 'mutual-b', [node('listitem', 'mutual-b-item', [text('b')])]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner cannot claim an ancestor of the element that owns it', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-chain-root'))), node('generic', 'owns-chain-root', [
+        node('list', 'chain-a', [
+          node('listitem', 'chain-a-item', [text('a')]),
+          node('list', 'chain-b', [node('listitem', 'chain-b-item', [text('b')])]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner whose children are presentational re-parents nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-leaf-root'))), node('generic', 'owns-leaf-root', [
+        node('button', 'leaf-owner', [], 'Open'),
+        node('menu', 'leaf-owned', [node('menuitem', 'leaf-owned-item', [], 'Item')]),
+      ]));
+    });
+
+    QUnit.test('an owned element inside a hidden container is not placed', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-hidden-ancestor-root'))), node('generic', 'owns-hidden-ancestor-root', [
+        node('list', 'owns-from-hidden', [node('listitem', 'shown-beside-hidden', [text('shown')])]),
+      ]));
+    });
+
+    QUnit.test('an owner inside an open shadow root re-parents within its tree', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-shadow-host'))), node('generic', 'owns-shadow-host', [
+        node('list', 'shadow-owner', [
+          node('listitem', 'shadow-own-child', [text('a')]),
+          node('listitem', 'shadow-owned', [text('b')]),
+        ]),
+      ]));
+    });
+
+    QUnit.test('an owner that is never rendered (unslotted light DOM) claims nothing', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('owns-unslotted-root'))), node('generic', 'owns-unslotted-root', [
+        node('listitem', 'unslotted-target', [text('kept')]),
+      ]));
+    });
+
+    QUnit.test('the element reference of an owned node is the element itself', function (assert) {
+      assert.strictEqual(snapshot(byId('owns-root')).children[0].children[1].element, byId('owned-after'));
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="owns-root">
+    <div role="listitem" id="owned-before">zero</div>
+    <ul id="owner" aria-owns="owned-after owned-before"><li id="own-child">one</li></ul>
+    <div role="listitem" id="owned-after">two</div>
+  </div>
+
+  <ul id="owns-descendant" aria-owns="desc-b"><li id="desc-a">a</li><li id="desc-b">b</li></ul>
+
+  <div id="owns-cycle-root">
+    <ul id="owns-ancestor" aria-owns="owns-ancestor owns-cycle-root no-such-element"><li id="cycle-item">item</li></ul>
+  </div>
+
+  <div id="owns-hidden-root">
+    <ul id="owns-hidden" aria-owns="hidden-owned"><li id="shown-item">shown</li></ul>
+    <div role="listitem" id="hidden-owned" hidden>hidden</div>
+  </div>
+
+  <div id="owns-generic-root">
+    <h2 id="before-generic">Before</h2>
+    <div aria-owns="generic-owned"><h2 id="generic-child">Child</h2></div>
+    <h2 id="after-generic">After</h2>
+    <h2 id="generic-owned">Owned</h2>
+  </div>
+
+  <div id="owns-hidden-owner-root">
+    <ul aria-owns="taken-along" hidden><li>x</li></ul>
+    <div role="listitem" id="taken-along">gone</div>
+  </div>
+
+  <div id="owns-outside-root"><ul id="owner-of-outside" aria-owns="outside-item"></ul></div>
+  <div role="listitem" id="outside-item">outside</div>
+
+  <div id="owns-mutual-root">
+    <ul id="mutual-a" aria-owns="mutual-b"><li id="mutual-a-item">a</li></ul>
+    <ul id="mutual-b" aria-owns="mutual-a"><li id="mutual-b-item">b</li></ul>
+  </div>
+
+  <div id="owns-chain-root">
+    <div id="chain-outer"><ul id="chain-a" aria-owns="chain-b"><li id="chain-a-item">a</li></ul></div>
+    <ul id="chain-b" aria-owns="chain-outer"><li id="chain-b-item">b</li></ul>
+  </div>
+
+  <div id="owns-leaf-root">
+    <button id="leaf-owner" aria-owns="leaf-owned">Open</button>
+    <div role="menu" id="leaf-owned"><div role="menuitem" id="leaf-owned-item">Item</div></div>
+  </div>
+
+  <div id="owns-hidden-ancestor-root">
+    <ul id="owns-from-hidden" aria-owns="in-hidden-container"><li id="shown-beside-hidden">shown</li></ul>
+    <div hidden><div role="listitem" id="in-hidden-container">hidden</div></div>
+  </div>
+
+  <div id="owns-shadow-host"></div>
+  <div id="owns-unslotted-root">
+    <div id="unslotted-host"><ul id="unslotted-owner" aria-owns="unslotted-target"><li>never rendered</li></ul></div>
+    <div role="listitem" id="unslotted-target">kept</div>
+  </div>
+  <script type="text/javascript">
+    document.getElementById('owns-shadow-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<ul id="shadow-owner" aria-owns="shadow-owned"><li id="shadow-own-child">a</li></ul><div role="listitem" id="shadow-owned">b</div>';
+    document.getElementById('unslotted-host').attachShadow({ mode: 'open' }).innerHTML = '<slot name="named"></slot>';
+  </script>
+
+  <ul aria-owns="claimed-from-outside"></ul>
+  <div id="owned-from-outside-root"><div role="listitem" id="claimed-from-outside">claimed</div></div>
+</body>
+
+</html>

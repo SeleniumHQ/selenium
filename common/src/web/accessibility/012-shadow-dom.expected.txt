@@ -1,0 +1,13 @@
+- document "Shadow DOM"
+  - heading "Shadow heading" [level=2]
+  - paragraph
+    - text: Light paragraph
+  - button "Shadow label"
+  - text: Shadow label
+  - paragraph
+    - text: A
+  - paragraph
+    - text: B
+  - paragraph
+    - text: Fallback
+  - heading "Nested" [level=2]
