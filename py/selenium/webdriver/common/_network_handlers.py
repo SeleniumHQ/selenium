@@ -56,6 +56,7 @@ import re
 import warnings
 from collections.abc import Callable
 from typing import Any
+from urllib.parse import urlsplit
 
 from selenium.webdriver.common._bidi.network import (
     AuthCredentials,
@@ -269,7 +270,12 @@ def _or_unset(value: Any) -> Any:
 
 
 def _is_glob(pattern: Any) -> bool:
-    return isinstance(pattern, str) and any(char in pattern for char in "*?")
+    if not isinstance(pattern, str):
+        return False
+    if "*" in pattern:
+        return True
+    # In a URL a "?" starts the query, which the remote end evaluates exactly.
+    return "?" in pattern and "://" not in pattern
 
 
 def glob_to_regex(pattern: str) -> re.Pattern:
@@ -370,16 +376,57 @@ class _UrlPatterns:
     """User URL patterns translated for ``network.addIntercept``.
 
     ``wire`` is what the remote end evaluates (``None`` intercepts everything).
-    ``globs`` holds the Python-side matchers for deprecated glob patterns, which
-    the remote end cannot evaluate; it is empty when the remote end decides alone.
+    ``matchers`` re-checks every alternative in Python when a deprecated glob is
+    among them, because the remote end cannot evaluate a glob and the event does
+    not say which alternative matched; it is empty when the remote end decides alone.
     """
 
-    def __init__(self, wire: list | None, globs: list[re.Pattern]):
+    def __init__(self, wire: list | None, matchers: list[Callable[[str], bool]]):
         self.wire = wire
-        self.globs = globs
+        self.matchers = matchers
 
     def matches(self, url: str) -> bool:
-        return not self.globs or any(regex.match(url) for regex in self.globs)
+        return not self.matchers or any(matcher(url) for matcher in self.matchers)
+
+
+def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
+    """Match a URL against the literal components of a ``network.UrlPatternPattern``."""
+    expected = {
+        "protocol": pattern.protocol,
+        "hostname": pattern.hostname,
+        "port": pattern.port,
+        "pathname": pattern.pathname,
+        "search": pattern.search,
+    }
+
+    def matches(url: str) -> bool:
+        parts = urlsplit(url)
+        actual = {
+            "protocol": parts.scheme,
+            "hostname": parts.hostname or "",
+            "port": str(parts.port) if parts.port is not None else "",
+            "pathname": parts.path,
+            "search": parts.query,
+        }
+        for name, value in expected.items():
+            if value is UNSET:
+                continue
+            if name == "protocol":
+                value = value.rstrip(":").lower()
+            elif name == "hostname":
+                value = value.lower()
+            elif name == "search":
+                value = value.lstrip("?")
+            if actual[name] != value:
+                return False
+        return True
+
+    return matches
+
+
+def _string_matcher(value: str) -> Callable[[str], bool]:
+    regex = glob_to_regex(value) if _is_glob(value) else re.compile(re.escape(value) + r"\Z")
+    return lambda url: regex.match(url) is not None
 
 
 def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
@@ -429,19 +476,26 @@ def _glob_url_patterns(values: list) -> _UrlPatterns:
         # Points past the registry and the driver.network method at the caller.
         stacklevel=5,
     )
-    wire: list | None = []
+    wire: list = []
+    matchers: list[Callable[[str], bool]] = []
+    intercept_everything = False
     for value in values:
         if isinstance(value, dict):
-            wire.append(_url_pattern_from_mapping(value))
+            url_pattern = _url_pattern_from_mapping(value)
+            wire.append(url_pattern)
+            if isinstance(url_pattern, UrlPatternPattern):
+                matchers.append(_component_matcher(url_pattern))
+            else:
+                matchers.append(_string_matcher(url_pattern.pattern))
             continue
+        matchers.append(_string_matcher(value))
         url_pattern = _glob_to_url_pattern(value) if _is_glob(value) else _url_pattern_from_string(value)
         if url_pattern is None:
             # One pattern that cannot be pre-filtered means intercepting everything.
-            wire = None
-            break
-        wire.append(url_pattern)
-    regexes = [glob_to_regex(value) for value in values if isinstance(value, str)]
-    return _UrlPatterns(wire or None, regexes)
+            intercept_everything = True
+        else:
+            wire.append(url_pattern)
+    return _UrlPatterns(None if intercept_everything else wire or None, matchers)
 
 
 # --------------------------------------------------------------------------
