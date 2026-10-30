@@ -29,6 +29,7 @@ import socket
 import ssl
 import sys
 import threading
+import time
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
@@ -118,6 +119,25 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self._send_response("text/plain")
                 header_lines = [f"{k}: {v}" for k, v in self.headers.items()]
                 self.wfile.write("\n".join(header_lines).encode("utf-8"))
+                return
+
+            if path == "slow":
+                # Delays the response by ?ms=<milliseconds> (capped) so tests
+                # can create a pending network request with a known lifetime,
+                # e.g. for the quiescence preload harness. With ?img=1 the
+                # delayed response is a real PNG, so an <img> pointed here
+                # fires `load` (not `error`) once the delay elapses.
+                qs = urllib.parse.urlparse(self.path).query
+                params = urllib.parse.parse_qs(qs)
+                delay_ms = min(int(params.get("ms", ["0"])[0]), 30000)
+                time.sleep(delay_ms / 1000)
+                if params.get("img"):
+                    with open(os.path.join(HTML_ROOT, "button.png"), "rb") as f:
+                        self._send_response("image/png")
+                        self.wfile.write(f.read())
+                    return
+                self._send_response("text/plain")
+                self.wfile.write(f"slept {delay_ms}ms".encode())
                 return
 
             if path == "echo_json":

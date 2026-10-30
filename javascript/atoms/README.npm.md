@@ -55,6 +55,41 @@ run in the page rather than in the driver process — for example via
 `Runtime.evaluate` over CDP, `script.callFunction` over WebDriver BiDi, or
 Selenium's own `executeScript`.
 
+### Quiescence
+
+`installQuiescence` is the odd one out: rather than answering a question when
+called, it installs a pending-work ledger and a DOM observer into the page, and
+answers questions from then on through `window.__quiescence`. It has to run
+before any page script, or work the page started earlier is invisible to it, so
+install it as a preload script. The function is self-contained, so its own
+source text is the preload:
+
+```js
+import installQuiescence from '@selenium/atoms/quiescence'
+
+// WebDriver BiDi
+await bidi.send('script.addPreloadScript', { functionDeclaration: installQuiescence.toString() })
+
+// Chrome DevTools Protocol
+await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `(${installQuiescence})()` })
+
+// Playwright
+await page.addInitScript(installQuiescence)
+```
+
+Then, from page script:
+
+```js
+await window.__quiescence.awaitQuiet({ timeoutMs: 10000 })        // pending timers, network, resources
+await window.__quiescence.awaitDomSettled({ settleMs: 150 })       // no meaningful DOM mutation
+await window.__quiescence.waitUntilActionable(element, { interaction: 'click' })
+```
+
+The query API on `window.__quiescence` is a prototype of a proposed WebDriver
+BiDi module and its shape is expected to change; see
+[ADR 17886](https://github.com/SeleniumHQ/selenium/pull/17886). The source in
+`typescript/quiescence.ts` documents what it cannot observe.
+
 ## Versioning
 
 This package is released from the Selenium monorepo and shares its version with
