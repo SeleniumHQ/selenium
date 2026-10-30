@@ -146,9 +146,9 @@ module SeleniumRake
     end
   end
 
-  def self.verify_package_published(url)
+  def self.verify_package_published(url, timeout: 300)
     puts "Verifying #{url}..."
-    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 300
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
     loop do
       res = get_request(url)
       break if res.is_a?(Net::HTTPSuccess)

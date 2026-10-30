@@ -3,9 +3,19 @@
 require 'find'
 
 def python_version
-  File.foreach('py/BUILD.bazel') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('python')
+end
+
+unless defined?(MANAGER_PYTHON_WHEEL_TARGETS)
+  # Each package fans out to one wheel per platform tag it supports, so build the
+  # `wheels` filegroup rather than naming individual wheels here.
+  MANAGER_PYTHON_WHEEL_TARGETS = %w[
+    //py/selenium-manager-linux-x86-64:wheels
+    //py/selenium-manager-linux-aarch64:wheels
+    //py/selenium-manager-macos:wheels
+    //py/selenium-manager-windows-x86:wheels
+    //py/selenium-manager:wheels
+  ].freeze
 end
 
 desc 'Build Python wheel and sdist with optional arguments'
@@ -37,6 +47,8 @@ task :release do |_task, arguments|
   if nightly
     puts 'Updating Python version to nightly...'
     Rake::Task['py:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one is dev0
+    SeleniumRake.write_version('python', python_version.sub(/dev0$/, "dev#{Time.now.strftime('%Y%m%d%H%M')}"))
     ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
@@ -52,7 +64,9 @@ end
 
 desc 'Copy known generated files for local development (use `./go py:local_dev all` to copy everything)'
 task :local_dev, [:all] do |_task, arguments|
-  Bazel.execute('build', [], '//py:selenium-wheel')
+  Bazel.execute('build', [], %w[//py:selenium-wheel //py:version-py-release])
+  FileUtils.rm_f('py/selenium/_version.py')
+  FileUtils.cp(File.realpath('bazel-bin/py/release/selenium/_version.py'), 'py/selenium/_version.py')
 
   bazel_bin = 'bazel-bin/py/selenium/webdriver'
   lib_path = 'py/selenium/webdriver'
@@ -98,7 +112,7 @@ end
 
 desc 'Generate and stage Python documentation'
 task :docs do |_task, arguments|
-  if python_version.match?(/^\d+\.\d+\.\d+\.\d+$/) && !arguments.to_a.include?('force')
+  if python_version.include?('dev') && !arguments.to_a.include?('force')
     abort('Aborting documentation update: nightly versions should not update docs.')
   end
 
@@ -147,25 +161,40 @@ end
 desc 'Update Python version'
 task :version, [:version] do |_task, arguments|
   old_version = python_version
-  nightly = ".#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '.dev0')
   puts "Updating Python from #{old_version} to #{new_version}"
+  SeleniumRake.write_version('python', new_version)
+end
 
-  ['py/pyproject.toml',
-   'py/BUILD.bazel',
-   'py/selenium/__init__.py',
-   'py/selenium/webdriver/__init__.py',
-   'py/docs/source/conf.py'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, 'w') { |f| f.puts text }
+desc 'Release selenium-manager Python packages to PyPI (use dry-run to build without uploading)'
+task :release_manager do |_task, arguments|
+  args = arguments.to_a
+  nightly = args.include?('nightly')
+  dry_run = args.include?('dry-run')
+  config = args.include?('rbe') ? 'rbe_release' : 'release'
+  Rake::Task['py:check_credentials'].invoke(*args) unless dry_run
+
+  if nightly
+    # The manager wheels take the binding's version. Reuse a nightly version that
+    # py:release already stamped, so the manager matches the selenium wheel beside it.
+    unless python_version.match?(/dev\d{12}$/)
+      Rake::Task['py:version'].invoke('nightly')
+      SeleniumRake.write_version('python', python_version.sub(/dev0$/, "dev#{Time.now.strftime('%Y%m%d%H%M')}"))
+    end
+    ENV['TWINE_PASSWORD'] = ENV.fetch('TWINE_NIGHTLY_PASSWORD', nil)
   end
 
-  old_short_version = old_version.split('.')[0..1].join('.')
-  new_short_version = new_version.split('.')[0..1].join('.')
+  if dry_run
+    MANAGER_PYTHON_WHEEL_TARGETS.each do |target|
+      puts "Dry-run: #{target}"
+      Bazel.execute('build', ["--config=#{config}"], target)
+    end
+    next
+  end
 
-  conf = 'py/docs/source/conf.py'
-  text = File.read(conf).gsub(old_short_version, new_short_version)
-  File.open(conf, 'w') { |f| f.puts text }
+  command = nightly ? '//py:selenium-manager-release-nightly' : '//py:selenium-manager-release'
+  puts "Running selenium-manager Python release command: #{command}"
+  Bazel.execute('run', ["--config=#{config}"], command)
 end
 
 desc 'Format Python code with ruff'

@@ -23,21 +23,8 @@ require 'selenium/server'
 module Selenium
   describe Server do
     let(:mock_process) { instance_double(WebDriver::ChildProcess).as_null_object }
-    let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
     let(:port) { 4321 }
     let(:jar) { 'selenium_server_deploy.jar' }
-    let(:example_json) do
-      [{url: "#{repo}/41272273",
-        assets: {
-          name: 'selenium-server-3.141.59.jar',
-          browser_download_url: "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
-        }},
-       {url: "#{repo}/51272273",
-        assets: {
-          name: 'selenium-server-10.0.1.jar',
-          browser_download_url: "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
-        }}].to_json
-    end
 
     before { allow(File).to receive(:exist?).with(jar).and_return(true) }
 
@@ -120,60 +107,80 @@ module Selenium
       end
     end
 
-    it 'downloads the specified version from the selenium site' do
-      required_version = '10.0.1'
-      expected_download_file_name = "selenium-server-#{required_version}.jar"
+    context 'with a jar in the Selenium Manager cache' do
+      let(:cached_jar) { File.expand_path('cache/grid/10.0.1/selenium-server-10.0.1.jar') }
 
-      stub_request(:get, repo).to_return(body: example_json)
+      around do |example|
+        Dir.mktmpdir { |dir| Dir.chdir(dir) { example.run } }
+      end
 
-      stub_request(:get, "#{repo}/selenium-10.0.1/#{expected_download_file_name}")
-        .to_return(headers: {location: 'https://github-releases.githubusercontent.com/something'})
+      before do
+        FileUtils.mkdir_p(File.dirname(cached_jar))
+        File.write(cached_jar, 'cached jar')
+        allow(WebDriver::SeleniumManager).to receive(:binary_paths).and_return({'driver_path' => cached_jar})
+      end
 
-      stub_request(:get, 'https://github-releases.githubusercontent.com/something')
-        .to_return(body: 'this is pretending to be a jar file for testing purposes')
+      describe '.download' do
+        it 'asks Selenium Manager for the latest server by default' do
+          expect(described_class.download).to eq('selenium-server-10.0.1.jar')
 
-      Dir.mktmpdir do |dir|
-        Dir.chdir(dir) do
-          actual_download_file_name = described_class.download(required_version)
-          expect(actual_download_file_name).to eq(expected_download_file_name)
-          expect(File).to exist(expected_download_file_name)
+          expect(WebDriver::SeleniumManager).to have_received(:binary_paths).with('--grid')
+        end
+
+        it 'asks Selenium Manager for the latest server when given :latest' do
+          expect(described_class.download(:latest)).to eq('selenium-server-10.0.1.jar')
+
+          expect(WebDriver::SeleniumManager).to have_received(:binary_paths).with('--grid')
+        end
+
+        it 'asks Selenium Manager for the given version' do
+          expect(described_class.download('10.0.1')).to eq('selenium-server-10.0.1.jar')
+
+          expect(WebDriver::SeleniumManager).to have_received(:binary_paths).with('--grid', '10.0.1')
+        end
+
+        it 'copies the cached jar into the current directory' do
+          described_class.download
+
+          expect(File.read('selenium-server-10.0.1.jar')).to eq('cached jar')
+          expect(File).to exist(cached_jar)
+        end
+
+        it 'does not ask Selenium Manager when the jar is already in the current directory' do
+          File.write('selenium-server-10.0.1.jar', 'existing jar')
+
+          expect(described_class.download('10.0.1')).to eq('selenium-server-10.0.1.jar')
+
+          expect(WebDriver::SeleniumManager).not_to have_received(:binary_paths)
+          expect(File.read('selenium-server-10.0.1.jar')).to eq('existing jar')
+        end
+
+        it 'raises Selenium::Server::Error when Selenium Manager fails' do
+          allow(WebDriver::SeleniumManager).to receive(:binary_paths)
+            .and_raise(WebDriver::Error::WebDriverError, 'Unsuccessful command executed')
+
+          expect {
+            described_class.download('99.99.99')
+          }.to raise_error(described_class::Error, /Unsuccessful command executed/)
         end
       end
-    end
 
-    it 'gets a server instance for the specified version' do
-      allow(File).to receive(:exist?).with('selenium-server-10.4.0.jar').and_return(true)
+      describe '.latest' do
+        it 'downloads the latest server and reports its version' do
+          expect(described_class.latest).to eq('10.0.1')
 
-      server = described_class.get('10.4.0', port: port)
-
-      expect(server).to be_a(described_class)
-      expect(server.port).to eq(port)
-    end
-
-    it 'automatically repairs http_proxy settings that do not start with http://' do
-      with_env('http_proxy' => 'proxy.com') do
-        expect(described_class.net_http_start('example.com', &:proxy_address)).to eq('proxy.com')
+          expect(File).to exist('selenium-server-10.0.1.jar')
+        end
       end
 
-      with_env('HTTP_PROXY' => 'proxy.com') do
-        expect(described_class.net_http_start('example.com', &:proxy_address)).to eq('proxy.com')
+      describe '.get' do
+        it 'builds a server for the downloaded jar with the given options' do
+          server = described_class.get('10.0.1', port: port)
+
+          expect(server).to be_a(described_class)
+          expect(server.port).to eq(port)
+        end
       end
-    end
-
-    it 'only downloads a jar if it is not present in the current directory' do
-      required_version = '10.2.0'
-      expected_download_file_name = "selenium-server-#{required_version}.jar"
-      allow(File).to receive(:exist?).with(expected_download_file_name).and_return(true)
-
-      expect(described_class.download(required_version)).to eq(expected_download_file_name)
-    end
-
-    it 'knows what the latest version available is' do
-      expected_latest = '10.0.1'
-
-      stub_request(:get, repo).to_return(body: example_json)
-
-      expect(described_class.latest).to eq(expected_latest)
     end
 
     it 'sets options after instantiation' do

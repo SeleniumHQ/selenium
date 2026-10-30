@@ -57,8 +57,8 @@ end
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
   base = 'https://api.nuget.org/v3/registration5-semver1'
-  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json")
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json", timeout: 900)
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json", timeout: 900)
 end
 
 desc 'Generate and stage .NET documentation'
@@ -79,8 +79,8 @@ end
 
 desc 'Install .NET packages to local NuGet cache'
 task :install do
-  Bazel.execute('build', [], '//dotnet/src/webdriver:webdriver-pack')
-  Bazel.execute('build', [], '//dotnet/src/support:support-pack')
+  Bazel.execute('build', ['--stamp'], '//dotnet/src/webdriver:webdriver-pack')
+  Bazel.execute('build', ['--stamp'], '//dotnet/src/support:support-pack')
   Dir.glob('bazel-bin/dotnet/src/**/*.nupkg').each do |nupkg|
     sh 'dotnet', 'nuget', 'push', nupkg, '--source', "#{Dir.home}/.nuget/packages"
   end

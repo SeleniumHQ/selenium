@@ -1,3 +1,14 @@
+0.4.52
+======
+* stop resolving a Java runtime on --grid so the jar lookup no longer depends on a JRE download (#18157)
+* Update Selenium Manager dependencies (#18202)
+* Remove fs2 crate and use standard mechanism for file lock (#18203)
+* Use sevenz_rust2 create instead of sevenz_rust (unmaintained) (#18204)
+* return the cached artifact once the lock is held instead of re-downloading (#18206)
+* Validate TLS certificates in Selenium Manager HTTP client (#18220)
+* Add opt-in insecure mode to Selenium Manager (#18222)
+* Create Selenium Manager HTTP client on first use and explain TLS certificate errors (#18224)
+
 0.4.51
 ======
 * Degrade to empty metadata when the cache cannot be read (#18101)

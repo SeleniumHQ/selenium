@@ -31,7 +31,7 @@ permissions:
 
 # RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
-  # Prettier is checked by ci-lint.yml.
+  # Prettier is checked by the Format job in ci.yml.
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
@@ -39,6 +39,8 @@ jobs:
       name: Lint
       run: bazel test //javascript/selenium-webdriver:eslint-test
 
+  # Tests on 22.23.4 (earliest supported version) are run in smoke and RBE.
+  # This job covers the latest supported version.
   unit-tests:
     name: Unit Tests
     if: github.event_name == 'schedule' || !inputs.smoke
@@ -46,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['24.14.1']
+        node-version: ['26.12.1']
         os: [ubuntu]
     with:
       name: Unit Tests (${{ matrix.node-version }}, ${{ matrix.os }})

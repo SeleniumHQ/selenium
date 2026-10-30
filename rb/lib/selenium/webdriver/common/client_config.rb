@@ -44,7 +44,7 @@ module Selenium
       # @param [Numeric] read_timeout Seconds to wait for a response.
       # @param [Integer] max_redirects Maximum number of redirects to follow.
       # @param [Proxy] proxy Proxy to use for the connection.
-      # @param [Boolean, nil] ignore_certificates Skip verifying the server certificate; nil verifies but falls back with a deprecation.
+      # @param [Boolean] ignore_certificates Skip verifying the server certificate (unsafe outside a trusted network).
       # @param [Hash] extra_headers Additional headers to send with each request.
       # @param [String] user_agent Value to send as the User-Agent header.
       # @param [String, URI] server_url URL of the server to connect to.
@@ -53,7 +53,7 @@ module Selenium
                      read_timeout: 120,
                      max_redirects: 20,
                      proxy: nil,
-                     ignore_certificates: nil,
+                     ignore_certificates: false,
                      extra_headers: nil,
                      user_agent: nil,
                      server_url: nil)

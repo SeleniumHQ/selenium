@@ -448,6 +448,7 @@ class WebElement(BaseWebElement):
             warnings.warn(
                 "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.screenshot_as_png
         try:

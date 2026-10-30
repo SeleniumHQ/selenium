@@ -15,7 +15,7 @@ csharp_library(
             "obj/**",
         ],
     ),
-    out = "Testing.NUnit",
+    out = "Selenium.Testing.NUnit",
     interceptors_namespaces = ["Microsoft.Extensions.Configuration.Binder.SourceGeneration"],
     project_sdk = "web",
     target_frameworks = ["net10.0"],

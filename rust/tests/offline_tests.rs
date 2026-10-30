@@ -31,3 +31,15 @@ fn offline_test() {
 
     assert!(stdout.contains("offline mode"));
 }
+
+#[test]
+#[cfg(target_os = "linux")]
+fn offline_without_ca_certificates_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.env("SSL_CERT_FILE", "/dev/null")
+        .env_remove("SSL_CERT_DIR")
+        .args(["--browser", "chrome", "--offline"])
+        .assert()
+        .success()
+        .code(0);
+}

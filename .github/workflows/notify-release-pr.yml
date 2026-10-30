@@ -1,0 +1,38 @@
+name: Release - Notify PR Failure
+
+on:
+  workflow_run:
+    workflows: ["CI", "CI - RBE"]
+    types: [completed]
+    branches: ["release-preparation-*"]
+
+permissions: {}
+
+jobs:
+  notify:
+    name: Notify
+    if: >-
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find the open release PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          number=$(gh pr list --head "$BRANCH" --base trunk --author selenium-ci --state open --json number --jq '.[0].number')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Slack Notification
+        if: steps.pr.outputs.number
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ':rotating_light:'
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: "Release PR not merged: ${{ github.event.workflow_run.name }} failed on ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.pr.outputs.number }}. Re-run the failed workflow once fixed, or close the PR to unlock trunk. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -49,6 +49,7 @@ module Selenium
 
           describe '#set_forced_colors_mode_theme_override',
                    pending_if: [{browser_family: :chromium,
+                                 version: 'stable',
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
                                  reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
@@ -204,8 +205,8 @@ module Selenium
           describe '#set_text_layout_mode_override',
                    pending_if: [{browser_family: :chromium,
                                  version: 'stable',
-                                 exception: {class: Error::UnknownCommandError},
-                                 reason: 'Chromium returns unknown command for setTextLayoutModeOverride'},
+                                 exception: {class: Error::UnsupportedOperationError},
+                                 reason: 'Chromium unsupported operation: emulation.setTextLayoutModeOverride'},
                                 {browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for setTextLayoutModeOverride'}] do
