@@ -5,42 +5,25 @@
 
 ## Context
 
-Agents and LLM-driven tools increasingly read pages through an accessibility snapshot rather
-than the DOM or a screenshot: a tree of roles, names and states is compact, semantically
-dense, and maps to how a user would describe an action. Playwright (`locator.ariaSnapshot()`)
-and Puppeteer (`page.accessibility.snapshot()`) both offer this, and WebdriverIO now ships
-`@wdio/snapshot`. Selenium does not. Users who need one write their own; the third-party
-`angiejones/mcp-selenium` server, for example, added its own accessibility snapshot in
-February 2026 (see also the discussion in #15969).
+Agents and LLM-driven tools increasingly read pages through an accessibility snapshot: a tree of
+roles, names and states that is compact and maps to how a user would describe an action.
+Playwright (`locator.ariaSnapshot()`), Puppeteer (`page.accessibility.snapshot()`) and
+WebdriverIO (`@wdio/snapshot`) offer one. Selenium does not, so users write their own (see
+#15969).
 
 WebDriver BiDi has no accessibility tree command. The request has been open as
-[w3c/webdriver-bidi#443](https://github.com/w3c/webdriver-bidi/issues/443) since 2023, and
-part of it (querying by role and name) was resolved by the `accessibility` locator in
-`browsingContext.locateNodes`. When the WG discussed the remainder in September 2024
-([minutes](https://www.w3.org/2024/09/27-webdriver-minutes.html)), orkon said it could not be
-implemented without agreement on what the tree looks like. jgraham said he did not expect trees
-to be comparable between browsers in the near future. accname and core-AAM define how an
-element's name and role are computed and mapped to platform APIs, but the tree itself is a
-platform construct, and Chromium, Gecko and WebKit build it differently. A tree command would
-have to settle node inclusion and pruning, what "hidden" means, shadow DOM flattening,
-cross-origin iframes, and CSS-generated content.
+[w3c/webdriver-bidi#443](https://github.com/w3c/webdriver-bidi/issues/443) since 2023 and has
+stalled on the lack of an agreed tree: accname and core-AAM define names and role mappings, but
+Chromium, Gecko and WebKit build the tree itself differently, and a command would have to settle
+node inclusion, hidden semantics, shadow DOM flattening, cross-origin iframes and CSS-generated
+content. [w3c/webdriver-bidi#1164](https://github.com/w3c/webdriver-bidi/issues/1164) brings
+agentic use cases into the WG's scope, but nothing yet defines a tree.
 
-Some work is in progress. As part of the Interop 2025 accessibility investigation, geckodriver
-and safaridriver have prototypes that expose per-node internal accessibility properties.
-Tentative testdriver methods for them were accepted in WPT RFC 226 (February 2026). Separately,
-[w3c/webdriver-bidi#1164](https://github.com/w3c/webdriver-bidi/issues/1164) brings agentic use
-cases into the WG's scope. The accessibility tree is cited there as an example feature, the
-revised charter is expected to take effect in October 2026, and the topic is in the TPAC 2026
-agenda topic bank. None of this yet defines a tree.
-
-There is precedent for exposing accname-derived data without a tree: the `locateNodes`
-accessibility locator, and Get Computed Role / Get Computed Label in classic WebDriver, which
-every binding already exposes on its element type (`getAriaRole` / `getAccessibleName` and
-equivalents). Chromium exposes its full native tree over CDP (`Accessibility.getFullAXTree`),
-which Puppeteer uses. Playwright's `ariaSnapshot()` and `@wdio/snapshot` both compute the tree
-with script injected into the page; `@wdio/snapshot` uses `dom-accessibility-api`, the role and
-name library Testing Library also uses. Playwright's YAML output has become a de facto format in
-agent tooling.
+There is precedent for exposing accname-derived data without a tree: the `accessibility` locator
+in `browsingContext.locateNodes`, and Get Computed Role / Get Computed Label in classic
+WebDriver. Chromium exposes its native tree over CDP (`Accessibility.getFullAXTree`), which
+Puppeteer uses; Playwright and `@wdio/snapshot` compute the tree with injected script.
+Playwright's YAML output has become a de facto format in agent tooling.
 
 ## Decision
 
@@ -144,9 +127,18 @@ accuracy fixes, not schema changes, and can ship in any release.
 
 Every node backed by an element carries that element as a BiDi `SharedReference`, produced by
 ordinary `script.callFunction` result serialization with `maxDomDepth: 0`. Bindings surface it
-as their normal element type, so a snapshot node can be clicked, typed into, or used as the root
-of a further snapshot without a second lookup. Shared ids are scoped to the document, not the
-realm, so references created in the sandbox are valid everywhere else. Text leaves and nodes
+as their normal element type, so a snapshot node can be used without a second lookup. Shared ids
+are scoped to the document, not the realm, so references created in the sandbox are valid in any
+realm of that document.
+
+Where a reference can be used depends on the command. BiDi commands that take a
+`SharedReference` accept it from any frame, and so does a subtree snapshot. Classic element
+commands (click, send keys, and the rest) resolve references against the driver's current
+frame, so they work only while the driver is switched into the node's document; otherwise they
+raise "no such element". That applies to a node inside a child frame when the driver is at the
+top level, and to a top-level node when the driver is switched into a frame. Bindings do not
+switch frames implicitly, because that changes the session's current browsing context as a side
+effect. The `iframe` nodes on the path to a node carry the elements needed to switch there. Text leaves and nodes
 with no element of their own (CSS-generated content, and any node the walk synthesizes) carry no
 reference. Bindings' element types represent elements only, so text leaves do not reference
 their `Text` node. The tree follows accessibility parentage, so with `aria-owns` a node's tree
@@ -191,100 +183,76 @@ parent and its DOM parent can differ; the reference still identifies the element
 ## Considered options
 
 **Delivery**
-- **Propose the spec first and wait.** This is the correct end state, and #443 already exists to
-  carry it. But it has been open since 2023 without consensus on the tree, and waiting leaves
-  Selenium without the capability for an open-ended period. Rejected as the *first* step; it
-  remains the second.
-- **Use CDP directly, Chromium only.** Gives high fidelity in one engine and nothing elsewhere.
-  It also adds new CDP surface that Selenium is trying to move users off, and produces output
-  tied to Chromium's internal tree rather than anything that could be standardised. Rejected.
+- **Propose the spec first and wait.** The right end state, but #443 has had no consensus on the
+  tree since 2023. Rejected as the first step; it remains the second.
+- **Use CDP directly, Chromium only.** High fidelity in one engine, nothing elsewhere, more CDP
+  surface, and output tied to Chromium's internal tree. Rejected.
 
 **Session types**
-- **Also support WebDriver Classic via Execute Script.** The atom could run through Execute
-  Script, and classic element references would work. But classic has no sandbox realm, so page
-  scripts can break the walk; cross-origin frames can only be reached by switching frames, which
-  changes the session's current browsing context as a side effect; and two code paths would have
-  to produce identical output. Rejected for now; it can be revisited in a later record if users
-  on classic-only remote ends ask for it.
+- **Also support WebDriver Classic via Execute Script.** Classic has no sandbox realm, reaching
+  cross-origin frames means switching the current frame, and two code paths would have to match.
+  Rejected for now; a later record can revisit it if classic-only users ask.
 
 **Data model**
-- **Adopt Playwright's YAML as the primary interface.** Agents already consume it, but it is
-  a lossy text rendering whose format is controlled by another project. It cannot carry element
-  references for follow-up actions, and it is the wrong thing to propose for a protocol.
-  Rejected as the data model. Kept as the text rendering.
-- **Leave the schema to the implementing PR.** This was the first draft of this record. Because
-  the output shape is a compatibility commitment across five bindings, leaving it open would let
-  the first binding to ship define it by accident. Rejected.
-- **Reference text nodes as well as elements.** BiDi can serialize a `Text` node as a shared
-  reference, but no binding's element type represents one and nothing useful can be done with it
-  through the existing APIs. Rejected.
+- **Adopt Playwright's YAML as the primary interface.** A lossy rendering whose format another
+  project controls, with no element references. Kept as the text rendering only.
+- **Leave the schema to the implementing PR.** The first binding to ship would define a
+  five-binding compatibility commitment by accident. Rejected.
+- **Reference text nodes as well as elements.** No binding's element type can represent a `Text`
+  node. Rejected.
 
 **API placement**
-- **A dedicated `accessibility` namespace.** Leaves room to grow, but two methods do not justify
-  it, and the existing accessibility methods (`getAriaRole`, `getAccessibleName`) already live
-  on the element. Rejected.
-- **A single driver method taking an optional root element.** Equivalent in power to the two
-  methods, but puts element scoping on the driver when the existing accessibility methods put it
-  on the element. Rejected.
+- **A dedicated `accessibility` namespace, or one driver method with an optional root.** The
+  existing accessibility methods (`getAriaRole`, `getAccessibleName`) live on the element, and two
+  methods do not justify a namespace. Rejected.
 
 **Implementation source**
-- **Reuse `@wdio/snapshot` directly.** It already works over BiDi and classic and handles
-  scoping and iframes. But its primary output is a text tree with refs stored in page globals,
-  it is built around WebdriverIO's session model and Appium page sources, and the bindings
-  could not consume it without shipping a second project's release cadence inside every
-  Selenium release. Rejected.
-- **Ask WebdriverIO to depend on `@selenium/atoms`.** This would give byte-identical output, but
-  WebdriverIO has just shipped its own collector and has no reason to replace it. Rejected.
-- **Build on `dom-accessibility-api`.** This is an independent, MIT-licensed accname
-  implementation used by Testing Library and `@wdio/snapshot`, and it would remove most of the
-  accname work. But it is pre-1.0 with a single maintainer, so fixing divergences would depend
-  on one person's priorities and releases, and it would ship inside every Selenium release. It
-  would also make Selenium's output match WebdriverIO's by construction, leaving no independent
-  implementation to compare against. Rejected; we accept the maintenance cost of our own
-  implementation instead.
+- **Reuse `@wdio/snapshot`, or ask WebdriverIO to depend on `@selenium/atoms`.** Its output is a
+  text tree with refs in page globals, built around WebdriverIO's session model, and either way
+  one project would ship the other's release cadence. Rejected.
+- **Build on `dom-accessibility-api`.** A pre-1.0, single-maintainer dependency inside every
+  release, and output identical to WebdriverIO's by construction, leaving nothing independent to
+  compare. Rejected; we accept the cost of our own implementation.
+
+**Text rendering**
+- **Render the text in the atom.** One renderer instead of five. But the atom runs once per
+  document and never sees the stitched tree, so the binding would have to send the whole tree back
+  into the page (about 366 KB for 5,000 nodes) for an extra round trip, and a saved or
+  deserialized `AccessibilityNode` could not render without a live session. The grammar is small
+  and fixed, and every binding's output is checked against the corpus's expected text, so drift
+  fails a test. Rejected.
 
 ## Consequences
 
-- **Availability over fidelity.** Users get a snapshot in every BiDi-capable browser soon,
-  but the snapshot comes from script rather than from the browser's tree. Where they differ,
-  the browser's tree is what assistive technology users actually encounter.
-- **Known inaccuracy at the edges.** Name computation will not match each engine exactly.
-  `display: contents`, CSS-generated content, closed shadow roots and engine-specific pruning
-  are the expected problem areas. Script cannot see into a closed shadow root, so the host's
-  light-DOM children are walked as if rendered, and `aria-owns` on an element inside a shadow
-  tree is not applied. One divergence is already known: Chromium keeps leading
-  whitespace in accessible names (`" Logout"` for an icon followed by text), which
-  script-computed names trim, so a computed name passed to the `locateNodes` accessibility
-  locator can match nothing (webdriverio/webdriverio#16131). The *computed* label and the
-  divergence document are how we stop users treating the output as an accessibility audit.
-- **Format drift.** Playwright controls the format agents have been trained on. The text
-  rendering follows their line grammar and role/state vocabulary, so if Playwright changes its
-  format we will have to follow it or explain the difference. Selenium's and WebdriverIO's trees
-  may also differ, and users moving between the two will see it.
-- **Element references.** Acting on a snapshot node needs no re-query by role and name, which
-  sidesteps the name-divergence problem above and is something Playwright's text format can
-  only approximate with page-global ref strings. References share the lifetime of the
-  document: after navigation they raise the binding's stale element error, and callers take a
-  new snapshot. Each reference adds serialization overhead per node, so the first implementation
-  should measure large trees; an option to omit references would be an additive change. As a
-  first data point, a 5,000-node tree is about 366 KB as plain JSON before BiDi serialization
-  adds references.
-- **Classic users get nothing.** Users on remote ends without BiDi get a clear error rather than
-  a snapshot. Given the direction of the project this is acceptable, but it is a visible gap.
-- **Maintenance.** We own an accname and role implementation, the tree walk, the shared test
-  corpus, and five bindings' frame stitching and text renderers until a native command exists.
-  accname and html-aam keep changing, and keeping up with them is the largest ongoing cost in
-  this design. In return we can fix divergences directly, without waiting on an upstream library,
-  and the comparison with `@wdio/snapshot` shows whether that control is producing a more
-  accurate tree. The package's existing atoms are small primitives behind WebDriver commands;
-  this one is larger and implements no spec command, so the computed-not-authoritative label
-  applies to the package as well.
-- **What the module has to produce for #443.** The schema above, a list of divergences
-  from each engine's native tree with test cases, and evidence of which node types, states and
-  scoping options people actually use, including how often element references are used for
-  follow-up commands. If they are, a native command should return a `SharedReference` for each
-  element-backed node; CDP's tree already carries a DOM node id per node, which suggests this is
-  feasible at least in Chromium. The 2024 discussion stalled on the lack of an agreed tree
-  shape, so a concrete schema, plus a comparison of two independent script implementations
-  against native trees, is the most useful thing we can bring.
-  Without that evidence the module is just an alternative to the spec, not input to it.
+- **Availability over fidelity.** Users get a snapshot in every BiDi-capable browser soon, but
+  computed by script; where it differs from the browser's tree, the browser's tree is what
+  assistive technology users encounter.
+- **Known inaccuracy at the edges.** Name computation, `display: contents`, CSS-generated
+  content, closed shadow roots and engine-specific pruning will diverge. One case is already
+  known: Chromium keeps leading whitespace in names (`" Logout"`) that script trims, so a computed
+  name passed to the `locateNodes` accessibility locator can match nothing
+  (webdriverio/webdriverio#16131). The *computed* label and the divergence list exist to stop
+  users treating the output as an accessibility audit.
+- **Format drift.** The text rendering follows Playwright's grammar, so if Playwright changes it
+  we follow or document the difference. Selenium's and WebdriverIO's trees may also differ.
+- **Element references.** Acting on a node needs no re-query by role and name, which sidesteps
+  the name divergence above. References die with their document (stale element error), and add
+  per-node serialization cost that the first implementation should measure; an option to omit
+  them would be additive.
+- **Frame references and Classic commands.** Until element actions are dispatched over BiDi, a
+  node outside the driver's current frame needs a frame switch before Classic commands work on it.
+  Routing click and send keys through `input.performActions` would remove that, but it changes how
+  element actions are dispatched generally, so it needs its own record. This is the known gap and
+  the likely follow-up.
+- **Classic users get nothing.** Remote ends without BiDi get a clear error. Acceptable given the
+  project's direction, but a visible gap.
+- **Maintenance.** We own an accname and role implementation, the tree walk, the corpus, and five
+  bindings' stitching and renderers until a native command exists. Keeping up with accname and
+  html-aam is the largest ongoing cost; in return we fix divergences directly, and the comparison
+  with `@wdio/snapshot` shows whether that control pays off.
+- **What the module has to produce for #443.** The schema, a divergence list against each engine's
+  native tree with test cases, and evidence of which node types, states and scoping options are
+  used, including how often element references drive follow-up commands. If they do, a native
+  command should return a `SharedReference` per element-backed node; CDP's tree already carries
+  DOM node ids, which suggests this is feasible in Chromium. Without that evidence the module is an
+  alternative to the spec, not input to it.
