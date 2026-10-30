@@ -35,10 +35,13 @@ CDDL-generated low-level commands:
   ``script.message`` channel subscription, and dispatches :class:`DomMutation`
   payloads.  Beyond attribute changes it can observe ``childList`` and
   ``characterData`` mutations on request.
-- :class:`PinnedScript` and :class:`ScriptResult` implement the design doc's
-  pinned-script surface: ``pin()`` returns a :class:`PinnedScript` (a ``str``
-  subclass, so code treating it as a plain script ID keeps working) and
-  ``execute(pinned, code)`` returns a non-raising :class:`ScriptResult`.
+- :func:`execute_pinned` implements ``execute(pinned, code)``, returning a
+  non-raising :class:`ScriptResult`.
+
+The payload types (:class:`ConsoleMessage`, :class:`ScriptError`,
+:class:`DomMutation`, :class:`PinnedScript`, :class:`ScriptResult`) are defined
+in ``selenium.webdriver.remote.script``, the supported API behind
+``driver.script``.
 """
 
 from __future__ import annotations
@@ -48,8 +51,18 @@ import logging
 import threading
 import uuid
 from collections.abc import Callable, Iterable
-from dataclasses import dataclass, field
 from typing import Any
+
+# The payload and handle types are part of the supported driver.script API, so
+# they live in a protocol-neutral module; importing them here keeps
+# selenium.webdriver.common.bidi.script.<name> importable.
+from selenium.webdriver.remote.script import (
+    ConsoleMessage,
+    DomMutation,
+    PinnedScript,
+    ScriptError,
+    ScriptResult,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -136,140 +149,6 @@ function observeMutations(channel, options) {
   observer.observe(document, observeInit)
 }
 """
-
-
-@dataclass
-class ScriptError:
-    """A JavaScript error observed in the browser.
-
-    Attributes:
-        message: The error message.
-        source: Source file/URL where the error occurred (top stack frame).
-        line_number: Line number of the error.
-        column_number: Column number of the error.
-        stack_trace: Formatted stack trace, one ``at function (url:line:col)``
-            line per frame.
-        timestamp: Time the entry was generated, in milliseconds since epoch.
-    """
-
-    message: str | None = None
-    source: str | None = None
-    line_number: int | None = None
-    column_number: int | None = None
-    stack_trace: str | None = None
-    timestamp: float | None = None
-
-
-@dataclass
-class ConsoleMessage:
-    """A console message observed in the browser.
-
-    Attributes:
-        level: Console level (``debug``, ``info``, ``warn`` or ``error``).
-        text: The console message text.
-        source: Source file/URL the message originated from (top stack frame).
-        line_number: Line number where the message originated.
-        column_number: Column number where the message originated.
-        stack_trace: Formatted stack trace where available.
-        timestamp: Time the entry was generated, in milliseconds since epoch.
-        method: The console method used (e.g. ``log``, ``warn``).
-        args: The raw BiDi RemoteValue arguments passed to the console call.
-    """
-
-    level: str | None = None
-    text: str | None = None
-    source: str | None = None
-    line_number: int | None = None
-    column_number: int | None = None
-    stack_trace: str | None = None
-    timestamp: float | None = None
-    method: str | None = None
-    args: list[Any] | None = None
-
-
-@dataclass
-class ScriptResult:
-    """Result of executing a pinned script, without raising on failure.
-
-    Attributes:
-        value: The BiDi RemoteValue result of the execution, or ``None``
-            when the script raised.
-        error: A :class:`ScriptError` describing the failure, or ``None``
-            on success.
-        realm: The realm the script was executed in.
-    """
-
-    value: Any | None = None
-    error: ScriptError | None = None
-    realm: str | None = None
-
-
-class PinnedScript(str):
-    """Identifier of a pinned script, as returned by ``Script.pin()``.
-
-    Subclasses ``str`` so existing code that treats the return value of
-    ``pin()`` as a plain script ID string keeps working, while exposing the
-    cross-binding API design's ``id``, ``source`` and ``realm`` properties.
-    """
-
-    def __new__(cls, script_id: str, source: str | None = None, realm: str | None = None):
-        instance = super().__new__(cls, script_id)
-        instance._source = source
-        instance._realm = realm
-        return instance
-
-    @property
-    def id(self) -> str:
-        """The unique identifier of the pinned script."""
-        return str(self)
-
-    @property
-    def source(self) -> str | None:
-        """The JavaScript source the script was pinned with."""
-        return self._source
-
-    @property
-    def realm(self) -> str | None:
-        """The realm the script is associated with, where known."""
-        return self._realm
-
-    def __repr__(self) -> str:
-        return f"PinnedScript(id={str.__repr__(self)}, realm={self._realm!r})"
-
-
-@dataclass
-class DomMutation:
-    """Represents a DOM mutation event from add_dom_mutation_handler.
-
-    Attributes:
-        element_id: The ``data-__webdriver_id`` attribute value set on the
-            mutated element by the MutationObserver. Use this to locate the
-            element from the main thread if needed.  For ``characterData``
-            mutations this identifies the parent element of the text node.
-        attribute_name: The name of the changed attribute (``attributes``
-            mutations only).
-        current_value: The value after the mutation (attribute value or
-            character data; ``None`` if the attribute was removed).
-        old_value: The value before the mutation.
-        type: The mutation type: ``attributes``, ``childList`` or
-            ``characterData``.
-        target: Same identifier as ``element_id``; named per the
-            cross-binding BiDi API design.
-        added_nodes: Node descriptors added by a ``childList`` mutation.
-            Element descriptors carry ``nodeType``/``nodeName``/``id``
-            (a ``data-__webdriver_id`` value); other nodes carry
-            ``nodeType``/``nodeName``/``value``.
-        removed_nodes: Node descriptors removed by a ``childList`` mutation.
-    """
-
-    element_id: str | None = None
-    attribute_name: str | None = None
-    current_value: str | None = None
-    old_value: str | None = None
-    type: str | None = None
-    target: str | None = None
-    added_nodes: list[Any] = field(default_factory=list)
-    removed_nodes: list[Any] = field(default_factory=list)
 
 
 def _stack_frames(stack_trace: Any) -> list[dict]:

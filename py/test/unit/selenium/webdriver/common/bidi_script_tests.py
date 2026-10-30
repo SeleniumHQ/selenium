@@ -411,7 +411,8 @@ def test_pin_returns_pinned_script():
     assert pinned == "preload-1"
     assert pinned.id == "preload-1"
     assert pinned.source == "function helper() { return 1; }"
-    assert pinned.realm is None
+    with pytest.warns(DeprecationWarning, match="PinnedScript.realm"):
+        assert pinned.realm is None
 
     script.unpin(pinned)
     removed = conn.commands_named("script.removePreloadScript")
