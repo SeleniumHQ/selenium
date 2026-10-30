@@ -124,10 +124,10 @@ js_library(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/78eb886e-d4b1-4efe-a623-075a0e576c65/MicrosoftEdge-156.0.4314.50.pkg",
-        sha256 = "b296b943ba258a8f678a6dc57a5d0f8889929480cb28808738947deb417ab94a",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/7503e2d6-8664-4bec-8d8b-cfbe1c60e4d6/MicrosoftEdge-156.0.4314.56.pkg",
+        sha256 = "a6c291a78fd591a712152432331e04aad7cd76cb1a3f6889913f7ee3f89a3e29",
         move = {
-            "MicrosoftEdge-156.0.4314.50.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-156.0.4314.56.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -144,8 +144,8 @@ js_library(
 
     deb_archive(
         name = "linux_edge",
-        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_156.0.4314.50-1_amd64.deb",
-        sha256 = "0d0bc6303a8b935424e20afa7116c61dd7e7ccbca249c3cf49803ae343eacf8d",
+        url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_156.0.4314.56-1_amd64.deb",
+        sha256 = "808447677313fda7bb2b74a9428734d193a0b3d1d8308844ce29144fde6e2b82",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -200,8 +200,8 @@ js_library(
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.73/linux64/chrome-linux64.zip",
-        sha256 = "c51c24f0126534aaf6d21d1f85b8e243934b3951989dbb59a1f8aab8e32b20c1",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.80/linux64/chrome-linux64.zip",
+        sha256 = "b711c720f774be355197f32edf37e0651418ba036d92446ee2da19ac017540a7",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -221,8 +221,8 @@ js_library(
     )
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.73/mac-arm64/chrome-mac-arm64.zip",
-        sha256 = "a46be48ee2e33b3edc1a98a39668b9f0abb8f23f031bc4df195e2388e6de28d1",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.80/mac-arm64/chrome-mac-arm64.zip",
+        sha256 = "8bc590d1b1acac042a000234c768f31830f25a3983a83ed5e067114c87c4cad1",
         strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
@@ -242,8 +242,8 @@ js_library(
     )
     http_archive(
         name = "linux_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.73/linux64/chromedriver-linux64.zip",
-        sha256 = "7b168a60f0e27f74dd13cc51a66f4f48c5046d1108280e3d77bb5af873c0c8a6",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.80/linux64/chromedriver-linux64.zip",
+        sha256 = "cae58bbd262ba5c8a0ce2540f44254b6e789efc4fe9b18bbb4a00487a9f5859e",
         strip_prefix = "chromedriver-linux64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -260,8 +260,8 @@ js_library(
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.73/mac-arm64/chromedriver-mac-arm64.zip",
-        sha256 = "abb23cd13ac8d39201dd7f78a81941c4dbb6af008dc1245dc30ec04e879b3f41",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.80/mac-arm64/chromedriver-mac-arm64.zip",
+        sha256 = "b5fe5abe5a82ca3ac49b3f2ea9e177b63f82fc3a4227883e0eaa9894a6bf3b7f",
         strip_prefix = "chromedriver-mac-arm64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
