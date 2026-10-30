@@ -105,8 +105,8 @@ jobs:
         fi
       artifact-name: check-targets
       artifact-path: |
-        bazel-targets.txt
-        compile-manager.txt
+        build/bazel-targets.txt
+        build/selenium-manager-changed.txt
 
   read-targets:
     name: Read Targets
@@ -128,17 +128,18 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: check-targets
+          path: build
       - name: Use every target
         if: needs.targets-mode.outputs.mode == 'all'
-        run: echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
+        run: mkdir -p build && echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > build/bazel-targets.txt
       - name: Read targets
         id: read
         env:
           COMMIT_MESSAGES: ${{ join(github.event.commits.*.message, ' ') }}
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
-          if [ "$(cat compile-manager.txt 2>/dev/null)" = "true" ]; then
+          targets=$(cat build/bazel-targets.txt 2>/dev/null || echo "")
+          if [ "$(cat build/selenium-manager-changed.txt 2>/dev/null)" = "true" ]; then
             echo "compile-manager=true" >> "$GITHUB_OUTPUT"
           fi
           check_binding() {
