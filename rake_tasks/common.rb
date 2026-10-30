@@ -99,7 +99,7 @@ module SeleniumRake
     skip_patterns = /^(bump|update.*version|Bumping to nightly)/i
     tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
 
-    command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
+    command = "git log #{tag}...HEAD --pretty=format:%s --reverse -- #{path}"
     log = `#{command}`
     raise "Failed to generate changelog: #{command}" unless $CHILD_STATUS.success?
 

@@ -36,7 +36,7 @@ task :affected_targets do |_task, args|
   base_rev, head_rev = if range.include?('..')
                          range.split('..', 2)
                        else
-                         ["#{range}^", range]
+                         ["#{range}~1", range]
                        end
 
   puts "Commit range: #{base_rev}..#{head_rev}"
