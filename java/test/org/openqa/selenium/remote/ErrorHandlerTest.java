@@ -513,7 +513,6 @@ class ErrorHandlerTest {
 
   private Response createResponse(int status, Object value) {
     Response response = new Response();
-    response.setStatus(status);
     response.setState(new ErrorCodes().toState(status));
     response.setValue(value);
     return response;

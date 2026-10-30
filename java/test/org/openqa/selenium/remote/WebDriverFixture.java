@@ -30,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -167,7 +166,6 @@ class WebDriverFixture {
     return cmd -> {
       Response response = new Response();
       response.setState(state);
-      response.setStatus(new ErrorCodes().toStatus(state, Optional.of(400)));
       response.setValue(value);
       response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
       return response;
