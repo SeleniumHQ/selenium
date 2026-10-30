@@ -60,7 +60,7 @@ from selenium.webdriver.common.bidi.emulation import Emulation
 from selenium.webdriver.common.bidi.input import Input
 from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
-from selenium.webdriver.common.bidi.script import Script
+from selenium.webdriver.common.bidi.script import Script as BidiScript
 from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension as BidiWebExtension
@@ -76,6 +76,7 @@ from selenium.webdriver.remote.file_detector import FileDetector, LocalFileDetec
 from selenium.webdriver.remote.locator_converter import LocatorConverter
 from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.script import Script
 from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.remote.switch_to import SwitchTo
@@ -601,7 +602,7 @@ class WebDriver(BaseWebDriver):
         """Store a JavaScript script by a unique hashable ID for later execution.
 
         .. deprecated::
-            Use ``driver.script.pin()`` instead, which uses the WebDriver BiDi protocol.
+            Use ``driver.script.pin()`` instead.
 
         Example:
             `script = "return document.getElementById('foo').value"`
@@ -619,7 +620,7 @@ class WebDriver(BaseWebDriver):
         """Remove a pinned script from storage.
 
         .. deprecated::
-            Use ``driver.script.unpin()`` instead, which uses the WebDriver BiDi protocol.
+            Use ``driver.script.unpin()`` instead.
 
         Example:
             `driver.unpin(script_key)`
@@ -638,13 +639,13 @@ class WebDriver(BaseWebDriver):
         """Return a list of all pinned scripts.
 
         .. deprecated::
-            Use ``driver.script.pin()`` to manage preload scripts via the WebDriver BiDi protocol.
+            Use ``driver.script.pin()`` instead.
 
         Example:
             `pinned_scripts = driver.get_pinned_scripts()`
         """
         warnings.warn(
-            "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead",
+            "get_pinned_scripts is deprecated, use driver.script.pin() instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1270,11 +1271,21 @@ class WebDriver(BaseWebDriver):
 
     @property
     def script(self) -> Script:
+        """Pinned scripts, script execution and console, error and DOM-mutation handlers.
+
+        Returns:
+            The session's ``Script`` object.
+
+        Examples:
+            `total = driver.script.execute("(a, b) => a + b", 1, 2)`
+            `pinned = driver.script.pin("() => { window.helper = () => 42 }")`
+            `handler_id = driver.script.add_console_handler(messages.append)`
+        """
         if not self._websocket_connection:
             self._start_bidi()
 
         if not self._script:
-            self._script = Script(self._websocket_connection, self)
+            self._script = Script(BidiScript(self._websocket_connection, self), self)
 
         return self._script
 

@@ -380,7 +380,7 @@ def test_file_dialog_event_handler_multiple(driver, multiple):
     driver.get(f"data:text/html,<input id=upload type=file {'multiple' if multiple else ''} />")
 
     # Use script.evaluate to trigger the file dialog with user activation
-    driver.script._evaluate(
+    driver.script._script._evaluate(
         expression="document.getElementById('upload').click()",
         target={"context": driver.current_window_handle},
         await_promise=False,
@@ -418,7 +418,7 @@ def test_file_dialog_event_handler_unsubscribe(driver):
     driver.get("data:text/html,<input id=upload type=file />")
 
     # Trigger the file dialog
-    driver.script._evaluate(
+    driver.script._script._evaluate(
         expression="document.getElementById('upload').click()",
         target={"context": driver.current_window_handle},
         await_promise=False,

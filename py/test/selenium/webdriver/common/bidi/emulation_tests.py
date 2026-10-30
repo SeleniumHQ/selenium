@@ -29,7 +29,7 @@ from selenium.webdriver.common.window import WindowTypes
 
 
 def get_browser_timezone_string(driver):
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "Intl.DateTimeFormat().resolvedOptions().timeZone",
         {"context": driver.current_window_handle},
         await_promise=False,
@@ -38,7 +38,7 @@ def get_browser_timezone_string(driver):
 
 
 def get_browser_timezone_offset(driver):
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "new Date().getTimezoneOffset()", {"context": driver.current_window_handle}, await_promise=False
     )
     return result.result["value"]
@@ -72,7 +72,7 @@ def get_browser_geolocation(driver, user_context=None):
 
 
 def get_browser_locale(driver):
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "Intl.DateTimeFormat().resolvedOptions().locale",
         {"context": driver.current_window_handle},
         await_promise=False,
@@ -81,14 +81,14 @@ def get_browser_locale(driver):
 
 
 def get_screen_orientation(driver, context_id):
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "screen.orientation.type",
         {"context": context_id},
         await_promise=False,
     )
     orientation_type = result.result["value"]
 
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "screen.orientation.angle",
         {"context": context_id},
         await_promise=False,
@@ -99,7 +99,7 @@ def get_screen_orientation(driver, context_id):
 
 
 def get_browser_user_agent(driver):
-    result = driver.script._evaluate(
+    result = driver.script._script._evaluate(
         "navigator.userAgent",
         {"context": driver.current_window_handle},
         await_promise=False,
@@ -108,13 +108,13 @@ def get_browser_user_agent(driver):
 
 
 def is_online(driver, context_id):
-    result = driver.script._evaluate("navigator.onLine", {"context": context_id}, await_promise=False)
+    result = driver.script._script._evaluate("navigator.onLine", {"context": context_id}, await_promise=False)
     return result.result["value"]
 
 
 def get_screen_dimensions(driver, context_id):
-    width_result = driver.script._evaluate("screen.width", {"context": context_id}, await_promise=False)
-    height_result = driver.script._evaluate("screen.height", {"context": context_id}, await_promise=False)
+    width_result = driver.script._script._evaluate("screen.width", {"context": context_id}, await_promise=False)
+    height_result = driver.script._script._evaluate("screen.height", {"context": context_id}, await_promise=False)
     return {"width": width_result.result["value"], "height": height_result.result["value"]}
 
 
@@ -409,7 +409,7 @@ def test_set_scripting_enabled_with_contexts(driver, pages):
         url="data:text/html,<script>window.foo=123;</script>",
         wait="complete",
     )
-    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    result = driver.script._script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
     assert result.result["value"] is False, "Page script should not have executed when scripting is disabled"
 
     # clear override via None to restore JS
@@ -419,7 +419,7 @@ def test_set_scripting_enabled_with_contexts(driver, pages):
         url="data:text/html,<script>window.foo=123;</script>",
         wait="complete",
     )
-    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    result = driver.script._script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
     assert result.result["value"] is True, "Page script should execute after clearing the override"
 
 
@@ -442,7 +442,7 @@ def test_set_scripting_enabled_with_user_contexts(driver, pages):
             click_field.click()
 
             # Get the value after click, it should remain unchanged if scripting is disabled
-            result_value = driver.script._evaluate(
+            result_value = driver.script._script._evaluate(
                 "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
             )
             assert result_value.result["value"] == initial_value, (
@@ -456,7 +456,7 @@ def test_set_scripting_enabled_with_user_contexts(driver, pages):
 
             # Click the element again, it should change to 'Clicked' now
             driver.find_element("id", "clickField").click()
-            result_value = driver.script._evaluate(
+            result_value = driver.script._script._evaluate(
                 "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
             )
             assert result_value.result["value"] == "Clicked"
