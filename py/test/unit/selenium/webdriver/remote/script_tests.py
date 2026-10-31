@@ -18,6 +18,7 @@
 import dataclasses
 import json
 import math
+import time
 from unittest.mock import MagicMock
 
 import pytest
@@ -357,6 +358,7 @@ class FakeLogConnection:
         assert payload["method"] == "browsingContext.getTree"
         root = payload["params"]["root"]
         self.tree_lookups.append(root)
+        time.sleep(0.01)  # a real round trip, so concurrent misses overlap
         if root not in self.TREE:
             raise WebDriverException("no such frame")
         try:
@@ -534,6 +536,29 @@ def test_window_lookups_are_cached(log_script):
 
     assert conn.tree_lookups == ["frame-2", "frame-1", "context-1"]
     assert [m.window_handle for m in messages] == ["context-1"] * 3
+
+
+def test_concurrent_entries_from_a_new_context_look_it_up_once(log_script):
+    import threading
+
+    script, conn = log_script
+    messages = []
+    started = threading.Barrier(8)
+
+    script.add_console_message_handler(messages.append)
+
+    def emit():
+        started.wait()
+        conn.emit(iframe_entry("frame-1"))
+
+    threads = [threading.Thread(target=emit) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert conn.tree_lookups == ["frame-1", "context-1"]
+    assert [m.window_handle for m in messages] == ["context-1"] * 8
 
 
 def test_unknown_context_has_no_window(log_script):

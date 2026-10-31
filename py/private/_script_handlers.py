@@ -211,6 +211,7 @@ class WindowResolver:
     def __init__(self, conn: Any) -> None:
         self._conn = conn
         self._lock = threading.Lock()
+        self._lookup_lock = threading.Lock()
         self._windows: dict[str, str] = {}
 
     def _parent_of(self, context: str) -> Any:
@@ -228,6 +229,15 @@ class WindowResolver:
         """The window handle containing ``context``, or ``None`` if the browser no longer knows it."""
         if context is None:
             return None
+        with self._lock:
+            cached = self._windows.get(context)
+        if cached is not None:
+            return cached
+        # One lookup at a time, so a burst of entries from a new context asks the browser once.
+        with self._lookup_lock:
+            return self._resolve(context)
+
+    def _resolve(self, context: str) -> str | None:
         chain = []
         current = context
         window = None
