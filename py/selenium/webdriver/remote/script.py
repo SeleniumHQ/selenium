@@ -94,8 +94,11 @@ class ConsoleMessage:
         timestamp: Time the entry was generated, in milliseconds since epoch.
         method: The console method used (e.g. ``log``, ``warn``).
         args: The arguments passed to the console call.
-        window_handle: The browsing context the message came from.
+        window_handle: Handle of the window the message came from, or ``None``
+            if the window closed before it could be identified.
         type: The kind of log entry, always ``console``.
+        frame: Identifier of the iframe the message came from, or ``None``
+            when it came from the window's own document.
     """
 
     level: str | None = None
@@ -109,6 +112,7 @@ class ConsoleMessage:
     args: list[Any] | None = None
     window_handle: str | None = None
     type: str = "console"
+    frame: str | None = None
 
 
 @dataclass
@@ -128,7 +132,10 @@ class ScriptError:
         timestamp: Time the entry was generated, in milliseconds since epoch.
         stacktrace: The ``StackTrace`` where the error was thrown, or ``None``
             when the browser reported none.
-        window_handle: The browsing context the error came from.
+        window_handle: Handle of the window the error came from, or ``None``
+            if the window closed before it could be identified.
+        frame: Identifier of the iframe the error came from, or ``None``
+            when it came from the window's own document.
     """
 
     message: str | None = None
@@ -139,6 +146,7 @@ class ScriptError:
     timestamp: float | None = None
     stacktrace: StackTrace | None = None
     window_handle: str | None = None
+    frame: str | None = None
 
 
 @dataclass

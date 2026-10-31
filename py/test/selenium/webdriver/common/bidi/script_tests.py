@@ -1549,6 +1549,26 @@ class TestBidiScriptAlignment:
         finally:
             driver.script.remove_console_message_handler(handler)
 
+    def test_console_message_from_iframe_names_its_window(self, driver, pages):
+        pages.load("blank.html")
+        messages = []
+        handler = driver.script.add_console_message_handler(messages.append)
+
+        try:
+            driver.execute_script(
+                "const frame = document.createElement('iframe');"
+                "frame.srcdoc = '<script>console.log(\"from frame\")</' + 'script>';"
+                "document.body.appendChild(frame);"
+            )
+            WebDriverWait(driver, 5).until(lambda _: [m for m in messages if m.text == "from frame"])
+
+            message = next(m for m in messages if m.text == "from frame")
+            assert message.window_handle == driver.current_window_handle
+            assert message.frame is not None
+            assert message.frame != driver.current_window_handle
+        finally:
+            driver.script.remove_console_message_handler(handler)
+
     def test_deprecated_handler_names_still_work(self, driver, pages):
         pages.load("bidi/logEntryAdded.html")
         messages = []

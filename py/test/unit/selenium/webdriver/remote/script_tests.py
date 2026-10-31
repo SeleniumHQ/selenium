@@ -345,8 +345,25 @@ def test_add_dom_mutation_handler_returns_registration(script, implementation):
 
 
 class FakeLogConnection:
+    # Browsing contexts and their parents: two windows, one iframe in the first.
+    TREE = {"context-1": None, "context-2": None, "frame-1": "context-1", "frame-2": "frame-1"}
+
     def __init__(self):
         self.callbacks = {}
+        self.tree_lookups = []
+
+    def execute(self, cmd):
+        payload = next(cmd)
+        assert payload["method"] == "browsingContext.getTree"
+        root = payload["params"]["root"]
+        self.tree_lookups.append(root)
+        if root not in self.TREE:
+            raise WebDriverException("no such frame")
+        try:
+            cmd.send({"contexts": [{"context": root, "parent": self.TREE[root], "children": []}]})
+        except StopIteration as exc:
+            return exc.value
+        raise AssertionError("command generator did not finish")
 
     def add_callback(self, event, callback):
         callback_id = len(self.callbacks) + 1
@@ -475,6 +492,59 @@ def test_script_error_is_still_a_javascript_log_entry(log_script):
     assert error.stacktrace == STACK
     assert isinstance(error.stacktrace, dict)
     assert json.dumps(error.stacktrace) == json.dumps(STACK)
+
+
+def iframe_entry(context):
+    entry = console_entry()
+    entry["source"] = {"realm": "realm-9", "context": context}
+    return entry
+
+
+def test_console_message_from_an_iframe_names_its_window(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(iframe_entry("frame-2"))
+
+    assert messages[0].window_handle == "context-1"
+    assert messages[0].frame == "frame-2"
+    assert messages[0].source == {"realm": "realm-9", "context": "frame-2"}
+
+
+def test_console_message_from_a_window_has_no_frame(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(console_entry())
+
+    assert messages[0].window_handle == "context-1"
+    assert messages[0].frame is None
+
+
+def test_window_lookups_are_cached(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(iframe_entry("frame-2"))
+    conn.emit(iframe_entry("frame-1"))
+    conn.emit(console_entry())
+
+    assert conn.tree_lookups == ["frame-2", "frame-1", "context-1"]
+    assert [m.window_handle for m in messages] == ["context-1"] * 3
+
+
+def test_unknown_context_has_no_window(log_script):
+    script, conn = log_script
+    errors = []
+
+    script.add_javascript_error_handler(errors.append)
+    conn.emit(dict(error_entry(), source={"realm": "realm-1", "context": "gone"}))
+
+    assert errors[0].window_handle is None
+    assert errors[0].frame is None
 
 
 def test_removing_a_registration_detaches_the_handler(log_script):
