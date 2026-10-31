@@ -23,7 +23,6 @@ import pytest
 
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.windows import (
     Navigation,
     PrintedPage,
@@ -130,9 +129,7 @@ def test_screenshot_and_print_are_objects(driver, pages, tmp_path):
     shot.save(str(tmp_path / "shot.png"))
     assert (tmp_path / "shot.png").read_bytes().startswith(PNG_MAGIC)
 
-    options = PrintOptions()
-    options.orientation = "landscape"
-    printed = tab.print_page(options)
+    printed = tab.print_page()
     assert isinstance(printed, PrintedPage)
     assert printed.pdf.startswith(PDF_MAGIC)
 

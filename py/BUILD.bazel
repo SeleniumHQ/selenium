@@ -964,7 +964,10 @@ BIDI_TESTS = glob([
 ])
 
 # Tests that have bidi and classic implementations.
-BIDI_IMPLEMENTATIONS = []
+BIDI_IMPLEMENTATIONS = [
+    # driver.windows works on classic sessions and adds BiDi-only features on BiDi ones
+    "test/selenium/webdriver/common/windows_tests.py",
+]
 
 # BiDi test files with Grid-specific behavior, run through Grid as well. Empty
 # generates no targets: an empty test_suite would mean every test in the package.
