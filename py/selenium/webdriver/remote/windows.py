@@ -30,6 +30,7 @@ import base64
 import itertools
 import logging
 import threading
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
@@ -60,13 +61,17 @@ _TRAVERSE_EVENTS = (
 )
 # navigationFailed is left out: Chrome reports one for the page being left when it
 # is restored from the back/forward cache, before the traversal commits
-# resolves once the document reaches the readiness state, including one that already has
-_READY_SCRIPTS = {
-    "complete": "new Promise(r => document.readyState === 'complete'"
-    " ? r() : addEventListener('load', () => r(), {once: true}))",
-    "interactive": "new Promise(r => document.readyState !== 'loading'"
-    " ? r() : addEventListener('DOMContentLoaded', () => r(), {once: true}))",
+# per readiness state: the check for a document already there, and the event that gets it there
+_READY_CHECKS = {
+    "complete": ("document.readyState === 'complete'", "load"),
+    "interactive": ("document.readyState !== 'loading'", "DOMContentLoaded"),
 }
+# resolves true once the document is ready, false when the timeout (ms) runs out first
+_READY_SCRIPT = (
+    "new Promise(r => {{ if ({check}) return r(true);"
+    " addEventListener('{event}', () => r(true), {{once: true}});"
+    " setTimeout(() => r(false), {timeout}); }})"
+)
 _WINDOW_TYPES = ("tab", "window")
 _DEFAULT_USER_CONTEXT = "default"
 
@@ -733,14 +738,15 @@ class Windows:
             try:
                 self._bidi_context().traverse_history(context=handle, delta=delta)
                 timeout = self._driver.timeouts.page_load or 300
+                started = time.monotonic()
                 if not done.wait(timeout):
                     raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
             finally:
                 self._unlisten(subscriptions, callbacks)
             method, url = seen[0]
             wait = self._session_wait()
-            if method == "browsingContext.navigationCommitted" and wait in _READY_SCRIPTS:
-                self._await_ready(handle, wait)
+            if method == "browsingContext.navigationCommitted" and wait in _READY_CHECKS:
+                self._await_ready(handle, wait, timeout - (time.monotonic() - started))
             return url or self._info(handle).url
 
         return Navigation(window, self._dispatch(handle, classic, bidi))
@@ -821,18 +827,24 @@ class Windows:
             raise WebDriverException("The BiDi connection is not open")
         return connection
 
-    def _await_ready(self, handle: str, wait: str) -> None:
+    def _await_ready(self, handle: str, wait: str, timeout: float) -> None:
         from selenium.webdriver.common._bidi.script import ContextTarget, Script
 
+        check, event = _READY_CHECKS[wait]
+        script = _READY_SCRIPT.format(check=check, event=event, timeout=max(0, int(timeout * 1000)))
         try:
-            Script(self._driver).evaluate(
-                _READY_SCRIPTS[wait],
+            result = Script(self._driver).evaluate(
+                script,
                 target=ContextTarget(context=handle, sandbox="selenium-windows"),
                 await_promise=True,
             )
         except WebDriverException:
-            # the document went away while loading, e.g. another navigation started
+            # the document went away while loading, e.g. another navigation replaced it;
+            # that navigation is not the one this call made, so there is nothing to wait for
             logger.debug("could not wait for %s in %s", wait, handle, exc_info=True)
+            return
+        if getattr(getattr(result, "result", None), "value", True) is False:
+            raise TimeoutException(f"The page in {handle!r} did not reach {wait!r} in {timeout:.1f}s")
 
     def _subscribe(self, family: str) -> None:
         events = list(self._family_events(family))

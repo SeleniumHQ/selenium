@@ -18,10 +18,11 @@
 """Tests for ``driver.windows`` (ADR 17681)."""
 
 import threading
+import time
 
 import pytest
 
-from selenium.common.exceptions import NoSuchWindowException, WebDriverException
+from selenium.common.exceptions import InvalidArgumentException, NoSuchWindowException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.windows import (
     Navigation,
@@ -30,6 +31,7 @@ from selenium.webdriver.remote.windows import (
     UserContext,
     Window,
 )
+from selenium.webdriver.support.wait import WebDriverWait
 
 PNG_MAGIC = b"\x89PNG"
 PDF_MAGIC = b"%PDF"
@@ -102,6 +104,37 @@ def test_refresh_back_and_forward(driver, pages):
     assert tab.back().url == pages.url("simpleTest.html")
     assert tab.forward().url == pages.url("formPage.html")
     assert tab.refresh().url == pages.url("formPage.html")
+
+
+def test_back_and_forward_wait_for_page_load(bidi, pages):
+    # forward() lands on a page left before it finished loading, so it loads again;
+    # the document commits at once but its image takes seven seconds
+    slow = pages.url("slowLoadingResourcePage.html")
+    tab = bidi.windows.open()
+    tab.get(pages.url("simpleTest.html"))
+    tab.get(slow, wait="none")
+    tab.back()
+    started = time.monotonic()
+    nav = tab.forward()
+    assert nav.url == slow
+    assert time.monotonic() - started > 3
+    assert bidi.script.execute("() => document.readyState", context_id=tab) == "complete"
+
+
+def test_handlers_skip_events_the_browser_does_not_know(bidi, pages):
+    # Firefox, for one, rejects browsingContext.navigationAborted
+    windows = bidi.windows
+    seen = []
+    subscriptions, callbacks = windows._listen(
+        ["browsingContext.load", "browsingContext.noSuchEvent"], lambda method: seen.append
+    )
+    try:
+        bidi.get(pages.url("simpleTest.html"))
+        WebDriverWait(bidi, 5).until(lambda _: seen)
+    finally:
+        windows._unlisten(subscriptions, callbacks)
+    with pytest.raises(InvalidArgumentException):
+        windows._listen(["browsingContext.noSuchEvent"], lambda method: seen.append)
 
 
 def test_window_operations_ignore_frame_focus(driver, pages):
