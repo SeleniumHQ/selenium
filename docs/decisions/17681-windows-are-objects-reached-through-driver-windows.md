@@ -181,3 +181,9 @@ User prompts are left to their own record, which should take the same window and
   today key subscriptions by event name only.
 - Java must resolve the clash between the new window type and the existing nested `WebDriver.Window`
   through packaging or naming.
+
+## Appendix
+
+Reference implementation (Python, draft): [#18269](https://github.com/SeleniumHQ/selenium/pull/18269). It
+covers every decision above, with tests on classic and BiDi sessions, and is the place to try the API shape
+before the record is accepted.
