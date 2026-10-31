@@ -24,6 +24,7 @@ from selenium.common.exceptions import NoSuchElementException, NoSuchFrameExcept
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.windows import Window
 
 if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
@@ -110,15 +111,18 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_PARENT_FRAME)
 
-    def window(self, window_name: str) -> None:
+    def window(self, window_name: str | Window) -> None:
         """Switches focus to the specified window.
 
         Args:
-            window_name: The name or window handle of the window to switch to.
+            window_name: The name or window handle of the window to switch to,
+                or a ``Window`` from ``driver.windows``.
 
         Example:
             driver.switch_to.window("main")
         """
+        if isinstance(window_name, Window):
+            window_name = window_name.handle
         self._w3c_window(window_name)
 
     def _w3c_window(self, window_name: str) -> None:

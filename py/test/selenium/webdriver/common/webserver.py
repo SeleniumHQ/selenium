@@ -29,6 +29,7 @@ import socket
 import ssl
 import sys
 import threading
+import time
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
@@ -137,6 +138,15 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self.send_header("Set-Cookie", f"{name}={value}; Path=/")
                 self.end_headers()
                 self.wfile.write(b"cookie set")
+                return
+
+            if path == "sleep":
+                # like the Java test server's /sleep?time=<seconds>
+                qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                seconds = float(qs.get("time", ["1"])[0])
+                time.sleep(seconds)
+                self._send_response("text/html")
+                self.wfile.write(f"<html><body>Slept for {seconds}s</body></html>".encode())
                 return
 
             if path == "basic-auth":

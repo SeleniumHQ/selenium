@@ -82,6 +82,7 @@ from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.remote.switch_to import SwitchTo
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.websocket_connection import WebSocketConnection
+from selenium.webdriver.remote.windows import Windows
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 cdp = None
@@ -359,6 +360,7 @@ class WebDriver(BaseWebDriver):
 
         self._websocket_connection: WebSocketConnection | None = None
         self._script: Script | None = None
+        self._windows: Windows | None = None
         self._network: Network | None = None
         self._browser: Browser | None = None
         self._bidi_session: Session | None = None
@@ -1288,6 +1290,22 @@ class WebDriver(BaseWebDriver):
             self._script = Script(BidiScript(self._websocket_connection, self), self)
 
         return self._script
+
+    @property
+    def windows(self) -> Windows:
+        """Windows and tabs as objects: open, drive, isolate and observe them.
+
+        Returns:
+            The session's ``Windows`` object.
+
+        Examples:
+            `tab = driver.windows.open()`
+            `tab.get("https://www.selenium.dev")`
+            `png = tab.screenshot(full_page=True).png`
+        """
+        if self._windows is None:
+            self._windows = Windows(self)
+        return self._windows
 
     def _start_bidi(self) -> None:
         if self.caps.get("webSocketUrl"):
