@@ -1523,7 +1523,7 @@ class TestBidiScriptAlignment:
             error = errors[0]
             assert isinstance(error, ScriptError)
             assert error.message == "Error: Not working"
-            assert "logEntryAdded" in error.stacktrace
+            assert "logEntryAdded" in str(error.stacktrace)
             assert error.window_handle == driver.current_window_handle
         finally:
             driver.script.remove_javascript_error_handler(handler)

@@ -33,8 +33,8 @@ CDDL-generated low-level commands:
   dataclasses unchanged on this generated module.  ``driver.script`` passes its
   own ``payload`` builder so ``add_console_message_handler`` /
   ``add_javascript_error_handler`` deliver :class:`ConsoleMessage` /
-  :class:`ScriptError` there (ADR 17776), with the old fields kept as
-  deprecated attributes.
+  :class:`ScriptError` there (ADR 17776); those payloads also subclass the
+  generated log-entry classes so existing handlers keep working.
 - :class:`DomMutationRegistry` owns the DOM-observation preload script and the
   ``script.message`` channel subscription, and dispatches :class:`DomMutation`
   payloads.  Beyond attribute changes it can observe ``childList`` and
@@ -55,6 +55,7 @@ import logging
 import threading
 import uuid
 from collections.abc import Callable, Iterable
+from dataclasses import dataclass
 from typing import Any
 
 # The payload and handle types are part of the supported driver.script API, so
@@ -181,28 +182,20 @@ def _window_handle(params: dict) -> str | None:
 
 
 def _stack_trace(stack_trace: Any) -> StackTrace | None:
-    if stack_trace is None:
-        return None
-    return StackTrace(_format_stack_trace(stack_trace) or "", raw=stack_trace)
+    return StackTrace(stack_trace) if isinstance(stack_trace, dict) else None
 
 
-def console_message_from_log_entry(params: dict, legacy: bool = False) -> ConsoleMessage:
-    """Build a :class:`ConsoleMessage` from raw ``log.entryAdded`` params.
-
-    With ``legacy`` set, the deprecated ``source`` and ``stack_trace``
-    attributes hold the protocol values ``add_console_message_handler`` used
-    to deliver; otherwise they hold the source URL and formatted stack trace
-    ``add_console_handler`` delivered.
-    """
+def console_message_from_log_entry(params: dict) -> ConsoleMessage:
+    """Build a :class:`ConsoleMessage` from raw ``log.entryAdded`` params."""
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
     return ConsoleMessage(
         level=params.get("level"),
         text=params.get("text"),
-        source=params.get("source") if legacy else top.get("url"),
+        source=top.get("url"),
         line_number=top.get("lineNumber"),
         column_number=top.get("columnNumber"),
-        stack_trace=params.get("stackTrace") if legacy else _format_stack_trace(params.get("stackTrace")),
+        stack_trace=_format_stack_trace(params.get("stackTrace")),
         timestamp=params.get("timestamp"),
         method=params.get("method"),
         args=params.get("args"),
@@ -211,25 +204,92 @@ def console_message_from_log_entry(params: dict, legacy: bool = False) -> Consol
     )
 
 
-def script_error_from_log_entry(params: dict, legacy: bool = False) -> ScriptError:
-    """Build a :class:`ScriptError` from raw ``log.entryAdded`` params.
-
-    With ``legacy`` set, the deprecated ``source`` attribute holds the
-    protocol value ``add_javascript_error_handler`` used to deliver; otherwise
-    it holds the source URL ``add_error_handler`` delivered.
-    """
+def script_error_from_log_entry(params: dict) -> ScriptError:
+    """Build a :class:`ScriptError` from raw ``log.entryAdded`` params."""
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
     return ScriptError(
         message=params.get("text"),
-        source=params.get("source") if legacy else top.get("url"),
+        source=top.get("url"),
         line_number=top.get("lineNumber"),
         column_number=top.get("columnNumber"),
         stack_trace=_format_stack_trace(params.get("stackTrace")),
         timestamp=params.get("timestamp"),
         stacktrace=_stack_trace(params.get("stackTrace")),
         window_handle=_window_handle(params),
+    )
+
+
+_log_entry_payload_classes: dict[str, type] = {}
+
+
+def _log_entry_payload_class(name: str) -> type:
+    """A payload class that is both the ADR payload and the generated log entry.
+
+    ``driver.script.add_console_message_handler`` and
+    ``add_javascript_error_handler`` used to deliver the generated
+    ``ConsoleLogEntry`` / ``JavascriptLogEntry``. Their payloads subclass both
+    those and :class:`ConsoleMessage` / :class:`ScriptError`, so ``isinstance``
+    checks, dataclass helpers and the old field values keep working until the
+    old fields are removed.
+    """
+    if name not in _log_entry_payload_classes:
+        from selenium.webdriver.common.bidi import log as log_mod
+
+        if name == "console":
+            cls: type = dataclass(type("ConsoleLogMessage", (log_mod.ConsoleLogEntry, ConsoleMessage), {}))
+        else:
+            cls = dataclass(type("JavascriptLogError", (log_mod.JavascriptLogEntry, ScriptError), {}))
+        cls.__module__ = __name__
+        _log_entry_payload_classes[name] = cls
+    return _log_entry_payload_classes[name]
+
+
+def console_log_message(params: dict) -> ConsoleMessage:
+    """Build the payload ``driver.script.add_console_message_handler`` delivers.
+
+    ``source``, ``stack_trace`` and ``type_`` keep the protocol values the
+    generated ``ConsoleLogEntry`` carried.
+    """
+    frames = _stack_frames(params.get("stackTrace"))
+    top = frames[0] if frames else {}
+    return _log_entry_payload_class("console")(
+        type_=params.get("type"),
         level=params.get("level"),
+        text=params.get("text"),
+        source=params.get("source"),
+        line_number=top.get("lineNumber"),
+        column_number=top.get("columnNumber"),
+        stack_trace=_stack_trace(params.get("stackTrace")),
+        timestamp=params.get("timestamp"),
+        method=params.get("method"),
+        args=params.get("args"),
+        window_handle=_window_handle(params),
+        type=params.get("type") or "console",
+    )
+
+
+def javascript_log_error(params: dict) -> ScriptError:
+    """Build the payload ``driver.script.add_javascript_error_handler`` delivers.
+
+    ``text``, ``level``, ``source``, ``stacktrace`` and ``type_`` keep the
+    values the generated ``JavascriptLogEntry`` carried; ``stacktrace`` is a
+    :class:`StackTrace`, which is the same mapping.
+    """
+    frames = _stack_frames(params.get("stackTrace"))
+    top = frames[0] if frames else {}
+    return _log_entry_payload_class("javascript")(
+        type_=params.get("type"),
+        level=params.get("level"),
+        text=params.get("text"),
+        message=params.get("text"),
+        source=params.get("source"),
+        line_number=top.get("lineNumber"),
+        column_number=top.get("columnNumber"),
+        stack_trace=_format_stack_trace(params.get("stackTrace")),
+        timestamp=params.get("timestamp"),
+        stacktrace=_stack_trace(params.get("stackTrace")),
+        window_handle=_window_handle(params),
     )
 
 

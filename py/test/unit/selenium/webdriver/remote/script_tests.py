@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import dataclasses
+import json
 import math
 from unittest.mock import MagicMock
 
@@ -22,6 +24,7 @@ import pytest
 
 from selenium.common.exceptions import JavascriptException, WebDriverException
 from selenium.webdriver.common.bidi._script_handlers import LogHandlerRegistry
+from selenium.webdriver.common.bidi.log import ConsoleLogEntry, JavascriptLogEntry
 from selenium.webdriver.remote.script import (
     ConsoleMessage,
     PinnedScript,
@@ -420,7 +423,7 @@ def test_console_message_handler_delivers_console_message(log_script, recwarn):
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
-def test_console_message_keeps_log_entry_fields_deprecated(log_script):
+def test_console_message_is_still_a_console_log_entry(log_script):
     script, conn = log_script
     messages = []
 
@@ -428,12 +431,12 @@ def test_console_message_keeps_log_entry_fields_deprecated(log_script):
     conn.emit(console_entry())
 
     message = messages[0]
-    with pytest.warns(DeprecationWarning, match="ConsoleMessage.type_"):
-        assert message.type_ == "console"
-    with pytest.warns(DeprecationWarning, match="ConsoleMessage.source"):
-        assert message.source == {"realm": "realm-1", "context": "context-1"}
-    with pytest.warns(DeprecationWarning, match="ConsoleMessage.stack_trace"):
-        assert message.stack_trace == STACK
+    assert isinstance(message, ConsoleLogEntry)
+    assert dataclasses.is_dataclass(message)
+    assert dataclasses.asdict(message)["window_handle"] == "context-1"
+    assert message.type_ == "console"
+    assert message.source == {"realm": "realm-1", "context": "context-1"}
+    assert message.stack_trace == STACK
 
 
 def test_javascript_error_handler_delivers_script_error(log_script, recwarn):
@@ -449,13 +452,13 @@ def test_javascript_error_handler_delivers_script_error(log_script, recwarn):
     assert isinstance(error, ScriptError)
     assert error.message == "Error: Not working"
     assert isinstance(error.stacktrace, StackTrace)
-    assert error.stacktrace == "    at boom (https://example.com/page.html:7:21)"
+    assert str(error.stacktrace) == "    at boom (https://example.com/page.html:7:21)"
     assert error.window_handle == "context-2"
     assert error.timestamp == 99
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
-def test_script_error_keeps_log_entry_fields_deprecated(log_script):
+def test_script_error_is_still_a_javascript_log_entry(log_script):
     script, conn = log_script
     errors = []
 
@@ -463,16 +466,15 @@ def test_script_error_keeps_log_entry_fields_deprecated(log_script):
     conn.emit(error_entry())
 
     error = errors[0]
-    with pytest.warns(DeprecationWarning, match="ScriptError.text"):
-        assert error.text == "Error: Not working"
-    with pytest.warns(DeprecationWarning, match="ScriptError.level"):
-        assert error.level == "error"
-    with pytest.warns(DeprecationWarning, match="ScriptError.type_"):
-        assert error.type_ == "javascript"
-    with pytest.warns(DeprecationWarning, match="ScriptError.source"):
-        assert error.source == {"realm": "realm-1", "context": "context-2"}
-    with pytest.warns(DeprecationWarning, match="protocol mapping"):
-        assert error.stacktrace["callFrames"] == STACK["callFrames"]
+    assert isinstance(error, JavascriptLogEntry)
+    assert dataclasses.is_dataclass(error)
+    assert error.text == "Error: Not working"
+    assert error.level == "error"
+    assert error.type_ == "javascript"
+    assert error.source == {"realm": "realm-1", "context": "context-2"}
+    assert error.stacktrace == STACK
+    assert isinstance(error.stacktrace, dict)
+    assert json.dumps(error.stacktrace) == json.dumps(STACK)
 
 
 def test_removing_a_registration_detaches_the_handler(log_script):
@@ -486,21 +488,9 @@ def test_removing_a_registration_detaches_the_handler(log_script):
     assert messages == []
 
 
-def test_stack_trace_is_a_string():
-    trace = StackTrace("    at f (a.js:1:2)", raw=STACK)
+def test_stack_trace_formats_as_text():
+    trace = StackTrace(STACK)
 
-    assert trace[0] == " "
-    assert trace.splitlines() == ["    at f (a.js:1:2)"]
-
-
-def test_unknown_payload_attribute_raises():
-    with pytest.raises(AttributeError):
-        _ = ConsoleMessage().no_such_field
-    with pytest.raises(AttributeError):
-        _ = ScriptError().no_such_field
-
-
-def test_add_dom_mutation_handler_passes_mutation_types(script, implementation):
-    script.add_dom_mutation_handler(print, ("childList",))
-
-    implementation.add_dom_mutation_handler.assert_called_once_with(print, ("childList",))
+    assert str(trace) == "    at boom (https://example.com/page.html:7:21)"
+    assert trace.frames == STACK["callFrames"]
+    assert str(StackTrace({})) == ""

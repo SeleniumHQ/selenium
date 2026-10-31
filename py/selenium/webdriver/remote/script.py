@@ -55,50 +55,29 @@ _REPLACEMENTS = {
 }
 
 
-_UNSET: Any = object()
+class StackTrace(dict):
+    """A JavaScript stack trace.
 
-
-def _warn_deprecated_field(owner: str, name: str, advice: str) -> None:
-    warnings.warn(
-        f"{owner}.{name} is deprecated and will be removed; {advice}",
-        DeprecationWarning,
-        stacklevel=3,
-    )
-
-
-class StackTrace(str):
-    """A JavaScript stack trace, one ``at function (url:line:col)`` line per frame.
-
-    Subclasses ``str``. Indexing it with a key, as in ``stacktrace["callFrames"]``,
-    still reads the protocol stack trace that ``add_javascript_error_handler()``
-    used to deliver, but is deprecated.
+    ``str()`` gives one ``at function (url:line:col)`` line per frame, and
+    ``frames`` lists the frames. It is also the mapping the browser reported,
+    so code that reads ``stacktrace["callFrames"]`` keeps working.
     """
 
-    _raw: Any
+    @property
+    def frames(self) -> list[dict]:
+        """The stack frames, innermost first."""
+        frames = self.get("callFrames")
+        return [frame for frame in frames if isinstance(frame, dict)] if isinstance(frames, list) else []
 
-    def __new__(cls, text: str = "", raw: Any = None):
-        instance = super().__new__(cls, text)
-        instance._raw = raw
-        return instance
-
-    def _raw_mapping(self) -> dict:
-        warnings.warn(
-            "Reading a stack trace as a protocol mapping is deprecated and will be removed; use it as a string instead",
-            DeprecationWarning,
-            stacklevel=3,
+    def __str__(self) -> str:
+        return "\n".join(
+            f"    at {frame.get('functionName') or '<anonymous>'} "
+            f"({frame.get('url')}:{frame.get('lineNumber')}:{frame.get('columnNumber')})"
+            for frame in self.frames
         )
-        return self._raw if isinstance(self._raw, dict) else {}
-
-    def __getitem__(self, key: Any) -> Any:
-        if isinstance(key, str):
-            return self._raw_mapping()[key]
-        return super().__getitem__(key)
-
-    def get(self, key: str, default: Any = None) -> Any:
-        """Deprecated: read a field of the protocol stack trace."""
-        return self._raw_mapping().get(key, default)
 
 
+@dataclass
 class ConsoleMessage:
     """A console message observed in the browser.
 
@@ -107,87 +86,32 @@ class ConsoleMessage:
     Attributes:
         level: Console level (``debug``, ``info``, ``warn`` or ``error``).
         text: The console message text.
-        type: The kind of log entry, always ``console``.
+        source: Deprecated; use ``window_handle`` to tell where the message
+            came from. A console message carries no stack trace.
+        line_number: Deprecated.
+        column_number: Deprecated.
+        stack_trace: Deprecated.
+        timestamp: Time the entry was generated, in milliseconds since epoch.
         method: The console method used (e.g. ``log``, ``warn``).
         args: The arguments passed to the console call.
-        timestamp: Time the entry was generated, in milliseconds since epoch.
-        window_handle: Handle of the window the message came from.
-
-    ``source``, ``line_number``, ``column_number``, ``stack_trace`` and ``type_``
-    are deprecated: a console message carries no stack trace.
+        window_handle: The browsing context the message came from.
+        type: The kind of log entry, always ``console``.
     """
 
-    _DEPRECATED = {
-        "source": "use window_handle to tell where the message came from",
-        "line_number": "a console message carries no stack trace",
-        "column_number": "a console message carries no stack trace",
-        "stack_trace": "a console message carries no stack trace",
-    }
-
-    def __init__(
-        self,
-        level: str | None = None,
-        text: str | None = None,
-        source: Any = None,
-        line_number: int | None = None,
-        column_number: int | None = None,
-        stack_trace: Any = None,
-        timestamp: float | None = None,
-        method: str | None = None,
-        args: list[Any] | None = None,
-        window_handle: str | None = None,
-        type: str = "console",
-    ) -> None:
-        self.level = level
-        self.text = text
-        self.type = type
-        self.method = method
-        self.args = args
-        self.timestamp = timestamp
-        self.window_handle = window_handle
-        self._deprecated = {
-            "source": source,
-            "line_number": line_number,
-            "column_number": column_number,
-            "stack_trace": stack_trace,
-        }
-
-    def __getattr__(self, name: str) -> Any:
-        deprecated = self.__dict__.get("_deprecated")
-        if deprecated is not None and name in deprecated:
-            _warn_deprecated_field("ConsoleMessage", name, self._DEPRECATED[name])
-            return deprecated[name]
-        if name == "type_":
-            _warn_deprecated_field("ConsoleMessage", name, "use type instead")
-            return self.type
-        raise AttributeError(f"'ConsoleMessage' object has no attribute {name!r}")
-
-    def _fields(self) -> tuple:
-        return (
-            self.level,
-            self.text,
-            self.type,
-            self.method,
-            self.args,
-            self.timestamp,
-            self.window_handle,
-            self._deprecated,
-        )
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ConsoleMessage):
-            return NotImplemented
-        return self._fields() == other._fields()
-
-    __hash__ = None  # type: ignore[assignment]
-
-    def __repr__(self) -> str:
-        return (
-            f"ConsoleMessage(level={self.level!r}, text={self.text!r}, method={self.method!r}, "
-            f"window_handle={self.window_handle!r})"
-        )
+    level: str | None = None
+    text: str | None = None
+    source: Any = None
+    line_number: int | None = None
+    column_number: int | None = None
+    stack_trace: Any = None
+    timestamp: float | None = None
+    method: str | None = None
+    args: list[Any] | None = None
+    window_handle: str | None = None
+    type: str = "console"
 
 
+@dataclass
 class ScriptError:
     """A JavaScript error observed in the browser.
 
@@ -197,76 +121,24 @@ class ScriptError:
 
     Attributes:
         message: The error message.
+        source: Deprecated; read the top frame of ``stacktrace`` instead.
+        line_number: Deprecated; read the top frame of ``stacktrace`` instead.
+        column_number: Deprecated; read the top frame of ``stacktrace`` instead.
+        stack_trace: Deprecated; use ``str(stacktrace)`` instead.
+        timestamp: Time the entry was generated, in milliseconds since epoch.
         stacktrace: The ``StackTrace`` where the error was thrown, or ``None``
             when the browser reported none.
-        timestamp: Time the entry was generated, in milliseconds since epoch.
-        window_handle: Handle of the window the error came from.
-
-    ``source``, ``line_number``, ``column_number``, ``stack_trace``, ``text``,
-    ``level`` and ``type_`` are deprecated.
+        window_handle: The browsing context the error came from.
     """
 
-    _DEPRECATED = {
-        "source": "read the top frame of stacktrace instead",
-        "line_number": "read the top frame of stacktrace instead",
-        "column_number": "read the top frame of stacktrace instead",
-        "stack_trace": "use stacktrace instead",
-        "text": "use message instead",
-        "level": "a JavaScript error is always reported at level 'error'",
-        "type_": "a JavaScript error handler only receives JavaScript errors",
-    }
-
-    def __init__(
-        self,
-        message: str | None = None,
-        source: Any = None,
-        line_number: int | None = None,
-        column_number: int | None = None,
-        stack_trace: Any = None,
-        timestamp: float | None = None,
-        stacktrace: StackTrace | str | None = None,
-        window_handle: str | None = None,
-        level: str | None = _UNSET,
-    ) -> None:
-        if stacktrace is None and isinstance(stack_trace, str):
-            stacktrace = stack_trace
-        if stacktrace is not None and not isinstance(stacktrace, StackTrace):
-            stacktrace = StackTrace(stacktrace)
-        self.message = message
-        self.stacktrace = stacktrace
-        self.timestamp = timestamp
-        self.window_handle = window_handle
-        self._deprecated = {
-            "source": source,
-            "line_number": line_number,
-            "column_number": column_number,
-            "stack_trace": stack_trace,
-            "level": "error" if level is _UNSET else level,
-        }
-
-    def __getattr__(self, name: str) -> Any:
-        deprecated = self.__dict__.get("_deprecated")
-        if deprecated is None or name not in self._DEPRECATED:
-            raise AttributeError(f"'ScriptError' object has no attribute {name!r}")
-        _warn_deprecated_field("ScriptError", name, self._DEPRECATED[name])
-        if name == "text":
-            return self.message
-        if name == "type_":
-            return "javascript"
-        return deprecated[name]
-
-    def _fields(self) -> tuple:
-        return (self.message, self.stacktrace, self.timestamp, self.window_handle, self._deprecated)
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ScriptError):
-            return NotImplemented
-        return self._fields() == other._fields()
-
-    __hash__ = None  # type: ignore[assignment]
-
-    def __repr__(self) -> str:
-        return f"ScriptError(message={self.message!r}, window_handle={self.window_handle!r})"
+    message: str | None = None
+    source: Any = None
+    line_number: int | None = None
+    column_number: int | None = None
+    stack_trace: Any = None
+    timestamp: float | None = None
+    stacktrace: StackTrace | None = None
+    window_handle: str | None = None
 
 
 @dataclass
@@ -576,13 +448,9 @@ class Script:
         Example:
             `handler = driver.script.add_console_message_handler(messages.append)`
         """
-        from selenium.webdriver.common.bidi._script_handlers import console_message_from_log_entry
+        from selenium.webdriver.common.bidi._script_handlers import console_log_message
 
-        return _registration(
-            self._script._log_handlers.add_handler(
-                callback, "console", payload=lambda params: console_message_from_log_entry(params, legacy=True)
-            )
-        )
+        return _registration(self._script._log_handlers.add_handler(callback, "console", payload=console_log_message))
 
     def remove_console_message_handler(self, handler: Registration | int) -> None:
         """Remove a handler added by ``add_console_message_handler()``.
@@ -605,13 +473,9 @@ class Script:
         Example:
             `handler = driver.script.add_javascript_error_handler(errors.append)`
         """
-        from selenium.webdriver.common.bidi._script_handlers import script_error_from_log_entry
+        from selenium.webdriver.common.bidi._script_handlers import javascript_log_error
 
-        return _registration(
-            self._script._log_handlers.add_handler(
-                callback, "error", payload=lambda params: script_error_from_log_entry(params, legacy=True)
-            )
-        )
+        return _registration(self._script._log_handlers.add_handler(callback, "error", payload=javascript_log_error))
 
     def remove_javascript_error_handler(self, handler: Registration | int) -> None:
         """Remove a handler added by ``add_javascript_error_handler()``.
