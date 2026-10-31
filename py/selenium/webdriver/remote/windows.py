@@ -31,6 +31,7 @@ import itertools
 import logging
 import threading
 import time
+import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
@@ -54,13 +55,12 @@ _WAITS = ("none", "interactive", "complete")
 _STRATEGY_WAITS = {"normal": "complete", "eager": "interactive", "none": "none"}
 # events that end the navigation part of a history traversal; a page restored from the
 # back/forward cache commits but sends no load event, so readiness is checked separately
+# a same-document traversal (fragment or pushState entry) can keep both the document and
+# the URL, so these events are what show it happened
 _TRAVERSE_EVENTS = (
-    "browsingContext.navigationCommitted",
     "browsingContext.fragmentNavigated",
     "browsingContext.historyUpdated",
 )
-# navigationFailed is left out: Chrome reports one for the page being left when it
-# is restored from the back/forward cache, before the traversal commits
 # per readiness state: the check for a document already there, and the event that gets it there
 _READY_CHECKS = {
     "complete": ("document.readyState === 'complete'", "load"),
@@ -72,6 +72,7 @@ _READY_SCRIPT = (
     " addEventListener('{event}', () => r(true), {{once: true}});"
     " setTimeout(() => r(false), {timeout}); }})"
 )
+_SANDBOX = "selenium-windows"
 _WINDOW_TYPES = ("tab", "window")
 _DEFAULT_USER_CONTEXT = "default"
 
@@ -721,33 +722,47 @@ class Windows:
             return self._driver.current_url
 
         def bidi() -> str:
-            # traverseHistory returns before the traversal finishes, so wait for it
-            # the way the page load strategy says, as classic back/forward does
+            # traverseHistory can return before the traversal finishes (Chrome), and a page
+            # restored from the back/forward cache may send no navigation event (Firefox).
+            # So mark the current document, then wait until the mark is gone (another
+            # document is showing), the URL changed or a same-document event arrived, and
+            # then wait for readiness the way the page load strategy says, as classic does.
             done = threading.Event()
-            seen: list[tuple[str, str]] = []
 
             def listener(method: str) -> Callable[[dict], None]:
                 def listen(params: dict) -> None:
-                    if params.get("context") == handle and not done.is_set():
-                        seen.append((method, params.get("url", "")))
+                    if params.get("context") == handle:
                         done.set()
 
                 return listen
 
+            token = uuid.uuid4().hex
+            before = self._evaluate(handle, f"window.__seleniumTraverse = '{token}'; location.href")
+            timeout = self._page_load_timeout()
+            deadline = time.monotonic() + timeout
             subscriptions, callbacks = self._listen(list(_TRAVERSE_EVENTS), listener, contexts=[handle])
             try:
                 self._bidi_context().traverse_history(context=handle, delta=delta)
-                timeout = self._page_load_timeout()
-                started = time.monotonic()
-                if not done.wait(timeout):
-                    raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
+                while True:
+                    try:
+                        state = self._evaluate(
+                            handle, f"(window.__seleniumTraverse === '{token}' ? 'same ' : 'new ') + location.href"
+                        )
+                    except WebDriverException:
+                        state = None  # between documents
+                    if state is not None:
+                        same, _, url = state.partition(" ")
+                        if same == "new" or url != before or done.is_set():
+                            break
+                    if time.monotonic() >= deadline:
+                        raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
+                    done.wait(0.05)
             finally:
                 self._unlisten(subscriptions, callbacks)
-            method, url = seen[0]
             wait = self._session_wait()
-            if method == "browsingContext.navigationCommitted" and wait in _READY_CHECKS:
-                self._await_ready(handle, wait, timeout - (time.monotonic() - started))
-            return url or self._info(handle).url
+            if same == "new" and wait in _READY_CHECKS:
+                self._await_ready(handle, wait, deadline - time.monotonic())
+            return url
 
         return Navigation(window, self._dispatch(handle, classic, bidi))
 
@@ -831,6 +846,18 @@ class Windows:
         page_load = self._driver.execute(Command.GET_TIMEOUTS)["value"].get("pageLoad")
         return 300.0 if page_load is None else page_load / 1000
 
+    def _evaluate(self, handle: str, expression: str) -> Any:
+        """Evaluate in this module's sandbox in the window's document and return the value."""
+        from selenium.webdriver.common._bidi.script import ContextTarget, Script
+
+        result = Script(self._driver).evaluate(
+            expression, target=ContextTarget(context=handle, sandbox=_SANDBOX), await_promise=False
+        )
+        remote = getattr(result, "result", None)
+        if remote is None:
+            raise WebDriverException(f"Script failed in {handle!r}: {getattr(result, 'exception_details', result)}")
+        return getattr(remote, "value", None)
+
     def _await_ready(self, handle: str, wait: str, timeout: float) -> None:
         from selenium.webdriver.common._bidi.script import ContextTarget, Script
 
@@ -839,7 +866,7 @@ class Windows:
         try:
             result = Script(self._driver).evaluate(
                 script,
-                target=ContextTarget(context=handle, sandbox="selenium-windows"),
+                target=ContextTarget(context=handle, sandbox=_SANDBOX),
                 await_promise=True,
             )
         except WebDriverException:

@@ -327,7 +327,8 @@ def test_download_handler(bidi, pages):
     bidi.windows.remove_download_handler(reg)
     first, last = downloads[0], downloads[-1]
     assert first.window == window
-    assert first.suggested_filename == "file_1.txt"
+    # a browser may add a suffix such as "(2)" when the file already exists
+    assert first.suggested_filename.startswith("file_1")
     assert last.stage in ("completed", "canceled")
     assert last.window == window
     assert last.url == first.url
