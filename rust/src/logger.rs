@@ -130,8 +130,12 @@ impl Logger {
                     env_logger::try_init().unwrap_or_default();
                 }
             }
-            _ => {
-                env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+            // Machine-readable modes: SM messages bypass `log`, so any live backend here only
+            // leaks third-party lines into stderr. A disabled backend also blocks the
+            // `Logger::new()` managers from re-enabling them through RUST_LOG.
+            OutputType::Json | OutputType::Shell => {
+                env_logger::Builder::new()
+                    .filter_level(LevelFilter::Off)
                     .try_init()
                     .unwrap_or_default();
             }
