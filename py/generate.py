@@ -20,7 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
+# This is a modified copy of:
+#   - https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
 import builtins
