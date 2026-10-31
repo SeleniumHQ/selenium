@@ -748,6 +748,8 @@ class Windows:
                         state = self._evaluate(
                             handle, f"(window.__seleniumTraverse === '{token}' ? 'same ' : 'new ') + location.href"
                         )
+                    except (NoSuchFrameException, NoSuchWindowException):
+                        raise  # the window closed while waiting
                     except WebDriverException:
                         state = None  # between documents
                     if state is not None:
