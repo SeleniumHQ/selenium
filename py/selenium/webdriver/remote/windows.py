@@ -48,7 +48,7 @@ _STRATEGY_WAITS = {"normal": "complete", "eager": "interactive", "none": "none"}
 _WINDOW_TYPES = ("tab", "window")
 _DEFAULT_USER_CONTEXT = "default"
 
-_NAVIGATION_EVENTS = {
+_NAVIGATION_EVENTS: dict[str, str | None] = {
     "browsingContext.navigationStarted": "started",
     "browsingContext.navigationCommitted": "committed",
     "browsingContext.domContentLoaded": "dom_content_loaded",
@@ -58,11 +58,11 @@ _NAVIGATION_EVENTS = {
     "browsingContext.fragmentNavigated": "fragment",
     "browsingContext.historyUpdated": "history",
 }
-_WINDOW_EVENTS = {
+_WINDOW_EVENTS: dict[str, str | None] = {
     "browsingContext.contextCreated": "opened",
     "browsingContext.contextDestroyed": "closed",
 }
-_DOWNLOAD_EVENTS = {
+_DOWNLOAD_EVENTS: dict[str, str | None] = {
     "browsingContext.downloadWillBegin": "started",
     "browsingContext.downloadEnd": None,  # stage comes from the payload's status
 }
@@ -403,7 +403,9 @@ class Windows:
         Args:
             type: ``tab`` or ``window``.
             isolated: Open it in a new user context, with its own cookies and
-                storage, that is removed when the window closes.
+                storage, that ``Window.close()`` removes along with the window.
+                Closing the window another way, such as ``driver.close()``,
+                leaves the user context for ``user_contexts()`` to find.
 
         Returns:
             The new window.
@@ -412,7 +414,11 @@ class Windows:
             return self._open(type, None)
         self._require_bidi("Opening an isolated window")
         user_context = self._create_user_context()
-        window = self._open(type, user_context)
+        try:
+            window = self._open(type, user_context)
+        except Exception:
+            self._bidi_browser().remove_user_context(user_context)
+            raise
         with self._lock:
             self._owned_user_contexts[window.handle] = user_context
         return window
@@ -672,8 +678,8 @@ class Windows:
         def bidi() -> str:
             from selenium.webdriver.common._bidi.browsing_context import ReadinessState
 
-            self._bidi_context().reload(context=handle, wait=ReadinessState(wait))
-            return self._info(handle).url
+            result = self._bidi_context().reload(context=handle, wait=ReadinessState(wait))
+            return result.url if wait == "none" else self._info(handle).url
 
         return Navigation(window, self._dispatch(handle, classic, bidi, force_bidi=override))
 
@@ -738,9 +744,9 @@ class Windows:
         uc = user_context.id if isinstance(user_context, UserContext) else user_context
         registration = Registration(family, callback, handle, uc)
         with self._lock:
-            self._registrations[family].append(registration)
             if family not in self._subscriptions:
                 self._subscribe(family)
+            self._registrations[family].append(registration)
         return registration
 
     def _remove(self, family: str, registration: Registration) -> None:
@@ -756,16 +762,33 @@ class Windows:
             self._unsubscribe(family)
 
     def _family_events(self, family: str) -> dict[str, str | None]:
-        return {"navigation": _NAVIGATION_EVENTS, "window": _WINDOW_EVENTS, "download": _DOWNLOAD_EVENTS}[family]
+        families: dict[str, dict[str, str | None]] = {
+            "navigation": _NAVIGATION_EVENTS,
+            "window": _WINDOW_EVENTS,
+            "download": _DOWNLOAD_EVENTS,
+        }
+        return families[family]
+
+    def _connection(self) -> Any:
+        connection = self._driver._websocket_connection
+        if connection is None:
+            raise WebDriverException("The BiDi connection is not open")
+        return connection
 
     def _subscribe(self, family: str) -> None:
         events = self._family_events(family)
-        subscription = self._bidi_session().subscribe(events=list(events)).subscription
-        connection = self._driver._websocket_connection
-        callbacks = []
-        for method in events:
-            callback_id = connection.add_callback(_RawEvent(method), self._listener(family, method))
-            callbacks.append((method, callback_id))
+        self._bidi_session()  # starts BiDi, so the connection exists
+        connection = self._connection()
+        # listen before subscribing, so an event sent right after the subscription is not dropped
+        callbacks = [
+            (method, connection.add_callback(_RawEvent(method), self._listener(family, method))) for method in events
+        ]
+        try:
+            subscription = self._bidi_session().subscribe(events=list(events)).subscription
+        except Exception:
+            for method, callback_id in callbacks:
+                connection.remove_callback(_RawEvent(method), callback_id)
+            raise
         self._subscriptions[family] = (subscription, callbacks)
 
     def _unsubscribe(self, family: str) -> None:
@@ -773,7 +796,7 @@ class Windows:
         if entry is None:
             return
         subscription, callbacks = entry
-        connection = self._driver._websocket_connection
+        connection = self._connection()
         for method, callback_id in callbacks:
             connection.remove_callback(_RawEvent(method), callback_id)
         try:
@@ -791,7 +814,7 @@ class Windows:
         return listen
 
     def _is_top_level(self, params: dict) -> bool:
-        context = params.get("context")
+        context = params["context"]
         if "parent" in params:
             if params["parent"] is not None:
                 self._frames.add(context)
@@ -820,7 +843,7 @@ class Windows:
             opener = params.get("originalOpener")
             payload = WindowEvent(
                 window,
-                _WINDOW_EVENTS[method],  # type: ignore[arg-type]
+                _WINDOW_EVENTS[method] or "",
                 self._window(opener) if opener else None,
                 UserContext(self, params.get("userContext", _DEFAULT_USER_CONTEXT)),
             )
@@ -883,7 +906,9 @@ def _bidi_print_params(print_options: PrintOptions | None) -> dict[str, Any]:
     if "pageRanges" in options:
         params["page_ranges"] = list(options["pageRanges"])
     if "page" in options:
-        params["page"] = PrintPageParameters(**{k: float(v) for k, v in options["page"].items()})
+        page: dict[str, Any] = dict(options["page"])
+        params["page"] = PrintPageParameters(**{k: float(v) for k, v in page.items()})
     if "margin" in options:
-        params["margin"] = PrintMarginParameters(**{k: float(v) for k, v in options["margin"].items()})
+        margin: dict[str, Any] = dict(options["margin"])
+        params["margin"] = PrintMarginParameters(**{k: float(v) for k, v in margin.items()})
     return params

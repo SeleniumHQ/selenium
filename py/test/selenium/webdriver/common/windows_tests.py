@@ -195,6 +195,32 @@ def test_user_context_as_context_manager(bidi, pages):
     assert a not in bidi.windows.all()
 
 
+def test_user_context_handlers_see_only_their_windows(bidi, pages):
+    outside = bidi.windows.open()
+    with bidi.windows.create_user_context() as profile:
+        navigations = []
+        windows = []
+        loaded = threading.Event()
+
+        def on_navigation(n):
+            navigations.append(n)
+            if n.stage == "load":
+                loaded.set()
+
+        profile.add_navigation_handler(on_navigation)
+        profile.add_window_handler(windows.append)
+        inside = profile.open()  # opened after registering
+        outside.get(pages.url("formPage.html"))
+        inside.get(pages.url("simpleTest.html"))
+        assert loaded.wait(5)
+        bidi.windows.clear_navigation_handlers()
+        bidi.windows.clear_window_handlers()
+    assert navigations
+    assert all(n.window == inside for n in navigations)
+    assert ("opened", inside) in [(e.kind, e.window) for e in windows]
+    assert all(e.user_context == profile for e in windows)
+
+
 def test_default_user_context_cannot_be_removed(bidi):
     default = bidi.windows.current.user_context
     with pytest.raises(WebDriverException):
@@ -244,20 +270,28 @@ def test_download_handler(bidi, pages):
     downloads = []
     started = threading.Event()
 
+    ended = threading.Event()
+
     def on_download(d):
         downloads.append(d)
         if d.stage == "started":
             started.set()
+        elif d.stage in ("completed", "canceled"):
+            ended.set()
 
     window = bidi.windows.current
     reg = window.add_download_handler(on_download)
     bidi.get(pages.url("downloads/download.html"))
     bidi.find_element(By.ID, "file-1").click()
     assert started.wait(5)
+    assert ended.wait(10)
     bidi.windows.remove_download_handler(reg)
-    first = downloads[0]
+    first, last = downloads[0], downloads[-1]
     assert first.window == window
     assert first.suggested_filename == "file_1.txt"
+    assert last.stage in ("completed", "canceled")
+    assert last.window == window
+    assert last.url == first.url
 
 
 def test_handler_exception_is_logged_not_raised(bidi, pages, caplog):
@@ -268,10 +302,12 @@ def test_handler_exception_is_logged_not_raised(bidi, pages, caplog):
         called.set()
         raise RuntimeError("boom")
 
-    tab.add_navigation_handler(boom)
-    tab.get(pages.url("simpleTest.html"))
-    assert called.wait(5)
-    bidi.windows.clear_navigation_handlers()
+    with caplog.at_level("ERROR", logger="selenium.webdriver.remote.windows"):
+        tab.add_navigation_handler(boom)
+        tab.get(pages.url("simpleTest.html"))
+        assert called.wait(5)
+        bidi.windows.clear_navigation_handlers()
+    assert any(r.exc_info and "boom" in str(r.exc_info[1]) for r in caplog.records)
 
 
 def test_handler_scope_rejects_both(bidi):
