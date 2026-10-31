@@ -53,7 +53,7 @@ def test_quit_closes_bidi_websocket_without_error(clean_driver, clean_options, w
             url=webserver.where_is("simpleTest.html"),
             wait=ReadinessState.COMPLETE,
         )
-        title = driver.script.execute("() => document.title", context_id=context_id)
+        title = driver.script.execute("() => document.title", window_handle=context_id)
         assert title == "Hello WebDriver"
 
         ws_connection = driver._websocket_connection
