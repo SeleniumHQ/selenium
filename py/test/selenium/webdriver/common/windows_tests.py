@@ -120,7 +120,7 @@ def test_switch_to_window_accepts_a_window(driver):
     assert original.is_current
 
 
-def test_screenshot_and_print_are_objects(driver, pages, tmp_path):
+def test_screenshot_is_an_object(driver, pages, tmp_path):
     tab = driver.windows.open()
     tab.get(pages.url("simpleTest.html"))
     shot = tab.screenshot()
@@ -129,6 +129,11 @@ def test_screenshot_and_print_are_objects(driver, pages, tmp_path):
     shot.save(str(tmp_path / "shot.png"))
     assert (tmp_path / "shot.png").read_bytes().startswith(PNG_MAGIC)
 
+
+@pytest.mark.xfail_safari(reason="no endpoint for print in safari")
+def test_print_page_is_an_object(driver, pages):
+    tab = driver.windows.open()
+    tab.get(pages.url("simpleTest.html"))
     printed = tab.print_page()
     assert isinstance(printed, PrintedPage)
     assert printed.pdf.startswith(PDF_MAGIC)
