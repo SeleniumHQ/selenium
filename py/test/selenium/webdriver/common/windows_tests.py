@@ -51,7 +51,11 @@ def close_extra_windows(driver):
     for handle in driver.window_handles:
         if handle != original:
             driver.switch_to.window(handle)
-            driver.close()
+            try:
+                driver.close()
+            except WebDriverException:
+                # cleanup only: Edge on RBE times out closing a window left after the download test
+                pass
     driver.switch_to.window(original)
 
 

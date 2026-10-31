@@ -737,7 +737,7 @@ class Windows:
             subscriptions, callbacks = self._listen(list(_TRAVERSE_EVENTS), listener, contexts=[handle])
             try:
                 self._bidi_context().traverse_history(context=handle, delta=delta)
-                timeout = self._driver.timeouts.page_load
+                timeout = self._page_load_timeout()
                 started = time.monotonic()
                 if not done.wait(timeout):
                     raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
@@ -826,6 +826,10 @@ class Windows:
         if connection is None:
             raise WebDriverException("The BiDi connection is not open")
         return connection
+
+    def _page_load_timeout(self) -> float:
+        page_load = self._driver.execute(Command.GET_TIMEOUTS)["value"].get("pageLoad")
+        return 300.0 if page_load is None else page_load / 1000
 
     def _await_ready(self, handle: str, wait: str, timeout: float) -> None:
         from selenium.webdriver.common._bidi.script import ContextTarget, Script
