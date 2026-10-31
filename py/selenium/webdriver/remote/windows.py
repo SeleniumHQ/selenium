@@ -737,7 +737,7 @@ class Windows:
             subscriptions, callbacks = self._listen(list(_TRAVERSE_EVENTS), listener, contexts=[handle])
             try:
                 self._bidi_context().traverse_history(context=handle, delta=delta)
-                timeout = self._driver.timeouts.page_load or 300
+                timeout = self._driver.timeouts.page_load
                 started = time.monotonic()
                 if not done.wait(timeout):
                     raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
