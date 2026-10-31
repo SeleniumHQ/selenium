@@ -30,7 +30,11 @@ CDDL-generated low-level commands:
   line and column numbers extracted from the BiDi stack trace; handlers
   registered through the longer-standing ``add_console_message_handler`` /
   ``add_javascript_error_handler`` keep receiving the generated log-entry
-  dataclasses unchanged.
+  dataclasses unchanged on this generated module.  ``driver.script`` passes its
+  own ``payload`` builder so ``add_console_message_handler`` /
+  ``add_javascript_error_handler`` deliver :class:`ConsoleMessage` /
+  :class:`ScriptError` there (ADR 17776), with the old fields kept as
+  deprecated attributes.
 - :class:`DomMutationRegistry` owns the DOM-observation preload script and the
   ``script.message`` channel subscription, and dispatches :class:`DomMutation`
   payloads.  Beyond attribute changes it can observe ``childList`` and
@@ -62,6 +66,7 @@ from selenium.webdriver.remote.script import (
     PinnedScript,
     ScriptError,
     ScriptResult,
+    StackTrace,
 )
 
 logger = logging.getLogger(__name__)
@@ -170,38 +175,65 @@ def _format_stack_trace(stack_trace: Any) -> str | None:
     return "\n".join(lines)
 
 
-def console_message_from_log_entry(params: dict) -> ConsoleMessage:
-    """Build a :class:`ConsoleMessage` from raw ``log.entryAdded`` params."""
+def _window_handle(params: dict) -> str | None:
+    source = params.get("source")
+    return source.get("context") if isinstance(source, dict) else None
+
+
+def _stack_trace(stack_trace: Any) -> StackTrace | None:
+    if stack_trace is None:
+        return None
+    return StackTrace(_format_stack_trace(stack_trace) or "", raw=stack_trace)
+
+
+def console_message_from_log_entry(params: dict, legacy: bool = False) -> ConsoleMessage:
+    """Build a :class:`ConsoleMessage` from raw ``log.entryAdded`` params.
+
+    With ``legacy`` set, the deprecated ``source`` and ``stack_trace``
+    attributes hold the protocol values ``add_console_message_handler`` used
+    to deliver; otherwise they hold the source URL and formatted stack trace
+    ``add_console_handler`` delivered.
+    """
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
     return ConsoleMessage(
         level=params.get("level"),
         text=params.get("text"),
-        source=top.get("url"),
+        source=params.get("source") if legacy else top.get("url"),
         line_number=top.get("lineNumber"),
         column_number=top.get("columnNumber"),
-        stack_trace=_format_stack_trace(params.get("stackTrace")),
+        stack_trace=params.get("stackTrace") if legacy else _format_stack_trace(params.get("stackTrace")),
         timestamp=params.get("timestamp"),
         method=params.get("method"),
         args=params.get("args"),
+        window_handle=_window_handle(params),
+        type=params.get("type") or "console",
     )
 
 
-def script_error_from_log_entry(params: dict) -> ScriptError:
-    """Build a :class:`ScriptError` from raw ``log.entryAdded`` params."""
+def script_error_from_log_entry(params: dict, legacy: bool = False) -> ScriptError:
+    """Build a :class:`ScriptError` from raw ``log.entryAdded`` params.
+
+    With ``legacy`` set, the deprecated ``source`` attribute holds the
+    protocol value ``add_javascript_error_handler`` used to deliver; otherwise
+    it holds the source URL ``add_error_handler`` delivered.
+    """
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
     return ScriptError(
         message=params.get("text"),
-        source=top.get("url"),
+        source=params.get("source") if legacy else top.get("url"),
         line_number=top.get("lineNumber"),
         column_number=top.get("columnNumber"),
         stack_trace=_format_stack_trace(params.get("stackTrace")),
         timestamp=params.get("timestamp"),
+        stacktrace=_stack_trace(params.get("stackTrace")),
+        window_handle=_window_handle(params),
+        level=params.get("level"),
     )
 
 
-def script_error_from_exception_details(details: dict) -> ScriptError:
+def script_error_from_exception_details(details: dict, window_handle: str | None = None) -> ScriptError:
     """Build a :class:`ScriptError` from BiDi ``script.ExceptionDetails``."""
     frames = _stack_frames(details.get("stackTrace"))
     top = frames[0] if frames else {}
@@ -211,6 +243,8 @@ def script_error_from_exception_details(details: dict) -> ScriptError:
         line_number=details.get("lineNumber"),
         column_number=details.get("columnNumber"),
         stack_trace=_format_stack_trace(details.get("stackTrace")),
+        stacktrace=_stack_trace(details.get("stackTrace")),
+        window_handle=window_handle,
     )
 
 
@@ -299,7 +333,7 @@ def execute_pinned(script: Any, pinned: PinnedScript, code: str, context_id: str
         if raw.get("type") == "exception":
             details = raw.get("exceptionDetails")
             details = details if isinstance(details, dict) else {}
-            return ScriptResult(value=None, error=script_error_from_exception_details(details), realm=realm)
+            return ScriptResult(value=None, error=script_error_from_exception_details(details, context_id), realm=realm)
         if raw.get("type") == "success":
             return ScriptResult(value=raw.get("result"), error=None, realm=realm)
     return ScriptResult(value=raw, error=None, realm=None)
@@ -327,7 +361,13 @@ class LogHandlerRegistry:
         self._subscription_id: str | None = None
         self._categories: dict[int, str] = {}
 
-    def add_handler(self, callback: Callable, category: str, legacy: bool = False) -> int:
+    def add_handler(
+        self,
+        callback: Callable,
+        category: str,
+        legacy: bool = False,
+        payload: Callable[[dict], Any] | None = None,
+    ) -> int:
         """Register a handler and subscribe to ``log.entryAdded`` if needed.
 
         Args:
@@ -337,13 +377,18 @@ class LogHandlerRegistry:
                 ``ConsoleLogEntry`` / ``JavascriptLogEntry`` dataclasses;
                 otherwise it receives :class:`ConsoleMessage` /
                 :class:`ScriptError`.
+            payload: Builds the payload from the raw entry params, in place
+                of the default for ``category``; overrides ``legacy``.
         """
         entry_type = self._CATEGORY_ENTRY_TYPES[category]
+        build = payload
 
         def _dispatch(params: Any) -> None:
             if not isinstance(params, dict) or params.get("type") != entry_type:
                 return
-            if legacy:
+            if build is not None:
+                payload = build(params)
+            elif legacy:
                 payload = _legacy_log_entry(params)
             elif category == self.CONSOLE:
                 payload = console_message_from_log_entry(params)

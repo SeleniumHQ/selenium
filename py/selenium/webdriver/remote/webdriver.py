@@ -1279,7 +1279,7 @@ class WebDriver(BaseWebDriver):
         Examples:
             `total = driver.script.execute("(a, b) => a + b", 1, 2)`
             `pinned = driver.script.pin("() => { window.helper = () => 42 }")`
-            `handler_id = driver.script.add_console_handler(messages.append)`
+            `handler = driver.script.add_console_message_handler(messages.append)`
         """
         if not self._websocket_connection:
             self._start_bidi()
