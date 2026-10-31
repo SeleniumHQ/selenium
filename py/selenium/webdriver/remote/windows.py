@@ -34,7 +34,13 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from selenium.common.exceptions import NoSuchFrameException, NoSuchWindowException, WebDriverException
+from selenium.common.exceptions import (
+    InvalidArgumentException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.remote.command import Command
 
 if TYPE_CHECKING:
@@ -45,6 +51,22 @@ logger = logging.getLogger(__name__)
 
 _WAITS = ("none", "interactive", "complete")
 _STRATEGY_WAITS = {"normal": "complete", "eager": "interactive", "none": "none"}
+# events that end the navigation part of a history traversal; a page restored from the
+# back/forward cache commits but sends no load event, so readiness is checked separately
+_TRAVERSE_EVENTS = (
+    "browsingContext.navigationCommitted",
+    "browsingContext.fragmentNavigated",
+    "browsingContext.historyUpdated",
+)
+# navigationFailed is left out: Chrome reports one for the page being left when it
+# is restored from the back/forward cache, before the traversal commits
+# resolves once the document reaches the readiness state, including one that already has
+_READY_SCRIPTS = {
+    "complete": "new Promise(r => document.readyState === 'complete'"
+    " ? r() : addEventListener('load', () => r(), {once: true}))",
+    "interactive": "new Promise(r => document.readyState !== 'loading'"
+    " ? r() : addEventListener('DOMContentLoaded', () => r(), {once: true}))",
+}
 _WINDOW_TYPES = ("tab", "window")
 _DEFAULT_USER_CONTEXT = "default"
 
@@ -392,7 +414,7 @@ class Windows:
         # windows opened with isolated=True, mapped to the user context to remove with them
         self._owned_user_contexts: dict[str, str] = {}
         self._registrations: dict[str, list[Registration]] = {"navigation": [], "window": [], "download": []}
-        self._subscriptions: dict[str, tuple[str, list[tuple[str, int]]]] = {}
+        self._subscriptions: dict[str, tuple[list[str], list[tuple[str, int]]]] = {}
         self._frames: set[str] = set()
 
     # -- public ------------------------------------------------------------
@@ -694,8 +716,32 @@ class Windows:
             return self._driver.current_url
 
         def bidi() -> str:
-            self._bidi_context().traverse_history(context=handle, delta=delta)
-            return self._info(handle).url
+            # traverseHistory returns before the traversal finishes, so wait for it
+            # the way the page load strategy says, as classic back/forward does
+            done = threading.Event()
+            seen: list[tuple[str, str]] = []
+
+            def listener(method: str) -> Callable[[dict], None]:
+                def listen(params: dict) -> None:
+                    if params.get("context") == handle and not done.is_set():
+                        seen.append((method, params.get("url", "")))
+                        done.set()
+
+                return listen
+
+            subscriptions, callbacks = self._listen(list(_TRAVERSE_EVENTS), listener, contexts=[handle])
+            try:
+                self._bidi_context().traverse_history(context=handle, delta=delta)
+                timeout = self._driver.timeouts.page_load or 300
+                if not done.wait(timeout):
+                    raise TimeoutException(f"History traversal in {handle!r} did not finish in {timeout}s")
+            finally:
+                self._unlisten(subscriptions, callbacks)
+            method, url = seen[0]
+            wait = self._session_wait()
+            if method == "browsingContext.navigationCommitted" and wait in _READY_SCRIPTS:
+                self._await_ready(handle, wait)
+            return url or self._info(handle).url
 
         return Navigation(window, self._dispatch(handle, classic, bidi))
 
@@ -775,34 +821,68 @@ class Windows:
             raise WebDriverException("The BiDi connection is not open")
         return connection
 
-    def _subscribe(self, family: str) -> None:
-        events = self._family_events(family)
-        self._bidi_session()  # starts BiDi, so the connection exists
-        connection = self._connection()
-        # listen before subscribing, so an event sent right after the subscription is not dropped
-        callbacks = [
-            (method, connection.add_callback(_RawEvent(method), self._listener(family, method))) for method in events
-        ]
+    def _await_ready(self, handle: str, wait: str) -> None:
+        from selenium.webdriver.common._bidi.script import ContextTarget, Script
+
         try:
-            subscription = self._bidi_session().subscribe(events=list(events)).subscription
-        except Exception:
-            for method, callback_id in callbacks:
-                connection.remove_callback(_RawEvent(method), callback_id)
-            raise
-        self._subscriptions[family] = (subscription, callbacks)
+            Script(self._driver).evaluate(
+                _READY_SCRIPTS[wait],
+                target=ContextTarget(context=handle, sandbox="selenium-windows"),
+                await_promise=True,
+            )
+        except WebDriverException:
+            # the document went away while loading, e.g. another navigation started
+            logger.debug("could not wait for %s in %s", wait, handle, exc_info=True)
+
+    def _subscribe(self, family: str) -> None:
+        events = list(self._family_events(family))
+        self._subscriptions[family] = self._listen(events, lambda method: self._listener(family, method))
 
     def _unsubscribe(self, family: str) -> None:
         entry = self._subscriptions.pop(family, None)
-        if entry is None:
-            return
-        subscription, callbacks = entry
+        if entry is not None:
+            self._unlisten(*entry)
+
+    def _listen(
+        self,
+        events: list[str],
+        make_listener: Callable[[str], Callable[[dict], None]],
+        contexts: list[str] | None = None,
+    ) -> tuple[list[str], list[tuple[str, int]]]:
+        """Subscribe to events, skipping any this browser does not implement."""
+        session = self._bidi_session()  # starts BiDi, so the connection exists
+        connection = self._connection()
+        scope: dict[str, Any] = {"contexts": contexts} if contexts else {}
+        # listen before subscribing, so an event sent right after the subscription is not dropped
+        callbacks = [(method, connection.add_callback(_RawEvent(method), make_listener(method))) for method in events]
+        subscriptions: list[str] = []
+        try:
+            try:
+                subscriptions.append(session.subscribe(events=events, **scope).subscription)
+            except InvalidArgumentException as unknown:
+                # e.g. Firefox does not know browsingContext.navigationAborted yet
+                for method in events:
+                    try:
+                        subscriptions.append(session.subscribe(events=[method], **scope).subscription)
+                    except InvalidArgumentException:
+                        logger.debug("%s is not supported by this browser", method)
+                if not subscriptions:
+                    raise unknown
+        except Exception:
+            self._unlisten(subscriptions, callbacks)
+            raise
+        return subscriptions, callbacks
+
+    def _unlisten(self, subscriptions: list[str], callbacks: list[tuple[str, int]]) -> None:
         connection = self._connection()
         for method, callback_id in callbacks:
             connection.remove_callback(_RawEvent(method), callback_id)
+        if not subscriptions:
+            return
         try:
-            self._bidi_session().unsubscribe(subscriptions=[subscription])
+            self._bidi_session().unsubscribe(subscriptions=subscriptions)
         except WebDriverException:
-            logger.debug("could not unsubscribe %s", subscription, exc_info=True)
+            logger.debug("could not unsubscribe %s", subscriptions, exc_info=True)
 
     def _listener(self, family: str, method: str) -> Callable[[dict], None]:
         def listen(params: dict) -> None:
