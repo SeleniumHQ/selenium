@@ -4,21 +4,53 @@
 
 namespace {{rootNamespace}}.{{domain.Name}}
 {
+    using System;
+    using System.Text.Json;
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// {{xml-code-comment type.Description 1}}
     /// </summary>
-    [JsonConverter(typeof(OpenQA.Selenium.DevTools.Json.JsonEnumMemberConverter<{{className}}>))]
+    [JsonConverter(typeof({{className}}JsonConverter))]
     public enum {{className}}
     {
-    {{#each type.Enum}}
+    {{#each enumValues}}
         /// <summary>
-        /// Enumerated member for the {{this}} value.
+        /// Enumerated member for a protocol value.
         /// </summary>
-        [EnumMember(Value = "{{this}}")]
-        {{dehumanize this}},
+        [EnumMember(Value = {{WireValueLiteral}})]
+        {{Name}},
     {{/each}}
+    }
+
+    internal sealed class {{className}}JsonConverter : JsonConverter<{{className}}>
+    {
+        public override {{className}} Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            string value = reader.GetString() ?? throw new JsonException("Could not read an enum string from \"null\"");
+
+            return value switch
+            {
+            {{#each enumReadValues}}
+                {{ValueLiteral}} => {{../className}}.{{Name}},
+            {{/each}}
+                _ => default
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, {{className}} value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+            {{#each enumValues}}
+                case {{../className}}.{{Name}}:
+                    writer.WriteStringValue({{WireValueLiteral}});
+                    return;
+            {{/each}}
+                default:
+                    throw new System.Collections.Generic.KeyNotFoundException();
+            }
+        }
     }
 }

@@ -2,6 +2,8 @@ using Humanizer;
 using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
@@ -70,13 +72,53 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 className = className,
                 domain = context.Domain,
                 rootNamespace = Settings.RootNamespace,
-                context = context
+                context = context,
+                enumValues = typeDefinition.Enum.Select(value => new
+                {
+                    Name = GetEnumMemberName(value),
+                    WireValueLiteral = JsonSerializer.Serialize(value)
+                }).ToList(),
+                enumReadValues = GetEnumReadValues(typeDefinition)
             });
 
             var outputPath = Utility.ReplaceTokensInPath(templateSettings.OutputPath, className, context, Settings);
             result.Add(outputPath, codeResult);
-
             return result;
+        }
+
+        private static string GetEnumMemberName(string value)
+        {
+            string name = value.StartsWith("-", StringComparison.Ordinal)
+                ? $"Negative{value.Dehumanize()}"
+                : value.Dehumanize();
+            return name.Dehumanize();
+        }
+
+        private static List<object> GetEnumReadValues(TypeDefinition typeDefinition)
+        {
+            var enumReadValues = new Dictionary<string, string>(StringComparer.Ordinal);
+            var enumValues = typeDefinition.Enum
+                .Select(value => (Value: value, Name: GetEnumMemberName(value)))
+                .ToList();
+
+            foreach (var enumValue in enumValues)
+            {
+                enumReadValues.Add(enumValue.Name, enumValue.Name);
+            }
+
+            foreach (var enumValue in enumValues)
+            {
+                enumReadValues[enumValue.Value] = enumValue.Name;
+            }
+
+            return enumReadValues
+                .Select(pair => new
+                {
+                    ValueLiteral = JsonSerializer.Serialize(pair.Key),
+                    Name = pair.Value
+                })
+                .Cast<object>()
+                .ToList();
         }
     }
 }
