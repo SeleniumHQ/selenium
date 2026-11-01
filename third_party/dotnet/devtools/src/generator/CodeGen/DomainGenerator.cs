@@ -61,6 +61,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 domain = domainDefinition,
                 className = className,
                 rootNamespace = Settings.RootNamespace,
+                serializerContextName = $"{Settings.RootNamespace.Replace(".", "_")}DevToolsJsonSerializerContext",
                 context = context
             });
 

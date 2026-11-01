@@ -28,7 +28,9 @@ namespace {{rootNamespace}}.{{domain.Name}}
             Session = session ?? throw new ArgumentNullException(nameof(session));
             Session.DevToolsEventReceived += OnDevToolsEventReceived;
     {{#each domain.Events}}
-            m_eventMap["{{Name}}"] = new DevToolsEventData(typeof({{dehumanize Name}}EventArgs), On{{dehumanize Name}});
+            m_eventMap["{{Name}}"] = new DevToolsEventData(
+                global::{{../rootNamespace}}.{{../serializerContextName}}.Default.GetTypeInfo(typeof({{dehumanize Name}}EventArgs))!,
+                On{{dehumanize Name}});
     {{/each}}
         }
 
@@ -65,7 +67,7 @@ namespace {{rootNamespace}}.{{domain.Name}}
                 if (m_eventMap.ContainsKey(e.EventName))
                 {
                     var eventData = m_eventMap[e.EventName];
-                    var eventArgs = e.EventData.Deserialize(eventData.EventArgsType, global::OpenQA.Selenium.DevTools.Json.DevToolsJsonOptions.Default);
+                    var eventArgs = e.EventData.Deserialize(eventData.EventArgsTypeInfo ?? throw new InvalidOperationException("DevTools event type metadata is unavailable."));
                     eventData.EventInvoker(eventArgs);
                 }
             }

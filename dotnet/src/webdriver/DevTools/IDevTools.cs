@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -35,8 +33,6 @@ public interface IDevTools
     /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
     /// </summary>
     /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     DevToolsSession GetDevToolsSession();
 
     /// <summary>
@@ -45,14 +41,10 @@ public interface IDevTools
     /// <param name="options">The options for the DevToolsSession to use.</param>
     /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     DevToolsSession GetDevToolsSession(DevToolsOptions options);
 
     /// <summary>
     /// Closes a DevTools session
     /// </summary>
-    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     void CloseDevToolsSession();
 }

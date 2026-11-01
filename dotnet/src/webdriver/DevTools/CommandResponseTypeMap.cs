@@ -18,6 +18,7 @@
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -27,6 +28,8 @@ namespace OpenQA.Selenium.DevTools;
 public class CommandResponseTypeMap
 {
     private readonly IDictionary<Type, Type> commandResponseTypeDictionary = new Dictionary<Type, Type>();
+    private readonly IDictionary<Type, JsonTypeInfo> commandSettingsJsonTypeInfoDictionary = new Dictionary<Type, JsonTypeInfo>();
+    private readonly IDictionary<Type, JsonTypeInfo> commandResponseJsonTypeInfoDictionary = new Dictionary<Type, JsonTypeInfo>();
 
     /// <summary>
     /// Adds mapping to a response type for a specified command type.
@@ -44,6 +47,35 @@ public class CommandResponseTypeMap
         {
             commandResponseTypeDictionary.Add(commandSettingsType, commandResponseType);
         }
+    }
+
+    internal void AddCommandResponseType(JsonTypeInfo commandSettingsTypeInfo, JsonTypeInfo commandResponseTypeInfo)
+    {
+        ArgumentNullException.ThrowIfNull(commandSettingsTypeInfo);
+        ArgumentNullException.ThrowIfNull(commandResponseTypeInfo);
+
+        AddCommandResponseType(commandSettingsTypeInfo.Type, commandResponseTypeInfo.Type);
+        if (!commandSettingsJsonTypeInfoDictionary.ContainsKey(commandSettingsTypeInfo.Type))
+        {
+            commandSettingsJsonTypeInfoDictionary.Add(commandSettingsTypeInfo.Type, commandSettingsTypeInfo);
+            commandResponseJsonTypeInfoDictionary.Add(commandSettingsTypeInfo.Type, commandResponseTypeInfo);
+        }
+    }
+
+    internal bool TryGetCommandResponseTypeInfo(
+        Type commandSettingsType,
+        [NotNullWhen(true)] out JsonTypeInfo? commandSettingsTypeInfo,
+        [NotNullWhen(true)] out JsonTypeInfo? commandResponseTypeInfo)
+    {
+        if (commandSettingsJsonTypeInfoDictionary.TryGetValue(commandSettingsType, out commandSettingsTypeInfo) &&
+            commandResponseJsonTypeInfoDictionary.TryGetValue(commandSettingsType, out commandResponseTypeInfo))
+        {
+            return true;
+        }
+
+        commandSettingsTypeInfo = null;
+        commandResponseTypeInfo = null;
+        return false;
     }
 
     /// <summary>

@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization.Metadata;
+
 namespace OpenQA.Selenium.DevTools;
 
 /// <summary>
@@ -38,10 +40,18 @@ public class DevToolsEventData
         EventInvoker = invoker;
     }
 
+    internal DevToolsEventData(JsonTypeInfo eventArgsTypeInfo, Action<object?> invoker)
+        : this(eventArgsTypeInfo?.Type ?? throw new ArgumentNullException(nameof(eventArgsTypeInfo)), invoker)
+    {
+        EventArgsTypeInfo = eventArgsTypeInfo;
+    }
+
     /// <summary>
     /// Gets the type of the event args object for the event.
     /// </summary>
     public Type EventArgsType { get; }
+
+    internal JsonTypeInfo? EventArgsTypeInfo { get; }
 
     /// <summary>
     /// The method to called to raise the event.

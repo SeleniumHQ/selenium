@@ -2,6 +2,27 @@
 namespace {{rootNamespace}}
 {
     using System;
+    using System.Text.Json.Serialization;
+
+{{#each commands}}
+    [JsonSerializable(typeof({{FullTypeName}}), TypeInfoPropertyName = "{{SettingsTypeInfoName}}")]
+    [JsonSerializable(typeof({{FullResponseTypeName}}), TypeInfoPropertyName = "{{ResponseTypeInfoName}}")]
+{{/each}}
+{{#each events}}
+    [JsonSerializable(typeof({{FullTypeName}}), TypeInfoPropertyName = "{{TypeInfoName}}")]
+{{/each}}
+{{#each types}}
+    {{#unless IsPrimitive}}
+    [JsonSerializable(typeof({{Namespace}}.{{TypeName}}), TypeInfoPropertyName = "{{Namespace}}{{TypeName}}")]
+    {{/unless}}
+{{/each}}
+{{#each additionalJsonTypeInfos}}
+    [JsonSerializable(typeof({{FullTypeName}}), TypeInfoPropertyName = "{{TypeInfoName}}")]
+{{/each}}
+    #pragma warning disable CS3016
+    [JsonSourceGenerationOptions(Converters = [typeof(global::OpenQA.Selenium.DevTools.Json.StringConverter)])]
+    #pragma warning restore CS3016
+    internal partial class {{serializerContextName}} : JsonSerializerContext;
 
     ///<summary>
     /// The active domains for a DevTools session.
@@ -39,7 +60,9 @@ namespace {{rootNamespace}}
         protected override void PopulateCommandResponseTypeMap()
         {
 {{#each commands}}
-            ResponseTypeMap.AddCommandResponseType(typeof({{FullTypeName}}), typeof({{FullResponseTypeName}}));
+            ResponseTypeMap.AddCommandResponseType(
+                {{../serializerContextName}}.Default.GetTypeInfo(typeof({{FullTypeName}}))!,
+                {{../serializerContextName}}.Default.GetTypeInfo(typeof({{FullResponseTypeName}}))!);
 {{/each}}
         }
     }

@@ -48,7 +48,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     (
                         commandName: $"{domain.Name}.{command.Name}",
                         fullTypeName: $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandSettings",
-                        fullResponseTypeName: $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandResponse"
+                        fullResponseTypeName: $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandResponse",
+                        settingsTypeInfoName: $"{domain.Name.Dehumanize()}{command.Name.Dehumanize()}CommandSettings",
+                        responseTypeInfoName: $"{domain.Name.Dehumanize()}{command.Name.Dehumanize()}CommandResponse"
                     ));
                 }
             }
@@ -63,13 +65,15 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     events.Add(new EventInfo
                     (
                         eventName: $"{domain.Name}.{@event.Name}",
-                        fullTypeName: $"{domain.Name.Dehumanize()}.{@event.Name.Dehumanize()}EventArgs")
+                        fullTypeName: $"{domain.Name.Dehumanize()}.{@event.Name.Dehumanize()}EventArgs",
+                        typeInfoName: $"{domain.Name.Dehumanize()}{@event.Name.Dehumanize()}EventArgs")
                     );
                 }
             }
 
             //Get typeinfos as a dictionary.
             var types = GetTypesInDomain(domains);
+            var additionalJsonTypeInfos = GetAdditionalJsonTypeInfos(domains, types);
 
             //Create an object that contains information that include templates can use.
             var includeData = new
@@ -77,9 +81,11 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 chromeVersion = protocolDefinition.BrowserVersion,
                 runtimeVersion = Settings.RuntimeVersion,
                 rootNamespace = Settings.RootNamespace,
+                serializerContextName = $"{Settings.RootNamespace.Replace(".", "_")}DevToolsJsonSerializerContext",
                 domains = domains,
                 commands = commands,
                 events = events,
+                additionalJsonTypeInfos = additionalJsonTypeInfos,
                 types = types.Values.ToList()
             };
 
@@ -101,6 +107,131 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             }
 
             return result;
+        }
+
+        private static List<object> GetAdditionalJsonTypeInfos(ICollection<DomainDefinition> domains, IDictionary<string, TypeInfo> knownTypes)
+        {
+            var result = new List<object>();
+            var includedTypes = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (var domain in domains)
+            {
+                foreach (var type in domain.Types)
+                {
+                    AddJsonTypeInfo(type, domain);
+                }
+
+                foreach (var command in domain.Commands)
+                {
+                    foreach (var parameter in command.Parameters)
+                    {
+                        AddJsonTypeInfo(parameter, domain);
+                    }
+
+                    foreach (var commandReturn in command.Returns)
+                    {
+                        AddJsonTypeInfo(commandReturn, domain);
+                    }
+                }
+
+                foreach (var protocolEvent in domain.Events)
+                {
+                    foreach (var parameter in protocolEvent.Parameters)
+                    {
+                        AddJsonTypeInfo(parameter, domain);
+                    }
+                }
+            }
+
+            return result;
+
+            void AddJsonTypeInfo(TypeDefinition type, DomainDefinition domain)
+            {
+                if (type.Type == "array")
+                {
+                    AddJsonType(GetJsonTypeName(type, domain));
+                }
+                else if (type.Optional && IsOptionalEnum(type, domain))
+                {
+                    AddJsonType(GetJsonTypeName(type, domain));
+                }
+
+                if (type.Items != null)
+                {
+                    AddJsonTypeInfo(type.Items, domain);
+                }
+
+                foreach (var property in type.Properties)
+                {
+                    AddJsonTypeInfo(property, domain);
+                }
+            }
+
+            string GetJsonTypeName(TypeDefinition type, DomainDefinition domain)
+            {
+                if (type.Type == "array" && type.Items != null)
+                {
+                    string elementTypeName = GetJsonTypeName(type.Items, domain);
+                    if (type.Items.Optional && !IsOptionalEnum(type.Items, domain) &&
+                        type.Items.Type is not ("boolean" or "integer" or "number"))
+                    {
+                        elementTypeName = elementTypeName.Replace("?", string.Empty);
+                    }
+
+                    return $"{elementTypeName}[]";
+                }
+
+                if (!string.IsNullOrWhiteSpace(type.TypeReference))
+                {
+                    string referencedType = type.TypeReference;
+                    string referencedTypeKey = referencedType.Contains(".")
+                        ? referencedType
+                        : $"{domain.Name}.{referencedType}";
+                    if (knownTypes.TryGetValue(referencedTypeKey, out TypeInfo? referencedTypeInfo))
+                    {
+                        string typeName = referencedTypeInfo.IsPrimitive
+                            ? referencedTypeInfo.TypeName
+                            : $"{referencedTypeInfo.Namespace}.{referencedTypeInfo.TypeName}";
+                        if (type.Optional)
+                        {
+                            typeName += "?";
+                        }
+
+                        return typeName;
+                    }
+                }
+
+                return Utility.GetTypeMappingForType(type, domain, knownTypes);
+            }
+
+            void AddJsonType(string typeName)
+            {
+                if (includedTypes.Add(typeName))
+                {
+                    string typeInfoName = typeName
+                        .Replace("[]", "Array")
+                        .Replace("?", "Nullable")
+                        .Replace(".", "_")
+                        .Replace(" ", string.Empty);
+                    result.Add(new { FullTypeName = typeName, TypeInfoName = typeInfoName });
+                }
+            }
+
+            bool IsOptionalEnum(TypeDefinition type, DomainDefinition domain)
+            {
+                if (string.IsNullOrWhiteSpace(type.TypeReference))
+                {
+                    return false;
+                }
+
+                string referencedType = type.TypeReference;
+                int separatorIndex = referencedType.LastIndexOf('.');
+                string domainName = separatorIndex < 0 ? domain.Name! : referencedType.Substring(0, separatorIndex);
+                string typeId = separatorIndex < 0 ? referencedType : referencedType.Substring(separatorIndex + 1);
+                DomainDefinition? referencedDomain = domains.FirstOrDefault(candidate => candidate.Name == domainName);
+                TypeDefinition? referencedDefinition = referencedDomain?.Types.FirstOrDefault(candidate => candidate.Id == typeId);
+                return referencedDefinition?.Type == "string" && referencedDefinition.Enum.Count > 0;
+            }
         }
 
         private static Dictionary<string, TypeInfo> GetTypesInDomain(ICollection<DomainDefinition> domains)

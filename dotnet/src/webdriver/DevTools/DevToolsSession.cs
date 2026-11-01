@@ -18,10 +18,11 @@
 // </copyright>
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.DevTools.Json;
 using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.DevTools;
@@ -30,12 +31,8 @@ namespace OpenQA.Selenium.DevTools;
 /// Represents a WebSocket connection to a running DevTools instance that can be used to send
 /// commands and receive events.
 ///</summary>
-[RequiresUnreferencedCode(CDP_AOTIncompatibilityMessage)]
-[RequiresDynamicCode(CDP_AOTIncompatibilityMessage)]
 public class DevToolsSession : IDevToolsSession
 {
-    internal const string CDP_AOTIncompatibilityMessage = "CDP is not compatible with trimming or AOT.";
-
     /// <summary>
     /// A value indicating that the version of the DevTools protocol in use
     /// by the browser should be automatically detected.
@@ -146,7 +143,7 @@ public class DevToolsSession : IDevToolsSession
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
+        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -154,12 +151,7 @@ public class DevToolsSession : IDevToolsSession
             return null;
         }
 
-        if (!this.Domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType<TCommand>(out Type? commandResponseType))
-        {
-            throw new InvalidOperationException($"Type {command.GetType()} does not correspond to a known command response type.");
-        }
-
-        return result.Value.Deserialize(commandResponseType) as ICommandResponse<TCommand>;
+        return result.Value.Deserialize(commandResponseTypeInfo) as ICommandResponse<TCommand>;
     }
 
     /// <summary>
@@ -177,7 +169,7 @@ public class DevToolsSession : IDevToolsSession
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
+        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
         var result = await SendCommand(command.CommandName, sessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -185,12 +177,7 @@ public class DevToolsSession : IDevToolsSession
             return null;
         }
 
-        if (!this.Domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType(command, out Type? commandResponseType))
-        {
-            throw new InvalidOperationException($"Type {typeof(TCommand)} does not correspond to a known command response type.");
-        }
-
-        return result.Value.Deserialize(commandResponseType) as ICommandResponse<TCommand>;
+        return result.Value.Deserialize(commandResponseTypeInfo) as ICommandResponse<TCommand>;
     }
 
     /// <summary>
@@ -210,7 +197,7 @@ public class DevToolsSession : IDevToolsSession
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
+        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -218,7 +205,7 @@ public class DevToolsSession : IDevToolsSession
             return default;
         }
 
-        return result.Value.Deserialize<TCommandResponse>();
+        return (TCommandResponse?)result.Value.Deserialize(commandResponseTypeInfo);
     }
 
     /// <summary>
@@ -268,7 +255,7 @@ public class DevToolsSession : IDevToolsSession
 
             LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
 
-            string contents = JsonSerializer.Serialize(message);
+            string contents = JsonSerializer.Serialize(message, DevToolsRuntimeJsonSerializerContext.Default.DevToolsCommandData);
             this.pendingCommands.TryAdd(message.CommandId, message);
             await this.connection.SendData(contents).ConfigureAwait(false);
 
@@ -397,7 +384,7 @@ public class DevToolsSession : IDevToolsSession
                 rawVersionInfo = await client.GetStringAsync("/json/version").ConfigureAwait(false);
             }
 
-            var versionInfo = JsonSerializer.Deserialize<DevToolsVersionInfo>(rawVersionInfo) ?? throw new JsonException("/json/version endpoint returned null response");
+            var versionInfo = JsonSerializer.Deserialize(rawVersionInfo, DevToolsRuntimeJsonSerializerContext.Default.DevToolsVersionInfo) ?? throw new JsonException("/json/version endpoint returned null response");
             this.EndpointAddress = versionInfo.WebSocketDebuggerUrl;
 
             if (requestedProtocolVersion == AutoDetectDevToolsProtocolVersion)
@@ -637,5 +624,20 @@ public class DevToolsSession : IDevToolsSession
     private void LogError(string message, params object?[] args)
     {
         LogMessage?.Invoke(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
+    }
+
+    private JsonNode SerializeCommand(ICommand command, out JsonTypeInfo commandResponseTypeInfo)
+    {
+        if (!this.Domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseTypeInfo(
+            command.GetType(),
+            out JsonTypeInfo? commandSettingsTypeInfo,
+            out JsonTypeInfo? responseTypeInfo))
+        {
+            throw new InvalidOperationException($"Type {command.GetType()} does not correspond to a known command response type.");
+        }
+
+        commandResponseTypeInfo = responseTypeInfo;
+        return JsonSerializer.SerializeToNode(command, commandSettingsTypeInfo)
+            ?? throw new InvalidOperationException("Command serialized to \"null\".");
     }
 }
