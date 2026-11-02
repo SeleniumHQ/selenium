@@ -277,12 +277,15 @@ def _is_glob(pattern: Any) -> bool:
     return "?" in pattern and "://" not in pattern
 
 
-def glob_to_regex(pattern: str) -> re.Pattern:
+def glob_to_regex(pattern: str, *, segmented: bool = True) -> re.Pattern:
     """Compile a URL glob (``*``, ``**``, ``?``) into a regular expression.
 
     ``*`` matches within a path segment, ``**`` matches across segments, and
     ``?`` matches a single character.  Matching is anchored at both ends.
+    With ``segmented=False``, as for a query, ``/`` is an ordinary character
+    that ``*`` and ``?`` also match.
     """
+    any_char = "[^/]" if segmented else "."
     parts: list[str] = []
     i = 0
     while i < len(pattern):
@@ -292,10 +295,10 @@ def glob_to_regex(pattern: str) -> re.Pattern:
                 parts.append(".*")
                 i += 2
             else:
-                parts.append("[^/]*")
+                parts.append(any_char + "*")
                 i += 1
         elif char == "?":
-            parts.append("[^/]")
+            parts.append(any_char)
             i += 1
         else:
             parts.append(re.escape(char))
@@ -445,7 +448,7 @@ def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
             elif name == "search":
                 value = value.lstrip("?")
             if _component_has_wildcard(name, value):
-                if glob_to_regex(value).match(actual[name]) is None:
+                if glob_to_regex(value, segmented=name != "search").match(actual[name]) is None:
                     return False
             elif actual[name] != value:
                 return False
