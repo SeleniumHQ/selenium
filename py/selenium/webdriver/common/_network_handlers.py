@@ -376,9 +376,10 @@ class _UrlPatterns:
     """User URL patterns translated for ``network.addIntercept``.
 
     ``wire`` is what the remote end evaluates (``None`` intercepts everything).
-    ``matchers`` re-checks every alternative in Python when a deprecated glob is
-    among them, because the remote end cannot evaluate a glob and the event does
-    not say which alternative matched; it is empty when the remote end decides alone.
+    ``matchers`` re-checks every alternative in Python when a glob or a wildcard
+    component is among them, because the remote end cannot evaluate wildcards and
+    the event does not say which alternative matched; it is empty when the remote
+    end decides alone.
     """
 
     def __init__(self, wire: list | None, matchers: list[Callable[[str], bool]]):
@@ -389,15 +390,42 @@ class _UrlPatterns:
         return not self.matchers or any(matcher(url) for matcher in self.matchers)
 
 
-def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
-    """Match a URL against the literal components of a ``network.UrlPatternPattern``."""
-    expected = {
-        "protocol": pattern.protocol,
-        "hostname": pattern.hostname,
-        "port": pattern.port,
-        "pathname": pattern.pathname,
-        "search": pattern.search,
+def _component_has_wildcard(name: str, value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    if name == "search":
+        # A leading "?" only introduces the query.
+        value = value.lstrip("?")
+    return "*" in value or "?" in value
+
+
+def _has_wildcard_component(pattern: Any) -> bool:
+    if not isinstance(pattern, dict) or pattern.get("type") == "string":
+        return False
+    return any(_component_has_wildcard(name, value) for name, value in pattern.items())
+
+
+def _literal_components(pattern: UrlPatternPattern) -> UrlPatternPattern | None:
+    """The browser-side pre-filter for a component pattern, or ``None`` to intercept everything.
+
+    Wildcard components are dropped because the remote end rejects them, so the
+    filter is broader than the pattern and Python-side matching narrows it.
+    """
+    components = {
+        name: value
+        for name in URL_PATTERN_COMPONENTS
+        if (value := getattr(pattern, name)) is not UNSET and not _component_has_wildcard(name, value)
     }
+    return UrlPatternPattern(**components) if components else None
+
+
+def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
+    """Match a URL against the components of a ``network.UrlPatternPattern``.
+
+    Unlike the remote end, a component may use the URL glob wildcards
+    (``*``, ``**``, ``?``), e.g. ``{"hostname": "*.example.org"}``.
+    """
+    expected = {name: getattr(pattern, name) for name in URL_PATTERN_COMPONENTS}
 
     def matches(url: str) -> bool:
         parts = urlsplit(url)
@@ -417,7 +445,10 @@ def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
                 value = value.lower()
             elif name == "search":
                 value = value.lstrip("?")
-            if actual[name] != value:
+            if _component_has_wildcard(name, value):
+                if glob_to_regex(value).match(actual[name]) is None:
+                    return False
+            elif actual[name] != value:
                 return False
         return True
 
@@ -440,7 +471,9 @@ def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
 
     A glob string (one containing ``*`` or ``?``) is deprecated: the remote end
     rejects wildcards, so as in earlier releases its literal components pre-filter
-    in the browser and the glob itself is matched in Python.
+    in the browser and the glob itself is matched in Python.  A mapping may use
+    the same wildcards in its components (e.g. ``{"hostname": "*.example.org"}``),
+    matched the same way.
     """
     if patterns is None:
         return _UrlPatterns(None, [])
@@ -457,8 +490,8 @@ def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
                 f"A URL pattern must be a string or a mapping of pattern components, got {type(pattern).__name__}"
             )
         values.append(pattern)
-    if any(_is_glob(value) for value in values):
-        return _glob_url_patterns(values)
+    if any(_is_glob(value) or _has_wildcard_component(value) for value in values):
+        return _python_matched_url_patterns(values)
     wire = [
         _url_pattern_from_string(value) if isinstance(value, str) else _url_pattern_from_mapping(value)
         for value in values
@@ -466,30 +499,31 @@ def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
     return _UrlPatterns(wire or None, [])
 
 
-def _glob_url_patterns(values: list) -> _UrlPatterns:
+def _python_matched_url_patterns(values: list) -> _UrlPatterns:
     globs = [value for value in values if _is_glob(value)]
-    warnings.warn(
-        f"Glob URL patterns such as {globs[0]!r} are deprecated, because the browser cannot evaluate them; "
-        "pass a URL pattern string without wildcards or a mapping of URL components instead, "
-        "and do finer matching inside the handler",
-        DeprecationWarning,
-        # Points past the registry and the driver.network method at the caller.
-        stacklevel=5,
-    )
+    if globs:
+        warnings.warn(
+            f"Glob URL patterns such as {globs[0]!r} are deprecated, because the browser cannot evaluate them; "
+            "pass a URL pattern string without wildcards or a mapping of URL components instead, "
+            "and do finer matching inside the handler",
+            DeprecationWarning,
+            # Points past the registry and the driver.network method at the caller.
+            stacklevel=5,
+        )
     wire: list = []
     matchers: list[Callable[[str], bool]] = []
     intercept_everything = False
     for value in values:
         if isinstance(value, dict):
             url_pattern = _url_pattern_from_mapping(value)
-            wire.append(url_pattern)
             if isinstance(url_pattern, UrlPatternPattern):
                 matchers.append(_component_matcher(url_pattern))
+                url_pattern = _literal_components(url_pattern) if _has_wildcard_component(value) else url_pattern
             else:
                 matchers.append(_string_matcher(url_pattern.pattern))
-            continue
-        matchers.append(_string_matcher(value))
-        url_pattern = _glob_to_url_pattern(value) if _is_glob(value) else _url_pattern_from_string(value)
+        else:
+            matchers.append(_string_matcher(value))
+            url_pattern = _glob_to_url_pattern(value) if _is_glob(value) else _url_pattern_from_string(value)
         if url_pattern is None:
             # One pattern that cannot be pre-filtered means intercepting everything.
             intercept_everything = True
