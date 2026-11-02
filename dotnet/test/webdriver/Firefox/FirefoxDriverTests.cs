@@ -53,8 +53,8 @@ public class FirefoxDriverTests : DriverTestFixture
 
         Driver.Url = Urls.FormsPage;
         IWebElement textarea = Driver.FindElement(By.Id("withText"));
-        string expectedText = "I like cheese" + System.Environment.NewLine
-            + System.Environment.NewLine + "It's really nice";
+        string expectedText = "I like cheese" + Environment.NewLine
+            + Environment.NewLine + "It's really nice";
         textarea.Clear();
         textarea.SendKeys(expectedText);
 

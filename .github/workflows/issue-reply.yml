@@ -1,0 +1,31 @@
+name: Webhook - Issue Reply
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  retriage:
+    # Maintainers often comment right after applying a J-* label, so only outside replies count
+    if: >-
+      github.event.repository.fork == false &&
+      !github.event.issue.pull_request &&
+      github.event.issue.state == 'open' &&
+      github.event.comment.user.type != 'Bot' &&
+      !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
+      (contains(github.event.issue.labels.*.name, 'J-awaiting answer') ||
+       contains(github.event.issue.labels.*.name, 'J-logging') ||
+       contains(github.event.issue.labels.*.name, 'J-issue-template'))
+    runs-on: ubuntu-latest
+    steps:
+      - run: >-
+          gh issue edit "$NUMBER" --repo "$REPO"
+          --remove-label "J-awaiting answer" --remove-label J-logging --remove-label J-issue-template
+          --add-label A-needs-triaging
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}

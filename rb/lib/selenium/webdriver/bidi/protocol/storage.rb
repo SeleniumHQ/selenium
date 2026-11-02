@@ -45,11 +45,11 @@ module Selenium
             value: {wire_key: 'value', required: false, ref: 'Network::BytesValue'},
             domain: {wire_key: 'domain', required: false, primitive: 'string'},
             path: {wire_key: 'path', required: false, primitive: 'string'},
-            size: {wire_key: 'size', required: false, primitive: 'integer'},
+            size: {wire_key: 'size', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
             secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             extensible: true
           )
 
@@ -113,7 +113,7 @@ module Selenium
             http_only: {wire_key: 'httpOnly', required: false, primitive: 'boolean'},
             secure: {wire_key: 'secure', required: false, primitive: 'boolean'},
             same_site: {wire_key: 'sameSite', required: false, enum: 'Network::SAME_SITE'},
-            expiry: {wire_key: 'expiry', required: false, primitive: 'integer'},
+            expiry: {wire_key: 'expiry', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             extensible: true
           )
 

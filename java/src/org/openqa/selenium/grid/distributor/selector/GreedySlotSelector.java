@@ -62,12 +62,11 @@ public class GreedySlotSelector implements SlotSelector {
                 // Then sort by stereotype browserVersion (descending order)
                 .thenComparing(
                     NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed()))
-        .flatMap(
-            node ->
-                node.getSlots().stream()
-                    .filter(slot -> slot.getSession() == null)
-                    .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
-                    .map(Slot::getId))
+        .flatMap(node ->
+            node.getSlots().stream()
+                .filter(slot -> slot.getSession() == null)
+                .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
+                .map(Slot::getId))
         .collect(toSequencedSet());
   }
 }

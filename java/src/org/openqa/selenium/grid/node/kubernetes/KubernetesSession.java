@@ -80,6 +80,13 @@ public class KubernetesSession extends DefaultActiveSession {
   }
 
   @Override
+  public boolean isRemoteFileSystem() {
+    // The browser runs in a separate Kubernetes Job Pod that does not share the Node Pod's
+    // filesystem, so file upload and download commands must be forwarded to the browser Pod.
+    return true;
+  }
+
+  @Override
   public void stop() {
     LOG.info(String.format("Stopping session, deleting K8s Job: %s/%s", namespace, jobName));
     saveLogs();

@@ -17,10 +17,7 @@
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command;
-use crate::{
-    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, default_cache_folder,
-    path_to_string,
-};
+use crate::{ARCH_ARM7L, Command, REQUEST_TIMEOUT_SEC, default_cache_folder, path_to_string};
 use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
 use anyhow::Error;
 use anyhow::anyhow;
@@ -34,8 +31,7 @@ use toml::Table;
 use winapi::um::sysinfoapi::{GetNativeSystemInfo, SYSTEM_INFO};
 #[cfg(windows)]
 use winapi::um::winnt::{
-    PROCESSOR_ARCHITECTURE_AMD64, PROCESSOR_ARCHITECTURE_ARM, PROCESSOR_ARCHITECTURE_ARM64,
-    PROCESSOR_ARCHITECTURE_IA64, PROCESSOR_ARCHITECTURE_INTEL,
+    PROCESSOR_ARCHITECTURE_ARM, PROCESSOR_ARCHITECTURE_ARM64, PROCESSOR_ARCHITECTURE_INTEL,
 };
 
 thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_to_string(&default_cache_folder())));
@@ -46,6 +42,7 @@ pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
 pub const MIRROR_PREFIX: &str = "-mirror-url";
 pub const CACHE_PATH_KEY: &str = "cache-path";
+const DO_NOT_TRACK: &str = "DO_NOT_TRACK";
 const UNAME_COMMAND: &str = "uname";
 
 pub struct ManagerConfig {
@@ -59,6 +56,7 @@ pub struct ManagerConfig {
     pub os: String,
     pub arch: String,
     pub proxy: String,
+    pub insecure: bool,
     pub timeout: u64,
     pub ttl: u64,
     pub offline: bool,
@@ -77,20 +75,7 @@ impl ManagerConfig {
 
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            let mut _architecture = env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default();
-            #[cfg(windows)]
-            {
-                if _architecture.is_empty() {
-                    _architecture = get_win_os_architecture();
-                }
-            }
-            if _architecture.contains("32") {
-                ARCH_X86.to_string()
-            } else if _architecture.contains("ARM") {
-                ARCH_ARM64.to_string()
-            } else {
-                ARCH_X64.to_string()
-            }
+            get_win_os_architecture()
         } else {
             let uname_a_command = Command::new(UNAME_COMMAND, vec![String::from("-a")]);
             if run_shell_command(uname_a_command)
@@ -126,6 +111,7 @@ impl ManagerConfig {
             os: StringKey(vec!["os"], self_os).get_value(),
             arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
             proxy: StringKey(vec!["proxy"], "").get_value(),
+            insecure: BooleanKey("insecure", false).get_value(),
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
             ttl: IntegerKey("ttl", TTL_SEC).get_value(),
             offline: BooleanKey("offline", false).get_value(),
@@ -133,7 +119,10 @@ impl ManagerConfig {
             avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
             language_binding: StringKey(vec!["language-binding"], "").get_value(),
             selenium_version: StringKey(vec!["selenium-version"], "").get_value(),
-            avoid_stats: BooleanKey("avoid-stats", cfg!(feature = "avoid_stats")).get_value(),
+            avoid_stats: should_avoid_stats(
+                BooleanKey("avoid-stats", cfg!(feature = "avoid_stats")).get_value(),
+                env::var(DO_NOT_TRACK).ok().as_deref(),
+            ),
             skip_driver_in_path: BooleanKey("skip-driver-in-path", false).get_value(),
             skip_browser_in_path: BooleanKey("skip-browser-in-path", false).get_value(),
         }
@@ -192,8 +181,9 @@ impl ARCH {
         match self {
             ARCH::X32 => vec![ARCH_X86, "i386", "x32", "i686"],
             ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "ia64"],
-            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
-            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64"],
+            // "arm" is the conventional name for 32-bit ARM (e.g. std::env::consts::ARCH)
+            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l", "arm"],
         }
     }
 
@@ -272,6 +262,10 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
+fn should_avoid_stats(configured: bool, do_not_track: Option<&str>) -> bool {
+    configured || do_not_track == Some("1")
+}
+
 #[cfg(test)]
 mod env_name_tests {
     use super::*;
@@ -294,6 +288,28 @@ mod env_name_tests {
     #[test]
     fn get_env_name_empty_suffix() {
         assert_eq!(get_env_name(""), "SE_");
+    }
+}
+
+#[cfg(test)]
+mod stats_config_tests {
+    use super::*;
+
+    #[test]
+    fn do_not_track_disables_stats() {
+        assert!(should_avoid_stats(false, Some("1")));
+    }
+
+    #[test]
+    fn existing_opt_out_disables_stats_without_do_not_track() {
+        assert!(should_avoid_stats(true, None));
+    }
+
+    #[test]
+    fn other_do_not_track_values_do_not_disable_stats() {
+        for value in [None, Some(""), Some("0"), Some("true")] {
+            assert!(!should_avoid_stats(false, value));
+        }
     }
 }
 
@@ -338,6 +354,11 @@ fn read_cache_path() -> String {
     cache_path
 }
 
+#[cfg(not(windows))]
+fn get_win_os_architecture() -> String {
+    ARCH_X64.to_string()
+}
+
 #[cfg(windows)]
 fn get_win_os_architecture() -> String {
     unsafe {
@@ -345,12 +366,13 @@ fn get_win_os_architecture() -> String {
         GetNativeSystemInfo(&mut system_info);
 
         match system_info.u.s() {
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 => "64-bit",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => "32-bit",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM => "ARM",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 => "ARM64",
-            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 => "Itanium-based",
-            _ => "Unknown",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => ARCH_X86,
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM
+                || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 =>
+            {
+                ARCH_ARM64
+            }
+            _ => ARCH_X64,
         }
         .to_string()
     }

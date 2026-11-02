@@ -1,3 +1,56 @@
+4.52.0 (2026-10-29)
+=========================
+* Support CDP versions: v154, v155, v156
+* Do not pass a bare --proxy to Selenium Manager (#18150)
+* [build] Automated CDDL Spec Update (#18144)
+* deprecate current behavior of ignoring Grid certificates on HTTPS connections (#18153)
+* generate version.rb from the root version.bzl so tests do not read the version (#18164)
+* fix atoms outside Bazel and add local_dev for using a local checkout (#18183)
+* type vendor-declared BiDi fields instead of making extended types extensible (#18190)
+* check each BiDi list element against its declared type (#18196)
+* hold BiDi numbers to their declared ranges (#18198)
+* [build] Automated Browser Version Update (major) with CDP (#18214)
+* raise on unverified Grid certificates instead of falling back to VERIFY_NONE (#18223)
+* [bidi] Eliminate sleep-based polling for websocket command response (#18231)
+
+4.51.0 (2026-10-09)
+=========================
+* Support CDP versions: v153, v154, v155
+* [build] Automated CDDL Spec Update (#18118)
+* type a field-less synthetic map record as a validated map (#18121)
+* [build] Automated Browser Version Update (major) with CDP (#18131)
+
+4.50.0 (2026-09-30)
+=========================
+* Support CDP versions: v152, v153, v154
+* render WebSocket debug log lines lazily (#18033)
+* Implement driver methods for installing and uninstalling web extensions via BiDi (#17879)
+* [build] Automated CDDL Spec Update (#18046)
+* [build] replace the BiDi KNOWN_INCOMPLETE allowlist with spec-shaped CDDL overlays (#18057)
+* [build] generate the BiDi schema vendor section from Mozilla's Firefox CDDL (#18060)
+* remove deprecated Firefox profile extension and cert methods (#18066)
+* [build] add support for Mozilla's Commands fragment in the BiDi schema (#18071)
+* [build] Automated Browser Version Update (major) with CDP (#18067)
+* [build] Automated CDDL Spec Update (#18075)
+
+4.49.0 (2026-09-09)
+=========================
+* Support CDP versions: v151, v152, v153
+* derive BiDi field names and enum value types in the schema (#17966)
+* [build] Automated CDDL Spec Update (#17990)
+* [build] ship prebuilt Selenium Manager Linux arm64 binary in all bindings (#17999)
+* [build] Automated Browser Version Update (major) with CDP (#18005)
+
+4.48.0 (2026-08-27)
+=========================
+* Support CDP versions: v150, v151, v152
+* add low-level BiDi protocol integration specs (#17878)
+* [build] Automated Browser Version Update (major) with CDP (#17910)
+* fix silent hang on oversized WebSocket frames (#17655)
+* always reject a missing required inbound BiDi field (#17936)
+* accept a whole-valued float for an integer BiDi field (#17939)
+* reject an inbound BiDi scalar outside its union's declared arms (#17947)
+
 4.47.0 (2026-08-10)
 =========================
 * Support CDP versions: v149, v150, v151

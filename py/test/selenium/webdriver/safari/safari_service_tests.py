@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 import sys
 from unittest.mock import patch
 
@@ -34,10 +33,8 @@ class TestSafariDriverService:
     service_path = "/path/to/safaridriver"
 
     @pytest.fixture(autouse=True)
-    def setup_and_teardown(self):
-        os.environ["SE_SAFARIDRIVER"] = self.service_path
-        yield
-        os.environ.pop("SE_SAFARIDRIVER", None)
+    def pin_driver_env(self, monkeypatch):
+        monkeypatch.setenv("SE_SAFARIDRIVER", self.service_path)
 
     def test_uses_path_from_env_variable(self, service):
         assert "safaridriver" in service.path

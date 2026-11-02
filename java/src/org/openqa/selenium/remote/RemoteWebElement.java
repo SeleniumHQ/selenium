@@ -203,15 +203,13 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   @Override
   public List<WebElement> findElements(By locator) {
     return parent.findElements(
-        this,
-        (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
-        locator);
+        this, (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, value), locator);
   }
 
   @Override
   public WebElement findElement(By locator) {
     return parent.findElement(
-        this, (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)), locator);
+        this, (using, value) -> FIND_CHILD_ELEMENT(getId(), using, value), locator);
   }
 
   @Override

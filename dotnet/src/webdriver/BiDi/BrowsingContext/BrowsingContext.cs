@@ -105,6 +105,11 @@ public sealed record BrowsingContext : IIdentifiable
         return BiDi.BrowsingContext.PrintAsync(this, options, cancellationToken);
     }
 
+    public Task<StartScreencastResult> StartScreencastAsync(StartScreencastOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        return BiDi.BrowsingContext.StartScreencastAsync(this, options, cancellationToken);
+    }
+
     public Task<HandleUserPromptResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null, CancellationToken cancellationToken = default)
     {
         return BiDi.BrowsingContext.HandleUserPromptAsync(this, options, cancellationToken);

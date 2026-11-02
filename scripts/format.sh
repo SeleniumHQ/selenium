@@ -77,6 +77,18 @@ WORKSPACE_ROOT="$(bazel info workspace)"
 # Capture baseline to detect formatter-introduced changes (allows pre-existing uncommitted work)
 baseline="$(git status --porcelain)"
 
+# The formatters run on the working tree, so a pushed file that also has uncommitted changes
+# would hide its committed formatting behind the baseline above. Refuse rather than guess.
+if [[ "$mode" == "pre-push" && "$format_all" == "false" && -n "$changed" ]]; then
+    dirty="$(printf '%s\n' "$changed" | tr '\n' '\0' | xargs -0 git status --porcelain --untracked-files=no --)"
+    if [[ -n "$dirty" ]]; then
+        echo "Cannot verify the formatting of the commits being pushed: these files also have uncommitted changes:" >&2
+        echo "$dirty" >&2
+        echo "Commit or stash them, then push again." >&2
+        exit 1
+    fi
+fi
+
 # Always run buildifier and copyright
 section "Buildifier"
 echo "    buildifier" >&2
@@ -150,6 +162,9 @@ if [[ "$(git status --porcelain)" != "$baseline" ]]; then
     echo "" >&2
     echo "Formatters modified files:" >&2
     git diff --name-only >&2
+    if [[ "$mode" == "pre-push" ]]; then
+        echo "Commit these changes (e.g. git commit --amend --no-edit), then push again." >&2
+    fi
     exit 1
 fi
 

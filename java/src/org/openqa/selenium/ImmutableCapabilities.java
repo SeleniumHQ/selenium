@@ -143,13 +143,12 @@ public class ImmutableCapabilities implements Capabilities {
     Require.nonNull("Capabilities", capabilities);
 
     Map<String, Object> delegate = new TreeMap<>();
-    capabilities.forEach(
-        (key, value) -> {
-          Require.argument("Capability key", key).instanceOf(String.class);
-          Require.nonNull("Capability value", value);
+    capabilities.forEach((key, value) -> {
+      Require.argument("Capability key", key).instanceOf(String.class);
+      Require.nonNull("Capability value", value);
 
-          setCapability(delegate, (String) key, value);
-        });
+      setCapability(delegate, (String) key, value);
+    });
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);

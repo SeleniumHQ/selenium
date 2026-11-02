@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,10 +43,12 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.Script;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 
+@CloseExtraWindowsAfterTest
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
@@ -53,17 +56,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToWindowBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }
@@ -75,15 +75,16 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
     Map<String, BrowsingContextInfo> closedWindows = new HashMap<>();
 
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      inspector.onBrowsingContextDestroyed(
-          context -> {
-            // here may arrive events from the previous tests
-            closedWindows.put(context.getId(), context);
-          });
+      inspector.onBrowsingContextDestroyed(context -> {
+        // here may arrive events from the previous tests
+        closedWindows.put(context.getId(), context);
+      });
 
+      String originalWindow = driver.getWindowHandle();
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
       driver.close();
+      driver.switchTo().window(originalWindow);
 
       wait.until(d -> closedWindows.containsKey(windowHandle));
 
@@ -100,16 +101,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }
@@ -304,12 +303,11 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
 
-      assertThatThrownBy(
-              () ->
-                  context.navigate(
-                      "http://invalid-domain-that-does-not-exist.test/",
-                      ReadinessState.COMPLETE,
-                      ofSeconds(1)))
+      assertThatThrownBy(() ->
+              context.navigate(
+                  "http://invalid-domain-that-does-not-exist.test/",
+                  ReadinessState.COMPLETE,
+                  ofSeconds(1)))
           .as("Expect an exception due to navigation failure")
           .isInstanceOf(BiDiException.class);
 
@@ -361,11 +359,10 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       List<NavigationInfo> receivedEvents = new ArrayList<>();
       CountDownLatch latch = new CountDownLatch(1);
-      inspector.onNavigationStarted(
-          info -> {
-            receivedEvents.add(info);
-            latch.countDown();
-          });
+      inspector.onNavigationStarted(info -> {
+        receivedEvents.add(info);
+        latch.countDown();
+      });
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
       context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);

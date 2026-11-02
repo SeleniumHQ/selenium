@@ -11,6 +11,7 @@ filegroup(
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
+        tags = ["grid"],
     )
     for file in glob(["*_spec.rb"])
 ]

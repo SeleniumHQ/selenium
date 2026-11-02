@@ -26,11 +26,17 @@ module Selenium
 
         @connection: untyped
 
+        @web_extension: BiDi::Protocol::WebExtension
+
         attr_reader bidi: BiDi
 
         attr_reader connection: untyped
 
         def create_session: (untyped capabilities) -> void
+
+        def install_web_extension: (String path) -> WebExtension
+
+        def uninstall_web_extension: (String id) -> void
 
         def get: (String url) -> void
 
@@ -49,6 +55,10 @@ module Selenium
         def validated_socket_url: () -> String
 
         def browsing_context: () -> BiDi::Protocol::BrowsingContext
+
+        def web_extension: () -> BiDi::Protocol::WebExtension
+
+        def web_extension_data: (String path) -> untyped
 
         def readiness_state: () -> Symbol
       end

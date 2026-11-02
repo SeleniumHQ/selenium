@@ -28,4 +28,6 @@ public interface IBaseNavigationInfo
     DateTimeOffset Timestamp { get; }
 
     string Url { get; }
+
+    Browser.UserContext? UserContext { get; }
 }

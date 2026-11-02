@@ -81,9 +81,9 @@ fn os_is_does_not_match(#[case] os: OS, #[case] candidate: &str) {
 #[case(X64, "ia64")]
 #[case(ARM64, "arm64")]
 #[case(ARM64, "aarch64")]
-#[case(ARM64, "arm")]
 #[case(ARMV7, "arm7l")]
 #[case(ARMV7, "armv7l")]
+#[case(ARMV7, "arm")]
 fn arch_is_matches(#[case] arch: ARCH, #[case] candidate: &str) {
     assert!(arch.is(candidate));
 }
@@ -95,6 +95,7 @@ fn arch_is_matches(#[case] arch: ARCH, #[case] candidate: &str) {
 #[case(X64, "i686")]
 #[case(X64, "arm7l")]
 #[case(ARM64, "x86_64")]
+#[case(ARM64, "arm")]
 #[case(ARMV7, "aarch64")]
 fn arch_is_does_not_match(#[case] arch: ARCH, #[case] candidate: &str) {
     assert!(!arch.is(candidate));

@@ -77,7 +77,7 @@ internal class SessionTests : BiDiTestFixture
             }
         });
 
-        await context.NavigateAsync(Urls.BlankPage, new() { Wait = OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
+        await context.NavigateAsync(Urls.BlankPage, new() { Wait = Selenium.BiDi.BrowsingContext.ReadinessState.Complete });
 
         var e1 = await tcs1.Task.WaitAsync(TimeSpan.FromSeconds(5));
         var e2 = await tcs2.Task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -124,7 +124,7 @@ internal class SessionTests : BiDiTestFixture
 
         cts.Cancel();
 
-        Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
         {
             await foreach (var _ in sub.ReadAllAsync(cts.Token)) { }
         });
@@ -180,9 +180,6 @@ class CustomModule : Module
 {
     private static readonly CustomModuleJsonSerializerContext JsonContext = CustomModuleJsonSerializerContext.Default;
 
-    private static readonly Command<Parameters, DoSomethingResult> DoSomethingCommand =
-        new("session.status", JsonContext.Parameters, JsonContext.DoSomethingResult);
-
     private static readonly EventDescriptor<SomethingHappenedEventArgs> SomethingHappenedDescriptor =
         EventDescriptor<SomethingHappenedEventArgs>.Create(
             "log.entryAdded",
@@ -192,7 +189,7 @@ class CustomModule : Module
 
     public async Task<DoSomethingResult> DoSomethingAsync(DoSomethingOptions options = null)
     {
-        return await ExecuteAsync(DoSomethingCommand, Parameters.Empty, options, CancellationToken.None);
+        return await ExecuteAsync("session.status", Parameters.Empty, JsonContext.Parameters, JsonContext.DoSomethingResult, options, CancellationToken.None);
     }
 }
 

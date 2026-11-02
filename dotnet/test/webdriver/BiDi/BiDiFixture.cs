@@ -18,7 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 using BiDiBrowsingContext = OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext;
 
 namespace OpenQA.Selenium.Tests.BiDi;
@@ -36,17 +36,28 @@ public abstract class BiDiTestFixture
     [SetUp]
     public async Task BiDiSetUp()
     {
-        var options = new BiDiEnabledDriverOptions()
+        var driverFactory = new DriverFactory(EnvironmentManager.Instance);
+        driver = driverFactory.CreateDriver(configureOptions: options =>
         {
-            UseWebSocketUrl = true,
-            UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore,
-        };
+            options.UseWebSocketUrl = true;
 
-        driver = EnvironmentManager.Instance.CreateDriverInstance(options);
+            if (options is Safari.SafariOptions safariOptions)
+            {
+                safariOptions.AddAdditionalOption("safari:experimentalWebSocketUrl", true);
+            }
+
+            options.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+
+            ConfigureDriverOptions(options);
+        });
 
         bidi = await driver.AsBiDiAsync();
 
         context = (await bidi.BrowsingContext.GetTreeAsync()).Contexts[0].Context;
+    }
+
+    protected virtual void ConfigureDriverOptions(DriverOptions options)
+    {
     }
 
     [TearDown]
@@ -60,18 +71,6 @@ public abstract class BiDiTestFixture
         if (driver is not null)
         {
             await driver.DisposeAsync();
-        }
-    }
-
-    public class BiDiEnabledDriverOptions : DriverOptions
-    {
-        public override void AddAdditionalOption(string capabilityName, object capabilityValue)
-        {
-        }
-
-        public override ICapabilities ToCapabilities()
-        {
-            return null;
         }
     }
 }

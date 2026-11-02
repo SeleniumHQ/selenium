@@ -1,0 +1,93 @@
+{
+  "ActiveDriverConfig": "Chrome",
+  "Headless": false,
+  "DriverServiceLocation": null,
+  "BrowserLocation": null,
+  "DriverConfigs": {
+    "Chrome": {
+      "Browser": "Chrome",
+      "RemoteCapabilities": "chrome"
+    },
+
+    "ChromeDev": {
+      "Browser": "Chrome",
+      "Options": {
+        "Chrome": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "chrome"
+    },
+
+    "EdgeIEMode": {
+      "Browser": "IE",
+      "Options": {
+        "InternetExplorer": {
+          "RequireWindowFocus": true,
+          "UsePerProcessProxy": true,
+          "AttachToEdgeChrome": true
+        }
+      },
+      "RemoteCapabilities": "internet explorer"
+    },
+
+    "Edge": {
+      "Browser": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
+    "EdgeDev": {
+      "Browser": "Edge",
+      "Options": {
+        "Edge": {
+          "BrowserVersion": "dev"
+        }
+      },
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
+    "Firefox": {
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox"
+    },
+
+    "FirefoxNightly": {
+      "Browser": "Firefox",
+      "Options": {
+        "Firefox": {
+          "BrowserVersion": "nightly",
+          "AcceptInsecureCertificates": true,
+          "EnableDevToolsProtocol": true
+        }
+      },
+      "RemoteCapabilities": "firefox"
+    },
+
+    "Safari": {
+      "Browser": "Safari",
+      "RemoteCapabilities": "safari"
+    },
+
+    "SafariTechPreview": {
+      "Browser": "Safari",
+      "Options": {
+        "Safari": {
+          "UseTechnologyPreview": true
+        }
+      },
+      "RemoteCapabilities": "safari"
+    },
+
+    "Remote": {
+      "Browser": "Remote",
+      "RemoteCapabilities": "chrome",
+      "AutoStartRemoteServer": true
+    }
+  }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>attribute_value_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-attribute-value-global.js"></script>
+  <script type="text/javascript">
+    // Ported from bot.dom.core.getAttribute: the value the author wrote in the
+    // markup. This is deliberately *not* the WebDriver getAttribute algorithm.
+    var getAttributeValue = window.bot.dom.typescript.getAttributeValue;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    QUnit.test('returns the authored value', function (assert) {
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'value'), 'authored');
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'id'), 'an-input');
+    });
+
+    QUnit.test('returns null for an attribute that is not there', function (assert) {
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'name'), null);
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'no-such-attribute'), null);
+    });
+
+    QUnit.test('the attribute name is case-insensitive', function (assert) {
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'VALUE'), 'authored');
+    });
+
+    QUnit.test('a bare boolean attribute reads as the empty string, not null', function (assert) {
+      // Presence is the signal; test against null rather than truthiness.
+      assert.strictEqual(getAttributeValue(byId('bare-disabled'), 'disabled'), '');
+      assert.strictEqual(getAttributeValue(byId('valued-disabled'), 'disabled'), 'disabled');
+      assert.strictEqual(getAttributeValue(byId('an-input'), 'disabled'), null, 'absent stays null');
+    });
+
+    QUnit.test('does not follow a property change', function (assert) {
+      // The difference that matters versus the get_attribute atom: typing into
+      // a field changes the property, never the markup.
+      var input = byId('an-input');
+      input.value = 'typed by the user';
+      assert.strictEqual(getAttributeValue(input, 'value'), 'authored');
+    });
+
+    QUnit.test('standardises the style attribute', function (assert) {
+      var value = getAttributeValue(byId('styled'), 'style');
+      assert.strictEqual(value, 'color: red;', 'property names lower-cased, trailing semicolon added');
+    });
+
+    QUnit.test('keeps semicolons that are inside a value', function (assert) {
+      var value = getAttributeValue(byId('tricky-style'), 'style');
+      assert.ok(value.indexOf('"a;b"') >= 0, 'quoted semicolon survives: ' + value);
+      assert.strictEqual(value.charAt(value.length - 1), ';', 'still ends in a semicolon');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <input type="text" id="an-input" value="authored">
+  <button type="button" id="bare-disabled" disabled>bare</button>
+  <button type="button" id="valued-disabled" disabled="disabled">valued</button>
+  <div id="styled" style="COLOR: red">styled</div>
+  <div id="tricky-style" style="font-family: &quot;a;b&quot;">tricky</div>
+</body>
+
+</html>

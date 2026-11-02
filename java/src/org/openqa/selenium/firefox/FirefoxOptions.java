@@ -78,13 +78,12 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     source.getCapabilityNames().stream()
         .filter(name -> !FIREFOX_OPTIONS.equals(name))
-        .forEach(
-            name -> {
-              Object value = source.getCapability(name);
-              if (value != null) {
-                setCapability(name, value);
-              }
-            });
+        .forEach(name -> {
+          Object value = source.getCapability(name);
+          if (value != null) {
+            setCapability(name, value);
+          }
+        });
 
     // If `source` is an instance of FirefoxOptions, we need to mirror those into this instance.
     if (source instanceof FirefoxOptions) {
@@ -323,12 +322,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
       if (name.equals(Keys.ARGS.key)) {
         List<String> arguments = get(capabilities, name, emptyList());
-        arguments.forEach(
-            arg -> {
-              if (!containsArgument(newInstance, arg)) {
-                newInstance.addArguments(arg);
-              }
-            });
+        arguments.forEach(arg -> {
+          if (!containsArgument(newInstance, arg)) {
+            newInstance.addArguments(arg);
+          }
+        });
       }
 
       if (name.equals(Keys.PREFS.key)) {
@@ -387,12 +385,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         FirefoxDriverLogLevel logLevel =
             FirefoxDriverLogLevel.fromString((String) logLevelMap.get("level"));
 
-        arguments.forEach(
-            arg -> {
-              if (!containsArgument(newInstance, arg)) {
-                newInstance.addArguments(arg);
-              }
-            });
+        arguments.forEach(arg -> {
+          if (!containsArgument(newInstance, arg)) {
+            newInstance.addArguments(arg);
+          }
+        });
 
         Object binary = options.get("binary");
         if (binary instanceof String) {

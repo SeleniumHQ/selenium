@@ -100,12 +100,11 @@ public class LogInspector implements AutoCloseable {
         logEntry ->
             logEntry
                 .getJavascriptLogEntry()
-                .ifPresent(
-                    entry -> {
-                      if (entry.getLevel() == LogLevel.ERROR) {
-                        consumer.accept(entry);
-                      }
-                    });
+                .ifPresent(entry -> {
+                  if (entry.getLevel() == LogLevel.ERROR) {
+                    consumer.accept(entry);
+                  }
+                });
 
     return addLogEntryAddedListener(logEntryConsumer);
   }

@@ -37,16 +37,15 @@ public class Safely {
 
     for (TearDownFixture fixture : fixtures) {
       CompletableFuture<Void> check = new CompletableFuture<>();
-      executor.submit(
-          () -> {
-            // Fixture being null is handled by the exception check.
-            try {
-              fixture.tearDown();
-            } catch (Exception ignored) {
-              // nothing to see here.
-            }
-            check.complete(null);
-          });
+      executor.submit(() -> {
+        // Fixture being null is handled by the exception check.
+        try {
+          fixture.tearDown();
+        } catch (Exception ignored) {
+          // nothing to see here.
+        }
+        check.complete(null);
+      });
       futures.add(check);
     }
 

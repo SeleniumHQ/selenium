@@ -22,6 +22,18 @@ use std::path::Path;
 
 mod common;
 
+const LICENSE: &str = include_str!("../LICENSE");
+const NOTICE: &str = include_str!("../NOTICE");
+
+#[test]
+fn license_output_includes_license_and_notice() {
+    let mut cmd = get_selenium_manager();
+    cmd.arg("--license").assert().success().code(0);
+
+    let stdout = get_stdout(&mut cmd);
+    assert_eq!(stdout, format!("{}\n{}", LICENSE, NOTICE));
+}
+
 #[test]
 fn json_output_test() {
     let mut cmd = get_selenium_manager();
@@ -49,6 +61,32 @@ fn json_output_test() {
 
     let driver = Path::new(&json.result.driver_path);
     assert!(driver.exists());
+}
+
+#[test]
+fn json_output_keeps_stderr_empty_with_rust_log() {
+    let mut cmd = get_selenium_manager();
+    cmd.env("RUST_LOG", "trace")
+        .args([
+            "--browser",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
+            "--output",
+            "json",
+        ])
+        .assert()
+        .success()
+        .code(0);
+
+    let stderr = get_stderr(&mut cmd);
+    assert!(stderr.is_empty(), "stderr: {}", stderr);
+
+    let stdout = get_stdout(&mut cmd);
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(json.result.code, 0);
 }
 
 #[test]

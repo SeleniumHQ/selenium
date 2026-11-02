@@ -154,9 +154,6 @@ java_test_suite(
         ["*Test.java"],
         exclude = LARGE_TESTS + BIDI_TESTS + STRESS_TESTS + SMALL_TESTS,
     ),
-    tags = [
-        "requires-network",
-    ],
     deps = [
         ":support",
         "//java/src/org/openqa/selenium/bidi",

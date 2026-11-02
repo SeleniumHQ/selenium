@@ -176,12 +176,18 @@ class ConstructorCoercer extends TypeCoercer<Object> {
     private final Constructor<?> constructor;
     private final Parameter[] parameters;
     private final Map<String, Integer> parameterIndexes;
+    // Computed once here rather than re-checked reflectively on every create() call: the
+    // JsonTypeCoercer caches the coercer built for a type, so this candidate — and this flag —
+    // is reused for every future deserialization of that type, not just the first one.
+    private final boolean warnsOnUnknownFields;
 
     ConstructorCandidate(Constructor<?> constructor) {
       this.constructor = constructor;
       this.constructor.setAccessible(true);
       this.parameters = constructor.getParameters();
       this.parameterIndexes = getParameterIndexes(parameters);
+      this.warnsOnUnknownFields =
+          constructor.getDeclaringClass().isAnnotationPresent(WarnOnUnknownFields.class);
     }
 
     int parameterCount() {
@@ -219,6 +225,11 @@ class ConstructorCoercer extends TypeCoercer<Object> {
         values[i] = value;
       }
 
+      if (warnsOnUnknownFields) {
+        UnknownFieldsWarning.warnOnUnknownFields(
+            constructor.getDeclaringClass(), parameterIndexes.keySet(), properties);
+      }
+
       try {
         return constructor.newInstance(values);
       } catch (ReflectiveOperationException | IllegalArgumentException e) {
@@ -231,13 +242,12 @@ class ConstructorCoercer extends TypeCoercer<Object> {
           .filter(parameter -> !isOptional(parameter))
           .filter(parameter -> !fieldNames.contains(parameter.getName()))
           .findFirst()
-          .ifPresent(
-              parameter -> {
-                throw new JsonException(
-                    String.format(
-                        "Missing JSON value for constructor parameter %s.%s",
-                        constructor.getDeclaringClass().getName(), parameter.getName()));
-              });
+          .ifPresent(parameter -> {
+            throw new JsonException(
+                String.format(
+                    "Missing JSON value for constructor parameter %s.%s",
+                    constructor.getDeclaringClass().getName(), parameter.getName()));
+          });
     }
   }
 }

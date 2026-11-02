@@ -114,24 +114,23 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
         Route.combine(
             sessionQueue,
             get("/status")
-                .to(
-                    () ->
-                        req -> {
-                          boolean ready = sessionQueue.isReady();
-                          return new HttpResponse()
-                              .addHeader("Content-Type", JSON_UTF_8)
-                              .setContent(
-                                  asJson(
+                .to(() ->
+                    req -> {
+                      boolean ready = sessionQueue.isReady();
+                      return new HttpResponse()
+                          .addHeader("Content-Type", JSON_UTF_8)
+                          .setContent(
+                              asJson(
+                                  Map.of(
+                                      "value",
                                       Map.of(
-                                          "value",
-                                          Map.of(
-                                              "ready",
-                                              ready,
-                                              "message",
-                                              ready
-                                                  ? "New Session Queue is ready."
-                                                  : "New Session Queue is not ready."))));
-                        }),
+                                          "ready",
+                                          ready,
+                                          "message",
+                                          ready
+                                              ? "New Session Queue is ready."
+                                              : "New Session Queue is not ready."))));
+                    }),
             get("/readyz").to(() -> readinessCheck)),
         null) {
       @Override
@@ -153,14 +152,13 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
     config
         .get("server", "max-threads")
-        .ifPresent(
-            value ->
-                LOG.log(
-                    Level.WARNING,
-                    () ->
-                        "Support for max-threads flag is deprecated. The intent of the flag is to"
-                            + " set the thread pool size in the Distributor. Please use"
-                            + " newsession-threadpool-size flag instead."));
+        .ifPresent(value ->
+            LOG.log(
+                Level.WARNING,
+                () ->
+                    "Support for max-threads flag is deprecated. The intent of the flag is to"
+                        + " set the thread pool size in the Distributor. Please use"
+                        + " newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();

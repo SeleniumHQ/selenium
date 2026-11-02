@@ -66,12 +66,11 @@ public class Connection implements Closeable {
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
   private static final Executor EXECUTOR =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread thread = new Thread(r, "CDP Connection");
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newCachedThreadPool(r -> {
+        Thread thread = new Thread(r, "CDP Connection");
+        thread.setDaemon(true);
+        return thread;
+      });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private static final AtomicLong NEXT_SEQUENCE = new AtomicLong(1L);
   private WebSocket socket;
@@ -220,7 +219,7 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      eventCallbacks.computeIfAbsent(event, (key) -> new ArrayList<>()).add(handler);
+      eventCallbacks.computeIfAbsent(event, key -> new ArrayList<>()).add(handler);
     } finally {
       lock.unlock();
     }
@@ -249,15 +248,14 @@ public class Connection implements Closeable {
     @Override
     public void onText(CharSequence data) {
       long sequence = NEXT_SEQUENCE.getAndIncrement();
-      EXECUTOR.execute(
-          () -> {
-            try {
-              handle(sequence, data);
-            } catch (Throwable t) {
-              LOG.log(Level.WARNING, "Unable to process: " + data, t);
-              throw new DevToolsException(t);
-            }
-          });
+      EXECUTOR.execute(() -> {
+        try {
+          handle(sequence, data);
+        } catch (Throwable t) {
+          LOG.log(Level.WARNING, "Unable to process: " + data, t);
+          throw new DevToolsException(t);
+        }
+      });
     }
   }
 
@@ -317,54 +315,50 @@ public class Connection implements Closeable {
       try {
         // TODO: Also only decode once.
         eventCallbacks.entrySet().stream()
-            .peek(
-                event ->
-                    LOG.log(
-                        getDebugLogLevel(),
-                        "Matching {0} with {1}",
-                        new Object[] {raw.get("method"), event.getKey().getMethod()}))
+            .peek(event ->
+                LOG.log(
+                    getDebugLogLevel(),
+                    "Matching {0} with {1}",
+                    new Object[] {raw.get("method"), event.getKey().getMethod()}))
             .filter(event -> raw.get("method").equals(event.getKey().getMethod()))
-            .forEach(
-                event -> {
-                  // TODO: This is grossly inefficient. I apologise, and we should fix this.
-                  try (StringReader reader = new StringReader(asString);
-                      JsonInput input = JSON.newInput(reader)) {
-                    boolean hasParams = false;
-                    Object params = null;
-                    input.beginObject();
-                    while (input.hasNext()) {
-                      switch (input.nextName()) {
-                        case "params":
-                          hasParams = true;
-                          params = event.getKey().getMapper().apply(input);
-                          break;
+            .forEach(event -> {
+              // TODO: This is grossly inefficient. I apologise, and we should fix this.
+              try (StringReader reader = new StringReader(asString);
+                  JsonInput input = JSON.newInput(reader)) {
+                boolean hasParams = false;
+                Object params = null;
+                input.beginObject();
+                while (input.hasNext()) {
+                  switch (input.nextName()) {
+                    case "params":
+                      hasParams = true;
+                      params = event.getKey().getMapper().apply(input);
+                      break;
 
-                        default:
-                          input.skipValue();
-                          break;
-                      }
-                    }
-                    input.endObject();
-
-                    if (!hasParams) {
-                      LOG.fine(
-                          "suppressed event '"
-                              + event.getKey().getMethod()
-                              + "', no params in input");
-                      return;
-                    }
-
-                    for (BiConsumer<Long, ?> action : event.getValue()) {
-                      @SuppressWarnings("unchecked")
-                      BiConsumer<Long, Object> obj = (BiConsumer<Long, Object>) action;
-                      LOG.log(
-                          getDebugLogLevel(),
-                          "Calling callback for {0} using {1} being passed {2}",
-                          new Object[] {event.getKey(), obj, params});
-                      obj.accept(sequence, params);
-                    }
+                    default:
+                      input.skipValue();
+                      break;
                   }
-                });
+                }
+                input.endObject();
+
+                if (!hasParams) {
+                  LOG.fine(
+                      "suppressed event '" + event.getKey().getMethod() + "', no params in input");
+                  return;
+                }
+
+                for (BiConsumer<Long, ?> action : event.getValue()) {
+                  @SuppressWarnings("unchecked")
+                  BiConsumer<Long, Object> obj = (BiConsumer<Long, Object>) action;
+                  LOG.log(
+                      getDebugLogLevel(),
+                      "Calling callback for {0} using {1} being passed {2}",
+                      new Object[] {event.getKey(), obj, params});
+                  obj.accept(sequence, params);
+                }
+              }
+            });
       } finally {
         lock.unlock();
       }

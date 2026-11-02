@@ -114,7 +114,21 @@ public class Json {
   /** Specifier for {@code Object} input/output type */
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
-  private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
+  private final JsonTypeCoercer fromJson;
+
+  public Json() {
+    this(List.of());
+  }
+
+  /**
+   * @param extraCoercers Additional {@link TypeCoercer}s, tried in the given order before the
+   *     built-in ones — lets a caller customize how a particular type is converted to or from JSON
+   *     (a stricter check, a different wire representation, support for a type the built-in
+   *     coercers don't handle, etc.) for just this {@code Json} instance.
+   */
+  public Json(Iterable<TypeCoercer<?>> extraCoercers) {
+    this.fromJson = new JsonTypeCoercer(new JsonTypeCoercer(), extraCoercers);
+  }
 
   /**
    * Serialize the specified object to JSON string representation.<br>
@@ -212,6 +226,34 @@ public class Json {
     try (JsonInput json = newInput(source)) {
       return fromJson.coerce(json, typeOfT, setter);
     }
+  }
+
+  /**
+   * Deserialize an already-parsed JSON value into an object of the specified type. The source is
+   * the {@link java.util.Map}/{@link java.util.List}/{@link String}/{@link Number}/{@link
+   * Boolean}/{@code null} structure that {@link #toType(String, Type)} returns for {@link
+   * #MAP_TYPE} or {@link #OBJECT_TYPE} - not a JSON string.
+   *
+   * <p>This is the object-input counterpart of {@link #toType(String, Type)}. Use it when a value
+   * has already been parsed out of a larger document - typically one field of a {@code Map<String,
+   * Object>} - so that the surrounding document does not have to be parsed a second time to reach
+   * it. The value itself is still round-tripped once, via {@link #toJson(Object)} then {@link
+   * #toType(String, Type)}, and therefore inherits {@link JsonOutput#MAX_DEPTH} - a source nested
+   * deeper than that limit is rejected. A {@code null} source yields {@code null}.
+   *
+   * @param source an already-parsed JSON value ({@code Map}, {@code List}, {@code String}, {@code
+   *     Number}, {@code Boolean}, or {@code null})
+   * @param typeOfT data type for deserialization (class or {@link TypeToken})
+   * @return object of the specified type, or {@code null} if {@code source} is {@code null}
+   * @param <T> result type (as specified by [typeOfT])
+   * @throws JsonException if the source cannot be coerced to the specified type, or is nested
+   *     deeper than {@link JsonOutput#MAX_DEPTH}
+   */
+  public <T> @Nullable T convert(@Nullable Object source, Type typeOfT) {
+    if (source == null) {
+      return null;
+    }
+    return toType(toJson(source), typeOfT);
   }
 
   /**

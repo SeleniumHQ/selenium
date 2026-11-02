@@ -377,7 +377,7 @@ public class WebDriverDecorator<T extends WebDriver> {
     ProxyFactory<Z> factory =
         (ProxyFactory<Z>)
             cache.computeIfAbsent(
-                new Definition(decorated), (key) -> createProxyFactory(key, decorated, clazz));
+                new Definition(decorated), key -> createProxyFactory(key, decorated, clazz));
 
     return factory.newInstance(decorated);
   }
@@ -407,9 +407,8 @@ public class WebDriverDecorator<T extends WebDriver> {
             // interfaces that we extracted from the decorated class.
             boolean isCompatible =
                 originalInterfaces.stream()
-                    .anyMatch(
-                        eachInterface ->
-                            eachInterface.isAssignableFrom(method.getDeclaringClass()));
+                    .anyMatch(eachInterface ->
+                        eachInterface.isAssignableFrom(method.getDeclaringClass()));
 
             if (isCompatible) {
               instance.beforeCall(method, args);
@@ -423,9 +422,8 @@ public class WebDriverDecorator<T extends WebDriver> {
             // E.g., of additional interfaces include WrapsDriver,WrapsElement,JsonSerializer
             isCompatible =
                 derivedInterfaces.keySet().stream()
-                    .anyMatch(
-                        eachInterface ->
-                            eachInterface.isAssignableFrom(method.getDeclaringClass()));
+                    .anyMatch(eachInterface ->
+                        eachInterface.isAssignableFrom(method.getDeclaringClass()));
 
             if (isCompatible) {
               return derivedInterfaces
@@ -494,7 +492,7 @@ public class WebDriverDecorator<T extends WebDriver> {
     if (sample instanceof WebDriver) {
       handlers.put(
           WrapsDriver.class,
-          (instance) ->
+          instance ->
               (proxy, method, args) -> {
                 if ("getWrappedDriver".equals(method.getName())) {
                   return unwrapWebdriver(instance);
@@ -509,7 +507,7 @@ public class WebDriverDecorator<T extends WebDriver> {
     if (sample instanceof WebElement && !(sample instanceof WrapsElement)) {
       handlers.put(
           WrapsElement.class,
-          (instance) ->
+          instance ->
               (proxy, method, args) -> {
                 if ("getWrappedElement".equals(method.getName())) {
                   return instance;
@@ -524,7 +522,7 @@ public class WebDriverDecorator<T extends WebDriver> {
 
       handlers.put(
           JsonSerializer.class,
-          (instance) ->
+          instance ->
               ((proxy, method, args) -> {
                 if ("toJson".equals(method.getName())) {
                   return toJson.invoke(instance);

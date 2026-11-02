@@ -20,7 +20,7 @@
 using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -42,7 +42,7 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
     public void ShouldFireFocusEventInNonTopmostWindow()
     {
-        IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+        IWebDriver driver2 = CreateDriverInstance();
         try
         {
             // topmost
@@ -283,7 +283,7 @@ public class CorrectEventFiringTests : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
     public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
     {
-        IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+        IWebDriver driver2 = CreateDriverInstance();
         IWebElement element;
         IWebElement element2;
         try
@@ -345,7 +345,7 @@ public class CorrectEventFiringTests : DriverTestFixture
                 break;
             }
 
-            System.Threading.Thread.Sleep(200);
+            Thread.Sleep(200);
         }
 
         Assert.That(focused, Is.True, "Clicking on element didn't focus it in time - can't proceed so failing");
@@ -370,7 +370,7 @@ public class CorrectEventFiringTests : DriverTestFixture
         AssertEventNotFired("blur");
         // Click on child. It is not focusable, so focus should stay on the parent.
         Driver.FindElement(By.Id("hideOnBlurChild")).Click();
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         Assert.That(parent.Displayed, Is.True, "#hideOnBlur should still be displayed after click");
         AssertEventNotFired("blur");
         // Click elsewhere, and let the element disappear.

@@ -295,22 +295,6 @@ public class RemoteWebDriverBuilder {
               public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
                 return handler.execute(req);
               }
-
-              @Override
-              public <T>
-                  java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>>
-                      sendAsyncNative(
-                          java.net.http.HttpRequest request,
-                          java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendAsyncNative is not supported");
-              }
-
-              @Override
-              public <T> java.net.http.HttpResponse<T> sendNative(
-                  java.net.http.HttpRequest request,
-                  java.net.http.HttpResponse.BodyHandler<T> handler) {
-                throw new UnsupportedOperationException("sendNative is not supported");
-              }
             };
           }
         };
@@ -340,31 +324,27 @@ public class RemoteWebDriverBuilder {
     Optional<Supplier<WebDriver>> first =
         requestedCapabilities.stream()
             .map(caps -> caps.merge(additional))
-            .flatMap(
-                caps ->
-                    infos.stream()
-                        .filter(info -> info.isSupporting(caps))
-                        .filter(WebDriverInfo::isAvailable)
-                        .map(
-                            info ->
-                                (Supplier<WebDriver>)
-                                    () ->
-                                        info.createDriver(caps, clientConfig)
-                                            .orElseThrow(
-                                                () ->
-                                                    new SessionNotCreatedException(
-                                                        "Unable to create session with " + caps))))
+            .flatMap(caps ->
+                infos.stream()
+                    .filter(info -> info.isSupporting(caps))
+                    .filter(WebDriverInfo::isAvailable)
+                    .map(info ->
+                        (Supplier<WebDriver>)
+                            () ->
+                                info.createDriver(caps, clientConfig)
+                                    .orElseThrow(() ->
+                                        new SessionNotCreatedException(
+                                            "Unable to create session with " + caps))))
             .findFirst();
 
     Supplier<WebDriver> supplier =
-        first.orElseThrow(
-            () ->
-                new SessionNotCreatedException(
-                    String.format(
-                        "Unable to find matching driver for capabilities%n"
-                            + "  requestedCapabilities: %s%n "
-                            + "  infos: %s",
-                        requestedCapabilities, infos)));
+        first.orElseThrow(() ->
+            new SessionNotCreatedException(
+                String.format(
+                    "Unable to find matching driver for capabilities%n"
+                        + "  requestedCapabilities: %s%n "
+                        + "  infos: %s",
+                    requestedCapabilities, infos)));
     return supplier.get();
   }
 
@@ -413,7 +393,7 @@ public class RemoteWebDriverBuilder {
                 new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
                     .andThen(new DumpHttpExchangeFilter())
-                    .andThen(new CloseHttpClientFilter(clientFactory, client)));
+                    .andThen(new CloseHttpClientFilter(client)));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
@@ -556,11 +536,9 @@ public class RemoteWebDriverBuilder {
 
   private static class CloseHttpClientFilter implements Filter {
 
-    private final HttpClient.Factory factory;
     private final HttpClient client;
 
-    CloseHttpClientFilter(HttpClient.Factory factory, HttpClient client) {
-      this.factory = Require.nonNull("Http client factory", factory);
+    CloseHttpClientFilter(HttpClient client) {
       this.client = Require.nonNull("Http client", client);
     }
 
@@ -572,17 +550,15 @@ public class RemoteWebDriverBuilder {
         } finally {
           if (req.getMethod() == DELETE) {
             HttpSessionId.getSessionId(req.getUri())
-                .ifPresent(
-                    id -> {
-                      if (("/session/" + id).equals(req.getUri())) {
-                        try {
-                          client.close();
-                        } catch (Exception e) {
-                          LOG.log(WARNING, "Exception swallowed while closing http client", e);
-                        }
-                        factory.cleanupIdleClients();
-                      }
-                    });
+                .ifPresent(id -> {
+                  if (("/session/" + id).equals(req.getUri())) {
+                    try {
+                      client.close();
+                    } catch (Exception e) {
+                      LOG.log(WARNING, "Exception swallowed while closing http client", e);
+                    }
+                  }
+                });
           }
         }
       };

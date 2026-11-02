@@ -30,7 +30,7 @@ module Selenium
         class Record < ::Data
           # Named Field, not Member, to avoid colliding with +::Data#members+.
           Field = ::Data.define(:name, :wire_key, :nullable, :ref, :list, :fixed, :enum, :required, :primitive,
-                                :scalar, :const)
+                                :scalar, :const, :map, :min, :max, :exclusive_min, :exclusive_max)
 
           def self.define(**spec)
             extensible = spec.delete(:extensible) || false
@@ -61,7 +61,9 @@ module Selenium
                       nullable: meta[:nullable] || false, ref: meta[:ref],
                       list: meta[:list] || false, fixed: meta.fetch(:fixed, UNSET), enum: meta[:enum],
                       required: meta.fetch(:required, true), primitive: meta[:primitive],
-                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET))
+                      scalar: meta[:scalar], const: meta.fetch(:const, UNSET), map: meta[:map],
+                      min: meta[:min], max: meta[:max], exclusive_min: meta[:exclusive_min] || false,
+                      exclusive_max: meta[:exclusive_max] || false)
           end
           private_class_method :field
 
@@ -79,10 +81,10 @@ module Selenium
               construct(**attributes)
             end
 
-            # Inbound: builds from the wire. A missing required field is omitted and warned (or
-            # raised in strict mode, in +wire_value+); enum tokens are mapped back to symbols and an
-            # unrecognized one raises (in +read+); an undeclared property is captured silently
-            # (extensible) or warned and dropped (closed) — strict on shape, lenient on extras.
+            # Inbound: builds from the wire. A missing required field raises (in +wire_value+); enum
+            # tokens are mapped back to symbols and an unrecognized one raises (in +read+); an
+            # undeclared property is captured silently (extensible) or warned and dropped (closed)
+            # — strict on shape, lenient on extras.
             def from_json(json_payload)
               unless json_payload.is_a?(::Hash)
                 raise Error::SerializationError, "#{name} expected an object on the wire, got #{json_payload.inspect}"
@@ -121,12 +123,13 @@ module Selenium
             end
 
             # Checks a field that carries an actual value (neither omitted nor nil): a nullable-const
-            # field against its literal, list/scalar shape, primitive type (lists excepted, as inbound
-            # does), ref type, and enum membership (resolved lazily so a cross-domain enum need not load first).
+            # field against its literal, list/scalar shape, primitive type (per element for a list), ref
+            # type, and enum membership (resolved lazily so a cross-domain enum need not load first).
             def validate_present(field, value)
               validate_const(field, value)
               check_outbound_shape(field, value)
-              check_outbound_primitive(field, value) unless field.list
+              check_outbound_primitive(field, value)
+              check_outbound_map(field, value) if field.map
               validate_ref(field, value) if field.ref
               Serialization.validate!("#{name}##{field.name}", value, Protocol.const_get(field.enum)) if field.enum
             end
@@ -173,8 +176,8 @@ module Selenium
 
             # Outbound mirror of scalar_value: a bare map key must match one of the arm's primitives.
             def check_outbound_scalar(field, value)
-              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
-              return if expected.empty? || expected.any? { |type| value.is_a?(type) }
+              checks = Array(field.scalar).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
+              return if checks.empty? || checks.any? { |check| check.call(value) }
 
               raise ::ArgumentError,
                     "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"
@@ -200,38 +203,34 @@ module Selenium
             end
 
             # Outbound mirror of check_primitive: a primitive-typed arg (`string`/`integer`/…) must be
-            # the matching Ruby type, so a caller mistake (a string width, a float count) is a local
-            # ArgumentError here rather than a rejection the browser reports a round-trip later. A field
-            # with no primitive descriptor (enum, ref, opaque) passes; lists are skipped, as inbound does.
+            # the matching Ruby type within its declared bounds, so a caller mistake (a string width, a
+            # zero count) is a local ArgumentError here rather than a rejection the browser reports a
+            # round-trip later. A field with no primitive descriptor (enum, ref, opaque) passes.
             def check_outbound_primitive(field, value)
-              expected = PRIMITIVE_TYPES[field.primitive]
-              return if expected.nil? || expected.any? { |type| value.is_a?(type) }
+              mismatch = primitive_mismatch(field, value)
+              raise ::ArgumentError, "#{name}##{field.name}#{mismatch}" if mismatch
+            end
 
-              raise ::ArgumentError, "#{name}##{field.name} expected #{field.primitive}, got #{value.inspect}"
+            # Outbound mirror of check_map: a map-typed arg must be a Hash whose values are the
+            # declared primitive, so a caller mistake is a local ArgumentError.
+            def check_outbound_map(field, value)
+              mismatch = map_mismatch(field, value)
+              raise ::ArgumentError, "#{name}##{field.name}#{mismatch}" if mismatch
             end
 
             def fixed?(field)
               !UNSET.equal?(field.fixed)
             end
 
+            # A required field absent from the response cannot yield a valid typed object, so it raises
+            # rather than substitute a placeholder or represent the field as omitted; a remote end that
+            # lags the schema is handled by a project schema override, not by runtime tolerance.
             def wire_value(field, json_payload)
               return field.fixed if fixed?(field)
               return read(field, json_payload[field.wire_key]) if json_payload.key?(field.wire_key)
               return UNSET unless field.required
 
-              missing_required(field)
-            end
-
-            # A required field absent from the response is tolerated as omitted (UNSET) and warned, so a
-            # schema ahead of the browser does not block the caller; strict mode (SE_BIDI_STRICT) escalates
-            # to an error for callers who want it. Omitted (UNSET) stays distinct from an explicit null (nil),
-            # which matters for the required-and-nullable fields the schema flags.
-            def missing_required(field)
-              message = "#{name}##{field.name} is required but was missing from the response"
-              raise Error::SerializationError, message if Serialization.strict?
-
-              WebDriver.logger.warn(message, id: :bidi_missing_required)
-              UNSET
+              raise Error::SerializationError, "#{name}##{field.name} is required but was missing from the response"
             end
 
             def read(field, raw)
@@ -244,11 +243,18 @@ module Selenium
               return Serialization.to_symbol("#{name}##{field.name}", raw, enum_hash(field)) if field.enum
 
               if field.ref.nil?
-                check_primitive(field, raw) unless field.list
-                return raw
+                return check_map(field, raw) if field.map
+
+                check_primitive(field, raw)
+                return field.list ? raw.map { |element| hold_integer(field, element) } : hold_integer(field, raw)
               end
 
               read_ref(field, raw)
+            end
+
+            # A whole number is exact in both types, so the declared type is held with nothing lost.
+            def hold_integer(field, value)
+              WHOLE_FLOAT.call(value) && Array(field.primitive).include?('integer') ? value.to_i : value
             end
 
             # Reads a ref-typed value into its class. A `scalar` position is an inline union with
@@ -272,20 +278,86 @@ module Selenium
                     "#{name}##{field.name} expected #{field.list ? 'a list' : 'a single value'}, got #{raw.inspect}"
             end
 
-            # Ruby classes a checkable primitive admits. `number` is any Numeric (JSON has one
-            # number type); `integer` requires an Integer — a browser emits `5`, not `5.0`, for an
-            # integer (JS has no int/float split), so this rarely false-positives yet still rejects
-            # a genuine non-integer like 1.5. A field with no primitive descriptor is left unchecked.
-            PRIMITIVE_TYPES = {
-              'string' => [::String], 'boolean' => [::TrueClass, ::FalseClass],
-              'number' => [::Numeric], 'integer' => [::Integer]
+            # The check a schema primitive admits, by JSON kind rather than Ruby class: `number` is
+            # any Numeric (JSON has one number type), and `integer` is any whole one — a browser is
+            # free to send `5` or `5.0` (JS has no int/float split), while a fractional value like
+            # 1.5 is a real mismatch. A field with no primitive descriptor is left unchecked.
+            WHOLE_FLOAT = ->(value) { value.is_a?(::Float) && value.finite? && (value % 1).zero? }
+            PRIMITIVE_CHECKS = {
+              'string' => ->(value) { value.is_a?(::String) },
+              'boolean' => ->(value) { value.is_a?(::TrueClass) || value.is_a?(::FalseClass) },
+              'number' => ->(value) { value.is_a?(::Numeric) },
+              'integer' => ->(value) { value.is_a?(::Integer) || WHOLE_FLOAT.call(value) }
             }.freeze
 
             def check_primitive(field, raw)
-              expected = PRIMITIVE_TYPES[field.primitive]
-              return if expected.nil? || expected.any? { |type| raw.is_a?(type) }
+              mismatch = primitive_mismatch(field, raw)
+              raise Error::SerializationError, "#{name}##{field.name}#{mismatch}" if mismatch
+            end
 
-              raise Error::SerializationError, "#{name}##{field.name} expected #{field.primitive}, got #{raw.inspect}"
+            # The suffix of the error a primitive-typed value earns, or nil when it conforms — shared by
+            # both directions like map_mismatch. A list checks each element, so a nil element mismatches.
+            def primitive_mismatch(field, value)
+              return if field.primitive.nil?
+              return element_mismatch(field, field.primitive, value) unless field.list
+
+              value.each_with_index do |element, index|
+                mismatch = element_mismatch(field, field.primitive, element)
+                return "[#{index}]#{mismatch}" if mismatch
+              end
+              nil
+            end
+
+            # The field's bounds hold every numeric value it carries: the scalar, each list element, each map value.
+            def element_mismatch(field, primitives, value)
+              checks = Array(primitives).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
+              return bound_mismatch(field, value) if checks.empty? || checks.any? { |check| check.call(value) }
+
+              " expected #{Array(primitives).join(' or ')}, got #{value.inspect}"
+            end
+
+            def bound_mismatch(field, value)
+              return unless value.is_a?(::Numeric)
+
+              bound = violated_min(field, value) || violated_max(field, value)
+              " expected #{bound}, got #{value.inspect}" if bound
+            end
+
+            # Each is written as the in-bounds test, so NaN (in no range) fails rather than slipping past both sides.
+            def violated_min(field, value)
+              return if field.min.nil? || (field.exclusive_min ? value > field.min : value >= field.min)
+
+              "#{field.exclusive_min ? '>' : '>='} #{field.min}"
+            end
+
+            def violated_max(field, value)
+              return if field.max.nil? || (field.exclusive_max ? value < field.max : value <= field.max)
+
+              "#{field.exclusive_max ? '<' : '<='} #{field.max}"
+            end
+
+            # A `map` field (`{*text => <primitive>}`, e.g. script.NodeProperties.attributes) must arrive
+            # as an object whose every value matches a declared primitive. Keys are JSON object keys,
+            # so they are strings by construction. The Hash passes through unchanged once validated.
+            def check_map(field, raw)
+              mismatch = map_mismatch(field, raw)
+              raise Error::SerializationError, "#{name}##{field.name}#{mismatch}" if mismatch
+
+              raw
+            end
+
+            # The suffix of the error a map value earns, or nil when it conforms — shared by the inbound
+            # (SerializationError) and outbound (ArgumentError) checks so the two cannot drift apart. An
+            # unrecognized value primitive (none in PRIMITIVE_CHECKS) checks only the shape, matching the
+            # lenient default elsewhere.
+            def map_mismatch(field, value)
+              return " expected a map, got #{value.inspect}" unless value.is_a?(::Hash)
+
+              value.each do |key, entry|
+                mismatch = element_mismatch(field, field.map, entry)
+                return "[#{key.inspect}]#{mismatch}" if mismatch
+              end
+              nil
             end
 
             def enum_hash(field)
@@ -326,11 +398,11 @@ module Selenium
             # A bare scalar at a scalar-tolerant union position must match one of the union's
             # scalar-arm primitives (+scalar+ is a primitive name or an array of them); a
             # wrong-typed scalar (a number where a string is expected) is a wire error, not
-            # something to pass through. An unrecognized primitive (none in PRIMITIVE_TYPES) is
+            # something to pass through. An unrecognized primitive (none in PRIMITIVE_CHECKS) is
             # left unchecked, matching the lenient default elsewhere.
             def scalar_value(field, value)
-              expected = Array(field.scalar).flat_map { |primitive| PRIMITIVE_TYPES[primitive] || [] }
-              return value if expected.empty? || expected.any? { |type| value.is_a?(type) }
+              checks = Array(field.scalar).filter_map { |primitive| PRIMITIVE_CHECKS[primitive] }
+              return value if checks.empty? || checks.any? { |check| check.call(value) }
 
               raise Error::SerializationError,
                     "#{name}##{field.name} expected #{Array(field.scalar).join(' or ')}, got #{value.inspect}"

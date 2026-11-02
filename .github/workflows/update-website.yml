@@ -1,0 +1,33 @@
+name: Release - Test Website
+
+on:
+  push:
+    branches:
+      - trunk
+    paths:
+      - 'common/src/web/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish Test Website
+    if: github.repository_owner == 'SeleniumHQ'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test website
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: common/src/web
+          persist-credentials: false
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          publish_dir: common/src/web
+          destination_dir: web
+          user_name: Selenium CI Bot
+          user_email: selenium-ci@users.noreply.github.com
+          commit_message: Update test website from

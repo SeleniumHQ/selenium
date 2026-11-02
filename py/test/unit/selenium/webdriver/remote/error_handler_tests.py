@@ -299,3 +299,18 @@ def test_handle_numeric_error(handler):
     with pytest.raises(exceptions.WebDriverException) as e:
         handler.check_response(response)
     assert e.value.msg == "0"
+
+
+def test_handle_error_when_value_is_none(handler):
+    with pytest.raises(exceptions.NoSuchElementException):
+        handler.check_response({"status": "no such element", "value": None})
+
+
+def test_handle_error_when_value_is_missing(handler):
+    with pytest.raises(exceptions.TimeoutException):
+        handler.check_response({"status": "timeout"})
+
+
+def test_handle_error_when_numeric_status_without_value(handler):
+    with pytest.raises(exceptions.WebDriverException):
+        handler.check_response({"status": 13})

@@ -502,10 +502,9 @@ class KubernetesSessionFactoryTest {
         KubernetesSessionFactory.findContainerByName(
             job.getSpec().getTemplate().getSpec().getContainers(), "browser");
     assertThat(browser.getVolumeMounts())
-        .anyMatch(
-            m ->
-                "session-assets".equals(m.getName())
-                    && "/opt/selenium/assets".equals(m.getMountPath()));
+        .anyMatch(m ->
+            "session-assets".equals(m.getName())
+                && "/opt/selenium/assets".equals(m.getMountPath()));
   }
 
   @Test
