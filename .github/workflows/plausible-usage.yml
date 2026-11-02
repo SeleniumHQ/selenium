@@ -11,6 +11,7 @@ jobs:
   check:
     name: Check Weekly Pageviews
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: github.event.repository.fork == false
     steps:
       - uses: actions/checkout@v6
@@ -20,6 +21,8 @@ jobs:
         id: check
         env:
           PLAUSIBLE_STATS_KEY: ${{ secrets.PLAUSIBLE_STATS_KEY }}
+          PLAUSIBLE_THRESHOLD: ${{ vars.PLAUSIBLE_THRESHOLD }}
+          PLAUSIBLE_MONTHLY_LIMIT: ${{ vars.PLAUSIBLE_MONTHLY_LIMIT }}
         run: ./scripts/github-actions/check-plausible-usage.sh
       - name: Slack Notification
         if: failure()

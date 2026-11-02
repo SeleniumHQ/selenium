@@ -17,6 +17,13 @@ MONTHLY_LIMIT="${PLAUSIBLE_MONTHLY_LIMIT:-75000000}"
 
 : "${PLAUSIBLE_STATS_KEY:?PLAUSIBLE_STATS_KEY is required}"
 
+for value in "$THRESHOLD" "$MONTHLY_LIMIT"; do
+  if [[ ! "$value" =~ ^[1-9][0-9]*$ ]]; then
+    echo "::error::Threshold and monthly limit must be positive integers, got '${value}'"
+    exit 1
+  fi
+done
+
 millions() {
   awk -v n="$1" 'BEGIN { v = n / 1000000; printf (v == int(v) ? "%d" : "%.1f"), v }'
 }
@@ -37,6 +44,7 @@ echo "Threshold: $(millions "$THRESHOLD")M per week, $(millions "$MONTHLY_LIMIT"
 # The status code is appended so a 4xx body reaches the log instead of being
 # swallowed by the failing assignment.
 if ! response="$(curl --silent --show-error --write-out '\n%{http_code}' \
+  --connect-timeout 10 --max-time 60 --retry 3 --retry-all-errors \
   --get "https://plausible.io/api/v1/stats/aggregate" \
   --header "Authorization: Bearer ${PLAUSIBLE_STATS_KEY}" \
   --data-urlencode "site_id=${SITE_ID}" \
@@ -74,10 +82,10 @@ fi
 monthly="$(awk -v p="$pageviews" 'BEGIN { printf "%d", p / 7 * 30 }')"
 percent="$(awk -v p="$pageviews" -v t="$THRESHOLD" 'BEGIN { printf "%.0f", (p - t) / t * 100 }')"
 
-report="Plausible stats are ${percent#-}% ${direction} budget for last week"
+report="Plausible: $(millions "$pageviews")M pageviews from ${START} to ${END}, ${percent#-}% ${direction} the $(millions "$THRESHOLD")M weekly budget"
 
 echo "$report"
-echo "On pace for $(millions "$monthly")M this month, against a $(millions "$MONTHLY_LIMIT")M limit"
+echo "Projected monthly (30-day pace): $(millions "$monthly")M, against a $(millions "$MONTHLY_LIMIT")M limit"
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   {
