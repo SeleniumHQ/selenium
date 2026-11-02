@@ -42,12 +42,13 @@ idiom; the `AccessibilitySnapshot` stem and the `AccessibilityNode` type name ar
 | Java       | `driver.getAccessibilitySnapshot()`     | `element.getAccessibilitySnapshot()`     |
 | Python     | `driver.accessibility_snapshot()`       | `element.accessibility_snapshot()`       |
 | Ruby       | `driver.accessibility_snapshot`         | `element.accessibility_snapshot`         |
-| .NET       | `driver.GetAccessibilitySnapshot()`     | `element.GetAccessibilitySnapshot()`     |
+| .NET       | `await driver.GetAccessibilitySnapshotAsync()` | `await element.GetAccessibilitySnapshotAsync()` |
 | JavaScript | `await driver.getAccessibilitySnapshot()` | `await element.getAccessibilitySnapshot()` |
 
 Adding them must not break existing implementers of the driver and element types: Java uses
 `default` interface methods that throw `UnsupportedOperationException`, as `getAriaRole` does,
-and .NET uses extension methods rather than new interface members.
+and .NET adds virtual members to the `WebDriver` and `WebElement` classes rather than to
+`IWebDriver` and `IWebElement`.
 
 The contract:
 
@@ -72,6 +73,8 @@ The contract:
   `to_text` / `ToText()`, per idiom). The format is one line per node,
   `- role "name" [state] [state=value]: value`, with children indented two spaces and text leaves
   written as `- text: content`. An empty name is left out, as is the value when absent or empty.
+  A name is quoted with `\` and `"` backslash-escaped; a value escapes `\`, CR and LF as `\\`,
+  `\r` and `\n`, so a node never spans two lines.
   States are written in the order of the table below; a `true` state is written bare, a `false`
   one is left out, and any other value is spelled. The description and element references are
   not rendered. That is the line grammar of Playwright's aria snapshot, restricted to the fields
@@ -80,7 +83,7 @@ The contract:
 
 ### 2. Data model
 
-The in-page script returns, and every binding exposes, the following shape. Bindings map
+The atom returns, and every binding exposes, the following shape. Bindings map
 field names to their own casing and map `element` to their element type.
 
 ```text
@@ -152,9 +155,14 @@ parent and its DOM parent can differ; the reference still identifies the element
   `@selenium/atoms/accessibility-snapshot`), in both the injectable-string and callable-function
   forms the package already provides. Every binding embeds the same build artifact; no binding
   reimplements tree logic.
-- In the browser it is installed with `script.addPreloadScript` into a sandbox realm, and
-  injected on demand via `script.callFunction` for documents that loaded before the preload was
-  added. The sandbox keeps page scripts from interfering with the implementation.
+- Bindings send the atom with each `script.callFunction`, once per browsing context, into a
+  named sandbox realm that keeps page scripts from interfering with it. There is no preload
+  script; a size ceiling on the atom bundle, enforced by a test, bounds the per-call cost.
+- Bindings call a wire entry (`@selenium/atoms/accessibility-snapshot-wire`) rather than the
+  plain one. It returns the tree as one JSON string, with each reference replaced by an index
+  into arrays of elements and frame windows that travel beside it, so each binding parses the
+  tree with its own JSON library and BiDi serializes every reference in one pass. The wire form
+  is internal to the bindings; the data model above is the contract.
 - The only per-binding code is the public methods above, frame stitching (running the script in
   each child context and attaching the result under its `iframe` node), mapping references to
   element types, and the text renderer.
