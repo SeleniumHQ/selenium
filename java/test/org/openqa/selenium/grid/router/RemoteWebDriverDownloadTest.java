@@ -151,15 +151,14 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
 
   static Stream<Arguments> downloadableFiles() {
     return Stream.of(DriverCreationMode.values())
-        .flatMap(
-            mode ->
-                Stream.of(
-                    Arguments.of(mode, By.id("file-1"), "file_1.txt", "Hello, World!"),
-                    Arguments.of(
-                        mode,
-                        By.id("file-3"),
-                        "file-with-space 0 & _ ' ~.txt",
-                        "Hello, filename with space!")));
+        .flatMap(mode ->
+            Stream.of(
+                Arguments.of(mode, By.id("file-1"), "file_1.txt", "Hello, World!"),
+                Arguments.of(
+                    mode,
+                    By.id("file-3"),
+                    "file-with-space 0 & _ ' ~.txt",
+                    "Hello, filename with space!")));
   }
 
   @ParameterizedTest
@@ -216,13 +215,12 @@ class RemoteWebDriverDownloadTest extends JupiterTestBase {
     HasDownloads hasDownloads = (HasDownloads) driver;
 
     new WebDriverWait(driver, ofSeconds(5))
-        .until(
-            __ -> {
-              long actualFilesCount =
-                  hasDownloads.getDownloadedFiles().stream()
-                      .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::hasExtension))
-                      .count();
-              return actualFilesCount == expectedFilesCount;
-            });
+        .until(__ -> {
+          long actualFilesCount =
+              hasDownloads.getDownloadedFiles().stream()
+                  .filter(f -> FILE_EXTENSIONS.stream().anyMatch(f::hasExtension))
+                  .count();
+          return actualFilesCount == expectedFilesCount;
+        });
   }
 }

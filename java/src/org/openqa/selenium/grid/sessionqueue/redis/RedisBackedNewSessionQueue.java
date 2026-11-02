@@ -121,13 +121,12 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
   private final Map<RequestId, TraceContext> contexts = new ConcurrentHashMap<>();
 
   private final ScheduledExecutorService service =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName(NAME);
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName(NAME);
+        return thread;
+      });
 
   @Nullable private final MBean jmxBean;
 
@@ -175,11 +174,10 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
     URI redisUri =
         newSessionQueueOptions
             .getBackendUri()
-            .orElseThrow(
-                () ->
-                    new ConfigException(
-                        "RedisBackedNewSessionQueue requires [sessionqueue] backend-url to be"
-                            + " set"));
+            .orElseThrow(() ->
+                new ConfigException(
+                    "RedisBackedNewSessionQueue requires [sessionqueue] backend-url to be"
+                        + " set"));
 
     return new RedisBackedNewSessionQueue(
         tracer,
@@ -414,15 +412,14 @@ public class RedisBackedNewSessionQueue extends NewSessionQueue implements Close
         caps ->
             stereotypes.entrySet().stream()
                 .filter(entry -> entry.getValue() > 0)
-                .anyMatch(
-                    entry -> {
-                      boolean matches = slotMatcher.matches(entry.getKey(), caps);
-                      if (matches) {
-                        Long value = entry.getValue();
-                        entry.setValue(value - 1);
-                      }
-                      return matches;
-                    });
+                .anyMatch(entry -> {
+                  boolean matches = slotMatcher.matches(entry.getKey(), caps);
+                  if (matches) {
+                    Long value = entry.getValue();
+                    entry.setValue(value - 1);
+                  }
+                  return matches;
+                });
 
     List<SessionRequest> availableRequests = new ArrayList<>();
     for (String idStr : redis.lrange(QUEUE_KEY, 0, -1)) {

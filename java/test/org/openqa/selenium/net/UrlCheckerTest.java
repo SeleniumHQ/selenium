@@ -44,11 +44,10 @@ class UrlCheckerTest {
     // Warming NettyServer up
     final NettyAppServer server = createServer();
     executorService = Executors.newSingleThreadExecutor();
-    executorService.submit(
-        () -> {
-          server.start();
-          return null;
-        });
+    executorService.submit(() -> {
+      server.start();
+      return null;
+    });
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(server.whereIs("/")));
     server.stop();
 
@@ -65,12 +64,11 @@ class UrlCheckerTest {
   void testWaitUntilAvailableIsTimely() throws Exception {
     long delay = 200L;
 
-    executorService.submit(
-        () -> {
-          Thread.sleep(delay);
-          server.start();
-          return null;
-        });
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.start();
+      return null;
+    });
 
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
@@ -84,12 +82,11 @@ class UrlCheckerTest {
     server.start();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
 
-    executorService.submit(
-        () -> {
-          Thread.sleep(delay);
-          server.stop();
-          return null;
-        });
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.stop();
+      return null;
+    });
 
     long start = currentTimeMillis();
     urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);

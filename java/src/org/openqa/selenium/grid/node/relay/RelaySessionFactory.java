@@ -112,30 +112,28 @@ public class RelaySessionFactory implements SessionFactory {
     boolean platformVersionMatch =
         capabilities.getCapabilityNames().stream()
             .filter(name -> name.contains("platformVersion"))
-            .map(
-                platformVersionCapName ->
-                    Objects.equals(
-                        stereotype.getCapability(platformVersionCapName),
-                        capabilities.getCapability(platformVersionCapName)))
+            .map(platformVersionCapName ->
+                Objects.equals(
+                    stereotype.getCapability(platformVersionCapName),
+                    capabilities.getCapability(platformVersionCapName)))
             .reduce(Boolean::logicalAnd)
             .orElse(true);
 
     return platformVersionMatch
         && stereotype.getCapabilityNames().stream()
             .filter(name -> capabilities.asMap().containsKey(name))
-            .map(
-                name -> {
-                  if (capabilities.getCapability(name) instanceof String) {
-                    return stereotype
-                        .getCapability(name)
-                        .toString()
-                        .equalsIgnoreCase(capabilities.getCapability(name).toString());
-                  } else {
-                    return capabilities.getCapability(name) == null
-                        || Objects.equals(
-                            stereotype.getCapability(name), capabilities.getCapability(name));
-                  }
-                })
+            .map(name -> {
+              if (capabilities.getCapability(name) instanceof String) {
+                return stereotype
+                    .getCapability(name)
+                    .toString()
+                    .equalsIgnoreCase(capabilities.getCapability(name).toString());
+              } else {
+                return capabilities.getCapability(name) == null
+                    || Objects.equals(
+                        stereotype.getCapability(name), capabilities.getCapability(name));
+              }
+            })
             .reduce(Boolean::logicalAnd)
             .orElse(false);
   }

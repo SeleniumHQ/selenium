@@ -133,12 +133,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
             new ArrayList<>(
                 (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>())));
 
-        arguments.forEach(
-            arg -> {
-              if (!stereotypeArguments.contains(arg)) {
-                stereotypeArguments.add(arg);
-              }
-            });
+        arguments.forEach(arg -> {
+          if (!stereotypeArguments.contains(arg)) {
+            stereotypeArguments.add(arg);
+          }
+        });
         toReturn.put("args", stereotypeArguments);
       }
 
@@ -151,12 +150,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
             new ArrayList<>(
                 (List<String>) (stereotypeOptions.getOrDefault(("extensions"), new ArrayList<>())));
 
-        extensionList.forEach(
-            extension -> {
-              if (!stereotypeExtensions.contains(extension)) {
-                stereotypeExtensions.add(extension);
-              }
-            });
+        extensionList.forEach(extension -> {
+          if (!stereotypeExtensions.contains(extension)) {
+            stereotypeExtensions.add(extension);
+          }
+        });
 
         toReturn.put("extensions", stereotypeExtensions);
       }
@@ -191,12 +189,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
             new ArrayList<>(
                 (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>())));
 
-        arguments.forEach(
-            arg -> {
-              if (!stereotypeArguments.contains(arg)) {
-                stereotypeArguments.add(arg);
-              }
-            });
+        arguments.forEach(arg -> {
+          if (!stereotypeArguments.contains(arg)) {
+            stereotypeArguments.add(arg);
+          }
+        });
         toReturn.put("args", stereotypeArguments);
       }
 

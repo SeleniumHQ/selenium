@@ -356,14 +356,12 @@ class ElementDomAttributeTest extends JupiterTestBase {
 
   private void checkEnumeratedAttribute(String name, String... values) {
     List.of(values)
-        .forEach(
-            value -> {
-              driver.get(
-                  appServer.create(
-                      new Page()
-                          .withBody(String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
-              assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEqualTo(value);
-            });
+        .forEach(value -> {
+          driver.get(
+              appServer.create(
+                  new Page().withBody(String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
+          assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEqualTo(value);
+        });
 
     driver.get(appServer.create(new Page().withBody(String.format("<div id=\"attr\" %s>", name))));
     assertThat(driver.findElement(By.id("attr")).getDomAttribute(name)).isEmpty();

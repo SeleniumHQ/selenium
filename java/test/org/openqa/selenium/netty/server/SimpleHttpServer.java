@@ -56,7 +56,7 @@ import org.openqa.selenium.net.PortProber;
 public class SimpleHttpServer implements Closeable {
 
   public static final Function<HttpRequest, FullHttpResponse> ECHO_HEADERS_HANDLER =
-      (request) -> {
+      request -> {
         FullHttpResponse response =
             new DefaultFullHttpResponse(
                 request.protocolVersion(), HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
@@ -148,7 +148,7 @@ public class SimpleHttpServer implements Closeable {
     Function<io.netty.handler.codec.http.HttpRequest, FullHttpResponse> handler =
         endpoints.getOrDefault(
             entry(requested.method(), requested.uri()),
-            (request) -> {
+            request -> {
               FullHttpResponse response =
                   new DefaultFullHttpResponse(
                       requested.protocolVersion(),
@@ -180,7 +180,7 @@ public class SimpleHttpServer implements Closeable {
     registerEndpoint(
         method,
         uri,
-        (request) -> {
+        request -> {
           ByteBuf buffer =
               payload != null ? Unpooled.wrappedBuffer(payload) : Unpooled.EMPTY_BUFFER;
           FullHttpResponse response =

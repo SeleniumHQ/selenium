@@ -323,31 +323,27 @@ public class RemoteWebDriverBuilder {
     Optional<Supplier<WebDriver>> first =
         requestedCapabilities.stream()
             .map(caps -> caps.merge(additional))
-            .flatMap(
-                caps ->
-                    infos.stream()
-                        .filter(info -> info.isSupporting(caps))
-                        .filter(WebDriverInfo::isAvailable)
-                        .map(
-                            info ->
-                                (Supplier<WebDriver>)
-                                    () ->
-                                        info.createDriver(caps, clientConfig)
-                                            .orElseThrow(
-                                                () ->
-                                                    new SessionNotCreatedException(
-                                                        "Unable to create session with " + caps))))
+            .flatMap(caps ->
+                infos.stream()
+                    .filter(info -> info.isSupporting(caps))
+                    .filter(WebDriverInfo::isAvailable)
+                    .map(info ->
+                        (Supplier<WebDriver>)
+                            () ->
+                                info.createDriver(caps, clientConfig)
+                                    .orElseThrow(() ->
+                                        new SessionNotCreatedException(
+                                            "Unable to create session with " + caps))))
             .findFirst();
 
     Supplier<WebDriver> supplier =
-        first.orElseThrow(
-            () ->
-                new SessionNotCreatedException(
-                    String.format(
-                        "Unable to find matching driver for capabilities%n"
-                            + "  requestedCapabilities: %s%n "
-                            + "  infos: %s",
-                        requestedCapabilities, infos)));
+        first.orElseThrow(() ->
+            new SessionNotCreatedException(
+                String.format(
+                    "Unable to find matching driver for capabilities%n"
+                        + "  requestedCapabilities: %s%n "
+                        + "  infos: %s",
+                    requestedCapabilities, infos)));
     return supplier.get();
   }
 
@@ -553,16 +549,15 @@ public class RemoteWebDriverBuilder {
         } finally {
           if (req.getMethod() == DELETE) {
             HttpSessionId.getSessionId(req.getUri())
-                .ifPresent(
-                    id -> {
-                      if (("/session/" + id).equals(req.getUri())) {
-                        try {
-                          client.close();
-                        } catch (Exception e) {
-                          LOG.log(WARNING, "Exception swallowed while closing http client", e);
-                        }
-                      }
-                    });
+                .ifPresent(id -> {
+                  if (("/session/" + id).equals(req.getUri())) {
+                    try {
+                      client.close();
+                    } catch (Exception e) {
+                      LOG.log(WARNING, "Exception swallowed while closing http client", e);
+                    }
+                  }
+                });
           }
         }
       };

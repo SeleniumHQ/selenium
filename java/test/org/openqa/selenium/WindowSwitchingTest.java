@@ -168,11 +168,10 @@ class WindowSwitchingTest extends JupiterTestBase {
     // There should be three windows. We should also see each of the window titles at least once.
     Set<String> allWindowTitles =
         allWindowHandles.stream()
-            .map(
-                handle -> {
-                  driver.switchTo().window(handle);
-                  return driver.getTitle();
-                })
+            .map(handle -> {
+              driver.switchTo().window(handle);
+              return driver.getTitle();
+            })
             .collect(Collectors.toSet());
 
     assertThat(allWindowHandles).hasSize(3);
@@ -266,11 +265,10 @@ class WindowSwitchingTest extends JupiterTestBase {
 
     allWindowHandles.stream()
         .filter(anObject -> !mainHandle.equals(anObject))
-        .forEach(
-            handle -> {
-              driver.switchTo().window(handle);
-              driver.close();
-            });
+        .forEach(handle -> {
+          driver.switchTo().window(handle);
+          driver.close();
+        });
 
     assertThat(driver.getWindowHandles()).hasSize(1);
   }
@@ -294,11 +292,10 @@ class WindowSwitchingTest extends JupiterTestBase {
 
     allWindowHandles.stream()
         .filter(anObject -> !mainHandle.equals(anObject))
-        .forEach(
-            handle -> {
-              driver.switchTo().window(handle);
-              driver.close();
-            });
+        .forEach(handle -> {
+          driver.switchTo().window(handle);
+          driver.close();
+        });
 
     driver.switchTo().window(mainHandle);
 

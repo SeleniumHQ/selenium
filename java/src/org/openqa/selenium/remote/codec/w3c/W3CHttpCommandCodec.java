@@ -285,13 +285,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         {
           Map<String, Object> merged = new LinkedHashMap<>();
 
-          parameters.forEach(
-              (key, val) -> {
-                if ("text".equals(key) || "value".equals(key)) {
-                  return;
-                }
-                merged.put(key, val);
-              });
+          parameters.forEach((key, val) -> {
+            if ("text".equals(key) || "value".equals(key)) {
+              return;
+            }
+            merged.put(key, val);
+          });
 
           merged.put("text", text);
           merged.put("value", stringToUtf8Array(text));
@@ -315,13 +314,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         {
           Map<String, Object> merged = new LinkedHashMap<>();
 
-          parameters.forEach(
-              (key, val) -> {
-                if (timeoutType.equals(key)) {
-                  return;
-                }
-                merged.put(key, val);
-              });
+          parameters.forEach((key, val) -> {
+            if (timeoutType.equals(key)) {
+              return;
+            }
+            merged.put(key, val);
+          });
           merged.put(timeoutType, duration);
 
           return Map.copyOf(merged);
@@ -360,7 +358,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       String script =
           ATOM_SCRIPTS.computeIfAbsent(
               atomFileName,
-              (fileName) -> {
+              fileName -> {
                 String rawFunction =
                     resourceAsString(getClass(), "/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");

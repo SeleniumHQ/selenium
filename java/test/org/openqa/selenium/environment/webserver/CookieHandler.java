@@ -158,41 +158,40 @@ class CookieHandler implements HttpHandler {
 
     keysAndValues.stream()
         .skip(1)
-        .forEach(
-            keyAndValue -> {
-              List<String> parts =
-                  Arrays.stream(keyAndValue.split("=", 2))
-                      .map(String::trim)
-                      .filter(s -> !s.isEmpty())
-                      .collect(toList());
+        .forEach(keyAndValue -> {
+          List<String> parts =
+              Arrays.stream(keyAndValue.split("=", 2))
+                  .map(String::trim)
+                  .filter(s -> !s.isEmpty())
+                  .collect(toList());
 
-              String key = parts.get(0).toLowerCase();
-              switch (key) {
-                case "domain":
-                  builder.domain(parts.get(1));
-                  break;
+          String key = parts.get(0).toLowerCase();
+          switch (key) {
+            case "domain":
+              builder.domain(parts.get(1));
+              break;
 
-                case "expires":
-                  TemporalAccessor temporalAccessor = RFC_1123_DATE_TIME.parse(parts.get(1));
-                  builder.expiresOn(Date.from(Instant.from(temporalAccessor)));
-                  break;
+            case "expires":
+              TemporalAccessor temporalAccessor = RFC_1123_DATE_TIME.parse(parts.get(1));
+              builder.expiresOn(Date.from(Instant.from(temporalAccessor)));
+              break;
 
-                case "httponly":
-                  builder.isHttpOnly(true);
-                  break;
+            case "httponly":
+              builder.isHttpOnly(true);
+              break;
 
-                case "path":
-                  builder.path(parts.get(1));
-                  break;
+            case "path":
+              builder.path(parts.get(1));
+              break;
 
-                case "secure":
-                  builder.isSecure(true);
-                  break;
+            case "secure":
+              builder.isSecure(true);
+              break;
 
-                default:
-                  throw new RuntimeException("Unknown option: " + key);
-              }
-            });
+            default:
+              throw new RuntimeException("Unknown option: " + key);
+          }
+        });
 
     return builder.build();
   }

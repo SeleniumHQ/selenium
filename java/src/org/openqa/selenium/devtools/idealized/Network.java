@@ -231,37 +231,36 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
             HttpResponse forBrowser =
                 filter
-                    .andFinally(
-                        req -> {
-                          // Convert the selenium request to a CDP one and fulfill.
-                          devTools.send(continueRequest(pausedRequest, req));
-                          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
-                          // Save the future after the browser accepted the continueRequest
-                          pendingResponses.put(id, res);
+                    .andFinally(req -> {
+                      // Convert the selenium request to a CDP one and fulfill.
+                      devTools.send(continueRequest(pausedRequest, req));
+                      CompletableFuture<HttpResponse> res = new CompletableFuture<>();
+                      // Save the future after the browser accepted the continueRequest
+                      pendingResponses.put(id, res);
 
-                          // Wait for the CDP response and send that back.
-                          try {
-                            return res.get();
-                          } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            throw new WebDriverException(e);
-                          } catch (CancellationException e) {
-                            // The interception was intentionally stopped, network().disable() has
-                            // been called
-                            pendingResponses.remove(id);
-                            return STOP_PROCESSING;
-                          } catch (ExecutionException e) {
-                            if (e.getCause() instanceof RequestFailedException) {
-                              // Throwing here will give the user's filter a chance to intercept
-                              // the failure and handle it.
-                              throw (RequestFailedException) e.getCause();
-                            }
-                            if (fetchEnabled.get()) {
-                              LOG.log(WARNING, e, () -> "Unable to process request");
-                            }
-                            return new HttpResponse();
-                          }
-                        })
+                      // Wait for the CDP response and send that back.
+                      try {
+                        return res.get();
+                      } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new WebDriverException(e);
+                      } catch (CancellationException e) {
+                        // The interception was intentionally stopped, network().disable() has
+                        // been called
+                        pendingResponses.remove(id);
+                        return STOP_PROCESSING;
+                      } catch (ExecutionException e) {
+                        if (e.getCause() instanceof RequestFailedException) {
+                          // Throwing here will give the user's filter a chance to intercept
+                          // the failure and handle it.
+                          throw (RequestFailedException) e.getCause();
+                        }
+                        if (fetchEnabled.get()) {
+                          LOG.log(WARNING, e, () -> "Unable to process request");
+                        }
+                        return new HttpResponse();
+                      }
+                    })
                     .execute(message.left());
 
             if (forBrowser == NetworkInterceptor.PROCEED_WITH_REQUEST) {
@@ -327,12 +326,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
     HttpResponse res = new HttpResponse().setStatus(statusCode.orElse(HTTP_OK)).setContent(content);
 
-    headers.forEach(
-        entry -> {
-          if (entry.getValue() != null) {
-            res.addHeader(entry.getKey(), entry.getValue());
-          }
-        });
+    headers.forEach(entry -> {
+      if (entry.getValue() != null) {
+        res.addHeader(entry.getKey(), entry.getValue());
+      }
+    });
 
     return res;
   }
