@@ -43,9 +43,8 @@ Until :data:`ADR_17685_DISPATCH` is switched on, handlers keep the behavior of
 earlier releases — every matching handler runs in registration order and their
 outcomes are merged, an exception is logged rather than failing the event, and a
 handler with no scope sees every window — and Selenium warns wherever the
-outcome is about to change.  Glob URL patterns (``"**/api/**"``) are likewise
-still matched in Python, with a deprecation warning, because the remote end
-rejects them.
+outcome is about to change.  Glob URL patterns (``"**/api/**"``) are matched in
+Python, as Playwright does, because the remote end rejects wildcards.
 """
 
 from __future__ import annotations
@@ -469,9 +468,9 @@ def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
     components, an object exposing ``to_bidi_dict()``, or a parsed URL exposing
     ``geturl()``.
 
-    A glob string (one containing ``*`` or ``?``) is deprecated: the remote end
-    rejects wildcards, so as in earlier releases its literal components pre-filter
-    in the browser and the glob itself is matched in Python.  A mapping may use
+    A glob string (one containing ``*`` or ``?``) is supported for parity with
+    Playwright even though the remote end rejects wildcards: its literal
+    components pre-filter in the browser and the glob itself is matched in Python.  A mapping may use
     the same wildcards in its components (e.g. ``{"hostname": "*.example.org"}``),
     matched the same way.
     """
@@ -500,16 +499,6 @@ def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
 
 
 def _python_matched_url_patterns(values: list) -> _UrlPatterns:
-    globs = [value for value in values if _is_glob(value)]
-    if globs:
-        warnings.warn(
-            f"Glob URL patterns such as {globs[0]!r} are deprecated, because the browser cannot evaluate them; "
-            "pass a URL pattern string without wildcards or a mapping of URL components instead, "
-            "and do finer matching inside the handler",
-            DeprecationWarning,
-            # Points past the registry and the driver.network method at the caller.
-            stacklevel=5,
-        )
     wire: list = []
     matchers: list[Callable[[str], bool]] = []
     intercept_everything = False
@@ -1220,7 +1209,7 @@ class _HandlerEntry:
         an event blocked on another handler's behalf does not reach it
         (decision 4).  User-context scope is checked here because
         ``network.addIntercept`` cannot express it (decision 11), and a
-        deprecated glob is matched here because the remote end cannot evaluate it.
+        glob is matched here because the remote end cannot evaluate it.
         """
         if self.removing:
             return False
