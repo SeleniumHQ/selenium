@@ -107,7 +107,7 @@ def commands_for(conn):
 
 @pytest.fixture(autouse=True)
 def adr_17685_dispatch(monkeypatch):
-    """Most tests pin the decision record 17685 behavior that a later release switches on.
+    """Most tests pin the ``ADR_17685_DISPATCH`` behavior that a later release switches on.
 
     Tests of the behavior that ships until then request ``earlier_dispatch``.
     """
@@ -229,7 +229,7 @@ def dispatch_event_to(conn, event, bidi_event):
 
 
 # --------------------------------------------------------------------------
-# Registration, removal and clearing (decision 1)
+# Registration, removal and clearing
 # --------------------------------------------------------------------------
 
 
@@ -337,7 +337,7 @@ def test_add_authentication_is_cleared_with_the_family():
 
 
 # --------------------------------------------------------------------------
-# URL patterns are the remote's business (decision 2)
+# URL patterns
 # --------------------------------------------------------------------------
 
 
@@ -432,6 +432,21 @@ def test_a_glob_in_the_query_keeps_the_pathname_pre_filter():
     # In a URL the "?" starts the query rather than matching any character, and
     # the query is not split into path segments.
     assert seen == ["https://example.com/search?q=a/b"]
+
+
+def test_a_glob_with_an_ipv6_host_does_not_pre_filter_on_a_broken_host():
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    network.add_request_handler("http://[::1]:8080/api/*", lambda request: seen.append(request.url))
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "http"}]
+
+    dispatch_event(conn, make_before_request_event(url="http://[::1]:8080/api/orders"))
+
+    assert seen == ["http://[::1]:8080/api/orders"]
 
 
 def test_a_query_string_is_not_mistaken_for_a_glob(recwarn):
@@ -658,7 +673,7 @@ def test_blocked_event_owned_by_another_intercept_is_left_alone():
 
 
 # --------------------------------------------------------------------------
-# Dispositions, ordering and defaults (decisions 4, 5 and 6)
+# Dispositions, ordering and defaults
 # --------------------------------------------------------------------------
 
 
@@ -898,7 +913,7 @@ def test_data_url_requests_are_not_continued():
 
 
 # --------------------------------------------------------------------------
-# Handler faults (decision 7)
+# Handler faults
 # --------------------------------------------------------------------------
 
 
@@ -929,7 +944,7 @@ def test_handler_exception_is_recorded_before_the_request_is_failed():
 
     Failing the request unblocks the browser, so the user's navigation can raise
     and call back into driver.network. Recording the error after that would race
-    the very call meant to surface it (decision 7).
+    the very call meant to surface it.
     """
     conn = FakeConnection()
     network = Network(FakeDriver(conn))
@@ -1049,7 +1064,7 @@ def test_auth_handler_exception_cancels_the_challenge():
 
 
 # --------------------------------------------------------------------------
-# Return values and original values (decisions 8 and 9)
+# Return values and original values
 # --------------------------------------------------------------------------
 
 
@@ -1110,7 +1125,7 @@ def test_response_handler_can_read_the_original_event_value():
 
 
 # --------------------------------------------------------------------------
-# Body collection (decision 10)
+# Body collection
 # --------------------------------------------------------------------------
 
 
@@ -1255,7 +1270,7 @@ def test_response_handlers_cannot_collect_a_body():
 
 
 # --------------------------------------------------------------------------
-# Scoping (decision 11)
+# Scoping
 # --------------------------------------------------------------------------
 
 
@@ -2013,7 +2028,7 @@ def test_intercepts_is_deprecated_and_lists_the_handlers_intercepts():
 
 
 # --------------------------------------------------------------------------
-# Until decision record 17685's dispatch is switched on
+# Until ADR_17685_DISPATCH is switched on
 # --------------------------------------------------------------------------
 
 
