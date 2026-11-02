@@ -320,7 +320,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                                             itemType = "string";
                                             break;
                                         case "FilterEntry":
-                                            itemType = "object";
+                                            itemType = "System.Text.Json.Nodes.JsonNode";
                                             break;
                                         default:
                                             throw new NotImplementedException($"Did not expect a top-level domain array type to specify a type reference of {type.Items.TypeReference}");

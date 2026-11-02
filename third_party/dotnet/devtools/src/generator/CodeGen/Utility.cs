@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 
                     case "object":
                     case "any":
-                        mappedType = "object";
+                        mappedType = "System.Text.Json.Nodes.JsonNode";
                         break;
 
                     case "binary":
