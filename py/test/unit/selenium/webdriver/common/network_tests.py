@@ -449,6 +449,61 @@ def test_a_glob_mixed_with_other_patterns_still_reaches_their_traffic():
     ]
 
 
+def test_a_wildcard_component_is_matched_in_python(recwarn):
+    """The remote end rejects wildcards in components, so only the literal ones are forwarded."""
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    network.add_request_handler(
+        [{"protocol": "https", "hostname": "*.example.org", "pathname": "/api/**"}],
+        lambda request: seen.append(request.url),
+    )
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["urlPatterns"] == [{"type": "pattern", "protocol": "https"}]
+
+    for index, url in enumerate(
+        [
+            "https://cdn.example.org/api/v1/orders",
+            "https://CDN.Example.org/api/orders",
+            "https://example.org/api/orders",
+            "https://cdn.example.org/static/app.js",
+            "https://cdn.example.com/api/orders",
+        ]
+    ):
+        dispatch_event(conn, make_before_request_event(url=url, request_id=f"req-{index}"))
+
+    assert seen == ["https://cdn.example.org/api/v1/orders", "https://CDN.Example.org/api/orders"]
+    assert len(conn.commands_named("network.continueRequest")) == 5
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def test_a_wildcard_only_mapping_intercepts_everything():
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+
+    network.add_request_handler([{"hostname": "*.example.org"}], lambda request: None)
+
+    assert "urlPatterns" not in conn.commands_named("network.addIntercept")[0]["params"]
+
+
+def test_a_wildcard_component_mixed_with_a_glob_reaches_its_traffic():
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
+        network.add_request_handler(
+            ["https://shop.example.com/api/**", {"hostname": "*.example.org"}],
+            lambda request: seen.append(request.url),
+        )
+
+    dispatch_event(conn, make_before_request_event(url="https://cdn.example.org/app.js"))
+
+    assert seen == ["https://cdn.example.org/app.js"]
+
+
 def test_a_pattern_without_wildcards_raises_no_deprecation_warning(recwarn):
     network = Network(FakeDriver(FakeConnection()))
 
