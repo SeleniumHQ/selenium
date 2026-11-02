@@ -78,7 +78,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @param action the action to call
    */
   public void forEachHeader(BiConsumer<String, String> action) {
-    headers.forEach((name, values) -> values.forEach((value) -> action.accept(name, value)));
+    headers.forEach((name, values) -> values.forEach(value -> action.accept(name, value)));
   }
 
   /**
@@ -152,7 +152,7 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    */
   public M addHeader(String name, String value) {
     String lcName = name.toLowerCase(Locale.ENGLISH);
-    List<String> values = headers.computeIfAbsent(lcName, (n) -> new ArrayList<>());
+    List<String> values = headers.computeIfAbsent(lcName, n -> new ArrayList<>());
     values.add(value);
     return self();
   }
@@ -191,9 +191,9 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
       String contentType = getContentType();
       if (contentType != null) {
         return Arrays.stream(contentType.split(";"))
-            .map((e) -> e.trim().toLowerCase(Locale.ENGLISH))
-            .filter((e) -> e.startsWith("charset="))
-            .map((e) -> e.substring(e.indexOf('=') + 1))
+            .map(e -> e.trim().toLowerCase(Locale.ENGLISH))
+            .filter(e -> e.startsWith("charset="))
+            .map(e -> e.substring(e.indexOf('=') + 1))
             .map(Charset::forName)
             .findFirst()
             .orElse(UTF_8);

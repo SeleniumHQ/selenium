@@ -160,17 +160,15 @@ public class OneShotNode extends Node {
     WebDriverInfo driverInfo =
         StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
             .filter(info -> info.isSupporting(stereotype))
-            .filter(
-                info ->
-                    driverName
-                        .map(name -> name.equals(info.getDisplayName().toLowerCase(Locale.ENGLISH)))
-                        .orElse(true))
+            .filter(info ->
+                driverName
+                    .map(name -> name.equals(info.getDisplayName().toLowerCase(Locale.ENGLISH)))
+                    .orElse(true))
             .findFirst()
-            .orElseThrow(
-                () ->
-                    new ConfigException(
-                        "Unable to find matching driver for %s and %s",
-                        stereotype, driverName.orElse("any driver")));
+            .orElseThrow(() ->
+                new ConfigException(
+                    "Unable to find matching driver for %s and %s",
+                    stereotype, driverName.orElse("any driver")));
 
     LOG.info(
         String.format("Creating one-shot node for %s with stereotype %s", driverInfo, stereotype));

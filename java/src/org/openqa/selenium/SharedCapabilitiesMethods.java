@@ -111,10 +111,8 @@ class SharedCapabilitiesMethods {
           ((Map<?, ?>) stringify)
               .entrySet().stream()
                   .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
-                  .map(
-                      entry ->
-                          String.format(
-                              "%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
+                  .map(entry ->
+                      String.format("%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
                   .collect(Collectors.joining(", ")));
       value.append("}");
     } else {

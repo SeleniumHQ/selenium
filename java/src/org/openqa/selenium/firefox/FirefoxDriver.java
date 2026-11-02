@@ -251,7 +251,7 @@ public class FirefoxDriver extends RemoteWebDriver
               new AddHasContext().getAdditionalCommands(),
               new AddHasExtensions().getAdditionalCommands(),
               new AddHasFullPageScreenshot().getAdditionalCommands())
-          .flatMap((m) -> m.entrySet().stream())
+          .flatMap(m -> m.entrySet().stream())
           .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   }

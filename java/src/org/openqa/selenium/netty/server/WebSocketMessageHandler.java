@@ -48,14 +48,13 @@ class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     ctx.executor()
-        .execute(
-            () -> {
-              try {
-                handler.accept(msg);
-                ctx.flush();
-              } catch (Throwable t) {
-                ctx.fireExceptionCaught(t);
-              }
-            });
+        .execute(() -> {
+          try {
+            handler.accept(msg);
+            ctx.flush();
+          } catch (Throwable t) {
+            ctx.fireExceptionCaught(t);
+          }
+        });
   }
 }

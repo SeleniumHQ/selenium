@@ -117,11 +117,10 @@ public class WebDriverException extends RuntimeException {
   public static String getDriverName(StackTraceElement[] stackTraceElements) {
     return Stream.of(stackTraceElements)
         .filter(e -> e.getClassName().endsWith("Driver"))
-        .map(
-            e -> {
-              String[] bits = e.getClassName().split("\\.");
-              return bits[bits.length - 1];
-            })
+        .map(e -> {
+          String[] bits = e.getClassName().split("\\.");
+          return bits[bits.length - 1];
+        })
         .reduce((first, last) -> last)
         .orElse("unknown");
   }
@@ -135,11 +134,10 @@ public class WebDriverException extends RuntimeException {
         DRIVER_INFO, key -> "driver.version: " + getDriverName(getStackTrace()));
 
     return extraInfo.entrySet().stream()
-        .map(
-            entry ->
-                entry.getValue() != null && entry.getValue().startsWith(entry.getKey())
-                    ? entry.getValue()
-                    : entry.getKey() + ": " + entry.getValue())
+        .map(entry ->
+            entry.getValue() != null && entry.getValue().startsWith(entry.getKey())
+                ? entry.getValue()
+                : entry.getKey() + ": " + entry.getValue())
         .collect(Collectors.joining("\n"));
   }
 }

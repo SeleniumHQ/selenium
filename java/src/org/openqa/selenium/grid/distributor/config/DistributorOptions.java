@@ -51,19 +51,18 @@ public class DistributorOptions {
     Optional<URI> host =
         config
             .get(DISTRIBUTOR_SECTION, "host")
-            .map(
-                str -> {
-                  try {
-                    URI distributorUri = new URI(str);
-                    if (distributorUri.getHost() == null || distributorUri.getPort() == -1) {
-                      throw new ConfigException(
-                          "Undefined host or port in Distributor server URI: " + str);
-                    }
-                    return distributorUri;
-                  } catch (URISyntaxException e) {
-                    throw new ConfigException("Distributor URI is not a valid URI: " + str);
-                  }
-                });
+            .map(str -> {
+              try {
+                URI distributorUri = new URI(str);
+                if (distributorUri.getHost() == null || distributorUri.getPort() == -1) {
+                  throw new ConfigException(
+                      "Undefined host or port in Distributor server URI: " + str);
+                }
+                return distributorUri;
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Distributor URI is not a valid URI: " + str);
+              }
+            });
 
     if (host.isPresent()) {
       return host.get();
@@ -148,13 +147,12 @@ public class DistributorOptions {
   public Optional<URI> getBackendUri() {
     return config
         .get(DISTRIBUTOR_SECTION, "backend-url")
-        .map(
-            str -> {
-              try {
-                return new URI(str);
-              } catch (URISyntaxException e) {
-                throw new ConfigException("Distributor backend-url is not a valid URI: " + str);
-              }
-            });
+        .map(str -> {
+          try {
+            return new URI(str);
+          } catch (URISyntaxException e) {
+            throw new ConfigException("Distributor backend-url is not a valid URI: " + str);
+          }
+        });
   }
 }

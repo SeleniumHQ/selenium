@@ -125,14 +125,13 @@ public class LocalNodeRegistry implements NodeRegistry {
     this.bus.addListener(NodeRemovedEvent.listener(nodeStatus -> remove(nodeStatus.getNodeId())));
     this.bus.addListener(NodeDrainComplete.listener(this::remove));
     this.bus.addListener(
-        NodeHeartBeatEvent.listener(
-            nodeStatus -> {
-              if (nodes.containsKey(nodeStatus.getNodeId())) {
-                model.touch(nodeStatus);
-              } else {
-                register(nodeStatus);
-              }
-            }));
+        NodeHeartBeatEvent.listener(nodeStatus -> {
+          if (nodes.containsKey(nodeStatus.getNodeId())) {
+            model.touch(nodeStatus);
+          } else {
+            register(nodeStatus);
+          }
+        }));
 
     // Schedule regular health checks
     this.nodeHealthCheckService.scheduleAtFixedRate(
@@ -144,13 +143,12 @@ public class LocalNodeRegistry implements NodeRegistry {
     // Health checks are I/O-bound; a cached pool spawns one thread per active check and
     // reuses idle threads, giving each cycle a single concurrent pass over all nodes.
     this.nodeHealthCheckExecutor =
-        Executors.newCachedThreadPool(
-            r -> {
-              Thread t = new Thread(r);
-              t.setName("node-health-check-" + t.getId());
-              t.setDaemon(true);
-              return t;
-            });
+        Executors.newCachedThreadPool(r -> {
+          Thread t = new Thread(r);
+          t.setName("node-health-check-" + t.getId());
+          t.setDaemon(true);
+          return t;
+        });
 
     // Schedule node purging if interval is non-zero
     if (!this.purgeNodesInterval.isZero()) {
@@ -329,20 +327,18 @@ public class LocalNodeRegistry implements NodeRegistry {
       }
 
       List<Future<?>> futures = new ArrayList<>(nodeHealthChecks.size());
-      nodeHealthChecks.forEach(
-          (nodeId, check) -> {
-            try {
-              futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
-            } catch (RejectedExecutionException e) {
-              LOG.log(
-                  getDebugLogLevel(),
-                  String.format(
-                      "Unable to schedule health check for node %s, running in caller thread",
-                      nodeId),
-                  e);
-              runHealthCheck(nodeId, check);
-            }
-          });
+      nodeHealthChecks.forEach((nodeId, check) -> {
+        try {
+          futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
+        } catch (RejectedExecutionException e) {
+          LOG.log(
+              getDebugLogLevel(),
+              String.format(
+                  "Unable to schedule health check for node %s, running in caller thread", nodeId),
+              e);
+          runHealthCheck(nodeId, check);
+        }
+      });
 
       for (Future<?> future : futures) {
         try {
@@ -592,16 +588,15 @@ public class LocalNodeRegistry implements NodeRegistry {
       allChecks.clear();
       nodes
           .values()
-          .forEach(
-              n -> {
-                if (n instanceof RemoteNode) {
-                  try {
-                    ((RemoteNode) n).close();
-                  } catch (Exception e) {
-                    LOG.log(Level.WARNING, "Unable to close node properly: " + e.getMessage());
-                  }
-                }
-              });
+          .forEach(n -> {
+            if (n instanceof RemoteNode) {
+              try {
+                ((RemoteNode) n).close();
+              } catch (Exception e) {
+                LOG.log(Level.WARNING, "Unable to close node properly: " + e.getMessage());
+              }
+            }
+          });
       nodes.clear();
     } finally {
       writeLock.unlock();

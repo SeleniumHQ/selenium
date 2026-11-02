@@ -156,11 +156,10 @@ public class Actions {
     Require.nonNull("Keys", keys, "should be a not null CharSequence");
     for (CharSequence key : keys) {
       key.codePoints()
-          .forEach(
-              codePoint -> {
-                tick(getActiveKeyboard().createKeyDown(codePoint));
-                tick(getActiveKeyboard().createKeyUp(codePoint));
-              });
+          .forEach(codePoint -> {
+            tick(getActiveKeyboard().createKeyDown(codePoint));
+            tick(getActiveKeyboard().createKeyUp(codePoint));
+          });
     }
     return this;
   }
