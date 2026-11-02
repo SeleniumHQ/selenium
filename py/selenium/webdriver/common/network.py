@@ -17,9 +17,9 @@
 
 """Network interception for ``driver.network``.
 
-:class:`Network` is the supported, protocol-neutral API (decision record 17670):
-it hands out no protocol types and is reached as ``driver.network``.  It is
-implemented on the internal BiDi protocol layer, composed with the driver.
+:class:`Network` is the supported, protocol-neutral API: it hands out no
+protocol types and is reached as ``driver.network``.  It is implemented on the
+internal BiDi protocol layer, composed with the driver.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ _LEGACY_REQUEST_HANDLER_EVENTS = ("auth_required", "before_request", "before_req
 
 # What driver.network handed out while it was the BiDi network module itself.
 # They stay reachable for a deprecation period, but they are the protocol, which
-# decision record 17670 keeps off the driver.
+# the supported API keeps off the driver.
 _PROTOCOL_MEMBERS = frozenset(
     {
         "add_data_collector",
