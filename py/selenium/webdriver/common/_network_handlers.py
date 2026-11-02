@@ -97,15 +97,17 @@ class HandlerHandle(str):
     the plain string handler IDs returned by earlier releases were accepted.
     """
 
+    family: str
+
     def __new__(cls, handler_id: str, family: str) -> HandlerHandle:
         handle = super().__new__(cls, handler_id)
         handle.family = family
         return handle
 
-    def __getnewargs__(self) -> tuple[str, str]:
-        # str's own __getnewargs__ passes only the value, which __new__ rejects,
-        # so copy and pickle could not rebuild a handle without this.
-        return (str(self), self.family)
+    def __reduce__(self) -> tuple[type[HandlerHandle], tuple[str, str]]:
+        # str's own reduction passes only the value, which __new__ rejects, so
+        # copy and pickle could not rebuild a handle without this.
+        return (HandlerHandle, (str(self), self.family))
 
     def __repr__(self) -> str:
         return f"<HandlerHandle {self.family} {str.__repr__(self)}>"
@@ -167,8 +169,8 @@ def _bytes_value(value: Any) -> StringValue | Base64Value:
         value = value.to_bidi_dict()
     if isinstance(value, dict):
         if value.get("type") == "base64":
-            return Base64Value(value=value.get("value"))
-        return StringValue(value=value.get("value"))
+            return Base64Value(value=value.get("value", ""))
+        return StringValue(value=value.get("value", ""))
     # Header values such as True or 1 are stringified rather than sent as-is,
     # which the remote end would reject.
     return StringValue(value=value if isinstance(value, str) else str(value))
@@ -187,8 +189,8 @@ def headers_to_dict(headers: list | None) -> dict[str, str]:
     """Convert a raw BiDi header list to a name → value mapping."""
     result: dict[str, str] = {}
     for header in headers or []:
-        if isinstance(header, dict):
-            result[header.get("name")] = _decode_bytes_value(header.get("value"))
+        if isinstance(header, dict) and isinstance(header.get("name"), str):
+            result[header["name"]] = _decode_bytes_value(header.get("value"))
     return result
 
 
@@ -218,7 +220,7 @@ def _cookie_header_records(cookies: list | None) -> list[CookieHeader]:
     for cookie in cookies or []:
         entry = _cookie_name_and_value(cookie)
         if entry is not None:
-            records.append(CookieHeader(name=entry.get("name"), value=_bytes_value(entry.get("value"))))
+            records.append(CookieHeader(name=entry.get("name", ""), value=_bytes_value(entry.get("value"))))
     return records
 
 
@@ -250,7 +252,7 @@ def _set_cookie_header_records(cookies: list | None) -> list[SetCookieHeader]:
                 optional[field_name] = entry[key]
         if isinstance(optional.get("same_site"), str):
             optional["same_site"] = SameSite(optional["same_site"])
-        records.append(SetCookieHeader(name=entry.get("name"), value=_bytes_value(entry.get("value")), **optional))
+        records.append(SetCookieHeader(name=entry.get("name", ""), value=_bytes_value(entry.get("value")), **optional))
     return records
 
 
@@ -272,14 +274,7 @@ def _is_glob(pattern: Any) -> bool:
     return "?" in pattern and "://" not in pattern
 
 
-def glob_to_regex(pattern: str, *, segmented: bool = True) -> re.Pattern:
-    """Compile a URL glob (``*``, ``**``, ``?``) into a regular expression.
-
-    ``*`` matches within a path segment, ``**`` matches across segments, and
-    ``?`` matches a single character.  Matching is anchored at both ends.
-    With ``segmented=False``, as for a query, ``/`` is an ordinary character
-    that ``*`` and ``?`` also match.
-    """
+def _glob_source(pattern: str, segmented: bool) -> str:
     any_char = "[^/]" if segmented else "."
     parts: list[str] = []
     i = 0
@@ -298,7 +293,26 @@ def glob_to_regex(pattern: str, *, segmented: bool = True) -> re.Pattern:
         else:
             parts.append(re.escape(char))
             i += 1
-    return re.compile("".join(parts) + r"\Z")
+    return "".join(parts)
+
+
+def glob_to_regex(pattern: str, *, segmented: bool = True) -> re.Pattern:
+    """Compile a URL glob (``*``, ``**``, ``?``) into a regular expression.
+
+    ``*`` matches within a path segment, ``**`` matches across segments, and
+    ``?`` matches a single character.  Matching is anchored at both ends.
+    With ``segmented=False``, as for a query, ``/`` is an ordinary character
+    that ``*`` and ``?`` also match.
+    """
+    return re.compile(_glob_source(pattern, segmented) + r"\Z")
+
+
+def _url_glob_to_regex(pattern: str) -> re.Pattern:
+    """Compile a glob, treating the first ``?`` of a full URL as the start of its query."""
+    if "://" not in pattern or "?" not in pattern:
+        return glob_to_regex(pattern)
+    base, _, query = pattern.partition("?")
+    return re.compile(_glob_source(base, True) + r"\?" + _glob_source(query, False) + r"\Z")
 
 
 def _literal_component(component: str) -> str | None:
@@ -318,6 +332,8 @@ def _glob_to_url_pattern(pattern: str) -> UrlPatternPattern | None:
     if "://" not in pattern:
         return None
     scheme, _, rest = pattern.partition("://")
+    # The query is left to Python, so its wildcards cannot widen the filter.
+    rest = rest.partition("?")[0]
     host, slash, path = rest.partition("/")
     port = None
     if ":" in host:
@@ -453,7 +469,7 @@ def _component_matcher(pattern: UrlPatternPattern) -> Callable[[str], bool]:
 
 
 def _string_matcher(value: str) -> Callable[[str], bool]:
-    regex = glob_to_regex(value) if _is_glob(value) else re.compile(re.escape(value) + r"\Z")
+    regex = _url_glob_to_regex(value) if _is_glob(value) else re.compile(re.escape(value) + r"\Z")
     return lambda url: regex.match(url) is not None
 
 
@@ -499,6 +515,7 @@ def _python_matched_url_patterns(values: list) -> _UrlPatterns:
     matchers: list[Callable[[str], bool]] = []
     intercept_everything = False
     for value in values:
+        url_pattern: UrlPatternString | UrlPatternPattern | None
         if isinstance(value, dict):
             url_pattern = _url_pattern_from_mapping(value)
             if isinstance(url_pattern, UrlPatternPattern):
@@ -691,7 +708,9 @@ class Request(_Event):
     def fail(self) -> None:
         """Settle the request as an error; nothing reaches the server.
 
-        Settling resolves the event and stops the handler chain.
+        Settling resolves the event.  Under :data:`ADR_17685_DISPATCH` it also stops the handler
+        chain; until then every matching handler still runs and their outcomes
+        are merged.
         """
         self._settle("fail")
         if not self._deferred:
@@ -700,7 +719,9 @@ class Request(_Event):
     def respond(self, status=None, headers=None, body=None, reason_phrase=None) -> None:
         """Settle the request with a stubbed response; nothing reaches the server.
 
-        Settling resolves the event and stops the handler chain.
+        Settling resolves the event.  Under :data:`ADR_17685_DISPATCH` it also stops the handler
+        chain; until then every matching handler still runs and their outcomes
+        are merged.
 
         Args:
             status: HTTP status code for the stubbed response.
@@ -728,11 +749,13 @@ class Request(_Event):
         cookies: list | None = None,
         body: str | None = None,
     ) -> None:
-        """Send the request now, with any staged mutations, and stop the chain.
+        """Send the request now, with any staged mutations.
 
         ``submit`` is never required — a request nothing settles continues
-        anyway — and because it short-circuits the chain it overrides what
-        a handler registered earlier would have done.
+        anyway.  Under :data:`ADR_17685_DISPATCH` it settles the request and
+        stops the handler chain, overriding what a handler registered earlier
+        would have done; until then later handlers still run and may change
+        what is sent.
 
         Each keyword argument stages the corresponding mutation before the
         request is sent, overriding one recorded via ``set_url``/``set_method``/
@@ -871,12 +894,12 @@ class Response(_Event):
         resp = self._params.get("response", {}) or {}
         self._request_id = req.get("request")
         self.url = resp.get("url") or req.get("url", "")
-        self.status = resp.get("status")
+        self.status: int | None = resp.get("status")
         self.reason_phrase = resp.get("statusText")
         self.headers = headers_to_dict(resp.get("headers"))
         self.mime_type = resp.get("mimeType")
         self.cookies: list = []
-        self.body = None
+        self.body: str | None = None
         self.original = _Original(
             url=self.url,
             status=self.status,
@@ -929,7 +952,9 @@ class Response(_Event):
     def fail(self) -> None:
         """Settle the response as a failed request.
 
-        Settling resolves the event and stops the handler chain.
+        Settling resolves the event.  Under :data:`ADR_17685_DISPATCH` it also stops the handler
+        chain; until then every matching handler still runs and their outcomes
+        are merged.
         """
         self._settle("fail")
         if not self._deferred:
@@ -944,7 +969,10 @@ class Response(_Event):
         cookies: list | None = None,
         body: str | None = None,
     ) -> None:
-        """Deliver the response now, with any staged mutations, and stop the chain.
+        """Deliver the response now, with any staged mutations.
+
+        Under :data:`ADR_17685_DISPATCH` it settles the response and stops the
+        handler chain; until then later handlers still run.
 
         A replacement body is delivered as a replacement response; other
         mutations continue the response the server sent.  Data URLs (``data:``)
@@ -960,8 +988,10 @@ class Response(_Event):
         """
         if not self._merge_outcomes:
             self._settle("submit")
-        if status is not None or reason_phrase is not None:
-            self.set_status(self.status if status is None else status, reason_phrase)
+        if status is not None:
+            self.set_status(status, reason_phrase)
+        elif reason_phrase is not None and self.status is not None:
+            self.set_status(self.status, reason_phrase)
         if headers is not None:
             self.set_headers(headers)
         if cookies is not None:
@@ -1092,7 +1122,9 @@ class AuthenticationRequest(_Event):
     def authenticate(self, username: str, password: str) -> None:
         """Settle the challenge with the given credentials.
 
-        Settling resolves the challenge and stops the handler chain.
+        Settling resolves the challenge.  Under :data:`ADR_17685_DISPATCH` it also stops the handler
+        chain; until then every matching handler still runs and their outcomes
+        are merged.
         """
         if not self._settle("authenticate"):
             return
@@ -1103,7 +1135,9 @@ class AuthenticationRequest(_Event):
     def cancel(self) -> None:
         """Cancel the challenge, failing the request with an auth error.
 
-        Settling resolves the challenge and stops the handler chain.
+        Settling resolves the challenge.  Under :data:`ADR_17685_DISPATCH` it also stops the handler
+        chain; until then every matching handler still runs and their outcomes
+        are merged.
         """
         self._settle("cancel")
         if not self._deferred:

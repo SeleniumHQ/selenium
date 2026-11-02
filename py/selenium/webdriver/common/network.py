@@ -113,7 +113,7 @@ class Network:
         self._connection = self._commands._transport.connection
         self._handler_errors: list[BaseException] = []
         self._warned: set[str] = set()
-        self._protocol_module = None
+        self._protocol_module: Any = None
         self._request_handlers = RequestHandlerRegistry(self)
         self._response_handlers = ResponseHandlerRegistry(self)
         self._auth_handlers = AuthHandlerRegistry(self)
@@ -169,7 +169,11 @@ class Network:
         is deprecated; use the forms above.
         """
         self._drain_handler_errors()
-        scope = {"collect_body": collect_body, "window_handle": window_handle, "user_context": user_context}
+        scope: dict[str, Any] = {
+            "collect_body": collect_body,
+            "window_handle": window_handle,
+            "user_context": user_context,
+        }
         if callable(event) and callback is None:
             return self._request_handlers.add_handler(url_patterns, event, **scope)
         if (
@@ -252,7 +256,7 @@ class Network:
             A :class:`HandlerHandle` for ``remove_response_handler(handle)``.
         """
         self._drain_handler_errors()
-        scope = {"window_handle": window_handle, "user_context": user_context}
+        scope: dict[str, Any] = {"window_handle": window_handle, "user_context": user_context}
         if callable(url_patterns) and callback is None:
             return self._response_handlers.add_handler(None, url_patterns, **scope)
         if not callable(callback):
@@ -306,7 +310,7 @@ class Network:
             A :class:`HandlerHandle` for ``remove_authentication_handler(handle)``.
         """
         self._drain_handler_errors()
-        scope = {"window_handle": window_handle, "user_context": user_context}
+        scope: dict[str, Any] = {"window_handle": window_handle, "user_context": user_context}
         if callable(url_patterns) and callback is None:
             return self._auth_handlers.add_handler(None, url_patterns, **scope)
         if not callable(callback):

@@ -407,6 +407,33 @@ def test_an_untranslatable_glob_intercepts_everything():
     assert "urlPatterns" not in conn.commands_named("network.addIntercept")[0]["params"]
 
 
+def test_a_glob_in_the_query_keeps_the_pathname_pre_filter():
+    """Only the query has a wildcard, so the browser can still filter on the path."""
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    network.add_request_handler("https://example.com/search?q=*", lambda request: seen.append(request.url))
+
+    params = conn.commands_named("network.addIntercept")[0]["params"]
+    assert params["urlPatterns"] == [
+        {"type": "pattern", "protocol": "https", "hostname": "example.com", "pathname": "/search"}
+    ]
+
+    for index, url in enumerate(
+        [
+            "https://example.com/search?q=a/b",
+            "https://example.com/searchXq=1",
+            "https://example.com/search/more?q=1",
+        ]
+    ):
+        dispatch_event(conn, make_before_request_event(url=url, request_id=f"req-{index}"))
+
+    # In a URL the "?" starts the query rather than matching any character, and
+    # the query is not split into path segments.
+    assert seen == ["https://example.com/search?q=a/b"]
+
+
 def test_a_query_string_is_not_mistaken_for_a_glob(recwarn):
     """In a URL a '?' starts the query, which the remote end evaluates exactly."""
     conn = FakeConnection()
