@@ -85,12 +85,11 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     bus.addListener(
-        NodeRemovedEvent.listener(
-            nodeStatus ->
-                nodeStatus.getSlots().stream()
-                    .filter(slot -> slot.getSession() != null)
-                    .map(slot -> slot.getSession().getId())
-                    .forEach(this::remove)));
+        NodeRemovedEvent.listener(nodeStatus ->
+            nodeStatus.getSlots().stream()
+                .filter(slot -> slot.getSession() != null)
+                .map(slot -> slot.getSession().getId())
+                .forEach(this::remove)));
 
     bus.addListener(
         NodeRestartedEvent.listener(

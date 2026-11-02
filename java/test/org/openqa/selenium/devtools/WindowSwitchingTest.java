@@ -98,9 +98,8 @@ class WindowSwitchingTest extends DevToolsTestBase {
     devTools
         .getDomains()
         .events()
-        .addConsoleListener(
-            consoleEvent -> {
-              assertThat(consoleEvent.getMessages()).contains("Hello, world!");
-            });
+        .addConsoleListener(consoleEvent -> {
+          assertThat(consoleEvent.getMessages()).contains("Hello, world!");
+        });
   }
 }

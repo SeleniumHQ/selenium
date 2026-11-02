@@ -78,13 +78,12 @@ class PrefixedRouteTest {
         Route.prefix("/cheese")
             .to(
                 Route.matching(req -> true)
-                    .to(
-                        () ->
-                            req -> {
-                              path.set(req.getUri());
-                              parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
-                              return new HttpResponse();
-                            }));
+                    .to(() ->
+                        req -> {
+                          path.set(req.getUri());
+                          parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
+                          return new HttpResponse();
+                        }));
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
@@ -103,14 +102,12 @@ class PrefixedRouteTest {
                 Route.prefix("/and")
                     .to(
                         Route.matching(req -> true)
-                            .to(
-                                () ->
-                                    req -> {
-                                      path.set(req.getUri());
-                                      parts.set(
-                                          (List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
-                                      return new HttpResponse();
-                                    })));
+                            .to(() ->
+                                req -> {
+                                  path.set(req.getUri());
+                                  parts.set((List<?>) req.getAttribute(UrlPath.ROUTE_PREFIX_KEY));
+                                  return new HttpResponse();
+                                })));
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 

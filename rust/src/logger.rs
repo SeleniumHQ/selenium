@@ -130,7 +130,15 @@ impl Logger {
                     env_logger::try_init().unwrap_or_default();
                 }
             }
-            _ => {
+            // Json only: SM messages bypass `log`, so any live backend here leaks
+            // third-party lines into stderr and breaks the one-JSON-document contract.
+            OutputType::Json => {
+                env_logger::Builder::new()
+                    .filter_level(LevelFilter::Off)
+                    .try_init()
+                    .unwrap_or_default();
+            }
+            OutputType::Shell => {
                 env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
                     .try_init()
                     .unwrap_or_default();

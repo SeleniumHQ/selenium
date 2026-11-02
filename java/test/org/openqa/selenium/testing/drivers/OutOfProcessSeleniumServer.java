@@ -76,11 +76,10 @@ class OutOfProcessSeleniumServer {
     // Make sure we inherit system properties.
     Stream<String> javaFlags =
         System.getProperties().entrySet().stream()
-            .filter(
-                entry -> {
-                  String key = String.valueOf(entry.getKey());
-                  return key.startsWith("selenium") || key.startsWith("webdriver");
-                })
+            .filter(entry -> {
+              String key = String.valueOf(entry.getKey());
+              return key.startsWith("selenium") || key.startsWith("webdriver");
+            })
             .map(entry -> "--jvm_flag=-D" + entry.getKey() + "=" + entry.getValue());
 
     // Only use Selenium Manager if we're not running with pinned browsers.

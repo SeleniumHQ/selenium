@@ -54,11 +54,9 @@ class UserPromptHandlerTest {
     // receivable, non-extensible generated type gets for free. This proves the generated
     // fromJson calls UnknownFieldsWarning itself instead of silently dropping the extra key.
     List<LogRecord> records =
-        captureLogRecords(
-            () ->
-                new Json()
-                    .toType(
-                        "{\"alert\":\"dismiss\",\"mystery\":\"field\"}", UserPromptHandler.class));
+        captureLogRecords(() ->
+            new Json()
+                .toType("{\"alert\":\"dismiss\",\"mystery\":\"field\"}", UserPromptHandler.class));
 
     assertThat(records).hasSize(1);
     assertThat(records.get(0).getMessage())

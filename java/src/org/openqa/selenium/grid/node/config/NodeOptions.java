@@ -109,14 +109,13 @@ public class NodeOptions {
     Optional<URI> gridUri =
         config
             .get(NODE_SECTION, "grid-url")
-            .map(
-                url -> {
-                  try {
-                    return new URI(url);
-                  } catch (URISyntaxException e) {
-                    throw new ConfigException("Unable to construct public URL: " + url);
-                  }
-                });
+            .map(url -> {
+              try {
+                return new URI(url);
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Unable to construct public URL: " + url);
+              }
+            });
 
     if (gridUri.isPresent()) {
       return gridUri;
@@ -340,26 +339,23 @@ public class NodeOptions {
       Multimap<Capabilities, SessionFactory> sessionFactories) {
     config
         .getAll(NODE_SECTION, "driver-factories")
-        .ifPresent(
-            allConfigs -> {
-              if (allConfigs.size() % 2 != 0) {
-                throw new ConfigException("Expected each driver class to be mapped to a config");
-              }
+        .ifPresent(allConfigs -> {
+          if (allConfigs.size() % 2 != 0) {
+            throw new ConfigException("Expected each driver class to be mapped to a config");
+          }
 
-              Map<String, String> configMap =
-                  IntStream.range(0, allConfigs.size() / 2)
-                      .boxed()
-                      .collect(
-                          Collectors.toMap(
-                              i -> allConfigs.get(2 * i), i -> allConfigs.get(2 * i + 1)));
+          Map<String, String> configMap =
+              IntStream.range(0, allConfigs.size() / 2)
+                  .boxed()
+                  .collect(
+                      Collectors.toMap(i -> allConfigs.get(2 * i), i -> allConfigs.get(2 * i + 1)));
 
-              configMap.forEach(
-                  (clazz, config) -> {
-                    Capabilities stereotype = parseStereotype(config, "driver factory " + clazz);
-                    SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
-                    sessionFactories.put(stereotype, sessionFactory);
-                  });
-            });
+          configMap.forEach((clazz, config) -> {
+            Capabilities stereotype = parseStereotype(config, "driver factory " + clazz);
+            SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
+            sessionFactories.put(stereotype, sessionFactory);
+          });
+        });
   }
 
   private SessionFactory createSessionFactory(String clazz, Capabilities stereotype) {
@@ -405,146 +401,134 @@ public class NodeOptions {
     config
         .getArray(NODE_SECTION, "driver-configuration")
         // if configurations exist
-        .ifPresent(
-            drivers -> {
-              List<Map<String, String>> configList = new ArrayList<>();
-              if (drivers.isEmpty()) {
-                // This is the case when the configuration is provided through the CLI.
-                config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers::add);
+        .ifPresent(drivers -> {
+          List<Map<String, String>> configList = new ArrayList<>();
+          if (drivers.isEmpty()) {
+            // This is the case when the configuration is provided through the CLI.
+            config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers::add);
+          }
+
+          // iterate over driver configurations
+          for (List<String> driver : drivers) {
+            Map<String, String> configMap = new HashMap<>();
+
+            // iterate over driver settings
+            for (String setting : driver) {
+              // split this setting into key/value pair
+              String[] values = setting.split("=", 2);
+              // if format is invalid
+              if (values.length != 2) {
+                throw new ConfigException(
+                    "Driver setting '"
+                        + setting
+                        + "' does not adhere to the required 'key=value' format!");
+              }
+              // add setting to config
+              configMap.put(values[0], unquote(values[1]));
+            }
+
+            // if config lacks settings
+            if (configMap.isEmpty()) {
+              throw new ConfigException("Found config delimiter with no preceding settings!");
+            }
+
+            // if config lacks 'display-name' setting
+            if (!configMap.containsKey("display-name")) {
+              throw new ConfigException(
+                  "Found config with no 'display-name' setting! " + configMap);
+            }
+
+            // if config lacks 'stereotype' setting
+            if (!configMap.containsKey("stereotype")) {
+              throw new ConfigException("Found config with no 'stereotype' setting! " + configMap);
+            }
+
+            // add config to list
+            configList.add(configMap);
+          }
+
+          // if no configs were found
+          if (configList.isEmpty()) {
+            throw new ConfigException("No driver configs were found!");
+          }
+
+          List<DriverService.Builder<?, ?>> builderList = new ArrayList<>();
+          ServiceLoader.load(DriverService.Builder.class).forEach(builderList::add);
+
+          List<WebDriverInfo> infoList = new ArrayList<>();
+          ServiceLoader.load(WebDriverInfo.class).forEach(infoList::add);
+
+          // iterate over driver configs
+          configList.forEach(thisConfig -> {
+            // create Capabilities object from stereotype of this config
+            Capabilities confStereotype =
+                parseStereotype(
+                    thisConfig.get("stereotype"),
+                    "driver configuration '" + thisConfig.get("display-name") + "'");
+
+            // extract driver executable path from this config
+            String webDriverExecutablePath = thisConfig.get("webdriver-executable");
+            // if executable path is specified
+            if (null != webDriverExecutablePath) {
+              // create File object from executable path string
+              File webDriverExecutable = new File(webDriverExecutablePath);
+              // if specified path isn't a file
+              if (!webDriverExecutable.isFile()) {
+                LOG.warning(
+                    "Driver executable does not seem to be a file! " + webDriverExecutablePath);
               }
 
-              // iterate over driver configurations
-              for (List<String> driver : drivers) {
-                Map<String, String> configMap = new HashMap<>();
+              // if specified path isn't executable
+              if (!webDriverExecutable.canExecute()) {
+                LOG.warning(
+                    "Driver file exists but does not seem to be a executable! "
+                        + webDriverExecutablePath);
+              }
 
-                // iterate over driver settings
-                for (String setting : driver) {
-                  // split this setting into key/value pair
-                  String[] values = setting.split("=", 2);
-                  // if format is invalid
-                  if (values.length != 2) {
-                    throw new ConfigException(
-                        "Driver setting '"
-                            + setting
-                            + "' does not adhere to the required 'key=value' format!");
+              // add specified driver executable path to capabilities
+              confStereotype =
+                  new PersistentCapabilities(confStereotype)
+                      .setCapability("se:webDriverExecutable", webDriverExecutablePath);
+            }
+
+            Capabilities stereotype = enhanceStereotype(confStereotype);
+            String configName = thisConfig.getOrDefault("display-name", "Custom Slot Config");
+
+            WebDriverInfo info =
+                infoList.stream()
+                    .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+                    .findFirst()
+                    .orElseThrow(() ->
+                        new ConfigException("Unable to find matching driver for %s", stereotype));
+
+            int driverMaxSessions =
+                Integer.parseInt(
+                    thisConfig.getOrDefault("max-sessions", String.valueOf(maxSessions)));
+            Require.positive("Driver max sessions", driverMaxSessions);
+
+            WebDriverInfo driverInfoConfig =
+                createConfiguredDriverInfo(info, stereotype, configName);
+
+            builderList.stream()
+                .filter(builder -> builder.score(stereotype) > 0)
+                .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
+                .ifPresent(builder -> {
+                  ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
+                  int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
+                  for (int i = 0; i < maxDriverSessions; i++) {
+                    Collection<SessionFactory> factories = factoryFactory.apply(immutable);
+                    driverConfigs
+                        .computeIfAbsent(driverInfoConfig, __ -> new HashSet<>())
+                        .addAll(factories);
                   }
-                  // add setting to config
-                  configMap.put(values[0], unquote(values[1]));
-                }
-
-                // if config lacks settings
-                if (configMap.isEmpty()) {
-                  throw new ConfigException("Found config delimiter with no preceding settings!");
-                }
-
-                // if config lacks 'display-name' setting
-                if (!configMap.containsKey("display-name")) {
-                  throw new ConfigException(
-                      "Found config with no 'display-name' setting! " + configMap);
-                }
-
-                // if config lacks 'stereotype' setting
-                if (!configMap.containsKey("stereotype")) {
-                  throw new ConfigException(
-                      "Found config with no 'stereotype' setting! " + configMap);
-                }
-
-                // add config to list
-                configList.add(configMap);
-              }
-
-              // if no configs were found
-              if (configList.isEmpty()) {
-                throw new ConfigException("No driver configs were found!");
-              }
-
-              List<DriverService.Builder<?, ?>> builderList = new ArrayList<>();
-              ServiceLoader.load(DriverService.Builder.class).forEach(builderList::add);
-
-              List<WebDriverInfo> infoList = new ArrayList<>();
-              ServiceLoader.load(WebDriverInfo.class).forEach(infoList::add);
-
-              // iterate over driver configs
-              configList.forEach(
-                  thisConfig -> {
-                    // create Capabilities object from stereotype of this config
-                    Capabilities confStereotype =
-                        parseStereotype(
-                            thisConfig.get("stereotype"),
-                            "driver configuration '" + thisConfig.get("display-name") + "'");
-
-                    // extract driver executable path from this config
-                    String webDriverExecutablePath = thisConfig.get("webdriver-executable");
-                    // if executable path is specified
-                    if (null != webDriverExecutablePath) {
-                      // create File object from executable path string
-                      File webDriverExecutable = new File(webDriverExecutablePath);
-                      // if specified path isn't a file
-                      if (!webDriverExecutable.isFile()) {
-                        LOG.warning(
-                            "Driver executable does not seem to be a file! "
-                                + webDriverExecutablePath);
-                      }
-
-                      // if specified path isn't executable
-                      if (!webDriverExecutable.canExecute()) {
-                        LOG.warning(
-                            "Driver file exists but does not seem to be a executable! "
-                                + webDriverExecutablePath);
-                      }
-
-                      // add specified driver executable path to capabilities
-                      confStereotype =
-                          new PersistentCapabilities(confStereotype)
-                              .setCapability("se:webDriverExecutable", webDriverExecutablePath);
-                    }
-
-                    Capabilities stereotype = enhanceStereotype(confStereotype);
-                    String configName =
-                        thisConfig.getOrDefault("display-name", "Custom Slot Config");
-
-                    WebDriverInfo info =
-                        infoList.stream()
-                            .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
-                            .findFirst()
-                            .orElseThrow(
-                                () ->
-                                    new ConfigException(
-                                        "Unable to find matching driver for %s", stereotype));
-
-                    int driverMaxSessions =
-                        Integer.parseInt(
-                            thisConfig.getOrDefault("max-sessions", String.valueOf(maxSessions)));
-                    Require.positive("Driver max sessions", driverMaxSessions);
-
-                    WebDriverInfo driverInfoConfig =
-                        createConfiguredDriverInfo(info, stereotype, configName);
-
-                    builderList.stream()
-                        .filter(builder -> builder.score(stereotype) > 0)
-                        .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
-                        .ifPresent(
-                            builder -> {
-                              ImmutableCapabilities immutable =
-                                  new ImmutableCapabilities(stereotype);
-                              int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
-                              for (int i = 0; i < maxDriverSessions; i++) {
-                                Collection<SessionFactory> factories =
-                                    factoryFactory.apply(immutable);
-                                driverConfigs
-                                    .computeIfAbsent(driverInfoConfig, __ -> new HashSet<>())
-                                    .addAll(factories);
-                              }
-                            });
-                  });
-            });
+                });
+          });
+        });
 
     driverConfigs.entrySet().stream()
         .peek(this::report)
-        .forEach(
-            entry ->
-                sessionFactories.putAll(
-                    entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+        .forEach(entry ->
+            sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private void addDetectedDrivers(
@@ -561,12 +545,10 @@ public class NodeOptions {
 
     allDrivers.entrySet().stream()
         .peek(this::report)
-        .forEach(
-            entry -> {
-              Capabilities capabilities =
-                  enhanceStereotype(entry.getKey().getCanonicalCapabilities());
-              sessionFactories.putAll(capabilities, entry.getValue());
-            });
+        .forEach(entry -> {
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
 
     if (sessionFactories.isEmpty()) {
       String logMessage = "No drivers have been configured or have been found on PATH";
@@ -592,23 +574,20 @@ public class NodeOptions {
         config.getAll(NODE_SECTION, "driver-implementation").orElse(new ArrayList<>()).stream()
             .distinct()
             .map(String::toLowerCase)
-            .peek(
-                driver -> {
-                  boolean noneMatch =
-                      allDrivers.entrySet().stream()
-                          .noneMatch(
-                              entry -> entry.getKey().getDisplayName().equalsIgnoreCase(driver));
-                  if (noneMatch) {
-                    LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", driver);
-                  }
-                })
+            .peek(driver -> {
+              boolean noneMatch =
+                  allDrivers.entrySet().stream()
+                      .noneMatch(entry -> entry.getKey().getDisplayName().equalsIgnoreCase(driver));
+              if (noneMatch) {
+                LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", driver);
+              }
+            })
             .collect(Collectors.toList());
 
     Optional<Map.Entry<WebDriverInfo, Collection<SessionFactory>>> first =
         allDrivers.entrySet().stream()
-            .filter(
-                entry ->
-                    drivers.contains(entry.getKey().getDisplayName().toLowerCase(Locale.ENGLISH)))
+            .filter(entry ->
+                drivers.contains(entry.getKey().getDisplayName().toLowerCase(Locale.ENGLISH)))
             .findFirst();
 
     if (first.isEmpty()) {
@@ -622,12 +601,10 @@ public class NodeOptions {
             Comparator.comparing(
                 entry -> entry.getKey().getDisplayName().toLowerCase(Locale.ENGLISH)))
         .peek(this::report)
-        .forEach(
-            entry -> {
-              Capabilities capabilities =
-                  enhanceStereotype(entry.getKey().getCanonicalCapabilities());
-              sessionFactories.putAll(capabilities, entry.getValue());
-            });
+        .forEach(entry -> {
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
@@ -666,22 +643,20 @@ public class NodeOptions {
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     Multimap<WebDriverInfo, SessionFactory> toReturn = new Multimap<>();
-    infos.forEach(
-        info -> {
-          Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
-          builders.stream()
-              .filter(builder -> builder.score(caps) > 0)
-              .max(Comparator.comparingInt(builder -> builder.score(caps)))
-              .ifPresent(
-                  builder -> {
-                    ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
-                    int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
-                    for (int i = 0; i < maxDriverSessions; i++) {
-                      Collection<SessionFactory> factories = factoryFactory.apply(immutable);
-                      toReturn.putAll(info, factories);
-                    }
-                  });
-        });
+    infos.forEach(info -> {
+      Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
+      builders.stream()
+          .filter(builder -> builder.score(caps) > 0)
+          .max(Comparator.comparingInt(builder -> builder.score(caps)))
+          .ifPresent(builder -> {
+            ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
+            int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
+            for (int i = 0; i < maxDriverSessions; i++) {
+              Collection<SessionFactory> factories = factoryFactory.apply(immutable);
+              toReturn.putAll(info, factories);
+            }
+          });
+    });
 
     return toReturn.asMap();
   }
