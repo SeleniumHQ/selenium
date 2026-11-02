@@ -66,7 +66,9 @@
 
     <ItemGroup>
       <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\**\*.cs" LinkBase="DevTools\generated" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\v154\**\*.cs" LinkBase="DevTools\generated\v154" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\v155\**\*.cs" LinkBase="DevTools\generated\v155" />
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\DevTools\v156\**\*.cs" LinkBase="DevTools\generated\v156" />
     </ItemGroup>
   </Target>
 
