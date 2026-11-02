@@ -377,14 +377,13 @@ def test_patterns_may_mix_strings_and_component_mappings():
     ]
 
 
-def test_a_glob_pattern_is_deprecated_and_still_matched_in_python():
-    """The remote end rejects wildcards, so a glob keeps its earlier behavior with a warning."""
+def test_a_glob_pattern_is_matched_in_python(recwarn):
+    """The remote end rejects wildcards, so a glob is matched in Python, as Playwright does."""
     conn = FakeConnection()
     network = Network(FakeDriver(conn))
     seen = []
 
-    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
-        network.add_request_handler("https://*.example.com/api/**", lambda request: seen.append(request.url))
+    network.add_request_handler("https://*.example.com/api/**", lambda request: seen.append(request.url))
 
     # Only the literal components are forwarded as a pre-filter.
     params = conn.commands_named("network.addIntercept")[0]["params"]
@@ -396,14 +395,14 @@ def test_a_glob_pattern_is_deprecated_and_still_matched_in_python():
     assert seen == ["https://shop.example.com/api/orders"]
     # The request the glob rejected is still resolved rather than left blocked.
     assert len(conn.commands_named("network.continueRequest")) == 2
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
 def test_an_untranslatable_glob_intercepts_everything():
     conn = FakeConnection()
     network = Network(FakeDriver(conn))
 
-    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
-        network.add_request_handler("**/api/**", lambda request: None)
+    network.add_request_handler("**/api/**", lambda request: None)
 
     assert "urlPatterns" not in conn.commands_named("network.addIntercept")[0]["params"]
 
@@ -425,11 +424,10 @@ def test_a_glob_mixed_with_other_patterns_still_reaches_their_traffic():
     network = Network(FakeDriver(conn))
     seen = []
 
-    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
-        network.add_request_handler(
-            ["https://*.example.com/api/**", {"hostname": "cdn.example.org"}, "https://other.example.net/a?b=1"],
-            lambda request: seen.append(request.url),
-        )
+    network.add_request_handler(
+        ["https://*.example.com/api/**", {"hostname": "cdn.example.org"}, "https://other.example.net/a?b=1"],
+        lambda request: seen.append(request.url),
+    )
 
     for index, url in enumerate(
         [
@@ -493,11 +491,10 @@ def test_a_wildcard_component_mixed_with_a_glob_reaches_its_traffic():
     network = Network(FakeDriver(conn))
     seen = []
 
-    with pytest.warns(DeprecationWarning, match="Glob URL patterns"):
-        network.add_request_handler(
-            ["https://shop.example.com/api/**", {"hostname": "*.example.org"}],
-            lambda request: seen.append(request.url),
-        )
+    network.add_request_handler(
+        ["https://shop.example.com/api/**", {"hostname": "*.example.org"}],
+        lambda request: seen.append(request.url),
+    )
 
     dispatch_event(conn, make_before_request_event(url="https://cdn.example.org/app.js"))
 
