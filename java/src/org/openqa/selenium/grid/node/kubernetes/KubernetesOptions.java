@@ -102,11 +102,10 @@ public class KubernetesOptions {
     String imagePullPolicy =
         config
             .get(K8S_SECTION, "image-pull-policy")
-            .orElseGet(
-                () ->
-                    inheritedPodSpec.getImagePullPolicy() != null
-                        ? inheritedPodSpec.getImagePullPolicy()
-                        : DEFAULT_IMAGE_PULL_POLICY);
+            .orElseGet(() ->
+                inheritedPodSpec.getImagePullPolicy() != null
+                    ? inheritedPodSpec.getImagePullPolicy()
+                    : DEFAULT_IMAGE_PULL_POLICY);
 
     String serviceAccount =
         config
@@ -294,11 +293,8 @@ public class KubernetesOptions {
 
     boolean hasBrowserContainer =
         containers.stream()
-            .anyMatch(
-                c ->
-                    "browser".equals(c.getName())
-                        && c.getImage() != null
-                        && !c.getImage().isEmpty());
+            .anyMatch(c ->
+                "browser".equals(c.getName()) && c.getImage() != null && !c.getImage().isEmpty());
     if (!hasBrowserContainer) {
       throw new ConfigException(
           String.format(
@@ -329,21 +325,20 @@ public class KubernetesOptions {
     // in-cluster service account namespace file, and KUBERNETES_NAMESPACE env var.
     return config
         .get(K8S_SECTION, "namespace")
-        .orElseGet(
-            () -> {
-              if (kubeClient != null) {
-                try {
-                  String clientNamespace = kubeClient.getNamespace();
-                  if (clientNamespace != null && !clientNamespace.isEmpty()) {
-                    LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
-                    return clientNamespace;
-                  }
-                } catch (RuntimeException e) {
-                  LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
-                }
+        .orElseGet(() -> {
+          if (kubeClient != null) {
+            try {
+              String clientNamespace = kubeClient.getNamespace();
+              if (clientNamespace != null && !clientNamespace.isEmpty()) {
+                LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
+                return clientNamespace;
               }
-              return "default";
-            });
+            } catch (RuntimeException e) {
+              LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
+            }
+          }
+          return "default";
+        });
   }
 
   private Duration getServerStartTimeout() {

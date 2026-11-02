@@ -95,11 +95,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -132,11 +131,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -165,12 +163,11 @@ class SpeculationInspectorTest extends JupiterTestBase {
 
     // Set up for success event
     CompletableFuture<PrefetchStatusUpdatedParameters> successFuture = new CompletableFuture<>();
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          if (event.getStatus() == PreloadingStatus.SUCCESS) {
-            successFuture.complete(event);
-          }
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      if (event.getStatus() == PreloadingStatus.SUCCESS) {
+        successFuture.complete(event);
+      }
+    });
 
     // Navigate to the prefetched page by clicking the link
     script.callFunctionInBrowsingContext(
@@ -197,11 +194,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -235,11 +231,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -261,11 +256,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch newLatch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          newEvents.add(event);
-          newLatch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      newEvents.add(event);
+      newLatch.countDown();
+    });
 
     driver.get(testUrl);
 
@@ -291,11 +285,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -319,11 +312,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch newLatch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          newEvents.add(event);
-          newLatch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      newEvents.add(event);
+      newLatch.countDown();
+    });
 
     driver.get(testUrl);
 
@@ -349,11 +341,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
     String subscriptionId =
-        speculationInspector.onPrefetchStatusUpdated(
-            event -> {
-              events.add(event);
-              latch.countDown();
-            });
+        speculationInspector.onPrefetchStatusUpdated(event -> {
+          events.add(event);
+          latch.countDown();
+        });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);

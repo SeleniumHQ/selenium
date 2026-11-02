@@ -239,14 +239,13 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> executeScript(js))
         .withMessageContaining("errormessage")
-        .satisfies(
-            t -> {
-              Throwable rootCause = getRootCause(t);
-              assertThat(rootCause).hasMessageContaining("errormessage");
-              assertThat(List.of(rootCause.getStackTrace()))
-                  .extracting(StackTraceElement::getMethodName)
-                  .contains("functionB");
-            });
+        .satisfies(t -> {
+          Throwable rootCause = getRootCause(t);
+          assertThat(rootCause).hasMessageContaining("errormessage");
+          assertThat(List.of(rootCause.getStackTrace()))
+              .extracting(StackTraceElement::getMethodName)
+              .contains("functionB");
+        });
   }
 
   @Test
@@ -508,11 +507,10 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     assertThatExceptionOfType(JavascriptException.class)
-        .isThrownBy(
-            () ->
-                executeScript(
-                    "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return"
-                        + " obj1"));
+        .isThrownBy(() ->
+            executeScript(
+                "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return"
+                    + " obj1"));
   }
 
   @Test

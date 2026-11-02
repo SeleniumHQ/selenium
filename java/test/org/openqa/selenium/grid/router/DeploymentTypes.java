@@ -299,12 +299,11 @@ public enum DeploymentTypes {
           .ignoring(IOException.class)
           .ignoring(UncheckedIOException.class)
           .ignoring(ConnectException.class)
-          .until(
-              c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return status != null && Boolean.parseBoolean(status.get("ready").toString());
-              });
+          .until(c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return status != null && Boolean.parseBoolean(status.get("ready").toString());
+          });
     } finally {
       Safely.safelyCall(client::close);
     }

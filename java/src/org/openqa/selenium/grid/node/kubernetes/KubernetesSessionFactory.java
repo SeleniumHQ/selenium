@@ -381,13 +381,12 @@ public class KubernetesSessionFactory implements SessionFactory {
       if (usePortForwarding) {
         try {
           portForward =
-              withK8sRetry(
-                  () ->
-                      kubeClient
-                          .pods()
-                          .inNamespace(namespace)
-                          .withName(podName)
-                          .portForward(BROWSER_PORT));
+              withK8sRetry(() ->
+                  kubeClient
+                      .pods()
+                      .inNamespace(namespace)
+                      .withName(podName)
+                      .portForward(BROWSER_PORT));
           connectHost = "localhost";
           connectPort = portForward.getLocalPort();
           LOG.info(
@@ -689,34 +688,28 @@ public class KubernetesSessionFactory implements SessionFactory {
   private void setEnvVarsToContainer(List<EnvVar> envVars) {
     // Forward SE_* and LANGUAGE env vars from the current process
     System.getenv().entrySet().stream()
-        .filter(
-            entry ->
-                entry.getKey().startsWith("SE_") || entry.getKey().equalsIgnoreCase("LANGUAGE"))
-        .forEach(
-            entry ->
-                envVars.add(
-                    new EnvVarBuilder()
-                        .withName(entry.getKey())
-                        .withValue(entry.getValue())
-                        .build()));
+        .filter(entry ->
+            entry.getKey().startsWith("SE_") || entry.getKey().equalsIgnoreCase("LANGUAGE"))
+        .forEach(entry ->
+            envVars.add(
+                new EnvVarBuilder().withName(entry.getKey()).withValue(entry.getValue()).build()));
   }
 
   private void setCapsToEnvVars(Capabilities sessionCapabilities, List<EnvVar> envVars) {
     // Screen resolution from capabilities
     Optional<Dimension> screenResolution = ofNullable(getScreenResolution(sessionCapabilities));
-    screenResolution.ifPresent(
-        dimension -> {
-          envVars.add(
-              new EnvVarBuilder()
-                  .withName("SE_SCREEN_WIDTH")
-                  .withValue(String.valueOf(dimension.getWidth()))
-                  .build());
-          envVars.add(
-              new EnvVarBuilder()
-                  .withName("SE_SCREEN_HEIGHT")
-                  .withValue(String.valueOf(dimension.getHeight()))
-                  .build());
-        });
+    screenResolution.ifPresent(dimension -> {
+      envVars.add(
+          new EnvVarBuilder()
+              .withName("SE_SCREEN_WIDTH")
+              .withValue(String.valueOf(dimension.getWidth()))
+              .build());
+      envVars.add(
+          new EnvVarBuilder()
+              .withName("SE_SCREEN_HEIGHT")
+              .withValue(String.valueOf(dimension.getHeight()))
+              .build());
+    });
 
     // Timezone from capabilities
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionCapabilities));
@@ -1276,18 +1269,17 @@ public class KubernetesSessionFactory implements SessionFactory {
     Wait<Object> wait =
         new FluentWait<>(new Object()).withTimeout(duration).ignoring(UncheckedIOException.class);
 
-    wait.until(
-        obj -> {
-          HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-          LOG.fine(response::contentAsString);
-          if (401 == response.getStatus()) {
-            LOG.warning(
-                "Server requires basic authentication. "
-                    + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
-                    + "to provide credentials.");
-          }
-          return 200 == response.getStatus();
-        });
+    wait.until(obj -> {
+      HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+      LOG.fine(response::contentAsString);
+      if (401 == response.getStatus()) {
+        LOG.warning(
+            "Server requires basic authentication. "
+                + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
+                + "to provide credentials.");
+      }
+      return 200 == response.getStatus();
+    });
   }
 
   private ClientConfig applyBasicAuth(ClientConfig clientConfig) {

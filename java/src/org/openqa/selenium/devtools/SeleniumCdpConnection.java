@@ -81,17 +81,16 @@ public class SeleniumCdpConnection extends Connection {
 
     Optional<URI> cdpUri =
         Optional.ofNullable(capabilities.getCapability("se:cdp"))
-            .flatMap(
-                (uri) -> {
-                  if (uri instanceof String) {
-                    try {
-                      return Optional.of(new URI((String) uri));
-                    } catch (URISyntaxException e) {
-                      return Optional.empty();
-                    }
-                  }
+            .flatMap(uri -> {
+              if (uri instanceof String) {
+                try {
+                  return Optional.of(new URI((String) uri));
+                } catch (URISyntaxException e) {
                   return Optional.empty();
-                });
+                }
+              }
+              return Optional.empty();
+            });
 
     Optional<HttpClient> client;
 

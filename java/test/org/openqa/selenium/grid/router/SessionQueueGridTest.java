@@ -114,14 +114,12 @@ class SessionQueueGridTest {
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 CAPS,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
             .add(
                 CAPS,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
             .maximumConcurrentSessions(5)
             .build();
     handler.addHandler(localNode);

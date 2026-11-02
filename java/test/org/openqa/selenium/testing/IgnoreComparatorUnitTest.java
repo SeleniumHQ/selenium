@@ -116,12 +116,11 @@ class IgnoreComparatorUnitTest {
     final IgnoreList ignore = mock(IgnoreList.class, Mockito.RETURNS_SMART_NULLS);
     final Ignore[] list =
         drivers.stream()
-            .map(
-                driver -> {
-                  Ignore ig = mock(Ignore.class, Mockito.RETURNS_SMART_NULLS);
-                  when(ig.value()).thenReturn(driver);
-                  return ig;
-                })
+            .map(driver -> {
+              Ignore ig = mock(Ignore.class, Mockito.RETURNS_SMART_NULLS);
+              when(ig.value()).thenReturn(driver);
+              return ig;
+            })
             .collect(Collectors.toList())
             .toArray(new Ignore[drivers.size()]);
 

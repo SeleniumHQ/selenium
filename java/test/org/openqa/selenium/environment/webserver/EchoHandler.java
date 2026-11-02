@@ -54,11 +54,9 @@ class EchoHandler implements HttpHandler {
     String method = request.getMethod().toString();
     String headers =
         StreamSupport.stream(request.getHeaderNames().spliterator(), false)
-            .flatMap(
-                name ->
-                    StreamSupport.stream(request.getHeaders(name).spliterator(), false)
-                        .map(
-                            value -> String.format("<tr><td>%s</td><td>%s</td></tr>", name, value)))
+            .flatMap(name ->
+                StreamSupport.stream(request.getHeaders(name).spliterator(), false)
+                    .map(value -> String.format("<tr><td>%s</td><td>%s</td></tr>", name, value)))
             .collect(Collectors.joining(""));
     String body = Contents.utf8String(request.getContent());
 

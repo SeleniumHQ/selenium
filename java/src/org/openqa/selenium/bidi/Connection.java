@@ -62,12 +62,11 @@ public class Connection implements Closeable {
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
   private static final Executor EXECUTOR =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread thread = new Thread(r, "BiDi Connection");
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newCachedThreadPool(r -> {
+        Thread thread = new Thread(r, "BiDi Connection");
+        thread.setDaemon(true);
+        return thread;
+      });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
@@ -208,13 +207,12 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       List<Event<?>> list = new ArrayList<>();
-      eventCallbacks.forEach(
-          (k, v) -> {
-            v.remove(id);
-            if (v.isEmpty()) {
-              list.add(k);
-            }
-          });
+      eventCallbacks.forEach((k, v) -> {
+        v.remove(id);
+        if (v.isEmpty()) {
+          list.add(k);
+        }
+      });
 
       list.forEach(eventCallbacks::remove);
     } finally {
@@ -246,13 +244,12 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       Map<Event<?>, Map<String, Consumer<?>>> removed = new HashMap<>();
-      eventCallbacks.forEach(
-          (event, handlers) -> {
-            Consumer<?> handler = handlers.remove(id);
-            if (handler != null) {
-              removed.put(event, Map.of(id, handler));
-            }
-          });
+      eventCallbacks.forEach((event, handlers) -> {
+        Consumer<?> handler = handlers.remove(id);
+        if (handler != null) {
+          removed.put(event, Map.of(id, handler));
+        }
+      });
       eventCallbacks.values().removeIf(Map::isEmpty);
       return removed;
     } finally {
@@ -264,9 +261,8 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
-      detached.forEach(
-          (event, handlers) ->
-              eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).putAll(handlers));
+      detached.forEach((event, handlers) ->
+          eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).putAll(handlers));
     } finally {
       lock.unlock();
     }
@@ -332,14 +328,13 @@ public class Connection implements Closeable {
 
     @Override
     public void onText(CharSequence data) {
-      EXECUTOR.execute(
-          () -> {
-            try {
-              handle(data);
-            } catch (RuntimeException e) {
-              throw new BiDiException("Unable to process BiDi response: " + data, e);
-            }
-          });
+      EXECUTOR.execute(() -> {
+        try {
+          handle(data);
+        } catch (RuntimeException e) {
+          throw new BiDiException("Unable to process BiDi response: " + data, e);
+        }
+      });
     }
 
     @Override
@@ -416,37 +411,35 @@ public class Connection implements Closeable {
     }
     try {
       eventCallbacks.entrySet().stream()
-          .filter(
-              event -> {
-                LOG.log(
-                    getDebugLogLevel(),
-                    "Matching {0} with {1}",
-                    new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
-                return rawDataMap.get("method").equals(event.getKey().getMethod());
-              })
-          .forEach(
-              event -> {
-                Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
-                Object value = null;
-                if (params != null) {
-                  value = event.getKey().getMapper().apply(params);
-                }
-                if (value == null) {
-                  return;
-                }
+          .filter(event -> {
+            LOG.log(
+                getDebugLogLevel(),
+                "Matching {0} with {1}",
+                new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
+            return rawDataMap.get("method").equals(event.getKey().getMethod());
+          })
+          .forEach(event -> {
+            Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
+            Object value = null;
+            if (params != null) {
+              value = event.getKey().getMapper().apply(params);
+            }
+            if (value == null) {
+              return;
+            }
 
-                final Object finalValue = value;
+            final Object finalValue = value;
 
-                for (Consumer<?> action : event.getValue().values()) {
-                  @SuppressWarnings("unchecked")
-                  Consumer<Object> obj = (Consumer<Object>) action;
-                  LOG.log(
-                      getDebugLogLevel(),
-                      "Calling callback for {0} using {1} being passed {2}",
-                      new Object[] {event.getKey(), obj, finalValue});
-                  obj.accept(finalValue);
-                }
-              });
+            for (Consumer<?> action : event.getValue().values()) {
+              @SuppressWarnings("unchecked")
+              Consumer<Object> obj = (Consumer<Object>) action;
+              LOG.log(
+                  getDebugLogLevel(),
+                  "Calling callback for {0} using {1} being passed {2}",
+                  new Object[] {event.getKey(), obj, finalValue});
+              obj.accept(finalValue);
+            }
+          });
     } finally {
       lock.unlock();
     }

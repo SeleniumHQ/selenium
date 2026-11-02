@@ -676,10 +676,9 @@ class NodeTest {
         LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, c) -> {
-                      throw new SessionNotCreatedException("eeek");
-                    }))
+                new TestSessionFactory((id, c) -> {
+                  throw new SessionNotCreatedException("eeek");
+                }))
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
@@ -1153,11 +1152,10 @@ class NodeTest {
     AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
 
     bus.addListener(
-        SessionEvent.listener(
-            data -> {
-              receivedEvent.set(data);
-              latch.countDown();
-            }));
+        SessionEvent.listener(data -> {
+          receivedEvent.set(data);
+          latch.countDown();
+        }));
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));
@@ -1232,11 +1230,10 @@ class NodeTest {
     AtomicReference<SessionEventData> receivedEvent = new AtomicReference<>();
 
     bus.addListener(
-        SessionEvent.listener(
-            data -> {
-              receivedEvent.set(data);
-              latch.countDown();
-            }));
+        SessionEvent.listener(data -> {
+          receivedEvent.set(data);
+          latch.countDown();
+        }));
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));

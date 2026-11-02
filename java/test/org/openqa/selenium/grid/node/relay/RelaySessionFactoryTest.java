@@ -104,14 +104,13 @@ public class RelaySessionFactoryTest {
 
     Route route =
         Route.post("/session")
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
-                      response.setStatus(200);
-                      response.setContent(Contents.asJson(responsePayload));
-                      return response;
-                    });
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
+                  response.setStatus(200);
+                  response.setContent(Contents.asJson(responsePayload));
+                  return response;
+                });
 
     PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -179,14 +178,13 @@ public class RelaySessionFactoryTest {
 
     Route route =
         Route.post("/session")
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
-                      response.setStatus(200);
-                      response.setContent(Contents.asJson(responsePayload));
-                      return response;
-                    });
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
+                  response.setStatus(200);
+                  response.setContent(Contents.asJson(responsePayload));
+                  return response;
+                });
 
     PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -241,14 +239,13 @@ public class RelaySessionFactoryTest {
 
     Route route =
         Route.post("/session")
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
-                      response.setStatus(200);
-                      response.setContent(Contents.asJson(responsePayload));
-                      return response;
-                    });
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
+                  response.setStatus(200);
+                  response.setContent(Contents.asJson(responsePayload));
+                  return response;
+                });
 
     PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -304,15 +301,14 @@ public class RelaySessionFactoryTest {
     AtomicReference<String> forwardedPayload = new AtomicReference<>();
     Route route =
         Route.post("/session")
-            .to(
-                () ->
-                    req -> {
-                      forwardedPayload.set(Contents.string(req));
-                      HttpResponse response = new HttpResponse();
-                      response.setStatus(200);
-                      response.setContent(Contents.asJson(responsePayload));
-                      return response;
-                    });
+            .to(() ->
+                req -> {
+                  forwardedPayload.set(Contents.string(req));
+                  HttpResponse response = new HttpResponse();
+                  response.setStatus(200);
+                  response.setContent(Contents.asJson(responsePayload));
+                  return response;
+                });
 
     PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -367,14 +363,13 @@ public class RelaySessionFactoryTest {
 
     Route route =
         Route.post("/session")
-            .to(
-                () ->
-                    req -> {
-                      HttpResponse response = new HttpResponse();
-                      response.setStatus(200);
-                      response.setContent(Contents.asJson(responsePayload));
-                      return response;
-                    });
+            .to(() ->
+                req -> {
+                  HttpResponse response = new HttpResponse();
+                  response.setStatus(200);
+                  response.setContent(Contents.asJson(responsePayload));
+                  return response;
+                });
 
     PassthroughHttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(route);
     Tracer tracer = DefaultTestTracer.createTracer();

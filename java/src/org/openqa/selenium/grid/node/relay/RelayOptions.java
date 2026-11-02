@@ -171,23 +171,22 @@ public class RelayOptions {
 
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
-    parsedConfigs.forEach(
-        (maxSessions, stereotype) -> {
-          ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
-          for (int i = 0; i < maxSessions; i++) {
-            factories.put(
-                immutable,
-                new RelaySessionFactory(
-                    tracer,
-                    clientFactory,
-                    sessionTimeout,
-                    getServiceUri(),
-                    getServiceStatusUri(),
-                    getServiceProtocolVersion(),
-                    immutable));
-          }
-          LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
-        });
+    parsedConfigs.forEach((maxSessions, stereotype) -> {
+      ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
+      for (int i = 0; i < maxSessions; i++) {
+        factories.put(
+            immutable,
+            new RelaySessionFactory(
+                tracer,
+                clientFactory,
+                sessionTimeout,
+                getServiceUri(),
+                getServiceStatusUri(),
+                getServiceProtocolVersion(),
+                immutable));
+      }
+      LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
+    });
     return factories.asMap();
   }
 

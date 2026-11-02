@@ -125,13 +125,10 @@ public class RemoteNode extends Node implements Closeable {
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return this.capabilities.stream()
-        .anyMatch(
-            caps ->
-                caps.getCapabilityNames().stream()
-                    .allMatch(
-                        name ->
-                            Objects.equals(
-                                caps.getCapability(name), capabilities.getCapability(name))));
+        .anyMatch(caps ->
+            caps.getCapabilityNames().stream()
+                .allMatch(name ->
+                    Objects.equals(caps.getCapability(name), capabilities.getCapability(name))));
   }
 
   @Override

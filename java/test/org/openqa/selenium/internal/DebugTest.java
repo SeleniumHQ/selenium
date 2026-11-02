@@ -279,12 +279,11 @@ class DebugTest {
       List<Future<?>> calls = new ArrayList<>();
       for (int i = 0; i < threads; i++) {
         calls.add(
-            pool.submit(
-                () -> {
-                  start.await();
-                  Debug.configureLogger();
-                  return null;
-                }));
+            pool.submit(() -> {
+              start.await();
+              Debug.configureLogger();
+              return null;
+            }));
       }
       start.countDown();
       for (Future<?> call : calls) {
