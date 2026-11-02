@@ -81,8 +81,9 @@ tab.screenshot(full_page=True).save("page.png")
    fragment, history), window opened or closed, and download (started, finished). Each family has an
    add, a remove and a clear; add returns a registration object that remove takes. Payloads carry the
    window object. An exception in a handler is logged, not raised. A handler is scoped by a window or a
-   user context, never both; with neither it observes every window, present and future. Registering on a
-   window or user context object is the same as passing it as the scope.
+   user context, never both. With neither, it observes every tab and window in the session, in every
+   user context, including ones opened after it was registered. Registering on a window or user context
+   object is the same as passing it as the scope.
 
 Left to each binding: type names and packaging, synchronous or asynchronous signatures, how a scope is
 passed, and whether a scoped block for user contexts exists.
