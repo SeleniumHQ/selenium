@@ -48,6 +48,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
@@ -129,6 +130,11 @@ public class RemoteWebDriver
 
   /** Boolean system property that defines whether the tracing is enabled or not. */
   private static final String WEBDRIVER_REMOTE_ENABLE_TRACING = "webdriver.remote.enableTracing";
+
+  private static final Pattern CSS_STRING_SPECIALS =
+      Pattern.compile("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]()])");
+  private static final Pattern CSS_IDENTIFIER_SPECIALS =
+      Pattern.compile("([ \\t'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]()])");
 
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
@@ -1336,19 +1342,34 @@ public class RemoteWebDriver
 
     @Override
     public WebDriver frame(String frameName) {
-      String name =
-          frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
+      String name = escapeCss(frameName, CSS_STRING_SPECIALS);
       List<WebElement> frameElements =
           RemoteWebDriver.this.findElements(
               By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
       if (frameElements.isEmpty()) {
+        String id = escapeCssIdentifier(frameName);
         frameElements =
-            RemoteWebDriver.this.findElements(By.cssSelector("frame#" + name + ",iframe#" + name));
+            RemoteWebDriver.this.findElements(By.cssSelector("frame#" + id + ",iframe#" + id));
       }
       if (frameElements.isEmpty()) {
         throw new NoSuchFrameException("No frame element found by name or id " + frameName);
       }
       return frame(frameElements.get(0));
+    }
+
+    private String escapeCssIdentifier(String value) {
+      String escaped = escapeCss(value, CSS_IDENTIFIER_SPECIALS);
+      char first = value.isEmpty() ? '\0' : value.charAt(0);
+      if (first >= '0' && first <= '9') {
+        return "\\3" + first + " " + escaped.substring(1);
+      }
+      return escaped;
+    }
+
+    private String escapeCss(String value, Pattern specials) {
+      String escaped = specials.matcher(value).replaceAll("\\\\$1");
+      // CSS drops a backslash followed by a newline, so those characters need hex escapes.
+      return escaped.replace("\n", "\\a ").replace("\r", "\\d ").replace("\f", "\\c ");
     }
 
     @Override

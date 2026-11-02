@@ -33,6 +33,7 @@ import java.util.Random;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -134,6 +135,31 @@ class FrameSwitchingTest extends JupiterTestBase {
     driver.switchTo().frame("iframe1");
 
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value")).isEqualTo("name");
+  }
+
+  @Test
+  void testShouldBeAbleToSwitchToAnIframeWhoseIdStartsWithADigit() {
+    driver.get(
+        appServer.create(
+            new Page()
+                .withDoctype()
+                .withBody("<iframe id='1' srcdoc='<p id=\"inside\">inside</p>'></iframe>")));
+    driver.switchTo().frame("1");
+
+    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText())
+        .isEqualTo("inside");
+  }
+
+  @Test
+  void testShouldMatchAFrameIdIgnoringCaseInAQuirksModePage() {
+    driver.get(
+        appServer.create(
+            new Page()
+                .withBody("<iframe id='quirky' srcdoc='<p id=\"inside\">inside</p>'></iframe>")));
+    driver.switchTo().frame("QUIRKY");
+
+    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText())
+        .isEqualTo("inside");
   }
 
   @Test

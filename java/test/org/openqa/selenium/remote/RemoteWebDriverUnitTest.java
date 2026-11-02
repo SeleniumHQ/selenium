@@ -380,6 +380,70 @@ class RemoteWebDriverUnitTest {
   }
 
   @Test
+  void escapesALeadingDigitInAFrameId() {
+    String elementId = UUID.randomUUID().toString();
+    WebDriverFixture fixture =
+        new WebDriverFixture(
+            echoCapabilities,
+            valueResponder(EMPTY_LIST),
+            valueResponder(List.of(Map.of(ELEMENT_KEY, elementId))));
+
+    WebDriver driver2 = fixture.driver.switchTo().frame("1");
+
+    assertThat(driver2).isSameAs(fixture.driver);
+    fixture.verifyCommands(
+        new CommandPayload(
+            DriverCommand.FIND_ELEMENTS,
+            Map.of("using", "css selector", "value", "frame[name='1'],iframe[name='1']")),
+        new CommandPayload(
+            DriverCommand.FIND_ELEMENTS,
+            Map.of("using", "css selector", "value", "frame#\\31 ,iframe#\\31 ")),
+        new CommandPayload(
+            DriverCommand.SWITCH_TO_FRAME, Map.of("id", Map.of(ELEMENT_KEY, elementId))));
+  }
+
+  @Test
+  void escapesASpaceInAFrameId() {
+    assertFrameLookups(
+        "frame 1",
+        "frame[name='frame 1'],iframe[name='frame 1']",
+        "frame#frame\\ 1,iframe#frame\\ 1");
+  }
+
+  @Test
+  void escapesALeadingHyphenInAFrameId() {
+    assertFrameLookups(
+        "-1", "frame[name='\\-1'],iframe[name='\\-1']", "frame#\\-1,iframe#\\-1");
+  }
+
+  @Test
+  void escapesAnApostropheInAFrameNameAndId() {
+    assertFrameLookups(
+        "O'Brien",
+        "frame[name='O\\'Brien'],iframe[name='O\\'Brien']",
+        "frame#O\\'Brien,iframe#O\\'Brien");
+  }
+
+  @Test
+  void hexEscapesANewlineInAFrameNameAndId() {
+    assertFrameLookups(
+        "a\nb", "frame[name='a\\a b'],iframe[name='a\\a b']", "frame#a\\a b,iframe#a\\a b");
+  }
+
+  private void assertFrameLookups(String frameName, String byName, String byId) {
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(EMPTY_LIST));
+
+    assertThatExceptionOfType(NoSuchFrameException.class)
+        .isThrownBy(() -> fixture.driver.switchTo().frame(frameName));
+
+    fixture.verifyCommands(
+        new CommandPayload(
+            DriverCommand.FIND_ELEMENTS, Map.of("using", "css selector", "value", byName)),
+        new CommandPayload(
+            DriverCommand.FIND_ELEMENTS, Map.of("using", "css selector", "value", byId)));
+  }
+
+  @Test
   void canHandleSwitchToParentFrameCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
