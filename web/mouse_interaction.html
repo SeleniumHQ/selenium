@@ -91,5 +91,17 @@
     Move mouse here.
   </div>
   <div id="bottom" style="margin-top: 230px;"></div>
+
+  <script>
+    function describe(el) {
+      return `<${el.tagName.toLowerCase()} id="${el.id}">${el.innerText}</${el.tagName.toLowerCase()}>`;
+    }
+    window.addEventListener('mouseover', e => {
+      document.getElementById('bottom').innerText = `Mouse over (${e.x}, ${e.y}) ${describe(e.target)}`
+    })
+    window.addEventListener('click', e => {
+      document.getElementById('bottom').innerText = `Clicked at (${e.x}, ${e.y}) ${describe(e.target)}`
+    })
+  </script>
   </body>
 </html>
