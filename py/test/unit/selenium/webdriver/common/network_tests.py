@@ -477,6 +477,33 @@ def test_a_wildcard_component_is_matched_in_python(recwarn):
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
+def test_a_wildcard_search_component_matches_across_slashes():
+    """A query is not split into path segments, so its wildcards match "/" too."""
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    network.add_request_handler([{"search": "q=*"}], lambda request: seen.append(request.url))
+
+    for index, url in enumerate(["https://example.test/?q=a/b", "https://example.test/?r=a/b"]):
+        dispatch_event(conn, make_before_request_event(url=url, request_id=f"req-{index}"))
+
+    assert seen == ["https://example.test/?q=a/b"]
+
+
+def test_a_wildcard_pathname_component_stays_within_a_segment():
+    conn = FakeConnection()
+    network = Network(FakeDriver(conn))
+    seen = []
+
+    network.add_request_handler([{"pathname": "/api/*"}], lambda request: seen.append(request.url))
+
+    for index, url in enumerate(["https://example.test/api/orders", "https://example.test/api/orders/1"]):
+        dispatch_event(conn, make_before_request_event(url=url, request_id=f"req-{index}"))
+
+    assert seen == ["https://example.test/api/orders"]
+
+
 def test_a_wildcard_only_mapping_intercepts_everything():
     conn = FakeConnection()
     network = Network(FakeDriver(conn))
