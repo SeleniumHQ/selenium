@@ -22,29 +22,25 @@ intercepts and resolves the events those intercepts block, issuing every wire
 command through the internal BiDi protocol layer
 (``selenium.webdriver.common._bidi``) rather than building payloads by hand.
 
-The behavior implements decision record 17685, "The network async/event API"
-(``docs/decisions/17685-network-handler-behavior.md``):
+See ``docs/decisions/17685-network-handler-behavior.md`` for the rationale.
 
-* **Later-registered handlers are consulted first** (decision 6), and **the first
-  handler to settle a disposition resolves the event and stops the chain**
-  (decision 4).  Settling twice inside one handler raises
-  :class:`AlreadySettledError`.
-* **A handler that only stages mutations does not settle** (decision 5); if
-  nothing ever settles, the event proceeds with what was staged.
-* **An uncaught exception fails the event** (decision 7) and is re-raised from
-  the next call into ``driver.network``.
-* **URL patterns are evaluated by the remote end** (decision 2).
-* **Request bodies are collected only when a handler opts in** (decision 10).
-* **Handlers are scoped to one window handle by default** (decision 11).
+* **Later-registered handlers are consulted first**, and **the first handler to
+  settle a disposition resolves the event and stops the chain**.  Settling twice
+  inside one handler raises :class:`AlreadySettledError`.
+* **A handler that only stages mutations does not settle**; if nothing ever
+  settles, the event proceeds with what was staged.
+* **An uncaught exception fails the event** and is re-raised from the next call
+  into ``driver.network``.
+* **URL patterns are evaluated by the remote end**, except globs, which it
+  rejects and which are matched in Python.
+* **Request bodies are collected only when a handler opts in**.
+* **Handlers are scoped to one window handle by default**.
 
-Decisions 4, 6, 7 and 11 change what an existing call does without changing the
-call, so they cannot be deprecated side by side with the behavior they replace.
 Until :data:`ADR_17685_DISPATCH` is switched on, handlers keep the behavior of
 earlier releases — every matching handler runs in registration order and their
 outcomes are merged, an exception is logged rather than failing the event, and a
 handler with no scope sees every window — and Selenium warns wherever the
-outcome is about to change.  Glob URL patterns (``"**/api/**"``) are matched in
-Python, as Playwright does, because the remote end rejects wildcards.
+outcome is about to change.
 """
 
 from __future__ import annotations
@@ -74,11 +70,11 @@ from selenium.webdriver.common._bidi.serialization import UNSET
 
 logger = logging.getLogger(__name__)
 
-# Decisions 4, 6, 7 and 11 replace earlier behavior under the same method names,
-# so they switch on in a later release instead of alongside a deprecation.
+# Ordering, settling, error and scope behavior change under the same method
+# names, so they switch on in a later release instead of alongside a deprecation.
 ADR_17685_DISPATCH = False
 
-# Decision 10 puts the collector's size cap on Selenium rather than the user.
+# The size cap for collected bodies.
 DEFAULT_MAX_BODY_SIZE = 5 * 1024 * 1024
 
 # The components network.UrlPatternPattern accepts; each is an optional string.
@@ -88,18 +84,17 @@ URL_PATTERN_COMPONENTS = ("protocol", "hostname", "port", "pathname", "search")
 class AlreadySettledError(RuntimeError):
     """Raised when a handler settles the same event more than once.
 
-    Decision 4 makes the first disposition final, so a second call is a bug in
-    the handler rather than an override of the first.
+    The first disposition is final, so a second call is a bug in the handler
+    rather than an override of the first.
     """
 
 
 class HandlerHandle(str):
     """The handle returned when a handler is registered.
 
-    Decision 1 requires ``add`` to return a handle object rather than a bare id,
-    so the handle cannot be confused with an unrelated identifier.  It subclasses
-    ``str`` so that handles remain usable everywhere the plain string handler IDs
-    returned by earlier releases were accepted.
+    It is distinct from a bare id so it cannot be confused with an unrelated
+    identifier.  It subclasses ``str`` so that handles remain usable everywhere
+    the plain string handler IDs returned by earlier releases were accepted.
     """
 
     def __new__(cls, handler_id: str, family: str) -> HandlerHandle:
@@ -119,8 +114,8 @@ class HandlerHandle(str):
 class _Original:
     """A read-only snapshot of an event as it arrived.
 
-    Decision 9 lets a handler evaluate a condition against the unmodified event
-    even while earlier handlers have staged changes onto the live wrapper.
+    It lets a handler evaluate a condition against the unmodified event even
+    while earlier handlers have staged changes onto the live wrapper.
     Every read hands out a fresh copy, so mutating a header dict or cookie list
     taken from it cannot change what a later handler sees as original.
     """
@@ -465,17 +460,15 @@ def _string_matcher(value: str) -> Callable[[str], bool]:
 def normalize_url_patterns(patterns: Any) -> _UrlPatterns:
     """Translate user URL patterns into ``network.UrlPattern`` records.
 
-    Decision 2 keeps URL matching on the remote end: a pattern is validated here
-    and forwarded as given.  Accepts a single pattern or an iterable of them,
-    where each is a pattern string, a mapping of ``network.UrlPatternPattern``
-    components, an object exposing ``to_bidi_dict()``, or a parsed URL exposing
-    ``geturl()``.
+    A pattern is validated here and forwarded for the remote end to match.
+    Accepts a single pattern or an iterable of them, where each is a pattern
+    string, a mapping of ``network.UrlPatternPattern`` components, an object
+    exposing ``to_bidi_dict()``, or a parsed URL exposing ``geturl()``.
 
-    A glob string (one containing ``*`` or ``?``) is supported for parity with
-    Playwright even though the remote end rejects wildcards: its literal
-    components pre-filter in the browser and the glob itself is matched in Python.  A mapping may use
-    the same wildcards in its components (e.g. ``{"hostname": "*.example.org"}``),
-    matched the same way.
+    The remote end rejects wildcards, so a glob string (one containing ``*`` or
+    ``?``) or a mapping with wildcard components (e.g.
+    ``{"hostname": "*.example.org"}``) forwards only its literal components as a
+    pre-filter and is matched in Python.
     """
     if patterns is None:
         return _UrlPatterns(None, [])
@@ -550,7 +543,7 @@ class _Event:
 
     @property
     def settled(self) -> bool:
-        """Whether a handler has settled this event's disposition (decision 4)."""
+        """Whether a handler has settled this event's disposition."""
         return self._settled is not None
 
     def _settle(self, disposition: str) -> bool:
@@ -577,12 +570,11 @@ class Request(_Event):
         headers: The request headers as a name → value dict.
         cookies: The request cookies as a list of dicts.
         body: The request body, available when the handler opted in with
-            ``collect_body=True`` at registration (decision 10) or once a
+            ``collect_body=True`` at registration or once a
             handler has staged one.
         resource_type: The resource destination (e.g. ``"script"``, ``"image"``)
             when reported by the browser.
-        original: The event as it arrived, before any handler staged a change
-            (decision 9).
+        original: The event as it arrived, before any handler staged a change.
     """
 
     # Matches earlier releases: a failure beats a stubbed response, which beats
@@ -623,9 +615,9 @@ class Request(_Event):
         """The request body, or ``None`` when it was not collected.
 
         A body is fetched from the collector Selenium installed for a handler
-        registered with ``collect_body=True``; it is not available otherwise
-        (decision 10).  A body a handler staged is visible to every later
-        handler; a collected one only to handlers that opted in.
+        registered with ``collect_body=True``; it is not available otherwise.
+        A body a handler staged is visible to every later handler; a collected
+        one only to handlers that opted in.
         """
         if self._body_staged:
             return self._body
@@ -699,7 +691,7 @@ class Request(_Event):
     def fail(self) -> None:
         """Settle the request as an error; nothing reaches the server.
 
-        Settling resolves the event and stops the handler chain (decision 4).
+        Settling resolves the event and stops the handler chain.
         """
         self._settle("fail")
         if not self._deferred:
@@ -708,7 +700,7 @@ class Request(_Event):
     def respond(self, status=None, headers=None, body=None, reason_phrase=None) -> None:
         """Settle the request with a stubbed response; nothing reaches the server.
 
-        Settling resolves the event and stops the handler chain (decision 4).
+        Settling resolves the event and stops the handler chain.
 
         Args:
             status: HTTP status code for the stubbed response.
@@ -738,8 +730,8 @@ class Request(_Event):
     ) -> None:
         """Send the request now, with any staged mutations, and stop the chain.
 
-        ``submit`` is never required — a request nothing settles continues anyway
-        (decision 5) — and because it short-circuits the chain it overrides what
+        ``submit`` is never required — a request nothing settles continues
+        anyway — and because it short-circuits the chain it overrides what
         a handler registered earlier would have done.
 
         Each keyword argument stages the corresponding mutation before the
@@ -843,7 +835,7 @@ class Request(_Event):
             self._execute_continue()
 
     def _fail_after_handler_error(self) -> None:
-        """Discard staged mutations and fail the request (decision 7)."""
+        """Discard staged mutations and fail the request."""
         self._mutations.clear()
         self._stub = None
         self._settled = "fail"
@@ -865,9 +857,8 @@ class Response(_Event):
             unless mutated via :meth:`set_cookies`.
         body: The response body. Intercepting a response holds it before its
             body is collected, so this is ``None`` unless mutated via
-            :meth:`set_body` (decision 10).
-        original: The event as it arrived, before any handler staged a change
-            (decision 9).
+            :meth:`set_body`.
+        original: The event as it arrived, before any handler staged a change.
     """
 
     _PRIORITY = {"fail": 1}
@@ -938,7 +929,7 @@ class Response(_Event):
     def fail(self) -> None:
         """Settle the response as a failed request.
 
-        Settling resolves the event and stops the handler chain (decision 4).
+        Settling resolves the event and stops the handler chain.
         """
         self._settle("fail")
         if not self._deferred:
@@ -1054,7 +1045,7 @@ class Response(_Event):
             self._execute_submit()
 
     def _fail_after_handler_error(self) -> None:
-        """Discard staged mutations and fail the response (decision 7)."""
+        """Discard staged mutations and fail the response."""
         self._mutations.clear()
         self.body = None
         self._settled = "fail"
@@ -1071,7 +1062,7 @@ class AuthenticationRequest(_Event):
         scheme: The authentication scheme (e.g. ``"basic"``) of the first
             challenge, when reported.
         challenges: Every challenge as a list of ``{"scheme", "realm"}`` dicts.
-        original: The event as it arrived (decision 9).
+        original: The event as it arrived.
     """
 
     # Matches earlier releases: cancelling beats supplying credentials.
@@ -1101,7 +1092,7 @@ class AuthenticationRequest(_Event):
     def authenticate(self, username: str, password: str) -> None:
         """Settle the challenge with the given credentials.
 
-        Settling resolves the challenge and stops the handler chain (decision 4).
+        Settling resolves the challenge and stops the handler chain.
         """
         if not self._settle("authenticate"):
             return
@@ -1112,7 +1103,7 @@ class AuthenticationRequest(_Event):
     def cancel(self) -> None:
         """Cancel the challenge, failing the request with an auth error.
 
-        Settling resolves the challenge and stops the handler chain (decision 4).
+        Settling resolves the challenge and stops the handler chain.
         """
         self._settle("cancel")
         if not self._deferred:
@@ -1145,11 +1136,11 @@ class AuthenticationRequest(_Event):
             self._execute_continue("provideCredentials")
         else:
             # Nothing settled the challenge, so the browser's own behavior
-            # (usually the authentication prompt) applies (decision 5).
+            # (usually the authentication prompt) applies.
             self._execute_continue("default")
 
     def _fail_after_handler_error(self) -> None:
-        """Cancel the challenge after a handler raised (decision 7)."""
+        """Cancel the challenge after a handler raised."""
         self._credentials = None
         self._settled = "cancel"
         if not self._handled:
@@ -1162,7 +1153,7 @@ class AuthenticationRequest(_Event):
 
 
 def default_window_handle(network: Any) -> str:
-    """The window handle a handler is scoped to when none was given (decision 11).
+    """The window handle a handler is scoped to when none was given.
 
     Any failure propagates: falling back to no scope would silently widen a
     handler meant for one window to every window in the session.
@@ -1174,8 +1165,8 @@ def record_handler_error(network: Any, error: BaseException, label: str) -> None
     """Stash a handler's uncaught exception so it can surface to the user.
 
     Handlers run on the event-dispatch thread, which has no user frame to
-    propagate into, so decision 7's "surfaces to the user" is honored by
-    re-raising the exception from the next call into ``driver.network``.
+    propagate into, so the exception is re-raised from the next call into
+    ``driver.network``.
     """
     logger.error("%s raised; the event was failed", label.capitalize(), exc_info=error)
     network._handler_errors.append(error)
@@ -1209,10 +1200,10 @@ class _HandlerEntry:
 
         A handler is consulted only for events its own intercept blocked, so
         URL-pattern and window-handle scope are decided by the remote end —
-        an event blocked on another handler's behalf does not reach it
-        (decision 4).  User-context scope is checked here because
-        ``network.addIntercept`` cannot express it (decision 11), and a
-        glob is matched here because the remote end cannot evaluate it.
+        an event blocked on another handler's behalf does not reach it.
+        User-context scope is checked here because ``network.addIntercept``
+        cannot express it, and a glob is matched here because the remote end
+        cannot evaluate it.
         """
         if self.removing:
             return False
@@ -1249,7 +1240,7 @@ class _BaseHandlerRegistry:
     _id_prefix: str
     _label: str
     _wrapper: type
-    # Only request handlers can collect a body (decision 10).
+    # Only request handlers can collect a body.
     _supports_body_collection = False
 
     def __init__(self, network):
@@ -1276,7 +1267,7 @@ class _BaseHandlerRegistry:
         window_handle: str | None = None,
         user_context: str | None = None,
     ) -> HandlerHandle:
-        """Register a handler; returns the handle that removes it (decision 1)."""
+        """Register a handler; returns the handle that removes it."""
         if window_handle is not None and user_context is not None:
             raise ValueError("A handler is scoped by a window handle or a user context, never both")
         if collect_body and not self._supports_body_collection:
@@ -1417,7 +1408,7 @@ class _BaseHandlerRegistry:
             # Record before failing: failing unblocks the browser, which lets the
             # user's navigation raise and call back into driver.network. Recording
             # afterwards races that call, so the exception could go unseen until a
-            # later one (decision 7).
+            # later one.
             record_handler_error(self._network, error, self._label)
             wrapped._fail_after_handler_error()
             return
@@ -1432,14 +1423,14 @@ class _BaseHandlerRegistry:
         ]
 
     def _run_chain(self, wrapped, params, blocking_intercepts) -> BaseException | None:
-        # Decision 6: later-registered handlers are consulted first.
+        # Later-registered handlers are consulted first.
         for entry in reversed(self._consulted(wrapped, params, blocking_intercepts)):
             self._prepare(wrapped, entry)
             try:
                 entry.callback(wrapped)
             except BaseException as exc:
                 return exc
-            # Decision 4: the first handler to settle stops the chain.
+            # The first handler to settle stops the chain.
             if wrapped.settled:
                 break
         return None
@@ -1483,7 +1474,7 @@ class RequestHandlerRegistry(_BaseHandlerRegistry):
         self._extra_headers_intercept: str | None = None
 
     def _prepare(self, request, entry: _HandlerEntry) -> None:
-        # A body is readable only inside a handler that opted in (decision 10).
+        # A body is readable only inside a handler that opted in.
         request._body_collector = entry.collector_id
 
     def set_extra_header(self, name: str, value: str) -> None:
