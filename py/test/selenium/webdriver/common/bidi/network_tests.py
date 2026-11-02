@@ -33,7 +33,7 @@ def test_network_initialized(driver):
 
 @pytest.fixture
 def adr_17685_dispatch(monkeypatch):
-    """Pins the decision record 17685 dispatch a later release switches on."""
+    """Pins the ``ADR_17685_DISPATCH`` behavior a later release switches on."""
     monkeypatch.setattr(_network_handlers, "ADR_17685_DISPATCH", True)
 
 
@@ -371,7 +371,7 @@ def test_request_body_is_absent_unless_collected(driver, pages):
 
 
 def test_collect_body_reads_the_posted_body(driver, pages):
-    """A handler that opted in reads the body on the event (decision 10)."""
+    """A handler that opted in reads the body on the event."""
     seen = []
 
     _navigate(driver, pages.url("simpleTest.html"))

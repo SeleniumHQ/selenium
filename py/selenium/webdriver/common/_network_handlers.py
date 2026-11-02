@@ -24,23 +24,26 @@ command through the internal BiDi protocol layer
 
 See ``docs/decisions/17685-network-handler-behavior.md`` for the rationale.
 
-* **Later-registered handlers are consulted first**, and **the first handler to
-  settle a disposition resolves the event and stops the chain**.  Settling twice
-  inside one handler raises :class:`AlreadySettledError`.
+In every release:
+
 * **A handler that only stages mutations does not settle**; if nothing ever
   settles, the event proceeds with what was staged.
-* **An uncaught exception fails the event** and is re-raised from the next call
-  into ``driver.network``.
 * **URL patterns are evaluated by the remote end**, except globs, which it
   rejects and which are matched in Python.
 * **Request bodies are collected only when a handler opts in**.
-* **Handlers are scoped to one window handle by default**.
 
-Until :data:`ADR_17685_DISPATCH` is switched on, handlers keep the behavior of
-earlier releases — every matching handler runs in registration order and their
-outcomes are merged, an exception is logged rather than failing the event, and a
-handler with no scope sees every window — and Selenium warns wherever the
-outcome is about to change.
+By default, handlers keep the behavior of earlier releases: every matching
+handler runs in registration order and their outcomes are merged, an exception
+is logged rather than failing the event, and a handler with no scope sees every
+window.  Selenium warns wherever the outcome is about to change.  With
+:data:`ADR_17685_DISPATCH` switched on, as it will be in a later release:
+
+* **Later-registered handlers are consulted first**, and **the first handler to
+  settle a disposition resolves the event and stops the chain**.  Settling twice
+  inside one handler raises :class:`AlreadySettledError`.
+* **An uncaught exception fails the event** and is re-raised from the next call
+  into ``driver.network``.
+* **Handlers are scoped to one window handle by default**.
 """
 
 from __future__ import annotations
@@ -336,7 +339,11 @@ def _glob_to_url_pattern(pattern: str) -> UrlPatternPattern | None:
     rest = rest.partition("?")[0]
     host, slash, path = rest.partition("/")
     port = None
-    if ":" in host:
+    if host.startswith("["):
+        # The colons of an IPv6 literal are not a port separator, so leave the
+        # host and port to Python rather than forward a mangled pair.
+        host = ""
+    elif ":" in host:
         host, _, port = host.partition(":")
     components: dict[str, str] = {}
     if _literal_component(scheme):

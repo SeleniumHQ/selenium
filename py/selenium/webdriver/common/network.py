@@ -153,7 +153,9 @@ class Network:
             url_patterns: URL patterns limiting which requests reach the
                 handler, as pattern strings and/or mappings of ``protocol``,
                 ``hostname``, ``port``, ``pathname`` and ``search`` components,
-                evaluated by the browser. Defaults to matching everything.
+                evaluated by the browser.  Globs (``*``, ``**``, ``?``) in a
+                string or component are matched in Python, since the browser
+                rejects them. Defaults to matching everything.
             collect_body: Collect the request body so the handler can read
                 ``request.body``. Bodies are not available otherwise, and
                 Selenium owns the collector's lifecycle and size cap.
@@ -245,8 +247,8 @@ class Network:
 
         Args:
             url_patterns: URL patterns limiting which responses reach the
-                handler, evaluated by the browser. Defaults to matching
-                everything.
+                handler, in the forms :meth:`add_request_handler` accepts.
+                Defaults to matching everything.
             callback: The handler callable.
             window_handle: The window handle the handler applies to.
             user_context: The user context the handler applies to. Mutually
@@ -299,8 +301,8 @@ class Network:
 
         Args:
             url_patterns: URL patterns limiting which challenges reach the
-                handler, evaluated by the browser. Defaults to matching
-                everything.
+                handler, in the forms :meth:`add_request_handler` accepts.
+                Defaults to matching everything.
             callback: The handler callable.
             window_handle: The window handle the handler applies to.
             user_context: The user context the handler applies to. Mutually
