@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -58,6 +59,9 @@ public interface IDevToolsSession : IDisposable
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
     /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="command"/> is <see langword="null"/>.</exception>
+    [Obsolete("Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresUnreferencedCode("Command serialization and response deserialization require reflection. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresDynamicCode("Command serialization and response deserialization may require runtime code generation. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
     Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived)
         where TCommand : ICommand;
 
@@ -72,19 +76,30 @@ public interface IDevToolsSession : IDisposable
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
     /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="command"/> is <see langword="null"/>.</exception>
+    [Obsolete("Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresUnreferencedCode("Command serialization and response deserialization require reflection. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresDynamicCode("Command serialization and response deserialization may require runtime code generation. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
     Task<TCommandResponse?> SendCommand<TCommand, TCommandResponse>(TCommand command, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived)
         where TCommand : ICommand
         where TCommandResponse : ICommandResponse<TCommand>;
 
     /// <summary>
-    /// Returns a JsonNode based on a command created with the specified command name and params.
+    /// Sends a command with JSON parameters without reflection-based serialization.
     /// </summary>
     /// <param name="commandName">The name of the command to send.</param>
     /// <param name="params">The parameters of the command as a JsonNode object</param>
     /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
     /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
-    /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+    /// <returns>A task whose result contains the command's JSON result, or <see langword="null"/> if the connection is inactive or the pending command is no longer available.</returns>
+    /// <remarks>
+    /// If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is
+    /// <see langword="false"/>, the result may contain a <see cref="JsonElement"/> whose
+    /// <see cref="JsonElement.ValueKind"/> is <see cref="JsonValueKind.Undefined"/>.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is <see langword="true"/>.</exception>
+    /// <exception cref="OperationCanceledException">If cancellation is requested while waiting for the response.</exception>
+    /// <exception cref="CommandResponseException">If the remote end returns a command error.</exception>
     Task<JsonElement?> SendCommand(string commandName, JsonNode @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived);
 }

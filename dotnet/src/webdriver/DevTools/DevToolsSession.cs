@@ -18,6 +18,7 @@
 // </copyright>
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -138,12 +139,15 @@ public class DevToolsSession : IDevToolsSession
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
     /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="command"/> is <see langword="null"/>.</exception>
+    [Obsolete("Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresUnreferencedCode("Command serialization and response deserialization require reflection. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresDynamicCode("Command serialization and response deserialization may require runtime code generation. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
+        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -151,7 +155,12 @@ public class DevToolsSession : IDevToolsSession
             return null;
         }
 
-        return result.Value.Deserialize(commandResponseTypeInfo) as ICommandResponse<TCommand>;
+        if (!this.Domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType<TCommand>(out Type? commandResponseType))
+        {
+            throw new InvalidOperationException($"Type {command.GetType()} does not correspond to a known command response type.");
+        }
+
+        return result.Value.Deserialize(commandResponseType) as ICommandResponse<TCommand>;
     }
 
     /// <summary>
@@ -164,12 +173,15 @@ public class DevToolsSession : IDevToolsSession
     /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
     /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+    [Obsolete("Use SendCommand(string, string, JsonNode, ...) instead.")]
+    [RequiresUnreferencedCode("Command serialization and response deserialization require reflection. Use SendCommand(string, string, JsonNode, ...) instead.")]
+    [RequiresDynamicCode("Command serialization and response deserialization may require runtime code generation. Use SendCommand(string, string, JsonNode, ...) instead.")]
     public async Task<ICommandResponse<TCommand>?> SendCommand<TCommand>(TCommand command, string sessionId, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
+        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, sessionId, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -177,7 +189,12 @@ public class DevToolsSession : IDevToolsSession
             return null;
         }
 
-        return result.Value.Deserialize(commandResponseTypeInfo) as ICommandResponse<TCommand>;
+        if (!this.Domains.VersionSpecificDomains.ResponseTypeMap.TryGetCommandResponseType(command, out Type? commandResponseType))
+        {
+            throw new InvalidOperationException($"Type {typeof(TCommand)} does not correspond to a known command response type.");
+        }
+
+        return result.Value.Deserialize(commandResponseType) as ICommandResponse<TCommand>;
     }
 
     /// <summary>
@@ -191,13 +208,16 @@ public class DevToolsSession : IDevToolsSession
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
     /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="command"/> is <see langword="null"/>.</exception>
+    [Obsolete("Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresUnreferencedCode("Command serialization and response deserialization require reflection. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
+    [RequiresDynamicCode("Command serialization and response deserialization may require runtime code generation. Use generated domain adapters or SendCommand(string, JsonNode, ...) instead.")]
     public async Task<TCommandResponse?> SendCommand<TCommand, TCommandResponse>(TCommand command, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         where TCommand : ICommand
         where TCommandResponse : ICommandResponse<TCommand>
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        JsonNode commandParameters = SerializeCommand(command, out JsonTypeInfo commandResponseTypeInfo);
+        JsonNode commandParameters = JsonSerializer.SerializeToNode(command) ?? throw new InvalidOperationException("Command serialized to \"null\".");
         var result = await SendCommand(command.CommandName, commandParameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
 
         if (result == null)
@@ -205,19 +225,27 @@ public class DevToolsSession : IDevToolsSession
             return default;
         }
 
-        return (TCommandResponse?)result.Value.Deserialize(commandResponseTypeInfo);
+        return result.Value.Deserialize<TCommandResponse>();
     }
 
     /// <summary>
-    /// Returns a JsonNode based on a command created with the specified command name and params.
+    /// Sends a command with JSON parameters without reflection-based serialization.
     /// </summary>
     /// <param name="commandName">The name of the command to send.</param>
     /// <param name="commandParameters">The parameters of the command as a JsonNode object</param>
     /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
     /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
-    /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+    /// <returns>A task whose result contains the command's JSON result, or <see langword="null"/> if the connection is inactive or the pending command is no longer available.</returns>
+    /// <remarks>
+    /// If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is
+    /// <see langword="false"/>, the result may contain a <see cref="JsonElement"/> whose
+    /// <see cref="JsonElement.ValueKind"/> is <see cref="JsonValueKind.Undefined"/>.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is <see langword="true"/>.</exception>
+    /// <exception cref="OperationCanceledException">If cancellation is requested while waiting for the response.</exception>
+    /// <exception cref="CommandResponseException">If the remote end returns a command error.</exception>
     public async Task<JsonElement?> SendCommand(string commandName, JsonNode commandParameters, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
     {
         if (this.attachedTargetId == null)
@@ -230,7 +258,7 @@ public class DevToolsSession : IDevToolsSession
     }
 
     /// <summary>
-    /// Returns a JsonNode based on a command created with the specified command name and params.
+    /// Sends a command to a target session with JSON parameters without reflection-based serialization.
     /// </summary>
     /// <param name="commandName">The name of the command to send.</param>
     /// <param name="sessionId">The sessionId of the command.</param>
@@ -238,8 +266,16 @@ public class DevToolsSession : IDevToolsSession
     /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
     /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
     /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
-    /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+    /// <returns>A task whose result contains the command's JSON result, or <see langword="null"/> if the connection is inactive or the pending command is no longer available.</returns>
+    /// <remarks>
+    /// If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is
+    /// <see langword="false"/>, the result may contain a <see cref="JsonElement"/> whose
+    /// <see cref="JsonElement.ValueKind"/> is <see cref="JsonValueKind.Undefined"/>.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">If the response wait times out and <paramref name="throwExceptionIfResponseNotReceived"/> is <see langword="true"/>.</exception>
+    /// <exception cref="OperationCanceledException">If cancellation is requested while waiting for the response.</exception>
+    /// <exception cref="CommandResponseException">If the remote end returns a command error.</exception>
     public async Task<JsonElement?> SendCommand(string commandName, string? sessionId, JsonNode commandParameters, CancellationToken cancellationToken = default, int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
     {
         millisecondsTimeout ??= Convert.ToInt32(CommandTimeout.TotalMilliseconds);
@@ -447,8 +483,8 @@ public class DevToolsSession : IDevToolsSession
             var setAutoAttachCommand = Domains.Target.CreateSetAutoAttachCommand(true);
             var setDiscoverTargetsCommand = Domains.Target.CreateDiscoverTargetsCommand();
 
-            await SendCommand(setAutoAttachCommand, string.Empty, default, null, true).ConfigureAwait(false);
-            await SendCommand(setDiscoverTargetsCommand, string.Empty, default, null, true).ConfigureAwait(false);
+            await SendCommand(setAutoAttachCommand.CommandName, string.Empty, SerializeCommand(setAutoAttachCommand, out _), default, null, true).ConfigureAwait(false);
+            await SendCommand(setDiscoverTargetsCommand.CommandName, string.Empty, SerializeCommand(setDiscoverTargetsCommand, out _), default, null, true).ConfigureAwait(false);
         }
 
         this.Domains.Target.TargetDetached += this.OnTargetDetached;

@@ -7,6 +7,7 @@ namespace {{rootNamespace}}.{{domain.Name}}
     using System;
     using System.Collections.Generic;
     using System.Text.Json;
+    using System.Text.Json.Serialization.Metadata;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -54,10 +55,36 @@ namespace {{rootNamespace}}.{{domain.Name}}
         /// </summary>
         public Task<{{dehumanize Name}}CommandResponse{{#if NoReturn}}?{{/if}}> {{dehumanize Name}}({{dehumanize Name}}CommandSettings{{#if NoParameters}}?{{/if}} command{{#if NoParameters}} = null{{/if}}, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
-            return Session.SendCommand<{{dehumanize Name}}CommandSettings, {{dehumanize Name}}CommandResponse>(command{{#if NoParameters}} ?? new {{dehumanize Name}}CommandSettings(){{/if}}, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            return SendCommand(
+                command{{#if NoParameters}} ?? new {{dehumanize Name}}CommandSettings(){{/if}},
+                global::{{../rootNamespace}}.{{../serializerContextName}}.Default.{{dehumanize ../domain.Name}}{{dehumanize Name}}CommandSettings,
+                global::{{../rootNamespace}}.{{../serializerContextName}}.Default.{{dehumanize ../domain.Name}}{{dehumanize Name}}CommandResponse,
+                cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
         }
 
     {{/each}}
+        private async Task<TResponse?> SendCommand<TCommand, TResponse>(
+            TCommand command,
+            JsonTypeInfo<TCommand> commandTypeInfo,
+            JsonTypeInfo<TResponse> responseTypeInfo,
+            CancellationToken cancellationToken,
+            int? millisecondsTimeout,
+            bool throwExceptionIfResponseNotReceived)
+            where TCommand : ICommand
+            where TResponse : ICommandResponse<TCommand>
+        {
+            if (command is null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            var parameters = JsonSerializer.SerializeToNode(command, commandTypeInfo)
+                ?? throw new InvalidOperationException("Command serialized to \"null\".");
+            var result = await Session.SendCommand(
+                command.CommandName, parameters, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived).ConfigureAwait(false);
+            return result.HasValue ? result.Value.Deserialize(responseTypeInfo) : default;
+        }
+
 #nullable enable warnings
 
         private void OnDevToolsEventReceived(object? sender, DevToolsEventReceivedEventArgs e)
