@@ -463,8 +463,10 @@ class Windows:
     def create_user_context(self) -> UserContext:
         """Create an isolated user context to open windows in.
 
-        It inherits the session's ``acceptInsecureCerts``. Remove it with
-        :meth:`UserContext.remove`, or use it as a context manager.
+        It inherits the session's ``acceptInsecureCerts``, ``proxy`` and
+        ``unhandledPromptBehavior``; if the browser cannot apply one of them, this
+        raises rather than dropping it. Remove it with :meth:`UserContext.remove`,
+        or use it as a context manager.
         """
         self._require_bidi("Creating a user context")
         return UserContext(self, self._create_user_context())
@@ -633,13 +635,31 @@ class Windows:
         return wait, wait != self._session_wait()
 
     def _create_user_context(self) -> str:
-        from selenium.webdriver.common._bidi.serialization import UNSET
+        """Create a user context that inherits the session's settings (ADR 17681 decision 8).
 
-        accept_insecure = self._driver.caps.get("acceptInsecureCerts")
-        info = self._bidi_browser().create_user_context(
-            accept_insecure_certs=accept_insecure if isinstance(accept_insecure, bool) else UNSET
-        )
-        return info.user_context
+        A setting the browser cannot apply to a user context fails creation; it is never dropped.
+        """
+        caps = self._driver.caps
+        params: dict[str, Any] = {}
+        accept_insecure = caps.get("acceptInsecureCerts")
+        if isinstance(accept_insecure, bool):
+            params["acceptInsecureCerts"] = accept_insecure
+        proxy = _bidi_proxy(caps.get("proxy"))
+        if proxy is not None:
+            params["proxy"] = proxy
+        prompts = _bidi_prompt_handler(caps.get("unhandledPromptBehavior"))
+        if prompts is not None:
+            params["unhandledPromptBehavior"] = prompts
+        try:
+            reply = self._bidi_browser()._execute("browser.createUserContext", params=_RawParams(params))
+        except WebDriverException as e:
+            inherited = [name for name in ("proxy", "unhandledPromptBehavior") if name in params]
+            if not inherited:
+                raise
+            raise WebDriverException(
+                f"Could not create a user context with the session's {' and '.join(inherited)} settings: {e.msg}"
+            ) from e
+        return reply["userContext"]
 
     def _remove_user_context(self, user_context: str) -> None:
         if user_context == _DEFAULT_USER_CONTEXT:
@@ -1007,6 +1027,63 @@ class _RawEvent:
     @staticmethod
     def from_json(params: dict) -> dict:
         return params
+
+
+class _RawParams:
+    """Command parameters that are already in wire form."""
+
+    def __init__(self, params: dict[str, Any]) -> None:
+        self._params = params
+
+    def as_json(self) -> dict[str, Any]:
+        return self._params
+
+
+# keys a classic proxy capability shares with BiDi's session.ProxyConfiguration
+_PROXY_KEYS = ("proxyType", "proxyAutoconfigUrl", "httpProxy", "sslProxy", "socksProxy", "socksVersion", "noProxy")
+
+
+def _bidi_proxy(proxy: Any) -> dict[str, Any] | None:
+    """Translate the session's classic proxy capability for browser.createUserContext."""
+    if not proxy:
+        return None
+    if not isinstance(proxy, dict) or "proxyType" not in proxy:
+        raise WebDriverException(f"Cannot apply the session's proxy setting to a user context: {proxy!r}")
+    unsupported = [key for key in proxy if key not in _PROXY_KEYS]
+    if unsupported:
+        raise WebDriverException(
+            f"Cannot apply the session's proxy setting to a user context; unsupported keys: {', '.join(unsupported)}"
+        )
+    return {key: proxy[key] for key in _PROXY_KEYS if key in proxy}
+
+
+# classic unhandled prompt behaviours to BiDi user prompt handler types; "notify" only affects classic commands
+_PROMPT_TYPES = {
+    "accept": "accept",
+    "accept and notify": "accept",
+    "dismiss": "dismiss",
+    "dismiss and notify": "dismiss",
+    "ignore": "ignore",
+}
+_PROMPT_KINDS = ("alert", "beforeUnload", "confirm", "default", "file", "prompt")
+
+
+def _bidi_prompt_handler(behavior: Any) -> dict[str, str] | None:
+    """Translate the session's classic unhandledPromptBehavior for browser.createUserContext."""
+    if behavior is None:
+        return None
+    if isinstance(behavior, str):
+        behavior = {"default": behavior}
+    if not isinstance(behavior, dict):
+        raise WebDriverException(f"Cannot apply the session's unhandledPromptBehavior to a user context: {behavior!r}")
+    handler: dict[str, str] = {}
+    for kind, value in behavior.items():
+        if kind not in _PROMPT_KINDS or value not in _PROMPT_TYPES:
+            raise WebDriverException(
+                f"Cannot apply the session's unhandledPromptBehavior to a user context: {kind}={value!r}"
+            )
+        handler[kind] = _PROMPT_TYPES[value]
+    return handler
 
 
 def _bidi_print_params(print_options: PrintOptions | None) -> dict[str, Any]:
