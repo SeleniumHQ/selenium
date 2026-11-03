@@ -10,6 +10,7 @@ dotnet_nunit_test_suite(
             "obj/**",
         ],
     ),
+    out = "Selenium.Support.Tests",
     browsers = [
         "firefox",
     ],

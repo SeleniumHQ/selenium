@@ -124,11 +124,10 @@ public class CompletionCommand implements CliCommand {
 
     allCommands.keySet().stream()
         .sorted(Comparator.comparing(CliCommand::getName))
-        .forEach(
-            cmd -> {
-              out.printf(
-                  "        '%s:%s'%n", cmd.getName(), cmd.getDescription().replace("'", "'\\''"));
-            });
+        .forEach(cmd -> {
+          out.printf(
+              "        '%s:%s'%n", cmd.getName(), cmd.getDescription().replace("'", "'\\''"));
+        });
 
     out.println("      )");
     out.println("      _describe 'commands' cmds");
@@ -138,55 +137,51 @@ public class CompletionCommand implements CliCommand {
 
     allCommands.keySet().stream()
         .sorted(Comparator.comparing(CliCommand::getName))
-        .forEach(
-            cmd -> {
-              String shellName = cmd.getName().replace('-', '_');
-              out.printf("        (%s)%n", cmd.getName());
-              out.printf("          _selenium_%s%n", shellName);
-              out.println("          ;;");
-            });
+        .forEach(cmd -> {
+          String shellName = cmd.getName().replace('-', '_');
+          out.printf("        (%s)%n", cmd.getName());
+          out.printf("          _selenium_%s%n", shellName);
+          out.println("          ;;");
+        });
 
     out.println("      esac");
     out.println("      ;;");
     out.println("  esac");
     out.println("}\n\n");
 
-    allCommands.forEach(
-        (cmd, options) -> {
-          out.printf("_selenium_%s() {%n", cmd.getName().replace('-', '_'));
-          out.println("  args=(");
+    allCommands.forEach((cmd, options) -> {
+      out.printf("_selenium_%s() {%n", cmd.getName().replace('-', '_'));
+      out.println("  args=(");
 
-          options.stream()
-              .filter(opt -> !opt.flags().isEmpty())
-              .sorted(Comparator.comparing(opt -> opt.flags().iterator().next()))
-              .forEach(
-                  opt -> {
-                    String quotedDesc = opt.description().replace("'", "'\\''");
-                    int index = quotedDesc.indexOf("\n");
-                    if (index != -1) {
-                      quotedDesc = quotedDesc.substring(0, index);
-                    }
+      options.stream()
+          .filter(opt -> !opt.flags().isEmpty())
+          .sorted(Comparator.comparing(opt -> opt.flags().iterator().next()))
+          .forEach(opt -> {
+            String quotedDesc = opt.description().replace("'", "'\\''");
+            int index = quotedDesc.indexOf("\n");
+            if (index != -1) {
+              quotedDesc = quotedDesc.substring(0, index);
+            }
 
-                    if (opt.flags().size() == 1) {
-                      out.printf(
-                          "    '%s[%s]%s'%n",
-                          opt.flags().iterator().next(), quotedDesc, getZshType(opt));
-                    } else {
-                      out.print("    '");
-                      out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
-                      out.print("'");
-                      out.print(opt.flags.stream().collect(joining(",", "{", "}")));
-                      out.print("'");
-                      out.printf("[%s]", quotedDesc);
-                      out.print(getZshType(opt));
-                      out.print("'\n");
-                    }
-                  });
+            if (opt.flags().size() == 1) {
+              out.printf(
+                  "    '%s[%s]%s'%n", opt.flags().iterator().next(), quotedDesc, getZshType(opt));
+            } else {
+              out.print("    '");
+              out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
+              out.print("'");
+              out.print(opt.flags.stream().collect(joining(",", "{", "}")));
+              out.print("'");
+              out.printf("[%s]", quotedDesc);
+              out.print(getZshType(opt));
+              out.print("'\n");
+            }
+          });
 
-          out.println("  )");
-          out.println("  _arguments $args && return");
-          out.println("}\n\n");
-        });
+      out.println("  )");
+      out.println("  _arguments $args && return");
+      out.println("}\n\n");
+    });
   }
 
   private String getZshType(DescribedOption option) {
@@ -216,11 +211,9 @@ public class CompletionCommand implements CliCommand {
 
   private Map<CliCommand, Set<DescribedOption>> listKnownCommands() {
     return StreamSupport.stream(ServiceLoader.load(CliCommand.class).spliterator(), true)
-        .map(
-            command ->
-                new AbstractMap.SimpleEntry<>(
-                    command,
-                    DescribedOption.findAllMatchingOptions(command.getConfigurableRoles())))
+        .map(command ->
+            new AbstractMap.SimpleEntry<>(
+                command, DescribedOption.findAllMatchingOptions(command.getConfigurableRoles())))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

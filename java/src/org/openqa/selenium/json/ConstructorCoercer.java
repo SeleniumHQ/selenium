@@ -242,13 +242,12 @@ class ConstructorCoercer extends TypeCoercer<Object> {
           .filter(parameter -> !isOptional(parameter))
           .filter(parameter -> !fieldNames.contains(parameter.getName()))
           .findFirst()
-          .ifPresent(
-              parameter -> {
-                throw new JsonException(
-                    String.format(
-                        "Missing JSON value for constructor parameter %s.%s",
-                        constructor.getDeclaringClass().getName(), parameter.getName()));
-              });
+          .ifPresent(parameter -> {
+            throw new JsonException(
+                String.format(
+                    "Missing JSON value for constructor parameter %s.%s",
+                    constructor.getDeclaringClass().getName(), parameter.getName()));
+          });
     }
   }
 }

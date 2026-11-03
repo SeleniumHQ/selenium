@@ -57,17 +57,15 @@ public class v154Target implements org.openqa.selenium.devtools.idealized.target
         input -> {
           List<TargetInfo> infos = mapper.apply(input);
           return infos.stream()
-              .map(
-                  info ->
-                      new org.openqa.selenium.devtools.idealized.target.model.TargetInfo(
-                          new TargetID(info.getTargetId().toString()),
-                          info.getType(),
-                          info.getTitle(),
-                          info.getUrl(),
-                          info.getAttached(),
-                          info.getOpenerId().map(id -> new TargetID(id.toString())),
-                          info.getBrowserContextId()
-                              .map(id -> new BrowserContextID(id.toString()))))
+              .map(info ->
+                  new org.openqa.selenium.devtools.idealized.target.model.TargetInfo(
+                      new TargetID(info.getTargetId().toString()),
+                      info.getType(),
+                      info.getTitle(),
+                      info.getUrl(),
+                      info.getAttached(),
+                      info.getOpenerId().map(id -> new TargetID(id.toString())),
+                      info.getBrowserContextId().map(id -> new BrowserContextID(id.toString()))))
               .collect(Collectors.toUnmodifiableList());
         });
   }

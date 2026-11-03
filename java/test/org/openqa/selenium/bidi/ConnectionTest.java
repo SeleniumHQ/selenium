@@ -52,11 +52,10 @@ class ConnectionTest {
     socket = new FakeWebSocket();
     connection =
         new Connection(
-            new FakeHttpClient(
-                (request, l) -> {
-                  listener = l;
-                  return socket;
-                }),
+            new FakeHttpClient((request, l) -> {
+              listener = l;
+              return socket;
+            }),
             "ws://localhost:4444/session/1/se/bidi");
   }
 

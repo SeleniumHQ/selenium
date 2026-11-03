@@ -92,6 +92,7 @@ module Selenium
 
             it 'limits the screenshot to the requested image size',
                pending_if: [{browser_family: :chromium,
+                             version: 'stable',
                              reason: 'Chromium ignores the captureScreenshot imageSize parameter'},
                             {browser_family: :safari,
                              reason: 'Safari ignores the captureScreenshot imageSize parameter'}] do
@@ -379,6 +380,7 @@ module Selenium
 
           describe '#set_bypass_csp',
                    pending_if: [{browser_family: :chromium,
+                                 version: 'stable',
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /browsingContext\.setBypassCSP/},
                                  reason: 'Chromium returns unsupported operation for browsingContext.setBypassCSP'},

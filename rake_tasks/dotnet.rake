@@ -57,8 +57,8 @@ end
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
   base = 'https://api.nuget.org/v3/registration5-semver1'
-  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json")
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json", timeout: 900)
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json", timeout: 900)
 end
 
 desc 'Generate and stage .NET documentation'
@@ -75,6 +75,9 @@ task :docs_generate do
   puts 'Generating .NET documentation'
   FileUtils.rm_rf('build/docs/api/dotnet/')
   Bazel.execute('run', [], '//dotnet:docs')
+rescue RuntimeError
+  FileUtils.rm_rf('build/docs/api/dotnet/')
+  raise
 end
 
 desc 'Install .NET packages to local NuGet cache'

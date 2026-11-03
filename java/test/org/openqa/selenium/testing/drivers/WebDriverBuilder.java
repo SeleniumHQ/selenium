@@ -75,10 +75,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
             .map(Supplier::get)
             .filter(Objects::nonNull)
             .findFirst()
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "Cannot instantiate driver instance: " + desiredCapabilities));
+            .orElseThrow(() ->
+                new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
 
     modifyLogLevel(driver);
     managedDrivers.add(driver);

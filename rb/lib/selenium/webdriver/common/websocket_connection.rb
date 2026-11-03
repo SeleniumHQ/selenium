@@ -103,15 +103,18 @@ module Selenium
         # IOError to match what writing to an already-closed socket raises
         raise IOError, 'WebSocket connection is closed' if @closing
 
-        id = next_id
-        data = payload.merge(id: id)
-        WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
-        data = JSON.generate(data)
-        out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
-
-        @messages_mtx.synchronize { pending_responses[id] = ConditionVariable.new }
+        # Callbacks send commands from their own threads, so the id must be
+        # allocated and registered atomically or two commands can share one
+        id = @messages_mtx.synchronize do
+          next_id.tap { |new_id| pending_responses[new_id] = ConditionVariable.new }
+        end
 
         begin
+          data = payload.merge(id: id)
+          WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
+          data = JSON.generate(data)
+          out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
+
           begin
             socket.write(out_frame.to_s)
           rescue *CONNECTION_ERRORS => e

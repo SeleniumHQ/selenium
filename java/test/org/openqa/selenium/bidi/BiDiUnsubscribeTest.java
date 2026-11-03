@@ -55,12 +55,11 @@ class BiDiUnsubscribeTest {
   void clearedListenerDoesNotReceiveEventsArrivingDuringUnsubscribe() throws Exception {
     CountDownLatch delivered = new CountDownLatch(1);
     Connection connection =
-        connect(
-            (id, socketListener) -> {
-              socketListener.onText(REALM_CREATED_FRAME);
-              awaitQuietly(delivered);
-              socketListener.onText(success(id));
-            });
+        connect((id, socketListener) -> {
+          socketListener.onText(REALM_CREATED_FRAME);
+          awaitQuietly(delivered);
+          socketListener.onText(success(id));
+        });
     connection.addListener("sub-1", REALM_CREATED, event -> delivered.countDown());
 
     new BiDi(connection, Duration.ofSeconds(5)).clearListener(REALM_CREATED);
@@ -73,12 +72,11 @@ class BiDiUnsubscribeTest {
   void removedListenerDoesNotReceiveEventsArrivingDuringUnsubscribe() throws Exception {
     CountDownLatch delivered = new CountDownLatch(1);
     Connection connection =
-        connect(
-            (id, socketListener) -> {
-              socketListener.onText(REALM_CREATED_FRAME);
-              awaitQuietly(delivered);
-              socketListener.onText(success(id));
-            });
+        connect((id, socketListener) -> {
+          socketListener.onText(REALM_CREATED_FRAME);
+          awaitQuietly(delivered);
+          socketListener.onText(success(id));
+        });
     connection.addListener("sub-1", REALM_CREATED, event -> delivered.countDown());
 
     new BiDi(connection, Duration.ofSeconds(5)).removeListener("sub-1");
@@ -122,20 +120,18 @@ class BiDiUnsubscribeTest {
     AtomicReference<BiDi> bidi = new AtomicReference<>();
     AtomicReference<Thread> adding = new AtomicReference<>();
     Connection connection =
-        connectHandling(
-            (frame, socketListener) -> {
-              long id = ((Number) frame.get("id")).longValue();
-              if ("session.subscribe".equals(frame.get("method"))) {
-                subscribedDuringUnsubscribe.compareAndSet(false, unsubscribing.get());
-                socketListener.onText(subscribed(id, "sub-2"));
-              } else if ("session.unsubscribe".equals(frame.get("method"))) {
-                unsubscribing.set(true);
-                adding.set(
-                    startAndAwaitBlocked(() -> bidi.get().addListener(REALM_CREATED, e -> {})));
-                unsubscribing.set(false);
-                socketListener.onText(success(id));
-              }
-            });
+        connectHandling((frame, socketListener) -> {
+          long id = ((Number) frame.get("id")).longValue();
+          if ("session.subscribe".equals(frame.get("method"))) {
+            subscribedDuringUnsubscribe.compareAndSet(false, unsubscribing.get());
+            socketListener.onText(subscribed(id, "sub-2"));
+          } else if ("session.unsubscribe".equals(frame.get("method"))) {
+            unsubscribing.set(true);
+            adding.set(startAndAwaitBlocked(() -> bidi.get().addListener(REALM_CREATED, e -> {})));
+            unsubscribing.set(false);
+            socketListener.onText(success(id));
+          }
+        });
     connection.addListener("sub-1", REALM_CREATED, event -> {});
     bidi.set(new BiDi(connection, Duration.ofSeconds(5)));
 
@@ -209,12 +205,11 @@ class BiDiUnsubscribeTest {
     AtomicReference<Thread> handler = new AtomicReference<>();
     CountDownLatch unsubscribing = new CountDownLatch(1);
     Connection changing =
-        connect(
-            (id, socketListener) -> {
-              unsubscribing.countDown();
-              awaitBlocked(awaitSet(handler));
-              socketListener.onText(success(id));
-            });
+        connect((id, socketListener) -> {
+          unsubscribing.countDown();
+          awaitBlocked(awaitSet(handler));
+          socketListener.onText(success(id));
+        });
     changing.addListener("sub-2", REALM_CREATED, event -> {});
     BiDi otherSession = new BiDi(changing, Duration.ofSeconds(5));
     CountDownLatch handlerFinished = new CountDownLatch(1);
@@ -252,15 +247,14 @@ class BiDiUnsubscribeTest {
     AtomicReference<BiDi> bidi = new AtomicReference<>();
     AtomicReference<Thread> overlapping = new AtomicReference<>();
     Connection connection =
-        connect(
-            (id, socketListener) -> {
-              if (unsubscribes.getAndIncrement() > 0) {
-                socketListener.onText(success(id));
-                return;
-              }
-              overlapping.set(startAndAwaitBlocked(() -> overlappingCall.accept(bidi.get())));
-              socketListener.onText(error(id));
-            });
+        connect((id, socketListener) -> {
+          if (unsubscribes.getAndIncrement() > 0) {
+            socketListener.onText(success(id));
+            return;
+          }
+          overlapping.set(startAndAwaitBlocked(() -> overlappingCall.accept(bidi.get())));
+          socketListener.onText(error(id));
+        });
     connection.addListener("sub-1", REALM_CREATED, event -> {});
     bidi.set(new BiDi(connection, Duration.ofSeconds(5)));
 
@@ -272,12 +266,11 @@ class BiDiUnsubscribeTest {
   }
 
   private Connection connect(BiConsumer<Long, WebSocket.Listener> onUnsubscribe) {
-    return connectHandling(
-        (frame, socketListener) -> {
-          if ("session.unsubscribe".equals(frame.get("method"))) {
-            onUnsubscribe.accept(((Number) frame.get("id")).longValue(), socketListener);
-          }
-        });
+    return connectHandling((frame, socketListener) -> {
+      if ("session.unsubscribe".equals(frame.get("method"))) {
+        onUnsubscribe.accept(((Number) frame.get("id")).longValue(), socketListener);
+      }
+    });
   }
 
   private Connection connectHandling(

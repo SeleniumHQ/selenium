@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <AssemblyName>WebDriver.Remote.Tests</AssemblyName>
+    <AssemblyName>Selenium.WebDriver.Remote.Tests</AssemblyName>
     <IsTestProject>true</IsTestProject>
     <OutputType>Exe</OutputType>
     <EnableMicrosoftTestingPlatform>true</EnableMicrosoftTestingPlatform>

@@ -36,7 +36,7 @@ task :affected_targets do |_task, args|
   base_rev, head_rev = if range.include?('..')
                          range.split('..', 2)
                        else
-                         ["#{range}^", range]
+                         ["#{range}~1", range]
                        end
 
   puts "Commit range: #{base_rev}..#{head_rev}"
@@ -60,18 +60,19 @@ task :affected_targets do |_task, args|
               affected_targets_by_directory(changed_files)
             end
 
+  FileUtils.mkdir_p('build')
   if targets.empty?
     puts 'No test targets affected'
-    File.write('bazel-targets.txt', '')
+    File.write('build/bazel-targets.txt', '')
   else
     puts "Found #{targets.size} affected test targets"
-    File.write('bazel-targets.txt', targets.sort.join(' '))
+    File.write('build/bazel-targets.txt', targets.sort.join(' '))
     targets.sort.each { |t| puts t }
   end
 
   manager_changed = changed_files.any? { |f| f.start_with?('rust/') }
   puts 'Selenium Manager sources changed' if manager_changed
-  File.write('compile-manager.txt', manager_changed.to_s)
+  File.write('build/selenium-manager-changed.txt', manager_changed.to_s)
 end
 
 # ./go bazel:build_test_index                    --> 'build/bazel-test-file-index'

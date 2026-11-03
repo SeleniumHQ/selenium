@@ -471,15 +471,14 @@ public class SeleniumExtension
   private void logWebdriverDetails(ExtensionContext context) {
     try {
       Optional.ofNullable(instances.get())
-          .ifPresent(
-              (Instances current) -> {
-                System.err.println();
-                System.err.println("Test failure details:");
-                System.err.printf("  URL: %s%n", safely(current.driver::getCurrentUrl));
-                System.err.printf("  Title: %s%n", safely(current.driver::getTitle));
-                System.err.printf("  Page source: %s%n", savePageSource(current.driver, context));
-                System.err.printf("  Screenshot: %s%n", saveScreenshot(current.driver, context));
-              });
+          .ifPresent((Instances current) -> {
+            System.err.println();
+            System.err.println("Test failure details:");
+            System.err.printf("  URL: %s%n", safely(current.driver::getCurrentUrl));
+            System.err.printf("  Title: %s%n", safely(current.driver::getTitle));
+            System.err.printf("  Page source: %s%n", savePageSource(current.driver, context));
+            System.err.printf("  Screenshot: %s%n", saveScreenshot(current.driver, context));
+          });
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Failed to log webdriver details: " + e.getMessage(), e);
     }

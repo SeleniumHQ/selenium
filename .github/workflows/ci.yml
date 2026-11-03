@@ -25,6 +25,29 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
+  actionlint:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate workflows
+        uses: raven-actions/actionlint@v2
+
+  format:
+    name: Format
+    if: startsWith(github.head_ref, 'renovate/') != true
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Format
+      run: |
+        ./go format
+        if ! git diff --quiet; then
+          echo "::error::Code needs formatting. Run './go format' locally and push changes."
+          git diff
+          exit 1
+        fi
+
   # Everything but the release PR holds its binding jobs while trunk is locked, so macOS runners stay free for the release.
   wait-for-unlock:
     name: Wait for Trunk Unlock
@@ -82,8 +105,8 @@ jobs:
         fi
       artifact-name: check-targets
       artifact-path: |
-        bazel-targets.txt
-        compile-manager.txt
+        build/bazel-targets.txt
+        build/selenium-manager-changed.txt
 
   read-targets:
     name: Read Targets
@@ -92,7 +115,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       java: ${{ steps.read.outputs.java }}
-      grid: ${{ steps.read.outputs.grid }}
       py: ${{ steps.read.outputs.py }}
       rb: ${{ steps.read.outputs.rb }}
       dotnet: ${{ steps.read.outputs.dotnet }}
@@ -105,17 +127,18 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: check-targets
+          path: build
       - name: Use every target
         if: needs.targets-mode.outputs.mode == 'all'
-        run: echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > bazel-targets.txt
+        run: mkdir -p build && echo "//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..." > build/bazel-targets.txt
       - name: Read targets
         id: read
         env:
           COMMIT_MESSAGES: ${{ join(github.event.commits.*.message, ' ') }}
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          targets=$(cat bazel-targets.txt 2>/dev/null || echo "")
-          if [ "$(cat compile-manager.txt 2>/dev/null)" = "true" ]; then
+          targets=$(cat build/bazel-targets.txt 2>/dev/null || echo "")
+          if [ "$(cat build/selenium-manager-changed.txt 2>/dev/null)" = "true" ]; then
             echo "compile-manager=true" >> "$GITHUB_OUTPUT"
           fi
           check_binding() {
@@ -134,7 +157,6 @@ jobs:
             fi
           }
           process_binding "//java" "java"
-          check_binding "openqa/selenium/grid" "grid"
           check_binding "//dotnet" "dotnet"
           check_binding "//rust" "rust"
           process_binding "//rb" "rb"
@@ -161,12 +183,6 @@ jobs:
     if: "!cancelled() && needs.read-targets.outputs.java != ''"
     with:
       compile-manager: ${{ needs.read-targets.outputs.compile-manager == 'true' }}
-
-  grid:
-    name: Grid
-    needs: [read-targets, wait-for-unlock]
-    uses: ./.github/workflows/ci-grid.yml
-    if: "!cancelled() && needs.read-targets.outputs.grid != ''"
 
   python:
     name: Python
@@ -203,7 +219,7 @@ jobs:
   merge-flaky-results:
     name: Merge Flaky Results
     if: always() && github.event_name == 'schedule' && github.ref == 'refs/heads/trunk'
-    needs: [dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -230,7 +246,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [targets-mode, check, read-targets, dotnet, java, grid, python, ruby, rust, javascript]
+    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

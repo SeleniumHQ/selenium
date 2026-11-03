@@ -19,6 +19,24 @@ const { register, resolve } = require('./registry')
 
 class ValidationError extends Error {}
 
+function checkBounds(typeNode, value, path) {
+  if (typeof value !== 'number') return
+  if (typeNode.min !== undefined) {
+    const ok = typeNode.exclusiveMin ? value > typeNode.min : value >= typeNode.min
+    if (!ok) {
+      const op = typeNode.exclusiveMin ? '>' : '>='
+      throw new ValidationError(`${path}: expected ${op} ${typeNode.min}, got ${value}`)
+    }
+  }
+  if (typeNode.max !== undefined) {
+    const ok = typeNode.exclusiveMax ? value < typeNode.max : value <= typeNode.max
+    if (!ok) {
+      const op = typeNode.exclusiveMax ? '<' : '<='
+      throw new ValidationError(`${path}: expected ${op} ${typeNode.max}, got ${value}`)
+    }
+  }
+}
+
 // Validates a *present* value against a resolved type node, and returns the value to
 // assign for it — usually the same value, but for a nested ref-to-record/union (the
 // freshly constructed/parsed instance — fromWire()/build() inbound, `new RecordClass(value)`/
@@ -60,6 +78,7 @@ function validateValue(typeNode, value, path, direction) {
     if (typeNode.primitive === 'integer' && !Number.isInteger(value)) {
       throw new ValidationError(`${path}: expected an integer, got ${value}`)
     }
+    checkBounds(typeNode, value, path)
     // An inline literal choice (project_bidi_schema.mjs's enumNode()) carries both
     // `primitive` and `enum` — the primitive check above narrows the type, but the
     // closed vocabulary below still needs to run, so only return early when there
@@ -146,7 +165,9 @@ function validateValue(typeNode, value, path, direction) {
     }
 
     if (referenced.kind === 'alias') {
-      return validateValue(referenced.type, value, path, direction)
+      const result = validateValue(referenced.type, value, path, direction)
+      checkBounds(typeNode, result, path)
+      return result
     }
 
     return value

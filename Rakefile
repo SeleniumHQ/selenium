@@ -97,9 +97,8 @@ task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
-  sh "(git log --use-mailmap --format='%aN <%aE>' ; " \
-     'cat .OLD_AUTHORS ; cat AUTHORS) | ' \
-     'sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS'
+  authors = `git log --use-mailmap --format="%aN <%aE>"`.lines + File.readlines('AUTHORS')
+  File.write('AUTHORS', authors.uniq(&:upcase).sort_by(&:upcase).join)
 end
 
 desc 'Update dependencies for all bindings and Rust, plus pinned multitool binaries'

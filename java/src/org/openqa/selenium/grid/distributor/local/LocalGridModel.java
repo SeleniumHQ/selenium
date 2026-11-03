@@ -270,17 +270,15 @@ public class LocalGridModel extends GridModel {
         }
       }
 
-      replacements.forEach(
-          (before, after) -> {
-            nodes.remove(before);
-            nodes.add(after);
-          });
-      toRemove.forEach(
-          node -> {
-            nodes.remove(node);
-            nodePurgeTimes.remove(node.getNodeId());
-            nodeHealthCount.remove(node.getNodeId());
-          });
+      replacements.forEach((before, after) -> {
+        nodes.remove(before);
+        nodes.add(after);
+      });
+      toRemove.forEach(node -> {
+        nodes.remove(node);
+        nodePurgeTimes.remove(node.getNodeId());
+        nodeHealthCount.remove(node.getNodeId());
+      });
     } finally {
       writeLock.unlock();
     }

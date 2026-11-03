@@ -82,15 +82,14 @@ public class BytecodeVersionCheck {
     StringBuilder message =
         new StringBuilder(
             String.format("%s ships classes newer than Java %d:%n", artifact, maxJavaVersion));
-    tooNew.forEach(
-        (jar, found) ->
-            message.append(
-                String.format(
-                    "  %s: %d classes up to Java %d, e.g. %s%n",
-                    jar,
-                    found.count,
-                    found.highestMajor - JAVA_VERSION_OFFSET,
-                    String.join(", ", found.examples))));
+    tooNew.forEach((jar, found) ->
+        message.append(
+            String.format(
+                "  %s: %d classes up to Java %d, e.g. %s%n",
+                jar,
+                found.count,
+                found.highestMajor - JAVA_VERSION_OFFSET,
+                String.join(", ", found.examples))));
     return message.toString();
   }
 

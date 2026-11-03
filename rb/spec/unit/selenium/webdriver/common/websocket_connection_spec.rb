@@ -147,6 +147,28 @@ module Selenium
           expect(Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).to be < 5
         end
 
+        it 'gives concurrent commands distinct ids even if incrementing is not atomic' do
+          stub_const("#{described_class}::RESPONSE_WAIT_TIMEOUT", 5)
+          # Mimic a thread switch inside the increment, as happens on JRuby
+          last_id = 0
+          allow(connection).to receive(:next_id) do
+            expect(connection.instance_variable_get(:@messages_mtx)).to be_owned
+            current = last_id
+            Thread.pass
+            last_id = current + 1
+          end
+          allow(WebSocket::Frame::Outgoing::Client).to receive(:new) { |data:, **| data }
+          allow(socket).to receive(:write) do |data|
+            id = JSON.parse(data)['id']
+            Thread.new { connection.send(:process_frame, %({"id":#{id},"result":{}})) }
+          end
+
+          responses = Array.new(10) { Thread.new { connection.send_cmd(method: 'foo') } }.map(&:value)
+
+          expect(responses.map { |response| response['id'] }).to match_array(1..10)
+          expect(pending_state).to eq([{}, {}])
+        end
+
         it 'stops tracking the command when the write fails' do
           allow(socket).to receive(:write).and_raise(Errno::EPIPE)
 

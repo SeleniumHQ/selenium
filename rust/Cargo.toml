@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "0.4.52-nightly" # don't forget to update rust/BUILD.bazel
+version = "0.4.53-nightly" # don't forget to update rust/BUILD.bazel
 edition = "2024"
 rust-version = "1.93"
 authors = ["Selenium <selenium-developers@googlegroups.com"]

@@ -96,11 +96,9 @@ public class NodeProperties {
     if (rawAttributes != null) {
       Map<String, String> copy = new LinkedHashMap<>();
       RemoteValue.asMap(rawAttributes, "node attributes")
-          .forEach(
-              (name, value) ->
-                  copy.put(
-                      name,
-                      RemoteValue.coerceScalar(value, String.class, "node attribute " + name)));
+          .forEach((name, value) ->
+              copy.put(
+                  name, RemoteValue.coerceScalar(value, String.class, "node attribute " + name)));
       attributes = Optional.of(copy);
     }
 

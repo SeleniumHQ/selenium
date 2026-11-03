@@ -10,7 +10,7 @@ dotnet_nunit_test_suite(
             "obj/**",
         ],
     ),
-    out = "WebDriver.Remote.Tests",
+    out = "Selenium.WebDriver.Remote.Tests",
     browsers = ["remote"],
     data = [
         "//dotnet/src/webdriver:manager-linux-arm64",

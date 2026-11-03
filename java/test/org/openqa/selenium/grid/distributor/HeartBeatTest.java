@@ -51,13 +51,12 @@ public class HeartBeatTest extends DistributorTestBase {
       CountDownLatch latch = new CountDownLatch(1);
 
       bus.addListener(
-          NodeHeartBeatEvent.listener(
-              nodeStatus -> {
-                if (node.getId().equals(nodeStatus.getNodeId())) {
-                  latch.countDown();
-                  heartbeatStarted.set(true);
-                }
-              }));
+          NodeHeartBeatEvent.listener(nodeStatus -> {
+            if (node.getId().equals(nodeStatus.getNodeId())) {
+              latch.countDown();
+              heartbeatStarted.set(true);
+            }
+          }));
 
       boolean eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
 

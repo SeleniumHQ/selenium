@@ -49,6 +49,7 @@ module Selenium
 
           describe '#set_forced_colors_mode_theme_override',
                    pending_if: [{browser_family: :chromium,
+                                 version: 'stable',
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
                                  reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},

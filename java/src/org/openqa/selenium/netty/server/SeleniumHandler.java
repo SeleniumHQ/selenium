@@ -44,11 +44,10 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) {
     lastOne =
-        EXECUTOR.submit(
-            () -> {
-              HttpResponse res = seleniumHandler.execute(msg);
-              ctx.writeAndFlush(res);
-            });
+        EXECUTOR.submit(() -> {
+          HttpResponse res = seleniumHandler.execute(msg);
+          ctx.writeAndFlush(res);
+        });
   }
 
   @Override

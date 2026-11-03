@@ -282,14 +282,13 @@ class ProxyWebsocketTest {
             new BaseServerOptions(config),
             nullHandler,
             (uri, sink) ->
-                Optional.of(
-                    msg -> {
-                      if (msg instanceof TextMessage) {
-                        incomingRef.set(((TextMessage) msg).text());
-                        sink.accept(new TextMessage(response));
-                        latch.countDown();
-                      }
-                    }))
+                Optional.of(msg -> {
+                  if (msg instanceof TextMessage) {
+                    incomingRef.set(((TextMessage) msg).text());
+                    sink.accept(new TextMessage(response));
+                    latch.countDown();
+                  }
+                }))
         .start();
   }
 }

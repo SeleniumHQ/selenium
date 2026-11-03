@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <AssemblyName>WebDriver.Tests</AssemblyName>
+    <AssemblyName>Selenium.WebDriver.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Tests</RootNamespace>
     <IsTestProject>true</IsTestProject>
     <OutputType>Exe</OutputType>
