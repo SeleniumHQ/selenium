@@ -35,6 +35,15 @@ def test_manual_proxy_is_passed_through():
     assert _bidi_proxy(proxy) == proxy
 
 
+def test_comma_separated_no_proxy_becomes_a_list():
+    proxy = {"proxyType": "manual", "httpProxy": "proxy:8080", "noProxy": "localhost, 127.0.0.1,"}
+    assert _bidi_proxy(proxy)["noProxy"] == ["localhost", "127.0.0.1"]
+
+
+def test_autodetect_flag_is_folded_into_the_type():
+    assert _bidi_proxy({"proxyType": "AUTODETECT", "autodetect": True}) == {"proxyType": "autodetect"}
+
+
 def test_proxy_key_bidi_lacks_fails_instead_of_being_dropped():
     with pytest.raises(WebDriverException, match="ftpProxy"):
         _bidi_proxy({"proxyType": "manual", "ftpProxy": "ftp:21"})

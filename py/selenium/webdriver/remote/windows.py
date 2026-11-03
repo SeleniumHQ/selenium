@@ -1049,6 +1049,13 @@ def _bidi_proxy(proxy: Any) -> dict[str, Any] | None:
         return None
     if not isinstance(proxy, dict) or "proxyType" not in proxy:
         raise WebDriverException(f"Cannot apply the session's proxy setting to a user context: {proxy!r}")
+    proxy = dict(proxy)
+    proxy["proxyType"] = str(proxy["proxyType"]).lower()
+    if proxy["proxyType"] == "autodetect":
+        proxy.pop("autodetect", None)  # classic repeats it as a flag; BiDi needs only the type
+    if isinstance(proxy.get("noProxy"), str):
+        # classic also accepts a comma-separated string; BiDi takes a list
+        proxy["noProxy"] = [host.strip() for host in proxy["noProxy"].split(",") if host.strip()]
     unsupported = [key for key in proxy if key not in _PROXY_KEYS]
     if unsupported:
         raise WebDriverException(
