@@ -80,10 +80,12 @@ tab.screenshot(full_page=True).save("page.png")
    family, with the stage on the payload: started, committed, DOM content loaded, load, failed,
    fragment, history), window opened or closed, and download (started, finished). Each family has an
    add, a remove and a clear; add returns a registration object that remove takes. Payloads carry the
-   window object. An exception in a handler is logged, not raised. A handler is scoped by a window or a
-   user context, never both. With neither, it observes every tab and window in the session, in every
-   user context, including ones opened after it was registered. Registering on a window or user context
-   object is the same as passing it as the scope.
+   window object. An exception in a handler is logged, not raised: this follows 17776's rule for passive
+   observers rather than 17685 decision 7, because a window event only reports what already happened and
+   there is no request to fail. A handler is scoped by a window or a user context, never both. With
+   neither, it observes every tab and window in the session, in every user context, including ones
+   opened after it was registered. Registering on a window or user context object is the same as
+   passing it as the scope.
 
 Left to each binding: type names and packaging, synchronous or asynchronous signatures, how a scope is
 passed, and whether a scoped block for user contexts exists.
@@ -107,9 +109,10 @@ passed, and whether a scoped block for user contexts exists.
 - **Isolation (decision 8).** Chosen: `isolated=True` plus a user context object. Rejected: the object
   as the only route, which makes everyone who wants one clean tab learn a two-step model.
 - **Events (decision 9).** Chosen: one navigation family with the stage on the payload. Rejected: one
-  family per stage (seven add/remove/clear sets for one concept). For the default scope, observing only
-  the current window was considered; a handler that silently stops firing after a switch was judged the
-  larger surprise.
+  family per stage (seven add/remove/clear sets for one concept). For the default scope, 17685's rule
+  was considered: bind to the window the session is on at registration. Such a handler does not follow
+  `switch_to` and misses windows opened later, which for an observer of windows was judged the larger
+  surprise.
 
 ## Consequences
 
