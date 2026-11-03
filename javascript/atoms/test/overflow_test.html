@@ -183,6 +183,30 @@
       assert.strictEqual(bot.dom.getOverflowState(e), HIDDEN);
     });
 
+    QUnit.test('childOfScrollableInHiddenHasScrollStatusWhenItCanScrollIntoView', function(assert) {
+      var y = document.getElementById('scrollableIntoViewY');
+      assert.strictEqual(bot.dom.getOverflowState(y), SCROLL);
+      var x = document.getElementById('scrollableIntoViewX');
+      assert.strictEqual(bot.dom.getOverflowState(x), SCROLL);
+    });
+
+    QUnit.test('childOfScrollableInHiddenHasHiddenStatusWhenItCannotScrollIntoView', function(assert) {
+      var e = document.getElementById('notScrollableIntoView');
+      assert.strictEqual(bot.dom.getOverflowState(e), HIDDEN);
+      var inHiddenScroller = document.getElementById('inHiddenScroller');
+      assert.strictEqual(bot.dom.getOverflowState(inHiddenScroller), HIDDEN);
+    });
+
+    QUnit.test('childOfScrolledScrollableInHiddenHasScrollStatus', function(assert) {
+      var scroller = document.getElementById('scrolledScroller');
+      var e = document.getElementById('scrollableBackIntoView');
+      scroller.scrollTop = 0;
+      assert.strictEqual(bot.dom.getOverflowState(e), HIDDEN);
+      scroller.scrollTop = 10;
+      assert.strictEqual(bot.dom.getOverflowState(e), SCROLL);
+      scroller.scrollTop = 0;
+    });
+
     QUnit.test('overflowOfHtmlAndBodyElements', function(assert) {
       if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
         assert.ok(true, 'Skipping: Android pre-Gingerbread');
@@ -500,6 +524,42 @@
     <div>scroll down to see element</div>
     <br><br><br><br><br><br><br><br><br>
     <div id="overflowScrollInHiddenIsHidden">in overflow hidden</div>
+  </div>
+</div>
+
+<!-- The inner divs are taller or wider than the outer divs, so the outer divs
+     clip the elements, but scrolling the inner divs brings them into view. -->
+<div style="overflow:hidden; height:40px">
+  <div style="overflow:auto; height:60px">
+    <div style="height:45px"></div>
+    <div id="scrollableIntoViewY">clipped, but can scroll into view</div>
+    <br><br><br><br>
+  </div>
+</div>
+<div style="overflow:hidden; width:40px; height:40px">
+  <div style="overflow:auto; width:60px; height:40px; white-space:nowrap">
+    <span style="display:inline-block; width:45px"></span><span id="scrollableIntoViewX">x</span><span style="display:inline-block; width:100px"></span>
+  </div>
+</div>
+<div style="overflow:hidden; height:40px">
+  <div style="overflow:auto; height:80px">
+    <div style="height:45px"></div>
+    <div id="notScrollableIntoView">clipped, and the inner div cannot scroll</div>
+  </div>
+</div>
+<div style="overflow:hidden; height:0px">
+  <div style="overflow:hidden; height:40px">
+    <div style="overflow:auto; height:60px">
+      <div style="height:45px"></div>
+      <div id="inHiddenScroller">clipped, and the inner div is hidden too</div>
+      <br><br><br><br>
+    </div>
+  </div>
+</div>
+<div style="overflow:hidden; height:40px">
+  <div id="scrolledScroller" style="overflow:auto; height:60px; position:relative; top:-20px">
+    <div id="scrollableBackIntoView">above the outer div, scroll up to see it</div>
+    <div style="height:100px"></div>
   </div>
 </div>
 
