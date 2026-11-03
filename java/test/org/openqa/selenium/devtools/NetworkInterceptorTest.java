@@ -71,35 +71,32 @@ class NetworkInterceptorTest extends JupiterTestBase {
     Route route =
         Route.combine(
             Route.matching(req -> true)
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .setStatus(200)
-                                .addHeader("Content-Type", XHTML_UTF_8.toString())
-                                .setContent(
-                                    utf8String(
-                                        "<html><head><title>Hello,"
-                                            + " World!</title></head><body/></html>"))),
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .setStatus(200)
+                            .addHeader("Content-Type", XHTML_UTF_8.toString())
+                            .setContent(
+                                utf8String(
+                                    "<html><head><title>Hello,"
+                                        + " World!</title></head><body/></html>"))),
             Route.matching(req -> req.getUri().contains("london"))
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .setStatus(200)
-                                .addHeader("Content-Type", XHTML_UTF_8.toString())
-                                .setContent(
-                                    utf8String(
-                                        "<html><head><title>Hello,"
-                                            + " London!</title></head><body/></html>"))),
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .setStatus(200)
+                            .addHeader("Content-Type", XHTML_UTF_8.toString())
+                            .setContent(
+                                utf8String(
+                                    "<html><head><title>Hello,"
+                                        + " London!</title></head><body/></html>"))),
             Route.get("/redirect")
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .setStatus(HTTP_MOVED_TEMP)
-                                .setHeader("Location", "/cheese")
-                                .setContent(Contents.utf8String("Delicious"))));
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .setStatus(HTTP_MOVED_TEMP)
+                            .setHeader("Location", "/cheese")
+                            .setContent(Contents.utf8String("Delicious"))));
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -131,13 +128,12 @@ class NetworkInterceptorTest extends JupiterTestBase {
         new NetworkInterceptor(
             localDriver,
             Route.matching(req -> true)
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .setStatus(200)
-                                .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-                                .setContent(utf8String("Creamy, delicious cheese!"))));
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .setStatus(200)
+                            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+                            .setContent(utf8String("Creamy, delicious cheese!"))));
 
     localDriver.get(appServer.whereIs("/cheese"));
 
@@ -175,12 +171,11 @@ class NetworkInterceptorTest extends JupiterTestBase {
         new NetworkInterceptor(
             localDriver,
             Route.matching(req -> true)
-                .to(
-                    () ->
-                        req -> {
-                          seen.set(true);
-                          return NetworkInterceptor.PROCEED_WITH_REQUEST;
-                        }));
+                .to(() ->
+                    req -> {
+                      seen.set(true);
+                      return NetworkInterceptor.PROCEED_WITH_REQUEST;
+                    }));
 
     localDriver.get(appServer.whereIs("/cheese"));
 
@@ -197,12 +192,11 @@ class NetworkInterceptorTest extends JupiterTestBase {
         new NetworkInterceptor(
             localDriver,
             Route.matching(req -> true)
-                .to(
-                    () ->
-                        req ->
-                            new HttpResponse()
-                                .setStatus(HTTP_NOT_FOUND)
-                                .setContent(Contents.utf8String("Oh noes!"))))) {
+                .to(() ->
+                    req ->
+                        new HttpResponse()
+                            .setStatus(HTTP_NOT_FOUND)
+                            .setContent(Contents.utf8String("Oh noes!"))))) {
       localDriver.get(appServer.whereIs("/cheese"));
 
       String text = localDriver.findElement(By.tagName("body")).getText();

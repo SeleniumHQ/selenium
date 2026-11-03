@@ -67,18 +67,16 @@ public class ReverseProxyHandler implements HttpHandler, AutoCloseable {
         toUpstream.setAttribute(attributeName, req.getAttribute(attributeName));
       }
 
-      req.forEachQueryParameter(
-          (name, value) -> {
-            toUpstream.addQueryParameter(name, value);
-          });
+      req.forEachQueryParameter((name, value) -> {
+        toUpstream.addQueryParameter(name, value);
+      });
 
-      req.forEachHeader(
-          (name, value) -> {
-            if (IGNORED_REQ_HEADERS.contains(name.toLowerCase(Locale.ENGLISH))) {
-              return;
-            }
-            toUpstream.addHeader(name, value);
-          });
+      req.forEachHeader((name, value) -> {
+        if (IGNORED_REQ_HEADERS.contains(name.toLowerCase(Locale.ENGLISH))) {
+          return;
+        }
+        toUpstream.addHeader(name, value);
+      });
       // None of this "keep alive" nonsense.
       toUpstream.setHeader("Connection", "keep-alive");
 

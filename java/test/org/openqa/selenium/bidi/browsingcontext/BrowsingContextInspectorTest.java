@@ -75,11 +75,10 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
     Map<String, BrowsingContextInfo> closedWindows = new HashMap<>();
 
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      inspector.onBrowsingContextDestroyed(
-          context -> {
-            // here may arrive events from the previous tests
-            closedWindows.put(context.getId(), context);
-          });
+      inspector.onBrowsingContextDestroyed(context -> {
+        // here may arrive events from the previous tests
+        closedWindows.put(context.getId(), context);
+      });
 
       String originalWindow = driver.getWindowHandle();
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
@@ -304,12 +303,11 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
 
-      assertThatThrownBy(
-              () ->
-                  context.navigate(
-                      "http://invalid-domain-that-does-not-exist.test/",
-                      ReadinessState.COMPLETE,
-                      ofSeconds(1)))
+      assertThatThrownBy(() ->
+              context.navigate(
+                  "http://invalid-domain-that-does-not-exist.test/",
+                  ReadinessState.COMPLETE,
+                  ofSeconds(1)))
           .as("Expect an exception due to navigation failure")
           .isInstanceOf(BiDiException.class);
 
@@ -361,11 +359,10 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
       List<NavigationInfo> receivedEvents = new ArrayList<>();
       CountDownLatch latch = new CountDownLatch(1);
-      inspector.onNavigationStarted(
-          info -> {
-            receivedEvents.add(info);
-            latch.countDown();
-          });
+      inspector.onNavigationStarted(info -> {
+        receivedEvents.add(info);
+        latch.countDown();
+      });
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
       context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);

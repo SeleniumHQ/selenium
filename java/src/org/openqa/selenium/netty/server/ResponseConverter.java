@@ -84,25 +84,23 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
       HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is, CHUNK_SIZE));
       ChannelFuture future = ctx.write(writer);
-      future.addListener(
-          ignored -> {
-            is.close();
-            ctx.flush();
-          });
+      future.addListener(ignored -> {
+        is.close();
+        ctx.flush();
+      });
     }
   }
 
   private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
-    seResponse.forEachHeader(
-        (name, value) -> {
-          if (CONTENT_LENGTH.contentEqualsIgnoreCase(name)
-              || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
-            return;
-          } else if (value == null) {
-            return;
-          }
-          first.headers().add(name, value);
-        });
+    seResponse.forEachHeader((name, value) -> {
+      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name)
+          || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
+        return;
+      } else if (value == null) {
+        return;
+      }
+      first.headers().add(name, value);
+    });
 
     if (allowCors) {
       first.headers().add("Access-Control-Allow-Origin", "*");

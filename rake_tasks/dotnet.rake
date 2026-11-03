@@ -75,6 +75,9 @@ task :docs_generate do
   puts 'Generating .NET documentation'
   FileUtils.rm_rf('build/docs/api/dotnet/')
   Bazel.execute('run', [], '//dotnet:docs')
+rescue RuntimeError
+  FileUtils.rm_rf('build/docs/api/dotnet/')
+  raise
 end
 
 desc 'Install .NET packages to local NuGet cache'

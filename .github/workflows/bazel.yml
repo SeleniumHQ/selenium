@@ -237,7 +237,7 @@ jobs:
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
-        uses: rubygems/configure-rubygems-credentials@main
+        uses: rubygems/configure-rubygems-credentials@v2.1.0
       - name: Run Bazel
         id: run-bazel
         continue-on-error: true

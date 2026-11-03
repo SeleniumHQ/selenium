@@ -114,36 +114,33 @@ class LocalNewSessionQueueTest {
     // supplier. In particular, a shared event bus will cause weird
     // failures to happen.
 
-    toReturn.add(
-        () -> {
-          LocalNewSessionQueue local =
-              new LocalNewSessionQueue(
-                  tracer,
-                  new DefaultSlotMatcher(),
-                  Duration.ofSeconds(1),
-                  Duration.ofSeconds(3),
-                  Duration.ofSeconds(1),
-                  REGISTRATION_SECRET,
-                  5);
-          return new TestData(local, local);
-        });
+    toReturn.add(() -> {
+      LocalNewSessionQueue local =
+          new LocalNewSessionQueue(
+              tracer,
+              new DefaultSlotMatcher(),
+              Duration.ofSeconds(1),
+              Duration.ofSeconds(3),
+              Duration.ofSeconds(1),
+              REGISTRATION_SECRET,
+              5);
+      return new TestData(local, local);
+    });
 
-    toReturn.add(
-        () -> {
-          LocalNewSessionQueue local =
-              new LocalNewSessionQueue(
-                  tracer,
-                  new DefaultSlotMatcher(),
-                  Duration.ofSeconds(1),
-                  Duration.ofSeconds(3),
-                  Duration.ofSeconds(1),
-                  REGISTRATION_SECRET,
-                  5);
+    toReturn.add(() -> {
+      LocalNewSessionQueue local =
+          new LocalNewSessionQueue(
+              tracer,
+              new DefaultSlotMatcher(),
+              Duration.ofSeconds(1),
+              Duration.ofSeconds(3),
+              Duration.ofSeconds(1),
+              REGISTRATION_SECRET,
+              5);
 
-          HttpClient client = new PassthroughHttpClient(local);
-          return new TestData(
-              local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));
-        });
+      HttpClient client = new PassthroughHttpClient(local);
+      return new TestData(local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));
+    });
 
     return toReturn.stream().map(Arguments::of);
   }
@@ -156,12 +153,10 @@ class LocalNewSessionQueueTest {
   private void waitUntilAddedToQueue(SessionRequest request) {
     new FluentWait<>(request)
         .withTimeout(Duration.ofSeconds(5))
-        .until(
-            r ->
-                queue.getQueueContents().stream()
-                    .anyMatch(
-                        sessionRequestCapability ->
-                            sessionRequestCapability.getRequestId().equals(r.getRequestId())));
+        .until(r ->
+            queue.getQueueContents().stream()
+                .anyMatch(sessionRequestCapability ->
+                    sessionRequestCapability.getRequestId().equals(r.getRequestId())));
   }
 
   @ParameterizedTest
@@ -320,31 +315,30 @@ class LocalNewSessionQueueTest {
     CountDownLatch timedOut = new CountDownLatch(1);
 
     Thread distributor =
-        new Thread(
-            () -> {
-              waitUntilAddedToQueue(sessionRequestWithTimeout);
-              isPresent.set(true);
+        new Thread(() -> {
+          waitUntilAddedToQueue(sessionRequestWithTimeout);
+          isPresent.set(true);
 
-              Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+          Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
 
-              try {
-                Thread.sleep(2000); // simulate session waiting in queue
-              } catch (InterruptedException ignore) {
-              }
+          try {
+            Thread.sleep(2000); // simulate session waiting in queue
+          } catch (InterruptedException ignore) {
+          }
 
-              // remove request from queue
-              Map<Capabilities, Long> stereotypes = new HashMap<>();
-              stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
-              wasHandedOut.set(!queue.getNextAvailable(stereotypes).isEmpty());
-              try {
-                timedOut.await(); // wait to go past the request session timeout
-              } catch (InterruptedException ignore) {
-              }
+          // remove request from queue
+          Map<Capabilities, Long> stereotypes = new HashMap<>();
+          stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
+          wasHandedOut.set(!queue.getNextAvailable(stereotypes).isEmpty());
+          try {
+            timedOut.await(); // wait to go past the request session timeout
+          } catch (InterruptedException ignore) {
+          }
 
-              // LocalDistributor could not distribute the session, add it back to queue
-              // it should not be re-added to queue and send back error on session creation
-              queue.retryAddToQueue(sessionRequestWithTimeout);
-            });
+          // LocalDistributor could not distribute the session, add it back to queue
+          // it should not be re-added to queue and send back error on session creation
+          queue.retryAddToQueue(sessionRequestWithTimeout);
+        });
     distributor.start();
 
     LocalDateTime start = LocalDateTime.now();

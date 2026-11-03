@@ -155,6 +155,16 @@ test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 # undeclared resource, so `build` (which `test` inherits) must declare it. CI lowers this to 1.
 build --local_resources=browser=HOST_CPUS
 
+# GitHub Actions browser tests run one browser at a time on the latest stable browser and driver from Selenium Manager.
+test:gh-browser --build_tests_only
+test:gh-browser --keep_going
+test:gh-browser --flaky_test_attempts=2
+test:gh-browser --local_resources=browser=1
+test:gh-browser --skip_incompatible_explicit_targets
+test:gh-browser --pin_browsers=false
+test:gh-browser --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+test:gh-browser --test_env=SE_SKIP_DRIVER_IN_PATH=true
+
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"
 

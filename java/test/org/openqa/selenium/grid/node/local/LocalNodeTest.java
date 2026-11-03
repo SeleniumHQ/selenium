@@ -222,18 +222,17 @@ class LocalNodeTest {
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
-      callables.add(
-          () -> {
-            Either<WebDriverException, CreateSessionResponse> response =
-                node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
-            if (response.isRight()) {
-              CreateSessionResponse res = response.right();
-              assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
-              return res.getSession().getId();
-            } else {
-              throw new AssertionError("Unable to create session" + response.left().getMessage());
-            }
-          });
+      callables.add(() -> {
+        Either<WebDriverException, CreateSessionResponse> response =
+            node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
+        if (response.isRight()) {
+          CreateSessionResponse res = response.right();
+          assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
+          return res.getSession().getId();
+        } else {
+          throw new AssertionError("Unable to create session" + response.left().getMessage());
+        }
+      });
     }
 
     List<Future<SessionId>> futures = Executors.newFixedThreadPool(3).invokeAll(callables);
@@ -608,9 +607,8 @@ class LocalNodeTest {
 
     // Managed downloads are disabled, so a local download attempt fails here instead of forwarding.
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                localFsNode.downloadFile(new HttpRequest(GET, "/session/" + id + "/se/files"), id))
+        .isThrownBy(() ->
+            localFsNode.downloadFile(new HttpRequest(GET, "/session/" + id + "/se/files"), id))
         .withMessageContaining("enable-managed-downloads");
     assertThat(factory.session.lastRequest).isNull();
   }

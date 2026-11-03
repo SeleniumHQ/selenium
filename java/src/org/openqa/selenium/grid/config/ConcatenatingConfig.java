@@ -43,10 +43,9 @@ public class ConcatenatingConfig implements Config {
         Require.nonNull("Config values", values).entrySet().stream()
             .peek(entry -> Require.nonNull("Key", entry.getKey()))
             .peek(entry -> Require.nonNull("Value", entry.getValue()))
-            .map(
-                entry ->
-                    new AbstractMap.SimpleImmutableEntry<>(
-                        String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
+            .map(entry ->
+                new AbstractMap.SimpleImmutableEntry<>(
+                    String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
             .collect(toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

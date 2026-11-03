@@ -31,18 +31,16 @@ public class GuardedRunnableTest {
 
   @Test
   void shouldKeepRunningAfterTaskThrowsAnException() throws InterruptedException {
-    assertKeepsRunning(
-        () -> {
-          throw new RuntimeException("expected");
-        });
+    assertKeepsRunning(() -> {
+      throw new RuntimeException("expected");
+    });
   }
 
   @Test
   void shouldKeepRunningAfterTaskThrowsAnError() throws InterruptedException {
-    assertKeepsRunning(
-        () -> {
-          throw new StackOverflowError("expected");
-        });
+    assertKeepsRunning(() -> {
+      throw new StackOverflowError("expected");
+    });
   }
 
   private void assertKeepsRunning(Runnable failing) throws InterruptedException {
@@ -51,11 +49,10 @@ public class GuardedRunnableTest {
 
     try {
       service.scheduleAtFixedRate(
-          GuardedRunnable.guard(
-              () -> {
-                executions.countDown();
-                failing.run();
-              }),
+          GuardedRunnable.guard(() -> {
+            executions.countDown();
+            failing.run();
+          }),
           0,
           20,
           TimeUnit.MILLISECONDS);

@@ -390,9 +390,8 @@ public class DockerSessionFactory implements SessionFactory {
   private void setEnvVarsToContainer(Map<String, String> envVars) {
     Map<String, String> seEnvVars = System.getenv();
     seEnvVars.entrySet().stream()
-        .filter(
-            entry ->
-                entry.getKey().startsWith("SE_") || entry.getKey().equalsIgnoreCase("LANGUAGE"))
+        .filter(entry ->
+            entry.getKey().startsWith("SE_") || entry.getKey().equalsIgnoreCase("LANGUAGE"))
         .forEach(entry -> envVars.put(entry.getKey(), entry.getValue()));
   }
 
@@ -400,11 +399,10 @@ public class DockerSessionFactory implements SessionFactory {
       Capabilities sessionRequestCapabilities, Map<String, String> envVars) {
     Optional<Dimension> screenResolution =
         ofNullable(getScreenResolution(sessionRequestCapabilities));
-    screenResolution.ifPresent(
-        dimension -> {
-          envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
-          envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
-        });
+    screenResolution.ifPresent(dimension -> {
+      envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
+      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
+    });
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
   }
@@ -561,18 +559,17 @@ public class DockerSessionFactory implements SessionFactory {
     Wait<Object> wait =
         new FluentWait<>(new Object()).withTimeout(duration).ignoring(UncheckedIOException.class);
 
-    wait.until(
-        obj -> {
-          HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-          LOG.fine(response::contentAsString);
-          if (401 == response.getStatus()) {
-            LOG.warning(
-                "Server requires basic authentication. "
-                    + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
-                    + "to provide credentials.");
-          }
-          return 200 == response.getStatus();
-        });
+    wait.until(obj -> {
+      HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+      LOG.fine(response::contentAsString);
+      if (401 == response.getStatus()) {
+        LOG.warning(
+            "Server requires basic authentication. "
+                + "Set SE_ROUTER_USERNAME and SE_ROUTER_PASSWORD environment variables "
+                + "to provide credentials.");
+      }
+      return 200 == response.getStatus();
+    });
   }
 
   private ClientConfig applyBasicAuth(ClientConfig clientConfig) {
