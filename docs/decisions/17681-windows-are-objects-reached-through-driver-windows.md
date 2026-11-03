@@ -133,5 +133,4 @@ passed, and whether a scoped block for user contexts exists.
 ## Appendix
 
 Reference implementation (Python, draft): [#18269](https://github.com/SeleniumHQ/selenium/pull/18269),
-with tests on classic and BiDi sessions. It does not yet pass the proxy or prompt settings to new user
-contexts (decision 8).
+with tests on classic and BiDi sessions.
