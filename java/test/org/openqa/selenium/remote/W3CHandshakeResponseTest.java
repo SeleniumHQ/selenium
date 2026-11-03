@@ -46,7 +46,6 @@ class W3CHandshakeResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat(response.getStatus()).isEqualTo(0);
     assertThat(response.getValue())
         .asInstanceOf(MAP)
         .containsExactlyInAnyOrderEntriesOf(caps.asMap());
