@@ -394,7 +394,8 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
-            Map.of("using", "css selector", "value", "frame[name='1'],iframe[name='1']")),
+            Map.of(
+                "using", "css selector", "value", "frame[name='\\31 '],iframe[name='\\31 ']")),
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
             Map.of("using", "css selector", "value", "frame#\\31 ,iframe#\\31 ")),
@@ -406,7 +407,7 @@ class RemoteWebDriverUnitTest {
   void escapesASpaceInAFrameId() {
     assertFrameLookups(
         "frame 1",
-        "frame[name='frame 1'],iframe[name='frame 1']",
+        "frame[name='frame\\ 1'],iframe[name='frame\\ 1']",
         "frame#frame\\ 1,iframe#frame\\ 1");
   }
 
