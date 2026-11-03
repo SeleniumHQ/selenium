@@ -37,7 +37,6 @@ jobs:
 
   format:
     name: Format
-    if: startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Format
@@ -72,7 +71,7 @@ jobs:
       - name: Decide whether to compute affected targets
         id: mode
         run: |
-          if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
+          if [ "${{ github.event.repository.fork }}" = "true" ]; then
             mode=none
           elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository }}" = "true" ]; then
             mode=all

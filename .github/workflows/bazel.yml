@@ -136,18 +136,6 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
-      - name: Pull latest changes from head ref for PRs
-        if: contains(github.head_ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$HEAD_REF"
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-      - name: Pull latest changes from ref for branch pushes
-        if: contains(github.ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$GIT_REF"
-        env:
-          GIT_REF: ${{ github.ref }}
       - name: Delete browsers and drivers
         if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
         run: ./scripts/github-actions/delete-browsers-drivers.sh
