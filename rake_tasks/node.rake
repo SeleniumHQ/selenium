@@ -22,6 +22,22 @@ def node_version
   SeleniumRake.version('javascript')
 end
 
+# Platform packages come first: @selenium/manager pins each of them as an
+# optional dependency, so they must be on the registry before it is.
+def manager_packages
+  %w[
+    selenium-manager-linux-x64
+    selenium-manager-linux-arm64
+    selenium-manager-darwin
+    selenium-manager-win32-ia32
+    selenium-manager
+  ]
+end
+
+def manager_package_name(package)
+  package.sub('selenium-manager', '@selenium/manager')
+end
+
 def publish_npm_package(target, config, dry_run)
   bazel_args = ["--config=#{config}"]
   bazel_args += ['--', '--dry-run=true'] if dry_run
@@ -127,6 +143,15 @@ task :release do |_task, arguments|
   # registry before anything that may start depending on it.
   publish_npm_package(atoms_publish_target, config, dry_run)
   publish_npm_package(webdriver_publish_target, config, dry_run)
+
+  # Nightlies cannot carry the manager (see node:release_manager), so only
+  # releases publish it, keeping @selenium/manager@<x> beside selenium-webdriver@<x>.
+  next if nightly
+
+  manager_args = []
+  manager_args << 'dry-run' if dry_run
+  manager_args << 'rbe' if config == 'rbe_release'
+  Rake::Task['node:release_manager'].invoke(*manager_args)
 end
 
 desc 'Release @selenium/manager standalone packages to npm (use dry-run to test without publishing)'
@@ -145,15 +170,8 @@ task :release_manager do |_task, arguments|
 
   Rake::Task['node:check_credentials'].invoke unless dry_run
 
-  targets = [
-    '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
-    '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
-    '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
-    '//javascript/selenium-manager-win32-ia32:selenium-manager-win32-ia32.publish',
-    '//javascript/selenium-manager:selenium-manager.publish'
-  ]
-
-  targets.each do |target|
+  manager_packages.each do |package|
+    target = "//javascript/#{package}:#{package}.publish"
     puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
     publish_npm_package(target, config, dry_run)
   end
@@ -163,6 +181,10 @@ desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
   SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{node_version}")
+  manager_packages.each do |package|
+    encoded = manager_package_name(package).sub('/', '%2F')
+    SeleniumRake.verify_package_published("https://registry.npmjs.org/#{encoded}/#{node_version}")
+  end
 end
 
 desc 'Alias for node:release'
