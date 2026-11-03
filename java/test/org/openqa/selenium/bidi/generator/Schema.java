@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -110,6 +112,10 @@ final class Schema {
   }
 
   Generated generate() {
+    return generate(null);
+  }
+
+  Generated generate(Consumer<ClassLoader> verification) {
     String typesJson =
         types.entrySet().stream()
             .map(e -> "'" + e.getKey() + "': " + e.getValue())
@@ -130,7 +136,7 @@ final class Schema {
       try {
         BiDiGenerator.main(new String[] {schemaFile.toString(), srcjar.toString()});
         Map<String, String> sources = readSources(srcjar);
-        assertCompiles(sources);
+        assertCompiles(sources, verification);
         return new Generated(sources);
       } finally {
         Files.deleteIfExists(srcjar);
@@ -142,7 +148,8 @@ final class Schema {
     }
   }
 
-  private static void assertCompiles(Map<String, String> sources) throws IOException {
+  private static void assertCompiles(
+      Map<String, String> sources, Consumer<ClassLoader> verification) throws IOException {
     JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
     assertThat(javac).as("the test JVM must provide a Java compiler").isNotNull();
     List<JavaFileObject> units =
@@ -159,13 +166,24 @@ final class Schema {
                   null,
                   files,
                   diagnostics,
-                  List.of("-classpath", System.getProperty("java.class.path"), "-proc:none"),
+                  List.of(
+                      "-classpath",
+                      System.getProperty("java.class.path"),
+                      "-proc:none",
+                      "-parameters"),
                   null,
                   units)
               .call();
       assertThat(compiled)
           .as("generated sources must compile: %s", diagnostics.getDiagnostics())
           .isTrue();
+      if (verification != null) {
+        try (URLClassLoader loader =
+            new URLClassLoader(
+                new java.net.URL[] {classes.toUri().toURL()}, Schema.class.getClassLoader())) {
+          verification.accept(loader);
+        }
+      }
     } finally {
       try (Stream<Path> walk = Files.walk(classes)) {
         for (Path p : walk.sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {

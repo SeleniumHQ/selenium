@@ -18,6 +18,8 @@
 package org.openqa.selenium.bidi;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -93,6 +95,78 @@ public class ConverterFunctions {
   public static <T> Function<Map<String, Object>, T> fromMap(Class<T> type) {
     Require.nonNull("Type", type);
     return map -> Require.nonNull("Value", JSON.convert(map, type));
+  }
+
+  /** Tests a JSON integer arm without truncation, including its schema bounds. */
+  public static boolean isInteger(
+      Object value,
+      @Nullable String min,
+      @Nullable String max,
+      boolean exclusiveMin,
+      boolean exclusiveMax) {
+    if (!(value instanceof Number)) return false;
+    try {
+      BigDecimal exact = new BigDecimal(value.toString());
+      exact.longValueExact();
+      return (min == null
+              || (exclusiveMin
+                  ? exact.compareTo(new BigDecimal(min)) > 0
+                  : exact.compareTo(new BigDecimal(min)) >= 0))
+          && (max == null
+              || (exclusiveMax
+                  ? exact.compareTo(new BigDecimal(max)) < 0
+                  : exact.compareTo(new BigDecimal(max)) <= 0));
+    } catch (ArithmeticException | NumberFormatException e) {
+      return false;
+    }
+  }
+
+  /** Reads a generated collection without first erasing its element's union type. */
+  public static <T> @Nullable List<T> readList(JsonInput input, Function<JsonInput, T> reader) {
+    if (input.peek() == JsonType.NULL) {
+      input.nextNull();
+      return null;
+    }
+    List<T> values = new ArrayList<>();
+    input.beginArray();
+    while (input.hasNext()) values.add(reader.apply(input));
+    input.endArray();
+    return values;
+  }
+
+  /** Reads one inline-union element, preserving exact integers and typed object arms. */
+  public static @Nullable Object readUnion(JsonInput input, Class<?>... arms) {
+    Object raw;
+    if (input.peek() == JsonType.NUMBER) {
+      // ObjectCoercer reads decimal lexemes as doubles; an integer arm must see the lexeme
+      // before that conversion can round a fractional or out-of-range value into its range.
+      BigDecimal exact = input.nextExactNumber();
+      for (Class<?> arm : arms) {
+        if (arm == Long.class) {
+          try {
+            return exact.longValueExact();
+          } catch (ArithmeticException ignored) {
+            // Another declared arm may accept a non-integral number.
+          }
+        }
+      }
+      raw = exact;
+    } else {
+      raw = input.read(Object.class);
+    }
+    if (raw == null) return null; // The generated element's nullable flag decides validity.
+    for (Class<?> arm : arms) {
+      if (arm.isInstance(raw)) return raw;
+      if (arm == Long.class || arm == String.class || arm == Boolean.class || arm == Number.class) {
+        continue;
+      }
+      try {
+        return JSON.convert(raw, arm);
+      } catch (JsonException ignored) {
+        // A different enum or object arm may match the same JSON kind.
+      }
+    }
+    throw new JsonException("Value does not match a declared union arm: " + raw);
   }
 
   /**
