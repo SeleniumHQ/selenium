@@ -161,11 +161,10 @@ class DriverServiceSessionFactoryTest {
         .thenReturn(
             new HttpResponse()
                 .setStatus(200)
-                .setContent(
-                    () ->
-                        new ByteArrayInputStream(
-                            "{ \"value\": { \"sessionId\": \"1\", \"capabilities\": {} } }"
-                                .getBytes())));
+                .setContent(() ->
+                    new ByteArrayInputStream(
+                        "{ \"value\": { \"sessionId\": \"1\", \"capabilities\": {} } }"
+                            .getBytes())));
     when(clientFactory.createClient(any(ClientConfig.class))).thenReturn(httpClient);
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);

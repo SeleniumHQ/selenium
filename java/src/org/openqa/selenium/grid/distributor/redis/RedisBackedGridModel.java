@@ -370,11 +370,10 @@ public class RedisBackedGridModel extends GridModel {
       }
     }
 
-    toRemove.forEach(
-        node -> {
-          removeAllKeysForNode(node.getNodeId());
-          events.fire(new NodeRemovedEvent(node));
-        });
+    toRemove.forEach(node -> {
+      removeAllKeysForNode(node.getNodeId());
+      events.fire(new NodeRemovedEvent(node));
+    });
   }
 
   @Override
@@ -590,12 +589,11 @@ public class RedisBackedGridModel extends GridModel {
       node.getSlots().stream()
           .filter(s -> slotUUID.equals(s.getId().getSlotId()))
           .findFirst()
-          .ifPresent(
-              slot -> {
-                Slot released =
-                    new Slot(slot.getId(), slot.getStereotype(), slot.getLastStarted(), null);
-                writeNodeWithUpdatedSlot(node, released);
-              });
+          .ifPresent(slot -> {
+            Slot released =
+                new Slot(slot.getId(), slot.getStereotype(), slot.getLastStarted(), null);
+            writeNodeWithUpdatedSlot(node, released);
+          });
     } catch (Exception e) {
       LOG.fine(
           "Could not update node blob after release of slot key "

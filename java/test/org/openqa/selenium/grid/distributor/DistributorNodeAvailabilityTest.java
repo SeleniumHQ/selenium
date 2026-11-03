@@ -236,15 +236,14 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
                 new TestSessionFactory(
                     (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
             .advanced()
-            .healthCheck(
-                () -> {
-                  if (count.get() <= 4) {
-                    count.incrementAndGet();
-                    return new HealthCheck.Result(DOWN, "Down");
-                  }
-                  latch.countDown();
-                  return new HealthCheck.Result(UP, "Up");
-                })
+            .healthCheck(() -> {
+              if (count.get() <= 4) {
+                count.incrementAndGet();
+                return new HealthCheck.Result(DOWN, "Down");
+              }
+              latch.countDown();
+              return new HealthCheck.Result(UP, "Up");
+            })
             .build();
     handler.addHandler(node);
 

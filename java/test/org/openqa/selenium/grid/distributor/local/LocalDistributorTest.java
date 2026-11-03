@@ -296,19 +296,18 @@ class LocalDistributorTest {
 
     List<Callable<@Nullable SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
-      callables.add(
-          () -> {
-            Either<SessionNotCreatedException, CreateSessionResponse> result =
-                distributor.newSession(sessionRequest);
-            if (result.isRight()) {
-              CreateSessionResponse res = result.right();
-              assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
-              return res.getSession().getId();
-            } else {
-              fail("Session creation failed", result.left());
-            }
-            return null;
-          });
+      callables.add(() -> {
+        Either<SessionNotCreatedException, CreateSessionResponse> result =
+            distributor.newSession(sessionRequest);
+        if (result.isRight()) {
+          CreateSessionResponse res = result.right();
+          assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
+          return res.getSession().getId();
+        } else {
+          fail("Session creation failed", result.left());
+        }
+        return null;
+      });
     }
 
     List<Future<SessionId>> futures = Executors.newFixedThreadPool(3).invokeAll(callables);
@@ -456,38 +455,35 @@ class LocalDistributorTest {
 
     long start = System.currentTimeMillis();
     futures.add(
-        service.submit(
-            () ->
-                distributor.newSession(
-                    new SessionRequest(
-                        new RequestId(UUID.randomUUID()),
-                        Instant.now(),
-                        Set.of(W3C),
-                        Set.of(caps),
-                        Map.of(),
-                        Map.of()))));
+        service.submit(() ->
+            distributor.newSession(
+                new SessionRequest(
+                    new RequestId(UUID.randomUUID()),
+                    Instant.now(),
+                    Set.of(W3C),
+                    Set.of(caps),
+                    Map.of(),
+                    Map.of()))));
     futures.add(
-        service.submit(
-            () ->
-                distributor.newSession(
-                    new SessionRequest(
-                        new RequestId(UUID.randomUUID()),
-                        Instant.now(),
-                        Set.of(W3C),
-                        Set.of(caps),
-                        Map.of(),
-                        Map.of()))));
+        service.submit(() ->
+            distributor.newSession(
+                new SessionRequest(
+                    new RequestId(UUID.randomUUID()),
+                    Instant.now(),
+                    Set.of(W3C),
+                    Set.of(caps),
+                    Map.of(),
+                    Map.of()))));
 
-    futures.forEach(
-        f -> {
-          try {
-            f.get();
-          } catch (InterruptedException e) {
-            fail(e.toString(), e);
-          } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-          }
-        });
+    futures.forEach(f -> {
+      try {
+        f.get();
+      } catch (InterruptedException e) {
+        fail(e.toString(), e);
+      } catch (ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    });
 
     // If the sessions are created serially, then we expect the first
     // session to take up to `delay` ms to complete, followed by the
@@ -532,9 +528,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri1, nodeUri1, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "cheese"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri1, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri1, new ImmutableCapabilities(), c, Instant.now())))
             .build();
 
     // Node 2: Will be fully occupied
@@ -542,9 +537,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri2, nodeUri2, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "cheese"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri2, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri2, new ImmutableCapabilities(), c, Instant.now())))
             .build();
 
     // Add both nodes to distributor
@@ -633,9 +627,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "cheese"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
             .build();
 
     // Add node to distributor
@@ -688,9 +681,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "cheese"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
             .build();
 
     // Add node to distributor
@@ -744,9 +736,8 @@ class LocalDistributorTest {
           LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
               .add(
                   new ImmutableCapabilities("browserName", "cheese"),
-                  new TestSessionFactory(
-                      (id, c) ->
-                          new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                  new TestSessionFactory((id, c) ->
+                      new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
               .build();
       nodes.add(node);
       distributor.add(node);
@@ -812,9 +803,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "chrome"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
             .maximumConcurrentSessions(1)
             .build();
     distributor.add(node);
@@ -888,9 +878,8 @@ class LocalDistributorTest {
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
             .add(
                 new ImmutableCapabilities("browserName", "chrome"),
-                new TestSessionFactory(
-                    (id, c) ->
-                        new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                new TestSessionFactory((id, c) ->
+                    new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
             .build();
     distributor.add(node);
 
@@ -948,9 +937,8 @@ class LocalDistributorTest {
           LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
               .add(
                   new ImmutableCapabilities("browserName", "cheese"),
-                  new TestSessionFactory(
-                      (id, c) ->
-                          new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
+                  new TestSessionFactory((id, c) ->
+                      new Session(id, nodeUri, new ImmutableCapabilities(), c, Instant.now())))
               .build();
       nodes.add(node);
       distributor.add(node);

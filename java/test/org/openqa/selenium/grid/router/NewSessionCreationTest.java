@@ -194,15 +194,14 @@ class NewSessionCreationTest {
     // First session creation attempt throws an error.
     // Does not reach second attempt.
     TestSessionFactory sessionFactory =
-        new TestSessionFactory(
-            (id, caps) -> {
-              if (count.get() == 0) {
-                count.incrementAndGet();
-                throw new SessionNotCreatedException("Expected the exception");
-              } else {
-                return new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now());
-              }
-            });
+        new TestSessionFactory((id, caps) -> {
+          if (count.get() == 0) {
+            count.incrementAndGet();
+            throw new SessionNotCreatedException("Expected the exception");
+          } else {
+            return new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now());
+          }
+        });
 
     LocalNode localNode =
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
@@ -266,9 +265,8 @@ class NewSessionCreationTest {
     handler.addHandler(queue);
 
     TestSessionFactory sessionFactory =
-        new TestSessionFactory(
-            (id, caps) ->
-                new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now()));
+        new TestSessionFactory((id, caps) ->
+            new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now()));
 
     LocalNode localNode =
         LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)

@@ -271,13 +271,10 @@ There is also an auto-formatting script that can be run: `./scripts/format.sh`
 
 #### Local Installation
 
-To run Python code locally without building/installing the package, you must first install the dependencies:
+Both tasks below install into the active
+[virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments).
 
-```shell
-pip install -r py/requirements_lock.txt
-```
-
-Then, build the generated files and copy them into your local source tree:
+To run Python code locally without building/installing the package, install the dependencies and copy the generated files into your local source tree:
 
 ```shell
 ./go py:local_dev
@@ -290,11 +287,6 @@ Instead of running from source, you can build and install the selenium package (
 ```shell
 ./go py:install
 ```
-
-This will attempt to install into the global Python `site-packages` directory,
-which might not be writable. To avoid this, you should create and activate a
-[virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments)
-before installing.
 
 
 ### Ruby

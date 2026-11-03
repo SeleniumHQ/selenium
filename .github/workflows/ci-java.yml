@@ -20,18 +20,23 @@ permissions:
   contents: read
 
 jobs:
-  browser-tests:
-    name: Browser Tests
+  smoke:
+    name: Smoke Tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         os: [windows, macos]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
         # macOS runners are scarce, so only use for PRs and nightly runs
         exclude:
           - os: ${{ github.event_name == 'push' && 'macos' || '' }}
+        include:
+          # Edge has no linux-arm64 build
+          - os: ubuntu-24.04-arm
+            tag_filters: "unit,os-sensitive,se-manager,skip-rbe,-edge"
     with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
+      name: Smoke Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
       needs-display: true
       rerun-with-debug: true
@@ -39,14 +44,7 @@ jobs:
       run: >
         [ -s bazel-targets-java.txt ] || echo //java/... > bazel-targets-java.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
-        --build_tests_only
-        --keep_going
-        --flaky_test_attempts 2
-        --local_resources=browser=1
-        --skip_incompatible_explicit_targets
-        --pin_browsers=false
+        --config=gh-browser
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_tag_filters=unit,os-sensitive,se-manager${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-java.txt

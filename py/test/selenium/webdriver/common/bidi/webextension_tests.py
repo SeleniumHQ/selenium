@@ -28,6 +28,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from conftest import _resolve_bazel_path, get_extensions_location
 
+# These tests cover the deprecated driver.webextension module until it is
+# removed; driver_web_extension_tests.py covers install_web_extension().
+pytestmark = pytest.mark.filterwarnings("ignore:driver.webextension is deprecated:DeprecationWarning")
+
 EXTENSIONS = get_extensions_location()
 EXTENSION_ID = "webextensions-selenium-example-v3@example.com"
 EXTENSION_PATH = "webextensions-selenium-example-signed"
@@ -59,6 +63,11 @@ def uninstall_extension_and_verify_extension_uninstalled(driver, extension_info)
 def test_webextension_initialized(driver):
     """Test that the webextension module is initialized properly."""
     assert driver.webextension is not None
+
+
+def test_webextension_is_deprecated(driver):
+    with pytest.warns(DeprecationWarning, match=r"use driver\.install_web_extension\(\)"):
+        assert driver.webextension is not None
 
 
 @pytest.mark.xfail_chrome

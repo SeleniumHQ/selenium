@@ -142,36 +142,34 @@ public class NodeServer extends TemplateGridServerCommand {
         };
 
     bus.addListener(
-        NodeAddedEvent.listener(
-            nodeId -> {
-              if (node.getId().equals(nodeId)) {
-                node.register();
-                LOG.info("Node has been added");
-              }
-            }));
+        NodeAddedEvent.listener(nodeId -> {
+          if (node.getId().equals(nodeId)) {
+            node.register();
+            LOG.info("Node has been added");
+          }
+        }));
 
     bus.addListener(
-        NodeDrainComplete.listener(
-            nodeId -> {
-              if (!node.getId().equals(nodeId)) {
-                return;
-              }
+        NodeDrainComplete.listener(nodeId -> {
+          if (!node.getId().equals(nodeId)) {
+            return;
+          }
 
-              // Wait a beat before shutting down so the final response from the
-              // node can escape.
-              new Thread(
-                      () -> {
-                        try {
-                          Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                          // Swallow, the next thing we're doing is shutting down
-                        }
-                        LOG.info("Shutting down");
-                        System.exit(0);
-                      },
-                      "Node shutdown: " + nodeId)
-                  .start();
-            }));
+          // Wait a beat before shutting down so the final response from the
+          // node can escape.
+          new Thread(
+                  () -> {
+                    try {
+                      Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                      // Swallow, the next thing we're doing is shutting down
+                    }
+                    LOG.info("Shutting down");
+                    System.exit(0);
+                  },
+                  "Node shutdown: " + nodeId)
+              .start();
+        }));
 
     Route httpHandler = Route.combine(node, get("/readyz").to(() -> readinessCheck));
 
@@ -214,40 +212,37 @@ public class NodeServer extends TemplateGridServerCommand {
                 .withMaxDuration(nodeOptions.getRegisterPeriod())
                 .withDelay(nodeOptions.getRegisterCycle())
                 .handleResultIf(result -> true)
-                .onFailure(
-                    event -> {
-                      LOG.severe(
-                          String.format(
-                              "Registration event failed after period of %s seconds. Node will not"
-                                  + " attempt to register again",
-                              nodeOptions.getRegisterPeriod().getSeconds()));
-                      if (nodeOptions.getRegisterShutdownOnFailure()) {
-                        LOG.severe("Shutting down");
-                        System.exit(1);
-                      }
-                    })
+                .onFailure(event -> {
+                  LOG.severe(
+                      String.format(
+                          "Registration event failed after period of %s seconds. Node will not"
+                              + " attempt to register again",
+                          nodeOptions.getRegisterPeriod().getSeconds()));
+                  if (nodeOptions.getRegisterShutdownOnFailure()) {
+                    LOG.severe("Shutting down");
+                    System.exit(1);
+                  }
+                })
                 .build();
 
         LOG.info("Starting registration process for Node " + node.getUri());
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(
-            () -> {
-              Failsafe.with(registrationPolicy)
-                  .run(
-                      () -> {
-                        if (node.isRegistered()) {
-                          throw new InterruptedException("Stopping registration thread.");
-                        }
-                        HealthCheck.Result check = node.getHealthCheck().check();
-                        if (DOWN.equals(check.getAvailability())) {
-                          LOG.severe("Node is not alive: " + check.getMessage());
-                          // Throw an exception to force another check sooner.
-                          throw new UnsupportedOperationException("Node cannot be registered");
-                        }
-                        bus.fire(new NodeStatusEvent(node.getStatus()));
-                        LOG.info("Sending registration event...");
-                      });
-            });
+        executor.submit(() -> {
+          Failsafe.with(registrationPolicy)
+              .run(() -> {
+                if (node.isRegistered()) {
+                  throw new InterruptedException("Stopping registration thread.");
+                }
+                HealthCheck.Result check = node.getHealthCheck().check();
+                if (DOWN.equals(check.getAvailability())) {
+                  LOG.severe("Node is not alive: " + check.getMessage());
+                  // Throw an exception to force another check sooner.
+                  throw new UnsupportedOperationException("Node cannot be registered");
+                }
+                bus.fire(new NodeStatusEvent(node.getStatus()));
+                LOG.info("Sending registration event...");
+              });
+        });
         executor.shutdown();
 
         return this;
@@ -270,14 +265,13 @@ public class NodeServer extends TemplateGridServerCommand {
 
     config
         .get("server", "max-threads")
-        .ifPresent(
-            value ->
-                LOG.log(
-                    Level.WARNING,
-                    () ->
-                        "Support for max-threads flag is deprecated. The intent of the flag is to"
-                            + " set the thread pool size in the Distributor. Please use"
-                            + " newsession-threadpool-size flag instead."));
+        .ifPresent(value ->
+            LOG.log(
+                Level.WARNING,
+                () ->
+                    "Support for max-threads flag is deprecated. The intent of the flag is to"
+                        + " set the thread pool size in the Distributor. Please use"
+                        + " newsession-threadpool-size flag instead."));
 
     Runtime.getRuntime().addShutdownHook(shutdownHook);
     Server<?> server = asServer(config).start();

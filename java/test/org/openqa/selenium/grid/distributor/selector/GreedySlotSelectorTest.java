@@ -207,24 +207,21 @@ class GreedySlotSelectorTest {
     URI uri = createUri();
 
     Set<Slot> slots = new HashSet<>();
-    stereotypes.forEach(
-        stereotype -> {
-          for (int i = 0; i < currentLoad; i++) {
-            Instant now = Instant.now();
-            slots.add(
-                new Slot(
-                    new SlotId(nodeId, UUID.randomUUID()),
-                    stereotype,
-                    now,
-                    new Session(
-                        new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
-          }
+    stereotypes.forEach(stereotype -> {
+      for (int i = 0; i < currentLoad; i++) {
+        Instant now = Instant.now();
+        slots.add(
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                stereotype,
+                now,
+                new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
+      }
 
-          for (int i = 0; i < count - currentLoad; i++) {
-            slots.add(
-                new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
-          }
-        });
+      for (int i = 0; i < count - currentLoad; i++) {
+        slots.add(new Slot(new SlotId(nodeId, UUID.randomUUID()), stereotype, Instant.EPOCH, null));
+      }
+    });
 
     return new NodeStatus(
         nodeId,
@@ -247,23 +244,22 @@ class GreedySlotSelectorTest {
     URI uri = createUri();
 
     Set<Slot> slots = new HashSet<>();
-    stereotypes.forEach(
-        stereotype -> {
-          Capabilities caps = new ImmutableCapabilities(stereotype);
-          for (int i = 0; i < currentLoad; i++) {
-            Instant now = Instant.now();
-            slots.add(
-                new Slot(
-                    new SlotId(nodeId, UUID.randomUUID()),
-                    caps,
-                    now,
-                    new Session(new SessionId(UUID.randomUUID()), uri, caps, caps, now)));
-          }
+    stereotypes.forEach(stereotype -> {
+      Capabilities caps = new ImmutableCapabilities(stereotype);
+      for (int i = 0; i < currentLoad; i++) {
+        Instant now = Instant.now();
+        slots.add(
+            new Slot(
+                new SlotId(nodeId, UUID.randomUUID()),
+                caps,
+                now,
+                new Session(new SessionId(UUID.randomUUID()), uri, caps, caps, now)));
+      }
 
-          for (int i = 0; i < count - currentLoad; i++) {
-            slots.add(new Slot(new SlotId(nodeId, UUID.randomUUID()), caps, Instant.EPOCH, null));
-          }
-        });
+      for (int i = 0; i < count - currentLoad; i++) {
+        slots.add(new Slot(new SlotId(nodeId, UUID.randomUUID()), caps, Instant.EPOCH, null));
+      }
+    });
 
     return new NodeStatus(
         nodeId,

@@ -211,13 +211,12 @@ public class JsonOutput implements Closeable {
           }
           beginObject();
           ((Map<?, ?>) obj)
-              .forEach(
-                  (key, value) -> {
-                    if (value instanceof Optional && ((Optional) value).isEmpty()) {
-                      return;
-                    }
-                    name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
-                  });
+              .forEach((key, value) -> {
+                if (value instanceof Optional && ((Optional) value).isEmpty()) {
+                  return;
+                }
+                name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
+              });
           endObject();
         });
     builder.put(
@@ -449,15 +448,14 @@ public class JsonOutput implements Closeable {
 
     String.valueOf(obj)
         .chars()
-        .forEach(
-            i -> {
-              String escaped = ESCAPES.get(i);
-              if (escaped != null) {
-                toReturn.append(escaped);
-              } else {
-                toReturn.append((char) i);
-              }
-            });
+        .forEach(i -> {
+          String escaped = ESCAPES.get(i);
+          if (escaped != null) {
+            toReturn.append(escaped);
+          } else {
+            toReturn.append((char) i);
+          }
+        });
 
     toReturn.append('"');
 
