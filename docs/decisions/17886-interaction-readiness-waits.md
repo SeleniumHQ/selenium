@@ -82,7 +82,7 @@ than as a blessed pair of wait methods.
   so clocks and keep-alive polls do not prevent settling. Meaningful mutation excludes attribute
   churn that cannot affect layout, and mutation confined to a region annotated inert or detected as
   periodic noise. Running CSS animations and transitions count as activity. Settling can be scoped
-  to a subtree.
+  to a subtree, and open shadow roots are observed; closed ones are reported as unobservable.
 - *Element actionability* — visible, enabled (including `aria-disabled` and the `fieldset`/`legend`
   exception), editable when the planned interaction writes, in the viewport, not obstructed at its
   interaction point, and not moving. Which checks apply depends on the interaction: `type` and
@@ -173,8 +173,10 @@ same thing under five spellings. `settle_window` defaults to the session's confi
 accepts the same values the atom accepts.
 
 This shape does not assume an asynchronous script API. It fits the script module's planned
-synchronous execution with handlers for asynchronous behavior, and it means no client library is
-forced into Selenium's waiting strategy to use Selenium's readiness data.
+synchronous execution with handlers for asynchronous behavior; the one export that settles across
+frames (decision 8) is resolved by the binding with `script.callFunction`'s `awaitPromise`, so the
+accessor still returns a value rather than a promise. No client library is forced into Selenium's
+waiting strategy to use Selenium's readiness data.
 
 **6. Settledness becomes a locally managed page load strategy.** A `settled` page load strategy
 waits for the page to settle after a navigation, in addition to what `normal` guarantees.
@@ -199,15 +201,16 @@ interprets a record containing it:
 ```ts
 export function pendingWork(doc: Document): PendingWork;
 export function settledness(root: Node, settleWindowMs: number): Settledness;
-export function actionability(element: Element, interaction: Interaction): Actionability;
+export function actionability(element: Element, interaction: Interaction): Promise<Actionability>;
 
+// submit and hover take the click checks; type and clear add editable; drop and screenshot drop enabled
 type Interaction = 'click' | 'type' | 'clear' | 'submit' | 'hover' | 'drop' | 'screenshot';
 
 type PendingWork = {
   quiet: boolean;
   observed: boolean;   // false when no preload script ran: history is unavailable (decision 9)
   active: { timers: number; intervals: number; animationFrames: number;
-            requests: number; sockets: number; resources: number; animations: number };
+            requests: number; sockets: number; resources: number };
   inert:  { timers: number; intervals: number; animationFrames: number };
 };
 
@@ -217,7 +220,8 @@ type Settledness = {
   pendingWork: PendingWork;
   mutating: Array<{ path: string; sinceMs: number;
                     reason: 'mutation' | 'animation' | 'transition' }>;
-  unobservable: Array<'closed-shadow'>;   // subtrees whose mutations could not be seen
+  // what could not be seen: closed shadow subtrees, or mutation history before a late install
+  unobservable: Array<'closed-shadow' | 'late-install'>;
 };
 
 type Actionability = {
@@ -236,9 +240,19 @@ caller that sees `unobstructed: true` alongside `cross-origin-ancestor` knows th
 stopped at a frame boundary script cannot read.
 
 `Settledness` nests `PendingWork` because the ledger is its input (decision 1); `Actionability`
-nests neither, which is what makes the interaction path cheap. Every export is synchronous and
-returns a decided answer for the instant it is called — the waiting is the caller's, so the same
-export serves a binding's internal wait, a user's snapshot and a `WebDriverWait` predicate. Bindings
+nests neither, which is what makes the interaction path cheap. Running CSS animations and
+transitions are reported by `Settledness.mutating`, not counted in `PendingWork`: they are DOM
+activity rather than queued work, which is where decision 1 places them. A document the atom was
+injected into late reports the gap twice, by design: `PendingWork.observed` is `false` because the
+ledger has no history, and `Settledness.unobservable` lists `late-install` because the mutation
+record has none either.
+
+`pendingWork` and `settledness` are synchronous and return a decided answer for the instant they
+are called. `actionability` is the exception: `stable` compares the element's box across animation
+frames, which one instant cannot answer, so it resolves after at most a few frames, or immediately
+when `stable` does not apply or another check has already failed. None of the exports waits for
+readiness — that waiting is the caller's, so the same export serves a binding's internal wait, a
+user's snapshot and a `WebDriverWait` predicate. Bindings
 pass arguments and marshal results; no binding adds logic of its own. One artifact is what holds the
 heuristics together: what counts as meaningful mutation, when a spinner is inert and how obstruction
 is hit-tested share definitions, will not stay identical across five hand-written ports, and are one
@@ -457,7 +471,7 @@ frame boundaries, obstruction hit-testing, motion stability, and the per-interac
 is linked from this record's PR as evidence that the semantics above are implementable and testable,
 not as the proposed API shape — decisions 4 and 5 replace its two driver-level wait methods, and
 decision 8 keeps its single atom while requiring narrow named exports in place of its combined
-entry point. It already satisfies decisions 9 and 12: the interaction path consults actionability
+entry point. It already satisfies decisions 1 and 9: the interaction path consults actionability
 alone, settle-then-act is opt-in per call, and an oracle injected into an already-loaded document
 reports that its pending-work history is unobservable rather than reporting quiet. The capability,
 the implicit-wait
