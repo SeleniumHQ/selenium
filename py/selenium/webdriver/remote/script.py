@@ -33,6 +33,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from selenium.common.exceptions import JavascriptException
+from selenium.webdriver.remote.windows import Window
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -315,7 +316,9 @@ class Script:
         """
         self._script.unpin(script_id)
 
-    def execute(self, function_declaration: str | PinnedScript, *args: Any, context_id: str | None = None) -> Any:
+    def execute(
+        self, function_declaration: str | PinnedScript, *args: Any, context_id: str | Window | None = None
+    ) -> Any:
         """Execute JavaScript in the current window and return its result.
 
         Arguments and return values are converted as by ``execute_script``:
@@ -328,8 +331,8 @@ class Script:
             *args: Arguments passed to the function. When ``function_declaration`` is a
                 ``PinnedScript``, the single argument is the code to run with
                 the pinned source in scope, e.g. ``"return helper();"``.
-            context_id: The window handle to run in. Defaults to the current
-                window.
+            context_id: The window handle, or ``Window``, to run in. Defaults
+                to the current window.
 
         Returns:
             The function's return value. When ``function_declaration`` is a ``PinnedScript``,
@@ -342,6 +345,8 @@ class Script:
         Example:
             `total = driver.script.execute("(a, b) => a + b", 1, 2)`
         """
+        if isinstance(context_id, Window):
+            context_id = context_id.handle
         if isinstance(function_declaration, PinnedScript):
             result = self._script.execute(function_declaration, *args, context_id=context_id)
             result.value = deserialize_result(result.value, self._driver)
