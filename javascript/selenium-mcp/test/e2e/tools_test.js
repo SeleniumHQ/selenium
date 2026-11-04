@@ -88,6 +88,7 @@ describe('selenium-mcp tools', function () {
       assert.match(clicked, /button "Inner clicked"/)
       const outer = await ok('browser_click', { ref: refOf(clicked, 'button "Outer button"') })
       assert.match(outer, /button "Outer clicked"/)
+      assert.match(await ok('browser_wait_for', { text: 'Inner clicked' }), /Waited for text/)
     })
 
     it('descends into the bindings iframes page', async function () {
@@ -276,6 +277,10 @@ describe('selenium-mcp tools', function () {
       assert.match(info, /\[info\] fixture info/)
       const warnings = await ok('browser_console_messages', { level: 'warning' })
       assert.ok(!warnings.includes('fixture info'), warnings)
+      await ok('browser_tabs', { action: 'new' })
+      const fresh = await ok('browser_console_messages', {})
+      assert.ok(!fresh.includes('fixture warning'), fresh)
+      await ok('browser_tabs', { action: 'close' })
     })
   })
 

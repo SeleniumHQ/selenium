@@ -104,6 +104,19 @@ async function fill(element, value) {
   await element.sendKeys(String(value))
 }
 
+/**
+ * @param {{name: string, value: string}} field
+ * @return {boolean}
+ */
+function parseChecked(field) {
+  const value = String(field.value).trim().toLowerCase()
+  if (value === 'true') return true
+  if (value === 'false') return false
+  throw new ToolError(
+    `${field.name}: use "true" or "false" for a checkbox or radio, not ${JSON.stringify(field.value)}.`,
+  )
+}
+
 async function setChecked(element, wanted, type) {
   if ((await element.isSelected()) === wanted) return
   if (type === 'radio' && !wanted) {
@@ -190,8 +203,28 @@ async function selectOptions(element, values) {
   return labels
 }
 
+/**
+ * @return {!Promise<string>} the text of the page and of the frames it can
+ *     reach, so a wait sees what browser_snapshot shows inside iframes
+ */
 async function pageText(driver) {
-  return driver.executeScript('return document.body ? document.body.innerText : ""')
+  return driver.executeScript(`
+    const texts = []
+    const visit = (doc, depth) => {
+      if (!doc || depth > 5) return
+      if (doc.body) texts.push(doc.body.innerText)
+      for (const frame of doc.querySelectorAll('iframe, frame')) {
+        let inner = null
+        try {
+          inner = frame.contentDocument
+        } catch {
+          // a cross-origin frame cannot be read from here
+        }
+        visit(inner, depth + 1)
+      }
+    }
+    visit(document, 0)
+    return texts.join('\\n')`)
 }
 
 const tools = [
@@ -274,7 +307,7 @@ const tools = [
           switch (field.type) {
             case 'checkbox':
             case 'radio':
-              return setChecked(element, String(field.value).toLowerCase() === 'true', field.type)
+              return setChecked(element, parseChecked(field), field.type)
             case 'combobox':
               return selectOptions(element, [String(field.value)])
             case 'slider':
@@ -408,4 +441,4 @@ const tools = [
   },
 ]
 
-module.exports = { tools, parseKey, setSliderValue }
+module.exports = { tools, parseChecked, parseKey, setSliderValue }

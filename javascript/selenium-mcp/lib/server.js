@@ -89,7 +89,8 @@ function createServer(config, deps = {}) {
     const problems = validate(tool.inputSchema, args)
     if (problems.length) return errorResult(`Invalid arguments for ${name}: ${problems.join('; ')}`)
     try {
-      log_.finer(`${name} ${JSON.stringify(args)}`)
+      // Argument values can be passwords the agent is typing, so only their names are logged.
+      log_.finer(`${name} (${Object.keys(args).join(', ')})`)
       return await tool.run(ctx, args)
     } catch (e) {
       if (e instanceof ToolError || e instanceof StartAbandonedError) return errorResult(e.message)

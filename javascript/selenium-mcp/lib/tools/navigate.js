@@ -38,6 +38,10 @@ function normalizeUrl(url) {
   return `https://${trimmed}`
 }
 
+function withoutRootDot(host) {
+  return host.endsWith('.') ? host.slice(0, -1) : host
+}
+
 /**
  * @param {!URL} url
  * @param {string} pattern an origin (https://example.com) or a host,
@@ -52,14 +56,16 @@ function originMatches(url, pattern) {
       return false
     }
   }
-  const host = url.hostname
+  // example.com. is the same host as example.com, so neither side keeps the root dot.
+  const host = withoutRootDot(url.hostname)
+  const port = url.port ? `:${url.port}` : ''
   // URL lowercases the host, so the pattern must be too.
-  const wanted = pattern.toLowerCase()
+  const wanted = pattern.toLowerCase().replace(/\.(?=$|:)/, '')
   if (wanted.startsWith('*.')) {
     const base = wanted.slice(2)
     return host === base || host.endsWith('.' + base)
   }
-  return host === wanted || url.host === wanted
+  return host === wanted || host + port === wanted
 }
 
 /**
@@ -140,6 +146,7 @@ const tools = [
     inputSchema: { type: 'object', properties: {} },
     async run(ctx) {
       const driver = await ctx.session.driver()
+      ctx.session.consoleMessages = []
       await driver.navigate().back()
       return actionResult(ctx, 'Navigated back')
     },
@@ -170,10 +177,12 @@ const tools = [
         case 'new':
           await driver.switchTo().newWindow('tab')
           ctx.session.refs.clear()
+          ctx.session.consoleMessages = []
           return actionResult(ctx, 'Opened a new tab')
         case 'select':
           await driver.switchTo().window(pick(index))
           ctx.session.refs.clear()
+          ctx.session.consoleMessages = []
           return actionResult(ctx, `Selected tab ${index}`)
         case 'close': {
           const current = await driver.getWindowHandle()
@@ -187,6 +196,7 @@ const tools = [
           const remaining = handles.filter((h) => h !== target)
           await driver.switchTo().window(target === current ? remaining[0] : current)
           ctx.session.refs.clear()
+          if (target === current) ctx.session.consoleMessages = []
           return actionResult(ctx, `Closed tab ${index === undefined ? handles.indexOf(current) : index}`)
         }
         default:

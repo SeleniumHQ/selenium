@@ -21,7 +21,7 @@ const assert = require('node:assert')
 
 const { allTools } = require('../../lib/server')
 const { checkOrigin, normalizeUrl } = require('../../lib/tools/navigate')
-const { parseKey } = require('../../lib/tools/interact')
+const { parseChecked, parseKey } = require('../../lib/tools/interact')
 const { Key } = require('selenium-webdriver')
 
 /** Every tool the plan puts in v0, named as @playwright/mcp names them. */
@@ -111,6 +111,13 @@ describe('tools', function () {
       assert.throws(() => checkOrigin('https://x.a.test', config([], ['*.A.Test'])), /blocked/)
     })
 
+    it('ignores the DNS root dot on either side', function () {
+      assert.throws(() => checkOrigin('https://example.com./', config([], ['example.com'])), /blocked/)
+      assert.throws(() => checkOrigin('https://x.example.com./', config([], ['*.example.com'])), /blocked/)
+      assert.throws(() => checkOrigin('https://example.com:8080/', config([], ['example.com.:8080'])), /blocked/)
+      checkOrigin('https://example.com./', config(['example.com']))
+    })
+
     it('blocks file:// unless allowed', function () {
       assert.throws(() => checkOrigin('file:///etc/passwd', config()), /--allow-unrestricted-file-access/)
       checkOrigin('file:///tmp/page.html', { ...config(), allowFileAccess: true })
@@ -143,6 +150,18 @@ describe('tools', function () {
 
     it('rejects unknown names', function () {
       assert.throws(() => parseKey('Hyper'), /Unknown key/)
+    })
+  })
+
+  describe('parseChecked', function () {
+    it('takes true or false, ignoring case and spaces', function () {
+      assert.strictEqual(parseChecked({ name: 'Agree', value: 'True' }), true)
+      assert.strictEqual(parseChecked({ name: 'Agree', value: ' false ' }), false)
+    })
+
+    it('refuses anything else instead of unchecking', function () {
+      assert.throws(() => parseChecked({ name: 'Agree', value: 'treu' }), /Agree: use "true" or "false"/)
+      assert.throws(() => parseChecked({ name: 'Agree', value: 'yes' }), /not "yes"/)
     })
   })
 })
