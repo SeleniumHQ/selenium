@@ -76,8 +76,8 @@ The contract:
   A name is quoted with `\` and `"` backslash-escaped; a value escapes `\`, CR and LF as `\\`,
   `\r` and `\n`, so a node never spans two lines.
   States are written in the order of the table below; a `true` state is written bare, a `false`
-  one is left out, and any other value is spelled. The description and element references are
-  not rendered. That is the line grammar of Playwright's aria snapshot, restricted to the fields
+  one is left out, and any other value is spelled. The description, the link `url` and element
+  references are not rendered. That is the line grammar of Playwright's aria snapshot, restricted to the fields
   below and with no refs. The text is derived from the tree and carries no information the tree
   lacks.
 
@@ -92,6 +92,7 @@ AccessibilityNode {
   name:        string                  // computed accessible name; "" when there is none
   description: string                  // computed accessible description; "" when there is none
   value?:      string                  // current value, for textbox, combobox, searchbox and range roles
+  url?:        string                  // the link target, for role link; absent when the element has no href
   states:      map<string, bool | int | "mixed">   // {} when there are none
   element?:    element reference       // absent when the node is not backed by an element
   children:    AccessibilityNode[]     // [] for leaves
@@ -110,7 +111,11 @@ The `states` keys, and when each is present:
 | `disabled` | `true`            | only when disabled                        |
 | `focused`  | `true`            | only on the focused node                  |
 
-`pressed` and grid `selected` follow ARIA's default for an absent attribute: a button without
+`url` is present on a node of role `link` whose element has an `href`, and holds the resolved
+absolute URL (`HTMLAnchorElement.href` for `a` and `area`), as CDP's accessibility tree exposes
+it on links; a `link` without `href`, including an element given the role by `role="link"`, has
+no `url`. It is not rendered in the text form. `pressed` and grid `selected` follow ARIA's
+default for an absent attribute: a button without
 `aria-pressed` is not a toggle button, and most grids are not selectable, so reporting `false`
 would mislead. `iframe` is not a WAI-ARIA role; it marks the node under which a binding attaches
 the frame's tree. Elements html-aam gives no corresponding role are reported as `generic`.
