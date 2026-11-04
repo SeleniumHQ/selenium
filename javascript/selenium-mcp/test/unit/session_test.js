@@ -52,6 +52,24 @@ function controlledBuilds() {
 const CONFIG = { browser: 'chrome', headless: true }
 
 describe('Session lifecycle', function () {
+  it('hands out the browser only once console capture is listening', async function () {
+    let listening
+    const driver = {
+      async quit() {},
+      getBidi: () =>
+        new Promise((_resolve, reject) => {
+          listening = () => reject(new Error('no BiDi in this test'))
+        }),
+    }
+    const session = new Session(CONFIG, { buildDriver: async () => driver })
+    const starting = session.driver()
+    while (!listening) await new Promise((resolve) => setImmediate(resolve))
+    assert.strictEqual(session.isOpen, false)
+    listening()
+    assert.strictEqual(await starting, driver)
+    assert.strictEqual(session.isOpen, true)
+  })
+
   it('starts one browser for concurrent callers', async function () {
     const builds = controlledBuilds()
     const session = new Session(CONFIG, builds)

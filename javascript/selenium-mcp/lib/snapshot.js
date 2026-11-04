@@ -559,6 +559,11 @@ async function takeSnapshot(driver, table, options = {}) {
     const { items } = await driver.executeScript(COLLECT_SCRIPT, includeAll)
     for (const item of items) {
       const depth = baseDepth + item.depth
+      // Page script can reach the in-page ref map, so never trust it to keep
+      // refs unique: a repeated ref would show one element and act on another.
+      if (item.ref !== null && (!Number.isInteger(item.ref) || item.ref < 1 || entries.has(`${prefix}e${item.ref}`))) {
+        throw new Error('The page tampered with element refs, so this snapshot cannot be trusted.')
+      }
       const ref = item.ref ? `${prefix}e${item.ref}` : null
       if (ref) entries.set(ref, { element: item.element, framePath })
       lines.push(formatLine({ ...item, depth }, ref))

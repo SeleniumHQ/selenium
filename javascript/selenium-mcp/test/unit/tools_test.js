@@ -141,6 +141,10 @@ describe('tools', function () {
       assert.deepStrictEqual(parseKey('+'), { modifiers: [], key: '+' })
     })
 
+    it('takes an emoji as one character', function () {
+      assert.deepStrictEqual(parseKey('😀'), { modifiers: [], key: '😀' })
+    })
+
     it('parses chords', function () {
       assert.deepStrictEqual(parseKey('Control+Shift+ArrowLeft'), {
         modifiers: [Key.CONTROL, Key.SHIFT],

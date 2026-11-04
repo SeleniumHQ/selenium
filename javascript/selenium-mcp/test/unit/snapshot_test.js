@@ -23,7 +23,7 @@ const path = require('node:path')
 
 const { JSDOM } = require('jsdom')
 
-const { RefTable, collectNodes, formatLine, framePrefix } = require('../../lib/snapshot')
+const { RefTable, collectNodes, formatLine, framePrefix, takeSnapshot } = require('../../lib/snapshot')
 
 const FIXTURE = fs.readFileSync(path.join(__dirname, '../fixtures/snapshot.html'), 'utf8')
 
@@ -177,6 +177,37 @@ describe('snapshot', function () {
       table.replaceWith(new Map([['e2', kept]]))
       assert.throws(() => table.get('e1'), /not in the current snapshot/)
       assert.strictEqual(table.get('e2'), kept)
+    })
+  })
+
+  describe('takeSnapshot', function () {
+    /** A driver whose page returns `items`, as a page that rewrote the ref map could. */
+    function driverReturning(items) {
+      return {
+        switchTo: () => ({ defaultContent: async () => {} }),
+        executeScript: async () => ({ fresh: false, items }),
+      }
+    }
+    const button = (ref) => ({ depth: 0, role: 'button', name: `b${ref}`, props: [], ref, element: {}, frame: false })
+
+    it('refuses a page that gives two elements the same ref, keeping the old refs', async function () {
+      const table = new RefTable()
+      const kept = { element: {}, framePath: [] }
+      table.set('e9', kept)
+      await assert.rejects(takeSnapshot(driverReturning([button(1), button(1)]), table), /tampered with element refs/)
+      assert.strictEqual(table.get('e9'), kept)
+    })
+
+    it('refuses refs that are not positive integers', async function () {
+      await assert.rejects(takeSnapshot(driverReturning([button('1 or e2')]), new RefTable()), /tampered/)
+      await assert.rejects(takeSnapshot(driverReturning([button(0)]), new RefTable()), /tampered/)
+    })
+
+    it('records each ref against the element shown beside it', async function () {
+      const table = new RefTable()
+      const text = await takeSnapshot(driverReturning([button(1), button(2)]), table)
+      assert.match(text, /\[e1\] button "b1"\n\[e2\] button "b2"/)
+      assert.strictEqual(table.size, 2)
     })
   })
 })

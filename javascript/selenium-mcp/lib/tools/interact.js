@@ -77,7 +77,8 @@ function parseKey(spec) {
   // A lone "+" is the plus key, not an empty chord.
   const parts = raw === '+' ? ['+'] : raw.split('+')
   const resolved = parts.map((part) => {
-    if (part.length === 1) return part
+    // One code point, not one UTF-16 unit, so an emoji is a character too.
+    if ([...part].length === 1) return part
     const named = NAMED_KEYS[part.toLowerCase()]
     if (!named) throw new ToolError(`Unknown key: ${part}`)
     return named

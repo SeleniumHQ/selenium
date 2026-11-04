@@ -128,16 +128,20 @@ class Session {
       await quietlyQuit(driver)
       throw new StartAbandonedError()
     }
-    this.driver_ = driver
-    this.refs.clear()
     this.consoleMessages = []
     try {
       await this.listenToConsole_(driver)
     } catch (e) {
       log_.warning(`console messages unavailable: ${e.message}`)
     }
-    // close() ran while the listener was being set up, and has quit this browser.
-    if (generation !== this.generation_) throw new StartAbandonedError()
+    if (generation !== this.generation_) {
+      await quietlyQuit(driver)
+      throw new StartAbandonedError()
+    }
+    // Only now can other tool calls use the browser, so nothing a page logs
+    // is missed while the console listener is still being set up.
+    this.driver_ = driver
+    this.refs.clear()
     return driver
   }
 
