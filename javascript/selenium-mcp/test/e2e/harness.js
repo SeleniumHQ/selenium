@@ -110,7 +110,19 @@ async function startMcp(overrides = {}) {
  */
 function locate(file) {
   if (fs.existsSync(file)) return file
-  const { runfiles } = require('@bazel/runfiles')
+  // An absolute or relative path that does not exist is a typo, not a runfile.
+  const found = path.isAbsolute(file) || file.startsWith('.') ? null : locateInRunfiles(file)
+  if (!found) throw new Error(`Unable to find ${file}`)
+  return found
+}
+
+function locateInRunfiles(file) {
+  let runfiles
+  try {
+    runfiles = require('@bazel/runfiles').runfiles
+  } catch {
+    return null
+  }
   for (const resolve of [(f) => runfiles.resolve(f), (f) => runfiles.resolveWorkspaceRelative(f)]) {
     try {
       return resolve(file)
@@ -121,15 +133,19 @@ function locate(file) {
   // Pinned browsers live in external repos (e.g. linux_chrome/...), whose
   // runfiles directory is the repo's canonical name, so map the first segment
   // as selenium-webdriver/testing does.
-  const mapping = {}
-  for (const line of fs.readFileSync(runfiles.resolve('_repo_mapping'), 'utf8').split('\n')) {
-    if (line.startsWith(',')) {
-      const [, apparent, canonical] = line.split(',', 3)
-      mapping[apparent] = canonical
+  try {
+    const mapping = {}
+    for (const line of fs.readFileSync(runfiles.resolve('_repo_mapping'), 'utf8').split('\n')) {
+      if (line.startsWith(',')) {
+        const [, apparent, canonical] = line.split(',', 3)
+        mapping[apparent] = canonical
+      }
     }
+    const [repo, ...rest] = file.split('/')
+    return runfiles.resolve([mapping[repo] || '_main', ...rest].join('/'))
+  } catch {
+    return null
   }
-  const [repo, ...rest] = file.split('/')
-  return runfiles.resolve([mapping[repo] || '_main', ...rest].join('/'))
 }
 
 /**
