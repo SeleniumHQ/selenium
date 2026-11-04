@@ -607,7 +607,8 @@ class Windows:
         return self._in_window(handle, classic)
 
     def _is_last_background_window(self, handle: str) -> bool:
-        # Only the BiDi path can close a window other than the current one.
+        # Without BiDi a background window is already closed by switching to it and
+        # calling driver.close(); only the BiDi path needs rerouting for the last one.
         if not self._has_bidi() or self._is_current(handle):
             return False
         return self._driver.window_handles == [handle]

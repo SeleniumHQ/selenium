@@ -21,7 +21,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 from selenium.webdriver.remote.windows import Windows, _bidi_prompt_handler, _bidi_proxy
 
 
@@ -112,7 +112,14 @@ def _bidi_driver(handles, current):
     driver = MagicMock()
     driver.caps = {"webSocketUrl": "ws://localhost/session"}
     driver.window_handles = handles
-    type(driver).current_window_handle = property(lambda self: current)
+
+    def current_window_handle(self):
+        # a driver whose current window has closed reports no such window
+        if current not in handles:
+            raise NoSuchWindowException("current window is closed")
+        return current
+
+    type(driver).current_window_handle = property(current_window_handle)
     return driver
 
 
@@ -121,8 +128,23 @@ def test_closing_the_last_window_uses_the_drivers_close():
     windows = Windows(driver)
     windows._browsing_context = MagicMock()
     windows._close("only")
+    driver.switch_to.window.assert_called_once_with("only")
     driver.close.assert_called_once_with()
     windows._browsing_context.close.assert_not_called()
+
+
+@pytest.mark.parametrize("wait", ["soon", "complete", "interactive"])
+def test_wait_takes_page_load_strategy_names_only(wait):
+    windows = Windows(_bidi_driver(["only"], "only"))
+    with pytest.raises(ValueError, match="normal, eager, none"):
+        windows._resolve_wait(wait)
+
+
+@pytest.mark.parametrize(("wait", "readiness"), [("none", "none"), ("eager", "interactive"), ("normal", "complete")])
+def test_wait_maps_strategy_names_to_readiness(wait, readiness):
+    windows = Windows(_bidi_driver(["only"], "only"))
+    windows._driver.caps["pageLoadStrategy"] = "normal"
+    assert windows._resolve_wait(wait) == (readiness, readiness != "complete")
 
 
 def test_closing_a_background_window_uses_bidi():
