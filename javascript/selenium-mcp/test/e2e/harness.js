@@ -111,7 +111,25 @@ async function startMcp(overrides = {}) {
 function locate(file) {
   if (fs.existsSync(file)) return file
   const { runfiles } = require('@bazel/runfiles')
-  return runfiles.resolveWorkspaceRelative(file)
+  for (const resolve of [(f) => runfiles.resolve(f), (f) => runfiles.resolveWorkspaceRelative(f)]) {
+    try {
+      return resolve(file)
+    } catch {
+      // try the next way
+    }
+  }
+  // Pinned browsers live in external repos (e.g. linux_chrome/...), whose
+  // runfiles directory is the repo's canonical name, so map the first segment
+  // as selenium-webdriver/testing does.
+  const mapping = {}
+  for (const line of fs.readFileSync(runfiles.resolve('_repo_mapping'), 'utf8').split('\n')) {
+    if (line.startsWith(',')) {
+      const [, apparent, canonical] = line.split(',', 3)
+      mapping[apparent] = canonical
+    }
+  }
+  const [repo, ...rest] = file.split('/')
+  return runfiles.resolve([mapping[repo] || '_main', ...rest].join('/'))
 }
 
 /**
