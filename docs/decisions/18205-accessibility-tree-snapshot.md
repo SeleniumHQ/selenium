@@ -50,6 +50,13 @@ Adding them must not break existing implementers of the driver and element types
 and .NET adds virtual members to the `WebDriver` and `WebElement` classes rather than to
 `IWebDriver` and `IWebElement`.
 
+Both methods take one optional parameter, `interestingOnly`, which defaults to `true` and follows
+Puppeteer's `accessibility.snapshot({ interestingOnly })`. With the default the tree is pruned as
+section 2 describes; with `false` it is not, and every rendered element produces a node. Each
+binding spells the parameter per idiom (a keyword argument in Python and Ruby, an options object
+in JavaScript, an overload taking an options type in Java, an optional parameter in .NET), with
+the name `interestingOnly` under the binding's casing.
+
 The contract:
 
 - The whole-page snapshot is rooted at the top-level browsing context of the current window,
@@ -124,6 +131,14 @@ An element produces a node when it is not hidden (in the accname sense) and has 
 `generic`, `none` or `presentation`, or has a non-empty name. Elements that produce no node have
 their children attached to the nearest ancestor that does. The precise pruning is pinned by the
 shared test corpus below, not by this record.
+
+With `interestingOnly` set to `false` that pruning is turned off: every element that is not hidden
+produces a node, whatever its role or name, and `generic`, `none` and `presentation` are reported
+as the roles they are. Hidden-ness, names, states, text leaves and element references are computed
+the same way in both modes, so the unpruned tree is the pruned one with the container nodes left in
+place. This is the tree CDP's `Accessibility.getFullAXTree` shows, minus the nodes it marks
+`ignored`, and it is for consumers that need the document's structure rather than its interesting
+content. The corpus records both forms of every page.
 
 Compatibility rule: adding an optional field or a new `states` key is not a breaking change, and
 consumers must ignore keys they do not recognise. Removing or renaming a field, or changing its
@@ -226,6 +241,14 @@ parent and its DOM parent can differ; the reference still identifies the element
 - **Build on `dom-accessibility-api`.** A pre-1.0, single-maintainer dependency inside every
   release, and output identical to WebdriverIO's by construction, leaving nothing independent to
   compare. Rejected; we accept the cost of our own implementation.
+
+**Pruning**
+- **Always prune, as Playwright does.** The pruned tree is the compact one agents read and the
+  default here. But users of CDP's full tree asked in review for the container nodes it shows, so
+  the unpruned tree is available behind Puppeteer's `interestingOnly: false` rather than as a
+  separate method or a second data model. Rejected as the only mode; kept as the default.
+- **Never prune, as CDP does.** Several times the nodes for the same content, and a text form
+  agents have not been trained on. Rejected as the default.
 
 **Text rendering**
 - **Render the text in the atom.** One renderer instead of five. But the atom runs once per
