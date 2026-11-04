@@ -487,14 +487,13 @@ class RefTable {
   }
 
   /**
-   * @param {string} prefix the frame's ref prefix ('' for the top frame)
+   * Makes `entries` the whole table, so a ref that the latest snapshot no
+   * longer shows cannot be acted on.
+   *
+   * @param {!Map<string, {element: !Object, framePath: !Array<!Object>}>} entries
    */
-  clearFrame(prefix) {
-    for (const key of this.entries_.keys()) {
-      // The next character must start a ref or a nested frame, so that
-      // clearing f1 leaves f10's refs alone.
-      if (key.startsWith(prefix) && /^[ef]\d/.test(key.slice(prefix.length))) this.entries_.delete(key)
-    }
+  replaceWith(entries) {
+    this.entries_ = new Map(entries)
   }
 
   set(ref, entry) {
@@ -551,15 +550,17 @@ async function enterFrames(driver, framePath) {
 async function takeSnapshot(driver, table, options = {}) {
   const lines = []
   const includeAll = !!options.all
+  // Filled as the snapshot goes and swapped in only once it is complete, so a
+  // snapshot cut short by a dialog leaves the previous refs usable.
+  const entries = new Map()
 
   async function visit(framePath, prefix, baseDepth) {
     await enterFrames(driver, framePath)
-    const { fresh, items } = await driver.executeScript(COLLECT_SCRIPT, includeAll)
-    if (fresh) table.clearFrame(prefix)
+    const { items } = await driver.executeScript(COLLECT_SCRIPT, includeAll)
     for (const item of items) {
       const depth = baseDepth + item.depth
       const ref = item.ref ? `${prefix}e${item.ref}` : null
-      if (ref) table.set(ref, { element: item.element, framePath })
+      if (ref) entries.set(ref, { element: item.element, framePath })
       lines.push(formatLine({ ...item, depth }, ref))
       if (item.frame && item.element) {
         if (framePath.length >= MAX_FRAME_DEPTH) {
@@ -578,6 +579,7 @@ async function takeSnapshot(driver, table, options = {}) {
   }
 
   await visit([], '', 0)
+  table.replaceWith(entries)
   await driver.switchTo().defaultContent()
   return lines.length ? lines.join('\n') : '(page has no visible content)'
 }

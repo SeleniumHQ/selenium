@@ -192,6 +192,15 @@ describe('selenium-mcp tools', function () {
       assert.match(cleared.text, /choose another option/)
     })
 
+    it('refuses a ref whose element the page removed', async function () {
+      const ref = refOf(page, 'button "Remove me"')
+      const after = await ok('browser_click', { ref })
+      assert.ok(!after.includes('Remove me'), after)
+      const stale = await mcp.call('browser_click', { ref })
+      assert.ok(stale.isError)
+      assert.match(stale.text, /not in the current snapshot/)
+    })
+
     it('hovers and double clicks', async function () {
       assert.match(await ok('browser_hover', { ref: refOf(page, 'button "Hover me"') }), /button "Hovered"/)
       const dbl = await ok('browser_click', { ref: refOf(page, 'button "Double click me"'), doubleClick: true })

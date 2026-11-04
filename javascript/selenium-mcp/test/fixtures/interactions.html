@@ -15,6 +15,7 @@
     <option value="oats">Oats</option>
   </select>
   <button id="hover" onmouseover="this.textContent = 'Hovered'">Hover me</button>
+  <button onclick="this.remove()">Remove me</button>
   <button ondblclick="this.textContent = 'Double clicked'">Double click me</button>
   <input aria-label="Keys" onkeydown="if (event.key === 'Enter') document.getElementById('out').textContent = 'Enter in ' + this.value">
   <label><input type="checkbox" id="agree"> Agree</label>

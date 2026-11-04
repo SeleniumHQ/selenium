@@ -169,22 +169,14 @@ describe('snapshot', function () {
       assert.throws(() => new RefTable().get('e9'), /Call browser_snapshot/)
     })
 
-    it('clears one frame without touching the others', function () {
+    it('drops refs the new entries leave out', function () {
       const table = new RefTable()
-      const refs = ['e1', 'f1e1', 'f1f2e1', 'f10e1', 'f3e1']
-      for (const ref of refs) table.set(ref, { element: {}, framePath: [] })
-      table.clearFrame('f1')
-      assert.deepStrictEqual(
-        refs.filter((r) => {
-          try {
-            table.get(r)
-            return true
-          } catch {
-            return false
-          }
-        }),
-        ['e1', 'f10e1', 'f3e1'],
-      )
+      table.set('e1', { element: {}, framePath: [] })
+      table.set('e2', { element: {}, framePath: [] })
+      const kept = { element: {}, framePath: [] }
+      table.replaceWith(new Map([['e2', kept]]))
+      assert.throws(() => table.get('e1'), /not in the current snapshot/)
+      assert.strictEqual(table.get('e2'), kept)
     })
   })
 })
