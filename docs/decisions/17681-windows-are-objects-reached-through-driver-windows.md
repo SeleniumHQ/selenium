@@ -28,17 +28,16 @@ supported API.
    (switching windows, the `window_handle` scope in 17685 and 17776) it also accepts a window object.
    Existing methods that return handle strings keep doing so; the new API never returns one.
 
-2. **Windows are reached through a `windows` entry on the driver**, alongside `network` and `script`.
-   It opens a window, lists the open top-level windows in every user context, and returns the current
-   one. Opening a window
-   does not change which window the driver's own commands target.
+2. **Windows are reached through a `windows` entry on the driver**, alongside `network` and `script`. It
+   opens a window, lists the open top-level windows in every user context, and returns the current one.
+   Opening a window does not change which window the driver's own commands target.
 
 3. **A window carries the navigation and capture verbs, named as they are on the driver**: `get`,
    `refresh`, `back`, `forward`, `close`, `screenshot` and `print_page`, plus `activate` (bring to the
    front) and `switch_to` (make it the driver's current window). It reads `title`, `url`, `opener` and
-   `user_context`. Acting on a window never moves the driver's focus, except `switch_to`, and closing the
-   driver's current window, which behaves as the driver's `close` does. Closing the last open window
-   behaves as the driver's `close` does on the last window, ending the session where it ends it.
+   `user_context`. Acting on a window never moves the driver's focus, except `switch_to`, and closing
+   the driver's current window, which behaves as the driver's `close` does. Closing the last open window
+   ends the session wherever the driver's `close` would.
 
 4. **Results are objects; plain values stay plain.** Navigation verbs return a navigation result with
    the window and the final URL after redirects. `screenshot` and `print_page` return objects giving the
@@ -48,8 +47,8 @@ supported API.
 5. **A window's own navigation returns as the page load strategy says.** When `get`, `refresh`, `back`
    or `forward` on a window returns is decided here: when the session's page load strategy is met, or
    with a timeout error after the page load timeout. A per-call `wait` may override it, using the page
-   load strategy names `none`, `eager` and `normal`. Waiting for navigations the caller did not start is left to
-   [#17676](https://github.com/SeleniumHQ/selenium/pull/17676).
+   load strategy names `none`, `eager` and `normal`. Waiting for navigations the caller did not start is
+   left to [#17676](https://github.com/SeleniumHQ/selenium/pull/17676).
 
 ```python
 tab = driver.windows.open()                       # focus does not move
@@ -82,19 +81,19 @@ tab.screenshot(full_page=True).save("page.png")
 9. **Window events follow 17776's handler rules for passive observers.** Three families: navigation (one
    family, with the stage on the payload: started, committed, DOM content loaded, load, failed,
    fragment, history), window opened or closed, and download (started, finished). This record decides
-   only the download events; where files go and Grid's managed downloads are out of scope. Each family has an
-   add, a remove and a clear; add returns a registration object that remove takes. Payloads carry the
-   window object. An exception in a handler is logged, not raised: this follows 17776's rule for passive
-   observers rather than 17685 decision 7, because a window event only reports what already happened and
-   there is no request to fail. A handler is scoped by a window or a user context, never both. With
-   neither, it observes every tab and window in the session, in every user context, including ones
-   opened after it was registered. 17685's unscoped default differs; aligning the two is proposed in
-   [#18279](https://github.com/SeleniumHQ/selenium/pull/18279). Registering on a window or user context object is the same as
-   passing it as the scope.
+   only the download events; where files go and Grid's managed downloads are out of scope. Each family
+   has an add, a remove and a clear; add returns a registration object that remove takes. Payloads carry
+   the window object. An exception in a handler is logged, not raised: this follows 17776's rule for
+   passive observers rather than 17685 decision 7, because a window event only reports what already
+   happened and there is no request to fail. A handler is scoped by a window or a user context, never
+   both. With neither, it observes every tab and window in the session, in every user context, including
+   ones opened after it was registered. 17685's unscoped default differs; aligning the two is proposed
+   in [#18279](https://github.com/SeleniumHQ/selenium/pull/18279). Registering on a window or user
+   context object is the same as passing it as the scope.
 
 Left to each binding: type names and packaging, synchronous or asynchronous signatures, how a scope is
-passed, and whether a scoped block for user contexts exists. Overriding an inherited setting
-for one user context is left to a later record.
+passed, and whether a scoped block for user contexts exists. Overriding an inherited setting for one
+user context is left to a later record.
 
 ## Considered options
 
