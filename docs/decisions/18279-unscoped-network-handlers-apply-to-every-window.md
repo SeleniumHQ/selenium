@@ -1,7 +1,7 @@
-# NNNN. An unscoped network handler applies to every window in the session
+# 18279. An unscoped network handler applies to every window in the session
 
 - Status: Proposed
-- Discussion: <!-- link to this record's PR -->
+- Discussion: [#18279](https://github.com/SeleniumHQ/selenium/pull/18279)
 
 ## Context
 
