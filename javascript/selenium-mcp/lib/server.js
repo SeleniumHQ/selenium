@@ -94,10 +94,14 @@ function createServer(config, deps = {}) {
     } catch (e) {
       if (e instanceof ToolError) return errorResult(e.message)
       if (session.isSessionGone(e)) {
+        log_.warning(
+          `the browser went away during ${name}; the next call starts a new one: ${firstLine(e.message || e)}`,
+        )
         session.reset()
         return errorResult('The browser is no longer running. The next browser tool call starts a new one.')
       }
       if (e instanceof error.SessionNotCreatedError) {
+        log_.warning(`could not start ${config.browser}: ${firstLine(e.message)}`)
         session.reset()
         return errorResult(
           `Could not start ${config.browser}: ${firstLine(e.message)} ` +

@@ -18,6 +18,9 @@
   <button ondblclick="this.textContent = 'Double clicked'">Double click me</button>
   <input aria-label="Keys" onkeydown="if (event.key === 'Enter') document.getElementById('out').textContent = 'Enter in ' + this.value">
   <label><input type="checkbox" id="agree"> Agree</label>
+  <label><input type="radio" name="size" value="s" checked> Small</label>
+  <label><input type="radio" name="size" value="l"> Large</label>
+  <label>Volume <input type="range" min="0" max="10" value="2" oninput="document.getElementById('out').textContent = 'Volume ' + this.value"></label>
   <button onclick="setTimeout(() => { document.getElementById('out').textContent = 'Done loading' }, 300)">Load later</button>
   <a href="frame-inner.html" target="_blank">Open in new tab</a>
   <p role="status" id="out">Nothing yet</p>

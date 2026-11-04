@@ -48,6 +48,7 @@ Any other MCP client: run `npx @selenium/mcp@latest` as a stdio server.
 | `--grid <url>`             | Run the browser on a Selenium Grid instead of locally.                  |
 | `--allowed-origins <list>` | Semicolon-separated origins or hosts (`*.example.com`) the browser may navigate to. |
 | `--blocked-origins <list>` | Semicolon-separated origins or hosts it may not navigate to.            |
+| `--allow-unrestricted-file-access` | Let `browser_navigate` open `file://` URLs (blocked by default).  |
 | `--log-level <level>`      | Log to stderr: `severe`, `warning` (default), `info`, `fine`, `all`.    |
 
 Flag names match `@playwright/mcp` wherever they mean the same thing.
@@ -104,6 +105,8 @@ transport, more than one session, shadow DOM in snapshots, network and storage t
 ## Security
 
 - No tool runs arbitrary JavaScript in v0.
+- `browser_navigate` opens only http(s), `about:blank` and `data:` URLs; `file://` needs
+  `--allow-unrestricted-file-access`, and `data:` is refused when `--allowed-origins` is set.
 - `--allowed-origins` and `--blocked-origins` restrict where `browser_navigate` can go. They do not stop links,
   redirects or scripts on a page from going elsewhere, so they are not a browser-wide security boundary.
 - Snapshots and screenshots are the only page data returned.

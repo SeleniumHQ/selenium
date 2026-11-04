@@ -104,9 +104,34 @@ async function fill(element, value) {
   await element.sendKeys(String(value))
 }
 
-async function setChecked(element, wanted) {
-  const checked = await element.isSelected()
-  if (checked !== wanted) await element.click()
+async function setChecked(element, wanted, type) {
+  if ((await element.isSelected()) === wanted) return
+  if (type === 'radio' && !wanted) {
+    throw new ToolError('A radio button cannot be cleared by clicking it; choose another option in its group instead.')
+  }
+  await element.click()
+  if ((await element.isSelected()) !== wanted) {
+    throw new ToolError(`Clicking the ${type} did not ${wanted ? 'check' : 'uncheck'} it.`)
+  }
+}
+
+/**
+ * Sets a range input's value. Typing does not move a slider, so the value is
+ * set the way a user's drag ends: assigned, then input and change fired.
+ */
+async function setSliderValue(driver, element, value) {
+  const actual = await driver.executeScript(
+    `const el = arguments[0]
+     el.value = arguments[1]
+     el.dispatchEvent(new Event('input', { bubbles: true }))
+     el.dispatchEvent(new Event('change', { bubbles: true }))
+     return el.value`,
+    element,
+    String(value),
+  )
+  if (actual !== String(value)) {
+    throw new ToolError(`The slider took the value ${actual}, not ${value}; it may be outside its range or step.`)
+  }
 }
 
 /**
@@ -122,26 +147,25 @@ async function selectOptions(element, values) {
     throw new ToolError('browser_select_option needs a <select> element (role combobox or listbox).')
   const multiple = (await element.getAttribute('multiple')) !== null
   if (!multiple && values.length > 1) throw new ToolError('This select allows only one option.')
-  const options = await element.findElements(By.css('option'))
-  const chosen = []
+  const options = []
+  for (const option of await element.findElements(By.css('option'))) {
+    options.push({
+      option,
+      value: await option.getAttribute('value'),
+      label: (await option.getText()).trim(),
+    })
+  }
+  // Check every value before touching the page, so a bad request changes nothing.
+  const missing = values.filter((v) => !options.some((o) => o.value === v || o.label === v))
+  if (missing.length) {
+    const available = options.map((o) => JSON.stringify(o.label)).join(', ')
+    throw new ToolError(`No option matches ${JSON.stringify(missing)}. Options: ${available}`)
+  }
   const labels = []
-  for (const option of options) {
-    const value = await option.getAttribute('value')
-    const label = (await option.getText()).trim()
-    if (values.includes(value) || values.includes(label)) {
-      chosen.push(option)
-      labels.push(label)
-    } else if (multiple && (await option.isSelected())) {
-      await option.click()
-    }
-  }
-  if (chosen.length !== values.length) {
-    const available = []
-    for (const option of options) available.push(JSON.stringify((await option.getText()).trim()))
-    throw new ToolError(`Could not find all of ${JSON.stringify(values)}. Options: ${available.join(', ')}`)
-  }
-  for (const option of chosen) {
-    if (!(await option.isSelected())) await option.click()
+  for (const o of options) {
+    const wanted = values.includes(o.value) || values.includes(o.label)
+    if (wanted) labels.push(o.label)
+    if (wanted !== (await o.option.isSelected()) && (wanted || multiple)) await o.option.click()
   }
   return labels
 }
@@ -225,13 +249,16 @@ const tools = [
     async run(ctx, { fields }) {
       for (const field of fields) {
         const element = await elementFor(ctx, field.ref)
+        const driver = await ctx.session.driver()
         await onElement(field.ref, async () => {
           switch (field.type) {
             case 'checkbox':
             case 'radio':
-              return setChecked(element, String(field.value).toLowerCase() === 'true')
+              return setChecked(element, String(field.value).toLowerCase() === 'true', field.type)
             case 'combobox':
               return selectOptions(element, [String(field.value)])
+            case 'slider':
+              return setSliderValue(driver, element, field.value)
             default:
               return fill(element, field.value)
           }

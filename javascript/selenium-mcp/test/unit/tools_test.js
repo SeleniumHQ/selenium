@@ -79,6 +79,8 @@ describe('tools', function () {
       assert.strictEqual(normalizeUrl('localhost:3000/x'), 'http://localhost:3000/x')
       assert.strictEqual(normalizeUrl('http://example.com'), 'http://example.com')
       assert.strictEqual(normalizeUrl('about:blank'), 'about:blank')
+      assert.strictEqual(normalizeUrl('example.com:8080/x'), 'https://example.com:8080/x')
+      assert.strictEqual(normalizeUrl('data:text/html,hi'), 'data:text/html,hi')
     })
   })
 
@@ -102,6 +104,26 @@ describe('tools', function () {
 
     it('always allows about:blank', function () {
       checkOrigin('about:blank', config(['a.test']))
+    })
+
+    it('matches hosts case-insensitively', function () {
+      assert.throws(() => checkOrigin('https://a.test', config([], ['A.TEST'])), /blocked/)
+      assert.throws(() => checkOrigin('https://x.a.test', config([], ['*.A.Test'])), /blocked/)
+    })
+
+    it('blocks file:// unless allowed', function () {
+      assert.throws(() => checkOrigin('file:///etc/passwd', config()), /--allow-unrestricted-file-access/)
+      checkOrigin('file:///tmp/page.html', { ...config(), allowFileAccess: true })
+    })
+
+    it('allows data: only without an allow list', function () {
+      checkOrigin('data:text/html,hi', config())
+      assert.throws(() => checkOrigin('data:text/html,hi', config(['a.test'])), /data: URLs are not allowed/)
+    })
+
+    it('refuses other schemes', function () {
+      assert.throws(() => checkOrigin('javascript:alert(1)', config()), /not supported/)
+      assert.throws(() => checkOrigin('chrome://settings', config()), /not supported/)
     })
   })
 

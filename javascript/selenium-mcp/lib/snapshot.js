@@ -91,6 +91,68 @@ function collectNodes(includeAll) {
     'treeitem',
   ])
 
+  const LEAF_ROLES = new Set([
+    'button',
+    'checkbox',
+    'heading',
+    'link',
+    'menuitem',
+    'menuitemcheckbox',
+    'menuitemradio',
+    'option',
+    'radio',
+    'switch',
+    'tab',
+    'treeitem',
+  ])
+  // A role attribute's first token that is a real role wins; unknown tokens
+  // are skipped, as browsers do, so a typo does not hide a native button.
+  const KNOWN_ROLES = new Set([
+    ...INTERACTIVE,
+    ...ALWAYS,
+    ...NAME_FROM_CONTENT,
+    'article',
+    'banner',
+    'complementary',
+    'contentinfo',
+    'definition',
+    'document',
+    'feed',
+    'figure',
+    'form',
+    'grid',
+    'gridcell',
+    'group',
+    'img',
+    'list',
+    'log',
+    'main',
+    'marquee',
+    'math',
+    'menu',
+    'menubar',
+    'meter',
+    'navigation',
+    'note',
+    'paragraph',
+    'progressbar',
+    'radiogroup',
+    'region',
+    'rowgroup',
+    'scrollbar',
+    'search',
+    'separator',
+    'table',
+    'tablist',
+    'tabpanel',
+    'term',
+    'timer',
+    'toolbar',
+    'tooltip',
+    'tree',
+    'treegrid',
+  ])
+
   let fresh = false
   if (!window.__seleniumMcpRefs) {
     window.__seleniumMcpRefs = new WeakMap()
@@ -127,8 +189,11 @@ function collectNodes(includeAll) {
   function explicitRole(el) {
     const attr = el.getAttribute('role')
     if (!attr) return undefined
-    const role = attr.trim().split(/\s+/)[0].toLowerCase()
-    return role === 'none' || role === 'presentation' ? null : role
+    for (const token of attr.trim().toLowerCase().split(/\s+/)) {
+      if (token === 'none' || token === 'presentation') return null
+      if (KNOWN_ROLES.has(token)) return token
+    }
+    return undefined
   }
 
   function inputRole(el) {
@@ -324,7 +389,8 @@ function collectNodes(includeAll) {
 
   const items = []
 
-  function walk(el, depth, insideSelect) {
+  // textCovered: an ancestor's name already spells out this text.
+  function walk(el, depth, insideSelect, textCovered) {
     if (SKIP_TAGS.has(el.localName)) return
     if (el.hidden || el.getAttribute('aria-hidden') === 'true') return
     const s = insideSelect ? null : style(el)
@@ -343,6 +409,7 @@ function collectNodes(includeAll) {
     if (insideSelect && role !== 'option') include = false
 
     let childDepth = depth
+    let coversText = textCovered
     if (include) {
       const isFrame = role === 'iframe'
       const name = nameOf(el, role)
@@ -358,23 +425,33 @@ function collectNodes(includeAll) {
       })
       childDepth = depth + 1
       if (isFrame) return
-      // Their content is already the accessible name.
-      if (NAME_FROM_CONTENT.has(role) && role !== 'generic' && el.localName !== 'select') return
+      // Controls whose content is their name hold nothing else worth listing.
+      if (LEAF_ROLES.has(role)) return
       if (role === 'generic' && !el.querySelector('a, button, input, select, textarea, [role], [tabindex]')) return
+      // Containers such as alerts can hold controls (a dismiss button), so
+      // keep walking, but don't repeat the text their name already gave.
+      if (NAME_FROM_CONTENT.has(role) && name) coversText = true
     }
 
     const isSelect = el.localName === 'select'
     for (const child of el.childNodes) {
       if (child.nodeType === Node.ELEMENT_NODE) {
-        walk(child, childDepth, insideSelect || isSelect)
-      } else if (includeAll && visible && child.nodeType === Node.TEXT_NODE && !insideSelect && !isSelect) {
+        walk(child, childDepth, insideSelect || isSelect, coversText)
+      } else if (
+        includeAll &&
+        visible &&
+        !coversText &&
+        child.nodeType === Node.TEXT_NODE &&
+        !insideSelect &&
+        !isSelect
+      ) {
         const text = clean(child.textContent, MAX_TEXT)
         if (text) items.push({ depth: childDepth, role: 'text', name: text, props: [], ref: null, element: null })
       }
     }
   }
 
-  if (document.body) walk(document.body, 0, false)
+  if (document.body) walk(document.body, 0, false, false)
   return { fresh, items }
 }
 
@@ -414,7 +491,9 @@ class RefTable {
    */
   clearFrame(prefix) {
     for (const key of this.entries_.keys()) {
-      if (key.startsWith(prefix)) this.entries_.delete(key)
+      // The next character must start a ref or a nested frame, so that
+      // clearing f1 leaves f10's refs alone.
+      if (key.startsWith(prefix) && /^[ef]\d/.test(key.slice(prefix.length))) this.entries_.delete(key)
     }
   }
 

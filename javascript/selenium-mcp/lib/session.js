@@ -143,6 +143,14 @@ class Session {
 
   /** Quits the browser if one is running. */
   async close() {
+    if (this.starting_) {
+      // Let a start in flight finish, or the browser it opens would outlive the close.
+      try {
+        await this.starting_
+      } catch {
+        // It failed to start; there is nothing to quit.
+      }
+    }
     const driver = this.driver_
     this.reset()
     if (driver) {

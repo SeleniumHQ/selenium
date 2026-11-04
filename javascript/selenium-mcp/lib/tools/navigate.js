@@ -30,7 +30,11 @@ function normalizeUrl(url) {
   const trimmed = String(url).trim()
   // Checked first: "localhost:3000" would otherwise read as a URL scheme.
   if (/^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?(\/|$)/.test(trimmed)) return `http://${trimmed}`
-  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed
+  // A scheme needs "//" or one of the schemes that never take it; otherwise
+  // "example.com:8080" is a host and port.
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) || /^(about|data|javascript|view-source|blob):/i.test(trimmed)) {
+    return trimmed
+  }
   return `https://${trimmed}`
 }
 
@@ -49,16 +53,19 @@ function originMatches(url, pattern) {
     }
   }
   const host = url.hostname
-  if (pattern.startsWith('*.')) {
-    const base = pattern.slice(2)
+  // URL lowercases the host, so the pattern must be too.
+  const wanted = pattern.toLowerCase()
+  if (wanted.startsWith('*.')) {
+    const base = wanted.slice(2)
     return host === base || host.endsWith('.' + base)
   }
-  return host === pattern || url.host === pattern
+  return host === wanted || url.host === wanted
 }
 
 /**
  * @param {string} url
- * @param {{allowedOrigins: !Array<string>, blockedOrigins: !Array<string>}} config
+ * @param {{allowedOrigins: !Array<string>, blockedOrigins: !Array<string>,
+ *     allowFileAccess: (boolean|undefined)}} config
  * @throws {ToolError} if the URL is not allowed
  */
 function checkOrigin(url, config) {
@@ -68,7 +75,24 @@ function checkOrigin(url, config) {
   } catch {
     throw new ToolError(`Not a valid URL: ${url}`)
   }
-  if (parsed.protocol === 'about:' || parsed.protocol === 'data:') return
+  if (parsed.href === 'about:blank') return
+  if (parsed.protocol === 'file:') {
+    // A snapshot would hand the agent the contents of any readable local file.
+    if (!config.allowFileAccess) {
+      throw new ToolError(
+        'file:// URLs are blocked. Start the server with --allow-unrestricted-file-access to allow them.',
+      )
+    }
+    return
+  }
+  if (parsed.protocol === 'data:') {
+    // A data: page has no origin to check against an allow list.
+    if (config.allowedOrigins.length) throw new ToolError('data: URLs are not allowed when --allowed-origins is set.')
+    return
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new ToolError(`Navigation to ${parsed.protocol} URLs is not supported.`)
+  }
   if (config.blockedOrigins.some((p) => originMatches(parsed, p))) {
     throw new ToolError(`Navigation to ${parsed.origin} is blocked by --blocked-origins.`)
   }

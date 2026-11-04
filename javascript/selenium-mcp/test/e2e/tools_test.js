@@ -136,10 +136,35 @@ describe('selenium-mcp tools', function () {
       assert.match(multi, /option "Nuts"\n/)
     })
 
-    it('says which options exist when a value is wrong', async function () {
+    it('says which options exist when a value is wrong, and changes nothing', async function () {
       const result = await mcp.call('browser_select_option', { ref: refOf(page, 'combobox "Fruit"'), values: ['kiwi'] })
       assert.ok(result.isError)
       assert.match(result.text, /"Apple", "Pear"/)
+      const multi = await mcp.call('browser_select_option', {
+        ref: refOf(page, 'listbox "Extras"'),
+        values: ['seeds', 'kiwi'],
+      })
+      assert.ok(multi.isError)
+      assert.match(await ok('browser_snapshot', {}), /option "Nuts" \[selected\]\n\s+option "Seeds"\n/)
+    })
+
+    it('moves a slider through fill_form', async function () {
+      const filled = await ok('browser_fill_form', {
+        fields: [{ name: 'Volume', type: 'slider', ref: refOf(page, 'slider "Volume'), value: '7' }],
+      })
+      assert.match(filled, /status "Volume 7"/)
+    })
+
+    it('picks radios and refuses to clear one', async function () {
+      const picked = await ok('browser_fill_form', {
+        fields: [{ name: 'Large', type: 'radio', ref: refOf(page, 'radio "Large"'), value: 'true' }],
+      })
+      assert.match(picked, /radio "Large" \[checked\]/)
+      const cleared = await mcp.call('browser_fill_form', {
+        fields: [{ name: 'Large', type: 'radio', ref: refOf(picked, 'radio "Large"'), value: 'false' }],
+      })
+      assert.ok(cleared.isError)
+      assert.match(cleared.text, /choose another option/)
     })
 
     it('hovers and double clicks', async function () {
@@ -241,6 +266,14 @@ describe('selenium-mcp tools', function () {
       } finally {
         await restricted.close()
       }
+    })
+
+    it('quits a browser that is still starting when closed', async function () {
+      await ok('browser_close', {})
+      const starting = mcp.session.driver()
+      await ok('browser_close', {})
+      await starting
+      assert.strictEqual(mcp.session.isOpen, false)
     })
 
     it('closes the browser and starts a new one on the next call', async function () {

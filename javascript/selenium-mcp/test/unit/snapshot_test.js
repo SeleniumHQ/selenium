@@ -60,6 +60,10 @@ describe('snapshot', function () {
         'generic "Clickable div"',
         'link "Inside presentation"',
         'button "Labelled by two"',
+        'status "Saved Dismiss"',
+        '  [e', // the status's child below
+        'button "Dismiss"',
+        'button "Typo role"',
         'iframe "Inner"',
       ]) {
         assert.ok(text.includes(line), `expected ${JSON.stringify(line)} in:\n${text}`)
@@ -121,6 +125,12 @@ describe('snapshot', function () {
       assert.ok(refOf(second, 'New') > refOf(first, 'Inner'))
     })
 
+    it('does not repeat a container name as text', function () {
+      const text = render(collect(FIXTURE, true).items)
+      assert.ok(!/text "Saved"/.test(text), text)
+      assert.ok(!/text "Wrong password"/.test(text), text)
+    })
+
     it('handles an empty document', function () {
       assert.strictEqual(collect('<html><body></body></html>').items.length, 0)
     })
@@ -161,10 +171,11 @@ describe('snapshot', function () {
 
     it('clears one frame without touching the others', function () {
       const table = new RefTable()
-      for (const ref of ['e1', 'f1e1', 'f1f2e1', 'f3e1']) table.set(ref, { element: {}, framePath: [] })
+      const refs = ['e1', 'f1e1', 'f1f2e1', 'f10e1', 'f3e1']
+      for (const ref of refs) table.set(ref, { element: {}, framePath: [] })
       table.clearFrame('f1')
       assert.deepStrictEqual(
-        ['e1', 'f1e1', 'f1f2e1', 'f3e1'].filter((r) => {
+        refs.filter((r) => {
           try {
             table.get(r)
             return true
@@ -172,7 +183,7 @@ describe('snapshot', function () {
             return false
           }
         }),
-        ['e1', 'f3e1'],
+        ['e1', 'f10e1', 'f3e1'],
       )
     })
   })

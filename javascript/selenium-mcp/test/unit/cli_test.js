@@ -60,6 +60,11 @@ describe('cli', function () {
     assert.throws(() => parseCommandLine(['--caps=network']), /not supported yet/)
   })
 
+  it('keeps file:// blocked unless asked', function () {
+    assert.strictEqual(parseCommandLine([]).allowFileAccess, false)
+    assert.strictEqual(parseCommandLine(['--allow-unrestricted-file-access']).allowFileAccess, true)
+  })
+
   it('rejects unknown flags', function () {
     assert.throws(() => parseCommandLine(['--nope']))
   })

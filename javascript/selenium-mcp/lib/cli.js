@@ -32,6 +32,8 @@ Options:
   --grid <url>                run the browser on a Selenium Grid at this URL
   --allowed-origins <list>    semicolon-separated origins the browser may navigate to
   --blocked-origins <list>    semicolon-separated origins the browser may not navigate to
+  --allow-unrestricted-file-access
+                              allow browser_navigate to open file:// URLs
   --isolated                  accepted for compatibility; every session already uses a fresh profile
   --log-level <level>         log to stderr at this level: severe, warning (default), info, fine, all
   -h, --help                  show this help
@@ -50,7 +52,7 @@ const NOT_YET = {
  * @param {!Array<string>} argv arguments after the script name
  * @return {{help: boolean, version: boolean, browser: string, headless: boolean,
  *     grid: (string|undefined), allowedOrigins: !Array<string>,
- *     blockedOrigins: !Array<string>, logLevel: string}}
+ *     blockedOrigins: !Array<string>, allowFileAccess: boolean, logLevel: string}}
  * @throws {Error} on an unknown or invalid option
  */
 function parseCommandLine(argv) {
@@ -68,6 +70,7 @@ function parseCommandLine(argv) {
       'allowed-origins': { type: 'string' },
       'blocked-origins': { type: 'string' },
       isolated: { type: 'boolean' },
+      'allow-unrestricted-file-access': { type: 'boolean' },
       'log-level': { type: 'string', default: 'warning' },
       help: { type: 'boolean', short: 'h' },
       version: { type: 'boolean', short: 'v' },
@@ -97,6 +100,7 @@ function parseCommandLine(argv) {
     grid: values.grid,
     allowedOrigins: splitList(values['allowed-origins']),
     blockedOrigins: splitList(values['blocked-origins']),
+    allowFileAccess: !!values['allow-unrestricted-file-access'],
     logLevel: values['log-level'],
   }
 }
