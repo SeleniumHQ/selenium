@@ -67,3 +67,21 @@ test:rbe-ci --manager=stub
 # Configuration changes suggested by EngFlow
 build:rbe --grpc_keepalive_time=30s
 build:rbe --nolegacy_important_outputs
+
+# Cache-only use of the cluster: actions run locally, outputs and passing test results are shared.
+# The token needs packages:read; a rejected token fails the build instead of running without the cache.
+build:remote-cache --remote_cache=grpcs://gypsum.cluster.engflow.com
+build:remote-cache --remote_upload_local_results=false
+build:remote-cache --experimental_remote_cache_chunking
+build:remote-cache --grpc_keepalive_time=30s
+build:remote-cache --bes_backend=grpcs://gypsum.cluster.engflow.com
+build:remote-cache --bes_results_url=https://gypsum.cluster.engflow.com/invocation
+
+build:remote-cache-write --config=remote-cache
+build:remote-cache-write --remote_upload_local_results=true
+
+# Set per platform rather than in remote-cache, which CI adds after these and would override the Windows helper;
+# Bazel starts credential helpers with CreateProcess, which cannot run a shell script
+common:linux --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
+common:macos --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.sh
+common:windows --credential_helper=gypsum.cluster.engflow.com=%workspace%/scripts/credential-helper.bat
