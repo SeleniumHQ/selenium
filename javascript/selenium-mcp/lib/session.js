@@ -65,6 +65,17 @@ function buildOptions(config) {
 }
 
 /**
+ * Thrown to callers waiting on a start that a close() overtook. It says
+ * nothing about the current browser, so it must not reset the session.
+ */
+class StartAbandonedError extends Error {
+  constructor() {
+    super('The browser was closed while it was starting. The next browser tool call starts a new one.')
+    this.name = 'StartAbandonedError'
+  }
+}
+
+/**
  * One browser per server process, started on first use.
  */
 class Session {
@@ -100,9 +111,11 @@ class Session {
   async driver() {
     if (this.driver_) return this.driver_
     if (!this.starting_) {
-      this.starting_ = this.start_().finally(() => {
-        this.starting_ = null
+      const starting = this.start_().finally(() => {
+        // A close() may have moved on to a newer start; leave that one alone.
+        if (this.starting_ === starting) this.starting_ = null
       })
+      this.starting_ = starting
     }
     return this.starting_
   }
@@ -113,7 +126,7 @@ class Session {
     const driver = await this.buildDriver_(buildOptions(this.config))
     if (generation !== this.generation_) {
       await quietlyQuit(driver)
-      throw new error.NoSuchSessionError('The browser was closed while it was starting.')
+      throw new StartAbandonedError()
     }
     this.driver_ = driver
     this.refs.clear()
@@ -123,6 +136,8 @@ class Session {
     } catch (e) {
       log_.warning(`console messages unavailable: ${e.message}`)
     }
+    // close() ran while the listener was being set up, and has quit this browser.
+    if (generation !== this.generation_) throw new StartAbandonedError()
     return driver
   }
 
@@ -196,4 +211,4 @@ function normalizeLevel(level) {
   }
 }
 
-module.exports = { Session, buildOptions, normalizeLevel }
+module.exports = { Session, StartAbandonedError, buildOptions, normalizeLevel }

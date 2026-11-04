@@ -153,6 +153,14 @@ describe('selenium-mcp tools', function () {
         fields: [{ name: 'Volume', type: 'slider', ref: refOf(page, 'slider "Volume'), value: '7' }],
       })
       assert.match(filled, /status "Volume 7"/)
+      const spelled = await ok('browser_fill_form', {
+        fields: [{ name: 'Volume', type: 'slider', ref: refOf(page, 'slider "Volume'), value: '3.0' }],
+      })
+      assert.match(spelled, /status "Volume 3"/)
+      const readonly = await ok('browser_fill_form', {
+        fields: [{ name: 'Readonly', type: 'slider', ref: refOf(page, 'slider "Readonly'), value: '8' }],
+      })
+      assert.match(readonly, /slider "Readonly" \[value="8"\]/)
     })
 
     it('refuses slider values out of range, and disabled sliders, without changing them', async function () {
@@ -290,6 +298,18 @@ describe('selenium-mcp tools', function () {
       await ok('browser_close', {})
       await assert.rejects(starting, /closed while it was starting/)
       assert.strictEqual(mcp.session.isOpen, false)
+    })
+
+    it('keeps a new browser when an abandoned start settles after it', async function () {
+      await ok('browser_close', {})
+      const abandoned = mcp.session.driver()
+      await mcp.session.close()
+      const fresh = mcp.session.driver()
+      await assert.rejects(abandoned, /closed while it was starting/)
+      const driver = await fresh
+      assert.strictEqual(mcp.session.isOpen, true)
+      assert.strictEqual(await mcp.session.driver(), driver)
+      await open('/common/login.html')
     })
 
     it('closes the browser and starts a new one on the next call', async function () {

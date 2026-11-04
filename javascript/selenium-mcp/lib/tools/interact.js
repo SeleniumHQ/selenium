@@ -123,13 +123,17 @@ async function setSliderValue(driver, element, value) {
   const result = await driver.executeScript(
     `const el = arguments[0]
      const wanted = arguments[1]
-     if (el.disabled || el.readOnly) return { error: 'disabled' }
+     // readonly does not apply to range inputs, so only disabled blocks a user.
+     if (el.disabled) return { error: 'disabled' }
      // Try the value on a detached copy first, so a value the slider would
-     // clamp or round is refused without touching the page.
+     // clamp or round is refused without touching the page. Compare as
+     // numbers: "7.0" and "07" are both 7.
      const probe = el.cloneNode(false)
      probe.value = wanted
-     if (probe.value !== wanted) return { error: 'rejected', actual: probe.value }
-     el.value = wanted
+     if (wanted.trim() === '' || Number(probe.value) !== Number(wanted)) {
+       return { error: 'rejected', actual: probe.value }
+     }
+     el.value = probe.value
      el.dispatchEvent(new Event('input', { bubbles: true }))
      el.dispatchEvent(new Event('change', { bubbles: true }))
      return { actual: el.value }`,

@@ -22,7 +22,7 @@ const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontext
 const { error } = require('selenium-webdriver')
 const logging = require('selenium-webdriver/lib/logging')
 
-const { Session } = require('./session')
+const { Session, StartAbandonedError } = require('./session')
 const { ToolError } = require('./tools/common')
 const { validate } = require('./validate')
 
@@ -92,7 +92,7 @@ function createServer(config, deps = {}) {
       log_.finer(`${name} ${JSON.stringify(args)}`)
       return await tool.run(ctx, args)
     } catch (e) {
-      if (e instanceof ToolError) return errorResult(e.message)
+      if (e instanceof ToolError || e instanceof StartAbandonedError) return errorResult(e.message)
       if (session.isSessionGone(e)) {
         log_.warning(
           `the browser went away during ${name}; the next call starts a new one: ${firstLine(e.message || e)}`,
