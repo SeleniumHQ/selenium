@@ -50,9 +50,9 @@ genrule(
 npm_package(
     name = "selenium-mcp",
     srcs = [
+        "README.md",
         ":license",
         ":prod-src-files",
-        "README.md",
     ] + select({
         "//common:stamp": [":package-json-stamped"],
         "//conditions:default": ["package.json"],
