@@ -196,6 +196,15 @@ def test_get_with_wait_override(bidi, pages):
     assert nav.window == tab
     with pytest.raises(ValueError):
         tab.get(pages.url("simpleTest.html"), wait="soon")
+    # page load strategy names, not BiDi readiness names
+    with pytest.raises(ValueError):
+        tab.get(pages.url("simpleTest.html"), wait="complete")
+
+
+def test_get_with_eager_wait_returns_before_load(bidi, pages):
+    tab = bidi.windows.open()
+    tab.get(pages.url("slowLoadingResourcePage.html"), wait="eager")
+    assert bidi.script.execute("() => document.readyState", context_id=tab) != "loading"
 
 
 def test_opener_and_user_context(bidi, pages):

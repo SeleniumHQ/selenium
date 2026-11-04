@@ -51,7 +51,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_WAITS = ("none", "interactive", "complete")
 _STRATEGY_WAITS = {"normal": "complete", "eager": "interactive", "none": "none"}
 # events that end the navigation part of a history traversal; a page restored from the
 # back/forward cache commits but sends no load event, so readiness is checked separately
@@ -288,8 +287,8 @@ class Window:
 
         Args:
             url: The URL to load.
-            wait: ``none``, ``interactive`` or ``complete``. Defaults to what
-                the session's page load strategy waits for.
+            wait: A page load strategy for this call: ``none``, ``eager`` or
+                ``normal``. Defaults to the session's page load strategy.
 
         Returns:
             The navigation, with the final URL after redirects.
@@ -297,7 +296,12 @@ class Window:
         return self._windows._get(self, url, wait)
 
     def refresh(self, *, wait: str | None = None) -> Navigation:
-        """Reload this window's document."""
+        """Reload this window's document.
+
+        Args:
+            wait: A page load strategy for this call: ``none``, ``eager`` or
+                ``normal``. Defaults to the session's page load strategy.
+        """
         return self._windows._refresh(self, wait)
 
     def back(self) -> Navigation:
@@ -309,7 +313,10 @@ class Window:
         return self._windows._traverse(self, 1)
 
     def close(self) -> None:
-        """Close this window, and the user context it was opened with ``isolated=True``."""
+        """Close this window, and the user context it was opened with ``isolated=True``.
+
+        Closing the last open window behaves as ``driver.close()`` does.
+        """
         self._windows._close(self._handle)
 
     def activate(self) -> None:
@@ -599,6 +606,12 @@ class Windows:
             return self._call(handle, bidi)
         return self._in_window(handle, classic)
 
+    def _is_last_background_window(self, handle: str) -> bool:
+        # Only the BiDi path can close a window other than the current one.
+        if not self._has_bidi() or self._is_current(handle):
+            return False
+        return self._driver.window_handles == [handle]
+
     def _in_window(self, handle: str, fn: Callable[[], Any]) -> Any:
         with self._lock:
             try:
@@ -630,9 +643,10 @@ class Windows:
     def _resolve_wait(self, wait: str | None) -> tuple[str, bool]:
         if wait is None:
             return self._session_wait(), False
-        if wait not in _WAITS:
-            raise ValueError(f"wait must be one of {', '.join(_WAITS)}, not {wait!r}")
-        return wait, wait != self._session_wait()
+        if wait not in _STRATEGY_WAITS:
+            raise ValueError(f"wait must be one of {', '.join(_STRATEGY_WAITS)}, not {wait!r}")
+        readiness = _STRATEGY_WAITS[wait]
+        return readiness, readiness != self._session_wait()
 
     def _create_user_context(self) -> str:
         """Create a user context that inherits the session's settings (ADR 17681 decision 8).
@@ -789,7 +803,12 @@ class Windows:
         return Navigation(window, self._dispatch(handle, classic, bidi))
 
     def _close(self, handle: str) -> None:
-        self._dispatch(handle, self._driver.close, lambda: self._bidi_context().close(context=handle))
+        if self._is_last_background_window(handle):
+            # The last window closes the way driver.close() does (ADR 17681 decision 3),
+            # so the session ends where the driver's own close would end it.
+            self._in_window(handle, self._driver.close)
+        else:
+            self._dispatch(handle, self._driver.close, lambda: self._bidi_context().close(context=handle))
         with self._lock:
             owned = self._owned_user_contexts.pop(handle, None)
         if owned is not None:

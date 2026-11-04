@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""How the session's settings are passed to a new user context (ADR 17681 decision 8)."""
+"""User context settings (ADR 17681 decision 8) and closing the last window (decision 3)."""
 
 from unittest.mock import MagicMock
 
@@ -106,3 +106,29 @@ def test_browser_refusing_a_setting_fails_with_its_name():
     caps = {"proxy": {"proxyType": "direct"}}
     with pytest.raises(WebDriverException, match="session's proxy settings"):
         _windows(caps, browser)._create_user_context()
+
+
+def _bidi_driver(handles, current):
+    driver = MagicMock()
+    driver.caps = {"webSocketUrl": "ws://localhost/session"}
+    driver.window_handles = handles
+    type(driver).current_window_handle = property(lambda self: current)
+    return driver
+
+
+def test_closing_the_last_window_uses_the_drivers_close():
+    driver = _bidi_driver(["only"], "gone")
+    windows = Windows(driver)
+    windows._browsing_context = MagicMock()
+    windows._close("only")
+    driver.close.assert_called_once_with()
+    windows._browsing_context.close.assert_not_called()
+
+
+def test_closing_a_background_window_uses_bidi():
+    driver = _bidi_driver(["current", "other"], "current")
+    windows = Windows(driver)
+    windows._browsing_context = MagicMock()
+    windows._close("other")
+    windows._browsing_context.close.assert_called_once_with(context="other")
+    driver.close.assert_not_called()
