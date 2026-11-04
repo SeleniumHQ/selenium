@@ -155,6 +155,22 @@ describe('selenium-mcp tools', function () {
       assert.match(filled, /status "Volume 7"/)
     })
 
+    it('refuses slider values out of range, and disabled sliders, without changing them', async function () {
+      const outOfRange = await mcp.call('browser_fill_form', {
+        fields: [{ name: 'Volume', type: 'slider', ref: refOf(page, 'slider "Volume'), value: '99' }],
+      })
+      assert.ok(outOfRange.isError)
+      assert.match(outOfRange.text, /would take 10/)
+      const locked = await mcp.call('browser_fill_form', {
+        fields: [{ name: 'Locked', type: 'slider', ref: refOf(page, 'slider "Locked'), value: '1' }],
+      })
+      assert.ok(locked.isError)
+      assert.match(locked.text, /disabled/)
+      const after = await ok('browser_snapshot', {})
+      assert.match(after, /status "Nothing yet"/)
+      assert.match(after, /slider "Locked" \[disabled\] \[value="5"\]/)
+    })
+
     it('picks radios and refuses to clear one', async function () {
       const picked = await ok('browser_fill_form', {
         fields: [{ name: 'Large', type: 'radio', ref: refOf(page, 'radio "Large"'), value: 'true' }],
@@ -268,11 +284,11 @@ describe('selenium-mcp tools', function () {
       }
     })
 
-    it('quits a browser that is still starting when closed', async function () {
+    it('quits a browser that is still starting when closed, without waiting for it', async function () {
       await ok('browser_close', {})
       const starting = mcp.session.driver()
       await ok('browser_close', {})
-      await starting
+      await assert.rejects(starting, /closed while it was starting/)
       assert.strictEqual(mcp.session.isOpen, false)
     })
 

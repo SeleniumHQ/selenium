@@ -21,6 +21,7 @@
   <label><input type="radio" name="size" value="s" checked> Small</label>
   <label><input type="radio" name="size" value="l"> Large</label>
   <label>Volume <input type="range" min="0" max="10" value="2" oninput="document.getElementById('out').textContent = 'Volume ' + this.value"></label>
+  <label>Locked <input type="range" min="0" max="10" value="5" disabled></label>
   <button onclick="setTimeout(() => { document.getElementById('out').textContent = 'Done loading' }, 300)">Load later</button>
   <a href="frame-inner.html" target="_blank">Open in new tab</a>
   <p role="status" id="out">Nothing yet</p>

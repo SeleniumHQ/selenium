@@ -78,6 +78,8 @@ class Session {
     this.consoleMessages = []
     this.driver_ = null
     this.starting_ = null
+    // Bumped by close(), so a start that finishes afterwards knows to quit.
+    this.generation_ = 0
     this.buildDriver_ = hooks.buildDriver || ((options) => this.defaultBuildDriver_(options))
   }
 
@@ -107,7 +109,12 @@ class Session {
 
   async start_() {
     log_.info(`starting ${this.config.browser}${this.config.headless ? ' (headless)' : ''}`)
+    const generation = this.generation_
     const driver = await this.buildDriver_(buildOptions(this.config))
+    if (generation !== this.generation_) {
+      await quietlyQuit(driver)
+      throw new error.NoSuchSessionError('The browser was closed while it was starting.')
+    }
     this.driver_ = driver
     this.refs.clear()
     this.consoleMessages = []
@@ -143,23 +150,13 @@ class Session {
 
   /** Quits the browser if one is running. */
   async close() {
-    if (this.starting_) {
-      // Let a start in flight finish, or the browser it opens would outlive the close.
-      try {
-        await this.starting_
-      } catch {
-        // It failed to start; there is nothing to quit.
-      }
-    }
+    // Does not wait for a start in flight, which may never settle; that start
+    // sees the new generation and quits its own browser.
+    this.generation_++
+    this.starting_ = null
     const driver = this.driver_
     this.reset()
-    if (driver) {
-      try {
-        await driver.quit()
-      } catch (e) {
-        log_.finer(`error quitting the browser: ${e.message}`)
-      }
-    }
+    if (driver) await quietlyQuit(driver)
   }
 
   /**
@@ -168,6 +165,14 @@ class Session {
    */
   isSessionGone(e) {
     return e instanceof error.NoSuchSessionError || (e && /ECONNREFUSED|session deleted/i.test(e.message || ''))
+  }
+}
+
+async function quietlyQuit(driver) {
+  try {
+    await driver.quit()
+  } catch (e) {
+    log_.finer(`error quitting the browser: ${e.message}`)
   }
 }
 

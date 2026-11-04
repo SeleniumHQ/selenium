@@ -120,17 +120,25 @@ async function setChecked(element, wanted, type) {
  * set the way a user's drag ends: assigned, then input and change fired.
  */
 async function setSliderValue(driver, element, value) {
-  const actual = await driver.executeScript(
+  const result = await driver.executeScript(
     `const el = arguments[0]
-     el.value = arguments[1]
+     const wanted = arguments[1]
+     if (el.disabled || el.readOnly) return { error: 'disabled' }
+     // Try the value on a detached copy first, so a value the slider would
+     // clamp or round is refused without touching the page.
+     const probe = el.cloneNode(false)
+     probe.value = wanted
+     if (probe.value !== wanted) return { error: 'rejected', actual: probe.value }
+     el.value = wanted
      el.dispatchEvent(new Event('input', { bubbles: true }))
      el.dispatchEvent(new Event('change', { bubbles: true }))
-     return el.value`,
+     return { actual: el.value }`,
     element,
     String(value),
   )
-  if (actual !== String(value)) {
-    throw new ToolError(`The slider took the value ${actual}, not ${value}; it may be outside its range or step.`)
+  if (result.error === 'disabled') throw new ToolError('The slider is disabled.')
+  if (result.error === 'rejected') {
+    throw new ToolError(`The slider would take ${result.actual}, not ${value}; the value is outside its range or step.`)
   }
 }
 
