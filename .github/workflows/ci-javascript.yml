@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel test //javascript/selenium-webdriver:eslint-test
+      run: bazel test //javascript/selenium-webdriver:eslint-test //javascript/selenium-mcp:eslint-test
 
   # Tests on 22.23.4 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version.

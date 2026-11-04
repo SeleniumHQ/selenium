@@ -1,0 +1,364 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+'use strict'
+
+const { By, Key, error } = require('selenium-webdriver')
+
+const { ELEMENT, REF, ToolError, actionResult, elementFor, onElement } = require('./common')
+
+const DEFAULT_WAIT_MS = 10000
+const MAX_WAIT_SECONDS = 60
+
+/** Key names as agents write them (the DOM `key` values Playwright uses). */
+const NAMED_KEYS = {
+  enter: Key.ENTER,
+  return: Key.RETURN,
+  tab: Key.TAB,
+  escape: Key.ESCAPE,
+  esc: Key.ESCAPE,
+  backspace: Key.BACK_SPACE,
+  delete: Key.DELETE,
+  insert: Key.INSERT,
+  space: Key.SPACE,
+  ' ': Key.SPACE,
+  arrowup: Key.ARROW_UP,
+  arrowdown: Key.ARROW_DOWN,
+  arrowleft: Key.ARROW_LEFT,
+  arrowright: Key.ARROW_RIGHT,
+  home: Key.HOME,
+  end: Key.END,
+  pageup: Key.PAGE_UP,
+  pagedown: Key.PAGE_DOWN,
+  shift: Key.SHIFT,
+  control: Key.CONTROL,
+  ctrl: Key.CONTROL,
+  alt: Key.ALT,
+  meta: Key.META,
+  command: Key.COMMAND,
+  f1: Key.F1,
+  f2: Key.F2,
+  f3: Key.F3,
+  f4: Key.F4,
+  f5: Key.F5,
+  f6: Key.F6,
+  f7: Key.F7,
+  f8: Key.F8,
+  f9: Key.F9,
+  f10: Key.F10,
+  f11: Key.F11,
+  f12: Key.F12,
+}
+
+/**
+ * Parses `Enter`, `a` or a chord such as `Control+Shift+A` into the keys to
+ * hold and the key to press.
+ *
+ * @param {string} spec
+ * @return {{modifiers: !Array<string>, key: string}}
+ * @throws {ToolError} for a name that is not a key
+ */
+function parseKey(spec) {
+  const raw = String(spec)
+  // A lone "+" is the plus key, not an empty chord.
+  const parts = raw === '+' ? ['+'] : raw.split('+')
+  const resolved = parts.map((part) => {
+    if (part.length === 1) return part
+    const named = NAMED_KEYS[part.toLowerCase()]
+    if (!named) throw new ToolError(`Unknown key: ${part}`)
+    return named
+  })
+  return { modifiers: resolved.slice(0, -1), key: resolved[resolved.length - 1] }
+}
+
+async function pressKey(driver, spec) {
+  const { modifiers, key } = parseKey(spec)
+  let actions = driver.actions()
+  for (const m of modifiers) actions = actions.keyDown(m)
+  actions = actions.keyDown(key).keyUp(key)
+  for (const m of [...modifiers].reverse()) actions = actions.keyUp(m)
+  await actions.perform()
+}
+
+async function fill(element, value) {
+  try {
+    await element.clear()
+  } catch (e) {
+    // contenteditable and some custom inputs cannot be cleared; typing still works.
+    if (!(e instanceof error.InvalidElementStateError)) throw e
+  }
+  await element.sendKeys(String(value))
+}
+
+async function setChecked(element, wanted) {
+  const checked = await element.isSelected()
+  if (checked !== wanted) await element.click()
+}
+
+/**
+ * Selects options of a <select> by value or by visible text.
+ *
+ * @param {!Object} element the select element
+ * @param {!Array<string>} values
+ * @return {!Promise<!Array<string>>} the labels of the options selected
+ */
+async function selectOptions(element, values) {
+  const tag = (await element.getTagName()).toLowerCase()
+  if (tag !== 'select')
+    throw new ToolError('browser_select_option needs a <select> element (role combobox or listbox).')
+  const multiple = (await element.getAttribute('multiple')) !== null
+  if (!multiple && values.length > 1) throw new ToolError('This select allows only one option.')
+  const options = await element.findElements(By.css('option'))
+  const chosen = []
+  const labels = []
+  for (const option of options) {
+    const value = await option.getAttribute('value')
+    const label = (await option.getText()).trim()
+    if (values.includes(value) || values.includes(label)) {
+      chosen.push(option)
+      labels.push(label)
+    } else if (multiple && (await option.isSelected())) {
+      await option.click()
+    }
+  }
+  if (chosen.length !== values.length) {
+    const available = []
+    for (const option of options) available.push(JSON.stringify((await option.getText()).trim()))
+    throw new ToolError(`Could not find all of ${JSON.stringify(values)}. Options: ${available.join(', ')}`)
+  }
+  for (const option of chosen) {
+    if (!(await option.isSelected())) await option.click()
+  }
+  return labels
+}
+
+async function pageText(driver) {
+  return driver.executeScript('return document.body ? document.body.innerText : ""')
+}
+
+const tools = [
+  {
+    name: 'browser_click',
+    description: 'Click an element',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        element: ELEMENT,
+        ref: REF,
+        doubleClick: { type: 'boolean' },
+        button: { type: 'string', enum: ['left', 'right'] },
+      },
+      required: ['ref'],
+    },
+    async run(ctx, { ref, doubleClick, button }) {
+      const element = await elementFor(ctx, ref)
+      const driver = await ctx.session.driver()
+      await onElement(ref, async () => {
+        if (doubleClick) await driver.actions().doubleClick(element).perform()
+        else if (button === 'right') await driver.actions().contextClick(element).perform()
+        else await element.click()
+      })
+      return actionResult(ctx, `Clicked ${ref}`)
+    },
+  },
+  {
+    name: 'browser_type',
+    description: 'Type text into an editable element, replacing its contents',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        element: ELEMENT,
+        ref: REF,
+        text: { type: 'string' },
+        submit: { type: 'boolean', description: 'Press Enter afterwards' },
+      },
+      required: ['ref', 'text'],
+    },
+    async run(ctx, { ref, text, submit }) {
+      const element = await elementFor(ctx, ref)
+      await onElement(ref, async () => {
+        await fill(element, text)
+        if (submit) await element.sendKeys(Key.ENTER)
+      })
+      return actionResult(ctx, `Typed into ${ref}${submit ? ' and pressed Enter' : ''}`)
+    },
+  },
+  {
+    name: 'browser_fill_form',
+    description: 'Fill several form fields at once',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        fields: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string', description: 'Field name' },
+              type: { type: 'string', enum: ['textbox', 'checkbox', 'radio', 'combobox', 'slider'] },
+              ref: REF,
+              value: {
+                type: 'string',
+                description: 'Text, "true"/"false" for checkbox and radio, option for combobox',
+              },
+            },
+            required: ['name', 'type', 'ref', 'value'],
+          },
+        },
+      },
+      required: ['fields'],
+    },
+    async run(ctx, { fields }) {
+      for (const field of fields) {
+        const element = await elementFor(ctx, field.ref)
+        await onElement(field.ref, async () => {
+          switch (field.type) {
+            case 'checkbox':
+            case 'radio':
+              return setChecked(element, String(field.value).toLowerCase() === 'true')
+            case 'combobox':
+              return selectOptions(element, [String(field.value)])
+            default:
+              return fill(element, field.value)
+          }
+        })
+      }
+      return actionResult(ctx, `Filled ${fields.length} field${fields.length === 1 ? '' : 's'}`)
+    },
+  },
+  {
+    name: 'browser_select_option',
+    description: 'Select options in a dropdown',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        element: ELEMENT,
+        ref: REF,
+        values: { type: 'array', items: { type: 'string' }, description: 'Option values or labels' },
+      },
+      required: ['ref', 'values'],
+    },
+    async run(ctx, { ref, values }) {
+      const element = await elementFor(ctx, ref)
+      const labels = await onElement(ref, () => selectOptions(element, values))
+      return actionResult(ctx, `Selected ${labels.map((l) => JSON.stringify(l)).join(', ')} in ${ref}`)
+    },
+  },
+  {
+    name: 'browser_press_key',
+    description: 'Press a key on the keyboard',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Key name such as Enter or ArrowLeft, a character, or Control+a' },
+      },
+      required: ['key'],
+    },
+    async run(ctx, { key }) {
+      const driver = await ctx.session.driver()
+      await pressKey(driver, key)
+      return actionResult(ctx, `Pressed ${key}`)
+    },
+  },
+  {
+    name: 'browser_hover',
+    description: 'Hover over an element',
+    inputSchema: {
+      type: 'object',
+      properties: { element: ELEMENT, ref: REF },
+      required: ['ref'],
+    },
+    async run(ctx, { ref }) {
+      const element = await elementFor(ctx, ref)
+      const driver = await ctx.session.driver()
+      await onElement(ref, () => driver.actions().move({ origin: element }).perform())
+      return actionResult(ctx, `Hovered over ${ref}`)
+    },
+  },
+  {
+    name: 'browser_wait_for',
+    description: 'Wait for text to appear or disappear, or for a time to pass',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        time: { type: 'number', description: 'Seconds to wait' },
+        text: { type: 'string', description: 'Text to wait for' },
+        textGone: { type: 'string', description: 'Text to wait to disappear' },
+      },
+    },
+    async run(ctx, { time, text, textGone }) {
+      if (time === undefined && text === undefined && textGone === undefined) {
+        throw new ToolError('Give one of time, text or textGone.')
+      }
+      const driver = await ctx.session.driver()
+      if (time !== undefined) {
+        const seconds = Math.min(Math.max(Number(time), 0), MAX_WAIT_SECONDS)
+        await new Promise((resolve) => setTimeout(resolve, seconds * 1000))
+      }
+      if (text !== undefined || textGone !== undefined) {
+        const timeout = ctx.config.waitTimeoutMs || DEFAULT_WAIT_MS
+        await driver.switchTo().defaultContent()
+        try {
+          await driver.wait(async () => {
+            const body = await pageText(driver)
+            return (text === undefined || body.includes(text)) && (textGone === undefined || !body.includes(textGone))
+          }, timeout)
+        } catch (e) {
+          if (e instanceof error.TimeoutError) {
+            const what = text !== undefined ? `${JSON.stringify(text)} to appear` : `${JSON.stringify(textGone)} to go`
+            throw new ToolError(`Timed out after ${timeout / 1000}s waiting for ${what}.`)
+          }
+          throw e
+        }
+      }
+      const parts = []
+      if (time !== undefined) parts.push(`${time}s`)
+      if (text !== undefined) parts.push(`text ${JSON.stringify(text)}`)
+      if (textGone !== undefined) parts.push(`${JSON.stringify(textGone)} to go`)
+      return actionResult(ctx, `Waited for ${parts.join(', ')}`)
+    },
+  },
+  {
+    name: 'browser_handle_dialog',
+    description: 'Accept or dismiss an open dialog',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        accept: { type: 'boolean' },
+        promptText: { type: 'string', description: 'Text to enter in a prompt dialog' },
+      },
+      required: ['accept'],
+    },
+    async run(ctx, { accept, promptText }) {
+      const driver = await ctx.session.driver()
+      let alert
+      try {
+        alert = await driver.switchTo().alert()
+      } catch (e) {
+        if (e instanceof error.NoSuchAlertError) throw new ToolError('No dialog is open.')
+        throw e
+      }
+      const text = await alert.getText()
+      if (promptText !== undefined) await alert.sendKeys(promptText)
+      if (accept) await alert.accept()
+      else await alert.dismiss()
+      return actionResult(ctx, `${accept ? 'Accepted' : 'Dismissed'} dialog ${JSON.stringify(text)}`)
+    },
+  },
+]
+
+module.exports = { tools, parseKey }
