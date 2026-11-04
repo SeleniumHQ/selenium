@@ -539,6 +539,17 @@ async function enterFrames(driver, framePath) {
 }
 
 /**
+ * Thrown when page script has made refs repeat or take odd values. It must
+ * fail the whole snapshot, even from inside a frame.
+ */
+class RefTamperError extends Error {
+  constructor() {
+    super('The page tampered with element refs, so this snapshot cannot be trusted.')
+    this.name = 'RefTamperError'
+  }
+}
+
+/**
  * Takes a snapshot of the current page, descending into iframes, and records
  * every ref it hands out in `table`.
  *
@@ -562,7 +573,7 @@ async function takeSnapshot(driver, table, options = {}) {
       // Page script can reach the in-page ref map, so never trust it to keep
       // refs unique: a repeated ref would show one element and act on another.
       if (item.ref !== null && (!Number.isInteger(item.ref) || item.ref < 1 || entries.has(`${prefix}e${item.ref}`))) {
-        throw new Error('The page tampered with element refs, so this snapshot cannot be trusted.')
+        throw new RefTamperError()
       }
       const ref = item.ref ? `${prefix}e${item.ref}` : null
       if (ref) entries.set(ref, { element: item.element, framePath })
@@ -575,7 +586,7 @@ async function takeSnapshot(driver, table, options = {}) {
         try {
           await visit([...framePath, item.element], framePrefix(prefix, item.ref), depth + 1)
         } catch (e) {
-          if (e instanceof error.UnexpectedAlertOpenError) throw e
+          if (e instanceof error.UnexpectedAlertOpenError || e instanceof RefTamperError) throw e
           lines.push('  '.repeat(depth + 1) + '(frame content not available)')
         }
         await enterFrames(driver, framePath)

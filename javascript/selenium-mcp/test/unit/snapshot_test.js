@@ -198,6 +198,20 @@ describe('snapshot', function () {
       assert.strictEqual(table.get('e9'), kept)
     })
 
+    it('refuses tampered refs inside a frame instead of calling the frame unavailable', async function () {
+      const frame = { depth: 0, role: 'iframe', name: '', props: [], ref: 1, element: {}, frame: true }
+      const pages = [[frame], [button(1), button(1)]]
+      const driver = {
+        switchTo: () => ({ defaultContent: async () => {}, frame: async () => {} }),
+        executeScript: async () => ({ fresh: false, items: pages.shift() || [] }),
+      }
+      const table = new RefTable()
+      const kept = { element: {}, framePath: [] }
+      table.set('e9', kept)
+      await assert.rejects(takeSnapshot(driver, table), /tampered with element refs/)
+      assert.strictEqual(table.get('e9'), kept)
+    })
+
     it('refuses refs that are not positive integers', async function () {
       await assert.rejects(takeSnapshot(driverReturning([button('1 or e2')]), new RefTable()), /tampered/)
       await assert.rejects(takeSnapshot(driverReturning([button(0)]), new RefTable()), /tampered/)
