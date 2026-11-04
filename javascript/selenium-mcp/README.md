@@ -104,7 +104,8 @@ transport, more than one session, shadow DOM in snapshots, network and storage t
 ## Security
 
 - No tool runs arbitrary JavaScript in v0.
-- `--allowed-origins` and `--blocked-origins` restrict where `browser_navigate` can go.
+- `--allowed-origins` and `--blocked-origins` restrict where `browser_navigate` can go. They do not stop links,
+  redirects or scripts on a page from going elsewhere, so they are not a browser-wide security boundary.
 - Snapshots and screenshots are the only page data returned.
 
 ## Development

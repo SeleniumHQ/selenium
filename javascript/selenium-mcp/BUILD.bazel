@@ -139,18 +139,26 @@ eslint_bin.eslint_test(
     chdir = package_name(),
     data = [
         ":eslint-config",
+        ":node_modules/@bazel/runfiles",
         ":node_modules/@eslint/js",
         ":node_modules/eslint-plugin-mocha",
         ":node_modules/eslint-plugin-n",
         ":node_modules/eslint-plugin-no-only-tests",
         ":node_modules/eslint-plugin-prettier",
         ":node_modules/globals",
+        ":node_modules/jsdom",
+        ":node_modules/mocha",
         ":package-json",
+        # eslint-plugin-prettier reads the same config as prettier-test.
+        ":prettier-config",
         ":prod-src-files",
         ":test-files",
         "//:node_modules/selenium-webdriver",
     ],
-    tags = ["lint"],
+    tags = [
+        "lint",
+        "skip-rbe",
+    ],
 )
 
 copy_to_bin(
