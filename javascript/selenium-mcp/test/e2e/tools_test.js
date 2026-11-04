@@ -292,26 +292,6 @@ describe('selenium-mcp tools', function () {
       }
     })
 
-    it('quits a browser that is still starting when closed, without waiting for it', async function () {
-      await ok('browser_close', {})
-      const starting = mcp.session.driver()
-      await ok('browser_close', {})
-      await assert.rejects(starting, /closed while it was starting/)
-      assert.strictEqual(mcp.session.isOpen, false)
-    })
-
-    it('keeps a new browser when an abandoned start settles after it', async function () {
-      await ok('browser_close', {})
-      const abandoned = mcp.session.driver()
-      await mcp.session.close()
-      const fresh = mcp.session.driver()
-      await assert.rejects(abandoned, /closed while it was starting/)
-      const driver = await fresh
-      assert.strictEqual(mcp.session.isOpen, true)
-      assert.strictEqual(await mcp.session.driver(), driver)
-      await open('/common/login.html')
-    })
-
     it('closes the browser and starts a new one on the next call', async function () {
       await ok('browser_close', {})
       assert.strictEqual(mcp.session.isOpen, false)

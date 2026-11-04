@@ -119,7 +119,15 @@ async function setChecked(element, wanted, type) {
  * Sets a range input's value. Typing does not move a slider, so the value is
  * set the way a user's drag ends: assigned, then input and change fired.
  */
+// A valid floating-point number as HTML defines it. Anything else, such as
+// 0x5 or 1e, the slider sanitizes to its default, which can happen to equal
+// the number the string coerces to.
+const HTML_FLOAT = /^-?(\d+|\d*\.\d+)([eE][+-]?\d+)?$/
+
 async function setSliderValue(driver, element, value) {
+  if (!HTML_FLOAT.test(String(value))) {
+    throw new ToolError(`${JSON.stringify(String(value))} is not a number the slider accepts, e.g. 5 or 2.5.`)
+  }
   const result = await driver.executeScript(
     `const el = arguments[0]
      const wanted = arguments[1]
@@ -130,7 +138,7 @@ async function setSliderValue(driver, element, value) {
      // numbers: "7.0" and "07" are both 7.
      const probe = el.cloneNode(false)
      probe.value = wanted
-     if (wanted.trim() === '' || Number(probe.value) !== Number(wanted)) {
+     if (Number(probe.value) !== Number(wanted)) {
        return { error: 'rejected', actual: probe.value }
      }
      el.value = probe.value
@@ -400,4 +408,4 @@ const tools = [
   },
 ]
 
-module.exports = { tools, parseKey }
+module.exports = { tools, parseKey, setSliderValue }
