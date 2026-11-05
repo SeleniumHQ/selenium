@@ -6,17 +6,6 @@
 
 ## Context
 
-This record supersedes [17685](17685-network-handler-behavior.md) and repeats it unchanged except for
-one point: a handler registered without a scope now applies to every window in the session, not only
-the window current at registration (decision 11). Under 17685's default such a handler stays bound to
-that one window: it does not follow a later switch, and it never sees windows opened afterwards, such
-as a popup or a tab a link opens. A handler that blocks trackers, stubs an API or adds a header then
-silently stops applying as soon as a second window appears. Script handlers
-([17776](https://github.com/SeleniumHQ/selenium/pull/17776) decision 8) and window event handlers
-([17681](https://github.com/SeleniumHQ/selenium/pull/17681) decision 9) treat "no scope" as every
-window, so keeping 17685's default would give one call shape two meanings. No binding ships 17685's
-scoping yet, so the default can change without breaking user code.
-
 Selenium's network API lets a user observe and rewrite traffic by registering handlers for
 requests, responses, and authentication challenges. This record settles two things together: how
 handlers are registered, removed, and cleared, and how a handler behaves — including how several
@@ -290,7 +279,7 @@ network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
     into a frame does not narrow that; a frame is not a scope this API expresses, so narrowing to one
     belongs in the callable. A user who wants only the current window passes its handle as the scope.
 
-    To scope a handler elsewhere the user passes either a window handle or a user context, never both.
+    To narrow a handler, the user passes either a window handle or a user context, never both.
     A window handle targets that one window or tab, including one in the background without focus. A user
     context targets every window handle it contains, including ones opened later, so it scopes
     interception to a whole user context rather than a single known tab. The two are mutually
@@ -394,14 +383,10 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
     collected, so it is not available while intercepting.
 - **Context scoping (decision 11).**
   - Default to the window current at registration (17685's rule) — a handler silently misses popups
-    and tabs opened later, and "no scope" would mean one window here but every window for script and
-    window events.
+    and tabs opened later, so a header, stub or block stops applying as soon as a second window appears.
   - Default to whichever window is current, re-bound on each switch — a handler would change scope as
     a side effect of unrelated commands, and one worker's switch would move another worker's handler.
-  - Require a scope on every handler — adds ceremony to the common single-tab case and still differs
-    from script and window events.
-  - No scoping, so every handler applies globally — cannot target a specific tab, a background tab, or
-    a user context, which network work spanning several contexts needs.
+  - Require a scope on every handler — adds ceremony to the common single-tab case.
   - Scope only by window handle — a user context is the natural unit for interception that spans
     several tabs and covers tabs opened later, so either unit is accepted.
   - Accept a window handle and a user context together — the two are mutually exclusive, and a handler
@@ -418,11 +403,13 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
   handler stays contained, and the original event remains readable.
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
-- An unscoped handler applies to every window, so in a session shared by several workers it pauses
-  matching requests in all of their tabs; code that wants one tab passes that tab as the scope.
+- An unscoped handler intercepts matching requests in every tab, including popups, tabs opened later
+  and tabs other workers drive. A handler that intercepts and never lets a request continue now stalls
+  those requests everywhere, not only in the tab it was registered from. Code moving from 17685's
+  default, or wanting one tab, passes that tab as the scope.
 - Handlers can be scoped to a single window handle or to a user context, so interception can target a
-  background tab or a whole user context. The two are mutually
-  exclusive, so a binding rejects being given both.
+  background tab or a whole user context. The two are mutually exclusive, so a binding rejects being
+  given both.
 - Handlers with different scopes coexist: each acts only on events in its own scope, so an event a
   broadly scoped handler intercepts does not invoke a narrower handler whose scope excludes it.
 - This changes handler behavior that several bindings already ship, so it is not backwards
