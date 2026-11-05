@@ -53,8 +53,6 @@ public class SafariOptions : DriverOptions
     {
         this.BrowserName = BrowserNameValue;
         this.TechnologyPreview = false;
-        this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
-        this.AddKnownCapabilityName(SafariOptions.EnableAutomaticProfilingSafariOption, "EnableAutomaticProfiling property");
     }
 
     /// <summary>
