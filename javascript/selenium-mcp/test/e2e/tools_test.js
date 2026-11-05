@@ -267,7 +267,14 @@ describe('selenium-mcp tools', function () {
     it('navigates back', async function () {
       await open('/fixtures/interactions.html')
       await open('/common/login.html')
-      assert.match(await ok('browser_navigate_back', {}), /interactions\.html/)
+      const back = await ok('browser_navigate_back', {})
+      assert.match(back, /interactions\.html/)
+      assert.match(back, /^\[e1\] /m)
+    })
+
+    it('starts refs over on a new page', async function () {
+      await open('/fixtures/interactions.html')
+      assert.match(await open('/common/login.html'), /^\[e1\] /m)
     })
 
     it('opens, lists, selects and closes tabs', async function () {

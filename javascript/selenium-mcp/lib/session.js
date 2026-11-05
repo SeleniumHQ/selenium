@@ -167,6 +167,17 @@ class Session {
     this.refs.clear()
   }
 
+  /**
+   * Forgets a browser that has gone away and stops its driver in the
+   * background, so a crash does not leave a driver process behind and a
+   * quit that hangs does not hold up the reply.
+   */
+  discard() {
+    const driver = this.driver_
+    this.reset()
+    if (driver) quietlyQuit(driver)
+  }
+
   /** Quits the browser if one is running. */
   async close() {
     // Does not wait for a start in flight, which may never settle; that start

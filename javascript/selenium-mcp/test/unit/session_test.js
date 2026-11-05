@@ -122,6 +122,21 @@ describe('Session lifecycle', function () {
     const second = builds.pending[1]()
     assert.strictEqual(await next, second)
   })
+
+  it('stops the driver of a browser that went away, without waiting for it', async function () {
+    const builds = controlledBuilds()
+    const session = new Session(CONFIG, builds)
+    const starting = session.driver()
+    const gone = builds.pending[0]()
+    await starting
+    gone.quit = function () {
+      this.quits++
+      return new Promise(() => {})
+    }
+    session.discard()
+    assert.strictEqual(gone.quits, 1)
+    assert.strictEqual(session.isOpen, false)
+  })
 })
 
 describe('setSliderValue', function () {

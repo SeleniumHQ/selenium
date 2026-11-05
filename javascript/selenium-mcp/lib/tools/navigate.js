@@ -137,6 +137,7 @@ const tools = [
       // Messages from the previous page would only mislead the agent about this one.
       ctx.session.consoleMessages = []
       await driver.get(target)
+      ctx.session.refs.clear()
       return actionResult(ctx, `Navigated to ${target}`)
     },
   },
@@ -148,6 +149,7 @@ const tools = [
       const driver = await ctx.session.driver()
       ctx.session.consoleMessages = []
       await driver.navigate().back()
+      ctx.session.refs.clear()
       return actionResult(ctx, 'Navigated back')
     },
   },

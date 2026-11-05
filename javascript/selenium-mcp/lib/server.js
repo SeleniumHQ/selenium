@@ -98,7 +98,7 @@ function createServer(config, deps = {}) {
         log_.warning(
           `the browser went away during ${name}; the next call starts a new one: ${firstLine(e.message || e)}`,
         )
-        session.reset()
+        session.discard()
         return errorResult('The browser is no longer running. The next browser tool call starts a new one.')
       }
       if (e instanceof error.SessionNotCreatedError) {

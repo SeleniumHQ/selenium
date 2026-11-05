@@ -65,6 +65,14 @@ describe('cli', function () {
     assert.strictEqual(parseCommandLine(['--allow-unrestricted-file-access']).allowFileAccess, true)
   })
 
+  it('takes a log level in any case and refuses one it does not know', function () {
+    assert.strictEqual(parseCommandLine([]).logLevel, 'warning')
+    assert.strictEqual(parseCommandLine(['--log-level', 'FINE']).logLevel, 'fine')
+    for (const level of ['debug', 'warn', 'verbose']) {
+      assert.throws(() => parseCommandLine(['--log-level', level]), /--log-level must be one of/)
+    }
+  })
+
   it('rejects unknown flags', function () {
     assert.throws(() => parseCommandLine(['--nope']))
   })

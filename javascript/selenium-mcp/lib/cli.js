@@ -20,6 +20,9 @@
 const { parseArgs } = require('node:util')
 
 const BROWSERS = ['chrome', 'edge', 'firefox']
+// The bindings read any other name as ALL, which logs request bodies, typed
+// text included, so an unknown level is refused rather than passed on.
+const LOG_LEVELS = ['severe', 'warning', 'info', 'fine', 'all']
 
 const USAGE = `Usage: selenium-mcp [options]
 
@@ -35,7 +38,8 @@ Options:
   --allow-unrestricted-file-access
                               allow browser_navigate to open file:// URLs
   --isolated                  accepted for compatibility; every session already uses a fresh profile
-  --log-level <level>         log to stderr at this level: severe, warning (default), info, fine, all
+  --log-level <level>         log to stderr at this level: severe, warning (default), info, fine,
+                              all (all includes raw WebDriver traffic, so typed text such as passwords)
   -h, --help                  show this help
   -v, --version               show the version`
 
@@ -83,6 +87,10 @@ function parseCommandLine(argv) {
   if (!BROWSERS.includes(browser)) {
     throw new Error(`--browser must be one of ${BROWSERS.join(', ')}; got ${values.browser}`)
   }
+  const logLevel = values['log-level'].toLowerCase()
+  if (!LOG_LEVELS.includes(logLevel)) {
+    throw new Error(`--log-level must be one of ${LOG_LEVELS.join(', ')}; got ${values['log-level']}`)
+  }
   if (values.headless && values.headed) throw new Error('--headless and --headed cannot both be given')
   if (values.grid) {
     try {
@@ -101,7 +109,7 @@ function parseCommandLine(argv) {
     allowedOrigins: splitList(values['allowed-origins']),
     blockedOrigins: splitList(values['blocked-origins']),
     allowFileAccess: !!values['allow-unrestricted-file-access'],
-    logLevel: values['log-level'],
+    logLevel,
   }
 }
 
@@ -112,4 +120,4 @@ function splitList(value) {
     .filter(Boolean)
 }
 
-module.exports = { BROWSERS, USAGE, parseCommandLine }
+module.exports = { BROWSERS, LOG_LEVELS, USAGE, parseCommandLine }
