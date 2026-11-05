@@ -1,7 +1,7 @@
-# NNNN. Actions stay the input API, and can target any window
+# 18282. Actions stay the input API, and can target any window
 
 - Status: Proposed
-- Discussion: _(this PR)_
+- Discussion: [#18282](https://github.com/SeleniumHQ/selenium/pull/18282)
 
 ## Context
 
