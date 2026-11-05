@@ -86,7 +86,6 @@ mocha_test(
     args = ["test/unit/*_test.js"],
     chdir = package_name(),
     data = [
-        ":node_modules/jsdom",
         ":node_modules/mocha",
         ":node_modules/mocha-junit-reporter",
         ":package-json",
@@ -146,7 +145,6 @@ eslint_bin.eslint_test(
         ":node_modules/eslint-plugin-no-only-tests",
         ":node_modules/eslint-plugin-prettier",
         ":node_modules/globals",
-        ":node_modules/jsdom",
         ":node_modules/mocha",
         ":package-json",
         # eslint-plugin-prettier reads the same config as prettier-test.

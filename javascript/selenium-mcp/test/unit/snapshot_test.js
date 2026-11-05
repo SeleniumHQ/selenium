@@ -18,121 +18,141 @@
 'use strict'
 
 const assert = require('node:assert')
-const fs = require('node:fs')
-const path = require('node:path')
 
-const { JSDOM } = require('jsdom')
+const { AccessibilityNode, WebElement } = require('selenium-webdriver')
 
-const { RefTable, collectNodes, formatLine, framePrefix, takeSnapshot } = require('../../lib/snapshot')
+const { RefTable, formatLine, framePrefix, renderTree } = require('../../lib/snapshot')
 
-const FIXTURE = fs.readFileSync(path.join(__dirname, '../fixtures/snapshot.html'), 'utf8')
+let nextId = 0
 
-/** Runs the in-page collector the way the server does: as source, in the page. */
-function collect(html, includeAll = false) {
-  const dom = new JSDOM(html, { runScripts: 'outside-only' })
-  const result = dom.window.eval(`(${collectNodes.toString()})(${includeAll})`)
-  return { dom, ...result }
+/** A node backed by an element, as the bindings return it. */
+function el(role, name, fields = {}) {
+  return new AccessibilityNode({ role, name, element: new WebElement(null, `id-${++nextId}`), ...fields })
 }
 
-function render(items) {
-  return items.map((item) => formatLine(item, item.ref ? `e${item.ref}` : null)).join('\n')
+function text(content) {
+  return new AccessibilityNode({ role: 'text', name: content })
+}
+
+function page(...children) {
+  return new AccessibilityNode({ role: 'document', name: 'Page', element: new WebElement(null, 'root'), children })
+}
+
+async function render(root, options = {}, table = new RefTable()) {
+  const { lines, entries } = await renderTree(root, table, options)
+  return { text: lines.join('\n'), entries, table }
 }
 
 describe('snapshot', function () {
-  describe('collectNodes', function () {
-    it('lists interactive elements with roles, names and state', function () {
-      const { items } = collect(FIXTURE)
-      const text = render(items)
+  describe('renderTree', function () {
+    const form = () =>
+      page(
+        el('banner', '', { children: [el('navigation', '', { children: [el('link', 'Home')] })] }),
+        el('main', '', {
+          children: [
+            el('heading', 'Sign in', { states: { level: 1 }, children: [text('Sign in')] }),
+            el('paragraph', '', { children: [text('Enter your details below.')] }),
+            el('form', '', {
+              children: [
+                text('Username'),
+                el('textbox', 'Username', { value: 'ada' }),
+                el('textbox', 'Password', { value: '••••••' }),
+                el('checkbox', 'Remember me', { states: { checked: true } }),
+                el('combobox', 'Country', {
+                  value: 'France',
+                  children: [el('option', 'United Kingdom'), el('option', 'France', { states: { selected: true } })],
+                }),
+                el('button', 'Sign in', { states: { disabled: true } }),
+                el('button', 'Menu', { states: { expanded: false } }),
+              ],
+            }),
+            el('alert', '', { children: [text('Wrong password')] }),
+            el('status', '', { children: [text('Saved'), el('button', 'Dismiss')] }),
+          ],
+        }),
+      )
+
+    it('lists interactive elements with roles, names and state', async function () {
+      const { text } = await render(form())
       for (const line of [
         '[e1] link "Home"',
         'heading "Sign in" [level=1]',
         'textbox "Username" [value="ada"]',
-        'textbox "Password" [value=<hidden>]',
         'checkbox "Remember me" [checked]',
-        'radio "Free"',
         'combobox "Country" [value="France"]',
         '  option "France" [selected]',
-        'textbox "Notes"',
         'button "Sign in" [disabled]',
-        'button "Go"',
-        'alert "Wrong password"',
-        'button "Custom button"',
-        'generic "Clickable div"',
-        'link "Inside presentation"',
-        'button "Labelled by two"',
-        'status "Saved Dismiss"',
-        '  [e', // the status's child below
-        'button "Dismiss"',
-        'button "Typo role"',
-        'iframe "Inner"',
+        'button "Menu" [collapsed]',
       ]) {
         assert.ok(text.includes(line), `expected ${JSON.stringify(line)} in:\n${text}`)
       }
     })
 
-    it('never leaks password values', function () {
-      const text = render(collect(FIXTURE).items)
-      assert.ok(!text.includes('secret'), text)
+    it('names alerts and status regions from their text', async function () {
+      const { text } = await render(form())
+      assert.match(text, /\] alert "Wrong password"$/m)
+      assert.match(text, /\] status "Saved"\n {2}\[e\d+\] button "Dismiss"$/m)
     })
 
-    it('leaves out hidden and non-interactive content by default', function () {
-      const text = render(collect(FIXTURE).items)
-      for (const absent of [
-        'Hidden button',
-        'Also hidden',
-        'Aria hidden',
-        'Invisible',
-        'Not a link',
-        'Enter your details',
-        'token',
-      ]) {
+    it('leaves out structure and text by default', async function () {
+      const { text } = await render(form())
+      for (const absent of ['banner', 'main', 'form', 'paragraph', 'Enter your details', 'text ']) {
         assert.ok(!text.includes(absent), `did not expect ${absent} in:\n${text}`)
       }
     })
 
-    it('includes structure and text when asked for everything', function () {
-      const text = render(collect(FIXTURE, true).items)
+    it('includes structure and text when asked for everything', async function () {
+      const { text } = await render(form(), { all: true })
       assert.ok(text.includes('text "Enter your details below."'), text)
       assert.ok(/^\[e\d+\] main$/m.test(text), text)
       assert.ok(/^ +\[e\d+\] form$/m.test(text), text)
-      assert.ok(text.includes('img "Logo"'), text)
-      assert.ok(!text.includes('Hidden button'), text)
+      assert.ok(!text.includes('text "Wrong password"'), 'the alert name already says it')
     })
 
-    it('gives options no refs, since browser_select_option takes values', function () {
-      const { items } = collect(FIXTURE)
-      const options = items.filter((i) => i.role === 'option')
-      assert.strictEqual(options.length, 2)
-      assert.ok(options.every((o) => o.ref === null))
+    it('gives a native select’s options no refs, since browser_select_option takes their text', async function () {
+      const { text } = await render(form())
+      assert.match(text, /^ {2}option "United Kingdom"$/m)
+      const listbox = page(el('listbox', 'Pick', { children: [el('option', 'One')] }))
+      assert.match((await render(listbox)).text, /\[e\d+\] option "One"/)
     })
 
-    it('marks iframes so the server can descend into them', function () {
-      const frames = collect(FIXTURE).items.filter((i) => i.frame)
-      assert.strictEqual(frames.length, 1)
-      assert.strictEqual(frames[0].element.localName, 'iframe')
+    it('keeps an element’s ref across snapshots and drops refs for elements that went away', async function () {
+      const table = new RefTable()
+      const save = el('button', 'Save')
+      const remove = el('button', 'Remove me')
+      const first = await render(page(remove, save), {}, table)
+      table.replaceWith(first.entries)
+      assert.match(first.text, /\[e2\] button "Save"/)
+      const second = await render(page(save), {}, table)
+      table.replaceWith(second.entries)
+      assert.match(second.text, /^\[e2\] button "Save"$/)
+      assert.throws(() => table.get('e1'), /not in the current snapshot/)
+      assert.strictEqual(table.get('e2').element, save.element)
     })
 
-    it('keeps refs stable across snapshots of the same document', function () {
-      const dom = new JSDOM(FIXTURE, { runScripts: 'outside-only' })
-      const run = () => dom.window.eval(`(${collectNodes.toString()})(false)`)
-      const first = run()
-      dom.window.document.querySelector('h1').insertAdjacentHTML('afterend', '<button>New</button>')
-      const second = run()
-      assert.strictEqual(first.fresh, true)
-      assert.strictEqual(second.fresh, false)
-      const refOf = (r, name) => r.items.find((i) => i.name === name).ref
-      assert.strictEqual(refOf(second, 'Username'), refOf(first, 'Username'))
-      assert.ok(refOf(second, 'New') > refOf(first, 'Inner'))
+    it('puts frame content under the iframe with prefixed refs and the frame path', async function () {
+      const frame = el('iframe', 'Inner', { children: [page(el('button', 'In frame'))] })
+      const { text, entries } = await render(page(el('button', 'Outer'), frame))
+      assert.match(text, /^\[e2\] iframe "Inner"\n {2}\[f2e1\] button "In frame"$/m)
+      assert.deepStrictEqual(entries.get('f2e1').framePath, [frame.element])
     })
 
-    it('does not repeat a container name as text', function () {
-      const text = render(collect(FIXTURE, true).items)
-      assert.ok(!/text "Saved"/.test(text), text)
-      assert.ok(!/text "Wrong password"/.test(text), text)
+    it('says when a frame could not be read', async function () {
+      const { text } = await render(page(el('iframe', 'Gone')))
+      assert.match(text, /iframe "Gone"\n {2}\(frame content not available\)/)
     })
 
-    it('handles an empty document', function () {
-      assert.strictEqual(collect('<html><body></body></html>').items.length, 0)
+    it('stops descending into deeply nested frames', async function () {
+      let node = el('button', 'Deep')
+      for (let i = 0; i < 7; i++) node = el('iframe', `F${i}`, { children: [page(node)] })
+      const { text } = await render(page(node))
+      assert.match(text, /\(frames nested too deep, not shown\)/)
+      assert.ok(!text.includes('Deep'), text)
+    })
+
+    it('shortens long names', async function () {
+      const { text } = await render(page(el('link', 'x'.repeat(300))))
+      assert.match(text, /link "x{99}…"/)
     })
   })
 
@@ -178,50 +198,15 @@ describe('snapshot', function () {
       assert.throws(() => table.get('e1'), /not in the current snapshot/)
       assert.strictEqual(table.get('e2'), kept)
     })
-  })
 
-  describe('takeSnapshot', function () {
-    /** A driver whose page returns `items`, as a page that rewrote the ref map could. */
-    function driverReturning(items) {
-      return {
-        switchTo: () => ({ defaultContent: async () => {} }),
-        executeScript: async () => ({ fresh: false, items }),
-      }
-    }
-    const button = (ref) => ({ depth: 0, role: 'button', name: `b${ref}`, props: [], ref, element: {}, frame: false })
-
-    it('refuses a page that gives two elements the same ref, keeping the old refs', async function () {
+    it('numbers elements per frame and starts again once cleared', function () {
       const table = new RefTable()
-      const kept = { element: {}, framePath: [] }
-      table.set('e9', kept)
-      await assert.rejects(takeSnapshot(driverReturning([button(1), button(1)]), table), /tampered with element refs/)
-      assert.strictEqual(table.get('e9'), kept)
-    })
-
-    it('refuses tampered refs inside a frame instead of calling the frame unavailable', async function () {
-      const frame = { depth: 0, role: 'iframe', name: '', props: [], ref: 1, element: {}, frame: true }
-      const pages = [[frame], [button(1), button(1)]]
-      const driver = {
-        switchTo: () => ({ defaultContent: async () => {}, frame: async () => {} }),
-        executeScript: async () => ({ fresh: false, items: pages.shift() || [] }),
-      }
-      const table = new RefTable()
-      const kept = { element: {}, framePath: [] }
-      table.set('e9', kept)
-      await assert.rejects(takeSnapshot(driver, table), /tampered with element refs/)
-      assert.strictEqual(table.get('e9'), kept)
-    })
-
-    it('refuses refs that are not positive integers', async function () {
-      await assert.rejects(takeSnapshot(driverReturning([button('1 or e2')]), new RefTable()), /tampered/)
-      await assert.rejects(takeSnapshot(driverReturning([button(0)]), new RefTable()), /tampered/)
-    })
-
-    it('records each ref against the element shown beside it', async function () {
-      const table = new RefTable()
-      const text = await takeSnapshot(driverReturning([button(1), button(2)]), table)
-      assert.match(text, /\[e1\] button "b1"\n\[e2\] button "b2"/)
-      assert.strictEqual(table.size, 2)
+      assert.strictEqual(table.numberFor('', 'a'), 1)
+      assert.strictEqual(table.numberFor('', 'b'), 2)
+      assert.strictEqual(table.numberFor('f1', 'c'), 1)
+      assert.strictEqual(table.numberFor('', 'a'), 1)
+      table.clear()
+      assert.strictEqual(table.numberFor('', 'b'), 1)
     })
   })
 })

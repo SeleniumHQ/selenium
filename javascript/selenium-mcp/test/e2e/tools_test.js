@@ -97,6 +97,19 @@ describe('selenium-mcp tools', function () {
       assert.match(page, /\[f\d+e\d+\] textbox/)
     })
 
+    it('shows and acts on elements inside open shadow roots', async function () {
+      const page = await open('/fixtures/shadow.html')
+      const clicked = await ok('browser_click', { ref: refOf(page, 'button "Shadow button"') })
+      assert.match(clicked, /button "Shadow clicked"/)
+    })
+
+    it('names a status region from its text', async function () {
+      const page = await open('/fixtures/snapshot.html')
+      assert.match(page, /status "Saved"\n\s+\[e\d+\] button "Dismiss"/)
+      assert.match(page, /alert "Wrong password"/)
+      assert.ok(!page.includes('secret'), page)
+    })
+
     it('returns everything when asked', async function () {
       await open('/fixtures/snapshot.html')
       const all = await ok('browser_snapshot', { all: true })
@@ -146,7 +159,7 @@ describe('selenium-mcp tools', function () {
         values: ['seeds', 'kiwi'],
       })
       assert.ok(multi.isError)
-      assert.match(await ok('browser_snapshot', {}), /option "Nuts" \[selected\]\n\s+option "Seeds"\n/)
+      assert.match(await ok('browser_snapshot', {}), /option "Nuts" \[selected\]\n\s+\[e\d+\] option "Seeds"\n/)
     })
 
     it('moves a slider through fill_form', async function () {

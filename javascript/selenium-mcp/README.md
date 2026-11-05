@@ -90,16 +90,18 @@ Every action returns the page's URL, title and a fresh snapshot, so the agent ra
   [f5e1] link "Forgot password?"
 ```
 
+- Roles, names and states come from the bindings' `getAccessibilitySnapshot()`, which computes them in the page
+  following WAI-ARIA, html-aam and accname, in a sandbox that page scripts cannot reach. Open shadow roots are included.
 - By default a snapshot lists interactive elements, headings, live regions (`alert`, `status`) and frames.
   `browser_snapshot` with `all: true` adds the rest of the visible content.
-- A ref stays the same for the same element across snapshots of a page; navigating to a new page starts over.
+- A ref stays the same for the same element across snapshots; `browser_navigate` starts over.
 - Content inside an iframe gets refs prefixed with the frame's own ref (`f5e1`), and tools act on them directly.
 - Password values are never shown.
 
 ## What v0 covers
 
 v0 is the smallest useful server: Chrome, headless, stdio, the tools above. Not yet: other browsers under test, HTTP
-transport, more than one session, shadow DOM in snapshots, network and storage tools, `browser_evaluate`, and the
+transport, more than one session, network and storage tools, `browser_evaluate`, and the
 `selenium_*` tools (Grid status, `selenium_doctor`). Those come in later releases.
 
 ## Security

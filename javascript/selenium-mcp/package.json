@@ -45,7 +45,6 @@
     "eslint-plugin-no-only-tests": "^3.4.0",
     "eslint-plugin-prettier": "^5.5.7",
     "globals": "^17.14.0",
-    "jsdom": "^30.1.3",
     "mocha": "^11.8.0",
     "mocha-junit-reporter": "^2.2.1",
     "prettier": "^3.9.10"

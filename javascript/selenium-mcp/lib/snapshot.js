@@ -20,445 +20,96 @@
 const { error } = require('selenium-webdriver')
 
 const MAX_FRAME_DEPTH = 5
+const MAX_NAME = 100
+const MAX_TEXT = 200
 
-/**
- * Runs inside the page (one frame at a time). Walks the DOM and returns the
- * nodes worth showing an agent, in document order, each with its depth in the
- * output tree and, for nodes that get a ref, the element itself so the server
- * can cache the handle.
- *
- * Refs are assigned here, not on the server, so that the same element keeps
- * the same ref across snapshots of the same document. They live in a WeakMap
- * on the window, which a navigation throws away.
- *
- * The role and accessible-name logic is a deliberately small stopgap: the
- * bindings are gaining a proper accessible-name computation, and this should
- * be replaced by it once it lands.
- *
- * Must stay self-contained: it is serialized with Function#toString.
- *
- * @param {boolean} includeAll include every visible node and text, not just
- *     interactive ones
- * @return {{fresh: boolean, items: !Array<!Object>}}
- */
-function collectNodes(includeAll) {
-  /* global window, document, Node */
-  const MAX_NAME = 100
-  const MAX_TEXT = 200
-  const SKIP_TAGS = new Set(['script', 'style', 'noscript', 'template', 'head', 'meta', 'link', 'title'])
-  const INTERACTIVE = new Set([
-    'button',
-    'checkbox',
-    'combobox',
-    'link',
-    'listbox',
-    'menuitem',
-    'menuitemcheckbox',
-    'menuitemradio',
-    'option',
-    'radio',
-    'searchbox',
-    'slider',
-    'spinbutton',
-    'switch',
-    'tab',
-    'textbox',
-    'treeitem',
-  ])
-  // Shown even in the default snapshot: headings orient the agent, live
-  // regions carry the feedback a form gives back, frames hold more content.
-  const ALWAYS = new Set(['heading', 'alert', 'alertdialog', 'status', 'dialog', 'iframe'])
-  const NAME_FROM_CONTENT = new Set([
-    'alert',
-    'button',
-    'cell',
-    'checkbox',
-    'columnheader',
-    'generic',
-    'heading',
-    'link',
-    'listitem',
-    'menuitem',
-    'menuitemcheckbox',
-    'menuitemradio',
-    'option',
-    'radio',
-    'row',
-    'rowheader',
-    'status',
-    'switch',
-    'tab',
-    'treeitem',
-  ])
+const INTERACTIVE = new Set([
+  'button',
+  'checkbox',
+  'combobox',
+  'link',
+  'listbox',
+  'menuitem',
+  'menuitemcheckbox',
+  'menuitemradio',
+  'option',
+  'radio',
+  'searchbox',
+  'slider',
+  'spinbutton',
+  'switch',
+  'tab',
+  'textbox',
+  'treeitem',
+])
+// Shown even in the default snapshot: headings orient the agent, live
+// regions carry the feedback a form gives back, frames hold more content.
+const ALWAYS = new Set(['heading', 'alert', 'alertdialog', 'status', 'dialog', 'iframe'])
+// Controls whose content is their name hold nothing else worth listing.
+const LEAF_ROLES = new Set([
+  'button',
+  'checkbox',
+  'heading',
+  'link',
+  'menuitem',
+  'menuitemcheckbox',
+  'menuitemradio',
+  'option',
+  'radio',
+  'switch',
+  'tab',
+  'treeitem',
+])
+// accname gives these no name from their content, but their text is the
+// feedback an agent needs, so the snapshot names them from it.
+const NAMED_FROM_TEXT = new Set(['alert', 'status'])
 
-  const LEAF_ROLES = new Set([
-    'button',
-    'checkbox',
-    'heading',
-    'link',
-    'menuitem',
-    'menuitemcheckbox',
-    'menuitemradio',
-    'option',
-    'radio',
-    'switch',
-    'tab',
-    'treeitem',
-  ])
-  // A role attribute's first token that is a real role wins; unknown tokens
-  // are skipped, as browsers do, so a typo does not hide a native button.
-  const KNOWN_ROLES = new Set([
-    ...INTERACTIVE,
-    ...ALWAYS,
-    ...NAME_FROM_CONTENT,
-    'article',
-    'banner',
-    'complementary',
-    'contentinfo',
-    'definition',
-    'document',
-    'feed',
-    'figure',
-    'form',
-    'grid',
-    'gridcell',
-    'group',
-    'img',
-    'list',
-    'log',
-    'main',
-    'marquee',
-    'math',
-    'menu',
-    'menubar',
-    'meter',
-    'navigation',
-    'note',
-    'paragraph',
-    'progressbar',
-    'radiogroup',
-    'region',
-    'rowgroup',
-    'scrollbar',
-    'search',
-    'separator',
-    'table',
-    'tablist',
-    'tabpanel',
-    'term',
-    'timer',
-    'toolbar',
-    'tooltip',
-    'tree',
-    'treegrid',
-  ])
+/** The order states are written in, as the bindings' text form does. */
+const STATE_ORDER = ['checked', 'pressed', 'selected', 'level', 'disabled', 'focused']
 
-  let fresh = false
-  if (!window.__seleniumMcpRefs) {
-    window.__seleniumMcpRefs = new WeakMap()
-    window.__seleniumMcpNextRef = 1
-    fresh = true
-  }
-  const refs = window.__seleniumMcpRefs
-
-  function refFor(el) {
-    let ref = refs.get(el)
-    if (!ref) {
-      ref = window.__seleniumMcpNextRef++
-      refs.set(el, ref)
-    }
-    return ref
-  }
-
-  function clean(text, max) {
-    const s = String(text || '')
-      .replace(/\s+/g, ' ')
-      .trim()
-    return s.length > max ? s.slice(0, max - 1) + '…' : s
-  }
-
-  function textOf(el) {
-    // jsdom (unit tests) has no innerText; textContent is close enough there.
-    return typeof el.innerText === 'string' ? el.innerText : el.textContent
-  }
-
-  function style(el) {
-    return window.getComputedStyle(el)
-  }
-
-  function explicitRole(el) {
-    const attr = el.getAttribute('role')
-    if (!attr) return undefined
-    for (const token of attr.trim().toLowerCase().split(/\s+/)) {
-      if (token === 'none' || token === 'presentation') return null
-      if (KNOWN_ROLES.has(token)) return token
-    }
-    return undefined
-  }
-
-  function inputRole(el) {
-    const type = (el.getAttribute('type') || 'text').toLowerCase()
-    switch (type) {
-      case 'hidden':
-        return null
-      case 'button':
-      case 'submit':
-      case 'reset':
-      case 'image':
-      case 'file':
-        return 'button'
-      case 'checkbox':
-        return 'checkbox'
-      case 'radio':
-        return 'radio'
-      case 'range':
-        return 'slider'
-      case 'number':
-        return 'spinbutton'
-      case 'search':
-        return el.hasAttribute('list') ? 'combobox' : 'searchbox'
-      default:
-        return el.hasAttribute('list') ? 'combobox' : 'textbox'
-    }
-  }
-
-  function implicitRole(el) {
-    const tag = el.localName
-    switch (tag) {
-      case 'a':
-      case 'area':
-        return el.hasAttribute('href') ? 'link' : null
-      case 'button':
-      case 'summary':
-        return 'button'
-      case 'input':
-        return inputRole(el)
-      case 'textarea':
-        return 'textbox'
-      case 'select':
-        return el.multiple || el.size > 1 ? 'listbox' : 'combobox'
-      case 'option':
-        return 'option'
-      case 'img':
-        return el.getAttribute('alt') === '' ? null : 'img'
-      case 'h1':
-      case 'h2':
-      case 'h3':
-      case 'h4':
-      case 'h5':
-      case 'h6':
-        return 'heading'
-      case 'iframe':
-      case 'frame':
-        return 'iframe'
-      case 'nav':
-        return 'navigation'
-      case 'main':
-        return 'main'
-      case 'aside':
-        return 'complementary'
-      case 'header':
-        return el.closest('article, aside, main, nav, section') ? null : 'banner'
-      case 'footer':
-        return el.closest('article, aside, main, nav, section') ? null : 'contentinfo'
-      case 'form':
-        return 'form'
-      case 'dialog':
-        return 'dialog'
-      case 'table':
-        return 'table'
-      case 'tr':
-        return 'row'
-      case 'td':
-        return 'cell'
-      case 'th':
-        return 'columnheader'
-      case 'ul':
-      case 'ol':
-      case 'menu':
-        return 'list'
-      case 'li':
-        return 'listitem'
-      case 'p':
-        return 'paragraph'
-      case 'fieldset':
-      case 'details':
-        return 'group'
-      case 'output':
-        return 'status'
-      case 'progress':
-        return 'progressbar'
-      case 'hr':
-        return 'separator'
-      default:
-        return null
-    }
-  }
-
-  function roleOf(el) {
-    const explicit = explicitRole(el)
-    if (explicit !== undefined) return explicit
-    const implicit = implicitRole(el)
-    if (implicit) return implicit
-    if (el.isContentEditable || el.getAttribute('contenteditable') === 'true') return 'textbox'
-    return undefined
-  }
-
-  function looksClickable(el) {
-    // Many apps build buttons out of divs; a pointer cursor, an onclick
-    // attribute or a tabindex are the signals available from inside the page.
-    if (el.hasAttribute('onclick')) return true
-    const tabindex = el.getAttribute('tabindex')
-    if (tabindex !== null && Number(tabindex) >= 0) return true
-    if (style(el).cursor !== 'pointer') return false
-    const parent = el.parentElement
-    return !parent || style(parent).cursor !== 'pointer'
-  }
-
-  function nameOf(el, role) {
-    const labelledBy = el.getAttribute('aria-labelledby')
-    if (labelledBy) {
-      const text = labelledBy
-        .split(/\s+/)
-        .map((id) => document.getElementById(id))
-        .filter(Boolean)
-        .map(textOf)
-        .join(' ')
-      if (clean(text, MAX_NAME)) return clean(text, MAX_NAME)
-    }
-    const ariaLabel = clean(el.getAttribute('aria-label'), MAX_NAME)
-    if (ariaLabel) return ariaLabel
-
-    const tag = el.localName
-    if (tag === 'input' || tag === 'textarea' || tag === 'select') {
-      const type = (el.getAttribute('type') || '').toLowerCase()
-      if (['button', 'submit', 'reset'].includes(type)) {
-        return clean(el.value, MAX_NAME) || (type === 'submit' ? 'Submit' : type === 'reset' ? 'Reset' : '')
-      }
-      if (type === 'image') return clean(el.getAttribute('alt'), MAX_NAME) || 'Submit'
-      const labels = el.labels ? Array.from(el.labels).map(textOf).join(' ') : ''
-      return (
-        clean(labels, MAX_NAME) ||
-        clean(el.getAttribute('title'), MAX_NAME) ||
-        clean(el.getAttribute('placeholder'), MAX_NAME)
-      )
-    }
-    if (tag === 'img' || tag === 'area') return clean(el.getAttribute('alt') || el.getAttribute('title'), MAX_NAME)
-    if (tag === 'fieldset') {
-      const legend = el.querySelector(':scope > legend')
-      if (legend) return clean(textOf(legend), MAX_NAME)
-    }
-    if (tag === 'table' && el.caption) return clean(textOf(el.caption), MAX_NAME)
-    if (tag === 'iframe' || tag === 'frame') return clean(el.getAttribute('title') || el.getAttribute('name'), MAX_NAME)
-    if (NAME_FROM_CONTENT.has(role)) {
-      const text = clean(textOf(el), MAX_NAME)
-      if (text) return text
-    }
-    return clean(el.getAttribute('title'), MAX_NAME)
-  }
-
-  function propsOf(el, role) {
-    const props = []
-    if (role === 'heading') {
-      const level = el.getAttribute('aria-level') || (/^h[1-6]$/.test(el.localName) ? el.localName[1] : '')
-      if (level) props.push('level=' + level)
-    }
-    if (role === 'checkbox' || role === 'radio' || role === 'switch') {
-      const checked = 'checked' in el ? el.checked : el.getAttribute('aria-checked') === 'true'
-      if (checked) props.push('checked')
-    }
-    if (role === 'option' && (el.selected || el.getAttribute('aria-selected') === 'true')) props.push('selected')
-    if (el.disabled || el.getAttribute('aria-disabled') === 'true') props.push('disabled')
-    const expanded = el.getAttribute('aria-expanded')
-    if (expanded === 'true') props.push('expanded')
-    if (expanded === 'false') props.push('collapsed')
-    if (el.required) props.push('required')
-    const tag = el.localName
-    if ((role === 'textbox' || role === 'searchbox' || role === 'spinbutton' || role === 'slider') && 'value' in el) {
-      if ((el.getAttribute('type') || '').toLowerCase() === 'password') {
-        if (el.value) props.push('value=<hidden>')
-      } else if (el.value) {
-        props.push('value=' + JSON.stringify(clean(el.value, MAX_NAME)))
-      }
-    }
-    if (tag === 'select' && !el.multiple && el.selectedIndex >= 0) {
-      props.push('value=' + JSON.stringify(clean(textOf(el.options[el.selectedIndex]), MAX_NAME)))
-    }
-    return props
-  }
-
-  const items = []
-
-  // textCovered: an ancestor's name already spells out this text.
-  function walk(el, depth, insideSelect, textCovered) {
-    if (SKIP_TAGS.has(el.localName)) return
-    if (el.hidden || el.getAttribute('aria-hidden') === 'true') return
-    const s = insideSelect ? null : style(el)
-    if (s && s.display === 'none') return
-    const visible = !s || s.visibility !== 'hidden'
-
-    // undefined: no role at all; null: role="none"/"presentation" or hidden.
-    let role = visible ? roleOf(el) : null
-    let include = false
-    if (role) {
-      include = INTERACTIVE.has(role) || ALWAYS.has(role) || includeAll
-    } else if (role === undefined && !insideSelect && looksClickable(el)) {
-      role = 'generic'
-      include = true
-    }
-    if (insideSelect && role !== 'option') include = false
-
-    let childDepth = depth
-    let coversText = textCovered
-    if (include) {
-      const isFrame = role === 'iframe'
-      const name = nameOf(el, role)
-      const giveRef = !insideSelect
-      items.push({
-        depth,
-        role,
-        name,
-        props: propsOf(el, role),
-        ref: giveRef ? refFor(el) : null,
-        element: giveRef ? el : null,
-        frame: isFrame,
-      })
-      childDepth = depth + 1
-      if (isFrame) return
-      // Controls whose content is their name hold nothing else worth listing.
-      if (LEAF_ROLES.has(role)) return
-      if (role === 'generic' && !el.querySelector('a, button, input, select, textarea, [role], [tabindex]')) return
-      // Containers such as alerts can hold controls (a dismiss button), so
-      // keep walking, but don't repeat the text their name already gave.
-      if (NAME_FROM_CONTENT.has(role) && name) coversText = true
-    }
-
-    const isSelect = el.localName === 'select'
-    for (const child of el.childNodes) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        walk(child, childDepth, insideSelect || isSelect, coversText)
-      } else if (
-        includeAll &&
-        visible &&
-        !coversText &&
-        child.nodeType === Node.TEXT_NODE &&
-        !insideSelect &&
-        !isSelect
-      ) {
-        const text = clean(child.textContent, MAX_TEXT)
-        if (text) items.push({ depth: childDepth, role: 'text', name: text, props: [], ref: null, element: null })
-      }
-    }
-  }
-
-  if (document.body) walk(document.body, 0, false, false)
-  return { fresh, items }
+function clean(text, max) {
+  const s = String(text || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return s.length > max ? s.slice(0, max - 1) + '…' : s
 }
 
-const COLLECT_SCRIPT = `return (${collectNodes.toString()})(arguments[0])`
+/**
+ * The text leaves under `node`, joined, without the text that controls
+ * below it already show as their names.
+ *
+ * @param {!Object} node an AccessibilityNode
+ * @return {string}
+ */
+function textBelow(node) {
+  const parts = []
+  for (const child of node.children) {
+    if (child.role === 'text') parts.push(child.name)
+    else if (!LEAF_ROLES.has(child.role) && child.role !== 'iframe') parts.push(textBelow(child))
+  }
+  return parts.filter(Boolean).join(' ')
+}
 
 /**
- * Renders one snapshot node as a line of text.
+ * @param {!Object} node an AccessibilityNode
+ * @return {!Array<string>} the bracketed properties of the line, without brackets
+ */
+function propsOf(node) {
+  const props = []
+  const states = node.states || {}
+  for (const key of STATE_ORDER) {
+    if (!(key in states)) continue
+    if (states[key] === true) props.push(key)
+    else if (states[key] !== false) props.push(`${key}=${states[key]}`)
+  }
+  if (states.expanded === true) props.push('expanded')
+  if (states.expanded === false) props.push('collapsed')
+  if (node.value) props.push('value=' + JSON.stringify(clean(node.value, MAX_NAME)))
+  return props
+}
+
+/**
+ * Renders one snapshot line.
  *
  * @param {{depth: number, role: string, name: string, props: !Array<string>}} item
  * @param {?string} ref
@@ -476,14 +127,40 @@ function formatLine(item, ref) {
 /**
  * The server side of refs: maps the ref an agent sees to the element handle
  * and the chain of frames that must be entered to reach it.
+ *
+ * Refs are numbered by element id, so the same element keeps its ref across
+ * snapshots for as long as the table is not cleared.
  */
 class RefTable {
   constructor() {
     this.entries_ = new Map()
+    this.numbers_ = new Map()
+    this.next_ = new Map()
   }
 
   clear() {
     this.entries_.clear()
+    this.numbers_.clear()
+    this.next_.clear()
+  }
+
+  /**
+   * The ref number of an element within the frame that `prefix` names,
+   * handing out the next one the first time the element is seen.
+   *
+   * @param {string} prefix
+   * @param {string} elementId
+   * @return {number}
+   */
+  numberFor(prefix, elementId) {
+    const key = `${prefix} ${elementId}`
+    let number = this.numbers_.get(key)
+    if (number === undefined) {
+      number = this.next_.get(prefix) || 1
+      this.next_.set(prefix, number + 1)
+      this.numbers_.set(key, number)
+    }
+    return number
   }
 
   /**
@@ -539,62 +216,103 @@ async function enterFrames(driver, framePath) {
 }
 
 /**
- * Thrown when page script has made refs repeat or take odd values. It must
- * fail the whole snapshot, even from inside a frame.
+ * Turns the bindings' accessibility tree into snapshot lines, giving a ref
+ * to every element shown.
+ *
+ * @param {!Object} root the AccessibilityNode of the top-level document
+ * @param {!RefTable} table where ref numbers come from
+ * @param {{all: (boolean|undefined)}=} options
+ * @return {!Promise<{lines: !Array<string>, entries: !Map<string, !Object>}>}
  */
-class RefTamperError extends Error {
-  constructor() {
-    super('The page tampered with element refs, so this snapshot cannot be trusted.')
-    this.name = 'RefTamperError'
+async function renderTree(root, table, options = {}) {
+  const includeAll = !!options.all
+  const lines = []
+  const entries = new Map()
+
+  async function refOf(node, prefix, framePath) {
+    const number = table.numberFor(prefix, await node.element.getId())
+    const ref = `${prefix}e${number}`
+    entries.set(ref, { element: node.element, framePath })
+    return { ref, number }
   }
+
+  // textCovered: an ancestor's name already spells out this text.
+  async function visit(node, depth, ctx) {
+    if (node.role === 'text') {
+      if (includeAll && !ctx.textCovered) {
+        const text = clean(node.name, MAX_TEXT)
+        if (text) lines.push(formatLine({ depth, role: 'text', name: text, props: [] }, null))
+      }
+      return
+    }
+    const include = includeAll || INTERACTIVE.has(node.role) || ALWAYS.has(node.role)
+    if (!include) {
+      for (const child of node.children) await visit(child, depth, ctx)
+      return
+    }
+
+    let name = clean(node.name, MAX_NAME)
+    let textCovered = ctx.textCovered
+    if (!name && NAMED_FROM_TEXT.has(node.role)) {
+      name = clean(textBelow(node), MAX_NAME)
+      if (name) textCovered = true
+    }
+    // browser_select_option picks a native select's options by their text.
+    const giveRef = node.element && !(node.role === 'option' && ctx.parentRole === 'combobox')
+    const { ref, number } = giveRef ? await refOf(node, ctx.prefix, ctx.framePath) : {}
+    lines.push(formatLine({ depth, role: node.role, name, props: propsOf(node) }, ref || null))
+
+    if (node.role === 'iframe') {
+      await visitFrame(node, depth + 1, ctx, number)
+      return
+    }
+    if (LEAF_ROLES.has(node.role)) return
+    for (const child of node.children) {
+      await visit(child, depth + 1, { ...ctx, textCovered, parentRole: node.role })
+    }
+  }
+
+  async function visitFrame(node, depth, ctx, number) {
+    const indent = '  '.repeat(depth)
+    const document = node.children[0]
+    if (!document || !node.element) {
+      lines.push(indent + '(frame content not available)')
+      return
+    }
+    if (ctx.framePath.length >= MAX_FRAME_DEPTH) {
+      lines.push(indent + '(frames nested too deep, not shown)')
+      return
+    }
+    const inner = {
+      prefix: framePrefix(ctx.prefix, number),
+      framePath: [...ctx.framePath, node.element],
+      textCovered: false,
+      parentRole: 'document',
+    }
+    for (const child of document.children) await visit(child, depth, inner)
+  }
+
+  const top = { prefix: '', framePath: [], textCovered: false, parentRole: 'document' }
+  for (const child of root.children) await visit(child, 0, top)
+  return { lines, entries }
 }
 
 /**
- * Takes a snapshot of the current page, descending into iframes, and records
+ * Takes a snapshot of the current page, including its iframes, and records
  * every ref it hands out in `table`.
  *
- * @param {!Object} driver a WebDriver
+ * The tree comes from the bindings' getAccessibilitySnapshot(), which
+ * computes roles, names and states in a sandbox the page cannot reach.
+ *
+ * @param {!Object} driver a WebDriver with a BiDi connection
  * @param {!RefTable} table
  * @param {{all: (boolean|undefined)}=} options
  * @return {!Promise<string>} the snapshot text
  */
 async function takeSnapshot(driver, table, options = {}) {
-  const lines = []
-  const includeAll = !!options.all
-  // Filled as the snapshot goes and swapped in only once it is complete, so a
-  // snapshot cut short by a dialog leaves the previous refs usable.
-  const entries = new Map()
-
-  async function visit(framePath, prefix, baseDepth) {
-    await enterFrames(driver, framePath)
-    const { items } = await driver.executeScript(COLLECT_SCRIPT, includeAll)
-    for (const item of items) {
-      const depth = baseDepth + item.depth
-      // Page script can reach the in-page ref map, so never trust it to keep
-      // refs unique: a repeated ref would show one element and act on another.
-      if (item.ref !== null && (!Number.isInteger(item.ref) || item.ref < 1 || entries.has(`${prefix}e${item.ref}`))) {
-        throw new RefTamperError()
-      }
-      const ref = item.ref ? `${prefix}e${item.ref}` : null
-      if (ref) entries.set(ref, { element: item.element, framePath })
-      lines.push(formatLine({ ...item, depth }, ref))
-      if (item.frame && item.element) {
-        if (framePath.length >= MAX_FRAME_DEPTH) {
-          lines.push('  '.repeat(depth + 1) + '(frames nested too deep, not shown)')
-          continue
-        }
-        try {
-          await visit([...framePath, item.element], framePrefix(prefix, item.ref), depth + 1)
-        } catch (e) {
-          if (e instanceof error.UnexpectedAlertOpenError || e instanceof RefTamperError) throw e
-          lines.push('  '.repeat(depth + 1) + '(frame content not available)')
-        }
-        await enterFrames(driver, framePath)
-      }
-    }
-  }
-
-  await visit([], '', 0)
+  const root = await driver.getAccessibilitySnapshot()
+  const { lines, entries } = await renderTree(root, table, options)
+  // Swapped in only once complete, so a failed snapshot leaves the previous refs usable.
   table.replaceWith(entries)
   await driver.switchTo().defaultContent()
   return lines.length ? lines.join('\n') : '(page has no visible content)'
@@ -624,12 +342,11 @@ async function resolveRef(driver, table, ref) {
 }
 
 module.exports = {
-  COLLECT_SCRIPT,
   RefTable,
-  collectNodes,
   enterFrames,
   formatLine,
   framePrefix,
+  renderTree,
   resolveRef,
   takeSnapshot,
 }
