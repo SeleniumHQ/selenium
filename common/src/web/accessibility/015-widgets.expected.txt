@@ -1,0 +1,23 @@
+- document "ARIA widgets"
+  - tablist "Views"
+    - tab "First" [selected]
+    - tab "Second"
+  - tabpanel "First"
+    - paragraph
+      - text: First panel
+  - tree "Files"
+    - treeitem "src index.ts" [expanded] [level=1]
+      - group
+        - treeitem "index.ts" [selected] [level=2]
+  - listbox "Colours"
+    - option "Red" [selected]
+    - option "Green"
+  - slider "Zoom": 150 percent
+  - progressbar "Upload": 40
+  - switch "Notifications" [checked]
+  - menubar "Main"
+    - menuitem "File"
+    - menuitemcheckbox "Wrap" [checked=mixed]
+  - toolbar "Format"
+    - button "B"
+  - tooltip "Tooltip text"

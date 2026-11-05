@@ -38,6 +38,7 @@ generated_resource_utilities(
         "//javascript/atoms/fragments:is-displayed-typescript.js": "IsDisplayedAtom",
         "//javascript/cdp-support:mutation-listener.js": "MutationListenerAtom",
         "//javascript/atoms/fragments:get-attribute-typescript.js": "GetAttributeAtom",
+        "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js": "AccessibilitySnapshotAtom",
     },
 )
 

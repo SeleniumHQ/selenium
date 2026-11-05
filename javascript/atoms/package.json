@@ -181,6 +181,14 @@
     "./submit": {
       "types": "./dist/typescript/submit.d.ts",
       "default": "./dist/typescript/submit.js"
+    },
+    "./accessibility-snapshot": {
+      "types": "./dist/typescript/accessibility-snapshot.d.ts",
+      "default": "./dist/typescript/accessibility-snapshot.js"
+    },
+    "./accessibility-snapshot-wire": {
+      "types": "./dist/typescript/accessibility-snapshot-wire.d.ts",
+      "default": "./dist/typescript/accessibility-snapshot-wire.js"
     }
   },
   "typesVersions": {
@@ -227,7 +235,9 @@
       "click": ["./dist/typescript/click.d.ts"],
       "type": ["./dist/typescript/type.d.ts"],
       "clear": ["./dist/typescript/clear.d.ts"],
-      "submit": ["./dist/typescript/submit.d.ts"]
+      "submit": ["./dist/typescript/submit.d.ts"],
+      "accessibility-snapshot": ["./dist/typescript/accessibility-snapshot.d.ts"],
+      "accessibility-snapshot-wire": ["./dist/typescript/accessibility-snapshot-wire.d.ts"]
     }
   },
   "engines": {
