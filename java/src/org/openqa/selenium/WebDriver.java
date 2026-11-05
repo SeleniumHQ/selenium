@@ -218,6 +218,20 @@ public interface WebDriver extends SearchContext {
     throw new UnsupportedOperationException("getAccessibilitySnapshot");
   }
 
+  /**
+   * Takes an accessibility snapshot of the whole page with the given options; see {@link
+   * #getAccessibilitySnapshot()}. With {@link AccessibilitySnapshotOptions#withInterestingOnly
+   * interestingOnly} false every rendered element produces a node, as Puppeteer's {@code
+   * accessibility.snapshot({ interestingOnly: false })} does.
+   *
+   * @param options what the snapshot leaves out
+   * @return the root node of the snapshot, of role {@code document}
+   * @throws UnsupportedOperationException if the driver does not support snapshots
+   */
+  default AccessibilityNode getAccessibilitySnapshot(AccessibilitySnapshotOptions options) {
+    throw new UnsupportedOperationException("getAccessibilitySnapshot");
+  }
+
   /** An interface for managing stuff you would do in a browser menu */
   interface Options {
 

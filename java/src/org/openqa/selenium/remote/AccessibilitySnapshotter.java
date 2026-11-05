@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AccessibilityNode;
+import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -86,14 +87,16 @@ class AccessibilitySnapshotter {
    *
    * @param root the element whose subtree to snapshot, or {@code null} for the page of the current
    *     window's top-level browsing context
+   * @param options what the snapshot leaves out
    * @return the snapshot, with every reachable child frame's tree attached under its {@code iframe}
    *     node
    * @throws StaleElementReferenceException when {@code root} no longer belongs to a document
    */
-  AccessibilityNode snapshot(@Nullable RemoteWebElement root) {
+  AccessibilityNode snapshot(
+      @Nullable RemoteWebElement root, AccessibilitySnapshotOptions options) {
     String top = driver.getWindowHandle();
     if (root == null) {
-      AccessibilityNode node = snapshotContext(top, null);
+      AccessibilityNode node = snapshotContext(top, null, options);
       if (node == null) {
         throw new WebDriverException("accessibility snapshot: the script returned nothing");
       }
@@ -105,7 +108,7 @@ class AccessibilitySnapshotter {
     // found.
     for (String context : contexts(top)) {
       try {
-        AccessibilityNode node = snapshotContext(context, root.getId());
+        AccessibilityNode node = snapshotContext(context, root.getId(), options);
         if (node != null) {
           return node;
         }
@@ -144,11 +147,13 @@ class AccessibilitySnapshotter {
     Object element = data.get("element");
     Object description = data.get("description");
     Object value = data.get("value");
+    Object url = data.get("url");
     return new AccessibilityNode(
         (String) data.get("role"),
         (String) data.get("name"),
         description == null ? "" : (String) description,
         value == null ? null : (String) value,
+        url == null ? null : (String) url,
         states,
         element == null ? null : elements.get(index(element)),
         children);
@@ -158,12 +163,17 @@ class AccessibilitySnapshotter {
     return ((Number) value).intValue();
   }
 
-  /** The snapshot of {@code context}, or {@code null} when another document owns the root. */
-  private @Nullable AccessibilityNode snapshotContext(String context, @Nullable String rootId) {
-    List<LocalValue> arguments =
-        rootId == null
-            ? List.of()
-            : List.of(new RemoteReference(RemoteReference.Type.SHARED_ID, rootId));
+  /**
+   * The snapshot of {@code context}, or {@code null} when another document owns the root. The
+   * interestingOnly flag goes first, so a whole-page call sends no placeholder for a root.
+   */
+  private @Nullable AccessibilityNode snapshotContext(
+      String context, @Nullable String rootId, AccessibilitySnapshotOptions options) {
+    List<LocalValue> arguments = new ArrayList<>();
+    arguments.add(LocalValue.booleanValue(options.isInterestingOnly()));
+    if (rootId != null) {
+      arguments.add(new RemoteReference(RemoteReference.Type.SHARED_ID, rootId));
+    }
     RemoteValue result = callAtom(context, arguments);
     if ("null".equals(result.getType())) {
       return null;
@@ -182,7 +192,7 @@ class AccessibilitySnapshotter {
       windows.add(contextOf(window));
     }
     Map<String, Object> data = JSON.toType(string(required(fields, "json")), Json.MAP_TYPE);
-    return fromWire(data, elements, index -> stitch(windows.get(index)));
+    return fromWire(data, elements, index -> stitch(windows.get(index), options));
   }
 
   /**
@@ -197,7 +207,7 @@ class AccessibilitySnapshotter {
           script.callFunction(
               new CallFunctionParameters(
                       new ContextTarget(context, SANDBOX),
-                      "(root) => (" + atom() + ")(root)",
+                      "(interestingOnly, root) => (" + atom() + ")(root, {interestingOnly})",
                       false)
                   .arguments(arguments)
                   .resultOwnership(ResultOwnership.NONE)
@@ -218,13 +228,14 @@ class AccessibilitySnapshotter {
   }
 
   /** The document of a frame as the frame node's one child, or no children when unreachable. */
-  private List<AccessibilityNode> stitch(@Nullable String context) {
+  private List<AccessibilityNode> stitch(
+      @Nullable String context, AccessibilitySnapshotOptions options) {
     if (context == null) {
       return List.of();
     }
     AccessibilityNode document;
     try {
-      document = snapshotContext(context, null);
+      document = snapshotContext(context, null, options);
     } catch (RuntimeException e) {
       // Gone between discovery and the call, or mid-navigation: the frame stays a leaf. Anything
       // else is a real failure.

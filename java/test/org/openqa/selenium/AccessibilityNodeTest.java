@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.json.Json;
@@ -48,12 +50,28 @@ class AccessibilityNodeTest {
     return JSON.<List<String>>toType(read("index.json"), List.class).stream();
   }
 
-  @ParameterizedTest
-  @MethodSource("corpusPages")
-  void rendersEveryCorpusPageAsItsRecordedText(String page) throws IOException {
-    AccessibilityNode tree = fromJson(JSON.toType(read(page + ".expected.json"), Json.MAP_TYPE));
+  /** Both recorded forms of every page: pruned, and with interestingOnly false. */
+  static Stream<Arguments> corpusForms() throws IOException {
+    return corpusPages().flatMap(page -> Stream.of("", ".full").map(form -> arguments(page, form)));
+  }
 
-    assertThat(tree.toText() + "\n").isEqualTo(read(page + ".expected.txt"));
+  @ParameterizedTest
+  @MethodSource("corpusForms")
+  void rendersEveryCorpusPageAsItsRecordedText(String page, String form) throws IOException {
+    AccessibilityNode tree =
+        fromJson(JSON.toType(read(page + ".expected" + form + ".json"), Json.MAP_TYPE));
+
+    assertThat(tree.toText() + "\n").isEqualTo(read(page + ".expected" + form + ".txt"));
+  }
+
+  @Test
+  void doesNotRenderTheUrl() {
+    AccessibilityNode link =
+        new AccessibilityNode(
+            "link", "Docs", "", null, "https://example.com/docs", Map.of(), null, List.of());
+
+    assertThat(link.getUrl()).isEqualTo("https://example.com/docs");
+    assertThat(link.toText()).isEqualTo("- link \"Docs\"");
   }
 
   @Test
@@ -66,7 +84,14 @@ class AccessibilityNodeTest {
     states.put("pressed", "mixed");
     AccessibilityNode node =
         new AccessibilityNode(
-            "textbox", "Say \"hi\" \\ bye", "", "line one\nline two\\", states, null, List.of());
+            "textbox",
+            "Say \"hi\" \\ bye",
+            "",
+            "line one\nline two\\",
+            null,
+            states,
+            null,
+            List.of());
 
     assertThat(node.toText())
         .isEqualTo(
@@ -75,7 +100,8 @@ class AccessibilityNodeTest {
     assertThat(node("list", "", List.of()).toText()).isEqualTo("- list");
     assertThat(node("text", "plain words", List.of()).toText()).isEqualTo("- text: plain words");
     assertThat(
-            new AccessibilityNode("textbox", "Empty", "", "", Map.of(), null, List.of()).toText())
+            new AccessibilityNode("textbox", "Empty", "", "", null, Map.of(), null, List.of())
+                .toText())
         .isEqualTo("- textbox \"Empty\"");
   }
 
@@ -100,13 +126,14 @@ class AccessibilityNodeTest {
     Map<String, Object> states = new LinkedHashMap<>();
     states.put("checked", true);
     AccessibilityNode node =
-        new AccessibilityNode("checkbox", "Agree", "Terms", null, states, null, List.of());
+        new AccessibilityNode("checkbox", "Agree", "Terms", null, null, states, null, List.of());
     states.put("checked", false);
 
     assertThat(node.getRole()).isEqualTo("checkbox");
     assertThat(node.getName()).isEqualTo("Agree");
     assertThat(node.getDescription()).isEqualTo("Terms");
     assertThat(node.getValue()).isNull();
+    assertThat(node.getUrl()).isNull();
     assertThat(node.getStates()).containsEntry("checked", true);
     assertThat(node.getElement()).isNull();
     assertThat(node.getChildren()).isEmpty();
@@ -114,7 +141,7 @@ class AccessibilityNodeTest {
 
   private static AccessibilityNode node(
       String role, String name, List<AccessibilityNode> children) {
-    return new AccessibilityNode(role, name, "", null, Map.of(), null, children);
+    return new AccessibilityNode(role, name, "", null, null, Map.of(), null, children);
   }
 
   /**
@@ -131,6 +158,7 @@ class AccessibilityNodeTest {
         (String) data.get("name"),
         (String) data.get("description"),
         (String) data.get("value"),
+        (String) data.get("url"),
         (Map<String, Object>) data.get("states"),
         null,
         children);

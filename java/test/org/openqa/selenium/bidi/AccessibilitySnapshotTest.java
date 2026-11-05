@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.AccessibilityNode;
+import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -71,6 +72,52 @@ class AccessibilitySnapshotTest extends JupiterTestBase {
 
     assertThat(serialize(tree)).isEqualTo(JSON.toType(expected(page, "json"), Json.MAP_TYPE));
     assertThat(tree.toText() + "\n").isEqualTo(expected(page, "txt"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("corpusPages")
+  void unprunedSnapshotMatchesTheCorpus(String page) throws IOException {
+    load(page);
+
+    AccessibilityNode tree =
+        driver.getAccessibilitySnapshot(
+            AccessibilitySnapshotOptions.defaults().withInterestingOnly(false));
+
+    assertThat(serialize(tree))
+        .isEqualTo(JSON.toType(expected(page, "json", ".full"), Json.MAP_TYPE));
+    assertThat(tree.toText() + "\n").isEqualTo(expected(page, "txt", ".full"));
+  }
+
+  @Test
+  void aLinkCarriesItsResolvedUrl() {
+    load("003-links-and-buttons");
+
+    AccessibilityNode tree = driver.getAccessibilitySnapshot();
+
+    AccessibilityNode link =
+        walk(tree).filter(node -> "link".equals(node.getRole())).findFirst().orElseThrow();
+    assertThat(link.getUrl()).isEqualTo(link.getElement().getDomProperty("href"));
+    assertThat(link.getUrl()).startsWith("https://example.com/");
+    assertThat(
+            walk(tree)
+                .filter(node -> !"link".equals(node.getRole()))
+                .map(AccessibilityNode::getUrl))
+        .containsOnlyNulls();
+  }
+
+  @Test
+  void aSubtreeSnapshotCanBeUnprunedToo() {
+    load("010-generic-and-presentation");
+    WebElement wrapper = driver.findElement(By.id("wrap-1"));
+
+    AccessibilityNode pruned = wrapper.getAccessibilitySnapshot();
+    AccessibilityNode full =
+        wrapper.getAccessibilitySnapshot(
+            AccessibilitySnapshotOptions.defaults().withInterestingOnly(false));
+
+    assertThat(roles(pruned.getChildren())).containsExactly("heading", "text");
+    assertThat(roles(full.getChildren())).containsExactly("generic");
+    assertThat(full.getChildren().get(0).getElement().getDomAttribute("id")).isEqualTo("wrap-2");
   }
 
   @Test
@@ -242,15 +289,22 @@ class AccessibilitySnapshotTest extends JupiterTestBase {
     return "chromium";
   }
 
-  /** The engine-specific expectation when one is recorded, else the shared one. */
   private String expected(String page, String suffix) throws IOException {
+    return expected(page, suffix, "");
+  }
+
+  /**
+   * The engine-specific expectation when one is recorded, else the shared one; {@code form} is
+   * {@code ".full"} for the unpruned recording.
+   */
+  private String expected(String page, String suffix, String form) throws IOException {
     Path specific =
         InProject.locate("common/src/web/accessibility")
-            .resolve(page + ".expected." + engine() + "." + suffix);
+            .resolve(page + ".expected" + form + "." + engine() + "." + suffix);
     if (Files.exists(specific)) {
       return Files.readString(specific, StandardCharsets.UTF_8);
     }
-    return read(page + ".expected." + suffix);
+    return read(page + ".expected" + form + "." + suffix);
   }
 
   /** The corpus JSON form: every field written, `element` as the element's id. */
@@ -261,6 +315,9 @@ class AccessibilitySnapshotTest extends JupiterTestBase {
     out.put("description", node.getDescription());
     if (node.getValue() != null) {
       out.put("value", node.getValue());
+    }
+    if (node.getUrl() != null) {
+      out.put("url", node.getUrl());
     }
     out.put("states", node.getStates());
     if (node.getElement() != null) {

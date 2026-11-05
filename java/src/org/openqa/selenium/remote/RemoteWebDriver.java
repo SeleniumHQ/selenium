@@ -53,6 +53,7 @@ import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.AccessibilityNode;
+import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -670,7 +671,12 @@ public class RemoteWebDriver
 
   @Override
   public AccessibilityNode getAccessibilitySnapshot() {
-    return accessibility().snapshot(null);
+    return getAccessibilitySnapshot(AccessibilitySnapshotOptions.defaults());
+  }
+
+  @Override
+  public AccessibilityNode getAccessibilitySnapshot(AccessibilitySnapshotOptions options) {
+    return accessibility().snapshot(null, Require.nonNull("Options", options));
   }
 
   // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.

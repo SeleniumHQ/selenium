@@ -27,6 +27,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.AccessibilityNode;
+import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.json.Json;
@@ -66,7 +67,29 @@ class AccessibilitySnapshotUnitTest {
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(driver::getAccessibilitySnapshot)
         .withMessageContaining("BiDi");
+    assertThatExceptionOfType(UnsupportedCommandException.class)
+        .isThrownBy(
+            () ->
+                driver.getAccessibilitySnapshot(
+                    AccessibilitySnapshotOptions.defaults().withInterestingOnly(false)))
+        .withMessageContaining("BiDi");
     assertThat(executor.commands).isEmpty();
+  }
+
+  @Test
+  void optionsDefaultToPruningAndAreImmutable() {
+    AccessibilitySnapshotOptions defaults = AccessibilitySnapshotOptions.defaults();
+    AccessibilitySnapshotOptions full = defaults.withInterestingOnly(false);
+
+    assertThat(defaults.isInterestingOnly()).isTrue();
+    assertThat(full.isInterestingOnly()).isFalse();
+    assertThat(defaults.isInterestingOnly()).as("withInterestingOnly returns a new value").isTrue();
+    assertThat(defaults.withInterestingOnly(true)).isEqualTo(defaults);
+    assertThat(full.withInterestingOnly(false)).isEqualTo(full);
+    assertThat(full)
+        .isNotEqualTo(defaults)
+        .hasToString("AccessibilitySnapshotOptions{interestingOnly=false}");
+    assertThat(full.hashCode()).isNotEqualTo(defaults.hashCode());
   }
 
   @Test
@@ -98,19 +121,22 @@ class AccessibilitySnapshotUnitTest {
                 + "{\"role\":\"iframe\",\"name\":\"Embedded\",\"description\":\"\",\"states\":{},"
                 + "\"element\":1,\"frame\":0,\"children\":[]},"
                 + "{\"role\":\"button\",\"name\":\"Save\",\"description\":\"Saves\","
-                + "\"states\":{\"disabled\":true,\"level\":2},\"element\":2,\"children\":[]}]}",
+                + "\"states\":{\"disabled\":true,\"level\":2},\"element\":2,\"children\":[]},"
+                + "{\"role\":\"link\",\"name\":\"Docs\",\"description\":\"\","
+                + "\"url\":\"https://example.com/docs\",\"states\":{},\"element\":3,"
+                + "\"children\":[]}]}",
             Json.MAP_TYPE);
     AccessibilityNode framed =
-        new AccessibilityNode("document", "Inner", "", null, Map.of(), null, List.of());
+        new AccessibilityNode("document", "Inner", "", null, null, Map.of(), null, List.of());
 
     AccessibilityNode node =
         AccessibilitySnapshotter.fromWire(
-            data, List.of(region, frame, button), index -> List.of(framed));
+            data, List.of(region, frame, button, element("link-1")), index -> List.of(framed));
 
     assertThat(node.getRole()).isEqualTo("region");
     assertThat(node.getName()).isEqualTo("App");
     assertThat(node.getElement()).isSameAs(region);
-    assertThat(node.getChildren()).hasSize(3);
+    assertThat(node.getChildren()).hasSize(4);
     AccessibilityNode text = node.getChildren().get(0);
     assertThat(text.getRole()).isEqualTo("text");
     assertThat(text.getElement()).isNull();
@@ -122,6 +148,8 @@ class AccessibilitySnapshotUnitTest {
     assertThat(save.getDescription()).isEqualTo("Saves");
     assertThat(save.getStates()).containsEntry("disabled", true);
     assertThat(((Number) save.getStates().get("level")).intValue()).isEqualTo(2);
+    assertThat(save.getUrl()).isNull();
+    assertThat(node.getChildren().get(3).getUrl()).isEqualTo("https://example.com/docs");
   }
 
   @Test
@@ -136,6 +164,7 @@ class AccessibilitySnapshotUnitTest {
         AccessibilitySnapshotter.fromWire(data, List.of(element("input-1")), index -> List.of());
 
     assertThat(node.getValue()).isEqualTo("a@b.c");
+    assertThat(node.getUrl()).isNull();
     assertThat(node.getChildren()).isEmpty();
     assertThat(node.getStates()).isEmpty();
   }

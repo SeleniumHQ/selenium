@@ -42,6 +42,7 @@ public final class AccessibilityNode {
   private final String name;
   private final String description;
   private final @Nullable String value;
+  private final @Nullable String url;
   private final Map<String, Object> states;
   private final @Nullable WebElement element;
   private final List<AccessibilityNode> children;
@@ -52,6 +53,7 @@ public final class AccessibilityNode {
    * @param description the computed accessible description, {@code ""} when there is none
    * @param value the current value for textbox, searchbox, combobox and range roles, or {@code
    *     null}
+   * @param url the resolved href of a link whose element has one, or {@code null}
    * @param states the states that apply, keyed by name; values are {@link Boolean}, {@link Long} or
    *     {@link String}
    * @param element the element the node is backed by, or {@code null} for a text leaf
@@ -62,6 +64,7 @@ public final class AccessibilityNode {
       String name,
       String description,
       @Nullable String value,
+      @Nullable String url,
       Map<String, Object> states,
       @Nullable WebElement element,
       List<AccessibilityNode> children) {
@@ -69,6 +72,7 @@ public final class AccessibilityNode {
     this.name = Require.nonNull("Name", name);
     this.description = Require.nonNull("Description", description);
     this.value = value;
+    this.url = url;
     this.states =
         Collections.unmodifiableMap(new LinkedHashMap<>(Require.nonNull("States", states)));
     this.element = element;
@@ -104,6 +108,14 @@ public final class AccessibilityNode {
    */
   public @Nullable String getValue() {
     return value;
+  }
+
+  /**
+   * @return the resolved {@code href} of a {@code link} whose element has one; {@code null} for
+   *     every other node. Not rendered by {@link #toText()}.
+   */
+  public @Nullable String getUrl() {
+    return url;
   }
 
   /**
