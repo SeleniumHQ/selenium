@@ -1,0 +1,18 @@
+- document "Images and figures"
+  - generic
+    - img "A map"
+    - presentation
+    - img
+    - img "Titled image"
+    - figure "Sales by month"
+      - img "Chart"
+      - generic
+        - text: Sales by month
+    - graphics-document "Logo"
+      - generic
+        - text: Logo
+      - generic
+    - img "Rating: 4 of 5"
+    - generic
+      - link "Zone"
+    - img "Mapped"

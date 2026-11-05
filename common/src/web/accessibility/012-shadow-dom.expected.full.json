@@ -1,0 +1,216 @@
+{
+  "role": "document",
+  "name": "Shadow DOM",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "generic",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "body",
+      "children": [
+        {
+          "role": "generic",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "host",
+          "children": [
+            {
+              "role": "heading",
+              "name": "Shadow heading",
+              "description": "",
+              "states": {
+                "level": 2
+              },
+              "element": "shadow-heading",
+              "children": []
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "default-slot",
+              "children": [
+                {
+                  "role": "paragraph",
+                  "name": "",
+                  "description": "",
+                  "states": {},
+                  "element": "light",
+                  "children": [
+                    {
+                      "role": "text",
+                      "name": "Light paragraph",
+                      "description": "",
+                      "states": {},
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "role": "button",
+              "name": "Shadow label",
+              "description": "",
+              "states": {},
+              "element": "shadow-button",
+              "children": []
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "shadow-label",
+              "children": [
+                {
+                  "role": "text",
+                  "name": "Shadow label",
+                  "description": "",
+                  "states": {},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "generic",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "named-host",
+          "children": [
+            {
+              "role": "paragraph",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "p-a",
+              "children": [
+                {
+                  "role": "generic",
+                  "name": "",
+                  "description": "",
+                  "states": {},
+                  "element": "slot-a",
+                  "children": [
+                    {
+                      "role": "generic",
+                      "name": "",
+                      "description": "",
+                      "states": {},
+                      "element": "slotted-a",
+                      "children": [
+                        {
+                          "role": "text",
+                          "name": "A",
+                          "description": "",
+                          "states": {},
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "p-b",
+              "children": [
+                {
+                  "role": "generic",
+                  "name": "",
+                  "description": "",
+                  "states": {},
+                  "element": "slot-b",
+                  "children": [
+                    {
+                      "role": "generic",
+                      "name": "",
+                      "description": "",
+                      "states": {},
+                      "element": "slotted-b",
+                      "children": [
+                        {
+                          "role": "text",
+                          "name": "B",
+                          "description": "",
+                          "states": {},
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "slot-c",
+              "children": [
+                {
+                  "role": "paragraph",
+                  "name": "",
+                  "description": "",
+                  "states": {},
+                  "element": "fallback",
+                  "children": [
+                    {
+                      "role": "text",
+                      "name": "Fallback",
+                      "description": "",
+                      "states": {},
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "generic",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "outer",
+          "children": [
+            {
+              "role": "generic",
+              "name": "",
+              "description": "",
+              "states": {},
+              "element": "inner",
+              "children": [
+                {
+                  "role": "heading",
+                  "name": "Nested",
+                  "description": "",
+                  "states": {
+                    "level": 2
+                  },
+                  "element": "inner-heading",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

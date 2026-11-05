@@ -13,6 +13,7 @@ rb_library(
     name = "atoms",
     srcs = ["atoms.rb"],
     data = [
+        "//rb/lib/selenium/webdriver/atoms:accessibility-snapshot",
         "//rb/lib/selenium/webdriver/atoms:find-elements",
         "//rb/lib/selenium/webdriver/atoms:get-attribute",
         "//rb/lib/selenium/webdriver/atoms:is-displayed",
