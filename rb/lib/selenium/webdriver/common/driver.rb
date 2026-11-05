@@ -284,13 +284,17 @@ module Selenium
       # switched to, with every reachable child frame's tree attached under its iframe
       # node. Requires a BiDi session.
       #
+      # @param [Boolean] interesting_only with true, the default, elements of role generic,
+      #   none or presentation with no name produce no node and their children take their
+      #   place; with false every rendered element produces a node, as Puppeteer's
+      #   accessibility.snapshot({interestingOnly: false}) does
       # @return [AccessibilityNode] the root of the snapshot
       # @raise [Error::UnsupportedOperationError] when the session has no BiDi connection
       # @see AccessibilityNode#to_text
       #
 
-      def accessibility_snapshot
-        bridge.accessibility_snapshot
+      def accessibility_snapshot(interesting_only: true)
+        bridge.accessibility_snapshot(nil, interesting_only: interesting_only)
       end
 
       #

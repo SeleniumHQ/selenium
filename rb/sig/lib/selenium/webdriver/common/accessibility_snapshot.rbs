@@ -32,13 +32,15 @@ module Selenium
 
       attr_reader value: String?
 
+      attr_reader url: String?
+
       attr_reader states: Hash[String, state]
 
       attr_reader element: Element?
 
       attr_accessor children: Array[AccessibilityNode]
 
-      def initialize: (role: String, name: String, ?description: String, ?value: String?, ?states: Hash[String, state], ?element: Element?, ?children: Array[AccessibilityNode]) -> void
+      def initialize: (role: String, name: String, ?description: String, ?value: String?, ?url: String?, ?states: Hash[String, state], ?element: Element?, ?children: Array[AccessibilityNode]) -> void
 
       def to_text: () -> String
 
@@ -87,15 +89,15 @@ module Selenium
 
       def initialize: (Remote::Bridge bridge) -> void
 
-      def snapshot: (?Element? root) -> AccessibilityNode
+      def snapshot: (?Element? root, ?interesting_only: bool) -> AccessibilityNode
 
       private
 
-      def snapshot_context: (String context, String? root_id) -> AccessibilityNode?
+      def snapshot_context: (String context, String? root_id, ?bool interesting_only) -> AccessibilityNode?
 
-      def call: (String context, Array[Hash[Symbol, String]] arguments) -> AccessibilityNode::remote_value
+      def call: (String context, Array[Hash[Symbol, untyped]] arguments) -> AccessibilityNode::remote_value
 
-      def stitch: (String? context) -> Array[AccessibilityNode]
+      def stitch: (String? context, bool interesting_only) -> Array[AccessibilityNode]
 
       def element: (String shared_id) -> Element
 

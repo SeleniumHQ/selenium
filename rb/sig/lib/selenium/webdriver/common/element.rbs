@@ -49,7 +49,7 @@ module Selenium
 
       def accessible_name: () -> String
 
-      def accessibility_snapshot: () -> AccessibilityNode
+      def accessibility_snapshot: (?interesting_only: bool) -> AccessibilityNode
 
       def text: () -> String
 

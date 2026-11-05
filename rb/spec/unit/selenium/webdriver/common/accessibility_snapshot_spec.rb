@@ -37,6 +37,7 @@ module Selenium
           name: data['name'],
           description: data['description'],
           value: data['value'],
+          url: data['url'],
           states: data['states'],
           element: data['element'],
           children: data['children'].map { |child| node_from_json(child) }
@@ -46,12 +47,21 @@ module Selenium
       describe '#to_text' do
         # Every expected.txt is the reference renderer's output over its expected.json; the port must agree.
         pages = File.expand_path('../../../../../../common/src/web/accessibility/index.json', __dir__)
+        forms = ['', '.full'].freeze
         JSON.parse(File.read(pages, encoding: 'UTF-8')).each do |page|
-          it "renders #{page} as its recorded text" do
-            tree = node_from_json(JSON.parse(corpus("#{page}.expected.json")))
+          forms.each do |form|
+            it "renders #{page}#{form} as its recorded text" do
+              tree = node_from_json(JSON.parse(corpus("#{page}.expected#{form}.json")))
 
-            expect("#{tree.to_text}\n").to eq corpus("#{page}.expected.txt")
+              expect("#{tree.to_text}\n").to eq corpus("#{page}.expected#{form}.txt")
+            end
           end
+        end
+
+        it 'does not render the url' do
+          node = described_class.new(role: 'link', name: 'Docs', url: 'https://example.com/docs')
+
+          expect(node.to_text).to eq '- link "Docs"'
         end
 
         it 'writes the line grammar with its escapes' do
@@ -101,19 +111,23 @@ module Selenium
                'states' => {'focused' => true, 'level' => 2, 'pressed' => 'mixed', 'selected' => false},
                'element' => 1, 'children' => []},
               {'role' => 'iframe', 'name' => 'Embedded', 'description' => '', 'states' => {}, 'element' => 2,
-               'frame' => 0, 'children' => []}
+               'frame' => 0, 'children' => []},
+              {'role' => 'link', 'name' => 'Docs', 'description' => '', 'url' => 'https://example.com/docs',
+               'states' => {}, 'element' => 3, 'children' => []}
             ]
           }
           stitched = []
 
-          node = described_class.from_wire(data, %w[element:0 element:1 element:2]) do |index|
+          node = described_class.from_wire(data, %w[element:0 element:1 element:2 element:3]) do |index|
             stitched << index
             [described_class.new(role: 'document', name: 'Inner')]
           end
 
           expect(node.role).to eq 'generic'
           expect(node.element).to eq 'element:0'
-          text, textbox, frame = node.children
+          text, textbox, frame, link = node.children
+          expect(link.url).to eq 'https://example.com/docs'
+          expect(textbox.url).to be_nil
           expect(text.role).to eq 'text'
           expect(text.element).to be_nil
           expect(text.children).to be_empty
@@ -133,6 +147,7 @@ module Selenium
 
           expect(node.description).to eq ''
           expect(node.value).to be_nil
+          expect(node.url).to be_nil
           expect(node.element).to be_nil
           expect(node.children).to be_empty
         end
@@ -201,6 +216,22 @@ module Selenium
         calls = connection.calls.select { |call| call.first == 'script.callFunction' }
         contexts = calls.map { |_, params| params[:target][:context] }
         expect(contexts).to eq %w[top child]
+      end
+
+      it 'sends interesting_only first, true by default, with the root after it' do
+        connection = self.connection.new(%w[top])
+        bridge = bridge_over(connection)
+        snapshotter = described_class.new(bridge)
+
+        snapshotter.snapshot
+        snapshotter.snapshot(interesting_only: false)
+        snapshotter.snapshot(Element.new(bridge, 'shared-1'), interesting_only: false)
+
+        calls = connection.calls.select { |call| call.first == 'script.callFunction' }.map(&:last)
+        expect(calls[0][:arguments]).to eq [{type: 'boolean', value: true}]
+        expect(calls[1][:arguments]).to eq [{type: 'boolean', value: false}]
+        expect(calls[2][:arguments]).to eq [{type: 'boolean', value: false}, {sharedId: 'shared-1'}]
+        expect(calls[0][:functionDeclaration]).to start_with '(interestingOnly, root) =>'
       end
 
       it 'reads a root another document owns as nil and a detached root as the stale error' do

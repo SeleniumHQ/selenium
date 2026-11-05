@@ -42,15 +42,17 @@ module Selenium
         'chromium'
       end
 
-      # The engine-specific expectation when one is recorded, else the shared one.
-      def expected(page, suffix)
-        corpus("#{page}.expected.#{engine}.#{suffix}") || corpus("#{page}.expected.#{suffix}")
+      # The engine-specific expectation when one is recorded, else the shared one;
+      # +form+ is '' for the pruned snapshot and '.full' for the unpruned one.
+      def expected(page, suffix, form = '')
+        corpus("#{page}.expected#{form}.#{engine}.#{suffix}") || corpus("#{page}.expected#{form}.#{suffix}")
       end
 
       # The corpus JSON form: every field written, `element` as the element's id.
       def serialize(node)
         out = {'role' => node.role, 'name' => node.name, 'description' => node.description}
         out['value'] = node.value unless node.value.nil?
+        out['url'] = node.url unless node.url.nil?
         out['states'] = node.states
         out['element'] = node.element.attribute('id') unless node.element.nil?
         out['children'] = node.children.map { |child| serialize(child) }
@@ -79,6 +81,26 @@ module Selenium
             expect(serialize(tree)).to eq JSON.parse(expected(page, 'json'))
             expect("#{tree.to_text}\n").to eq expected(page, 'txt')
           end
+
+          it "matches the unpruned corpus for #{page}" do
+            load_page(page)
+
+            tree = driver.accessibility_snapshot(interesting_only: false)
+
+            expect(serialize(tree)).to eq JSON.parse(expected(page, 'json', '.full'))
+            expect("#{tree.to_text}\n").to eq expected(page, 'txt', '.full')
+          end
+        end
+
+        it 'carries the resolved url of a link' do
+          load_page('003-links-and-buttons')
+
+          tree = driver.accessibility_snapshot
+
+          link = walk(tree).find { |node| node.role == 'link' }
+          expect(link.url).to eq 'https://example.com/link'
+          expect(link.element.attribute('href')).to eq link.url
+          expect(walk(tree).find { |node| node.role == 'button' }.url).to be_nil
         end
 
         it 'is rooted at the document' do
@@ -161,6 +183,18 @@ module Selenium
       end
 
       describe 'Element#accessibility_snapshot' do
+        it 'can be unpruned too' do
+          load_page('010-generic-and-presentation')
+          wrapper = driver.find_element(id: 'wrap-1')
+
+          pruned = wrapper.accessibility_snapshot
+          full = wrapper.accessibility_snapshot(interesting_only: false)
+
+          expect(pruned.children.map(&:role)).to eq %w[heading text]
+          expect(full.children.map(&:role)).to eq %w[generic]
+          expect(full.children.first.element.attribute('id')).to eq 'wrap-2'
+        end
+
         it 'always produces a node for its root' do
           load_page('005-lists')
           root = driver.find_element(tag_name: 'body')

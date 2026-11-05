@@ -46,6 +46,10 @@ module Selenium
       #   roles; nil where the role has none. A password field's value is masked.
       attr_reader :value
 
+      # @return [String, nil] the resolved href of a link whose element has one; nil for
+      #   every other node. Not rendered in the text form.
+      attr_reader :url
+
       # @return [Hash{String => Boolean, Integer, String}] checked, pressed, expanded,
       #   selected, level, disabled and focused, each present only when it applies; new
       #   keys may be added in any release, so ignore keys you do not recognise
@@ -59,11 +63,12 @@ module Selenium
       # @return [Array<AccessibilityNode>] the child nodes, [] for leaves
       attr_accessor :children
 
-      def initialize(role:, name:, description: '', value: nil, states: {}, element: nil, children: [])
+      def initialize(role:, name:, description: '', value: nil, url: nil, states: {}, element: nil, children: [])
         @role = role
         @name = name
         @description = description
         @value = value
+        @url = url
         @states = states
         @element = element
         @children = children
@@ -107,6 +112,7 @@ module Selenium
           name: data.fetch('name'),
           description: data.fetch('description', ''),
           value: data['value'],
+          url: data['url'],
           states: data.fetch('states').dup,
           element: element_index && elements.fetch(element_index),
           children: children
@@ -227,10 +233,10 @@ module Selenium
       # @raise [Error::StaleElementReferenceError] when +root+ no longer belongs to a document
       #
 
-      def snapshot(root = nil)
+      def snapshot(root = nil, interesting_only: true)
         top = @bridge.window_handle
         if root.nil?
-          node = snapshot_context(top, nil)
+          node = snapshot_context(top, nil, interesting_only)
           raise Error::WebDriverError, 'accessibility snapshot: the script returned nothing' if node.nil?
 
           return node
@@ -241,7 +247,7 @@ module Selenium
         # the browsing context group, so the atom checks ownership itself and each
         # context is tried until the owner is found.
         contexts(top).each do |context|
-          node = snapshot_context(context, root.ref.last)
+          node = snapshot_context(context, root.ref.last, interesting_only)
           return node unless node.nil?
         rescue NotOwnedError
           next
@@ -251,9 +257,12 @@ module Selenium
 
       private
 
-      # The snapshot of +context+, or nil when another document owns the root.
-      def snapshot_context(context, root_id)
-        result = call(context, root_id ? [{sharedId: root_id}] : [])
+      # The snapshot of +context+, or nil when another document owns the root. The
+      # interestingOnly flag goes first, so a whole-page call sends no placeholder for a root.
+      def snapshot_context(context, root_id, interesting_only = true)
+        arguments = [{type: 'boolean', value: interesting_only}]
+        arguments << {sharedId: root_id} if root_id
+        result = call(context, arguments)
         return nil if result['type'] == 'null'
 
         fields = AccessibilityNode::Wire.object_fields(result)
@@ -263,13 +272,13 @@ module Selenium
         elements = fields.fetch('elements').fetch('value', []).map { |node| element(AccessibilityNode::Wire.shared_id(node)) }
         windows = fields.fetch('windows').fetch('value', []).map { |window| AccessibilityNode::Wire.context_of(window) }
         data = JSON.parse(AccessibilityNode::Wire.string(fields.fetch('json')))
-        AccessibilityNode.from_wire(data, elements) { |index| stitch(windows.fetch(index)) }
+        AccessibilityNode.from_wire(data, elements) { |index| stitch(windows.fetch(index), interesting_only) }
       end
 
       # Runs the atom's wire entry in the sandbox of +context+ and returns the remote value of its result.
       def call(context, arguments)
         raw = @bidi.send_cmd('script.callFunction',
-                             functionDeclaration: "(root) => (#{atom})(root)",
+                             functionDeclaration: "(interestingOnly, root) => (#{atom})(root, {interestingOnly})",
                              awaitPromise: false,
                              target: {context: context, sandbox: SANDBOX},
                              arguments: arguments,
@@ -289,10 +298,10 @@ module Selenium
       end
 
       # The document of a frame as the frame node's one child, or no children when unreachable.
-      def stitch(context)
+      def stitch(context, interesting_only)
         return [] if context.nil?
 
-        document = snapshot_context(context, nil)
+        document = snapshot_context(context, nil, interesting_only)
         document.nil? ? [] : [document]
       rescue Error::WebDriverError => e
         # Gone between discovery and the call, or mid-navigation: the frame stays a

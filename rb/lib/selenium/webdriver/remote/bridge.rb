@@ -422,7 +422,7 @@ module Selenium
         end
 
         # The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
-        def accessibility_snapshot(root = nil)
+        def accessibility_snapshot(root = nil, interesting_only: true)
           unless bidi?
             raise Error::UnsupportedOperationError,
                   'accessibility_snapshot requires WebDriver BiDi; ' \
@@ -430,7 +430,7 @@ module Selenium
           end
 
           @accessibility_snapshotter ||= AccessibilitySnapshotter.new(self)
-          @accessibility_snapshotter.snapshot(root)
+          @accessibility_snapshotter.snapshot(root, interesting_only: interesting_only)
         end
 
         def element_value(element)

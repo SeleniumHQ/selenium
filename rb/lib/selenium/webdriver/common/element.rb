@@ -185,14 +185,17 @@ module Selenium
       # The element always produces the root node; an iframe carries its document.
       # Requires a BiDi session.
       #
+      # @param [Boolean] interesting_only with true, the default, unnamed generic and
+      #   presentational elements below this one are pruned; with false every rendered
+      #   element produces a node
       # @return [AccessibilityNode] the node for this element, with its subtree
       # @raise [Error::UnsupportedOperationError] when the session has no BiDi connection
       # @raise [Error::StaleElementReferenceError] when the element no longer belongs to a document
       # @see Driver#accessibility_snapshot
       #
 
-      def accessibility_snapshot
-        bridge.accessibility_snapshot(self)
+      def accessibility_snapshot(interesting_only: true)
+        bridge.accessibility_snapshot(self, interesting_only: interesting_only)
       end
 
       #

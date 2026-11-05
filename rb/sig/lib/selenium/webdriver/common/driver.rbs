@@ -37,7 +37,7 @@ module Selenium
 
       def network: -> Network
 
-      def accessibility_snapshot: () -> AccessibilityNode
+      def accessibility_snapshot: (?interesting_only: bool) -> AccessibilityNode
 
       def status: () -> Hash[untyped, untyped]
 
