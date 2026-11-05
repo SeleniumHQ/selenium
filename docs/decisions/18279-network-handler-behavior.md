@@ -404,9 +404,11 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
 - An unscoped handler intercepts matching requests in every tab, including popups, tabs opened later
-  and tabs other workers drive. A handler that intercepts and never lets a request continue now stalls
-  those requests everywhere, not only in the tab it was registered from. Code moving from 17685's
-  default, or wanting one tab, passes that tab as the scope.
+  and tabs other workers drive. Each intercepted request waits for the handler, so a slow or hung
+  handler now holds matching requests everywhere, not only in the tab it was registered from. An
+  unscoped override, or `submit`, from one worker likewise applies to every other worker's tabs, and
+  static credentials registered without URL patterns answer authentication challenges from any host
+  in any tab. Code moving from 17685's default, or wanting one tab, passes that tab as the scope.
 - Handlers can be scoped to a single window handle or to a user context, so interception can target a
   background tab or a whole user context. The two are mutually exclusive, so a binding rejects being
   given both.
