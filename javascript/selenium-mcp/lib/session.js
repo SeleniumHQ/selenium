@@ -28,6 +28,8 @@ const { RefTable } = require('./snapshot')
 const log_ = logging.getLogger('selenium.mcp.session')
 
 const MAX_CONSOLE_MESSAGES = 1000
+// How long close() waits for browsers discarded after a crash to quit.
+const DISCARD_WAIT_MS = 5000
 const WINDOW_SIZE = { width: 1280, height: 720 }
 
 /**
@@ -88,6 +90,7 @@ class Session {
     this.refs = new RefTable()
     /** Quits of discarded browsers still in flight, which close() waits for. */
     this.quitting_ = new Set()
+    this.discardWaitMs_ = hooks.discardWaitMs ?? DISCARD_WAIT_MS
     this.consoleMessages = []
     this.driver_ = null
     this.starting_ = null
@@ -190,8 +193,12 @@ class Session {
     this.starting_ = null
     const driver = this.driver_
     this.reset()
-    // Discarded browsers too, or exiting straight after would leave their drivers running.
-    await Promise.allSettled([...this.quitting_, driver && quietlyQuit(driver)])
+    // Discarded browsers too, or exiting straight after would leave their
+    // drivers running; but only for a while, as a crashed one may never answer.
+    await Promise.allSettled([
+      withinMs(Promise.allSettled([...this.quitting_]), this.discardWaitMs_),
+      driver && quietlyQuit(driver),
+    ])
   }
 
   /**
@@ -201,6 +208,20 @@ class Session {
   isSessionGone(e) {
     return e instanceof error.NoSuchSessionError || (e && /ECONNREFUSED|session deleted/i.test(e.message || ''))
   }
+}
+
+/**
+ * @param {!Promise} promise
+ * @param {number} ms
+ * @return {!Promise} settles with `promise`, or resolves after `ms` if it has not
+ */
+function withinMs(promise, ms) {
+  let timer
+  const timeout = new Promise((resolve) => {
+    timer = setTimeout(resolve, ms)
+    timer.unref?.()
+  })
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
 }
 
 async function quietlyQuit(driver) {
