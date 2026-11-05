@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,6 +62,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
+import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -319,6 +321,88 @@ class LocalDistributorTest {
       HttpResponse res = node.execute(new HttpRequest(GET, String.format("/session/%s/url", id)));
       assertThat(res.isSuccessful()).isTrue();
     }
+  }
+
+  @Test
+  void shouldSpreadConcurrentSessionsAcrossNodes() throws Exception {
+    NewSessionQueue queue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            registrationSecret,
+            5);
+
+    // Waits until both requests are selecting a slot, or a short timeout if selection is
+    // serialized. If both requests select at the same time, they see the same node load and
+    // pick the same node.
+    CountDownLatch bothSelecting = new CountDownLatch(2);
+    SlotSelector selector =
+        (caps, nodes, matcher) -> {
+          bothSelecting.countDown();
+          try {
+            bothSelecting.await(1, TimeUnit.SECONDS);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+          return new DefaultSlotSelector().selectSlot(caps, nodes, matcher);
+        };
+
+    LocalDistributor distributor =
+        new LocalDistributor(
+            tracer,
+            bus,
+            new PassthroughHttpClient.Factory(localNode),
+            new LocalSessionMap(tracer, bus),
+            queue,
+            selector,
+            registrationSecret,
+            Duration.ofMinutes(5),
+            false,
+            Duration.ofSeconds(5),
+            newSessionThreadPoolSize,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
+
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+    for (URI nodeUri : List.of(new URI("http://example:1234"), new URI("http://example:5678"))) {
+      Node node =
+          LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
+              .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+              .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+              .maximumConcurrentSessions(2)
+              .build();
+      distributor.add(node);
+    }
+
+    Callable<Either<SessionNotCreatedException, CreateSessionResponse>> newSession =
+        () ->
+            distributor.newSession(
+                new SessionRequest(
+                    new RequestId(UUID.randomUUID()),
+                    Instant.now(),
+                    Set.of(W3C),
+                    Set.of(caps),
+                    Map.of(),
+                    Map.of()));
+
+    ExecutorService service = Executors.newFixedThreadPool(2);
+    try {
+      for (Future<Either<SessionNotCreatedException, CreateSessionResponse>> future :
+          service.invokeAll(List.of(newSession, newSession))) {
+        assertThat(future.get(10, TimeUnit.SECONDS).isRight()).isTrue();
+      }
+    } finally {
+      service.shutdownNow();
+    }
+
+    assertThat(distributor.getStatus().getNodes())
+        .hasSize(2)
+        .allSatisfy(node ->
+            assertThat(node.getSlots().stream().filter(slot -> slot.getSession() != null))
+                .hasSize(1));
   }
 
   @Test
