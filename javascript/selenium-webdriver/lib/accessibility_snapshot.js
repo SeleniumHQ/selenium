@@ -53,10 +53,20 @@ const STALE_MESSAGE = 'the snapshot root is no longer attached to a document'
 class AccessibilityNode {
   /**
    * @param {{role: string, name: string, description: (string|undefined),
-   *     value: (string|undefined), states: (!Object<string, (boolean|number|string)>|undefined),
+   *     value: (string|undefined), url: (string|undefined),
+   *     states: (!Object<string, (boolean|number|string)>|undefined),
    *     element: (?WebElement|undefined), children: (!Array<!AccessibilityNode>|undefined)}} fields
    */
-  constructor({ role, name, description = '', value = undefined, states = {}, element = null, children = [] }) {
+  constructor({
+    role,
+    name,
+    description = '',
+    value = undefined,
+    url = undefined,
+    states = {},
+    element = null,
+    children = [],
+  }) {
     /** The WAI-ARIA role token; `"text"` for text leaves and `"iframe"` for frames, under which the frame's own tree is attached. @type {string} */
     this.role = role
     /** The computed accessible name, `""` when there is none. @type {string} */
@@ -69,6 +79,12 @@ class AccessibilityNode {
      * @type {(string|undefined)}
      */
     this.value = value
+    /**
+     * The resolved `href` of a `link` whose element has one; `undefined` for
+     * every other node. Not rendered in the text form.
+     * @type {(string|undefined)}
+     */
+    this.url = url
     /**
      * `checked`, `pressed`, `expanded`, `selected`, `level`, `disabled` and
      * `focused`, each present only when it applies; new keys may be added in any
@@ -168,6 +184,7 @@ async function nodeFromWire(data, elements, frameChildren) {
     name: data.name,
     description: data.description ?? '',
     value: data.value,
+    url: data.url,
     states: { ...data.states },
     element: data.element === undefined ? null : elements[data.element],
     children,
@@ -258,12 +275,16 @@ class AccessibilitySnapshotter {
    *
    * @param {?WebElement} root The element whose subtree to snapshot, or null for
    *     the page of the current window's top-level browsing context.
+   * @param {{interestingOnly: (boolean|undefined)}=} options With `interestingOnly`
+   *     true, the default, unnamed generic and presentational elements produce no
+   *     node and their children take their place; with false every rendered
+   *     element produces a node.
    * @return {!Promise<!AccessibilityNode>} The snapshot, with every reachable
    *     child frame's tree attached under its `iframe` node.
    * @throws {error.UnsupportedOperationError} When the session has no BiDi connection.
    * @throws {error.StaleElementReferenceError} When `root` no longer belongs to a document.
    */
-  async snapshot(root) {
+  async snapshot(root, { interestingOnly = true } = {}) {
     const caps = await this.driver_.getCapabilities()
     if (!caps.get('webSocketUrl')) {
       throw new error.UnsupportedOperationError(
@@ -273,7 +294,7 @@ class AccessibilitySnapshotter {
     }
     const top = await this.driver_.getWindowHandle()
     if (!root) {
-      const node = await this.snapshotContext_(top, null)
+      const node = await this.snapshotContext_(top, null, interestingOnly)
       if (node === null) {
         throw new error.WebDriverError('accessibility snapshot: the script returned nothing')
       }
@@ -287,7 +308,7 @@ class AccessibilitySnapshotter {
     for (const context of await this.contexts_(top)) {
       let node
       try {
-        node = await this.snapshotContext_(context, rootId)
+        node = await this.snapshotContext_(context, rootId, interestingOnly)
       } catch (e) {
         if (!(e instanceof NoSuchNode)) throw e
         continue
@@ -316,8 +337,11 @@ class AccessibilitySnapshotter {
    * The snapshot of `context`, or null when another document owns the root.
    * @private
    */
-  async snapshotContext_(context, rootId) {
-    const result = await this.call_(context, rootId ? [{ sharedId: rootId }] : [])
+  async snapshotContext_(context, rootId, interestingOnly = true) {
+    // The flag goes first, so a whole-page call sends no placeholder for a root.
+    const args = [{ type: 'boolean', value: interestingOnly }]
+    if (rootId) args.push({ sharedId: rootId })
+    const result = await this.call_(context, args)
     if (result.type === 'null') return null
     const fields = objectFields(result)
     if (fields.has('error')) {
@@ -326,7 +350,9 @@ class AccessibilitySnapshotter {
     }
     const elements = (fields.get('elements')?.value ?? []).map((node) => this.elementFactory_(sharedIdOf(node)))
     const windows = (fields.get('windows')?.value ?? []).map(contextOf)
-    return nodeFromWire(JSON.parse(stringValue(fields.get('json'))), elements, (index) => this.stitch_(windows[index]))
+    return nodeFromWire(JSON.parse(stringValue(fields.get('json'))), elements, (index) =>
+      this.stitch_(windows[index], interestingOnly),
+    )
   }
 
   /**
@@ -337,7 +363,7 @@ class AccessibilitySnapshotter {
     let raw
     try {
       raw = await this.send_('script.callFunction', {
-        functionDeclaration: `(root) => (${atomDeclaration()})(root)`,
+        functionDeclaration: `(interestingOnly, root) => (${atomDeclaration()})(root, { interestingOnly })`,
         awaitPromise: false,
         target: { context, sandbox: SANDBOX },
         arguments: args,
@@ -364,10 +390,10 @@ class AccessibilitySnapshotter {
    * The document of a frame as the frame node's one child, or no children when unreachable.
    * @private
    */
-  async stitch_(context) {
+  async stitch_(context, interestingOnly) {
     if (!context) return []
     try {
-      const document = await this.snapshotContext_(context, null)
+      const document = await this.snapshotContext_(context, null, interestingOnly)
       return document === null ? [] : [document]
     } catch (e) {
       // Gone between discovery and the call, or mid-navigation: the frame stays

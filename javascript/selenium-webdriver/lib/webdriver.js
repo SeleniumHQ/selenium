@@ -1171,13 +1171,18 @@ class WebDriver {
    *     console.log(tree.toText())
    *     await tree.children[0].element.click()
    *
+   * @param {{interestingOnly: (boolean|undefined)}=} options With `interestingOnly`
+   *     true, the default, elements of role `generic`, `none` or `presentation`
+   *     with no name produce no node and their children take their place. With
+   *     false every rendered element produces a node, as Puppeteer's
+   *     `accessibility.snapshot({ interestingOnly: false })` does.
    * @return {!Promise<!AccessibilityNode>} The root node, of role `document`,
    *     named from the title.
    * @throws {error.UnsupportedOperationError} When the session has no WebDriver
    *     BiDi connection.
    */
-  getAccessibilitySnapshot() {
-    return this.accessibility_().snapshot(null)
+  getAccessibilitySnapshot(options = {}) {
+    return this.accessibility_().snapshot(null, options)
   }
 
   /** @private @return {!AccessibilitySnapshotter} */
@@ -3039,13 +3044,16 @@ class WebElement {
    * are attached under their `iframe` nodes. See
    * {@link WebDriver#getAccessibilitySnapshot}.
    *
+   * @param {{interestingOnly: (boolean|undefined)}=} options With `interestingOnly`
+   *     true, the default, unnamed generic and presentational elements below this
+   *     one are pruned; with false every rendered element produces a node.
    * @return {!Promise<!AccessibilityNode>} The node for this element, with its subtree.
    * @throws {error.UnsupportedOperationError} When the session has no WebDriver
    *     BiDi connection.
    * @throws {error.StaleElementReferenceError} When the element is no longer attached.
    */
-  getAccessibilitySnapshot() {
-    return this.driver_.accessibility_().snapshot(this)
+  getAccessibilitySnapshot(options = {}) {
+    return this.driver_.accessibility_().snapshot(this, options)
   }
 
   /**

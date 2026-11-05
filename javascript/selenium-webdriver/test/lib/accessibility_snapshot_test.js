@@ -42,6 +42,7 @@ function nodeFromJson(data) {
     name: data.name,
     description: data.description,
     value: data.value,
+    url: data.url,
     states: data.states,
     element: data.element ?? null,
     children: data.children.map(nodeFromJson),
@@ -55,11 +56,18 @@ function read(file) {
 describe('AccessibilityNode', function () {
   describe('toText', function () {
     for (const page of JSON.parse(read('index.json'))) {
-      it(`renders ${page} as the corpus records it`, function () {
-        const tree = nodeFromJson(JSON.parse(read(`${page}.expected.json`)))
-        assert.strictEqual(tree.toText() + '\n', read(`${page}.expected.txt`))
-      })
+      for (const form of ['', '.full']) {
+        it(`renders ${page}${form} as the corpus records it`, function () {
+          const tree = nodeFromJson(JSON.parse(read(`${page}.expected${form}.json`)))
+          assert.strictEqual(tree.toText() + '\n', read(`${page}.expected${form}.txt`))
+        })
+      }
     }
+
+    it('does not render the url', function () {
+      const node = new AccessibilityNode({ role: 'link', name: 'Docs', url: 'https://example.com/docs' })
+      assert.strictEqual(node.toText(), '- link "Docs"')
+    })
 
     it('writes one line per node: role, quoted name, states in order, value', function () {
       const node = new AccessibilityNode({
@@ -131,17 +139,28 @@ describe('nodeFromWire', function () {
           children: [],
         },
         { role: 'iframe', name: 'Embedded', description: '', states: {}, element: 2, frame: 0, children: [] },
+        {
+          role: 'link',
+          name: 'Docs',
+          description: '',
+          url: 'https://example.com/docs',
+          states: {},
+          element: 3,
+          children: [],
+        },
       ],
     }
     const stitched = []
-    const node = await nodeFromWire(data, ['element:0', 'element:1', 'element:2'], async (index) => {
+    const node = await nodeFromWire(data, ['element:0', 'element:1', 'element:2', 'element:3'], async (index) => {
       stitched.push(index)
       return [new AccessibilityNode({ role: 'document', name: 'Inner' })]
     })
 
     assert.strictEqual(node.role, 'generic')
     assert.strictEqual(node.element, 'element:0')
-    const [text, textbox, frame] = node.children
+    const [text, textbox, frame, link] = node.children
+    assert.strictEqual(link.url, 'https://example.com/docs')
+    assert.strictEqual(textbox.url, undefined)
     assert.strictEqual(text.role, 'text')
     assert.strictEqual(text.element, null)
     assert.deepStrictEqual(text.children, [])
@@ -163,8 +182,54 @@ describe('nodeFromWire', function () {
 
     assert.strictEqual(node.description, '')
     assert.strictEqual(node.value, undefined)
+    assert.strictEqual(node.url, undefined)
     assert.strictEqual(node.element, null)
     assert.deepStrictEqual(node.children, [])
+  })
+})
+
+describe('AccessibilitySnapshotter arguments', function () {
+  /** A driver with BiDi whose script module answers a one-node tree and records each call. */
+  function recording() {
+    const calls = []
+    const driver = {
+      getCapabilities: async () => new Capabilities().set('webSocketUrl', 'ws://x'),
+      getWindowHandle: async () => 'window-1',
+    }
+    const snapshotter = new AccessibilitySnapshotter(driver, (id) => `element:${id}`)
+    snapshotter.send_ = async (method, params) => {
+      calls.push({ method, params })
+      return {
+        type: 'success',
+        result: {
+          type: 'object',
+          value: [
+            [
+              'json',
+              {
+                type: 'string',
+                value: '{"role":"document","name":"T","description":"","states":{},"element":0,"children":[]}',
+              },
+            ],
+            ['elements', { type: 'array', value: [{ type: 'node', sharedId: 'shared-1' }] }],
+            ['windows', { type: 'array', value: [] }],
+          ],
+        },
+      }
+    }
+    return { snapshotter, calls }
+  }
+
+  it('sends interestingOnly first, true by default, with the root after it', async function () {
+    const { snapshotter, calls } = recording()
+
+    await snapshotter.snapshot(null)
+    await snapshotter.snapshot(null, { interestingOnly: false })
+
+    assert.deepStrictEqual(calls[0].params.arguments, [{ type: 'boolean', value: true }])
+    assert.deepStrictEqual(calls[1].params.arguments, [{ type: 'boolean', value: false }])
+    assert.ok(calls[0].params.functionDeclaration.startsWith('(interestingOnly, root) =>'))
+    assert.deepStrictEqual(calls[0].params.target, { context: 'window-1', sandbox: 'selenium' })
   })
 })
 

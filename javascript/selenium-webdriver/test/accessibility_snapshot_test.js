@@ -47,16 +47,20 @@ function engineOf(browserName) {
   return 'chromium'
 }
 
-/** The engine-specific expectation when one is recorded, else the shared one. */
-function expected(engine, page, suffix) {
-  const specific = `${page}.expected.${engine}.${suffix}`
-  return read(fs.existsSync(path.join(CORPUS, specific)) ? specific : `${page}.expected.${suffix}`)
+/**
+ * The engine-specific expectation when one is recorded, else the shared one.
+ * `form` is '' for the pruned snapshot and '.full' for the unpruned one.
+ */
+function expected(engine, page, suffix, form = '') {
+  const specific = `${page}.expected${form}.${engine}.${suffix}`
+  return read(fs.existsSync(path.join(CORPUS, specific)) ? specific : `${page}.expected${form}.${suffix}`)
 }
 
 /** The corpus JSON form: every field written, `element` as the element's id. */
 async function serialize(node) {
   const out = { role: node.role, name: node.name, description: node.description }
   if (node.value !== undefined) out.value = node.value
+  if (node.url !== undefined) out.url = node.url
   out.states = node.states
   if (node.element) out.element = await node.element.getDomAttribute('id')
   out.children = []
@@ -92,7 +96,46 @@ suite(
           assert.deepStrictEqual(await serialize(tree), JSON.parse(expected(engine, page, 'json')))
           assert.strictEqual(tree.toText() + '\n', expected(engine, page, 'txt'))
         })
+
+        it(`matches the unpruned corpus for ${page}`, async function () {
+          await driver.get(whereIs(`accessibility/${page}.html`))
+          const engine = engineOf((await driver.getCapabilities()).getBrowserName())
+
+          const tree = await driver.getAccessibilitySnapshot({ interestingOnly: false })
+
+          assert.deepStrictEqual(await serialize(tree), JSON.parse(expected(engine, page, 'json', '.full')))
+          assert.strictEqual(tree.toText() + '\n', expected(engine, page, 'txt', '.full'))
+        })
       }
+
+      it('a link carries its resolved url', async function () {
+        await driver.get(whereIs('accessibility/003-links-and-buttons.html'))
+
+        const tree = await driver.getAccessibilitySnapshot()
+
+        const link = [...walk(tree)].find((node) => node.role === 'link')
+        assert.strictEqual(link.url, 'https://example.com/link')
+        assert.strictEqual(await link.element.getDomAttribute('href'), link.url)
+        assert.strictEqual([...walk(tree)].find((node) => node.role === 'button').url, undefined)
+      })
+
+      it('a subtree snapshot can be unpruned too', async function () {
+        await driver.get(whereIs('accessibility/010-generic-and-presentation.html'))
+        const wrapper = await driver.findElement(By.id('wrap-1'))
+
+        const pruned = await wrapper.getAccessibilitySnapshot()
+        const full = await wrapper.getAccessibilitySnapshot({ interestingOnly: false })
+
+        assert.deepStrictEqual(
+          pruned.children.map((child) => child.role),
+          ['heading', 'text'],
+        )
+        assert.deepStrictEqual(
+          full.children.map((child) => child.role),
+          ['generic'],
+        )
+        assert.strictEqual(await full.children[0].element.getDomAttribute('id'), 'wrap-2')
+      })
 
       it('is rooted at the document', async function () {
         await driver.get(whereIs('accessibility/001-headings-and-landmarks.html'))
