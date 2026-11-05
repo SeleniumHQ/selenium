@@ -35,6 +35,11 @@ decision states what every binding provides; call shapes are per-language idiom.
    covers both sync and async, and async-versus-sync is a per-language return-type detail, not a
    second method. Passing a handle invokes the pinned script without resending its source — the
    original point of pinning — so a large atom travels once and each call carries only the invocation.
+   Bindings must stop listening for the result of a pending `execute` command once they have waited
+   longer than the session's script timeout value, and then raise the same script timeout error as
+   `execute_script`. The default script timeout value is 30 seconds. A binding may also accept an
+   optional `timeout` argument on `execute`, which replaces the session's script timeout for that
+   call only.
 
 ```ruby
 driver.script.execute("return document.title")
@@ -200,6 +205,8 @@ driver.script().pin(paintScript, Sandbox.named("selenium"));
   - It is what most bindings ship, and attribute changes are the common case. But `MutationObserver` reports child-list and character-data natively, so attributes-only discards capability the browser already provides, and Python already exposes the full set. Selecting types per handler keeps the common case a one-liner without capping the rest.
 - **Exposing the raw protocol entry as the payload.**
   - A direct passthrough — no shaping code, and it tracks the spec automatically. But the raw entry differs field by field across the `log` and `script` domains and leaves the consumer to resolve the origin and the fields these events are read for; a shaped payload gives the same fields in every binding and extracts them once.
+- **A separate script timeout setting for `execute`.**
+  - BiDi defines no script timeout, so a new one could be designed fresh for this API. But users already have one answer to "how long before a script gives up", and a second setting would need reconciling with it, more so if `execute` ever supersedes `execute_script`. A per-call `timeout` is not a second setting: it falls back to the session's value and changes nothing beyond its own call. Giving `execute` no timeout at all was not an option either: a promise that never settles would hang the test with nothing to report.
 - **Targeting `execute` (and event origins) by realm.**
   - The protocol runs scripts against realms, so a `realm` argument mirrors it and can name a worker directly. But a realm id is a BiDi type, which this record's boundary keeps off the surface, and it is not durable: the remote end tears realms down on navigation, so a stored realm goes stale while a pinned script — the very thing you would run in it — survives. A window handle survives navigation and is something the user already holds, so it is the durable target. Workers, which have no handle, are left to a separate record rather than forced through the same argument, which also spares the payload an asymmetric "worker events carry only a realm" case.
 
@@ -215,6 +222,8 @@ driver.script().pin(paintScript, Sandbox.named("selenium"));
   and custom async events no longer force a drop to the low-level module.
 - `execute` overlaps the existing `execute_script`; whether to supersede it is still open, and if we
   do it follows the normal deprecation policy, not a special migration.
+- Bindings need to store the value of the script timeout when a user sets it in either the
+  capabilities or through the timeouts API.
 - Scoping adds a window-handle parameter to handlers, `execute`, and `pin`, where most bindings expose
   only the current context today. Reaching workers and the fuller window-handle/user-context model are
   out of scope here. Python already exposes a realm id on `ScriptResult` and `PinnedScript`; keeping
