@@ -86,6 +86,8 @@ class Session {
   constructor(config, hooks = {}) {
     this.config = config
     this.refs = new RefTable()
+    /** Quits of discarded browsers still in flight, which close() waits for. */
+    this.quitting_ = new Set()
     this.consoleMessages = []
     this.driver_ = null
     this.starting_ = null
@@ -175,7 +177,9 @@ class Session {
   discard() {
     const driver = this.driver_
     this.reset()
-    if (driver) quietlyQuit(driver)
+    if (!driver) return
+    const quit = quietlyQuit(driver).finally(() => this.quitting_.delete(quit))
+    this.quitting_.add(quit)
   }
 
   /** Quits the browser if one is running. */
@@ -186,7 +190,8 @@ class Session {
     this.starting_ = null
     const driver = this.driver_
     this.reset()
-    if (driver) await quietlyQuit(driver)
+    // Discarded browsers too, or exiting straight after would leave their drivers running.
+    await Promise.allSettled([...this.quitting_, driver && quietlyQuit(driver)])
   }
 
   /**

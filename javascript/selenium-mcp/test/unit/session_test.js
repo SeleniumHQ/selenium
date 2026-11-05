@@ -137,6 +137,24 @@ describe('Session lifecycle', function () {
     assert.strictEqual(gone.quits, 1)
     assert.strictEqual(session.isOpen, false)
   })
+
+  it('waits on close for a discarded browser to finish quitting', async function () {
+    const builds = controlledBuilds()
+    const session = new Session(CONFIG, builds)
+    const starting = session.driver()
+    const gone = builds.pending[0]()
+    await starting
+    let finishQuit
+    gone.quit = () => new Promise((resolve) => (finishQuit = resolve))
+    session.discard()
+    let closed = false
+    const closing = session.close().then(() => (closed = true))
+    await new Promise((resolve) => setImmediate(resolve))
+    assert.strictEqual(closed, false)
+    finishQuit()
+    await closing
+    assert.strictEqual(closed, true)
+  })
 })
 
 describe('setSliderValue', function () {
