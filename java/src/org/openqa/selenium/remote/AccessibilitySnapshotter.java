@@ -303,13 +303,12 @@ class AccessibilitySnapshotter {
     }
     Map<String, RemoteValue> fields = new LinkedHashMap<>();
     ((Map<?, ?>) raw)
-        .forEach(
-            (key, entry) -> {
-              // A property name is written as a plain string, or as a string remote value.
-              String name =
-                  key instanceof RemoteValue ? string((RemoteValue) key) : String.valueOf(key);
-              fields.put(name, (RemoteValue) entry);
-            });
+        .forEach((key, entry) -> {
+          // A property name is written as a plain string, or as a string remote value.
+          String name =
+              key instanceof RemoteValue ? string((RemoteValue) key) : String.valueOf(key);
+          fields.put(name, (RemoteValue) entry);
+        });
     return fields;
   }
 

@@ -68,10 +68,9 @@ class AccessibilitySnapshotUnitTest {
         .isThrownBy(driver::getAccessibilitySnapshot)
         .withMessageContaining("BiDi");
     assertThatExceptionOfType(UnsupportedCommandException.class)
-        .isThrownBy(
-            () ->
-                driver.getAccessibilitySnapshot(
-                    AccessibilitySnapshotOptions.defaults().withInterestingOnly(false)))
+        .isThrownBy(() ->
+            driver.getAccessibilitySnapshot(
+                AccessibilitySnapshotOptions.defaults().withInterestingOnly(false)))
         .withMessageContaining("BiDi");
     assertThat(executor.commands).isEmpty();
   }
