@@ -1,7 +1,7 @@
-# NNNN. Allow alert handling with async handlers and the synchronous Alert API
+# 18283. Allow alert handling with async handlers and the synchronous Alert API
 
 - Status: Proposed
-- Discussion: _(this record's PR)_
+- Discussion: [#18283](https://github.com/SeleniumHQ/selenium/pull/18283)
 
 ## Context
 
