@@ -429,13 +429,18 @@ class WebElement(BaseWebElement):
         """
         return b64decode(self.screenshot_as_base64.encode("ascii"))
 
-    def accessibility_snapshot(self) -> AccessibilityNode:
+    def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
         """Snapshot the accessibility tree of this element's subtree.
 
         The root node is always this element, whatever its role; if the element
         is hidden, by itself or by an ancestor, that node has no children. Child
         frames are attached under their ``iframe`` nodes. See
         :meth:`WebDriver.accessibility_snapshot`.
+
+        Args:
+            interesting_only: With the default ``True`` unnamed generic and
+                presentational elements below this one are pruned; with
+                ``False`` every rendered element produces a node.
 
         Returns:
             The node for this element, with its subtree.
@@ -444,7 +449,7 @@ class WebElement(BaseWebElement):
             WebDriverException: When the session has no WebDriver BiDi connection.
             StaleElementReferenceException: When the element is no longer attached.
         """
-        return self._parent._accessibility().snapshot(self)
+        return self._parent._accessibility().snapshot(self, interesting_only)
 
     def screenshot(self, filename) -> bool:
         """Save a PNG screenshot of the current element to a file.

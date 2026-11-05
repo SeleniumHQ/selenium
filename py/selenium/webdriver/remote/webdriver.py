@@ -751,7 +751,7 @@ class WebDriver(BaseWebDriver):
         """Invokes the window manager-specific 'minimize' operation."""
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def accessibility_snapshot(self) -> AccessibilityNode:
+    def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
         """Snapshot the accessibility tree of the page.
 
         The tree is computed in the page from the DOM, following WAI-ARIA,
@@ -761,6 +761,13 @@ class WebDriver(BaseWebDriver):
         tree is attached under its ``iframe`` node. To scope to a frame, take
         ``element.accessibility_snapshot()`` of its ``iframe`` element. The
         snapshot is a copy taken at one point in time.
+
+        Args:
+            interesting_only: With the default ``True``, elements of role
+                ``generic``, ``none`` or ``presentation`` with no name produce
+                no node and their children take their place. With ``False``
+                every rendered element produces a node, as Puppeteer's
+                ``accessibility.snapshot({interestingOnly: false})`` does.
 
         Returns:
             The root node, of role ``document``, named from the title.
@@ -773,7 +780,7 @@ class WebDriver(BaseWebDriver):
             >>> print(tree.to_text())
             >>> tree.children[0].element.click()
         """
-        return self._accessibility().snapshot(None)
+        return self._accessibility().snapshot(None, interesting_only)
 
     def _accessibility(self) -> AccessibilitySnapshotter:
         if not self.caps.get("webSocketUrl"):

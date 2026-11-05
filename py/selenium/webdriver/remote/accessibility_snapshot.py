@@ -71,6 +71,8 @@ class AccessibilityNode:
         description: The computed accessible description, ``""`` when there is none.
         value: The current value for textbox, searchbox, combobox and range roles;
             ``None`` where the role has none. A password field's value is masked.
+        url: The resolved ``href`` of a ``link`` whose element has one; ``None``
+            for every other node. Not rendered in the text form.
         states: ``checked``, ``pressed``, ``expanded``, ``selected``, ``level``,
             ``disabled`` and ``focused``, each present only when it applies; new keys
             may be added in any release, so ignore keys you do not recognise.
@@ -85,6 +87,7 @@ class AccessibilityNode:
     name: str
     description: str = ""
     value: str | None = None
+    url: str | None = None
     states: dict[str, StateValue] = field(default_factory=dict)
     element: WebElement | None = None
     children: list[AccessibilityNode] = field(default_factory=list)
@@ -164,6 +167,7 @@ def node_from_wire(
         name=data["name"],
         description=data.get("description", ""),
         value=data.get("value"),
+        url=data.get("url"),
         states=dict(data["states"]),
         element=elements[element_index] if element_index is not None else None,
         children=children,
@@ -188,12 +192,15 @@ class AccessibilitySnapshotter:
     def __init__(self, driver: WebDriver) -> None:
         self._driver = driver
 
-    def snapshot(self, root: WebElement | None) -> AccessibilityNode:
+    def snapshot(self, root: WebElement | None, interesting_only: bool = True) -> AccessibilityNode:
         """Snapshot the whole page, or the subtree under ``root``.
 
         Args:
             root: The element whose subtree to snapshot, or ``None`` for the page
                 of the current window's top-level browsing context.
+            interesting_only: With ``True`` unnamed generic and presentational
+                elements produce no node and their children take their place;
+                with ``False`` every rendered element produces a node.
 
         Returns:
             The snapshot, with every reachable child frame's tree attached under
@@ -204,7 +211,7 @@ class AccessibilitySnapshotter:
         """
         top = self._driver.current_window_handle
         if root is None:
-            node = self._snapshot_context(top, None)
+            node = self._snapshot_context(top, None, interesting_only)
             if node is None:
                 raise WebDriverException("accessibility snapshot: the script returned nothing")
             return node
@@ -214,16 +221,18 @@ class AccessibilitySnapshotter:
         # context is tried until the owner is found.
         for context in self._contexts(top):
             try:
-                node = self._snapshot_context(context, root.id)
+                node = self._snapshot_context(context, root.id, interesting_only)
             except _NoSuchNode:
                 continue
             if node is not None:
                 return node
         raise StaleElementReferenceException(_STALE_MESSAGE)
 
-    def _snapshot_context(self, context: str, root_id: str | None) -> AccessibilityNode | None:
+    def _snapshot_context(self, context: str, root_id: str | None, interesting_only: bool) -> AccessibilityNode | None:
         """The snapshot of ``context``, or None when another document owns the root."""
-        arguments = [{"sharedId": root_id}] if root_id is not None else []
+        arguments: list[Any] = [{"type": "boolean", "value": interesting_only}]
+        if root_id is not None:
+            arguments.append({"sharedId": root_id})
         result = self._call(context, arguments)
         if result.get("type") == "null":
             return None
@@ -236,14 +245,17 @@ class AccessibilitySnapshotter:
         return node_from_wire(
             json.loads(_string(fields["json"])),
             elements,
-            lambda index: self._stitch(windows[index]),
+            lambda index: self._stitch(windows[index], interesting_only),
         )
 
     def _call(self, context: str, arguments: list[Any]) -> dict[str, Any]:
-        """Run the atom's wire entry in the sandbox of ``context`` and return the remote value of its result."""
+        """Run the atom's wire entry in the sandbox of ``context`` and return the remote value of its result.
+
+        The first argument is the ``interestingOnly`` flag, the optional second the root.
+        """
         try:
             raw = self._driver.script.call_function(
-                function_declaration=f"(root) => ({_atom()})(root)",
+                function_declaration=f"(interestingOnly, root) => ({_atom()})(root, {{interestingOnly}})",
                 await_promise=False,
                 target={"context": context, "sandbox": _SANDBOX},
                 arguments=arguments,
@@ -264,12 +276,12 @@ class AccessibilitySnapshotter:
             raise WebDriverException(f"accessibility snapshot failed in the page: {details.get('text', details)}")
         return raw.get("result") or {}
 
-    def _stitch(self, context: str | None) -> list[AccessibilityNode]:
+    def _stitch(self, context: str | None, interesting_only: bool) -> list[AccessibilityNode]:
         """The document of a frame as the frame node's one child, or no children when unreachable."""
         if context is None:
             return []
         try:
-            document = self._snapshot_context(context, None)
+            document = self._snapshot_context(context, None, interesting_only)
         except (_NoSuchNode, WebDriverException) as e:
             # Gone between discovery and the call, or mid-navigation: the frame stays
             # a leaf (ADR §1). Anything else is a real failure.

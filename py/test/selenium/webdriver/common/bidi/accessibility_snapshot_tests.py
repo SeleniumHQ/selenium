@@ -50,10 +50,13 @@ def _engine(driver):
     return "chromium"
 
 
-def _expected(driver, page, suffix):
-    """The engine-specific expectation when one is recorded, else the shared one."""
-    specific = CORPUS / f"{page}.expected.{_engine(driver)}.{suffix}"
-    shared = CORPUS / f"{page}.expected.{suffix}"
+def _expected(driver, page, suffix, form=""):
+    """The engine-specific expectation when one is recorded, else the shared one.
+
+    ``form`` is ``""`` for the pruned snapshot and ``".full"`` for the unpruned one.
+    """
+    specific = CORPUS / f"{page}.expected{form}.{_engine(driver)}.{suffix}"
+    shared = CORPUS / f"{page}.expected{form}.{suffix}"
     return (specific if specific.exists() else shared).read_text(encoding="utf-8")
 
 
@@ -62,6 +65,8 @@ def _serialize(node):
     out = {"role": node.role, "name": node.name, "description": node.description}
     if node.value is not None:
         out["value"] = node.value
+    if node.url is not None:
+        out["url"] = node.url
     out["states"] = node.states
     if node.element is not None:
         out["element"] = node.element.get_attribute("id")
@@ -77,6 +82,40 @@ def test_whole_page_snapshot_matches_the_corpus(driver, pages, page):
 
     assert _serialize(tree) == json.loads(_expected(driver, page, "json"))
     assert tree.to_text() + "\n" == _expected(driver, page, "txt")
+
+
+@pytest.mark.parametrize("page", _corpus_pages())
+def test_unpruned_snapshot_matches_the_corpus(driver, pages, page):
+    """interesting_only=False keeps every rendered element, as the .full expectations record."""
+    pages.load(f"accessibility/{page}.html")
+
+    tree = driver.accessibility_snapshot(interesting_only=False)
+
+    assert _serialize(tree) == json.loads(_expected(driver, page, "json", ".full"))
+    assert tree.to_text() + "\n" == _expected(driver, page, "txt", ".full")
+
+
+def test_a_link_carries_its_resolved_url(driver, pages):
+    pages.load("accessibility/003-links-and-buttons.html")
+
+    tree = driver.accessibility_snapshot()
+
+    link = next(node for node in _walk(tree) if node.role == "link")
+    assert link.url == "https://example.com/link"
+    assert link.element.get_attribute("href") == link.url
+    assert next(node for node in _walk(tree) if node.role == "button").url is None
+
+
+def test_a_subtree_snapshot_can_be_unpruned_too(driver, pages):
+    pages.load("accessibility/010-generic-and-presentation.html")
+    wrapper = driver.find_element(By.ID, "wrap-1")
+
+    pruned = wrapper.accessibility_snapshot()
+    full = wrapper.accessibility_snapshot(interesting_only=False)
+
+    assert [child.role for child in pruned.children] == ["heading", "text"]
+    assert [child.role for child in full.children] == ["generic"]
+    assert full.children[0].element.get_attribute("id") == "wrap-2"
 
 
 def test_whole_page_snapshot_is_rooted_at_the_document(driver, pages):

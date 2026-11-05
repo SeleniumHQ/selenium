@@ -37,6 +37,7 @@ def _node_from_json(data):
         name=data["name"],
         description=data["description"],
         value=data.get("value"),
+        url=data.get("url"),
         states=data["states"],
         element=data.get("element"),
         children=[_node_from_json(child) for child in data["children"]],
@@ -47,12 +48,19 @@ def _corpus_pages():
     return json.loads((CORPUS / "index.json").read_text(encoding="utf-8"))
 
 
+@pytest.mark.parametrize("form", ["", ".full"], ids=["pruned", "full"])
 @pytest.mark.parametrize("page", _corpus_pages())
-def test_to_text_matches_the_corpus(page):
+def test_to_text_matches_the_corpus(page, form):
     """Every expected.txt is the reference renderer's output over its expected.json; the port must agree."""
-    tree = _node_from_json(json.loads((CORPUS / f"{page}.expected.json").read_text(encoding="utf-8")))
-    expected = (CORPUS / f"{page}.expected.txt").read_text(encoding="utf-8")
+    tree = _node_from_json(json.loads((CORPUS / f"{page}.expected{form}.json").read_text(encoding="utf-8")))
+    expected = (CORPUS / f"{page}.expected{form}.txt").read_text(encoding="utf-8")
     assert tree.to_text() + "\n" == expected
+
+
+def test_to_text_does_not_render_the_url():
+    node = AccessibilityNode(role="link", name="Docs", url="https://example.com/docs")
+
+    assert node.to_text() == '- link "Docs"'
 
 
 def test_to_text_line_grammar():
@@ -114,9 +122,18 @@ def test_node_from_wire_builds_the_tree_and_resolves_the_indices():
                 "frame": 0,
                 "children": [],
             },
+            {
+                "role": "link",
+                "name": "Docs",
+                "description": "",
+                "url": "https://example.com/docs",
+                "states": {},
+                "element": 3,
+                "children": [],
+            },
         ],
     }
-    elements = ["element:0", "element:1", "element:2"]
+    elements = ["element:0", "element:1", "element:2", "element:3"]
     stitched = []
 
     def frame_children(index):
@@ -127,7 +144,9 @@ def test_node_from_wire_builds_the_tree_and_resolves_the_indices():
 
     assert node.role == "generic"
     assert node.element == "element:0"
-    text, textbox, frame = node.children
+    text, textbox, frame, link = node.children
+    assert link.url == "https://example.com/docs"
+    assert textbox.url is None
     assert text.role == "text"
     assert text.element is None
     assert text.children == []
@@ -146,5 +165,60 @@ def test_node_from_wire_keeps_absent_fields_absent():
 
     assert node.description == ""
     assert node.value is None
+    assert node.url is None
     assert node.element is None
     assert node.children == []
+
+
+class _Script:
+    """A stand-in for the BiDi script module: records each call and answers a one-node wire result."""
+
+    def __init__(self):
+        self.calls = []
+
+    def call_function(self, **params):
+        self.calls.append(params)
+        json_text = '{"role":"document","name":"T","description":"","states":{},"element":0,"children":[]}'
+        return {
+            "type": "success",
+            "result": {
+                "type": "object",
+                "value": [
+                    ["json", {"type": "string", "value": json_text}],
+                    ["elements", {"type": "array", "value": [{"type": "node", "sharedId": "shared-1"}]}],
+                    ["windows", {"type": "array", "value": []}],
+                ],
+            },
+        }
+
+
+class _Driver:
+    current_window_handle = "window-1"
+
+    def __init__(self):
+        self.script = _Script()
+
+
+@pytest.mark.parametrize("interesting_only", [True, False])
+def test_snapshotter_passes_interesting_only_to_the_atom_first(interesting_only):
+    from selenium.webdriver.remote.accessibility_snapshot import AccessibilitySnapshotter
+
+    driver = _Driver()
+
+    node = AccessibilitySnapshotter(driver).snapshot(None, interesting_only)
+
+    assert node.role == "document"
+    (call,) = driver.script.calls
+    assert call["arguments"][0] == {"type": "boolean", "value": interesting_only}
+    assert call["function_declaration"].startswith("(interestingOnly, root) =>")
+    assert call["target"] == {"context": "window-1", "sandbox": "selenium"}
+
+
+def test_snapshotter_defaults_to_the_pruned_tree():
+    from selenium.webdriver.remote.accessibility_snapshot import AccessibilitySnapshotter
+
+    driver = _Driver()
+
+    AccessibilitySnapshotter(driver).snapshot(None)
+
+    assert driver.script.calls[0]["arguments"] == [{"type": "boolean", "value": True}]
