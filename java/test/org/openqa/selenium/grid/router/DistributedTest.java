@@ -125,15 +125,14 @@ class DistributedTest {
 
     try {
       // provoke the client to run into a http timeout
-      assertThatThrownBy(
-              () ->
-                  RemoteWebDriver.builder()
-                      .oneOf(browser.getCapabilities())
-                      .config(
-                          ClientConfig.defaultConfig()
-                              .baseUrl(server.getUrl())
-                              .readTimeout(Duration.ofMillis(600)))
-                      .build())
+      assertThatThrownBy(() ->
+              RemoteWebDriver.builder()
+                  .oneOf(browser.getCapabilities())
+                  .config(
+                      ClientConfig.defaultConfig()
+                          .baseUrl(server.getUrl())
+                          .readTimeout(Duration.ofMillis(600)))
+                  .build())
           .isInstanceOf(SessionNotCreatedException.class)
           .hasMessageContaining("TimeoutException");
 

@@ -70,10 +70,9 @@ class RemoteWebDriverInitializationTest {
   @Test
   void testQuitsIfStartSessionFails() {
     assertThatExceptionOfType(RuntimeException.class)
-        .isThrownBy(
-            () ->
-                new BadStartSessionRemoteWebDriver(
-                    mock(CommandExecutor.class), new ImmutableCapabilities()))
+        .isThrownBy(() ->
+            new BadStartSessionRemoteWebDriver(
+                mock(CommandExecutor.class), new ImmutableCapabilities()))
         .withMessageContaining("Stub session that should fail");
 
     assertThat(quitCalled).isTrue();
@@ -84,6 +83,18 @@ class RemoteWebDriverInitializationTest {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
         .withMessage("Command executor must be set");
+  }
+
+  @Test
+  void constructorShouldThrowIfCapabilitiesAreNull() {
+    CommandExecutor executor =
+        command -> {
+          throw new AssertionError("Executor must not be called: " + command);
+        };
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new RemoteWebDriver(executor, null))
+        .withMessage("Capabilities must be set");
   }
 
   @Test
@@ -169,29 +180,27 @@ class RemoteWebDriverInitializationTest {
     List<String> events = new ArrayList<>();
     HttpClient client = mock(HttpClient.class);
     when(client.execute(any()))
-        .thenAnswer(
-            invocation -> {
-              HttpRequest request = invocation.getArgument(0);
-              events.add(request.getMethod().name());
-              return request.getMethod() == HttpMethod.POST
-                  ? newSessionResponse(Map.of("webSocketUrl", "ws://localhost:4444/session/bidi"))
-                  : new HttpResponse()
-                      .setStatus(200)
-                      .setContent(Contents.asJson(singletonMap("value", null)));
-            });
+        .thenAnswer(invocation -> {
+          HttpRequest request = invocation.getArgument(0);
+          events.add(request.getMethod().name());
+          return request.getMethod() == HttpMethod.POST
+              ? newSessionResponse(Map.of("webSocketUrl", "ws://localhost:4444/session/bidi"))
+              : new HttpResponse()
+                  .setStatus(200)
+                  .setContent(Contents.asJson(singletonMap("value", null)));
+        });
     doAnswer(invocation -> events.add("close")).when(client).close();
     HttpClient.Factory webSocketClientFactory = mock(HttpClient.Factory.class);
     when(webSocketClientFactory.createClient(any(ClientConfig.class)))
         .thenThrow(new IllegalStateException("Stub WebSocket client failure"));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(
-            () ->
-                new RemoteWebDriver(
-                    new HttpCommandExecutor(client, new URL("http://localhost:4444/")),
-                    new ImmutableCapabilities(),
-                    webSocketClientFactory,
-                    ClientConfig.defaultConfig()))
+        .isThrownBy(() ->
+            new RemoteWebDriver(
+                new HttpCommandExecutor(client, new URL("http://localhost:4444/")),
+                new ImmutableCapabilities(),
+                webSocketClientFactory,
+                ClientConfig.defaultConfig()))
         .withMessage("Stub WebSocket client failure");
 
     assertThat(events).startsWith("POST", "DELETE", "close");
@@ -248,12 +257,11 @@ class RemoteWebDriverInitializationTest {
 
     verify(executor)
         .execute(
-            argThat(
-                command ->
-                    command.getName().equals(DriverCommand.NEW_SESSION)
-                        && command.getSessionId() == null
-                        && singleton(capabilities)
-                            .equals(command.getParameters().get("capabilities"))));
+            argThat(command ->
+                command.getName().equals(DriverCommand.NEW_SESSION)
+                    && command.getSessionId() == null
+                    && singleton(capabilities)
+                        .equals(command.getParameters().get("capabilities"))));
     verifyNoMoreInteractions(executor);
     assertThat(driver.getSessionId()).isNotNull();
   }

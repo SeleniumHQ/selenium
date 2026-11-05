@@ -170,7 +170,8 @@ public class DockerOptions {
         throw new DockerException("Unable to find JSON config");
       }
       Capabilities stereotype =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "docker image '" + imageName + "'"));
 
       kinds.put(imageName, stereotype);
     }
@@ -201,36 +202,34 @@ public class DockerOptions {
             DEFAULT_MAX_SESSIONS);
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     Duration stopGracePeriod = getStopGracePeriod();
-    kinds.forEach(
-        (name, caps) -> {
-          Image image = docker.getImage(name);
-          for (int i = 0; i < maxContainerCount; i++) {
-            factories.put(
+    kinds.forEach((name, caps) -> {
+      Image image = docker.getImage(name);
+      for (int i = 0; i < maxContainerCount; i++) {
+        factories.put(
+            caps,
+            new DockerSessionFactory(
+                tracer,
+                clientFactory,
+                options.getSessionTimeout(),
+                getServerStartTimeout(),
+                docker,
+                getDockerUri(),
+                image,
                 caps,
-                new DockerSessionFactory(
-                    tracer,
-                    clientFactory,
-                    options.getSessionTimeout(),
-                    getServerStartTimeout(),
-                    docker,
-                    getDockerUri(),
-                    image,
-                    caps,
-                    devicesMapping,
-                    videoImage,
-                    assetsPath,
-                    networkName,
-                    info.isPresent(),
-                    capabilities -> options.getSlotMatcher().matches(caps, capabilities),
-                    hostConfig,
-                    hostConfigKeys,
-                    groupingLabels,
-                    stopGracePeriod));
-          }
-          LOG.info(
-              String.format(
-                  "Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
-        });
+                devicesMapping,
+                videoImage,
+                assetsPath,
+                networkName,
+                info.isPresent(),
+                capabilities -> options.getSlotMatcher().matches(caps, capabilities),
+                hostConfig,
+                hostConfigKeys,
+                groupingLabels,
+                stopGracePeriod));
+      }
+      LOG.info(
+          String.format("Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
+    });
     return factories.asMap();
   }
 
@@ -302,10 +301,8 @@ public class DockerOptions {
     if (info.isPresent()) {
       Optional<Map<String, Object>> mountedVolume =
           info.get().getMountedVolumes().stream()
-              .filter(
-                  mounted ->
-                      DEFAULT_ASSETS_PATH.equalsIgnoreCase(
-                          String.valueOf(mounted.get("Destination"))))
+              .filter(mounted ->
+                  DEFAULT_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
               .findFirst();
 
       if (mountedVolume.isPresent()) {
@@ -339,5 +336,14 @@ public class DockerOptions {
       }
       throw new RuntimeException(cause);
     }
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

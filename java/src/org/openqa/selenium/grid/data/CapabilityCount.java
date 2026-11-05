@@ -41,13 +41,12 @@ public class CapabilityCount {
 
   private Object toJson() {
     return counts.entrySet().stream()
-        .map(
-            entry -> {
-              Map<Object, Object> toReturn = new HashMap<>();
-              toReturn.put("capabilities", entry.getKey());
-              toReturn.put("count", entry.getValue());
-              return toReturn;
-            })
+        .map(entry -> {
+          Map<Object, Object> toReturn = new HashMap<>();
+          toReturn.put("capabilities", entry.getKey());
+          toReturn.put("count", entry.getValue());
+          return toReturn;
+        })
         .collect(
             Collector.of(
                 ArrayList::new,

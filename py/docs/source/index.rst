@@ -55,7 +55,7 @@ Latest official release::
 
 Nightly development release::
 
-    pip install -U --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
+    pip install -U --pre --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
 
 Note: you should consider using a
 `virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_

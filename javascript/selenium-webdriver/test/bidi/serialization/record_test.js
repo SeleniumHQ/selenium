@@ -493,4 +493,118 @@ describe('serialization/record', function () {
       assert.strictEqual(parsed.choice, false)
     })
   })
+
+  describe('numeric range and bounds validation', function () {
+    defineAlias('test.record.JsUint', {
+      primitive: 'integer',
+      min: 0,
+      max: 9007199254740991,
+    })
+
+    const LocateNodesParameters = defineRecord('test.record.LocateNodesParameters', [
+      { name: 'maxNodeCount', wire: 'maxNodeCount', required: false, type: { ref: 'test.record.JsUint', min: 1 } },
+    ])
+
+    const ResponseData = defineRecord('test.record.ResponseData', [
+      { name: 'status', wire: 'status', required: true, type: { ref: 'test.record.JsUint' } },
+    ])
+
+    const ViewportParameters = defineRecord('test.record.ViewportParameters', [
+      {
+        name: 'devicePixelRatio',
+        wire: 'devicePixelRatio',
+        required: false,
+        type: { primitive: 'number', min: 0, exclusiveMin: true, nullable: true },
+      },
+    ])
+
+    const GeolocationCoordinates = defineRecord('test.record.GeolocationCoordinates', [
+      {
+        name: 'heading',
+        wire: 'heading',
+        required: false,
+        type: { primitive: 'number', min: 0, max: 360, exclusiveMax: true, nullable: true },
+      },
+    ])
+
+    const PrintParameters = defineRecord('test.record.PrintParameters', [
+      {
+        name: 'pageRanges',
+        wire: 'pageRanges',
+        required: false,
+        type: { list: { union: [{ ref: 'test.record.JsUint' }, { primitive: 'string' }] } },
+      },
+    ])
+
+    it('holds an alias-typed field to its declared range outbound', function () {
+      const resp = new ResponseData({ status: 200 })
+      assert.strictEqual(resp.status, 200)
+
+      assert.throws(() => new ResponseData({ status: -1 }), /expected >= 0, got -1/)
+      assert.throws(() => new ResponseData({ status: 9007199254740992 }), /expected <= 9007199254740991/)
+    })
+
+    it('rejects a value outside the range of the alias it names on receipt', function () {
+      const parsed = ResponseData.fromWire({ status: 200 })
+      assert.strictEqual(parsed.status, 200)
+
+      assert.throws(() => ResponseData.fromWire({ status: -1 }), /expected >= 0, got -1/)
+      assert.throws(() => ResponseData.fromWire({ status: 9007199254740992 }), /expected <= 9007199254740991/)
+    })
+
+    it('holds a field narrowing an alias to its tightened range (e.g. maxNodeCount 0 vs 1)', function () {
+      const valid = new LocateNodesParameters({ maxNodeCount: 1 })
+      assert.strictEqual(valid.maxNodeCount, 1)
+
+      const parsed = LocateNodesParameters.fromWire({ maxNodeCount: 1 })
+      assert.strictEqual(parsed.maxNodeCount, 1)
+
+      assert.throws(() => new LocateNodesParameters({ maxNodeCount: 0 }), /expected >= 1, got 0/)
+      assert.throws(() => LocateNodesParameters.fromWire({ maxNodeCount: 0 }), /expected >= 1, got 0/)
+
+      assert.throws(() => new LocateNodesParameters({ maxNodeCount: -1 }), /expected >= 0, got -1/)
+      assert.throws(() => LocateNodesParameters.fromWire({ maxNodeCount: -1 }), /expected >= 0, got -1/)
+    })
+
+    it('enforces exclusive min bound on floating point numbers (e.g. devicePixelRatio > 0)', function () {
+      const valid = new ViewportParameters({ devicePixelRatio: 0.5 })
+      assert.strictEqual(valid.devicePixelRatio, 0.5)
+
+      const parsed = ViewportParameters.fromWire({ devicePixelRatio: 1 })
+      assert.strictEqual(parsed.devicePixelRatio, 1)
+
+      const nullVal = new ViewportParameters({ devicePixelRatio: null })
+      assert.strictEqual(nullVal.devicePixelRatio, null)
+
+      assert.throws(() => new ViewportParameters({ devicePixelRatio: 0 }), /expected > 0, got 0/)
+      assert.throws(() => ViewportParameters.fromWire({ devicePixelRatio: 0 }), /expected > 0, got 0/)
+      assert.throws(() => new ViewportParameters({ devicePixelRatio: -0.1 }), /expected > 0, got -0.1/)
+    })
+
+    it('enforces exclusive max bound on floating point numbers (e.g. heading < 360)', function () {
+      const valid = new GeolocationCoordinates({ heading: 359.9 })
+      assert.strictEqual(valid.heading, 359.9)
+
+      const zero = new GeolocationCoordinates({ heading: 0 })
+      assert.strictEqual(zero.heading, 0)
+
+      const parsed = GeolocationCoordinates.fromWire({ heading: 180 })
+      assert.strictEqual(parsed.heading, 180)
+
+      assert.throws(() => new GeolocationCoordinates({ heading: 360 }), /expected < 360, got 360/)
+      assert.throws(() => GeolocationCoordinates.fromWire({ heading: 360 }), /expected < 360, got 360/)
+      assert.throws(() => new GeolocationCoordinates({ heading: -1 }), /expected >= 0, got -1/)
+    })
+
+    it('holds union list elements to their declared numeric ranges (e.g. pageRanges)', function () {
+      const valid = new PrintParameters({ pageRanges: ['1-3', 2] })
+      assert.deepStrictEqual(valid.pageRanges, ['1-3', 2])
+
+      const parsed = PrintParameters.fromWire({ pageRanges: ['1-3', 2] })
+      assert.deepStrictEqual(parsed.pageRanges, ['1-3', 2])
+
+      assert.throws(() => new PrintParameters({ pageRanges: ['1-3', -1] }), ValidationError)
+      assert.throws(() => PrintParameters.fromWire({ pageRanges: ['1-3', -1] }), ValidationError)
+    })
+  })
 })

@@ -66,6 +66,8 @@ jobs:
               gh api -X POST "repos/$GH_REPO/rulesets" --input "$f"
             fi
           done
+          # GitHub merges the release PR itself once the rulesets are satisfied
+          gh api -X PATCH "repos/$GH_REPO" -F allow_auto_merge=true --silent
       - name: Delete release rulesets
         if: inputs.unlock
         shell: bash
@@ -79,6 +81,7 @@ jobs:
               gh api -X DELETE "repos/$GH_REPO/rulesets/$id"
             done < <(jq -r --arg n "$name" '.[] | select(.name==$n) | .id' <<<"$existing")
           done
+          gh api -X PATCH "repos/$GH_REPO" -F allow_auto_merge=false --silent
 
   notify:
     name: Send Notification

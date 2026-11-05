@@ -221,9 +221,8 @@ def test_wheel_scroll(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions])
 
-    # Verify the page scrolled by checking scroll position
-    scroll_y = driver.execute_script("return window.pageYOffset;")
-    assert scroll_y == 100
+    # Scrolling settles asynchronously after the command returns
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") == 100)
 
 
 def test_combined_input_actions(driver, pages):
@@ -381,7 +380,7 @@ def test_file_dialog_event_handler_multiple(driver, multiple):
     driver.get(f"data:text/html,<input id=upload type=file {'multiple' if multiple else ''} />")
 
     # Use script.evaluate to trigger the file dialog with user activation
-    driver.script._evaluate(
+    driver.script._script._evaluate(
         expression="document.getElementById('upload').click()",
         target={"context": driver.current_window_handle},
         await_promise=False,
@@ -419,7 +418,7 @@ def test_file_dialog_event_handler_unsubscribe(driver):
     driver.get("data:text/html,<input id=upload type=file />")
 
     # Trigger the file dialog
-    driver.script._evaluate(
+    driver.script._script._evaluate(
         expression="document.getElementById('upload').click()",
         target={"context": driver.current_window_handle},
         await_promise=False,
@@ -606,8 +605,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions_down])
 
-    scroll_y_down = driver.execute_script("return window.pageYOffset;")
-    assert scroll_y_down > 0
+    scroll_y_down = WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;"))
 
     # Then scroll back up (negative delta)
     wheel_actions_up = WheelSourceActions(
@@ -617,8 +615,7 @@ def test_wheel_scroll_negative_delta(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [wheel_actions_up])
 
-    scroll_y_up = driver.execute_script("return window.pageYOffset;")
-    assert scroll_y_up < scroll_y_down
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") < scroll_y_down)
 
 
 def test_wheel_scroll_with_duration(driver, pages):
@@ -856,8 +853,7 @@ def test_combined_keyboard_and_wheel_actions(driver, pages):
 
     driver.input.perform_actions(driver.current_window_handle, [key_actions, wheel_actions])
 
-    scroll_y = driver.execute_script("return window.pageYOffset;")
-    assert scroll_y == 100
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return window.pageYOffset;") == 100)
 
 
 def test_key_input_with_value_attribute(driver, pages):

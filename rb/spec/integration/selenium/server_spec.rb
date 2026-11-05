@@ -17,11 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative 'webdriver/spec_helper'
+require 'rspec'
+require 'selenium-webdriver'
 require 'selenium/server'
+require_relative 'webdriver/spec_support/test_environment'
 
 module Selenium
   describe Server do
+    let!(:environment) { WebDriver::SpecSupport::TestEnvironment.new }
+
+    before(:all) { ENV['SE_CACHE_PATH'] = Dir.mktmpdir('selenium-server') }
+
+    after(:all) { FileUtils.rm_rf(ENV.delete('SE_CACHE_PATH')) }
+
     after do
       File.delete(@location) if @location && File.exist?(@location)
     end
@@ -30,7 +38,15 @@ module Selenium
       @location = described_class.download
 
       expect(File.exist?(@location)).to be true
-      expect(@location).to eq("selenium-server-#{current_version}.jar")
+      expect(@location).to match(/\Aselenium-server-\d+\.\d+\.\d+\.jar\z/)
+    end
+
+    it 'reports the latest version' do
+      version = described_class.latest
+      @location = "selenium-server-#{version}.jar"
+
+      expect(version).to match(/\A\d+\.\d+\.\d+\z/)
+      expect(File.exist?(@location)).to be true
     end
 
     it 'downloads specified version' do
@@ -38,11 +54,25 @@ module Selenium
 
       expect(File.exist?(@location)).to be true
       expect(@location).to eq('selenium-server-4.9.0.jar')
+      expect(Dir.exist?(File.join(ENV.fetch('SE_CACHE_PATH'), 'grid', '4.9.0'))).to be true
+    end
+
+    it 'raises Selenium::Server::Error for a version that does not exist' do
+      Dir.mktmpdir('selenium-server-empty') do |empty_cache|
+        cache = ENV.fetch('SE_CACHE_PATH')
+        ENV['SE_CACHE_PATH'] = empty_cache
+
+        expect { described_class.download('99.99.99') }.to raise_error(described_class::Error, /99\.99\.99/)
+      ensure
+        ENV['SE_CACHE_PATH'] = cache
+      end
     end
 
     it 'starts and stops server' do
       @location = described_class.download
-      @server = described_class.new(@location, background: true)
+      chrome_slot = ['--driver-configuration', 'display-name=chrome', 'stereotype={"browserName":"chrome"}']
+      args = ['--detect-drivers', 'false', *chrome_slot]
+      @server = described_class.new(@location, background: true, java: environment.bazel_java, args: args)
       @server.start
       status = server_status("http://#{@server.host}:#{@server.port}")
       expect(status.code).to eq 200
@@ -59,13 +89,6 @@ module Selenium
       client = WebDriver::Remote::Http::Default.new
       client.server_url = URI.parse(url)
       client.send(:request, :get, URI.parse("#{url}/status"), {}, nil)
-    end
-
-    # Ruby Selenium is tagged one version ahead of release to support nightly gem
-    def current_version
-      selenium_version = Gem::Version.new(Selenium::WebDriver::VERSION).segments
-      selenium_version[1] = selenium_version[1] - 1
-      selenium_version.join('.')
     end
   end
 end

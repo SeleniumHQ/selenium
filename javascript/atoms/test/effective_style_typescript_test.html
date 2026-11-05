@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>effective_style_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-effective-style-global.js"></script>
+  <style>
+    #red-text {
+      color: red;
+    }
+
+    #translucent {
+      color: rgba(0, 255, 0, 0.5);
+    }
+
+    #hex-background {
+      background-color: #0000ff;
+    }
+
+    #floated {
+      float: left;
+    }
+
+    #custom-property {
+      --accent-colour: rebeccapurple;
+    }
+
+    #blocky {
+      display: block;
+      margin-top: 7px;
+    }
+
+    #inherits-colour {
+      color: inherit;
+    }
+
+    #bordered {
+      border-top: 1px solid red;
+      border-left: 1px solid #0000ff;
+    }
+  </style>
+  <script type="text/javascript">
+    // getEffectiveStyle is bot.dom.getEffectiveStyle. The behaviour worth
+    // pinning is the colour normalisation: getComputedStyle reports an opaque
+    // colour as "rgb(r, g, b)", and this atom has always reported
+    // "rgba(r, g, b, 1)". Bindings and user tests assert the rgba spelling, so
+    // it is contract rather than cosmetics.
+    var getEffectiveStyle = window.bot.dom.typescript.getEffectiveStyle;
+
+    function styleOf(id, property) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no such element: ' + id);
+      }
+      return getEffectiveStyle(element, property);
+    }
+
+    QUnit.test('normalises an opaque colour to rgba', function (assert) {
+      assert.strictEqual(styleOf('red-text', 'color'), 'rgba(255, 0, 0, 1)');
+    });
+
+    QUnit.test('preserves a fractional alpha', function (assert) {
+      assert.strictEqual(styleOf('translucent', 'color'), 'rgba(0, 255, 0, 0.5)');
+    });
+
+    QUnit.test('normalises a hex colour to rgba', function (assert) {
+      assert.strictEqual(styleOf('hex-background', 'background-color'), 'rgba(0, 0, 255, 1)');
+    });
+
+    QUnit.test('accepts dashed and camel-cased property names alike', function (assert) {
+      assert.strictEqual(
+        styleOf('hex-background', 'background-color'),
+        styleOf('hex-background', 'backgroundColor'),
+        'background-color and backgroundColor must agree');
+    });
+
+    // 'float' is a reserved word, so the CSSOM spells it cssFloat; all three
+    // spellings have to reach the same property.
+    QUnit.test('maps every spelling of float onto cssFloat', function (assert) {
+      assert.strictEqual(styleOf('floated', 'float'), 'left', 'float');
+      assert.strictEqual(styleOf('floated', 'cssFloat'), 'left', 'cssFloat');
+      assert.strictEqual(styleOf('floated', 'styleFloat'), 'left', 'styleFloat');
+    });
+
+    QUnit.test('reads a custom property by its own name', function (assert) {
+      assert.strictEqual(styleOf('custom-property', '--accent-colour'), 'rebeccapurple');
+    });
+
+    QUnit.test('leaves a non-colour property untouched', function (assert) {
+      assert.strictEqual(styleOf('blocky', 'display'), 'block');
+      assert.strictEqual(styleOf('blocky', 'margin-top'), '7px');
+    });
+
+    // Each of the border colours is normalised too, not just 'color' and
+    // 'background-color' -- that list is what scopes the rewriting.
+    QUnit.test('normalises every colour-valued property', function (assert) {
+      assert.strictEqual(styleOf('bordered', 'border-top-color'), 'rgba(255, 0, 0, 1)');
+      assert.strictEqual(styleOf('bordered', 'border-left-color'), 'rgba(0, 0, 255, 1)');
+    });
+
+    QUnit.test('resolves an inherited colour to the inherited value', function (assert) {
+      assert.strictEqual(styleOf('inherits-colour', 'color'), 'rgba(255, 0, 0, 1)',
+        'inherit should resolve to the parent colour');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="red-text">
+    <div id="inherits-colour">inherited</div>
+  </div>
+  <div id="translucent"></div>
+  <div id="hex-background"></div>
+  <div id="floated"></div>
+  <div id="custom-property"></div>
+  <div id="blocky"></div>
+  <div id="bordered"></div>
+</body>
+
+</html>

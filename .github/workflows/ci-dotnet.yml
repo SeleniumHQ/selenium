@@ -28,6 +28,14 @@ jobs:
       os: windows
       run: ./go dotnet:lint
 
+  unit-tests:
+    name: Unit Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Unit Tests
+      os: ubuntu
+      run: bazel test //dotnet/test/unit/... --flaky_test_attempts=1
+
   integration-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml

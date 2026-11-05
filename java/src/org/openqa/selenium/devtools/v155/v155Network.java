@@ -148,12 +148,9 @@ public class v155Network extends Network<AuthRequired, RequestPaused> {
       List<Map.Entry<String, String>> headers = new ArrayList<>();
       pausedReq
           .getResponseHeaders()
-          .ifPresent(
-              resHeaders ->
-                  resHeaders.forEach(
-                      header ->
-                          headers.add(
-                              new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
+          .ifPresent(resHeaders ->
+              resHeaders.forEach(header ->
+                  headers.add(new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
 
       HttpResponse res =
           createHttpResponse(pausedReq.getResponseStatusCode(), body, bodyIsBase64Encoded, headers);

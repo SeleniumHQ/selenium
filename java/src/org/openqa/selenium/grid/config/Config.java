@@ -87,10 +87,9 @@ public interface Config {
     // transform config settings map into list of key/value strings
     List<String> entryList =
         mapItem.entrySet().stream()
-            .map(
-                entry -> {
-                  return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
-                })
+            .map(entry -> {
+              return String.format("%s=%s", entry.getKey(), toJson(entry.getValue()));
+            })
             .collect(Collectors.toList());
     // add record separator
     entryList.add(DELIMITER);

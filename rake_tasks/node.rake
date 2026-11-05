@@ -18,18 +18,8 @@ def atoms_publish_target
   '//javascript/atoms:selenium-atoms-package.publish'
 end
 
-def package_json_version(path)
-  File.foreach(path) do |line|
-    return line.split(':').last.strip.tr('",', '') if line.include?('version')
-  end
-end
-
 def node_version
-  package_json_version(webdriver_package_json)
-end
-
-def atoms_version
-  package_json_version(atoms_package_json)
+  SeleniumRake.version('javascript')
 end
 
 def publish_npm_package(target, config, dry_run)
@@ -126,8 +116,9 @@ task :release do |_task, arguments|
   Rake::Task['node:check_credentials'].invoke(*(nightly ? ['nightly'] : [])) unless dry_run
 
   if nightly
-    puts 'Updating Node version to nightly...'
     Rake::Task['node:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one has no timestamp
+    SeleniumRake.write_version('javascript', "#{node_version}#{Time.now.strftime('%Y%m%d%H%M')}")
     setup_github_npm_auth unless dry_run
   end
 
@@ -138,10 +129,40 @@ task :release do |_task, arguments|
   publish_npm_package(webdriver_publish_target, config, dry_run)
 end
 
+desc 'Release @selenium/manager standalone packages to npm (use dry-run to test without publishing)'
+task :release_manager do |_task, arguments|
+  args = arguments.to_a
+  nightly = args.delete('nightly')
+  dry_run = args.delete('dry-run')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
+
+  # Nightlies go to GitHub Packages, which only accepts the @seleniumhq scope;
+  # the manager is only ever published as @selenium/manager, so it skips them.
+  if nightly
+    puts '@selenium/manager is published only in releases — skipping nightly.'
+    next
+  end
+
+  Rake::Task['node:check_credentials'].invoke unless dry_run
+
+  targets = [
+    '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
+    '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
+    '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
+    '//javascript/selenium-manager-win32-ia32:selenium-manager-win32-ia32.publish',
+    '//javascript/selenium-manager:selenium-manager.publish'
+  ]
+
+  targets.each do |target|
+    puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
+    publish_npm_package(target, config, dry_run)
+  end
+end
+
 desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
-  SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{atoms_version}")
+  SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{node_version}")
 end
 
 desc 'Alias for node:release'
@@ -165,7 +186,7 @@ end
 
 desc 'Install Node package locally via pnpm link'
 task :install do
-  Bazel.execute('build', [], '//javascript/selenium-webdriver')
+  Bazel.execute('build', ['--stamp'], '//javascript/selenium-webdriver')
   pkg_dir = File.expand_path('bazel-bin/javascript/selenium-webdriver/selenium-webdriver')
   Bazel.execute('run', ['--', '--dir', pkg_dir, 'link', '--global'], '@pnpm//:pnpm')
 end
@@ -180,26 +201,9 @@ end
 desc 'Update Node version'
 task :version, [:version] do |_task, arguments|
   old_version = node_version
-  # Both packages are bumped by substituting old_version, so a drifted
-  # @selenium/atoms would silently keep its stale version and then fail
-  # `node:verify` after the release has already gone out.
-  if atoms_version != old_version
-    raise "Version mismatch: selenium-webdriver is #{old_version} but @selenium/atoms is #{atoms_version}"
-  end
-
-  nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-nightly')
   puts "Updating Node from #{old_version} to #{new_version}"
-
-  %w[
-    javascript/selenium-webdriver/package.json
-    javascript/selenium-webdriver/BUILD.bazel
-    javascript/atoms/package.json
-    javascript/atoms/BUILD.bazel
-  ].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
-    File.open(file, 'w') { |f| f.puts text }
-  end
+  SeleniumRake.write_version('javascript', new_version)
 end
 
 desc 'Format JavaScript code with prettier'

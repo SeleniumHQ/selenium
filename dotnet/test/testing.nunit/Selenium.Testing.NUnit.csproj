@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0</TargetFrameworks>
-    <AssemblyName>Testing.NUnit</AssemblyName>
+    <AssemblyName>Selenium.Testing.NUnit</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Testing.NUnit</RootNamespace>
   </PropertyGroup>
 

@@ -20,6 +20,7 @@
 require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
+require 'selenium/webdriver/common/selenium_manager'
 require 'net/http'
 require 'json'
 
@@ -32,9 +33,9 @@ module Selenium
   #   server = Selenium::Server.new('/path/to/selenium-server-standalone.jar')
   #   server.start
   #
-  # Automatically download the given version:
+  # Automatically download the given version with Selenium Manager:
   #
-  #   server = Selenium::Server.get '2.6.0'
+  #   server = Selenium::Server.get '4.30.0'
   #   server.start
   #
   # or the latest version:
@@ -57,8 +58,6 @@ module Selenium
   class Server
     class Error < StandardError; end
 
-    CL_RESET = WebDriver::Platform.windows? ? '' : "\r\e[0K"
-
     class << self
       #
       # Download the given version of the selenium-server jar and return instance
@@ -73,92 +72,45 @@ module Selenium
       end
 
       #
-      # Download the given version of the selenium-server jar and return location
+      # Download the given version of the selenium-server jar with Selenium Manager and return location
       #
       # @param [String, Symbol] required_version X.Y.Z defaults to ':latest'
       # @return [String] location of downloaded file
+      # @raise [Selenium::Server::Error] if Selenium Manager cannot provide the jar
       #
 
       def download(required_version = :latest)
-        required_version = latest if required_version == :latest
-        download_file_name = "selenium-server-#{required_version}.jar"
+        arguments = ['--grid']
+        unless required_version == :latest
+          download_file_name = "selenium-server-#{required_version}.jar"
+          return download_file_name if File.exist? download_file_name
 
-        return download_file_name if File.exist? download_file_name
-
-        begin
-          download_location = available_assets[download_file_name]['browser_download_url']
-          released = Net::HTTP.get_response(URI.parse(download_location))
-          redirected = URI.parse released.header['location']
-
-          File.open(download_file_name, 'wb') do |destination|
-            download_server(redirected, destination)
-          end
-        rescue StandardError
-          FileUtils.rm_rf download_file_name
-          raise
+          arguments << required_version.to_s
         end
 
+        cached_jar = WebDriver::SeleniumManager.binary_paths(*arguments)['driver_path']
+        if cached_jar.to_s.empty?
+          offline_source = ENV['SE_OFFLINE'] == 'true' ? 'SE_OFFLINE is true' : 'offline is true in se-config.toml'
+          message = "Selenium Manager is in offline mode (#{offline_source}) "
+          raise Error, message + "and has no cached selenium-server #{required_version}"
+        end
+
+        download_file_name = File.basename(cached_jar)
+        FileUtils.cp(cached_jar, download_file_name) unless File.exist? download_file_name
+
         download_file_name
+      rescue WebDriver::Error::WebDriverError => e
+        raise Error, e.message
       end
 
       #
-      # Ask GitHub what the latest selenium-server version is.
+      # Download the latest selenium-server jar with Selenium Manager and return its version
+      #
+      # @return [String] X.Y.Z
       #
 
       def latest
-        @latest ||= begin
-          available = available_assets.keys.map { |key| key[/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1] }
-          available.map { |asset| Gem::Version.new(asset) }.max.to_s
-        end
-      end
-
-      # @api private
-
-      def available_assets
-        @available_assets ||= net_http_start('api.github.com') do |http|
-          json = http.get('/repos/seleniumhq/selenium/releases').body
-          all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
-          server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
-          server_assets.to_h { |asset| [asset.delete('name'), asset] }
-        end
-      end
-
-      def net_http_start(address, &block)
-        http_proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
-        if http_proxy
-          http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
-          uri = URI.parse(http_proxy)
-
-          Net::HTTP.start(address, nil, uri.host, uri.port, &block)
-        else
-          Net::HTTP.start(address, use_ssl: true, &block)
-        end
-      end
-
-      def download_server(uri, destination)
-        net_http_start('github-releases.githubusercontent.com') do |http|
-          request = Net::HTTP::Get.new uri
-          resp = http.request(request) do |response|
-            total = response.content_length
-            progress = 0
-            segment_count = 0
-
-            response.read_body do |segment|
-              progress += segment.length
-              segment_count += 1
-
-              if (segment_count % 15).zero?
-                percent = progress.fdiv(total) * 100
-                print "#{CL_RESET}Downloading #{destination.path}: #{percent.to_i}% (#{progress} / #{total})"
-                segment_count = 0
-              end
-
-              destination.write(segment)
-            end
-          end
-
-          raise Error, "#{resp.code} for #{destination.path}" unless resp.is_a? Net::HTTPSuccess
-        end
+        download[/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
       end
     end
 

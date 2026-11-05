@@ -30,10 +30,6 @@
             "integration_id": 15368
           },
           {
-            "context": "Validate workflows",
-            "integration_id": 15368
-          },
-          {
             "context": "Format / Check Format",
             "integration_id": 15368
           }

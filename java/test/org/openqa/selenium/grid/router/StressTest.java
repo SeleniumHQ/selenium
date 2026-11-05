@@ -168,19 +168,17 @@ class StressTest {
                 assertThatThrownBy(driver::getTitle)
                     .isInstanceOf(NoSuchSessionException.class)
                     .as("the session timed out. Either cleanup is pending, or cleanup is done.")
-                    .matches(
-                        e ->
-                            e.getMessage().startsWith("Cannot find session with id:")
-                                || e.getMessage().startsWith("Unable to find session with ID:"));
+                    .matches(e ->
+                        e.getMessage().startsWith("Cannot find session with id:")
+                            || e.getMessage().startsWith("Unable to find session with ID:"));
 
                 assertThatThrownBy(() -> ((RemoteWebDriver) driver).getDownloadedFiles())
                     .isInstanceOf(WebDriverException.class)
                     .as("The session timed out. Either the cleanup is pending or cleanup is done.")
-                    .matches(
-                        e ->
-                            e.getMessage()
-                                    .startsWith("Cannot find downloads file system for session id:")
-                                || e.getMessage().startsWith("Unable to find session with ID:"));
+                    .matches(e ->
+                        e.getMessage()
+                                .startsWith("Cannot find downloads file system for session id:")
+                            || e.getMessage().startsWith("Unable to find session with ID:"));
               },
               executor);
     }

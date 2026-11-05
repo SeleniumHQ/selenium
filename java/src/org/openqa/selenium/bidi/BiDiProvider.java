@@ -97,13 +97,12 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
     Object biDiCapability = caps.getCapability("webSocketUrl");
     Optional<String> webSocketUrl = Optional.ofNullable((String) biDiCapability);
 
-    return webSocketUrl.map(
-        uri -> {
-          try {
-            return new URI(uri);
-          } catch (URISyntaxException e) {
-            throw new BiDiException("Invalid BiDi URL: " + uri, e);
-          }
-        });
+    return webSocketUrl.map(uri -> {
+      try {
+        return new URI(uri);
+      } catch (URISyntaxException e) {
+        throw new BiDiException("Invalid BiDi URL: " + uri, e);
+      }
+    });
   }
 }

@@ -17,7 +17,7 @@
 
 """Driver-level install_web_extension / uninstall_web_extension.
 
-The module-level `driver.webextension` commands are covered by
+The deprecated module-level `driver.webextension` commands are covered by
 webextension_tests.py; these exercise the driver methods from
 docs/decisions/17817-driver-extension-install.md.
 """

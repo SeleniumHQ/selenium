@@ -23,7 +23,7 @@ import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from subprocess import PIPE
-from time import sleep
+from time import monotonic, sleep
 from typing import IO, Any
 from urllib import request
 from urllib.error import URLError
@@ -47,6 +47,8 @@ class Service(ABC):
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
         driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
+
+    _start_timeout: float = 30
 
     def __init__(
         self,
@@ -106,17 +108,18 @@ class Service(ABC):
             raise WebDriverException("Service path cannot be None.")
         self._start_process(self._path)
 
+        deadline = monotonic() + self._start_timeout
         count = 0
         try:
             while True:
                 self.assert_process_still_running()
                 if self.is_connectable():
                     break
+                if monotonic() >= deadline:
+                    raise WebDriverException(f"Can not connect to the Service {self._path}")
                 # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
                 sleep(min(0.01 + 0.05 * count, 0.5))
                 count += 1
-                if count == 70:
-                    raise WebDriverException(f"Can not connect to the Service {self._path}")
         except BaseException:
             try:
                 self.stop()
@@ -127,7 +130,7 @@ class Service(ABC):
     def assert_process_still_running(self) -> None:
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
-        if return_code:
+        if return_code is not None:
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:

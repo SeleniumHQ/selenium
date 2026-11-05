@@ -35,9 +35,9 @@ module Selenium
 
       @messages: untyped
 
-      @incoming_frame: untyped
+      @pending_responses: Hash[Integer, Thread::ConditionVariable]
 
-      @wait: untyped
+      @incoming_frame: untyped
 
       @socket: untyped
 
@@ -75,6 +75,12 @@ module Selenium
 
       def messages: () -> untyped
 
+      def pending_responses: () -> Hash[Integer, Thread::ConditionVariable]
+
+      def await_response: (Integer id) -> untyped
+
+      def release_pending_responses: () -> void
+
       def process_handshake: () -> untyped
 
       def attach_socket_listener: () -> untyped
@@ -92,8 +98,6 @@ module Selenium
       def process_frame: (untyped frame) -> (Hash[untyped, untyped] | untyped)
 
       def callback_thread: (untyped params) { (untyped) -> untyped } -> untyped
-
-      def wait: () -> untyped
 
       def socket: () -> untyped
 

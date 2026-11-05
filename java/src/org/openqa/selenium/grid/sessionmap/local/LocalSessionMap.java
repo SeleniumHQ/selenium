@@ -78,17 +78,14 @@ public class LocalSessionMap extends SessionMap {
             data -> removeWithReason(data.getSessionId(), data.getReason())));
 
     bus.addListener(
-        NodeRemovedEvent.listener(
-            nodeStatus -> {
-              batchRemoveByUri(nodeStatus.getExternalUri(), SessionClosedReason.NODE_REMOVED);
-            }));
+        NodeRemovedEvent.listener(nodeStatus -> {
+          batchRemoveByUri(nodeStatus.getExternalUri(), SessionClosedReason.NODE_REMOVED);
+        }));
 
     bus.addListener(
-        NodeRestartedEvent.listener(
-            previousNodeStatus -> {
-              batchRemoveByUri(
-                  previousNodeStatus.getExternalUri(), SessionClosedReason.NODE_RESTARTED);
-            }));
+        NodeRestartedEvent.listener(previousNodeStatus -> {
+          batchRemoveByUri(previousNodeStatus.getExternalUri(), SessionClosedReason.NODE_RESTARTED);
+        }));
   }
 
   public static SessionMap create(Config config) {

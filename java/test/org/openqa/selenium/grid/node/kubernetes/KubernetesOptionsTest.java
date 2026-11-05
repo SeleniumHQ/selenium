@@ -359,4 +359,12 @@ class KubernetesOptionsTest {
     String image = KubernetesOptions.extractBrowserImage(job);
     assertThat(image).isEqualTo("selenium/standalone-chrome:latest");
   }
+
+  @Test
+  void nullStereotypeThrowsConfigExceptionNamingTheSource() {
+    assertThatThrownBy(
+            () -> KubernetesOptions.parseStereotype("null", "kubernetes config 'chrome'"))
+        .isInstanceOf(ConfigException.class)
+        .hasMessageContaining("kubernetes config 'chrome'");
+  }
 }

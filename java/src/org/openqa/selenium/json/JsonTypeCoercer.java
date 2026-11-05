@@ -110,23 +110,23 @@ class JsonTypeCoercer {
             Capabilities.class,
             this,
             MutableCapabilities::new,
-            (caps) -> ((k, v) -> caps.setCapability((String) k, v))));
+            caps -> ((k, v) -> caps.setCapability((String) k, v))));
 
     // Container types
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, (list) -> list::add));
+    builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, list -> list::add));
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, (set) -> set::add));
+    builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, set -> set::add));
     //noinspection unchecked
     builder.add(
         new CollectionCoercer<>(
-            Collection.class, this, ArrayList::new, (collection) -> collection::add));
+            Collection.class, this, ArrayList::new, collection -> collection::add));
 
     builder.add(new OptionalCoercer(this));
 
     builder.add(new StaticInitializerCoercer());
 
-    builder.add(new MapCoercer<>(Map.class, this, LinkedHashMap::new, (map) -> map::put));
+    builder.add(new MapCoercer<>(Map.class, this, LinkedHashMap::new, map -> map::put));
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
@@ -167,13 +167,12 @@ class JsonTypeCoercer {
     return coercers.stream()
         .filter(coercer -> coercer.test(narrow(type)))
         .findFirst()
-        .map(
-            coercer -> {
-              @SuppressWarnings("unchecked")
-              BiFunction<JsonInput, PropertySetting, Object> funct =
-                  (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
-              return funct;
-            })
+        .map(coercer -> {
+          @SuppressWarnings("unchecked")
+          BiFunction<JsonInput, PropertySetting, Object> funct =
+              (BiFunction<JsonInput, PropertySetting, Object>) coercer.apply(type);
+          return funct;
+        })
         .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
   }
 

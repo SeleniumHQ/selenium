@@ -132,7 +132,7 @@ class Proxy:
         if raw.get("proxyAutoconfigUrl"):
             self.proxy_autoconfig_url = raw["proxyAutoconfigUrl"]
         if raw.get("sslProxy"):
-            self.sslProxy = raw["sslProxy"]
+            self.ssl_proxy = raw["sslProxy"]
         if raw.get("autodetect"):
             self.auto_detect = raw["autodetect"]
         if raw.get("socksProxy"):

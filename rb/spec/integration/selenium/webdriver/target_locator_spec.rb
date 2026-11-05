@@ -25,15 +25,11 @@ module Selenium
       before { @original_window = driver.window_handle }
 
       after do
-        if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome
-          reset_driver!
-        else
-          handles = driver.window_handles
-          driver.switch_to.window(@original_window) if handles.include?(@original_window)
+        handles = driver.window_handles
+        driver.switch_to.window(@original_window) if handles.include?(@original_window)
 
-          (handles - [driver.window_handle]).each do |handle|
-            driver.switch_to.window(handle) { driver.close }
-          end
+        (handles - [driver.window_handle]).each do |handle|
+          driver.switch_to.window(handle) { driver.close }
         end
       end
 

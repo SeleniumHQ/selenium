@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_roles_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // Role computation for the accessibility-snapshot atom: the explicit role
+    // attribute with WAI-ARIA 1.2 fallback rules, then the html-aam implicit
+    // mapping. An explicit root always produces a node, so each fixture is
+    // snapshotted on its own and only `role` is asserted here; names, states
+    // and children are pinned by their own pages.
+    //
+    // Where html-aam says an element has "no corresponding role" the atom
+    // reports `generic`, so the pruning rule in ADR 18205 treats it like a
+    // div. Rows marked "pinned" below are deliberate choices the ADR leaves
+    // open; changing them is an accuracy fix that must update this page.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function roleOf(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return snapshot(element).role;
+    }
+
+    function assertRoles(assert, expectations) {
+      Object.keys(expectations).forEach(function (id) {
+        assert.strictEqual(roleOf(id), expectations[id], '#' + id);
+      });
+    }
+
+    QUnit.module('explicit role attribute');
+
+    QUnit.test('an explicit role wins over the implicit one', function (assert) {
+      assertRoles(assert, { 'div-as-button': 'button', 'ul-as-tablist': 'tablist' });
+    });
+
+    QUnit.test('unknown tokens are skipped and the first known role is used', function (assert) {
+      assertRoles(assert, { 'unknown-then-button': 'button', 'only-unknown': 'generic' });
+    });
+
+    QUnit.test('abstract roles are not valid and fall through', function (assert) {
+      assertRoles(assert, { 'abstract-only': 'generic', 'abstract-then-nav': 'navigation' });
+    });
+
+    QUnit.test('role tokens match ASCII case-insensitively, as browsers do', function (assert) {
+      assertRoles(assert, { 'upper-case-role': 'button' });
+    });
+
+    QUnit.test('none and presentation are honoured on plain elements', function (assert) {
+      assertRoles(assert, { 'presentation-ul': 'presentation', 'none-table': 'none' });
+    });
+
+    QUnit.test('none and presentation are ignored on focusable elements and ones with global ARIA attributes', function (assert) {
+      // WAI-ARIA 1.2 §9.1, presentational roles conflict resolution.
+      assertRoles(assert, {
+        'presentation-button': 'button',
+        'none-focusable-ul': 'list',
+        'presentation-labelled-ul': 'list',
+        'none-disabled-ul': 'list',
+        'none-link': 'link',
+      });
+    });
+
+    QUnit.test('focusable means able to take focus, not what WebDriver calls focusable', function (assert) {
+      // An anchor without href and a disabled button cannot take focus, so
+      // their presentational role stands.
+      assertRoles(assert, {
+        'none-anchor': 'none', 'presentation-disabled-button': 'presentation',
+        'presentation-disabled-tabindex-button': 'presentation', 'none-tabindex-minus-one': 'generic',
+      });
+    });
+
+    QUnit.test('required owned elements of a presentational table or list are presentational too', function (assert) {
+      assertRoles(assert, { 'pres-tr': 'generic', 'pres-td': 'generic', 'pres-th': 'generic', 'pres-tbody': 'generic', 'pres-li': 'generic' });
+    });
+
+    QUnit.module('implicit roles: text and structure');
+
+    QUnit.test('headings are heading whatever their level', function (assert) {
+      assertRoles(assert, { h1: 'heading', h2: 'heading', h3: 'heading', h4: 'heading', h5: 'heading', h6: 'heading' });
+    });
+
+    QUnit.test('the html element is document and the body is generic', function (assert) {
+      assert.strictEqual(snapshot(document.documentElement).role, 'document');
+      assert.strictEqual(snapshot(document.body).role, 'generic');
+    });
+
+    QUnit.test('phrasing and grouping content maps per html-aam', function (assert) {
+      assertRoles(assert, {
+        'p': 'paragraph',
+        'blockquote': 'blockquote',
+        'code': 'code',
+        'em': 'emphasis',
+        'strong': 'strong',
+        'sub': 'subscript',
+        'sup': 'superscript',
+        'del': 'deletion',
+        'ins': 'insertion',
+        'time': 'time',
+        'hr': 'separator',
+        'figure': 'figure',
+        'dfn': 'term',
+        'math': 'math',
+      });
+    });
+
+    QUnit.test('elements with no corresponding role are generic', function (assert) {
+      assertRoles(assert, {
+        'div': 'generic', 'span': 'generic', 'b': 'generic', 'i': 'generic',
+        'abbr': 'generic', 'figcaption': 'generic', 'legend': 'generic', 'custom-element': 'generic',
+      });
+    });
+
+    QUnit.test('details is a group and summary is a button (pinned: html-aam gives summary no role)', function (assert) {
+      assertRoles(assert, { 'details': 'group', 'summary': 'button' });
+    });
+
+    QUnit.test('dialog is dialog', function (assert) {
+      assertRoles(assert, { 'dialog': 'dialog' });
+    });
+
+    QUnit.module('implicit roles: links and images');
+
+    QUnit.test('anchors and areas are links only with an href', function (assert) {
+      assertRoles(assert, { 'a-href': 'link', 'a-no-href': 'generic', 'area-href': 'link' });
+    });
+
+    QUnit.test('img is img unless alt is empty, which makes it presentation', function (assert) {
+      assertRoles(assert, { 'img-alt': 'img', 'img-no-alt': 'img', 'img-empty-alt': 'presentation' });
+    });
+
+    QUnit.test('an svg root is a graphics document', function (assert) {
+      assertRoles(assert, { 'svg': 'graphics-document' });
+    });
+
+    QUnit.test('frames are reported with the iframe token from ADR 18205, whatever their explicit role', function (assert) {
+      assertRoles(assert, { 'iframe': 'iframe', 'iframe-app': 'iframe', 'iframe-pres': 'iframe' });
+    });
+
+    QUnit.module('implicit roles: forms');
+
+    QUnit.test('buttons and button-like inputs are button', function (assert) {
+      assertRoles(assert, {
+        'button': 'button', 'input-button': 'button', 'input-submit': 'button',
+        'input-reset': 'button', 'input-image': 'button',
+      });
+    });
+
+    QUnit.test('text-like inputs are textbox, search is searchbox, and a list attribute makes a combobox', function (assert) {
+      assertRoles(assert, {
+        'input-text': 'textbox', 'input-email': 'textbox', 'input-tel': 'textbox', 'input-url': 'textbox',
+        'input-no-type': 'textbox', 'input-bogus-type': 'textbox', 'textarea': 'textbox',
+        'input-search': 'searchbox',
+        'input-text-list': 'combobox', 'input-search-list': 'combobox',
+      });
+    });
+
+    QUnit.test('password is textbox (pinned: html-aam gives it no role, engines expose a textbox)', function (assert) {
+      assertRoles(assert, { 'input-password': 'textbox' });
+    });
+
+    QUnit.test('the remaining input types map per html-aam', function (assert) {
+      assertRoles(assert, {
+        'input-checkbox': 'checkbox', 'input-radio': 'radio', 'input-range': 'slider',
+        'input-number': 'spinbutton', 'input-file': 'generic', 'input-color': 'generic',
+        'input-date': 'generic',
+      });
+    });
+
+    QUnit.test('select is a combobox unless it is multiple or shows more than one row', function (assert) {
+      assertRoles(assert, {
+        'select': 'combobox', 'select-size-1': 'combobox', 'select-multiple': 'listbox', 'select-size-3': 'listbox',
+        'option': 'option', 'optgroup': 'group', 'datalist': 'listbox',
+      });
+    });
+
+    QUnit.test('grouping and output elements', function (assert) {
+      assertRoles(assert, { 'fieldset': 'group', 'output': 'status', 'progress': 'progressbar', 'meter': 'meter' });
+    });
+
+    QUnit.test('a form is a landmark only when it has an accessible name (html-aam)', function (assert) {
+      assertRoles(assert, {
+        'form': 'generic', 'form-named': 'form', 'form-titled': 'form', 'form-image-labelled': 'form',
+      });
+    });
+
+    QUnit.module('implicit roles: lists and tables');
+
+    QUnit.test('ul, ol and menu are lists and their li are listitems', function (assert) {
+      assertRoles(assert, {
+        'ul': 'list', 'ol': 'list', 'menu': 'list',
+        'li-in-ul': 'listitem', 'li-in-ol': 'listitem', 'li-in-menu': 'listitem',
+      });
+    });
+
+    QUnit.test('an li outside a list is generic', function (assert) {
+      assertRoles(assert, { 'li-orphan': 'generic' });
+    });
+
+    QUnit.test('description lists', function (assert) {
+      assertRoles(assert, { 'dl': 'generic', 'dt': 'term', 'dd': 'definition' });
+    });
+
+    QUnit.test('table parts', function (assert) {
+      assertRoles(assert, {
+        'table': 'table', 'caption': 'caption', 'thead': 'rowgroup', 'tbody': 'rowgroup', 'tfoot': 'rowgroup',
+        'tr': 'row', 'td': 'cell', 'th': 'columnheader', 'th-scope-col': 'columnheader', 'th-scope-row': 'rowheader',
+      });
+    });
+
+    QUnit.test('cells of a grid are gridcells', function (assert) {
+      assertRoles(assert, { 'grid-td': 'gridcell', 'grid-th': 'columnheader' });
+    });
+
+    QUnit.module('implicit roles: landmarks');
+
+    QUnit.test('top-level header and footer are banner and contentinfo', function (assert) {
+      assertRoles(assert, { 'header': 'banner', 'footer': 'contentinfo' });
+    });
+
+    QUnit.test('header and footer inside sectioning content are generic', function (assert) {
+      assertRoles(assert, { 'header-in-article': 'generic', 'footer-in-section': 'generic', 'header-in-main': 'generic' });
+    });
+
+    QUnit.test('header and footer inside an element with a landmark role are generic', function (assert) {
+      assertRoles(assert, { 'header-in-role-main': 'generic', 'footer-in-role-region': 'generic', 'header-in-role-article': 'generic' });
+    });
+
+    QUnit.test('main, nav, article and search', function (assert) {
+      assertRoles(assert, { 'main': 'main', 'nav': 'navigation', 'article': 'article', 'search': 'search' });
+    });
+
+    QUnit.test('aside is complementary at the top level, and inside sectioning content only when labelled', function (assert) {
+      assertRoles(assert, {
+        'aside': 'complementary', 'aside-in-article': 'generic', 'aside-in-article-labelled': 'complementary',
+      });
+    });
+
+    QUnit.test('section is a region only when labelled', function (assert) {
+      assertRoles(assert, {
+        'section': 'generic', 'section-labelled': 'region', 'section-labelledby': 'region', 'section-title': 'region',
+        'section-image-labelledby': 'region',
+      });
+    });
+
+    QUnit.test('an aria-labelledby that resolves to nothing does not make a landmark', function (assert) {
+      assertRoles(assert, { 'section-bad-labelledby': 'generic', 'section-empty-labelledby': 'generic' });
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <header id="header">site header</header>
+  <nav id="nav">nav</nav>
+  <main id="main">
+    <header id="header-in-main">main header</header>
+    <article id="article">
+      <header id="header-in-article">article header</header>
+      <aside id="aside-in-article">unlabelled aside</aside>
+      <aside id="aside-in-article-labelled" aria-label="Related">labelled aside</aside>
+    </article>
+    <section id="section">unlabelled section</section>
+    <section id="section-labelled" aria-label="Labelled">labelled section</section>
+    <section id="section-labelledby" aria-labelledby="h2">labelled by heading</section>
+    <section id="section-title" title="Search results">titled section</section>
+    <section id="section-image-labelledby" aria-labelledby="image-label">labelled by an image</section>
+    <section id="section-bad-labelledby" aria-labelledby="no-such-id">labelled by nothing</section>
+    <span id="empty-label"></span>
+    <section id="section-empty-labelledby" aria-labelledby="empty-label">labelled by an empty element</section>
+    <section>
+      <footer id="footer-in-section">section footer</footer>
+    </section>
+    <search id="search">search</search>
+  </main>
+  <aside id="aside">top-level aside</aside>
+  <footer id="footer">site footer</footer>
+  <div role="main"><header id="header-in-role-main">x</header></div>
+  <div role="region" aria-label="Region"><footer id="footer-in-role-region">x</footer></div>
+  <div role="article"><header id="header-in-role-article">x</header></div>
+
+  <div id="div-as-button" role="button">button</div>
+  <ul id="ul-as-tablist" role="tablist"><li>tab</li></ul>
+  <div id="unknown-then-button" role="bogus button">x</div>
+  <div id="only-unknown" role="bogus">x</div>
+  <div id="abstract-only" role="widget">x</div>
+  <div id="abstract-then-nav" role="landmark navigation">x</div>
+  <div id="upper-case-role" role="BUTTON">x</div>
+  <ul id="presentation-ul" role="presentation"><li>x</li></ul>
+  <table id="none-table" role="none"><tr><td>x</td></tr></table>
+  <button id="presentation-button" role="presentation">x</button>
+  <ul id="none-focusable-ul" role="none" tabindex="0"><li>x</li></ul>
+  <ul id="presentation-labelled-ul" role="presentation" aria-label="Menu"><li>x</li></ul>
+  <ul id="none-disabled-ul" role="none" aria-disabled="true"><li>x</li></ul>
+  <a id="none-link" role="none" href="#">x</a>
+  <a id="none-anchor" role="none">x</a>
+  <button id="presentation-disabled-button" role="presentation" disabled>x</button>
+  <button id="presentation-disabled-tabindex-button" role="presentation" disabled tabindex="0">x</button>
+  <div id="none-tabindex-minus-one" role="none" tabindex="-1">x</div>
+  <table role="presentation"><tbody id="pres-tbody"><tr id="pres-tr"><th id="pres-th">h</th><td id="pres-td">d</td></tr></tbody></table>
+  <ul role="presentation"><li id="pres-li">x</li></ul>
+
+  <h1 id="h1">h1</h1><h2 id="h2">h2</h2><h3 id="h3">h3</h3><h4 id="h4">h4</h4><h5 id="h5">h5</h5><h6 id="h6">h6</h6>
+  <p id="p">p</p>
+  <blockquote id="blockquote">quote</blockquote>
+  <code id="code">code</code> <em id="em">em</em> <strong id="strong">strong</strong>
+  <sub id="sub">sub</sub> <sup id="sup">sup</sup> <del id="del">del</del> <ins id="ins">ins</ins>
+  <time id="time" datetime="2026-10-23">today</time>
+  <hr id="hr">
+  <figure id="figure"><img id="img-alt" src="/testdata/map.png" alt="A map"><figcaption id="figcaption">caption</figcaption></figure>
+  <dfn id="dfn">term</dfn>
+  <math id="math"><mi>x</mi></math>
+  <div id="div">div</div> <span id="span">span</span> <b id="b">b</b> <i id="i">i</i> <abbr id="abbr" title="x">abbr</abbr>
+  <custom-element id="custom-element">custom</custom-element>
+  <details id="details"><summary id="summary">summary</summary>body</details>
+  <dialog id="dialog" open>dialog</dialog>
+
+  <a id="a-href" href="#">link</a> <a id="a-no-href">anchor</a>
+  <map name="m"><area id="area-href" href="#" shape="rect" coords="0,0,1,1" alt="area"></map>
+  <img id="img-no-alt" src="/testdata/map.png">
+  <img id="img-empty-alt" src="/testdata/map.png" alt="">
+  <svg id="svg" width="10" height="10"><circle cx="5" cy="5" r="4"/></svg>
+  <iframe id="iframe" src="about:blank" title="frame"></iframe>
+  <iframe id="iframe-app" role="application" src="about:blank" title="app"></iframe>
+  <iframe id="iframe-pres" role="presentation" src="about:blank" title="layout"></iframe>
+
+  <form id="form">
+    <button id="button" type="button">b</button>
+    <input id="input-button" type="button" value="b">
+    <input id="input-submit" type="submit" value="s">
+    <input id="input-reset" type="reset" value="r">
+    <input id="input-image" type="image" alt="i" src="/testdata/map.png">
+    <input id="input-text" type="text">
+    <input id="input-email" type="email">
+    <input id="input-tel" type="tel">
+    <input id="input-url" type="url">
+    <input id="input-no-type">
+    <input id="input-bogus-type" type="bogus">
+    <input id="input-search" type="search">
+    <input id="input-text-list" type="text" list="datalist">
+    <input id="input-search-list" type="search" list="datalist">
+    <input id="input-password" type="password">
+    <input id="input-checkbox" type="checkbox">
+    <input id="input-radio" type="radio">
+    <input id="input-range" type="range">
+    <input id="input-number" type="number">
+    <input id="input-file" type="file">
+    <input id="input-color" type="color">
+    <input id="input-date" type="date">
+    <textarea id="textarea"></textarea>
+    <datalist id="datalist"><option value="a"></option></datalist>
+    <select id="select"><option id="option">one</option><optgroup id="optgroup" label="g"><option>two</option></optgroup></select>
+    <select id="select-size-1" size="1"><option>one</option></select>
+    <select id="select-multiple" multiple><option>one</option></select>
+    <select id="select-size-3" size="3"><option>one</option></select>
+    <fieldset id="fieldset"><legend id="legend">legend</legend></fieldset>
+    <output id="output">out</output>
+    <progress id="progress" value="1" max="2"></progress>
+    <meter id="meter" value="1" max="2"></meter>
+  </form>
+  <form id="form-named" aria-label="Checkout"></form>
+  <form id="form-titled" title="Sign in"></form>
+  <form id="form-image-labelled" aria-labelledby="image-label"></form>
+  <div id="image-label"><img alt="Billing" src="/testdata/map.png"></div>
+
+  <ul id="ul"><li id="li-in-ul">one</li></ul>
+  <ol id="ol"><li id="li-in-ol">one</li></ol>
+  <menu id="menu"><li id="li-in-menu">one</li></menu>
+  <div><li id="li-orphan">orphan</li></div>
+  <dl id="dl"><dt id="dt">term</dt><dd id="dd">definition</dd></dl>
+
+  <table id="table">
+    <caption id="caption">caption</caption>
+    <thead id="thead"><tr><th id="th">h</th><th id="th-scope-col" scope="col">h</th></tr></thead>
+    <tbody id="tbody"><tr id="tr"><th id="th-scope-row" scope="row">r</th><td id="td">d</td></tr></tbody>
+    <tfoot id="tfoot"><tr><td>f</td><td>f</td></tr></tfoot>
+  </table>
+  <table role="grid"><tr><th id="grid-th">h</th><td id="grid-td">d</td></tr></table>
+</body>
+
+</html>

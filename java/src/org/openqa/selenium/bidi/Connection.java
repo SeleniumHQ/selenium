@@ -62,15 +62,16 @@ public class Connection implements Closeable {
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
   private static final Executor EXECUTOR =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread thread = new Thread(r, "BiDi Connection");
-            thread.setDaemon(true);
-            return thread;
-          });
+      Executors.newCachedThreadPool(r -> {
+        Thread thread = new Thread(r, "BiDi Connection");
+        thread.setDaemon(true);
+        return thread;
+      });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final Map<Long, Consumer<Either<Throwable, @Nullable Object>>> methodCallbacks =
       new ConcurrentHashMap<>();
+  // Per connection, because a callback for one session holds only that connection's callbacks
+  private final ThreadLocal<Boolean> dispatchingEvents = ThreadLocal.withInitial(() -> false);
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Map<Event<?>, Map<String, Consumer<?>>> eventCallbacks = new HashMap<>();
   private final HttpClient client;
@@ -206,18 +207,70 @@ public class Connection implements Closeable {
     lock.lock();
     try {
       List<Event<?>> list = new ArrayList<>();
-      eventCallbacks.forEach(
-          (k, v) -> {
-            v.remove(id);
-            if (v.isEmpty()) {
-              list.add(k);
-            }
-          });
+      eventCallbacks.forEach((k, v) -> {
+        v.remove(id);
+        if (v.isEmpty()) {
+          list.add(k);
+        }
+      });
 
       list.forEach(eventCallbacks::remove);
     } finally {
       lock.unlock();
     }
+  }
+
+  /**
+   * Removes the callbacks for an event and returns them so they can be put back with {@link
+   * #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(Event<?> event) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<String, Consumer<?>> removed = eventCallbacks.remove(event);
+      return removed == null ? Map.of() : Map.of(event, removed);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Removes the callback registered under a subscription id and returns it, keyed by event, so it
+   * can be put back with {@link #restoreListeners(Map)} if unsubscribing from the remote end fails.
+   */
+  Map<Event<?>, Map<String, Consumer<?>>> detachListeners(String id) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      Map<Event<?>, Map<String, Consumer<?>>> removed = new HashMap<>();
+      eventCallbacks.forEach((event, handlers) -> {
+        Consumer<?> handler = handlers.remove(id);
+        if (handler != null) {
+          removed.put(event, Map.of(id, handler));
+        }
+      });
+      eventCallbacks.values().removeIf(Map::isEmpty);
+      return removed;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  void restoreListeners(Map<Event<?>, Map<String, Consumer<?>>> detached) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      detached.forEach((event, handlers) ->
+          eventCallbacks.computeIfAbsent(event, key -> new HashMap<>()).putAll(handlers));
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /** Whether the current thread is running event callbacks, and so holds them against changes. */
+  boolean isDispatchingEventsOnCurrentThread() {
+    return dispatchingEvents.get();
   }
 
   public boolean isSubscribed(String id) {
@@ -275,14 +328,13 @@ public class Connection implements Closeable {
 
     @Override
     public void onText(CharSequence data) {
-      EXECUTOR.execute(
-          () -> {
-            try {
-              handle(data);
-            } catch (RuntimeException e) {
-              throw new BiDiException("Unable to process BiDi response: " + data, e);
-            }
-          });
+      EXECUTOR.execute(() -> {
+        try {
+          handle(data);
+        } catch (RuntimeException e) {
+          throw new BiDiException("Unable to process BiDi response: " + data, e);
+        }
+      });
     }
 
     @Override
@@ -335,6 +387,19 @@ public class Connection implements Closeable {
             String.format(
                 "Method %s called with %s callbacks available",
                 rawDataMap.get("method"), eventCallbacks.size()));
+    boolean wasDispatching = dispatchingEvents.get();
+    dispatchingEvents.set(true);
+    try {
+      dispatchEvent(rawDataMap);
+    } finally {
+      // Removed rather than reset so pooled threads keep no entry for closed connections
+      if (!wasDispatching) {
+        dispatchingEvents.remove();
+      }
+    }
+  }
+
+  private void dispatchEvent(Map<String, Object> rawDataMap) {
     Lock lock = callbacksLock.readLock();
     // A waiting writer will block a reader to enter the lock, even if there are currently other
     // readers holding the lock. TryLock will bypass the waiting writers and acquire the read lock.
@@ -346,37 +411,35 @@ public class Connection implements Closeable {
     }
     try {
       eventCallbacks.entrySet().stream()
-          .filter(
-              event -> {
-                LOG.log(
-                    getDebugLogLevel(),
-                    "Matching {0} with {1}",
-                    new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
-                return rawDataMap.get("method").equals(event.getKey().getMethod());
-              })
-          .forEach(
-              event -> {
-                Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
-                Object value = null;
-                if (params != null) {
-                  value = event.getKey().getMapper().apply(params);
-                }
-                if (value == null) {
-                  return;
-                }
+          .filter(event -> {
+            LOG.log(
+                getDebugLogLevel(),
+                "Matching {0} with {1}",
+                new Object[] {rawDataMap.get("method"), event.getKey().getMethod()});
+            return rawDataMap.get("method").equals(event.getKey().getMethod());
+          })
+          .forEach(event -> {
+            Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
+            Object value = null;
+            if (params != null) {
+              value = event.getKey().getMapper().apply(params);
+            }
+            if (value == null) {
+              return;
+            }
 
-                final Object finalValue = value;
+            final Object finalValue = value;
 
-                for (Consumer<?> action : event.getValue().values()) {
-                  @SuppressWarnings("unchecked")
-                  Consumer<Object> obj = (Consumer<Object>) action;
-                  LOG.log(
-                      getDebugLogLevel(),
-                      "Calling callback for {0} using {1} being passed {2}",
-                      new Object[] {event.getKey(), obj, finalValue});
-                  obj.accept(finalValue);
-                }
-              });
+            for (Consumer<?> action : event.getValue().values()) {
+              @SuppressWarnings("unchecked")
+              Consumer<Object> obj = (Consumer<Object>) action;
+              LOG.log(
+                  getDebugLogLevel(),
+                  "Calling callback for {0} using {1} being passed {2}",
+                  new Object[] {event.getKey(), obj, finalValue});
+              obj.accept(finalValue);
+            }
+          });
     } finally {
       lock.unlock();
     }

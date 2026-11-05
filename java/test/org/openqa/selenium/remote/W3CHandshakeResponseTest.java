@@ -92,9 +92,7 @@ class W3CHandshakeResponseTest {
     assertThatExceptionOfType(SessionNotCreatedException.class)
         .isThrownBy(() -> new W3CHandshakeResponse().getResponseFunction().apply(initialResponse))
         .withMessageContaining("me no likey")
-        .satisfies(
-            e ->
-                assertThat(e.getAdditionalInformation())
-                    .contains("I have no idea what went wrong"));
+        .satisfies(e ->
+            assertThat(e.getAdditionalInformation()).contains("I have no idea what went wrong"));
   }
 }
