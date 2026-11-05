@@ -33,6 +33,7 @@
               "role": "link",
               "name": "Home",
               "description": "",
+              "url": "https://example.com/",
               "states": {},
               "element": "home",
               "children": []
@@ -41,6 +42,7 @@
               "role": "link",
               "name": "Docs",
               "description": "",
+              "url": "https://example.com/docs",
               "states": {},
               "element": "docs",
               "children": []

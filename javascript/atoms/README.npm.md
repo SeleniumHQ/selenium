@@ -53,13 +53,18 @@ findElements({ 'link text': 'Continue' }, shadowRoot)
 ### Accessibility snapshot
 
 ```ts
-accessibilitySnapshot(root?: Element | Document): AccessibilityNode
+accessibilitySnapshot(root?: Element | Document, options?: SnapshotOptions): AccessibilityNode
+
+interface SnapshotOptions {
+  interestingOnly?: boolean          // default true: prune unnamed generic and presentational nodes
+}
 
 interface AccessibilityNode {
   role: string                       // WAI-ARIA role; "text" for text leaves
   name: string                       // accessible name, "" when none
   description: string                // accessible description, "" when none
   value?: string                     // textbox, searchbox, combobox and range roles
+  url?: string                       // the resolved href, on links that have one
   states: Record<string, boolean | number | 'mixed'>
   element?: Element                  // absent on text leaves
   children: AccessibilityNode[]
@@ -71,13 +76,17 @@ import accessibilitySnapshot from '@selenium/atoms/accessibility-snapshot'
 
 const tree = accessibilitySnapshot()                 // the whole document
 const dialog = accessibilitySnapshot(dialogElement)  // one subtree
+const full = accessibilitySnapshot(undefined, { interestingOnly: false })  // nothing pruned
 ```
 
 The snapshot is *computed* by script from the DOM, following WAI-ARIA 1.2,
 html-aam and accname 1.2. It is not the browser's own accessibility tree, and
 it can differ from it at the edges. Elements that are hidden in the accname
-sense are left out; generic wrappers are pruned and their children hoisted;
-text an ancestor's name was computed from is not repeated as leaves. Frames are
+sense are left out; generic wrappers are pruned and their children hoisted
+unless `interestingOnly` is `false`, which keeps every rendered element as a
+node with the role it has (Puppeteer's `accessibility.snapshot({ interestingOnly:
+false })`); text an ancestor's name was computed from is not repeated as leaves.
+A `link` node whose element has an `href` carries it, resolved, as `url`. Frames are
 reported as `iframe` leaves with no children, whatever role attribute they
 carry, since a child document is another browsing context the page cannot
 reach; callers that can reach it stitch its snapshot in. Keys in `states` are
@@ -86,7 +95,7 @@ reach; callers that can reach it stitch its snapshot in. Keys in `states` are
 recognise. A password field's `value` is masked, one bullet per character, as
 the browser's own tree exposes it.
 
-`accessibilitySnapshotWire(root?: Element)` returns the same snapshot in the
+`accessibilitySnapshotWire(root?: Element, options?: SnapshotOptions)` returns the same snapshot in the
 shape the Selenium bindings fetch over WebDriver BiDi: `{ json, elements,
 windows }`, the tree as JSON text with each `element` replaced by an index into
 `elements` and each frame node given a `frame` index into `windows` (the

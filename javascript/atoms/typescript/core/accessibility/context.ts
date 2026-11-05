@@ -14,9 +14,9 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import type { HiddenState } from './hidden.js'
 import { computeRole } from './roles.js'
+import type { SnapshotOptions } from './types.js'
 
 // State shared by one snapshot call. It lives exactly as long as the call:
 // the snapshot is a copy taken at one point in time (ADR 18205 §1), and a
@@ -30,6 +30,8 @@ import { computeRole } from './roles.js'
 // aria-labelledby targets that the walk also visits; names are cached
 // because several nodes can reference the same element.
 export interface SnapshotContext {
+  /** False turns the pruning of unnamed generic and presentational nodes off. */
+  readonly interestingOnly: boolean
   readonly roles: Map<Element, string>
   readonly hidden: Map<Element, HiddenState>
   /** Whether an image map, by name, is rendered through some image that uses it; shared by all its areas. */
@@ -63,8 +65,9 @@ export interface NameResult {
   readonly source: NameSource
 }
 
-export function createContext(): SnapshotContext {
+export function createContext(options?: SnapshotOptions): SnapshotContext {
   return {
+    interestingOnly: options === undefined || options === null || options.interestingOnly !== false,
     roles: new Map(),
     hidden: new Map(),
     imageMaps: new Map(),

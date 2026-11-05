@@ -17,6 +17,7 @@
       "role": "link",
       "name": "Site (external)",
       "description": "",
+      "url": "https://example.com/suffix",
       "states": {},
       "element": "suffix",
       "children": []
@@ -33,6 +34,7 @@
       "role": "link",
       "name": "Savenow",
       "description": "",
+      "url": "https://example.com/inline",
       "states": {},
       "element": "inline",
       "children": []
@@ -41,6 +43,7 @@
       "role": "link",
       "name": "Line one Line two",
       "description": "",
+      "url": "https://example.com/blocks",
       "states": {},
       "element": "blocks",
       "children": []

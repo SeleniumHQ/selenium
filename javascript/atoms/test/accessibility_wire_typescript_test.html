@@ -63,6 +63,9 @@ under the License.
         if (node.value !== undefined) {
           out.value = node.value;
         }
+        if (node.url !== undefined) {
+          out.url = node.url;
+        }
         if (node.element !== undefined) {
           out.element = wire.elements[node.element].id;
         }
@@ -91,6 +94,20 @@ under the License.
       assert.strictEqual(intro.role, 'paragraph');
       assert.strictEqual(intro.children[0].role, 'text');
       assert.notOk('element' in intro.children[0]);
+    });
+
+    QUnit.test('options reach the snapshot: interestingOnly false keeps the generic nodes', function (assert) {
+      var full = snapshotWire(byId('app'), { interestingOnly: false });
+      assert.deepEqual(decoded(full), withIds(snapshot(byId('app'), { interestingOnly: false })));
+      var roles = JSON.parse(full.json).children.map(function (child) { return child.role; });
+      assert.ok(roles.indexOf('generic') >= 0, 'the label is kept as a generic node: ' + roles.join(','));
+      assert.notOk(JSON.parse(snapshotWire(byId('app')).json).children.some(function (child) { return child.role === 'generic'; }));
+    });
+
+    QUnit.test('a link node carries its url in the JSON text', function (assert) {
+      var parsed = JSON.parse(snapshotWire(byId('linked')).json);
+      assert.strictEqual(parsed.role, 'link');
+      assert.strictEqual(parsed.url, 'https://example.com/wire');
     });
 
     QUnit.test('without a root the whole document is snapshotted', function (assert) {
@@ -146,6 +163,7 @@ under the License.
   <div id="framed">
     <iframe id="frame" src="about:blank" title="Embedded"></iframe>
   </div>
+  <a id="linked" href="https://example.com/wire">Wire</a>
 </body>
 
 </html>

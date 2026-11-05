@@ -56,6 +56,9 @@ under the License.
       if (node.value !== undefined) {
         out.value = node.value;
       }
+      if (node.url !== undefined) {
+        out.url = node.url;
+      }
       if (Object.keys(node.states).length) {
         out.states = node.states;
       }
@@ -97,7 +100,9 @@ under the License.
       assert.strictEqual(main.role, 'main');
       assert.strictEqual(main.element, byId('qunit'));
       assert.deepEqual(strip(main.children[0]),
-        node('heading', 'qunit-header', [leaf('link', 'a', 'Accessibility snapshot fixture')], 'Accessibility snapshot fixture', { states: { level: 1 } }),
+        node('heading', 'qunit-header', [
+          leaf('link', 'a', 'Accessibility snapshot fixture', { url: document.querySelector('#qunit-header a').href }),
+        ], 'Accessibility snapshot fixture', { states: { level: 1 } }),
         'the heading is named from its content, so no text leaf repeats it');
     });
 
@@ -170,7 +175,7 @@ under the License.
         node('group', 'closed', [leaf('button', 'sum', 'More', { states: { expanded: false } })]),
         leaf('iframe', 'frame', 'frame'),
         leaf('img', 'img', 'Logo'),
-        node('link', 'link', [node('emphasis', 'em', [])], 'Go now'),
+        node('link', 'link', [node('emphasis', 'em', [])], 'Go now', { url: 'https://example.com/go' }),
         node('table', 't', [node('rowgroup', 'tbody', [node('row', 'tr', [node('cell', 'cell', [], 'A')], 'A')])]),
         node('paragraph', 'ws', []),
         node('paragraph', 'multi', [text('lots of space')]),
@@ -185,7 +190,8 @@ under the License.
     });
 
     QUnit.test('text consumed by an ancestor name is not repeated as leaves, but the structure below stays', function (assert) {
-      assert.deepEqual(strip(snapshot(byId('link'))), node('link', 'link', [node('emphasis', 'em', [])], 'Go now'));
+      assert.deepEqual(strip(snapshot(byId('link'))),
+        node('link', 'link', [node('emphasis', 'em', [])], 'Go now', { url: 'https://example.com/go' }));
       assert.deepEqual(strip(snapshot(byId('h'))), node('heading', 'h', [], 'Title', { states: { level: 1 } }));
     });
 
@@ -262,8 +268,62 @@ under the License.
     QUnit.test('image map areas appear as links where their map sits', function (assert) {
       assert.deepEqual(strip(snapshot(byId('map-wrapper'))), node('navigation', 'map-wrapper', [
         leaf('img', 'mapped-img', 'Mapped'),
-        leaf('link', 'area-link', 'Zone'),
+        leaf('link', 'area-link', 'Zone', { url: 'https://example.com/zone' }),
       ]));
+    });
+
+    QUnit.module('accessibility snapshot: links');
+
+    QUnit.test('a link carries the resolved href of its a or area element', function (assert) {
+      assert.strictEqual(snapshot(byId('link')).url, 'https://example.com/go');
+      assert.strictEqual(snapshot(byId('area-link')).url, 'https://example.com/zone');
+      assert.strictEqual(snapshot(byId('relative-link')).url, location.origin + '/docs/index.html');
+    });
+
+    QUnit.test('an anchor without href, or an element made a link by role alone, has no url', function (assert) {
+      assert.notOk('url' in snapshot(byId('no-href')), 'anchor without href');
+      assert.notOk('url' in snapshot(byId('role-link')), 'role=link on a div');
+      assert.notOk('url' in snapshot(byId('btn')), 'a non-link never has one');
+    });
+
+    QUnit.test('an anchor given another role keeps its href out of the tree', function (assert) {
+      var node = snapshot(byId('anchor-as-button'));
+      assert.strictEqual(node.role, 'button');
+      assert.notOk('url' in node);
+    });
+
+    QUnit.module('accessibility snapshot: interestingOnly');
+
+    QUnit.test('by default unnamed generic and presentational elements are pruned and their children hoisted', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('full-root'))), node('generic', 'full-root', [
+        text('a'),
+        node('paragraph', 'full-p', [text('bold'), text('text')]),
+        node('emphasis', 'full-em', [text('e')]),
+      ]));
+      assert.deepEqual(strip(snapshot(byId('full-root'), {})), strip(snapshot(byId('full-root'))), 'empty options are the default');
+      assert.deepEqual(strip(snapshot(byId('full-root'), { interestingOnly: true })), strip(snapshot(byId('full-root'))));
+    });
+
+    QUnit.test('with interestingOnly false every rendered element produces a node, with the roles it has', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('full-root'), { interestingOnly: false })), node('generic', 'full-root', [
+        node('generic', 'div', [node('generic', 'span', [text('a')])]),
+        node('paragraph', 'full-p', [node('generic', 'b', [text('bold')]), text('text')]),
+        node('none', 'full-none', [node('emphasis', 'full-em', [text('e')])]),
+      ]));
+    });
+
+    QUnit.test('interestingOnly false still leaves hidden elements out and computes names and states the same way', function (assert) {
+      assert.deepEqual(strip(snapshot(byId('full-hidden-root'), { interestingOnly: false })), node('generic', 'full-hidden-root', [
+        node('paragraph', 'fh-p', [text('y')]),
+        node('generic', 'fh-wrapper', [leaf('checkbox', 'fh-cb', 'Agree', { states: { checked: true } })]),
+      ]));
+    });
+
+    QUnit.test('the whole page with interestingOnly false keeps head and body as generic nodes under the document', function (assert) {
+      var tree = snapshot(undefined, { interestingOnly: false });
+      assert.strictEqual(tree.role, 'document');
+      assert.strictEqual(tree.children[0].element, document.body, 'head is not rendered; body is the first child');
+      assert.strictEqual(tree.children[0].role, 'generic');
     });
 
     QUnit.test('a presentational table flattens to its text', function (assert) {
@@ -302,7 +362,7 @@ under the License.
       <iframe id="frame" src="about:blank" title="frame"></iframe>
       <img id="img" src="/testdata/map.png" alt="Logo">
       <img id="deco" src="/testdata/map.png" alt="">
-      <a id="link" href="#">Go <em id="em">now</em></a>
+      <a id="link" href="https://example.com/go">Go <em id="em">now</em></a>
       <table id="t"><tr><td id="cell">A</td></tr></table>
       <p id="ws">   </p>
       <p id="multi">  lots   of
@@ -321,9 +381,17 @@ under the License.
   <textarea id="ta">default text</textarea>
   <nav id="media-wrapper"><video><p>no video support</p></video><audio><p>no audio support</p></audio></nav>
   <div role="graphics-symbol" id="sym" aria-label="Star"><span role="img" aria-label="inner"></span></div>
-  <nav id="map-wrapper"><img id="mapped-img" src="/testdata/map.png" usemap="#tree-map" alt="Mapped"><map name="tree-map"><area id="area-link" href="#" shape="rect" coords="0,0,1,1" alt="Zone"></map></nav>
+  <nav id="map-wrapper"><img id="mapped-img" src="/testdata/map.png" usemap="#tree-map" alt="Mapped"><map name="tree-map"><area id="area-link" href="https://example.com/zone" shape="rect" coords="0,0,1,1" alt="Zone"></map></nav>
   <nav id="layout-table-wrapper"><table role="presentation"><tr><td>cell text</td></tr></table></nav>
   <nav id="deco-wrapper"><img src="/testdata/map.png" alt="" title="Tooltip"></nav>
+  <nav id="link-wrapper">
+    <a id="relative-link" href="/docs/index.html">Docs</a>
+    <a id="no-href">Not a link</a>
+    <div id="role-link" role="link" tabindex="0">Pretend link</div>
+    <a id="anchor-as-button" href="https://example.com/act" role="button">Act</a>
+  </nav>
+  <div id="full-root"><div><span>a</span></div><p id="full-p"><b>bold</b> text</p><div role="none" id="full-none"><em id="full-em">e</em></div></div>
+  <div id="full-hidden-root"><div aria-hidden="true"><p>x</p></div><p id="fh-p">y</p><div id="fh-wrapper"><div role="checkbox" id="fh-cb" aria-checked="true">Agree</div></div></div>
 </body>
 
 </html>

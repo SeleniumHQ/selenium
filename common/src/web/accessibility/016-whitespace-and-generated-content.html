@@ -22,7 +22,7 @@ under the License.
   <meta charset="utf-8">
   <title>Whitespace and generated content</title>
 </head>
-<body>
+<body id="body">
   <style>
     .icon::before { content: "★ "; }
     .suffix::after { content: " (external)"; }
@@ -30,10 +30,10 @@ under the License.
     .block { display: block; }
   </style>
   <button id="icon" class="icon">Favourite</button>
-  <a id="suffix" class="suffix" href="#">Site</a>
+  <a id="suffix" class="suffix" href="https://example.com/suffix">Site</a>
   <button id="alt" class="alt">Task</button>
-  <a id="inline" href="#">Save<b>now</b></a>
-  <a id="blocks" href="#"><span class="block">Line one</span><span class="block">Line two</span></a>
+  <a id="inline" href="https://example.com/inline">Save<b id="inline-b">now</b></a>
+  <a id="blocks" href="https://example.com/blocks"><span id="block-1" class="block">Line one</span><span id="block-2" class="block">Line two</span></a>
   <button id="br">First<br>Second</button>
   <p id="nbsp">Non&nbsp;breaking space</p>
   <pre id="pre">  preformatted

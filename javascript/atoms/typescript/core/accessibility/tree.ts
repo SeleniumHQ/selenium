@@ -64,7 +64,29 @@ function elementNode(
   if (value !== null) {
     node.value = value
   }
+  const url = linkUrl(element, role)
+  if (url !== null) {
+    node.url = url
+  }
   return node
+}
+
+const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml'
+
+// ADR 18205 §2: a link node carries the resolved href of an `a` or `area`
+// element, as CDP's accessibility tree exposes it; an element made a link by
+// role alone has nothing to resolve. The href property, not the attribute,
+// so the URL is absolute. Checked by namespace and name rather than
+// instanceof, which fails across realms when the atom runs in a sandbox.
+function linkUrl(element: Element, role: string): string | null {
+  if (role !== 'link' || element.namespaceURI !== HTML_NAMESPACE) {
+    return null
+  }
+  const local = element.localName
+  if ((local !== 'a' && local !== 'area') || !element.hasAttribute('href')) {
+    return null
+  }
+  return (element as HTMLAnchorElement | HTMLAreaElement).href
 }
 
 function normalizeText(text: string): string {
@@ -72,9 +94,10 @@ function normalizeText(text: string): string {
 }
 
 // ADR 18205 §2: an element produces a node when its role is not generic,
-// none or presentation, or it has a name.
-function producesNode(role: string, name: string): boolean {
-  return !(role === 'generic' || isPresentational(role)) || name !== ''
+// none or presentation, or it has a name. With interestingOnly off every
+// element does, and the container nodes stay in place.
+function producesNode(role: string, name: string, context: SnapshotContext): boolean {
+  return !context.interestingOnly || !(role === 'generic' || isPresentational(role)) || name !== ''
 }
 
 function isLeaf(element: Element, role: string): boolean {
@@ -127,7 +150,7 @@ function visitElement(element: Element, context: SnapshotContext, above: Inherit
   const role = roleOf(element, context)
   const name = computeName(element, context)
   const descend = hidden !== 'contents' && !isLeaf(element, role)
-  if (!producesNode(role, name.text)) {
+  if (!producesNode(role, name.text, context)) {
     // The element is rendered, so its own visibility is visible even under
     // an invisible ancestor: its text shows.
     if (descend) {

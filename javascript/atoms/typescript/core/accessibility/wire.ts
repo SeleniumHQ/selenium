@@ -17,7 +17,7 @@
 
 import { isElement } from '../element.js'
 import accessibilitySnapshot from './snapshot.js'
-import type { AccessibilityNode, StateValue } from './types.js'
+import type { AccessibilityNode, SnapshotOptions, StateValue } from './types.js'
 
 /**
  * A node as the language bindings receive it: the same fields as
@@ -29,6 +29,7 @@ export interface WireNode {
   name: string
   description: string
   value?: string
+  url?: string
   states: Record<string, StateValue>
   /** Index into `WireSnapshot.elements`; absent for text leaves. */
   element?: number
@@ -73,6 +74,9 @@ export function encodeWire(tree: AccessibilityNode): Encoded {
     if (node.value !== undefined) {
       out.value = node.value
     }
+    if (node.url !== undefined) {
+      out.url = node.url
+    }
     if (node.element) {
       out.element = elements.push(node.element) - 1
       const window = node.role === 'iframe' ? (node.element as HTMLIFrameElement).contentWindow : null
@@ -97,7 +101,7 @@ export function encodeWire(tree: AccessibilityNode): Encoded {
  * for a root no longer in its document, so a binding never has to read an
  * exception's text.
  */
-function accessibilitySnapshotWire(root?: Element | null): WireSnapshot | WireError | null {
+function accessibilitySnapshotWire(root?: Element | null, options?: SnapshotOptions): WireSnapshot | WireError | null {
   if (root === null) {
     return null
   }
@@ -112,7 +116,7 @@ function accessibilitySnapshotWire(root?: Element | null): WireSnapshot | WireEr
       return { error: 'detached' }
     }
   }
-  const { node, elements, windows } = encodeWire(accessibilitySnapshot(root))
+  const { node, elements, windows } = encodeWire(accessibilitySnapshot(root, options))
   return { json: JSON.stringify(node), elements, windows }
 }
 

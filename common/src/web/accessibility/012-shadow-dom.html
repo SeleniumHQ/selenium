@@ -22,15 +22,15 @@ under the License.
   <meta charset="utf-8">
   <title>Shadow DOM</title>
 </head>
-<body>
+<body id="body">
   <div id="host"><p id="light">Light paragraph</p><p id="unslotted" slot="nowhere">Never rendered</p></div>
   <div id="named-host"><span id="slotted-b" slot="b">B</span><span id="slotted-a" slot="a">A</span></div>
   <div id="outer"></div>
   <script>
     document.getElementById('host').attachShadow({ mode: 'open' }).innerHTML =
-      '<h2 id="shadow-heading">Shadow heading</h2><slot></slot><button id="shadow-button" aria-labelledby="shadow-label">x</button><span id="shadow-label">Shadow label</span>';
+      '<h2 id="shadow-heading">Shadow heading</h2><slot id="default-slot"></slot><button id="shadow-button" aria-labelledby="shadow-label">x</button><span id="shadow-label">Shadow label</span>';
     document.getElementById('named-host').attachShadow({ mode: 'open' }).innerHTML =
-      '<p id="p-a"><slot name="a"></slot></p><p id="p-b"><slot name="b"></slot></p><slot name="c"><p id="fallback">Fallback</p></slot>';
+      '<p id="p-a"><slot id="slot-a" name="a"></slot></p><p id="p-b"><slot id="slot-b" name="b"></slot></p><slot id="slot-c" name="c"><p id="fallback">Fallback</p></slot>';
     document.getElementById('outer').attachShadow({ mode: 'open' }).innerHTML = '<div id="inner"></div>';
     document.getElementById('outer').shadowRoot.getElementById('inner').attachShadow({ mode: 'open' }).innerHTML = '<h2 id="inner-heading">Nested</h2>';
   </script>

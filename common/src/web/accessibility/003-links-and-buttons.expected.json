@@ -9,6 +9,7 @@
       "role": "link",
       "name": "A link",
       "description": "",
+      "url": "https://example.com/link",
       "states": {},
       "element": "link",
       "children": []
@@ -24,6 +25,7 @@
       "role": "link",
       "name": "Map",
       "description": "",
+      "url": "https://example.com/image",
       "states": {},
       "element": "link-with-image",
       "children": [
@@ -103,6 +105,7 @@
       "role": "link",
       "name": "Help",
       "description": "Opens the help",
+      "url": "https://example.com/titled",
       "states": {},
       "element": "titled",
       "children": []

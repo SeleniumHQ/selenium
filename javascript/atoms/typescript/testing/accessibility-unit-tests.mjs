@@ -136,6 +136,13 @@ test('a frame node points at its content window; a frame without one has no fram
   assert.equal(wire.node.children[1].element, 2)
 })
 
+test('the wire node keeps a link url and drops an absent one', () => {
+  const link = node('link', 'Docs', { element: { id: 'l' }, url: 'https://example.com/docs' })
+
+  assert.equal(JSON.parse(JSON.stringify(encodeWire(link).node)).url, 'https://example.com/docs')
+  assert.equal('url' in JSON.parse(JSON.stringify(encodeWire(node('link', 'Nowhere')).node)), false)
+})
+
 test('the wire node keeps value and states exactly, and drops an absent value', () => {
   const tree = node('textbox', 'Email', { element: { id: 'e' }, value: 'a@b.c', states: { focused: true, level: 2, pressed: 'mixed' } })
 

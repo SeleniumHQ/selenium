@@ -46,6 +46,7 @@
               "role": "link",
               "name": "more",
               "description": "",
+              "url": "https://example.com/list",
               "states": {},
               "element": "li-link",
               "children": []

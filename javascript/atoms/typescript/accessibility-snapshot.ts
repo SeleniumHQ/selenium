@@ -17,5 +17,5 @@
 
 // The implementation lives in core/accessibility/ because it spans several
 // modules; an atom entry point only re-exports.
-export type { AccessibilityNode, StateValue } from './core/accessibility/types.js'
+export type { AccessibilityNode, SnapshotOptions, StateValue } from './core/accessibility/types.js'
 export { default } from './core/accessibility/snapshot.js'

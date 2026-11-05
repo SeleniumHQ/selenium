@@ -22,17 +22,17 @@ under the License.
   <meta charset="utf-8">
   <title>Names and descriptions</title>
 </head>
-<body>
+<body id="body">
   <span id="first">First</span> <span id="second">Second</span>
   <div id="labelledby" role="group" aria-labelledby="first second"><p id="lb-content">Group content</p></div>
   <button id="aria-label" aria-label="Close">×</button>
   <span id="hint">Opens a new window</span>
-  <a id="described" href="#" aria-describedby="hint">Documentation</a>
+  <a id="described" href="https://example.com/described" aria-describedby="hint">Documentation</a>
   <button id="aria-description" aria-description="Saves your work">Save</button>
   <button id="title-desc" title="Keyboard: Ctrl+S">Save</button>
   <button id="title-name" title="Only a title"></button>
   <input id="placeholder" type="text" placeholder="Search terms">
-  <label for="wrapped">Quantity <input id="other" type="text" value="2"> items</label><input id="wrapped" type="text">
+  <label id="wrapping-label" for="wrapped">Quantity <input id="other" type="text" value="2"> items</label><input id="wrapped" type="text">
   <div id="generic-named" aria-label="Sidebar"><p id="gn-para">Named generic survives</p></div>
   <h2 id="heading-with-label">Heading <span id="x-label" aria-label="X">Y</span></h2>
   <span id="hidden-label" style="display: none">From a hidden label</span>

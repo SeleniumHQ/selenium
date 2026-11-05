@@ -13,7 +13,9 @@ is the first consumer and the thing that records the expectations.
 NNN-name.html                 the page
 NNN-name.expected.json        the snapshot of the whole page, as JSON
 NNN-name.expected.txt         the same snapshot in the text form of ADR §1
-NNN-name.expected.<engine>.json / .txt
+NNN-name.expected.full.json   the unpruned snapshot (interestingOnly false)
+NNN-name.expected.full.txt    and its text form
+NNN-name.expected[.full].<engine>.json / .txt
                               only where a divergence is recorded below;
                               <engine> is chromium, firefox or webkit
 index.json                    the list of page names, in order
@@ -21,14 +23,19 @@ index.json                    the list of page names, in order
 
 Each `.html` is a plain page with no test harness. The snapshot is taken of
 the whole document, so the root is the `html` element as role `document`
-named from the title.
+named from the title. Every page is recorded twice: pruned, the default
+(ADR §2), and unpruned, with `interestingOnly` false, where every rendered
+element produces a node and `generic`, `none` and `presentation` are kept.
 
 ## Conventions
 
-- Every element that should appear in the tree carries an `id`.
-  `expected.json` stores `"element": "<id>"`; a binding maps each reference
-  it gets back to its id with one `getAttribute("id")` call. Text leaves
-  have no `element` key. The root `html` element has `id="root"`.
+- Every rendered element carries an `id`, since every one appears in the
+  unpruned form. `expected.json` stores `"element": "<id>"`; a binding maps
+  each reference it gets back to its id with one `getAttribute("id")` call.
+  Text leaves have no `element` key. The root `html` element has `id="root"`
+  and the body `id="body"`.
+- Links use absolute `https://example.com/...` hrefs, so the `url` a link
+  node records does not depend on where the corpus is served from.
 - Empty `description` and `states` are still written (`""` and `{}`), so the
   JSON matches `javascript/atoms/typescript/accessibility-node.schema.json`
   literally. `//javascript/atoms:accessibility-corpus-consistent` checks
@@ -50,8 +57,9 @@ named from the title.
    # http://localhost:2310/filez/_main/javascript/atoms/test/accessibility_corpus_typescript_test.html?record=1
    ```
 
-   The page shows the JSON and text it computed for every corpus page; copy
-   them into the `.expected.json` and `.expected.txt` files.
+   The page shows the JSON and text it computed for every corpus page, in
+   both forms; copy them into the `.expected.json`, `.expected.txt`,
+   `.expected.full.json` and `.expected.full.txt` files.
 3. Run the corpus page in every browser:
 
    ```sh

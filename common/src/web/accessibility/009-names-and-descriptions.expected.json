@@ -63,6 +63,7 @@
       "role": "link",
       "name": "Documentation",
       "description": "Opens a new window",
+      "url": "https://example.com/described",
       "states": {},
       "element": "described",
       "children": []

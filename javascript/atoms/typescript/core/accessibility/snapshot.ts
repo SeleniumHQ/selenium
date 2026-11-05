@@ -18,7 +18,7 @@
 import { isElement } from '../element.js'
 import { createContext } from './context.js'
 import { buildTree } from './tree.js'
-import type { AccessibilityNode } from './types.js'
+import type { AccessibilityNode, SnapshotOptions } from './types.js'
 
 const DOCUMENT_NODE = 9
 
@@ -54,8 +54,8 @@ function resolveRoot(root: Element | Document | null | undefined): Element {
  * descended into; callers stitch child-document snapshots in themselves.
  *
  */
-function accessibilitySnapshot(root?: Element | Document | null): AccessibilityNode {
-  return buildTree(resolveRoot(root), createContext())
+function accessibilitySnapshot(root?: Element | Document | null, options?: SnapshotOptions): AccessibilityNode {
+  return buildTree(resolveRoot(root), createContext(options))
 }
 
 export default accessibilitySnapshot

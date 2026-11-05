@@ -34,6 +34,10 @@ under the License.
     // JSON and text expectation. The corpus, not this page, is the
     // cross-binding contract (ADR 18205 §4); this page is its first consumer.
     //
+    // Every page is snapshotted twice: pruned (the default) against
+    // `.expected.json`/`.txt`, and with interestingOnly false against
+    // `.expected.full.json`/`.txt`.
+    //
     // With ?record=1 the page records instead of testing: it shows the JSON
     // and text it computed for each corpus page, to be copied into the
     // expectation files (see the corpus README).
@@ -63,6 +67,9 @@ under the License.
       if (node.value !== undefined) {
         out.value = node.value;
       }
+      if (node.url !== undefined) {
+        out.url = node.url;
+      }
       out.states = node.states;
       if (node.element) {
         if (!node.element.id) {
@@ -82,6 +89,9 @@ under the License.
         var out = { role: node.role, name: node.name, description: node.description };
         if (node.value !== undefined) {
           out.value = node.value;
+        }
+        if (node.url !== undefined) {
+          out.url = node.url;
         }
         out.states = node.states;
         if (node.element !== undefined) {
@@ -103,6 +113,15 @@ under the License.
       return fetch(url).then(function (response) { return response.ok ? response.text() : null; });
     }
 
+    // Both forms of one page: `pruned` is the default snapshot, `full` the one
+    // with interestingOnly false. Each carries its JSON, text and decoded wire form.
+    function forms(doc, problems) {
+      function form(options) {
+        var tree = snapshot(doc, options);
+        return { json: JSON.stringify(serialize(tree, problems), null, 2), text: toText(tree), wire: decodeWire(tree) };
+      }
+      return { pruned: form(undefined), full: form({ interestingOnly: false }) };
+    }
     function inFrame(name) {
       return new Promise(function (resolve, reject) {
         var frame = document.createElement('iframe');
@@ -111,10 +130,9 @@ under the License.
         frame.onload = function () {
           try {
             var problems = [];
-            var tree = snapshot(frame.contentDocument);
-            var json = JSON.stringify(serialize(tree, problems), null, 2);
-            var text = toText(tree);
-            resolve({ json: json, text: text, wire: decodeWire(tree), problems: problems });
+            var result = forms(frame.contentDocument, problems);
+            result.problems = problems;
+            resolve(result);
           } catch (e) {
             reject(e);
           } finally {
@@ -134,7 +152,8 @@ under the License.
       return names.reduce(function (chain, name) {
         return chain.then(function () {
           return inFrame(name).then(function (result) {
-            [['json', result.json], ['txt', result.text]].forEach(function (pair) {
+            [['json', result.pruned.json], ['txt', result.pruned.text],
+             ['full.json', result.full.json], ['full.txt', result.full.text]].forEach(function (pair) {
               var pre = document.createElement('pre');
               pre.className = 'record';
               pre.setAttribute('data-page', name);
@@ -164,20 +183,30 @@ under the License.
         }
         return names.reduce(function (chain, name) {
           return chain.then(function () {
-            return Promise.all([
-              inFrame(name),
-              loadOptional(CORPUS + name + '.expected.' + engine() + '.json'),
-              load(CORPUS + name + '.expected.json'),
-              loadOptional(CORPUS + name + '.expected.' + engine() + '.txt'),
-              load(CORPUS + name + '.expected.txt'),
-            ]).then(function (results) {
+            // The expectation files of one form: `suffix` is '' for the pruned form
+            // (NNN.expected.json) and 'full' for the unpruned one (NNN.expected.full.json);
+            // the engine-specific file is preferred where one is recorded.
+            function expectation(suffix) {
+              var base = CORPUS + name + '.expected' + (suffix ? '.' + suffix : '');
+              return Promise.all([
+                loadOptional(base + '.' + engine() + '.json'),
+                load(base + '.json'),
+                loadOptional(base + '.' + engine() + '.txt'),
+                load(base + '.txt'),
+              ]).then(function (files) {
+                return { json: files[0] !== null ? files[0] : files[1], text: files[2] !== null ? files[2] : files[3] };
+              });
+            }
+            function check(label, actual, expected) {
+              assert.deepEqual(JSON.parse(actual.json), JSON.parse(expected.json), name + ': ' + label + ' tree');
+              assert.deepEqual(actual.wire, JSON.parse(expected.json), name + ': ' + label + ' wire form decodes to the tree');
+              assert.strictEqual(actual.text, expected.text.replace(/\n$/, ''), name + ': ' + label + ' text');
+            }
+            return Promise.all([inFrame(name), expectation(''), expectation('full')]).then(function (results) {
               var actual = results[0];
-              var expectedJson = results[1] !== null ? results[1] : results[2];
-              var expectedText = results[3] !== null ? results[3] : results[4];
               assert.deepEqual(actual.problems, [], name + ': every node has an id');
-              assert.deepEqual(JSON.parse(actual.json), JSON.parse(expectedJson), name + ': tree');
-              assert.deepEqual(actual.wire, JSON.parse(expectedJson), name + ': wire form decodes to the tree');
-              assert.strictEqual(actual.text, expectedText.replace(/\n$/, ''), name + ': text');
+              check('pruned', actual.pruned, results[1]);
+              check('full', actual.full, results[2]);
             });
           });
         }, Promise.resolve());

@@ -15,5 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
+export type { SnapshotOptions } from './core/accessibility/types.js'
 export type { WireError, WireNode, WireSnapshot } from './core/accessibility/wire.js'
 export { default } from './core/accessibility/wire.js'

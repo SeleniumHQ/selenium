@@ -21,6 +21,17 @@
 
 export type StateValue = boolean | number | 'mixed'
 
+/** What a snapshot leaves out; every option has a default, so `{}` is the default snapshot. */
+export interface SnapshotOptions {
+  /**
+   * With the default `true`, elements of role generic, none or presentation with
+   * no name produce no node and their children take their place (ADR 18205 §2).
+   * With `false` every rendered element produces a node, as Puppeteer's
+   * `accessibility.snapshot({ interestingOnly: false })` does.
+   */
+  interestingOnly?: boolean
+}
+
 export interface AccessibilityNode {
   /** WAI-ARIA role token; "text" for text leaves, "iframe" for frame leaves. */
   role: string
@@ -30,6 +41,8 @@ export interface AccessibilityNode {
   description: string
   /** Current value, present only for textbox, combobox, searchbox and range roles. */
   value?: string
+  /** The resolved href of a link, present only on role link whose element has one. */
+  url?: string
   /** States the role supports or the element sets; {} when there are none. */
   states: Record<string, StateValue>
   /** The backing element; absent for text leaves and synthesized nodes. */

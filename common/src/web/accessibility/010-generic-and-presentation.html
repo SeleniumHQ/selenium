@@ -22,12 +22,12 @@ under the License.
   <meta charset="utf-8">
   <title>Generic wrappers and presentation</title>
 </head>
-<body>
-  <div><div><div><h2 id="deep">Hoisted through wrappers</h2><span>loose text</span></div></div></div>
+<body id="body">
+  <div id="wrap-1"><div id="wrap-2"><div id="wrap-3"><h2 id="deep">Hoisted through wrappers</h2><span id="loose">loose text</span></div></div></div>
   <div id="role-none" role="none"><p id="inside-none">Paragraph inside role none</p></div>
-  <ul role="presentation"><li id="pres-li">Presentational list item text</li></ul>
-  <table role="none"><tr><td id="pres-td">Presentational cell text</td></tr></table>
-  <a id="pres-link" role="presentation" href="#">Focusable, so still a link</a>
+  <ul id="pres-ul" role="presentation"><li id="pres-li">Presentational list item text</li></ul>
+  <table id="pres-table" role="none"><tbody id="pres-tbody"><tr id="pres-tr"><td id="pres-td">Presentational cell text</td></tr></tbody></table>
+  <a id="pres-link" role="presentation" href="https://example.com/presentation">Focusable, so still a link</a>
   <img id="pres-img" src="../map.png" alt="" role="none">
   <div id="custom-generic" aria-label="Named div"></div>
   <custom-element id="custom">Custom element text</custom-element>

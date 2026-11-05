@@ -139,7 +139,13 @@ const files = new Set(fs.readdirSync(corpusDir))
 const covered = new Set(['index.json', 'README.md'])
 
 for (const name of index) {
-  for (const required of [`${name}.html`, `${name}.expected.json`, `${name}.expected.txt`]) {
+  for (const required of [
+    `${name}.html`,
+    `${name}.expected.json`,
+    `${name}.expected.txt`,
+    `${name}.expected.full.json`,
+    `${name}.expected.full.txt`,
+  ]) {
     covered.add(required)
     if (!files.has(required)) {
       failures.push(`${name}: missing ${required}`)
