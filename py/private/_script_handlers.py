@@ -30,7 +30,11 @@ CDDL-generated low-level commands:
   line and column numbers extracted from the BiDi stack trace; handlers
   registered through the longer-standing ``add_console_message_handler`` /
   ``add_javascript_error_handler`` keep receiving the generated log-entry
-  dataclasses unchanged.
+  dataclasses unchanged on this generated module.  ``driver.script`` passes its
+  own ``payload`` builder so ``add_console_message_handler`` /
+  ``add_javascript_error_handler`` deliver :class:`ConsoleMessage` /
+  :class:`ScriptError` there (ADR 17776); those payloads also subclass the
+  generated log-entry classes so existing handlers keep working.
 - :class:`DomMutationRegistry` owns the DOM-observation preload script and the
   ``script.message`` channel subscription, and dispatches :class:`DomMutation`
   payloads.  Beyond attribute changes it can observe ``childList`` and
@@ -50,7 +54,8 @@ import json
 import logging
 import threading
 import uuid
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Generator, Iterable
+from dataclasses import dataclass
 from typing import Any
 
 # The payload and handle types are part of the supported driver.script API, so
@@ -62,6 +67,7 @@ from selenium.webdriver.remote.script import (
     PinnedScript,
     ScriptError,
     ScriptResult,
+    StackTrace,
 )
 
 logger = logging.getLogger(__name__)
@@ -170,10 +176,109 @@ def _format_stack_trace(stack_trace: Any) -> str | None:
     return "\n".join(lines)
 
 
-def console_message_from_log_entry(params: dict) -> ConsoleMessage:
+Origin = tuple["str | None", "str | None"]
+"""Where a log entry came from: ``(window_handle, frame)``."""
+
+
+def _source_context(params: dict) -> str | None:
+    source = params.get("source")
+    return source.get("context") if isinstance(source, dict) else None
+
+
+def _origin(params: dict, origin: Origin | None) -> Origin:
+    # Without a resolver, the entry's own context is the best guess at its window.
+    return origin if origin is not None else (_source_context(params), None)
+
+
+def _get_tree_command(root: str) -> Generator[dict, Any, Any]:
+    result = yield {"method": "browsingContext.getTree", "params": {"root": root, "maxDepth": 0}}
+    return result
+
+
+class WindowResolver:
+    """Maps a browsing context to the window (top-level context) that contains it.
+
+    A log entry names the context of the document that logged it, which for an
+    iframe is the frame's context rather than a window handle. The protocol has
+    no flag for "this is a frame", so the parent chain is read with
+    ``browsingContext.getTree`` the first time a context is seen and cached;
+    context ids are never reused, so cached answers stay valid. Lookups run on
+    the event callback's own thread, never on the websocket reader thread.
+    """
+
+    _UNKNOWN: Any = object()
+
+    def __init__(self, conn: Any) -> None:
+        self._conn = conn
+        self._lock = threading.Lock()
+        self._lookup_lock = threading.Lock()
+        self._windows: dict[str, str] = {}
+
+    def _parent_of(self, context: str) -> Any:
+        try:
+            result = self._conn.execute(_get_tree_command(context))
+        except Exception:
+            logger.debug("Could not read the parent of browsing context %s", context, exc_info=True)
+            return self._UNKNOWN
+        contexts = result.get("contexts") if isinstance(result, dict) else None
+        if not contexts or not isinstance(contexts[0], dict):
+            return self._UNKNOWN
+        return contexts[0].get("parent")
+
+    def window_of(self, context: str | None) -> str | None:
+        """The window handle containing ``context``, or ``None`` if the browser no longer knows it."""
+        if context is None:
+            return None
+        with self._lock:
+            cached = self._windows.get(context)
+        if cached is not None:
+            return cached
+        # One lookup at a time, so a burst of entries from a new context asks the browser once.
+        with self._lookup_lock:
+            return self._resolve(context)
+
+    def _resolve(self, context: str) -> str | None:
+        chain = []
+        current = context
+        window = None
+        while True:
+            with self._lock:
+                cached = self._windows.get(current)
+            if cached is not None:
+                window = cached
+                break
+            parent = self._parent_of(current)
+            if parent is self._UNKNOWN:
+                break
+            chain.append(current)
+            if parent is None:
+                window = current
+                break
+            current = parent
+        if window is not None:
+            with self._lock:
+                for seen in chain:
+                    self._windows[seen] = window
+        return window
+
+    def origin_of(self, params: dict) -> Origin:
+        """``(window_handle, frame)`` for a log entry; ``frame`` is ``None`` for a window's own document."""
+        context = _source_context(params)
+        window = self.window_of(context)
+        if window is None:
+            return None, None
+        return window, (context if context != window else None)
+
+
+def _stack_trace(stack_trace: Any) -> StackTrace | None:
+    return StackTrace(stack_trace) if isinstance(stack_trace, dict) else None
+
+
+def console_message_from_log_entry(params: dict, origin: Origin | None = None) -> ConsoleMessage:
     """Build a :class:`ConsoleMessage` from raw ``log.entryAdded`` params."""
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
+    window_handle, frame = _origin(params, origin)
     return ConsoleMessage(
         level=params.get("level"),
         text=params.get("text"),
@@ -184,13 +289,17 @@ def console_message_from_log_entry(params: dict) -> ConsoleMessage:
         timestamp=params.get("timestamp"),
         method=params.get("method"),
         args=params.get("args"),
+        window_handle=window_handle,
+        frame=frame,
+        type=params.get("type") or "console",
     )
 
 
-def script_error_from_log_entry(params: dict) -> ScriptError:
+def script_error_from_log_entry(params: dict, origin: Origin | None = None) -> ScriptError:
     """Build a :class:`ScriptError` from raw ``log.entryAdded`` params."""
     frames = _stack_frames(params.get("stackTrace"))
     top = frames[0] if frames else {}
+    window_handle, frame = _origin(params, origin)
     return ScriptError(
         message=params.get("text"),
         source=top.get("url"),
@@ -198,10 +307,90 @@ def script_error_from_log_entry(params: dict) -> ScriptError:
         column_number=top.get("columnNumber"),
         stack_trace=_format_stack_trace(params.get("stackTrace")),
         timestamp=params.get("timestamp"),
+        stacktrace=_stack_trace(params.get("stackTrace")),
+        window_handle=window_handle,
+        frame=frame,
     )
 
 
-def script_error_from_exception_details(details: dict) -> ScriptError:
+_log_entry_payload_classes: dict[str, type] = {}
+
+
+def _log_entry_payload_class(name: str) -> type:
+    """A payload class that is both the ADR payload and the generated log entry.
+
+    ``driver.script.add_console_message_handler`` and
+    ``add_javascript_error_handler`` used to deliver the generated
+    ``ConsoleLogEntry`` / ``JavascriptLogEntry``. Their payloads subclass both
+    those and :class:`ConsoleMessage` / :class:`ScriptError`, so ``isinstance``
+    checks, dataclass helpers and the old field values keep working until the
+    old fields are removed.
+    """
+    if name not in _log_entry_payload_classes:
+        from selenium.webdriver.common.bidi import log as log_mod
+
+        if name == "console":
+            cls: type = dataclass(type("ConsoleLogMessage", (log_mod.ConsoleLogEntry, ConsoleMessage), {}))
+        else:
+            cls = dataclass(type("JavascriptLogError", (log_mod.JavascriptLogEntry, ScriptError), {}))
+        cls.__module__ = __name__
+        _log_entry_payload_classes[name] = cls
+    return _log_entry_payload_classes[name]
+
+
+def console_log_message(params: dict, origin: Origin | None = None) -> ConsoleMessage:
+    """Build the payload ``driver.script.add_console_message_handler`` delivers.
+
+    ``source``, ``stack_trace`` and ``type_`` keep the protocol values the
+    generated ``ConsoleLogEntry`` carried.
+    """
+    frames = _stack_frames(params.get("stackTrace"))
+    top = frames[0] if frames else {}
+    window_handle, frame = _origin(params, origin)
+    return _log_entry_payload_class("console")(
+        type_=params.get("type"),
+        level=params.get("level"),
+        text=params.get("text"),
+        source=params.get("source"),
+        line_number=top.get("lineNumber"),
+        column_number=top.get("columnNumber"),
+        stack_trace=_stack_trace(params.get("stackTrace")),
+        timestamp=params.get("timestamp"),
+        method=params.get("method"),
+        args=params.get("args"),
+        window_handle=window_handle,
+        frame=frame,
+        type=params.get("type") or "console",
+    )
+
+
+def javascript_log_error(params: dict, origin: Origin | None = None) -> ScriptError:
+    """Build the payload ``driver.script.add_javascript_error_handler`` delivers.
+
+    ``text``, ``level``, ``source``, ``stacktrace`` and ``type_`` keep the
+    values the generated ``JavascriptLogEntry`` carried; ``stacktrace`` is a
+    :class:`StackTrace`, which is the same mapping.
+    """
+    frames = _stack_frames(params.get("stackTrace"))
+    top = frames[0] if frames else {}
+    window_handle, frame = _origin(params, origin)
+    return _log_entry_payload_class("javascript")(
+        type_=params.get("type"),
+        level=params.get("level"),
+        text=params.get("text"),
+        message=params.get("text"),
+        source=params.get("source"),
+        line_number=top.get("lineNumber"),
+        column_number=top.get("columnNumber"),
+        stack_trace=_format_stack_trace(params.get("stackTrace")),
+        timestamp=params.get("timestamp"),
+        stacktrace=_stack_trace(params.get("stackTrace")),
+        window_handle=window_handle,
+        frame=frame,
+    )
+
+
+def script_error_from_exception_details(details: dict, window_handle: str | None = None) -> ScriptError:
     """Build a :class:`ScriptError` from BiDi ``script.ExceptionDetails``."""
     frames = _stack_frames(details.get("stackTrace"))
     top = frames[0] if frames else {}
@@ -211,6 +400,8 @@ def script_error_from_exception_details(details: dict) -> ScriptError:
         line_number=details.get("lineNumber"),
         column_number=details.get("columnNumber"),
         stack_trace=_format_stack_trace(details.get("stackTrace")),
+        stacktrace=_stack_trace(details.get("stackTrace")),
+        window_handle=window_handle,
     )
 
 
@@ -299,7 +490,7 @@ def execute_pinned(script: Any, pinned: PinnedScript, code: str, context_id: str
         if raw.get("type") == "exception":
             details = raw.get("exceptionDetails")
             details = details if isinstance(details, dict) else {}
-            return ScriptResult(value=None, error=script_error_from_exception_details(details), realm=realm)
+            return ScriptResult(value=None, error=script_error_from_exception_details(details, context_id), realm=realm)
         if raw.get("type") == "success":
             return ScriptResult(value=raw.get("result"), error=None, realm=realm)
     return ScriptResult(value=raw, error=None, realm=None)
@@ -326,8 +517,20 @@ class LogHandlerRegistry:
         self._lock = threading.Lock()
         self._subscription_id: str | None = None
         self._categories: dict[int, str] = {}
+        self._windows: WindowResolver | None = None
 
-    def add_handler(self, callback: Callable, category: str, legacy: bool = False) -> int:
+    def _origin_of(self, params: dict) -> Origin:
+        if self._windows is None:
+            self._windows = WindowResolver(self._script._conn)
+        return self._windows.origin_of(params)
+
+    def add_handler(
+        self,
+        callback: Callable,
+        category: str,
+        legacy: bool = False,
+        payload: Callable[[dict, Origin], Any] | None = None,
+    ) -> int:
         """Register a handler and subscribe to ``log.entryAdded`` if needed.
 
         Args:
@@ -337,18 +540,23 @@ class LogHandlerRegistry:
                 ``ConsoleLogEntry`` / ``JavascriptLogEntry`` dataclasses;
                 otherwise it receives :class:`ConsoleMessage` /
                 :class:`ScriptError`.
+            payload: Builds the payload from the raw entry params and its
+                ``(window_handle, frame)`` origin, in place of the default for
+                ``category``; overrides ``legacy``.
         """
         entry_type = self._CATEGORY_ENTRY_TYPES[category]
+        build = payload
+        default_build: Callable[[dict, Origin], Any] = (
+            console_message_from_log_entry if category == self.CONSOLE else script_error_from_log_entry
+        )
 
         def _dispatch(params: Any) -> None:
             if not isinstance(params, dict) or params.get("type") != entry_type:
                 return
-            if legacy:
+            if legacy and build is None:
                 payload = _legacy_log_entry(params)
-            elif category == self.CONSOLE:
-                payload = console_message_from_log_entry(params)
             else:
-                payload = script_error_from_log_entry(params)
+                payload = (build or default_build)(params, self._origin_of(params))
             callback(payload)
 
         conn = self._script._conn
