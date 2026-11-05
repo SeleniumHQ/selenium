@@ -24,8 +24,8 @@ namespace OpenQA.Selenium;
 
 /// <summary>
 /// One node of an accessibility snapshot, as returned by
-/// <see cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/> and
-/// <see cref="WebElement.GetAccessibilitySnapshotAsync(CancellationToken)"/>.
+/// <see cref="WebDriver.GetAccessibilitySnapshotAsync(bool, CancellationToken)"/> and
+/// <see cref="WebElement.GetAccessibilitySnapshotAsync(bool, CancellationToken)"/>.
 /// </summary>
 /// <remarks>
 /// The tree is computed in the page from the DOM following WAI-ARIA, html-aam and accname.
@@ -45,6 +45,7 @@ public sealed class AccessibilityNode
     /// <param name="name">The computed accessible name, empty when there is none.</param>
     /// <param name="description">The computed accessible description, empty when there is none.</param>
     /// <param name="value">The current value for textbox, searchbox, combobox and range roles, or <see langword="null"/>.</param>
+    /// <param name="url">The resolved href of a link whose element has one, or <see langword="null"/>.</param>
     /// <param name="states">The states that apply, keyed by name; values are <see cref="bool"/>, <see cref="long"/> or <see cref="string"/>.</param>
     /// <param name="element">The element the node is backed by, or <see langword="null"/> for a text leaf.</param>
     /// <param name="children">The child nodes.</param>
@@ -54,6 +55,7 @@ public sealed class AccessibilityNode
         string name,
         string description,
         string? value,
+        string? url,
         IReadOnlyDictionary<string, object> states,
         IWebElement? element,
         IReadOnlyList<AccessibilityNode> children)
@@ -68,6 +70,7 @@ public sealed class AccessibilityNode
         Name = name;
         Description = description;
         Value = value;
+        Url = url;
         States = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>(states.ToDictionary(pair => pair.Key, pair => pair.Value)));
         Element = element;
         Children = new ReadOnlyCollection<AccessibilityNode>(new List<AccessibilityNode>(children));
@@ -94,6 +97,12 @@ public sealed class AccessibilityNode
     /// where the role has none. A password field's value is masked.
     /// </summary>
     public string? Value { get; }
+
+    /// <summary>
+    /// Gets the resolved <c>href</c> of a <c>link</c> whose element has one; <see langword="null"/>
+    /// for every other node. Not rendered by <see cref="ToText()"/>.
+    /// </summary>
+    public string? Url { get; }
 
     /// <summary>
     /// Gets the states that apply: <c>checked</c>, <c>pressed</c>, <c>expanded</c>, <c>selected</c>,

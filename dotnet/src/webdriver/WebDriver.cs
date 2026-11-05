@@ -214,14 +214,17 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// attached under its <c>iframe</c> node. The snapshot is a copy taken at one point in time.
     /// </summary>
     /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="interestingOnly">With <see langword="true"/>, the default, elements of role <c>generic</c>, <c>none</c> or
+    /// <c>presentation</c> with no name produce no node and their children take their place. With <see langword="false"/> every
+    /// rendered element produces a node, with the role it has, as Puppeteer's <c>accessibility.snapshot({ interestingOnly: false })</c> does.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task whose result is the root node of the snapshot, of role <c>document</c>.</returns>
     /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
     /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <seealso cref="AccessibilityNode.ToText()"/>
-    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(bool interestingOnly = true, CancellationToken cancellationToken = default)
     {
-        return this.Accessibility.SnapshotAsync(null, cancellationToken);
+        return this.Accessibility.SnapshotAsync(null, interestingOnly, cancellationToken);
     }
 
     /// <summary>

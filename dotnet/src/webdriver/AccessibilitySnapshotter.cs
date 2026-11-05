@@ -68,17 +68,18 @@ internal sealed class AccessibilitySnapshotter
     /// Snapshots the whole page, or the subtree under the element <paramref name="rootId"/> refers to.
     /// </summary>
     /// <param name="rootId">The reference of the element whose subtree to snapshot, or <see langword="null"/> for the page of the current window's top-level browsing context.</param>
+    /// <param name="interestingOnly">Whether unnamed generic and presentational elements produce no node; with <see langword="false"/> every rendered element produces one.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The snapshot, with every reachable child frame's tree attached under its <c>iframe</c> node.</returns>
     /// <exception cref="StaleElementReferenceException">When the root no longer belongs to a document.</exception>
-    public async Task<AccessibilityNode> SnapshotAsync(string? rootId, CancellationToken cancellationToken)
+    public async Task<AccessibilityNode> SnapshotAsync(string? rootId, bool interestingOnly, CancellationToken cancellationToken)
     {
         IBiDi session = _bidi;
         BiDiBrowsingContext top = new BiDiBrowsingContext(session, _currentWindowHandle());
 
         if (rootId is null)
         {
-            return await SnapshotContextAsync(session, top, null, cancellationToken).ConfigureAwait(false)
+            return await SnapshotContextAsync(session, top, null, interestingOnly, cancellationToken).ConfigureAwait(false)
                 ?? throw new WebDriverException("accessibility snapshot: the script returned nothing");
         }
 
@@ -88,7 +89,7 @@ internal sealed class AccessibilitySnapshotter
         // found.
         foreach (BiDiBrowsingContext context in await ListContextsAsync(session, top, cancellationToken).ConfigureAwait(false))
         {
-            AccessibilityNode? node = await SnapshotContextAsync(session, context, rootId, cancellationToken).ConfigureAwait(false);
+            AccessibilityNode? node = await SnapshotContextAsync(session, context, rootId, interestingOnly, cancellationToken).ConfigureAwait(false);
             if (node is not null)
             {
                 return node;
@@ -100,13 +101,14 @@ internal sealed class AccessibilitySnapshotter
 
     /// <summary>
     /// The snapshot of a context, or null when the document of that context does not own the root:
-    /// either the remote end refused the shared id, or the atom answered null for it.
+    /// either the remote end refused the shared id, or the atom answered null for it. The
+    /// interestingOnly flag goes first, so a whole-page call sends no placeholder for a root.
     /// </summary>
-    private async Task<AccessibilityNode?> SnapshotContextAsync(IBiDi session, BiDiBrowsingContext context, string? rootId, CancellationToken cancellationToken)
+    private async Task<AccessibilityNode?> SnapshotContextAsync(IBiDi session, BiDiBrowsingContext context, string? rootId, bool interestingOnly, CancellationToken cancellationToken)
     {
         ImmutableArray<LocalValue> arguments = rootId is null
-            ? ImmutableArray<LocalValue>.Empty
-            : ImmutableArray.Create<LocalValue>(new SharedReferenceLocalValue(rootId));
+            ? ImmutableArray.Create<LocalValue>(new BooleanLocalValue(interestingOnly))
+            : ImmutableArray.Create<LocalValue>(new BooleanLocalValue(interestingOnly), new SharedReferenceLocalValue(rootId));
 
         RemoteValue? result = await CallAsync(session, context, arguments, cancellationToken).ConfigureAwait(false);
         if (result is null || result is NullRemoteValue)
@@ -137,7 +139,7 @@ internal sealed class AccessibilitySnapshotter
         return await BuildNodeAsync(
             document.RootElement,
             elements,
-            index => StitchAsync(session, windows[index], cancellationToken)).ConfigureAwait(false);
+            index => StitchAsync(session, windows[index], interestingOnly, cancellationToken)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -171,6 +173,7 @@ internal sealed class AccessibilitySnapshotter
             data.GetProperty("name").GetString() ?? string.Empty,
             data.TryGetProperty("description", out JsonElement description) ? description.GetString() ?? string.Empty : string.Empty,
             data.TryGetProperty("value", out JsonElement value) ? value.GetString() : null,
+            data.TryGetProperty("url", out JsonElement url) ? url.GetString() : null,
             states,
             data.TryGetProperty("element", out JsonElement element) ? elements[element.GetInt32()] : null,
             children);
@@ -178,7 +181,8 @@ internal sealed class AccessibilitySnapshotter
 
     /// <summary>
     /// Runs the atom's wire entry in the sandbox of the context; the remote value of its result, or
-    /// null when the document of the context does not own the root's shared id.
+    /// null when the document of the context does not own the root's shared id. The first argument
+    /// is the interestingOnly flag, the optional second the root.
     /// </summary>
     private static async Task<RemoteValue?> CallAsync(IBiDi session, BiDiBrowsingContext context, ImmutableArray<LocalValue> arguments, CancellationToken cancellationToken)
     {
@@ -193,13 +197,13 @@ internal sealed class AccessibilitySnapshotter
         try
         {
             result = await session.Script.CallFunctionAsync(
-                "(root) => (" + ResourceUtilities.AccessibilitySnapshotAtom + ")(root)",
+                "(interestingOnly, root) => (" + ResourceUtilities.AccessibilitySnapshotAtom + ")(root, {interestingOnly})",
                 false,
                 new ContextTarget(context) { Sandbox = Sandbox },
                 options,
                 cancellationToken).ConfigureAwait(false);
         }
-        catch (BiDiException e) when (!arguments.IsEmpty && Mentions(e, "no such node"))
+        catch (BiDiException e) when (arguments.Length > 1 && Mentions(e, "no such node"))
         {
             // The root lives in another frame, or its document is gone.
             return null;
@@ -217,7 +221,7 @@ internal sealed class AccessibilitySnapshotter
     /// <summary>
     /// The document of a frame as the frame node's one child, or no children when unreachable.
     /// </summary>
-    private async Task<IReadOnlyList<AccessibilityNode>> StitchAsync(IBiDi session, BiDiBrowsingContext? context, CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<AccessibilityNode>> StitchAsync(IBiDi session, BiDiBrowsingContext? context, bool interestingOnly, CancellationToken cancellationToken)
     {
         if (context is null)
         {
@@ -226,7 +230,7 @@ internal sealed class AccessibilitySnapshotter
 
         try
         {
-            AccessibilityNode? document = await SnapshotContextAsync(session, context, null, cancellationToken).ConfigureAwait(false);
+            AccessibilityNode? document = await SnapshotContextAsync(session, context, null, interestingOnly, cancellationToken).ConfigureAwait(false);
             return document is null ? Array.Empty<AccessibilityNode>() : new[] { document };
         }
         catch (BiDiException e) when (Mentions(e, "no such frame"))

@@ -82,6 +82,46 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         Assert.That(tree.ToText() + "\n", Is.EqualTo(await ReadExpectedAsync(page, "txt")));
     }
 
+    [TestCaseSource(nameof(ListCorpusPages))]
+    public async Task UnprunedSnapshotMatchesTheCorpus(string page)
+    {
+        Load(page);
+
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync(interestingOnly: false);
+
+        JsonNode actual = JsonNode.Parse(Serialize(tree).ToJsonString())!;
+        JsonNode expected = JsonNode.Parse(await ReadExpectedAsync(page, "json", ".full"))!;
+        Assert.That(JsonNode.DeepEquals(actual, expected), Is.True, () => "unpruned snapshot differs from the corpus:\n" + actual.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        Assert.That(tree.ToText() + "\n", Is.EqualTo(await ReadExpectedAsync(page, "txt", ".full")));
+    }
+
+    [Test]
+    public async Task ALinkCarriesItsResolvedUrl()
+    {
+        Load("003-links-and-buttons");
+
+        AccessibilityNode tree = await BiDiDriver.GetAccessibilitySnapshotAsync();
+
+        AccessibilityNode link = Walk(tree).First(node => node.Role == "link");
+        Assert.That(link.Url, Is.EqualTo(link.Element!.GetDomProperty("href")));
+        Assert.That(link.Url, Does.StartWith("https://example.com/"));
+        Assert.That(Walk(tree).Where(node => node.Role != "link").Select(node => node.Url), Is.All.Null);
+    }
+
+    [Test]
+    public async Task ASubtreeSnapshotCanBeUnprunedToo()
+    {
+        Load("010-generic-and-presentation");
+        WebElement wrapper = (WebElement)Driver.FindElement(By.Id("wrap-1"));
+
+        AccessibilityNode pruned = await wrapper.GetAccessibilitySnapshotAsync();
+        AccessibilityNode full = await wrapper.GetAccessibilitySnapshotAsync(interestingOnly: false);
+
+        Assert.That(ListRoles(pruned.Children), Is.EqualTo(new[] { "heading", "text" }));
+        Assert.That(ListRoles(full.Children), Is.EqualTo(new[] { "generic" }));
+        Assert.That(full.Children[0].Element!.GetDomAttribute("id"), Is.EqualTo("wrap-2"));
+    }
+
     [Test]
     public async Task WholePageSnapshotIsRootedAtTheDocument()
     {
@@ -280,11 +320,12 @@ public class AccessibilitySnapshotTests : DriverTestFixture
     }
 
     /// <summary>
-    /// The engine-specific expectation when one is recorded, else the shared one.
+    /// The engine-specific expectation when one is recorded, else the shared one; the form is
+    /// ".full" for the unpruned recording.
     /// </summary>
-    private async Task<string> ReadExpectedAsync(string page, string suffix)
+    private async Task<string> ReadExpectedAsync(string page, string suffix, string form = "")
     {
-        return await FetchAsync(page + ".expected." + DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected." + suffix);
+        return await FetchAsync(page + ".expected" + form + "." + DetectEngine() + "." + suffix) ?? await ReadAsync(page + ".expected" + form + "." + suffix);
     }
 
     /// <summary>
@@ -312,6 +353,11 @@ public class AccessibilitySnapshotTests : DriverTestFixture
         if (node.Value is not null)
         {
             json["value"] = node.Value;
+        }
+
+        if (node.Url is not null)
+        {
+            json["url"] = node.Url;
         }
 
         json["states"] = states;

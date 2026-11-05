@@ -36,9 +36,18 @@ public class AccessibilityNodeUnitTests
             ["selected"] = false,
             ["pressed"] = "mixed",
         };
-        var node = new AccessibilityNode(role: "textbox", name: "Say \"hi\" \\ bye", description: "", value: "line one\nline two\\", states: states, element: null, children: []);
+        var node = new AccessibilityNode(role: "textbox", name: "Say \"hi\" \\ bye", description: "", value: "line one\nline two\\", url: null, states: states, element: null, children: []);
 
         Assert.That(node.ToText(), Is.EqualTo("- textbox \"Say \\\"hi\\\" \\\\ bye\" [pressed=mixed] [level=2] [disabled] [focused]: line one\\nline two\\\\"));
+    }
+
+    [Test]
+    public void ToText_Link_DoesNotRenderTheUrl()
+    {
+        var node = new AccessibilityNode(role: "link", name: "Docs", description: "", value: null, url: "https://example.com/docs", states: new Dictionary<string, object>(), element: null, children: []);
+
+        Assert.That(node.Url, Is.EqualTo("https://example.com/docs"));
+        Assert.That(node.ToText(), Is.EqualTo("- link \"Docs\""));
     }
 
     [Test]
@@ -56,7 +65,7 @@ public class AccessibilityNodeUnitTests
     [Test]
     public void ToText_EmptyValue_OmitsTheValue()
     {
-        var node = new AccessibilityNode(role: "textbox", name: "Empty", description: "", value: "", states: new Dictionary<string, object>(), element: null, children: []);
+        var node = new AccessibilityNode(role: "textbox", name: "Empty", description: "", value: "", url: null, states: new Dictionary<string, object>(), element: null, children: []);
 
         Assert.That(node.ToText(), Is.EqualTo("- textbox \"Empty\""));
     }
@@ -74,7 +83,7 @@ public class AccessibilityNodeUnitTests
     {
         var states = new Dictionary<string, object> { ["checked"] = true };
         var children = new List<AccessibilityNode> { MakeNode("text", "Agree") };
-        var node = new AccessibilityNode(role: "checkbox", name: "Agree", description: "Terms", value: null, states: states, element: null, children: children);
+        var node = new AccessibilityNode(role: "checkbox", name: "Agree", description: "Terms", value: null, url: null, states: states, element: null, children: children);
 
         states["checked"] = false;
         children.Clear();
@@ -91,7 +100,7 @@ public class AccessibilityNodeUnitTests
     [Test]
     public void ToString_NodeWithName_ShowsRoleAndName()
     {
-        var node = new AccessibilityNode(role: "checkbox", name: "Agree", description: "Terms", value: null, states: new Dictionary<string, object>(), element: null, children: []);
+        var node = new AccessibilityNode(role: "checkbox", name: "Agree", description: "Terms", value: null, url: null, states: new Dictionary<string, object>(), element: null, children: []);
 
         Assert.That(node.ToString(), Is.EqualTo("AccessibilityNode{role=checkbox, name=\"Agree\"}"));
     }
@@ -99,17 +108,17 @@ public class AccessibilityNodeUnitTests
     [Test]
     public void Constructor_NullRole_ThrowsArgumentNullException()
     {
-        Assert.That(() => new AccessibilityNode(role: null!, name: "", description: "", value: null, states: new Dictionary<string, object>(), element: null, children: []), Throws.ArgumentNullException);
+        Assert.That(() => new AccessibilityNode(role: null!, name: "", description: "", value: null, url: null, states: new Dictionary<string, object>(), element: null, children: []), Throws.ArgumentNullException);
     }
 
     [Test]
     public void Constructor_NullStates_ThrowsArgumentNullException()
     {
-        Assert.That(() => new AccessibilityNode(role: "button", name: "", description: "", value: null, states: null!, element: null, children: []), Throws.ArgumentNullException);
+        Assert.That(() => new AccessibilityNode(role: "button", name: "", description: "", value: null, url: null, states: null!, element: null, children: []), Throws.ArgumentNullException);
     }
 
     private static AccessibilityNode MakeNode(string role, string name, params AccessibilityNode[] children)
     {
-        return new AccessibilityNode(role: role, name: name, description: "", value: null, states: new Dictionary<string, object>(), element: null, children: children);
+        return new AccessibilityNode(role: role, name: name, description: "", value: null, url: null, states: new Dictionary<string, object>(), element: null, children: children);
     }
 }

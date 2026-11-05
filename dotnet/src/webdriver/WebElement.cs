@@ -247,15 +247,17 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     /// the root node; an <c>iframe</c> carries its document.
     /// </summary>
     /// <remarks>Requires a WebDriver BiDi session; set <see cref="DriverOptions.UseWebSocketUrl"/> before starting the driver.</remarks>
+    /// <param name="interestingOnly">Whether unnamed generic and presentational elements produce no node; with <see langword="false"/>
+    /// every rendered element produces one. See <see cref="WebDriver.GetAccessibilitySnapshotAsync(bool, CancellationToken)"/>.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task whose result is the node for this element, with its subtree.</returns>
     /// <exception cref="UnsupportedOperationException">If the session was started without <see cref="DriverOptions.UseWebSocketUrl"/>.
     /// A session that asked for BiDi and could not connect fails in the <see cref="WebDriver"/> constructor instead.</exception>
     /// <exception cref="StaleElementReferenceException">If the element no longer belongs to a document.</exception>
-    /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(CancellationToken)"/>
-    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(CancellationToken cancellationToken = default)
+    /// <seealso cref="WebDriver.GetAccessibilitySnapshotAsync(bool, CancellationToken)"/>
+    public virtual Task<AccessibilityNode> GetAccessibilitySnapshotAsync(bool interestingOnly = true, CancellationToken cancellationToken = default)
     {
-        return this.driver.Accessibility.SnapshotAsync(this.Id, cancellationToken);
+        return this.driver.Accessibility.SnapshotAsync(this.Id, interestingOnly, cancellationToken);
     }
 
     /// <summary>
