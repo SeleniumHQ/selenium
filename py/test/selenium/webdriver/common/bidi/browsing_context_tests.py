@@ -22,7 +22,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchFrameException, TimeoutException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.window import WindowTypes
@@ -185,7 +185,7 @@ def test_close_window(driver):
 
     driver.browsing_context.close(window2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchFrameException):
         driver.browsing_context.get_tree(root=window2)
 
     # Clean up
@@ -199,7 +199,7 @@ def test_close_tab(driver):
 
     driver.browsing_context.close(tab2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchFrameException):
         driver.browsing_context.get_tree(root=tab2)
 
     # Clean up

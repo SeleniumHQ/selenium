@@ -19,7 +19,7 @@ import math
 
 import pytest
 
-from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import JavascriptException, NoSuchHandleException
 from selenium.webdriver.common.bidi.log import LogLevel
 from selenium.webdriver.common.bidi.script import RealmType, ResultOwnership
 from selenium.webdriver.common.by import By
@@ -617,7 +617,7 @@ def test_disown_handles(driver, pages):
     driver.script._script._disown(handles=[handle], target={"context": driver.current_window_handle})
 
     # Try using the disowned handle (this should fail)
-    with pytest.raises(Exception):
+    with pytest.raises(NoSuchHandleException):
         driver.script._script._call_function(
             "function(obj) { return obj.foo; }",
             await_promise=False,
@@ -1361,7 +1361,7 @@ class TestBidiScriptErrorHandling:
     def test_execute_script_syntax_error(self, driver):
         """Test executing script with syntax errors."""
         # This should raise an exception
-        with pytest.raises(Exception):
+        with pytest.raises(JavascriptException):
             driver.execute_script("{{invalid syntax}}")
 
 
