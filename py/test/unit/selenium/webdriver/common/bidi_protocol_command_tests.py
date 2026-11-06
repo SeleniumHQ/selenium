@@ -25,9 +25,6 @@ itself is covered by bidi_serialization_tests; here the subject is the generated
 code that sits on top of it.
 """
 
-import json
-import queue
-
 import pytest
 
 from selenium.common.exceptions import WebDriverException
@@ -51,7 +48,6 @@ from selenium.webdriver.common._bidi.speculation import Speculation
 from selenium.webdriver.common._bidi.storage import PartialCookie
 from selenium.webdriver.common._bidi.transport import Transport
 from selenium.webdriver.common._bidi.web_extension import ExtensionPath, WebExtension
-from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 _DOMAINS_WITH_EVENTS = [Bluetooth, BrowsingContext, Input, Log, Network, Script, Speculation]
 
@@ -295,38 +291,7 @@ def test_a_vendor_field_is_type_checked_like_any_other_field():
     assert connection.sent is None
 
 
-# --- event callbacks ---
-#
-# These go through a real `WebSocketConnection` that never opens a socket: the registry the
-# generated methods write to and the dispatch that calls back are the connection's own.
-
-
-@pytest.fixture
-def socket(monkeypatch):
-    def start_ws(self):
-        self._ws = None
-        self._ws_thread = None
-        self._started.set()
-
-    monkeypatch.setattr(WebSocketConnection, "_start_ws", start_ws)
-    return WebSocketConnection("ws://localhost", timeout=5)
-
-
-def test_a_generated_add_callback_delivers_the_raw_params_of_its_wire_event(socket):
-    received = queue.Queue()
-    params = {"context": "ctx-1", "isBlocked": True, "request": {"request": "r-1"}}
-    Network(Transport(socket)).add_before_request_sent_callback(received.put)
-
-    socket._process_message(json.dumps({"type": "event", "method": "network.beforeRequestSent", "params": params}))
-    assert received.get(timeout=5) == params
-
-
-def test_a_generated_remove_callback_works_from_a_separate_domain_instance(socket):
-    callback_id = Network(Transport(socket)).add_before_request_sent_callback(lambda params: None)
-
-    Network(Transport(socket)).remove_before_request_sent_callback(callback_id)
-
-    assert socket.callbacks["network.beforeRequestSent"] == []
+# --- event types (the generated callback methods are exercised in bidi_dispatcher_tests) ---
 
 
 @pytest.mark.parametrize("domain", _DOMAINS_WITH_EVENTS)

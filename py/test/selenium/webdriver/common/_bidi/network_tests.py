@@ -20,7 +20,19 @@
 import pytest
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common._bidi.network import Header, InterceptPhase, Network, StringValue
+from selenium.webdriver.common._bidi.browsing_context import BrowsingContext, ReadinessState
+from selenium.webdriver.common._bidi.network import (
+    AuthRequiredParameters,
+    BeforeRequestSentParameters,
+    FetchErrorParameters,
+    Header,
+    InterceptPhase,
+    Network,
+    ResponseCompletedParameters,
+    ResponseStartedParameters,
+    StringValue,
+)
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def test_add_intercept(driver, pages):
@@ -62,36 +74,71 @@ def test_removed_extra_header_is_not_sent(driver, pages):
     assert "x-selenium-extra" not in driver.page_source
 
 
-@pytest.mark.parametrize("event", ["before_request_sent", "response_started", "response_completed"])
-def test_request_events(driver, pages, listen, event):
+@pytest.mark.parametrize(
+    ("event", "payload"),
+    [
+        ("before_request_sent", BeforeRequestSentParameters),
+        ("response_started", ResponseStartedParameters),
+        ("response_completed", ResponseCompletedParameters),
+    ],
+)
+def test_request_events(driver, pages, event, payload):
     url = pages.url("simpleTest.html")
-    requests = listen(Network, event)
+    events = []
+    subscription = getattr(Network(driver), f"add_{event}_callback")(events.append).subscription
 
     driver.get(url)
+    request = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e["request"]["url"] == url), None))
+    Network(driver).remove_callback(subscription)
 
-    assert requests.first(lambda sent: sent.request.url == url).request.method == "GET"
+    assert payload.from_json(request).request.method == "GET"
 
 
-def test_fetch_error_event(driver, pages, listen):
+def test_a_callback_continues_the_requests_an_intercept_blocks(driver, pages):
+    url = pages.url("simpleTest.html")
+    blocked = []
+
+    def continue_request(params):
+        if params["isBlocked"]:
+            blocked.append(params["request"]["url"])
+            Network(driver).continue_request(request=params["request"]["request"])
+
+    subscription = Network(driver).add_before_request_sent_callback(continue_request).subscription
+    intercept = Network(driver).add_intercept(phases=[InterceptPhase.BEFORE_REQUEST_SENT]).intercept
+
+    # A BiDi navigation: in Chrome, a callable that sent a BiDi command during a classic ``driver.get`` timed out.
+    BrowsingContext(driver).navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
+
+    Network(driver).remove_intercept(intercept=intercept)
+    Network(driver).remove_callback(subscription)
+    assert url in blocked
+
+
+def test_fetch_error_event(driver, pages):
     url = "http://invalid-domain-that-does-not-exist.test/"
     driver.get(pages.url("simpleTest.html"))
-    errors = listen(Network, "fetch_error")
+    events = []
+    subscription = Network(driver).add_fetch_error_callback(events.append).subscription
 
     driver.execute_script("fetch(arguments[0]).catch(() => {})", url)
+    error = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e["request"]["url"] == url), None))
+    Network(driver).remove_callback(subscription)
 
-    assert errors.first(lambda error: error.request.url == url).error_text
+    assert FetchErrorParameters.from_json(error).error_text
 
 
 @pytest.mark.xfail_chrome(reason="Chromium reports a response status of -1, which ResponseData rejects")
 @pytest.mark.xfail_edge(reason="Chromium reports a response status of -1, which ResponseData rejects")
-def test_auth_required_event(driver, pages, listen):
+def test_auth_required_event(driver, pages):
     driver.get(pages.url("simpleTest.html"))
-    challenges = listen(Network, "auth_required")
+    events = []
+    subscription = Network(driver).add_auth_required_callback(events.append).subscription
     intercept = Network(driver).add_intercept(phases=[InterceptPhase.AUTH_REQUIRED]).intercept
     try:
         driver.execute_script("fetch(arguments[0])", pages.url("basic-auth"))
-        challenge = challenges.first()
-        Network(driver).continue_with_auth(request=challenge.request.request, action="cancel")
+        WebDriverWait(driver, 10).until(lambda _: events)
+        Network(driver).continue_with_auth(request=events[0]["request"]["request"], action="cancel")
     finally:
         Network(driver).remove_intercept(intercept=intercept)
-    assert challenge.response.status == 401
+        Network(driver).remove_callback(subscription)
+    assert AuthRequiredParameters.from_json(events[0]).response.status == 401

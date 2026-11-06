@@ -25,6 +25,6 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 # The domain modules beside this file (network.py, browsing_context.py, ...) are
 # generated at build time from the shared BiDi schema by //py:create-bidi-protocol-src
-# and are not checked in. Only serialization.py, transport.py, domain.py and this
-# __init__.py are hand-written. Regenerate the domain modules locally with:
+# and are not checked in. Only serialization.py, transport.py, domain.py, dispatcher.py
+# and this __init__.py are hand-written. Regenerate the domain modules locally with:
 #   bazel run //py:generate-bidi-protocol

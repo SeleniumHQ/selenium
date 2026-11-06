@@ -185,12 +185,11 @@ def test_does_not_hand_command_replies_to_the_receiver(monkeypatch):
     assert receiver.received == []
 
 
-@pytest.mark.parametrize("register", ["on", "add_callback"])
-def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch, register):
+def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch):
     connection = connect(monkeypatch)
     connection.set_event_receiver(Receiver())
     called = threading.Event()
-    getattr(connection, register)(LoadEvent, lambda params: called.set())
+    connection.on(LoadEvent, lambda params: called.set())
 
     send_event(connection, "browsingContext.load", {"url": "a"})
 

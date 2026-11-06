@@ -52,7 +52,7 @@ from generate_bidi_protocol import (
     _emit_command,
     _emit_domain_class,
     _emit_enum,
-    _emit_event_callbacks,
+    _emit_event_callback,
     _emit_field,
     _emit_record,
     _emit_union,
@@ -641,16 +641,21 @@ def test_a_command_with_union_parameters_dispatches_through_build():
 # --------------------------------------------------------------------------- #
 
 
-def test_an_event_emits_an_add_and_a_remove_callback_bound_to_its_wire_name():
+def test_an_event_emits_a_subscribing_callback_method_bound_to_its_wire_name():
     event = EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters")
 
-    lines = _emit_event_callbacks(event)
+    lines = _emit_event_callback(event)
 
-    assert "    def add_thing_happened_callback(self, callback: Callable[[dict[str, Any]], Any]) -> int:" in lines
+    assert lines[0].splitlines() == [
+        "    def add_thing_happened_callback(",
+        "        self,",
+        "        callback: Callable[[dict[str, Any]], Any],",
+        "        contexts: list[str] | UnsetType = UNSET,",
+        "        user_contexts: list[str] | UnsetType = UNSET,",
+        "    ) -> SubscribeResult:",
+    ]
     assert "        The callback gets the raw params; ``ThingHappenedParameters.from_json`` parses them." in lines
-    assert '        return self._add_callback("x.thingHappened", callback)' in lines
-    assert "    def remove_thing_happened_callback(self, callback_id: int) -> None:" in lines
-    assert lines[-1] == '        self._remove_callback("x.thingHappened", callback_id)'
+    assert lines[-1] == '        return self._add_callback("x.thingHappened", callback, contexts, user_contexts)'
 
 
 def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
@@ -675,11 +680,14 @@ def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
     assert '        "x.thingHappened": ThingHappenedParameters,' in emitted
     assert '        "x.bare": None,' in emitted
     assert "    def add_thing_happened_callback(" in emitted
-    assert "    def remove_bare_callback(" in emitted
+    assert "    def add_bare_callback(" in emitted
 
 
-@pytest.mark.parametrize("command", ["addThingCallback", "removeThingCallback"])
-def test_an_event_callback_that_would_shadow_a_command_is_rejected(command):
+@pytest.mark.parametrize(
+    ("command", "owner"),
+    [("addThingCallback", r"event x\.thing"), ("removeCallback", r"Domain\.remove_callback")],
+)
+def test_a_command_that_would_shadow_a_callback_method_is_rejected(command, owner):
     schema = Schema(
         {
             "types": {},
@@ -688,8 +696,14 @@ def test_an_event_callback_that_would_shadow_a_command_is_rejected(command):
         }
     )
 
-    with pytest.raises(ValueError, match=rf"x: callback method.*{camel_to_snake(command)}.*x\.thing.*collide"):
+    with pytest.raises(ValueError, match=rf"x: command method {camel_to_snake(command)} collides with .*{owner}"):
         build_module(schema, "x")
+
+
+def test_a_module_with_events_imports_the_subscribe_result_it_returns():
+    schema = Schema({"types": {}, "commands": [], "events": [{"domain": "x", "method": "x.thing", "name": "thing"}]})
+
+    assert build_module(schema, "x").imports == {"session": {"SubscribeResult"}}
 
 
 # --- vendor overlays ------------------------------------------------------------------------
