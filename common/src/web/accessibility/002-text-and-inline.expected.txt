@@ -1,0 +1,37 @@
+- document "Text and inline semantics"
+  - paragraph
+    - text: Plain,
+    - emphasis
+      - text: emphasised
+    - text: ,
+    - strong
+      - text: strong
+    - text: ,
+    - code
+      - text: code
+    - text: , x
+    - subscript
+      - text: 2
+    - text: , x
+    - superscript
+      - text: 2
+    - text: ,
+    - deletion
+      - text: old
+    - insertion
+      - text: new
+    - text: ,
+    - time
+      - text: today
+    - text: .
+  - blockquote
+    - text: A quotation.
+  - paragraph
+    - text: Inline
+    - text: wrappers
+    - text: and
+    - text: bold
+    - text: do not break the text.
+  - separator
+  - paragraph
+    - text: Collapsed whitespace here

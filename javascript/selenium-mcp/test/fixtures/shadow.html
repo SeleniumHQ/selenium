@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head><title>Shadow fixture</title></head>
+<body>
+  <fancy-button></fancy-button>
+  <script>
+    customElements.define(
+      'fancy-button',
+      class extends HTMLElement {
+        connectedCallback() {
+          const button = document.createElement('button')
+          button.textContent = 'Shadow button'
+          button.onclick = () => (button.textContent = 'Shadow clicked')
+          this.attachShadow({ mode: 'open' }).append(button)
+        }
+      },
+    )
+  </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_bench.html</title>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <style>
+    body { font: 13px/1.4 system-ui, sans-serif; margin: 16px; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid #ccc; padding: 2px 8px; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    #arena { position: absolute; left: -100000px; top: 0; width: 1000px; }
+  </style>
+</head>
+
+<body>
+  <h1>accessibility-snapshot benchmark</h1>
+  <p>
+    Not a test (the suite only runs <code>*_test.html</code>). Open it from the debug server to
+    measure the atom on fixed tree shapes: time per element and how many DOM calls the walk
+    makes. The numbers are for comparing one build of the atom with another on the same machine,
+    not for CI. Results are also in <code>data-results</code> on the body, as JSON.
+  </p>
+  <table id="results"><thead><tr>
+    <th>shape</th><th>elements</th><th>nodes</th><th>ms</th><th>µs / element</th><th>JSON KB</th>
+    <th>getComputedStyle</th><th>getAttribute</th><th>closest</th><th>querySelectorAll</th><th>getElementById</th><th>innerText</th>
+  </tr></thead><tbody></tbody></table>
+  <div id="arena"></div>
+
+  <script type="text/javascript">
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+    var arena = document.getElementById('arena');
+    var counts = {};
+
+    // Count the DOM calls the atom makes. Wrapping prototypes here is fine:
+    // this page is the only script, and it is a measurement, not a test.
+    function wrap(object, name, isGetter) {
+      var descriptor = Object.getOwnPropertyDescriptor(object, name);
+      if (isGetter) {
+        Object.defineProperty(object, name, {
+          configurable: true,
+          get: function () { counts[name] = (counts[name] || 0) + 1; return descriptor.get.call(this); },
+        });
+      } else {
+        object[name] = function () { counts[name] = (counts[name] || 0) + 1; return descriptor.value.apply(this, arguments); };
+      }
+    }
+    wrap(window, 'getComputedStyle');
+    wrap(Element.prototype, 'getAttribute');
+    wrap(Element.prototype, 'closest');
+    wrap(Element.prototype, 'querySelectorAll');
+    wrap(Document.prototype, 'getElementById');
+    wrap(HTMLElement.prototype, 'innerText', true);
+
+    function countNodes(node) {
+      return 1 + node.children.reduce(function (sum, child) { return sum + countNodes(child); }, 0);
+    }
+
+    function measure(label, html, repeat) {
+      arena.innerHTML = html;
+      var elements = arena.getElementsByTagName('*').length;
+      snapshot(arena); // warm: style is clean and the code is compiled
+      counts = {};
+      var start = performance.now();
+      var tree;
+      for (var i = 0; i < repeat; i++) {
+        tree = snapshot(arena);
+      }
+      var ms = (performance.now() - start) / repeat;
+      var json = JSON.stringify(tree, function (key, value) { return key === 'element' ? undefined : value; });
+      var row = {
+        shape: label,
+        elements: elements,
+        nodes: countNodes(tree),
+        ms: Math.round(ms * 10) / 10,
+        usPerElement: Math.round((ms * 1000) / elements),
+        jsonKb: Math.round(json.length / 1024),
+      };
+      // Counts are per snapshot: the loop ran `repeat` times.
+      Object.keys(counts).forEach(function (key) { row[key] = Math.round(counts[key] / repeat); });
+      arena.innerHTML = '';
+      return row;
+    }
+
+    function list(n) {
+      var h = '';
+      for (var i = 0; i < n; i++) {
+        h += '<li><a href="#">Link ' + i + '</a> text ' + i + ' <span>in span</span><b>bold</b></li>';
+      }
+      return '<ul>' + h + '</ul>';
+    }
+    function table(rows, cols) {
+      var h = '';
+      for (var r = 0; r < rows; r++) {
+        h += '<tr>';
+        for (var c = 0; c < cols; c++) {
+          h += '<td>c' + r + ',' + c + '</td>';
+        }
+        h += '</tr>';
+      }
+      return '<table><tbody>' + h + '</tbody></table>';
+    }
+    // Three nested content-named levels: row, cell, link.
+    function tableWithLinks(rows, cols) {
+      var h = '';
+      for (var r = 0; r < rows; r++) {
+        h += '<tr>';
+        for (var c = 0; c < cols; c++) {
+          h += '<td><a href="#">link ' + r + ',' + c + '</a></td>';
+        }
+        h += '</tr>';
+      }
+      return '<table><tbody>' + h + '</tbody></table>';
+    }
+    function headings(n) {
+      var h = '';
+      for (var i = 0; i < n; i++) {
+        h += '<h2>Heading <em>' + i + '</em> <a href="#">link</a></h2>';
+      }
+      return h;
+    }
+    function deep(n) {
+      var open = '';
+      var close = '';
+      for (var i = 0; i < n; i++) {
+        open += '<div>';
+        close += '</div>';
+      }
+      return open + '<h2>Deep</h2>' + close;
+    }
+    function documentLike(n) {
+      var h = '';
+      for (var i = 0; i < n; i++) {
+        h += '<section aria-label="S' + i + '"><h2>Title ' + i + '</h2><p>Para <a href="#">link</a> and <b>bold</b> text.</p>' +
+          '<form><label for="i' + i + '">Name</label><input id="i' + i + '" value="v"><button>Go</button></form><ul><li>a</li><li>b</li></ul></section>';
+      }
+      return h;
+    }
+    function fanIn(n) {
+      var h = '<span id="shared-header">Header</span><table><tbody>';
+      for (var i = 0; i < n; i++) {
+        h += '<tr><td aria-labelledby="shared-header">' + i + '</td></tr>';
+      }
+      return h + '</tbody></table>';
+    }
+
+    var results = [
+      measure('list 1000', list(1000), 3),
+      measure('list 2000', list(2000), 3),
+      measure('list 4000', list(4000), 2),
+      measure('list 8000', list(8000), 2),
+      measure('table 1000x10', table(1000, 10), 2),
+      measure('table 100x100', table(100, 100), 2),
+      measure('table with links 500x5', tableWithLinks(500, 5), 2),
+      measure('headings 4000', headings(4000), 2),
+      measure('document-like 1000', documentLike(1000), 2),
+      measure('fan-in 2000', fanIn(2000), 2),
+      measure('deep 500', deep(500), 3),
+      measure('deep 1000', deep(1000), 3),
+    ];
+
+    var columns = ['shape', 'elements', 'nodes', 'ms', 'usPerElement', 'jsonKb',
+      'getComputedStyle', 'getAttribute', 'closest', 'querySelectorAll', 'getElementById', 'innerText'];
+    var tbody = document.querySelector('#results tbody');
+    results.forEach(function (row) {
+      var tr = document.createElement('tr');
+      columns.forEach(function (column) {
+        var td = document.createElement('td');
+        td.textContent = row[column] === undefined ? '' : row[column];
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    document.body.setAttribute('data-results', JSON.stringify(results));
+  </script>
+</body>
+
+</html>

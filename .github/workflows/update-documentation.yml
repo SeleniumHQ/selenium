@@ -106,12 +106,18 @@ jobs:
         with:
           pattern: documentation-*
           merge-multiple: true
-          path: docs/api
+          path: docs-api
       - name: Commit documentation
         run: |
+          [ -d docs-api ] || { echo "::error::No documentation artifacts found"; exit 1; }
+          for dir in docs-api/*/; do
+            lang=$(basename "$dir")
+            rm -rf "docs/api/$lang"
+            cp -R "$dir" "docs/api/$lang"
+          done
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-          git add docs/api/
+          git add -A docs/api/
           git diff --staged --quiet && exit 0
           git commit -m "Update ${{ needs.parse.outputs.language }} documentation for Selenium ${{ needs.parse.outputs.version }}"
           git push origin gh-pages

@@ -448,34 +448,30 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   @Nullable
   private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
-    // Use read lock for slot selection to allow concurrent reads
-    // This reduces contention compared to using write lock for the entire operation
-    Set<SlotId> slotIds;
-    Lock readLock = lock.readLock();
-    readLock.lock();
+    // Select and reserve under the same write lock, so the next request sees this reservation
+    // in the node load. Otherwise, concurrent requests pick the same node and fill it before
+    // using the others.
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
-      slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
-    } finally {
-      readLock.unlock();
-    }
-
-    if (slotIds.isEmpty()) {
-      LOG.log(
-          getDebugLogLevel(),
-          String.format("No slots found for request %s and capabilities %s", requestId, caps));
-      return null;
-    }
-
-    // Try to reserve each candidate slot
-    // The reserve() method uses write lock briefly and atomic operations ensure thread safety
-    // Multiple threads may select the same slot but only one will successfully reserve it
-    for (SlotId slotId : slotIds) {
-      if (reserve(slotId)) {
-        return slotId;
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
+      if (slotIds.isEmpty()) {
+        LOG.log(
+            getDebugLogLevel(),
+            String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
       }
-    }
 
-    return null;
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   private boolean isNotSupported(Capabilities caps) {

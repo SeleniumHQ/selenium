@@ -1,0 +1,15 @@
+- document "Links and buttons"
+  - generic
+    - link "A link"
+    - generic
+      - text: Not a link
+    - link "Map"
+      - img "Map"
+    - button "Save now"
+    - button "Disabled" [disabled]
+    - button "Bold" [pressed]
+    - button "Menu"
+    - button "Send"
+    - button "Reset"
+    - button "Custom"
+    - link "Help"
