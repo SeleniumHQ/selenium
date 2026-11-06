@@ -647,8 +647,6 @@ class RemoteWebDriverBuilderTest {
   @Test
   void oneOfMetadataAndCapabilityOverwritesLogAtFineWhenDebugIsEnabled() {
     Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
-    Level previousLevel = logger.getLevel();
-    boolean previousUseParentHandlers = logger.getUseParentHandlers();
     String previousDebug = System.getProperty("selenium.debug");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
@@ -664,9 +662,6 @@ class RemoteWebDriverBuilderTest {
           @Override
           public void close() {}
         };
-    handler.setLevel(Level.ALL);
-    logger.setLevel(Level.ALL);
-    logger.setUseParentHandlers(false);
     logger.addHandler(handler);
     try {
       System.setProperty("selenium.debug", "true");
@@ -686,8 +681,6 @@ class RemoteWebDriverBuilderTest {
           .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
     } finally {
       logger.removeHandler(handler);
-      logger.setLevel(previousLevel);
-      logger.setUseParentHandlers(previousUseParentHandlers);
       if (previousDebug == null) {
         System.clearProperty("selenium.debug");
       } else {

@@ -23,6 +23,7 @@ import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openqa.selenium.internal.Debug;
 
 public class RetryRequest implements Filter {
 
@@ -32,6 +33,12 @@ public class RetryRequest implements Filter {
   private static final int RETRIES_ON_SERVER_ERROR = 2;
   private static final int NEEDED_ATTEMPTS =
       Math.max(RETRIES_ON_CONNECTION_FAILURE, RETRIES_ON_SERVER_ERROR) + 1;
+
+  public RetryRequest() {
+    // ClientConfig keeps a static instance created at class initialization, which can be
+    // before selenium.debug is set. configureLogger() is called again before each record.
+    Debug.configureLogger();
+  }
 
   @Override
   public HttpHandler apply(HttpHandler next) {
@@ -48,6 +55,7 @@ public class RetryRequest implements Filter {
 
           // must be a connection failure and check whether we have retries left for this
           if (isConnectionFailure && i < RETRIES_ON_CONNECTION_FAILURE) {
+            Debug.configureLogger();
             LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ConnectException", ex);
             continue;
           }
@@ -63,6 +71,7 @@ public class RetryRequest implements Filter {
 
         // must be a server error and check whether we have retries left for this
         if (isServerError && i < RETRIES_ON_SERVER_ERROR) {
+          Debug.configureLogger();
           LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
           continue;
         }

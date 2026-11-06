@@ -48,6 +48,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -103,7 +104,9 @@ public class RemoteWebDriverBuilder {
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
-    // Access through RemoteWebDriver.builder
+    // Access through RemoteWebDriver.builder. These diagnostics are logged before any
+    // RemoteWebDriver exists, so the debug switches have to be applied here.
+    Debug.configureLogger();
   }
 
   /**
