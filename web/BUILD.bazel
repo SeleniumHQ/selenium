@@ -23,6 +23,7 @@ js_library(
         ":web",
     ],
     visibility = [
+        "//javascript/selenium-mcp:__subpackages__",
         "//javascript/selenium-webdriver:__subpackages__",
     ],
 )
