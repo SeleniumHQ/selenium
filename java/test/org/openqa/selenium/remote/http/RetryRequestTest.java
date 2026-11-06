@@ -46,11 +46,15 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RetryRequestTest {
 
   private HttpClient client;
@@ -349,23 +353,46 @@ class RetryRequestTest {
   }
 
   @Test
+  @Order(1)
+  void clientConfigRetryFilterLogsAtFineWhenDebugIsSetAfterLoad() {
+    Logger logger = Logger.getLogger(RetryRequest.class.getName());
+    String previousDebug = System.getProperty("selenium.debug");
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler = capturingHandler(records);
+    logger.addHandler(handler);
+    try {
+      // setUp already initialized ClientConfig, so its static RetryRequest exists.
+      // Touch it again before the flag, then exercise that same filter.
+      ClientConfig.defaultConfig();
+      System.setProperty("selenium.debug", "true");
+      Filter retries = ClientConfig.defaultConfig().withRetries().filter();
+
+      HttpHandler unavailable = request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE);
+      retries.andFinally(unavailable).execute(new HttpRequest(GET, "/"));
+      assertLoggedAtFine(records, "ServerError");
+
+      records.clear();
+      HttpHandler connectionFailure =
+          request -> {
+            throw new UncheckedIOException(new ConnectException());
+          };
+      HttpHandler retryingConnection = retries.andFinally(connectionFailure);
+      assertThatThrownBy(() -> retryingConnection.execute(new HttpRequest(GET, "/")))
+          .isInstanceOf(UncheckedIOException.class)
+          .hasCauseInstanceOf(ConnectException.class);
+      assertLoggedAtFine(records, "ConnectException");
+    } finally {
+      logger.removeHandler(handler);
+      restoreDebugProperty(previousDebug);
+    }
+  }
+
+  @Test
   void retryLogsAtFineWhenDebugIsEnabled() {
     Logger logger = Logger.getLogger(RetryRequest.class.getName());
     String previousDebug = System.getProperty("selenium.debug");
     List<LogRecord> records = new ArrayList<>();
-    Handler handler =
-        new Handler() {
-          @Override
-          public void publish(LogRecord record) {
-            records.add(record);
-          }
-
-          @Override
-          public void flush() {}
-
-          @Override
-          public void close() {}
-        };
+    Handler handler = capturingHandler(records);
     logger.addHandler(handler);
     try {
       System.setProperty("selenium.debug", "true");
@@ -386,11 +413,30 @@ class RetryRequestTest {
       assertLoggedAtFine(records, "ConnectException");
     } finally {
       logger.removeHandler(handler);
-      if (previousDebug == null) {
-        System.clearProperty("selenium.debug");
-      } else {
-        System.setProperty("selenium.debug", previousDebug);
+      restoreDebugProperty(previousDebug);
+    }
+  }
+
+  private static Handler capturingHandler(List<LogRecord> records) {
+    return new Handler() {
+      @Override
+      public void publish(LogRecord record) {
+        records.add(record);
       }
+
+      @Override
+      public void flush() {}
+
+      @Override
+      public void close() {}
+    };
+  }
+
+  private static void restoreDebugProperty(String previousDebug) {
+    if (previousDebug == null) {
+      System.clearProperty("selenium.debug");
+    } else {
+      System.setProperty("selenium.debug", previousDebug);
     }
   }
 
