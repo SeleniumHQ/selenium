@@ -18,6 +18,7 @@
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.safari.options import Options
 from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 from selenium.webdriver.safari.service import Service
@@ -30,15 +31,19 @@ class WebDriver(LocalWebDriver):
         self,
         options: Options | None = None,
         service: Service | None = None,
-        keep_alive: bool = True,
+        keep_alive: bool | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Create a new Safari driver instance and launch or find a running safaridriver service.
 
         Args:
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
-            keep_alive: Whether to configure SafariRemoteConnection to use HTTP keep-alive.
+            keep_alive: (Deprecated) Set keep_alive on a ClientConfig passed as client_config instead.
+            client_config: Custom client configuration to use. Defaults to None.
         """
+        if keep_alive is not None:
+            self._warn_keep_alive_deprecated()
         self.service = service or Service()
         self.options = options or Options()
 
@@ -51,6 +56,7 @@ class WebDriver(LocalWebDriver):
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
             ignore_proxy=self.options._ignore_local_proxy,
+            client_config=client_config,
         )
 
         try:
