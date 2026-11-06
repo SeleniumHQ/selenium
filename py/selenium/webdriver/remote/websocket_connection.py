@@ -96,6 +96,7 @@ class WebSocketConnection:
         self.response_wait_interval = interval
 
         self.callbacks = {}
+        self._event_receiver = None
         self.session_id = None
         self._id = 0
         self._id_lock = threading.Lock()
@@ -123,6 +124,22 @@ class WebSocketConnection:
             self._ws_thread.join(timeout=self.response_wait_timeout)
         self._started.clear()
         self._ws = None
+        if self._event_receiver is not None:
+            self._event_receiver.close()
+
+    @property
+    def event_receiver(self):
+        return self._event_receiver
+
+    def set_event_receiver(self, receiver):
+        """Hand every event to ``receiver.receive(method, params)``, alongside the callbacks registered here.
+
+        ``receive`` runs on the socket's reader thread, so it must return quickly. A connection takes
+        one receiver for its lifetime, and calls ``receiver.close()`` when it closes.
+        """
+        if self._event_receiver is not None:
+            raise WebDriverException("This connection already has an event receiver")
+        self._event_receiver = receiver
 
     def _round_trip(self, payload):
         """Assign an id, envelope and send the frame, and return the correlated raw reply.
@@ -255,6 +272,12 @@ class WebSocketConnection:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
                 Thread(target=callback, args=(params,), daemon=True).start()
+            if self._event_receiver is not None:
+                # An exception escaping here would reach the websocket's error handler, which closes the socket.
+                try:
+                    self._event_receiver.receive(message["method"], params)
+                except Exception:
+                    logger.exception("Event receiver failed for %s", message["method"])
 
     def _release_pending(self):
         # Once the socket is gone no reply can arrive, so wake waiters instead of letting them run out the timeout
