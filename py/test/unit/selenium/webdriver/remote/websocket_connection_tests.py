@@ -134,3 +134,93 @@ def test_closes_socket_when_connection_does_not_start(monkeypatch):
         WebSocketConnection("ws://localhost", timeout=0.05)
 
     assert sockets[0].closed
+
+
+class Receiver:
+    def __init__(self, error=None):
+        self.error = error
+        self.received = []
+        self.closed = False
+
+    def receive(self, method, params):
+        if self.error:
+            raise self.error
+        self.received.append((method, params))
+
+    def close(self):
+        self.closed = True
+
+
+class LoadEvent:
+    event_class = "browsingContext.load"
+
+    @staticmethod
+    def from_json(params):
+        return params
+
+
+def send_event(connection, method, params):
+    connection._process_message(json.dumps({"type": "event", "method": method, "params": params}))
+
+
+def test_hands_every_event_to_the_receiver(monkeypatch):
+    connection = connect(monkeypatch)
+    receiver = Receiver()
+    connection.set_event_receiver(receiver)
+
+    send_event(connection, "browsingContext.load", {"url": "a"})
+    send_event(connection, "log.entryAdded", {"text": "b"})
+
+    assert connection.event_receiver is receiver
+    assert receiver.received == [("browsingContext.load", {"url": "a"}), ("log.entryAdded", {"text": "b"})]
+
+
+def test_does_not_hand_command_replies_to_the_receiver(monkeypatch):
+    connection = connect(monkeypatch, reply=echo)
+    receiver = Receiver()
+    connection.set_event_receiver(receiver)
+
+    connection.send_cmd("session.status", {})
+
+    assert receiver.received == []
+
+
+@pytest.mark.parametrize("register", ["on", "add_callback"])
+def test_registered_callbacks_still_fire_with_a_receiver_attached(monkeypatch, register):
+    connection = connect(monkeypatch)
+    connection.set_event_receiver(Receiver())
+    called = threading.Event()
+    getattr(connection, register)(LoadEvent, lambda params: called.set())
+
+    send_event(connection, "browsingContext.load", {"url": "a"})
+
+    assert called.wait(timeout=5)
+
+
+def test_takes_only_one_receiver(monkeypatch):
+    connection = connect(monkeypatch)
+    connection.set_event_receiver(Receiver())
+
+    with pytest.raises(WebDriverException, match="already has an event receiver"):
+        connection.set_event_receiver(Receiver())
+
+
+def test_a_failing_receiver_does_not_stop_message_processing(monkeypatch):
+    connection = connect(monkeypatch)
+    connection.set_event_receiver(Receiver(error=RuntimeError("boom")))
+    called = threading.Event()
+    connection.on(LoadEvent, lambda params: called.set())
+
+    send_event(connection, "browsingContext.load", {"url": "a"})
+
+    assert called.wait(timeout=5)
+
+
+def test_closes_the_receiver_when_the_connection_closes(monkeypatch):
+    connection = connect(monkeypatch)
+    receiver = Receiver()
+    connection.set_event_receiver(receiver)
+
+    connection.close()
+
+    assert receiver.closed
