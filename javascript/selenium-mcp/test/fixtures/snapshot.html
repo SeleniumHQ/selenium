@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head><title>Snapshot fixture</title></head>
+<body>
+  <header><nav><a href="/home">Home</a> <a>Not a link</a></nav></header>
+  <main>
+    <h1>Sign in</h1>
+    <p>Enter your details below.</p>
+    <form>
+      <label for="user">Username</label>
+      <input id="user" name="user" value="ada">
+      <input id="pass" type="password" placeholder="Password" value="secret">
+      <label><input type="checkbox" id="remember" checked> Remember me</label>
+      <input type="radio" name="plan" aria-label="Free">
+      <select id="country" aria-label="Country">
+        <option value="uk">United Kingdom</option>
+        <option value="fr" selected>France</option>
+      </select>
+      <textarea placeholder="Notes"></textarea>
+      <button type="submit" disabled>Sign in</button>
+      <input type="submit" value="Go">
+      <input type="hidden" name="token" value="x">
+    </form>
+    <div style="display:none"><button>Hidden button</button></div>
+    <div hidden><button>Also hidden</button></div>
+    <div aria-hidden="true"><button>Aria hidden</button></div>
+    <div style="visibility:hidden"><button>Invisible</button><span style="visibility:visible"><button>Visible again</button></span></div>
+    <div role="alert">Wrong password</div>
+    <div role="status">Saved <button>Dismiss</button></div>
+    <button role="buton">Typo role</button>
+    <div role="button" tabindex="0">Custom button</div>
+    <div onclick="void 0">Clickable div</div>
+    <span role="presentation"><a href="/x">Inside presentation</a></span>
+    <img src="data:," alt="Logo">
+    <img src="data:," alt="">
+    <button aria-labelledby="lbl1 lbl2">x</button><span id="lbl1">Labelled</span><span id="lbl2">by two</span>
+    <iframe title="Inner" srcdoc="<button>In frame</button>"></iframe>
+  </main>
+</body>
+</html>

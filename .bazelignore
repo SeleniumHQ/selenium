@@ -17,6 +17,7 @@ java/client/build
 java/server/build
 javascript/atoms/node_modules
 javascript/grid-ui/node_modules
+javascript/selenium-mcp/node_modules
 javascript/selenium-webdriver/node_modules
 node_modules
 .local
