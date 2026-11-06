@@ -394,8 +394,7 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
-            Map.of(
-                "using", "css selector", "value", "frame[name='\\31 '],iframe[name='\\31 ']")),
+            Map.of("using", "css selector", "value", "frame[name='\\31 '],iframe[name='\\31 ']")),
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
             Map.of("using", "css selector", "value", "frame#\\31 ,iframe#\\31 ")),
@@ -413,8 +412,7 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void escapesALeadingHyphenInAFrameId() {
-    assertFrameLookups(
-        "-1", "frame[name='\\-1'],iframe[name='\\-1']", "frame#\\-1,iframe#\\-1");
+    assertFrameLookups("-1", "frame[name='\\-1'],iframe[name='\\-1']", "frame#\\-1,iframe#\\-1");
   }
 
   @Test

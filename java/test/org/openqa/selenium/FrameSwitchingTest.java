@@ -146,8 +146,7 @@ class FrameSwitchingTest extends JupiterTestBase {
                 .withBody("<iframe id='1' srcdoc='<p id=\"inside\">inside</p>'></iframe>")));
     driver.switchTo().frame("1");
 
-    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText())
-        .isEqualTo("inside");
+    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText()).isEqualTo("inside");
   }
 
   @Test
@@ -158,8 +157,7 @@ class FrameSwitchingTest extends JupiterTestBase {
                 .withBody("<iframe id='quirky' srcdoc='<p id=\"inside\">inside</p>'></iframe>")));
     driver.switchTo().frame("QUIRKY");
 
-    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText())
-        .isEqualTo("inside");
+    assertThat(wait.until(presenceOfElementLocated(By.id("inside"))).getText()).isEqualTo("inside");
   }
 
   @Test
