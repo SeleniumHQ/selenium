@@ -37,6 +37,7 @@ import ast
 import re
 
 import pytest
+
 from generate_bidi_protocol import (
     _NO_FIXED,
     CommandIR,
