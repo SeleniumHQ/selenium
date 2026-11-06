@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 # Two tiers, mutually exclusive by content. `smoke` runs on every event, including
 # schedule, so the schedule-only flaky parser sees it. The full jobs run on schedule
@@ -83,21 +84,19 @@ jobs:
       matrix:
         os: [windows, macos]
         tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
-        # macOS runners are scarce, so only use for PRs and nightly runs
-        exclude:
-          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       download-artifact-name: targets
       run: >
         [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-py.txt
 
   browser-tests:

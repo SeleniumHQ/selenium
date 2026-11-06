@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   lint:
@@ -44,6 +45,7 @@ jobs:
       os: windows
       needs-display: true
       rerun-with-debug: true
+      remote-cache: true
       run: |
         bazel test --local_resources=browser=1 ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
 
@@ -55,5 +57,6 @@ jobs:
       os: windows
       needs-display: true
       rerun-with-debug: true
+      remote-cache: true
       run: |
         bazel test --local_resources=browser=1 ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/remote --flaky_test_attempts=3
