@@ -60,3 +60,38 @@ def test_removed_extra_header_is_not_sent(driver, pages):
 
     driver.get(pages.url("echo_headers"))
     assert "x-selenium-extra" not in driver.page_source
+
+
+@pytest.mark.parametrize("event", ["before_request_sent", "response_started", "response_completed"])
+def test_request_events(driver, pages, listen, event):
+    url = pages.url("simpleTest.html")
+    requests = listen(Network, event)
+
+    driver.get(url)
+
+    assert requests.first(lambda sent: sent.request.url == url).request.method == "GET"
+
+
+def test_fetch_error_event(driver, pages, listen):
+    url = "http://invalid-domain-that-does-not-exist.test/"
+    driver.get(pages.url("simpleTest.html"))
+    errors = listen(Network, "fetch_error")
+
+    driver.execute_script("fetch(arguments[0]).catch(() => {})", url)
+
+    assert errors.first(lambda error: error.request.url == url).error_text
+
+
+@pytest.mark.xfail_chrome(reason="Chromium reports a response status of -1, which ResponseData rejects")
+@pytest.mark.xfail_edge(reason="Chromium reports a response status of -1, which ResponseData rejects")
+def test_auth_required_event(driver, pages, listen):
+    driver.get(pages.url("simpleTest.html"))
+    challenges = listen(Network, "auth_required")
+    intercept = Network(driver).add_intercept(phases=[InterceptPhase.AUTH_REQUIRED]).intercept
+    try:
+        driver.execute_script("fetch(arguments[0])", pages.url("basic-auth"))
+        challenge = challenges.first()
+        Network(driver).continue_with_auth(request=challenge.request.request, action="cancel")
+    finally:
+        Network(driver).remove_intercept(intercept=intercept)
+    assert challenge.response.status == 401

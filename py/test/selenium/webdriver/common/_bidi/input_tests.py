@@ -39,7 +39,7 @@ from selenium.webdriver.common._bidi.input import (
     WheelScrollAction,
     WheelSourceActions,
 )
-from selenium.webdriver.common._bidi.script import SharedReference
+from selenium.webdriver.common._bidi.script import ContextTarget, Script, SharedReference
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -662,3 +662,19 @@ def test_type_and_set_files_in_same_form(driver, pages):
     finally:
         if os.path.exists(file_path):
             os.unlink(file_path)
+
+
+@pytest.mark.xfail_firefox(reason="File dialog handling not implemented in Firefox yet")
+def test_file_dialog_opened_event(driver, listen):
+    driver.get("data:text/html,<input id=upload type=file multiple />")
+    opened = listen(Input, "file_dialog_opened")
+
+    Script(driver).evaluate(
+        expression="document.getElementById('upload').click()",
+        target=ContextTarget(context=driver.current_window_handle),
+        await_promise=False,
+        user_activation=True,
+    )
+
+    dialog = opened.first()
+    assert (dialog.context, dialog.multiple) == (driver.current_window_handle, True)

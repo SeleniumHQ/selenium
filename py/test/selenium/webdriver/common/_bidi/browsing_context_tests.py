@@ -21,7 +21,7 @@ import base64
 
 import pytest
 
-from selenium.common.exceptions import NoSuchFrameException, TimeoutException
+from selenium.common.exceptions import NoSuchFrameException, TimeoutException, WebDriverException
 from selenium.webdriver.common._bidi.browser import Browser
 from selenium.webdriver.common._bidi.browsing_context import (
     BoxClipRectangle,
@@ -29,12 +29,15 @@ from selenium.webdriver.common._bidi.browsing_context import (
     CaptureScreenshotParametersOrigin,
     CreateType,
     CssLocator,
+    DownloadEndParamsCompleteParams,
     InnerTextLocator,
     ReadinessState,
+    UserPromptType,
     Viewport,
     XPathLocator,
 )
 from selenium.webdriver.common._bidi.script import SharedReference
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -564,3 +567,119 @@ def test_locate_nodes_given_start_nodes(driver, pages):
     ).nodes
     # The login form has 3 input elements (email, age, and submit button)
     assert len(nodes) == 3
+
+
+def test_load_callback_receives_the_event_params_until_removed(driver, pages):
+    loaded = []
+    callback = BrowsingContext(driver).add_load_callback(lambda params: loaded.append(params["url"]))
+    subscription = Session(driver).subscribe(events=[BrowsingContext.EVENTS["load"]]).subscription
+    try:
+        driver.get(pages.url("simpleTest.html"))
+        WebDriverWait(driver, 5).until(lambda _: pages.url("simpleTest.html") in loaded)
+
+        BrowsingContext(driver).remove_load_callback(callback)
+        driver.get(pages.url("blank.html"))
+        assert pages.url("blank.html") not in loaded
+    finally:
+        Session(driver).unsubscribe(subscriptions=[subscription])
+
+
+def test_context_created_event(driver, listen):
+    created = listen(BrowsingContext, "context_created")
+
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+
+    info = created.first(lambda info: info.context == context)
+    BrowsingContext(driver).close(context=context)
+    assert info.url == "about:blank"
+
+
+def test_context_destroyed_event(driver, listen):
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+    destroyed = listen(BrowsingContext, "context_destroyed")
+
+    BrowsingContext(driver).close(context=context)
+
+    assert destroyed.first().context == context
+
+
+@pytest.mark.parametrize("event", ["navigation_started", "navigation_committed", "dom_content_loaded", "load"])
+def test_navigation_events(driver, pages, listen, event):
+    url = pages.url("simpleTest.html")
+    navigated = listen(BrowsingContext, event)
+
+    driver.get(url)
+
+    assert navigated.first(lambda info: info.url == url).context == driver.current_window_handle
+
+
+def test_fragment_navigated_event(driver, pages, listen):
+    url = pages.url("linked_image.html")
+    driver.get(url)
+    navigated = listen(BrowsingContext, "fragment_navigated")
+
+    driver.get(url + "#link")
+
+    assert navigated.first().url == url + "#link"
+
+
+@pytest.mark.xfail_firefox
+def test_navigation_failed_event(driver, listen):
+    url = "http://invalid-domain-that-does-not-exist.test/"
+    failed = listen(BrowsingContext, "navigation_failed")
+
+    with pytest.raises(WebDriverException):
+        BrowsingContext(driver).navigate(context=driver.current_window_handle, url=url)
+
+    assert failed.first().url == url
+
+
+def test_history_updated_event(driver, pages, listen):
+    driver.get(pages.url("simpleTest.html"))
+    updated = listen(BrowsingContext, "history_updated")
+
+    driver.execute_script("history.pushState({}, '', '/new-path')")
+
+    assert updated.first().url.endswith("/new-path")
+
+
+def test_user_prompt_opened_event(driver, pages, listen):
+    driver.get(pages.url("alerts.html"))
+    opened = listen(BrowsingContext, "user_prompt_opened")
+
+    driver.find_element(By.ID, "alert").click()
+
+    prompt = opened.first()
+    BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle)
+    assert (prompt.type, prompt.message) == (UserPromptType.ALERT, "cheese")
+
+
+def test_user_prompt_closed_event(driver, pages, listen):
+    driver.get(pages.url("alerts.html"))
+    closed = listen(BrowsingContext, "user_prompt_closed")
+    driver.find_element(By.ID, "alert").click()
+    WebDriverWait(driver, 5).until(EC.alert_is_present())
+
+    BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle, accept=True)
+
+    assert closed.first().accepted is True
+
+
+def test_download_will_begin_event(driver, pages, listen):
+    driver.get(pages.url("downloads/download.html"))
+    beginning = listen(BrowsingContext, "download_will_begin")
+
+    driver.find_element(By.ID, "file-1").click()
+
+    assert "file_1" in beginning.first().suggested_filename
+
+
+def test_download_end_event(driver, pages, listen):
+    driver.get(pages.url("downloads/download.html"))
+    ended = listen(BrowsingContext, "download_end")
+
+    driver.find_element(By.ID, "file-1").click()
+
+    download = ended.first()
+    assert isinstance(download, DownloadEndParamsCompleteParams)
+    assert download.url == pages.url("downloads/file_1.txt")

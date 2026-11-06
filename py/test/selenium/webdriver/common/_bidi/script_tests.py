@@ -42,6 +42,7 @@ from selenium.webdriver.common._bidi.script import (
     SerializationOptions,
     SerializationOptionsIncludeShadowTree,
     StringValue,
+    WindowRealmInfo,
 )
 from selenium.webdriver.common._bidi.serialization import UNSET
 from selenium.webdriver.common.by import By
@@ -622,3 +623,37 @@ def test_call_function_with_nested_object_argument(driver, pages):
     assert value_dict["userName"] == "John"
     assert value_dict["userAge"] == 30
     assert value_dict["hobbyCount"] == 2
+
+
+def test_realm_created_event(driver, listen):
+    created = listen(Script, "realm_created")
+
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+
+    realm = created.first(lambda realm: getattr(realm, "context", None) == context)
+    BrowsingContext(driver).close(context=context)
+    assert isinstance(realm, WindowRealmInfo)
+
+
+def test_realm_destroyed_event(driver, listen):
+    context = BrowsingContext(driver).create(type=CreateType.TAB).context
+    realms = {realm.realm for realm in Script(driver).get_realms(context=context).realms}
+    destroyed = listen(Script, "realm_destroyed")
+
+    BrowsingContext(driver).close(context=context)
+
+    assert destroyed.first().realm in realms
+
+
+def test_message_event(driver, listen):
+    messages = listen(Script, "message")
+
+    Script(driver).call_function(
+        function_declaration="channel => channel('hello')",
+        arguments=[ChannelValue(value=ChannelProperties(channel="greeting"))],
+        target=ContextTarget(context=driver.current_window_handle),
+        await_promise=False,
+    )
+
+    message = messages.first()
+    assert (message.channel, message.data.value) == ("greeting", "hello")

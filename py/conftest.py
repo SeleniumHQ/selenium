@@ -19,6 +19,7 @@ import http.server
 import json
 import logging
 import os
+import queue
 import socketserver
 import sys
 import threading
@@ -818,3 +819,42 @@ def proxy_server():
     for server in servers:
         server.shutdown()
         server.server_close()
+
+
+class Events:
+    """The events a callback has received, parsed with the payload class ``EVENT_TYPES`` names for them."""
+
+    def __init__(self, payload):
+        self._payload = payload
+        self.received = queue.Queue()
+
+    def first(self, matches=lambda event: True):
+        while True:
+            event = self._payload.from_json(self.received.get(timeout=10))
+            if matches(event):
+                return event
+
+
+@pytest.fixture
+def listen(driver):
+    """Listen to an event of a generated ``_bidi`` domain until the test ends: ``listen(BrowsingContext, "load")``."""
+    # Imported here because only the BiDi targets depend on the generated ``_bidi`` layer.
+    from selenium.webdriver.common._bidi.session import Session
+
+    listeners = []
+
+    def start(domain, event):
+        wire = domain.EVENTS[event]
+        events = Events(domain.EVENT_TYPES[wire])
+        callback = getattr(domain(driver), f"add_{event}_callback")(events.received.put)
+        subscription = Session(driver).subscribe(events=[wire]).subscription
+        listeners.append((subscription, getattr(domain(driver), f"remove_{event}_callback"), callback))
+        return events
+
+    yield start
+    # A failed test has had its driver stopped by now, and its subscriptions went with it.
+    if driver._websocket_connection is None:
+        return
+    for subscription, remove_callback, callback in listeners:
+        Session(driver).unsubscribe(subscriptions=[subscription])
+        remove_callback(callback)
