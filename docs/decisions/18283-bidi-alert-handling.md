@@ -21,7 +21,7 @@ BiDi also supports interacting with `beforeUnload` prompts (the alert that asks 
 **Binding Status**
 * All bindings require users to set `unhandledPromptBehavior` to some value of "ignore" to work with alerts in a BiDi session at all, since the default (`dismiss and notify`) automatically dismisses *all* alerts as soon as they are opened (without the expected error).
 * No binding directly supports async alert handling, which means:
-  * A BiDi command (script, navigation, click) that opens an alert will hang indefinitely when `unhandledPromptBehavior` is set to ignore (classic commands that open an alert will still work)
+  * A BiDi command (script, navigation, click) that opens an alert will hang until the binding's response timeout (30 seconds by default) when `unhandledPromptBehavior` is set to ignore (classic commands that open an alert will still work)
 * No bindings prevent BiDi commands from executing when an alert is open
 
 ## Decision
