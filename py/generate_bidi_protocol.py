@@ -1064,7 +1064,9 @@ def _emit_event_callbacks(e: EventIR) -> list[str]:
     lines = [wrap_call(f"    def {add}(", ["self", "callback: Callable[[dict[str, Any]], Any]"], ") -> int:", 4)]
     lines.append(f'        """Add a callback for {e.wire} (internal, unsupported).')
     lines.append("")
-    lines.append("        The callback receives the event's raw params; adding it does not subscribe to the event.")
+    parse = f"; ``{e.payload_class}.from_json`` parses them" if e.payload_class else ""
+    lines.append(f"        The callback gets the raw params{parse}.")
+    lines.append("        Adding it does not subscribe to the event.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")

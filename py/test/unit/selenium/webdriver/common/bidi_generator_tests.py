@@ -647,6 +647,7 @@ def test_an_event_emits_an_add_and_a_remove_callback_bound_to_its_wire_name():
     lines = _emit_event_callbacks(event)
 
     assert "    def add_thing_happened_callback(self, callback: Callable[[dict[str, Any]], Any]) -> int:" in lines
+    assert "        The callback gets the raw params; ``ThingHappenedParameters.from_json`` parses them." in lines
     assert '        return self._add_callback("x.thingHappened", callback)' in lines
     assert "    def remove_thing_happened_callback(self, callback_id: int) -> None:" in lines
     assert lines[-1] == '        self._remove_callback("x.thingHappened", callback_id)'
