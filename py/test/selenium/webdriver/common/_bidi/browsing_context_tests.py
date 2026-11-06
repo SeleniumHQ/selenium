@@ -35,6 +35,7 @@ from selenium.webdriver.common._bidi.browsing_context import (
     XPathLocator,
 )
 from selenium.webdriver.common._bidi.script import SharedReference
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -564,3 +565,18 @@ def test_locate_nodes_given_start_nodes(driver, pages):
     ).nodes
     # The login form has 3 input elements (email, age, and submit button)
     assert len(nodes) == 3
+
+
+def test_load_callback_receives_the_event_params_until_removed(driver, pages):
+    loaded = []
+    callback = BrowsingContext(driver).add_load_callback(lambda params: loaded.append(params["url"]))
+    subscription = Session(driver).subscribe(events=[BrowsingContext.EVENTS["load"]]).subscription
+    try:
+        driver.get(pages.url("simpleTest.html"))
+        WebDriverWait(driver, 5).until(lambda _: pages.url("simpleTest.html") in loaded)
+
+        BrowsingContext(driver).remove_load_callback(callback)
+        driver.get(pages.url("blank.html"))
+        assert pages.url("blank.html") not in loaded
+    finally:
+        Session(driver).unsubscribe(subscriptions=[subscription])

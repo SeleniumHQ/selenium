@@ -22,8 +22,12 @@ command into a wire frame and back, and the `Domain` base every generated module
 subclasses. The websocket is stood in by `DrivingConnection`, which drives the
 command coroutine with the exact next()/send() protocol `WebSocketConnection`
 uses, so the seam is tested against the real contract rather than a mock of it.
+Event callbacks go through a real `WebSocketConnection` that never opens a socket,
+because the registry they land in and the dispatch that calls them are its own.
 """
 
+import json
+import queue
 from dataclasses import dataclass, field
 
 import pytest
@@ -33,6 +37,7 @@ from selenium.webdriver.common._bidi.domain import Domain
 from selenium.webdriver.common._bidi.errors import NoSuchUserContextException
 from selenium.webdriver.common._bidi.serialization import Record, meta, register
 from selenium.webdriver.common._bidi.transport import Transport
+from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 @register("test_transport.Params")
@@ -88,6 +93,17 @@ class DriverThatStartsBiDi:
     def _start_bidi(self):
         self.started = True
         self._websocket_connection = self._connection
+
+
+@pytest.fixture
+def socket(monkeypatch):
+    def start_ws(self):
+        self._ws = None
+        self._ws_thread = None
+        self._started.set()
+
+    monkeypatch.setattr(WebSocketConnection, "_start_ws", start_ws)
+    return WebSocketConnection("ws://localhost", timeout=5)
 
 
 # --- Transport ---
@@ -167,6 +183,27 @@ def test_execute_treats_the_presence_of_error_as_an_error_not_its_truthiness():
 
     with pytest.raises(WebDriverException):
         Transport(connection).execute("bad.command", result=Result)
+
+
+# --- Transport event callbacks ---
+
+
+def test_a_callback_receives_the_raw_event_params(socket):
+    received = queue.Queue()
+    params = {"context": "c", "nested": {"camelCase": 1}}
+    Transport(socket).add_callback("some.event", received.put)
+
+    socket._process_message(json.dumps({"type": "event", "method": "some.event", "params": params}))
+
+    assert received.get(timeout=5) == params
+
+
+def test_a_callback_added_through_one_transport_is_removed_through_another(socket):
+    callback_id = Transport(socket).add_callback("some.event", lambda params: None)
+
+    Transport(socket).remove_callback("some.event", callback_id)
+
+    assert socket.callbacks["some.event"] == []
 
 
 # --- Domain seam ---

@@ -197,6 +197,7 @@ class EventIR:
     wire: str
     name: str
     payload_class: str | None
+    spec_href: str | None = None
 
 
 @dataclass
@@ -826,6 +827,7 @@ def build_event(schema: Schema, event: dict) -> EventIR:
         wire=event["method"],
         name=safe_name(camel_to_snake(event["name"])),
         payload_class=type_class_name(payload) if payload else None,
+        spec_href=event.get("specHref"),
     )
 
 
@@ -835,11 +837,25 @@ def _guard_same_domain(domain: str, *type_names: str | None) -> None:
             raise ValueError(f"{domain}: cross-domain type reference {name!r} not yet supported")
 
 
+def _callback_methods(e: EventIR) -> tuple[str, str]:
+    """The add/remove listener method names a domain class gets for an event."""
+    return f"add_{e.name}_callback", f"remove_{e.name}_callback"
+
+
+def _guard_callback_names(domain: str, commands: list[CommandIR], events: list[EventIR]) -> None:
+    command_methods = {c.method for c in commands}
+    for e in events:
+        clash = sorted(command_methods.intersection(_callback_methods(e)))
+        if clash:
+            raise ValueError(f"{domain}: callback method(s) {clash} for event {e.wire} collide with a command method")
+
+
 def build_module(schema: Schema, domain: str) -> ModuleIR:
     schema._pending_refs = set()
     records, unions = schema.types_for(domain)
     commands = [build_command(schema, c) for c in schema.commands_for(domain)]
     events = [build_event(schema, e) for e in schema.events_for(domain)]
+    _guard_callback_names(domain, commands, events)
     imports = _cross_domain_imports(schema, domain)
     return ModuleIR(
         domain=domain,
@@ -1043,6 +1059,24 @@ def _emit_command(c: CommandIR) -> list[str]:
     return lines
 
 
+def _emit_event_callbacks(e: EventIR) -> list[str]:
+    add, remove = _callback_methods(e)
+    lines = [wrap_call(f"    def {add}(", ["self", "callback: Callable[[dict[str, Any]], Any]"], ") -> int:", 4)]
+    lines.append(f'        """Add a callback for {e.wire} (internal, unsupported).')
+    lines.append("")
+    lines.append("        The callback receives the event's raw params; adding it does not subscribe to the event.")
+    if e.spec_href:
+        lines.append("")
+        lines.append(f"        See {e.spec_href}")
+    lines.append('        """')
+    lines.append(f"        return self._add_callback({lit(e.wire)}, callback)")
+    lines.append("")
+    lines.append(f"    def {remove}(self, callback_id: int) -> None:")
+    lines.append(f'        """Remove a callback added for {e.wire} (internal, unsupported)."""')
+    lines.append(f"        self._remove_callback({lit(e.wire)}, callback_id)")
+    return lines
+
+
 def _emit_domain_class(mod: ModuleIR) -> str:
     doc = ['    """Internal, unsupported.', "", f"    See {BIDI_DOC_URL}"]
     if mod.spec_href:
@@ -1059,13 +1093,16 @@ def _emit_domain_class(mod: ModuleIR) -> str:
         lines.append("    }")
         lines.append("    EVENT_TYPES = {")
         for e in mod.events:
-            payload = lit(f"{mod.domain}.{e.payload_class}") if e.payload_class else "None"
+            payload = e.payload_class or "None"
             lines.append(f"        {lit(e.wire)}: {payload},")
         lines.append("    }")
     body = []
     for c in mod.commands:
         body.append("")
         body.extend(_emit_command(c))
+    for e in mod.events:
+        body.append("")
+        body.extend(_emit_event_callbacks(e))
     return "\n".join(lines + body)
 
 
@@ -1094,7 +1131,7 @@ def _imports(mod: ModuleIR) -> list[str]:
         [f.py_type for r in mod.records for f in r.fields]
         + [p.py_type for c in mod.commands for p in c.params]
         + [c.result_type for c in mod.commands]
-        + ["dict[str, Any]" if any(r.extensible for r in mod.records) else ""]
+        + ["dict[str, Any]" if any(r.extensible for r in mod.records) or mod.events else ""]
     )
     uses_any = "Any" in text_blob.split() or "Any]" in text_blob or "[Any" in text_blob
 
@@ -1117,6 +1154,8 @@ def _imports(mod: ModuleIR) -> list[str]:
         runtime.append("register")
 
     lines = ["from __future__ import annotations", ""]
+    if mod.events:
+        lines.append("from collections.abc import Callable")
     if has_records:
         lines.append("from dataclasses import dataclass, field")
     if mod.enums:

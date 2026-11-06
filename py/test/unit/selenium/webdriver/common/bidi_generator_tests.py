@@ -41,17 +41,22 @@ from generate_bidi_protocol import (
     _NO_FIXED,
     CommandIR,
     EnumIR,
+    EventIR,
     FieldIR,
+    ModuleIR,
     ParamIR,
     RecordIR,
     Schema,
     UnionIR,
     VariantIR,
     _emit_command,
+    _emit_domain_class,
     _emit_enum,
+    _emit_event_callbacks,
     _emit_field,
     _emit_record,
     _emit_union,
+    build_module,
     camel_to_snake,
     enum_member,
     frozenset_lit,
@@ -629,6 +634,61 @@ def test_a_command_with_union_parameters_dispatches_through_build():
     )
 
     assert "        params = DoThingParameters.build(value=value)" in _emit_command(command)
+
+
+# --------------------------------------------------------------------------- #
+# Event emission
+# --------------------------------------------------------------------------- #
+
+
+def test_an_event_emits_an_add_and_a_remove_callback_bound_to_its_wire_name():
+    event = EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters")
+
+    lines = _emit_event_callbacks(event)
+
+    assert "    def add_thing_happened_callback(self, callback: Callable[[dict[str, Any]], Any]) -> int:" in lines
+    assert '        return self._add_callback("x.thingHappened", callback)' in lines
+    assert "    def remove_thing_happened_callback(self, callback_id: int) -> None:" in lines
+    assert lines[-1] == '        self._remove_callback("x.thingHappened", callback_id)'
+
+
+def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
+    module = ModuleIR(
+        domain="x",
+        class_name="X",
+        filename="x",
+        enums=[],
+        records=[],
+        unions=[],
+        commands=[],
+        events=[
+            EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters"),
+            EventIR(wire="x.bare", name="bare", payload_class=None),
+        ],
+        imports={},
+    )
+
+    emitted = _emit_domain_class(module)
+
+    assert '        "thing_happened": "x.thingHappened",' in emitted
+    assert '        "x.thingHappened": ThingHappenedParameters,' in emitted
+    assert '        "x.bare": None,' in emitted
+    assert "    def add_thing_happened_callback(" in emitted
+    assert "    def remove_bare_callback(" in emitted
+
+
+@pytest.mark.parametrize("command", ["addThingCallback", "removeThingCallback"])
+def test_an_event_callback_that_would_shadow_a_command_is_rejected(command):
+    schema = Schema(
+        {
+            "types": {},
+            "commands": [{"domain": "x", "method": f"x.{command}", "name": command}],
+            "events": [{"domain": "x", "method": "x.thing", "name": "thing"}],
+        }
+    )
+
+    with pytest.raises(ValueError, match=rf"x: callback method.*{camel_to_snake(command)}.*x\.thing.*collide"):
+        build_module(schema, "x")
 
 
 # --- vendor overlays ------------------------------------------------------------------------
