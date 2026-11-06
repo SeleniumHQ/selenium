@@ -51,6 +51,7 @@ def test_uses_environment_variable(monkeypatch):
 
 
 def test_uses_windows(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr("platform.machine", lambda: "AMD64")
     binary = SeleniumManager()._get_binary()
@@ -59,6 +60,7 @@ def test_uses_windows(monkeypatch):
 
 
 def test_uses_windows_arm64(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr("platform.machine", lambda: "ARM64")
     binary = SeleniumManager()._get_binary()
@@ -67,6 +69,7 @@ def test_uses_windows_arm64(monkeypatch):
 
 
 def test_uses_linux(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr("platform.machine", lambda: "x86_64")
     binary = SeleniumManager()._get_binary()
@@ -75,6 +78,7 @@ def test_uses_linux(monkeypatch):
 
 
 def test_uses_linux_aarch64(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr("platform.machine", lambda: "aarch64")
     binary = SeleniumManager()._get_binary()
@@ -83,6 +87,7 @@ def test_uses_linux_aarch64(monkeypatch):
 
 
 def test_uses_mac(monkeypatch):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "darwin")
     binary = SeleniumManager()._get_binary()
     project_root = Path(selenium.__file__).parent.parent
@@ -90,6 +95,7 @@ def test_uses_mac(monkeypatch):
 
 
 def test_uses_freebsd(monkeypatch, caplog):
+    monkeypatch.setattr(Path, "is_file", lambda p: p.parent.name != "common")
     monkeypatch.setattr(sys, "platform", "freebsd15")
     monkeypatch.setattr("platform.machine", lambda: "amd64")
     root = logging.getLogger()
@@ -150,3 +156,19 @@ def test_run_non_zero_exit_code():
         with pytest.raises(WebDriverException) as excinfo:
             SeleniumManager._run(["/path/to/sm", "arg1"])
     assert "Unsuccessful command executed: /path/to/sm arg1; code: 1\n\nError Message" in str(excinfo.value)
+
+
+def test_process_logs(caplog):
+    log_items = [
+        {"level": "WARN", "message": "warning message"},
+        {"level": "ERROR", "message": "error message"},
+        {"level": "INFO", "message": "info message"},
+        {"level": "DEBUG", "message": "debug message"},
+    ]
+    with caplog.at_level(logging.DEBUG):
+        SeleniumManager._process_logs(log_items)
+    assert "warning message" in caplog.text
+    assert "error message" in caplog.text
+    assert "info message" in caplog.text
+    assert "debug message" in caplog.text
+
