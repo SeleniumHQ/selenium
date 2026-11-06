@@ -837,17 +837,18 @@ def _guard_same_domain(domain: str, *type_names: str | None) -> None:
             raise ValueError(f"{domain}: cross-domain type reference {name!r} not yet supported")
 
 
-def _callback_methods(e: EventIR) -> tuple[str, str]:
-    """The add/remove listener method names a domain class gets for an event."""
-    return f"add_{e.name}_callback", f"remove_{e.name}_callback"
+def _callback_method(e: EventIR) -> str:
+    """The listener method name a domain class gets for an event."""
+    return f"add_{e.name}_callback"
 
 
 def _guard_callback_names(domain: str, commands: list[CommandIR], events: list[EventIR]) -> None:
-    command_methods = {c.method for c in commands}
-    for e in events:
-        clash = sorted(command_methods.intersection(_callback_methods(e)))
-        if clash:
-            raise ValueError(f"{domain}: callback method(s) {clash} for event {e.wire} collide with a command method")
+    # ``remove_callback`` is the hand-written ``Domain`` method every generated listener is removed with.
+    taken = {_callback_method(e): f"the callback method for event {e.wire}" for e in events}
+    taken["remove_callback"] = "Domain.remove_callback"
+    for c in commands:
+        if c.method in taken:
+            raise ValueError(f"{domain}: command method {c.method} collides with {taken[c.method]}")
 
 
 def build_module(schema: Schema, domain: str) -> ModuleIR:
@@ -857,6 +858,8 @@ def build_module(schema: Schema, domain: str) -> ModuleIR:
     events = [build_event(schema, e) for e in schema.events_for(domain)]
     _guard_callback_names(domain, commands, events)
     imports = _cross_domain_imports(schema, domain)
+    if events:
+        imports.setdefault("session", set()).add("SubscribeResult")
     return ModuleIR(
         domain=domain,
         class_name=snake_to_class(camel_to_snake(domain)),
@@ -1059,23 +1062,27 @@ def _emit_command(c: CommandIR) -> list[str]:
     return lines
 
 
-def _emit_event_callbacks(e: EventIR) -> list[str]:
-    add, remove = _callback_methods(e)
-    lines = [wrap_call(f"    def {add}(", ["self", "callback: Callable[[dict[str, Any]], Any]"], ") -> int:", 4)]
-    lines.append(f'        """Add a callback for {e.wire} (internal, unsupported).')
+def _emit_event_callback(e: EventIR) -> list[str]:
+    args = [
+        "self",
+        "callback: Callable[[dict[str, Any]], Any]",
+        "contexts: list[str] | UnsetType = UNSET",
+        "user_contexts: list[str] | UnsetType = UNSET",
+    ]
+    lines = [wrap_call(f"    def {_callback_method(e)}(", args, ") -> SubscribeResult:", 4)]
+    lines.append(f'        """Subscribe ``callback`` to {e.wire} (internal, unsupported).')
     lines.append("")
     parse = f"; ``{e.payload_class}.from_json`` parses them" if e.payload_class else ""
     lines.append(f"        The callback gets the raw params{parse}.")
-    lines.append("        Adding it does not subscribe to the event.")
+    lines.append("        Pass the result's ``subscription`` to ``remove_callback`` to stop it.")
+    lines.append("")
+    lines.append("        ``contexts`` and ``user_contexts`` scope the subscription, not the callback: it is called")
+    lines.append("        for every such event the session is subscribed to, whoever subscribed.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")
     lines.append('        """')
-    lines.append(f"        return self._add_callback({lit(e.wire)}, callback)")
-    lines.append("")
-    lines.append(f"    def {remove}(self, callback_id: int) -> None:")
-    lines.append(f'        """Remove a callback added for {e.wire} (internal, unsupported)."""')
-    lines.append(f"        self._remove_callback({lit(e.wire)}, callback_id)")
+    lines.append(f"        return self._add_callback({lit(e.wire)}, callback, contexts, user_contexts)")
     return lines
 
 
@@ -1104,7 +1111,7 @@ def _emit_domain_class(mod: ModuleIR) -> str:
         body.extend(_emit_command(c))
     for e in mod.events:
         body.append("")
-        body.extend(_emit_event_callbacks(e))
+        body.extend(_emit_event_callback(e))
     return "\n".join(lines + body)
 
 
@@ -1127,6 +1134,7 @@ def _imports(mod: ModuleIR) -> list[str]:
         any(not f.required for r in mod.records for f in r.fields)
         or any(r.extensible for r in mod.records)
         or any(not p.required for c in mod.commands for p in c.params)
+        or bool(mod.events)
     )
     # "Any" appears in any emitted annotation
     text_blob = " ".join(

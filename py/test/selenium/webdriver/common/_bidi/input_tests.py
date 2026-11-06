@@ -24,6 +24,7 @@ import pytest
 
 from selenium.webdriver.common._bidi.input import (
     ElementOrigin,
+    FileDialogInfo,
     Input,
     KeyDownAction,
     KeySourceActions,
@@ -665,9 +666,10 @@ def test_type_and_set_files_in_same_form(driver, pages):
 
 
 @pytest.mark.xfail_firefox(reason="File dialog handling not implemented in Firefox yet")
-def test_file_dialog_opened_event(driver, listen):
+def test_file_dialog_opened_event(driver):
     driver.get("data:text/html,<input id=upload type=file multiple />")
-    opened = listen(Input, "file_dialog_opened")
+    events = []
+    subscription = Input(driver).add_file_dialog_opened_callback(events.append).subscription
 
     Script(driver).evaluate(
         expression="document.getElementById('upload').click()",
@@ -675,6 +677,8 @@ def test_file_dialog_opened_event(driver, listen):
         await_promise=False,
         user_activation=True,
     )
+    WebDriverWait(driver, 10).until(lambda _: events)
+    Input(driver).remove_callback(subscription)
 
-    dialog = opened.first()
+    dialog = FileDialogInfo.from_json(events[0])
     assert (dialog.context, dialog.multiple) == (driver.current_window_handle, True)

@@ -24,10 +24,14 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common._bidi.serialization import UnsetType
 from selenium.webdriver.common._bidi.transport import Transport
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common._bidi.session import SubscribeResult
 
 
 class Domain:
@@ -54,8 +58,18 @@ class Domain:
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
 
-    def _add_callback(self, event: str, callback: Callable[[dict[str, Any]], Any]) -> int:
-        return self._transport.add_callback(event, callback)
+    def remove_callback(self, subscription: str) -> None:
+        """Unsubscribe and drop the callable an ``add_<event>_callback`` method registered (internal, unsupported).
 
-    def _remove_callback(self, event: str, callback_id: int) -> None:
-        self._transport.remove_callback(event, callback_id)
+        ``subscription`` is the id in that method's result. An id no callable was registered under raises.
+        """
+        self._transport.remove_callback(subscription)
+
+    def _add_callback(
+        self,
+        event: str,
+        callback: Callable[[dict[str, Any]], Any],
+        contexts: list[str] | UnsetType,
+        user_contexts: list[str] | UnsetType,
+    ) -> SubscribeResult:
+        return self._transport.add_callback(event, callback, contexts=contexts, user_contexts=user_contexts)
