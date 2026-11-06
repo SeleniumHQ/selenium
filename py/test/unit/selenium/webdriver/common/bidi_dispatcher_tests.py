@@ -192,6 +192,28 @@ def test_removing_an_unknown_subscription_raises_without_a_wire_call(connection,
     assert browser.sent == []
 
 
+def test_concurrent_removals_of_one_subscription_unsubscribe_once(connection, browser):
+    subscription = network(connection).add_before_request_sent_callback(lambda params: None).subscription
+    ready = threading.Barrier(5)
+    refused = queue.Queue()
+
+    def remove():
+        ready.wait()
+        try:
+            network(connection).remove_callback(subscription)
+        except InvalidArgumentException as error:
+            refused.put(error)
+
+    threads = [threading.Thread(target=remove) for _ in range(5)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert browser.commands("session.unsubscribe") == [{"subscriptions": [subscription]}]
+    assert refused.qsize() == 4
+
+
 def test_a_callback_that_raises_is_logged_and_does_not_stop_another(connection, browser, logged):
     received = queue.Queue()
 

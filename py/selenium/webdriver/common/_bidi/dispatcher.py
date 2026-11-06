@@ -88,10 +88,12 @@ class EventDispatcher:
     def remove_callback(self, subscription: str) -> None:
         with self._lock:
             registration = next((r for r in self._registrations if r.subscription == subscription), None)
+            if registration is not None:
+                # Dropped before the unsubscribe: a concurrent remove must find nothing, and a
+                # refused unsubscribe must not leave a callable that could never be removed.
+                self._registrations.remove(registration)
         if registration is None:
             raise InvalidArgumentException(f"No callback is registered for subscription {subscription!r}")
-        # Dropped even if the unsubscribe is refused, or the callable could never be removed.
-        self._discard(registration)
         self._session.unsubscribe(subscriptions=[subscription])
 
     def receive(self, method: str, params: dict[str, Any]) -> None:
