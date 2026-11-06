@@ -529,8 +529,12 @@ experimental domain Animation
     parameters
       # List of animation ids to seek.
       array of string animations
-      # Set the current time of each animation.
-      number currentTime
+      # Set each animation to the same time.
+      optional number currentTime
+      # Set each animation to a different time. If set, should have the same
+      # length as animations. Exactly one of currentTime or currentTimes should
+      # be set.
+      optional array of number currentTimes
 
   # Sets the paused state of a set of animations.
   command setPaused
@@ -618,7 +622,6 @@ experimental domain Audits
       ExcludeSameSiteLax
       ExcludeSameSiteStrict
       ExcludeDomainNonASCII
-      ExcludeThirdPartyCookieBlockedInFirstPartySet
       ExcludeThirdPartyPhaseout
       ExcludePortMismatch
       ExcludeSchemeMismatch
@@ -989,6 +992,7 @@ experimental domain Audits
       FormModelContextMissingToolDescription
       FormModelContextRequiredParameterMissingName
       FormModelContextParameterMissingName
+      GeolocationPromptWithoutUserGesture
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -1095,6 +1099,7 @@ experimental domain Audits
       UiDismissedNoEmbargo
       CorsError
       SuppressedBySegmentationPlatform
+      PopupBlockedByConnectionAllowlist
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -1322,6 +1327,21 @@ experimental domain Audits
       # Used for messages about activation disabled reason
       optional string disableReason
 
+  type WebInstallIssueReason extends string
+    enum
+      ManifestParsingOrNetworkError
+      StartUrlInvalid
+      ManifestMissingNameOrShortName
+      ManifestMissingId
+      NoManifest
+
+  # This issue reports a failure involving a web app manifest used by a Web
+  # Install operation.
+  type WebInstallIssueDetails extends object
+    properties
+      optional string manifestUrl
+      WebInstallIssueReason reason
+
   # The issue warns about blocked calls to privacy sensitive APIs via the
   # Selective Permissions Intervention.
   type SelectivePermissionsInterventionIssueDetails extends object
@@ -1379,6 +1399,7 @@ experimental domain Audits
       SelectivePermissionsInterventionIssue
       EmailVerificationRequestIssue
       LazyLoadImageIssue
+      WebInstallIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1415,6 +1436,7 @@ experimental domain Audits
       optional SelectivePermissionsInterventionIssueDetails selectivePermissionsInterventionIssueDetails
       optional EmailVerificationRequestIssueDetails emailVerificationRequestIssueDetails
       optional LazyLoadImageIssueDetails lazyLoadImageIssueDetails
+      optional WebInstallIssueDetails webInstallIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -2959,6 +2981,15 @@ experimental domain CSS
       # Boolean indicating if this is on or off.
       boolean forced
 
+  # Forces a position-try option for the given node.
+  command forcePositionTryOption
+    parameters
+      # The element id for which to force the position-try option.
+      DOM.NodeId nodeId
+      # The 1-based index of the position-try fallback option, 0 for base position (no fallback),
+      # or omitted to clear the forced state.
+      optional integer index
+
   command getBackgroundColors
     parameters
       # Id of the node to get background colors for.
@@ -4368,6 +4399,15 @@ domain DOM
       # List of popovers that were closed in order to respect popover stacking order.
       array of NodeId nodeIds
 
+  # Returns candidate nodes that are configured as triggers for the given popover.
+  experimental command getImplicitAnchorCandidates
+    parameters
+      # Id of the popover HTMLElement.
+      NodeId nodeId
+    returns
+      # Candidate elements that can invoke this popover.
+      array of BackendNodeId backendNodeIds
+
   # When enabling, this API forces an element to gain interest in its target,
   # keeping interest active until disabled.
   experimental command forceShowInterest
@@ -4376,6 +4416,37 @@ domain DOM
       NodeId nodeId
       # If true, opens and holds interest. If false, releases forced interest.
       boolean enable
+
+  # Sets a spelling or grammar error marker on the given range of text.
+  # See https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
+  # Note: exactly one between nodeId, backendNodeId and objectId should be passed
+  # to identify the node.
+  experimental command setTextMarker
+    parameters
+      # Identifier of the node.
+      optional NodeId nodeId
+      # Identifier of the backend node.
+      optional BackendNodeId backendNodeId
+      # JavaScript object id of the node wrapper.
+      optional Runtime.RemoteObjectId objectId
+      # The type of marker to set on the given range of text.
+      enum type
+        # A spelling error marker, rendered as ::spelling-error
+        spelling
+        # A grammar error marker, rendered as ::grammar-error
+        grammar
+      # Start offset into the element's rendered text in UTF-16 code units.
+      # For a text control, an offset into the control's value.
+      # Offsets count text in DOM order and do not enter shadow trees.
+      # To mark text inside a shadow tree, pass the element inside the shadow tree.
+      integer start
+      # End offset (exclusive) in the same units and space as start.
+      integer end
+
+  # Clears the spelling and grammar error text markers overlapping the ranges
+  # set by setTextMarker in this session. These markers are also removed when
+  # the DOM domain is disabled or the session ends.
+  experimental command clearTextMarkers
 
   # Fired when `Element`'s attribute is modified.
   event attributeModified
@@ -5464,6 +5535,22 @@ domain Emulation
       # useful for emulating mobile device orientation lock behavior in
       # responsive design mode.
       experimental optional boolean screenOrientationLockEmulation
+      # Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,
+      # the viewport meta tag is always enabled.
+      experimental optional enum viewportMeta
+        # Enables viewport meta tag processing.
+        enable
+        # Restores the default viewport meta behavior (disabled on desktop,
+        # enabled on mobile).
+        default
+      # Text layout mode. Default: `default`. Note: if `mobile` is `true`,
+      # mobile text layout mode (text autosizing) is always enabled.
+      experimental optional enum textLayoutMode
+        # Enables mobile text layout mode (text autosizing / CSS text-size-adjust).
+        mobile
+        # Restores the default text layout mode behavior (disabled on desktop,
+        # enabled on mobile).
+        default
 
   # Start reporting the given posture value to the Device Posture API.
   # This override can also be set in setDeviceMetricsOverride().
@@ -6348,6 +6435,29 @@ experimental domain FileSystem
       # Returns the directory object at the path.
       Directory directory
 
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# This domain provides commands to trigger the "Find in page" feature.
+experimental domain FindInPage
+  # Forwards `query` to the find-in-page facility, starting a new find session.
+  # Where exactly the search starts from is implementation-specific.
+  command findFirst
+    parameters
+      string query
+
+  # Moves to the next match for the query passed to the most recent
+  # findFirst() call.
+  command findNext
+
+  # Moves to the previous match for the query passed to the most recent
+  # findFirst() call.
+  command findPrev
+
+  # Ends the current find session, if any, and clears its highlighting.
+  command stop
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -6443,7 +6553,7 @@ domain IO
       boolean eof
 
   # Return UUID of Blob object specified by a remote object id.
-  command resolveBlob
+  deprecated command resolveBlob
     parameters
       # Object id of a Blob object wrapper.
       Runtime.RemoteObjectId objectId
@@ -8174,9 +8284,6 @@ domain Network
       UserPreferences
       # The cookie was blocked due to third-party cookie phaseout.
       ThirdPartyPhaseout
-      # The cookie was blocked by third-party cookie blocking between sites in
-      # the same First-Party Set.
-      ThirdPartyBlockedInFirstPartySet
       # The syntax of the Set-Cookie header of the response was invalid.
       SyntaxError
       # The scheme of the connection is not allowed to store cookies.
@@ -8243,9 +8350,6 @@ domain Network
       UserPreferences
       # The cookie was blocked due to third-party cookie phaseout.
       ThirdPartyPhaseout
-      # The cookie was blocked by third-party cookie blocking between sites in
-      # the same First-Party Set.
-      ThirdPartyBlockedInFirstPartySet
       # An unknown error was encountered when trying to send this cookie.
       UnknownError
       # The cookie had the "SameSite=Strict" attribute but came from a response
@@ -8850,6 +8954,9 @@ domain Network
       MonotonicTime timestamp
       # Total number of bytes received for this request.
       number encodedDataLength
+      # Size of the response body before removing content encodings.
+      # Includes cached bodies, but excludes headers and transfer framing.
+      experimental optional number encodedBodyLength
 
   # Fired if request ended up loading from cache.
   event requestServedFromCache
@@ -9712,6 +9819,7 @@ domain Network
         InvalidSessionParams
         RefreshFatalError
         DevTools
+        Replaced
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -9928,6 +10036,28 @@ experimental domain Overlay
       aaa
       apca
 
+  # Configuration for Inset-Modified Containing Block (IMCB) and CSS Anchor Positioning highlight.
+  type ImcbHighlightConfig extends object
+    properties
+      # Border color for the Inset-Modified Containing Block (default: transparent).
+      optional DOM.RGBA imcbBorderColor
+      # Background fill color for the Inset-Modified Containing Block (default: transparent).
+      optional DOM.RGBA imcbBackgroundColor
+      # Fill color for the inset modifiers area (difference between CB and IMCB).
+      optional DOM.RGBA insetsBackgroundColor
+      # Hatch color for the inset modifiers area.
+      optional DOM.RGBA insetsHatchColor
+      # Border color for the referenced target anchor element(s) (when element is anchor-positioned).
+      optional DOM.RGBA anchorBorderColor
+      # Background fill color for the referenced target anchor element(s) (when element is anchor-positioned).
+      optional DOM.RGBA anchorBackgroundColor
+      # Whether to render the 3x3 position-area grid lines when position-area is used.
+      optional boolean showPositionAreaGrid
+      # Line color for the 3x3 position-area grid lines.
+      optional DOM.RGBA positionAreaGridLineColor
+      # Fill color for the active region within the position-area grid.
+      optional DOM.RGBA positionAreaActiveRegionColor
+
   # Configuration data for the highlighting of page elements.
   type HighlightConfig extends object
     properties
@@ -9969,6 +10099,8 @@ experimental domain Overlay
       optional ContrastAlgorithm contrastAlgorithm
       # The container query container highlight configuration (default: all transparent).
       optional ContainerQueryContainerHighlightConfig containerQueryContainerHighlightConfig
+      # The IMCB highlight configuration (default: all transparent).
+      optional ImcbHighlightConfig imcbHighlightConfig
 
   type ColorFormat extends string
     enum
@@ -10667,13 +10799,10 @@ domain Page
       private-state-token-redemption
       publickey-credentials-create
       publickey-credentials-get
+      publickey-credentials-remote-client-data-json
       rewriter
       screen-wake-lock
       serial
-      # Deprecated.
-      shared-storage
-      # Deprecated.
-      shared-storage-select-url
       smart-card
       speaker-selection
       storage-access
@@ -10903,6 +11032,8 @@ domain Page
       number scrollOffsetY
       # Frame swap timestamp.
       optional Network.TimeSinceEpoch timestamp
+      # Frame swap timestamp as monotonic time.
+      optional Network.MonotonicTime monotonicTimestamp
 
   # Javascript dialog type.
   type DialogType extends string
@@ -11319,7 +11450,18 @@ domain Page
     returns
       optional binary primaryIcon
 
-  # Returns the unique (PWA) app id.
+  type SubApp extends object
+    properties
+      # Display name of the sub-app.
+      string name
+      # Scope of the sub-app.
+      string scope
+      # Manifest id of the sub-app.
+      string manifestId
+      # Start URL of the sub-app.
+      string startUrl
+
+  # Returns the unique (PWA) app id, along with IWA bundle ID and parent app info.
   # Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
   experimental command getAppId
     returns
@@ -11327,6 +11469,20 @@ domain Page
       optional string appId
       # Recommendation for manifest's id attribute to match current id computed from start_url
       optional string recommendedId
+      # The bundle ID for an Isolated Web App (IWA)
+      optional string bundleId
+      # The name of the parent app if this app is a Sub-App
+      optional string parentAppName
+
+  # Returns the list of installed child Sub-Apps for the inspected parent app.
+  experimental command getSubApps
+    returns
+      array of SubApp subApps
+
+  # Returns the list of sibling Sub-Apps sharing the same parent app if the inspected context is a Sub-App.
+  experimental command getSiblingSubApps
+    returns
+      array of SubApp subApps
 
   experimental command getAdScriptAncestry
     parameters
@@ -11338,6 +11494,16 @@ domain Page
       # stack) to more distant ancestors (that created the immediately preceding
       # script). Only sent if frame is labelled as an ad and ids are available.
       optional Network.AdAncestry adScriptAncestry
+
+  # Returns the words that the frame's document added to its spell check custom
+  # dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted.
+  # Page script cannot read the dictionary back; this lets developers inspect
+  # it.
+  experimental command getSpellCheckCustomDictionary
+    parameters
+      FrameId frameId
+    returns
+      array of string words
 
   # Returns present frame tree structure.
   command getFrameTree
@@ -12309,6 +12475,13 @@ domain Page
       # components/optimization_guide/proto/features/common_quality_data.proto
       binary content
 
+  # Configures input visualization on the page.
+  experimental command setInputVisualization
+    parameters
+      # Whether to enable click visualization.
+      optional boolean clicks
+
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -12725,6 +12898,10 @@ experimental domain Preload
       PreloadingAttemptKey key
       PreloadPipelineId pipelineId
       PreloadingStatus status
+      # The action currently performed by this attempt. This differs from
+      # `key.action` after a prerender-until-script attempt is upgraded in place
+      # to a full prerender.
+      optional SpeculationAction effectiveAction
       optional PrerenderFinalStatus prerenderStatus
       # This is used to give users more information about the name of Mojo interface
       # that is incompatible with prerender and has caused the cancellation of the attempt.
@@ -12969,9 +13146,7 @@ experimental domain ServiceWorker
       redundant
 
   # Mostly corresponds to `RouterCondition` in ServiceWorker spec
-  # (https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this
-  # currently lacks support for the nested conditions ("or" and "not").
-  # TODO(crbug.com/540469610): Support recursive conditions.
+  # (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
   type ServiceWorkerRouterCondition extends object
     properties
       # Plain text, or JSON serialization of URLPatternInit or URLPattern
@@ -12980,6 +13155,8 @@ experimental domain ServiceWorker
       optional string requestMode
       optional string requestDestination
       optional ServiceWorkerVersionRunningStatus runningStatus
+      optional array of ServiceWorkerRouterCondition or
+      optional ServiceWorkerRouterCondition not
 
   type ServiceWorkerRouterSourceType extends string
     enum
@@ -13553,6 +13730,33 @@ experimental domain Storage
       string issuerOrigin
       number count
 
+  # Details of a stored Private Verification Token.
+  experimental type PrivateVerificationToken extends object
+    properties
+      # Unique identifier of the token in the database.
+      string id
+      # Origin of the token issuer.
+      string issuerOrigin
+      # Public key ID used to issue the token.
+      integer keyId
+      # Expiration timestamp in seconds since the epoch.
+      Network.TimeSinceEpoch expiration
+      # Token creation timestamp in seconds since the epoch.
+      Network.TimeSinceEpoch creationTime
+      # Token protocol version.
+      integer version
+      # Base64-encoded serialized token.
+      string token
+
+  # Configuration for a Private Verification Tokens issuer.
+  experimental type PrivateVerificationTokensIssuerConfig extends object
+    properties
+      # Origin of the token issuer.
+      string issuerOrigin
+      # Origins authorized to redeem tokens from this issuer.
+      array of string redeemerOrigins
+
+
 
   type StorageBucketsDurability extends string
     enum
@@ -13722,6 +13926,33 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
+  # Returns all stored Private Verification Tokens for the current browsing
+  # context.
+  experimental command getPrivateVerificationTokens
+    returns
+      array of PrivateVerificationToken tokens
+
+  # Returns the configured Private Verification Tokens issuers and their redeemer
+  # origins.
+  experimental command getPrivateVerificationTokensIssuerConfigs
+    returns
+      array of PrivateVerificationTokensIssuerConfig configs
+
+  # Removes all Private Verification Tokens issued by the provided issuerOrigin.
+  experimental command clearPrivateVerificationTokens
+    parameters
+      string issuerOrigin
+
+  # Removes a specific Private Verification Token by its ID.
+  experimental command deletePrivateVerificationToken
+    parameters
+      string tokenId
+
+  # Set tracking for Private Verification Tokens.
+  experimental command setPrivateVerificationTokensTracking
+    parameters
+      boolean enable
+
   # Set tracking for a storage key's buckets.
   experimental command setStorageBucketTracking
     parameters
@@ -13792,21 +14023,8 @@ experimental domain Storage
     parameters
       string bucketId
 
-  # A single Related Website Set object.
-  experimental type RelatedWebsiteSet extends object
-    properties
-      # The primary site of this set, along with the ccTLDs if there is any.
-      array of string primarySites
-      # The associated sites of this set, along with the ccTLDs if there is any.
-      array of string associatedSites
-      # The service sites of this set, along with the ccTLDs if there is any.
-      array of string serviceSites
-
-  # Returns the effective Related Website Sets in use by this profile for the browser
-  # session. The effective Related Website Sets will not change during a browser session.
-  experimental command getRelatedWebsiteSets
-    returns
-      array of RelatedWebsiteSet sets
+  # Private Verification Tokens have been stored or deleted.
+  experimental event privateVerificationTokensUpdated
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -14990,6 +15208,8 @@ experimental domain WebMCP
       optional boolean untrustedContent
       # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
       optional boolean consequential
+      # If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
+      optional boolean debugging
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
 

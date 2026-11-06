@@ -124,7 +124,7 @@ VERSION = VERSIONS["javascript"]
 BROWSER_VERSIONS = [
     "v155",
     "v156",
-    "v154",
+    "v157",
 ]
 
 js_library(
