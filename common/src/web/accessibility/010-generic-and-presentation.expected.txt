@@ -1,0 +1,10 @@
+- document "Generic wrappers and presentation"
+  - heading "Hoisted through wrappers" [level=2]
+  - text: loose text
+  - paragraph
+    - text: Paragraph inside role none
+  - text: Presentational list item text
+  - text: Presentational cell text
+  - link "Focusable, so still a link"
+  - generic "Named div"
+  - text: Custom element text

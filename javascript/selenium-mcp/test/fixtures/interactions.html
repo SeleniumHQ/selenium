@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head><title>Interactions fixture</title></head>
+<body>
+  <h1>Interactions</h1>
+  <label for="fruit">Fruit</label>
+  <select id="fruit" onchange="document.getElementById('out').textContent = 'Picked ' + this.value">
+    <option value="apple">Apple</option>
+    <option value="pear">Pear</option>
+  </select>
+  <label for="extras">Extras</label>
+  <select id="extras" multiple>
+    <option value="nuts" selected>Nuts</option>
+    <option value="seeds">Seeds</option>
+    <option value="oats">Oats</option>
+  </select>
+  <button id="hover" onmouseover="this.textContent = 'Hovered'">Hover me</button>
+  <button onclick="this.remove()">Remove me</button>
+  <button ondblclick="this.textContent = 'Double clicked'">Double click me</button>
+  <input aria-label="Keys" onkeydown="if (event.key === 'Enter') document.getElementById('out').textContent = 'Enter in ' + this.value">
+  <label><input type="checkbox" id="agree"> Agree</label>
+  <label><input type="radio" name="size" value="s" checked> Small</label>
+  <label><input type="radio" name="size" value="l"> Large</label>
+  <label>Volume <input type="range" min="0" max="10" value="2" oninput="document.getElementById('out').textContent = 'Volume ' + this.value"></label>
+  <label>Locked <input type="range" min="0" max="10" value="5" disabled></label>
+  <label>Readonly <input type="range" min="0" max="10" value="5" readonly></label>
+  <button onclick="setTimeout(() => { document.getElementById('out').textContent = 'Done loading' }, 300)">Load later</button>
+  <a href="frame-inner.html" target="_blank">Open in new tab</a>
+  <p role="status" id="out">Nothing yet</p>
+  <script>
+    console.warn('fixture warning')
+    console.log('fixture info')
+  </script>
+</body>
+</html>

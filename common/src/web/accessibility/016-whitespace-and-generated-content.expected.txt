@@ -1,0 +1,10 @@
+- document "Whitespace and generated content"
+  - button "★ Favourite"
+  - link "Site (external)"
+  - button "Done: Task"
+  - link "Savenow"
+  - link "Line one Line two"
+  - button "First Second"
+  - paragraph
+    - text: Non breaking space
+  - text: preformatted text

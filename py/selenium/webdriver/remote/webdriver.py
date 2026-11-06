@@ -67,6 +67,7 @@ from selenium.webdriver.common.bidi.webextension import WebExtension as BidiWebE
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.web_extension import WebExtension
+from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode, AccessibilitySnapshotter
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -359,6 +360,7 @@ class WebDriver(BaseWebDriver):
 
         self._websocket_connection: WebSocketConnection | None = None
         self._script: Script | None = None
+        self._accessibility_snapshotter: AccessibilitySnapshotter | None = None
         self._network: Network | None = None
         self._browser: Browser | None = None
         self._bidi_session: Session | None = None
@@ -750,6 +752,47 @@ class WebDriver(BaseWebDriver):
         """Invokes the window manager-specific 'minimize' operation."""
         self.execute(Command.MINIMIZE_WINDOW)
 
+    def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
+        """Snapshot the accessibility tree of the page.
+
+        The tree is computed in the page from the DOM, following WAI-ARIA,
+        html-aam and accname; it is not the browser's own accessibility tree.
+        It is rooted at the top-level browsing context of the current window,
+        whatever frame the driver has switched to, and every child frame's
+        tree is attached under its ``iframe`` node. To scope to a frame, take
+        ``element.accessibility_snapshot()`` of its ``iframe`` element. The
+        snapshot is a copy taken at one point in time.
+
+        Args:
+            interesting_only: With the default ``True``, elements of role
+                ``generic``, ``none`` or ``presentation`` with no name produce
+                no node and their children take their place. With ``False``
+                every rendered element produces a node, as Puppeteer's
+                ``accessibility.snapshot({interestingOnly: false})`` does.
+
+        Returns:
+            The root node, of role ``document``, named from the title.
+
+        Raises:
+            WebDriverException: When the session has no WebDriver BiDi connection.
+
+        Example:
+            >>> tree = driver.accessibility_snapshot()
+            >>> print(tree.to_text())
+            >>> tree.children[0].element.click()
+        """
+        return self._accessibility().snapshot(None, interesting_only)
+
+    def _accessibility(self) -> AccessibilitySnapshotter:
+        if not self.caps.get("webSocketUrl"):
+            raise WebDriverException(
+                "accessibility_snapshot() requires a WebDriver BiDi session; "
+                "enable it with options.enable_bidi = True before starting the driver"
+            )
+        if self._accessibility_snapshotter is None:
+            self._accessibility_snapshotter = AccessibilitySnapshotter(self)
+        return self._accessibility_snapshotter
+
     def print_page(self, print_options: PrintOptions | None = None) -> str:
         """Takes PDF of the current page.
 
@@ -993,17 +1036,23 @@ class WebDriver(BaseWebDriver):
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
-            _pkg = ".".join(__name__.split(".")[:-1])
-            raw_data = pkgutil.get_data(_pkg, "findElements.js")
-            if raw_data is None:
-                raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
-            raw_function = raw_data.decode("utf8")
-            find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
-            return self.execute_script(find_element_js, by.to_dict())
+            return self._find_elements_relative(by)
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
+
+    def _find_elements_relative(self, by: RelativeBy, root: WebElement | ShadowRoot | None = None) -> list[WebElement]:
+        """Find elements with a relative locator, searching from root, or the document when root is None."""
+        _pkg = ".".join(__name__.split(".")[:-1])
+        raw_data = pkgutil.get_data(_pkg, "findElements.js")
+        if raw_data is None:
+            raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
+        raw_function = raw_data.decode("utf8")
+        find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
+        if root is None:
+            return self.execute_script(find_element_js, by.to_dict())
+        return self.execute_script(find_element_js, by.to_dict(), root)
 
     @property
     def capabilities(self) -> dict:

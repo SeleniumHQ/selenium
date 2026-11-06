@@ -1,0 +1,60 @@
+{
+  "name": "@selenium/mcp",
+  "description": "The official Selenium MCP server: lets coding agents drive a real browser through Selenium",
+  "license": "Apache-2.0",
+  "keywords": [
+    "automation",
+    "browser",
+    "mcp",
+    "model-context-protocol",
+    "selenium",
+    "webdriver"
+  ],
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/selenium-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git",
+    "directory": "javascript/selenium-mcp"
+  },
+  "main": "./lib/server.js",
+  "bin": {
+    "selenium-mcp": "bin/selenium-mcp.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md"
+  ],
+  "engines": {
+    "node": "^22.23.4 || ^24.22.1 || >= 26.12.1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@bazel/runfiles": "^6.5.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-mocha": "^11.3.0",
+    "eslint-plugin-n": "^18.5.0",
+    "eslint-plugin-no-only-tests": "^3.4.0",
+    "eslint-plugin-prettier": "^5.5.7",
+    "globals": "^17.14.0",
+    "mocha": "^11.8.0",
+    "mocha-junit-reporter": "^2.2.1",
+    "prettier": "^3.9.10"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "bazel test //javascript/selenium-mcp/..."
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

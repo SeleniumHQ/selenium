@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_corpus_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script src="../typescript/testing/accessibility-global.js"></script>
+  <script type="text/javascript">
+    // Runs the shared corpus in common/src/web/accessibility/: every page is
+    // loaded into an iframe, snapshotted whole, and compared with its recorded
+    // JSON and text expectation. The corpus, not this page, is the
+    // cross-binding contract (ADR 18205 §4); this page is its first consumer.
+    //
+    // Every page is snapshotted twice: pruned (the default) against
+    // `.expected.json`/`.txt`, and with interestingOnly false against
+    // `.expected.full.json`/`.txt`.
+    //
+    // With ?record=1 the page records instead of testing: it shows the JSON
+    // and text it computed for each corpus page, to be copied into the
+    // expectation files (see the corpus README).
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+    var toText = window.bot.accessibility.typescript.testing.toText;
+    var encodeWire = window.bot.accessibility.typescript.testing.encodeWire;
+
+    var CORPUS = '/filez/_main/common/src/web/accessibility/';
+    var RECORD = /[?&]record=1/.test(location.search);
+
+    function engine() {
+      var ua = navigator.userAgent;
+      if (/Firefox\//.test(ua)) {
+        return 'firefox';
+      }
+      if (/Chrome\/|Chromium\/|Edg\//.test(ua)) {
+        return 'chromium';
+      }
+      return 'webkit';
+    }
+
+    // The JSON form of the corpus: every field written out, `element` as the
+    // element's id. An element without an id cannot be checked across
+    // bindings, so it is an error.
+    function serialize(node, problems) {
+      var out = { role: node.role, name: node.name, description: node.description };
+      if (node.value !== undefined) {
+        out.value = node.value;
+      }
+      if (node.url !== undefined) {
+        out.url = node.url;
+      }
+      out.states = node.states;
+      if (node.element) {
+        if (!node.element.id) {
+          problems.push(node.role + ' <' + node.element.tagName.toLowerCase() + '> has no id');
+        }
+        out.element = node.element.id || ('<' + node.element.tagName.toLowerCase() + '>');
+      }
+      out.children = node.children.map(function (child) { return serialize(child, problems); });
+      return out;
+    }
+
+    // The wire form the bindings receive, decoded the way a binding decodes it:
+    // the JSON text parsed, each element index replaced by the element's id.
+    function decodeWire(tree) {
+      var wire = encodeWire(tree);
+      function substitute(node) {
+        var out = { role: node.role, name: node.name, description: node.description };
+        if (node.value !== undefined) {
+          out.value = node.value;
+        }
+        if (node.url !== undefined) {
+          out.url = node.url;
+        }
+        out.states = node.states;
+        if (node.element !== undefined) {
+          out.element = wire.elements[node.element].id;
+        }
+        out.children = node.children.map(substitute);
+        return out;
+      }
+      return substitute(JSON.parse(JSON.stringify(wire.node)));
+    }
+
+    function load(url) {
+      return fetch(url).then(function (response) {
+        return response.ok ? response.text() : Promise.reject(new Error(response.status + ' for ' + url));
+      });
+    }
+
+    function loadOptional(url) {
+      return fetch(url).then(function (response) { return response.ok ? response.text() : null; });
+    }
+
+    // Both forms of one page: `pruned` is the default snapshot, `full` the one
+    // with interestingOnly false. Each carries its JSON, text and decoded wire form.
+    function forms(doc, problems) {
+      function form(options) {
+        var tree = snapshot(doc, options);
+        return { json: JSON.stringify(serialize(tree, problems), null, 2), text: toText(tree), wire: decodeWire(tree) };
+      }
+      return { pruned: form(undefined), full: form({ interestingOnly: false }) };
+    }
+    function inFrame(name) {
+      return new Promise(function (resolve, reject) {
+        var frame = document.createElement('iframe');
+        frame.width = 800;
+        frame.height = 600;
+        frame.onload = function () {
+          try {
+            var problems = [];
+            var result = forms(frame.contentDocument, problems);
+            result.problems = problems;
+            resolve(result);
+          } catch (e) {
+            reject(e);
+          } finally {
+            if (!RECORD) {
+              frame.parentNode.removeChild(frame);
+            }
+          }
+        };
+        frame.onerror = reject;
+        frame.src = CORPUS + name + '.html';
+        document.body.appendChild(frame);
+      });
+    }
+
+    function record(names) {
+      var output = document.getElementById('recorded');
+      return names.reduce(function (chain, name) {
+        return chain.then(function () {
+          return inFrame(name).then(function (result) {
+            [['json', result.pruned.json], ['txt', result.pruned.text],
+             ['full.json', result.full.json], ['full.txt', result.full.text]].forEach(function (pair) {
+              var pre = document.createElement('pre');
+              pre.className = 'record';
+              pre.setAttribute('data-page', name);
+              pre.setAttribute('data-kind', pair[0]);
+              pre.textContent = pair[1];
+              output.appendChild(pre);
+            });
+            if (result.problems.length) {
+              var warning = document.createElement('p');
+              warning.textContent = name + ': ' + result.problems.join('; ');
+              output.appendChild(warning);
+            }
+          });
+        });
+      }, Promise.resolve());
+    }
+
+    QUnit.module('accessibility corpus');
+
+    QUnit.test('corpus pages', function (assert) {
+      var done = assert.async();
+      load(CORPUS + 'index.json').then(function (text) {
+        var names = JSON.parse(text);
+        assert.ok(names.length > 0, 'index.json lists the corpus pages');
+        if (RECORD) {
+          return record(names).then(function () { assert.ok(true, 'recorded ' + names.length + ' pages'); });
+        }
+        return names.reduce(function (chain, name) {
+          return chain.then(function () {
+            // The expectation files of one form: `suffix` is '' for the pruned form
+            // (NNN.expected.json) and 'full' for the unpruned one (NNN.expected.full.json);
+            // the engine-specific file is preferred where one is recorded.
+            function expectation(suffix) {
+              var base = CORPUS + name + '.expected' + (suffix ? '.' + suffix : '');
+              return Promise.all([
+                loadOptional(base + '.' + engine() + '.json'),
+                load(base + '.json'),
+                loadOptional(base + '.' + engine() + '.txt'),
+                load(base + '.txt'),
+              ]).then(function (files) {
+                return { json: files[0] !== null ? files[0] : files[1], text: files[2] !== null ? files[2] : files[3] };
+              });
+            }
+            function check(label, actual, expected) {
+              assert.deepEqual(JSON.parse(actual.json), JSON.parse(expected.json), name + ': ' + label + ' tree');
+              assert.deepEqual(actual.wire, JSON.parse(expected.json), name + ': ' + label + ' wire form decodes to the tree');
+              assert.strictEqual(actual.text, expected.text.replace(/\n$/, ''), name + ': ' + label + ' text');
+            }
+            return Promise.all([inFrame(name), expectation(''), expectation('full')]).then(function (results) {
+              var actual = results[0];
+              assert.deepEqual(actual.problems, [], name + ': every node has an id');
+              check('pruned', actual.pruned, results[1]);
+              check('full', actual.full, results[2]);
+            });
+          });
+        }, Promise.resolve());
+      }).catch(function (e) {
+        assert.ok(false, 'corpus run failed: ' + (e && e.message ? e.message : e));
+      }).then(done);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <div id="recorded"></div>
+</body>
+
+</html>

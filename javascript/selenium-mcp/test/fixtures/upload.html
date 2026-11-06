@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Upload</title>
+</head>
+<body>
+  <!-- Sites often hide the input and show a styled button that opens it -->
+  <div>
+    <input type="file" hidden onchange="chose(this)">
+    <button onclick="this.previousElementSibling.click()">Choose photo</button>
+  </div>
+  <div>
+    <input type="file" multiple hidden onchange="chose(this)">
+    <button onclick="this.previousElementSibling.click()">Add documents</button>
+  </div>
+  <script>
+    function chose(input) {
+      document.getElementById('out').textContent = 'Chose ' + [...input.files].map((f) => f.name).join(', ')
+    }
+  </script>
+  <p role="status" id="out">Nothing yet</p>
+</body>
+</html>

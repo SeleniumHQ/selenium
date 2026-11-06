@@ -52,7 +52,7 @@ js_test(
 # and tree-shakes down to what each entry point actually imports.
 ATOM_SRCS = glob([
     "typescript/*.ts",
-    "typescript/core/*.ts",
+    "typescript/core/**/*.ts",
 ])
 
 # ── the atoms ────────────────────────────────────────────────────────────────
@@ -82,21 +82,66 @@ js_test(
     ],
 )
 
+# The pure parts of the accessibility modules (the reference text renderer)
+# run in Node against the test-only bundle, with no browser.
+js_test(
+    name = "accessibility-unit-tests",
+    size = "small",
+    data = [
+        ":typescript/accessibility-snapshot.generated.js",
+        ":typescript/accessibility-snapshot-wire.generated.js",
+        ":typescript/testing/accessibility.generated.js",
+    ],
+    entry_point = "typescript/testing/accessibility-unit-tests.mjs",
+    fixed_args = [
+        "$(rootpath :typescript/testing/accessibility.generated.js)",
+        "$(rootpath :typescript/accessibility-snapshot.generated.js)",
+        "$(rootpath :typescript/accessibility-snapshot-wire.generated.js)",
+    ],
+)
+
+# The shared accessibility corpus is the cross-binding contract: every
+# expectation validates against the node schema and every text file is the
+# renderer's output over its JSON, so a removed or renamed field fails here
+# before any binding sees it.
+js_test(
+    name = "accessibility-corpus-consistent",
+    size = "small",
+    data = [
+        "typescript/accessibility-node.schema.json",
+        ":typescript/testing/accessibility.generated.js",
+        "//common/src/web:accessibility-corpus",
+    ],
+    entry_point = "typescript/testing/corpus-consistent.mjs",
+    fixed_args = [
+        "common/src/web/accessibility",
+        "$(rootpath typescript/accessibility-node.schema.json)",
+        "$(rootpath :typescript/testing/accessibility.generated.js)",
+    ],
+)
+
 # ── test-only bundles ────────────────────────────────────────────────────────
 
 # Shared modules that no atom reaches yet still need a QUnit page. Each entry
 # under typescript/testing/ default-exports what its page drives. These are not
 # in ATOMS, so they are never published and never reach a binding.
 TEST_BUNDLES = {
+    "accessibility": "bot.accessibility.typescript.testing",
     "events": "bot.events.typescript",
     "keyboard": "bot.keyboard.typescript",
     "mouse": "bot.mouse.typescript",
 }
 
+# Every test-only module is a source of every test bundle: esbuild resolves
+# imports only among the sources it is given, and a bundle's entry may import
+# a sibling (the accessibility bundle imports its text renderer). Only what an
+# entry imports ends up in its bundle.
+TEST_BUNDLE_SRCS = ATOM_SRCS + glob(["typescript/testing/*.ts"])
+
 [
     typescript_atom(
         name = "testing/%s" % bundle,
-        srcs = ATOM_SRCS + ["typescript/testing/%s.ts" % bundle],
+        srcs = TEST_BUNDLE_SRCS,
         global_name = global_name,
         visibility = ["//visibility:private"],
     )
@@ -564,5 +609,8 @@ closure_test_suite(
     data = [
         ":atoms",
         ":deps",
+        # The accessibility corpus pages, loaded by
+        # test/accessibility_corpus_typescript_test.html.
+        "//common/src/web",
     ] + [":testing/%s-global" % bundle for bundle in TEST_BUNDLES],
 )

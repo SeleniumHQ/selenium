@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_description_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/accessibility-snapshot-global.js"></script>
+  <script type="text/javascript">
+    // Accessible description computation (accname 1.2 §4.3): aria-describedby,
+    // then aria-description, then the title attribute when it was not already
+    // used as the name.
+    var snapshot = window.bot.accessibility.typescript.snapshot;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function assertDescriptions(assert, expectations) {
+      Object.keys(expectations).forEach(function (id) {
+        assert.strictEqual(snapshot(byId(id)).description, expectations[id], '#' + id);
+      });
+    }
+
+    QUnit.test('aria-describedby concatenates references, hidden ones included', function (assert) {
+      assertDescriptions(assert, { 'db-one': 'Help text', 'db-two': 'Help text More help', 'db-hidden': 'Hidden help' });
+    });
+
+    QUnit.test('a referenced element contributes its full content, not just its name', function (assert) {
+      assertDescriptions(assert, { 'db-paragraph': 'A paragraph of help.' });
+    });
+
+    QUnit.test('aria-description is used when there is no aria-describedby', function (assert) {
+      assertDescriptions(assert, { 'desc-attr': 'Described inline', 'db-beats-desc': 'Help text' });
+    });
+
+    QUnit.test('title is the description when it was not the name', function (assert) {
+      assertDescriptions(assert, { 'title-with-content': 'Tip', 'title-with-label': 'Tip' });
+    });
+
+    QUnit.test('title is not repeated as the description when it was the name', function (assert) {
+      assert.strictEqual(snapshot(byId('title-only')).name, 'Tip');
+      assertDescriptions(assert, { 'title-only': '' });
+    });
+
+    QUnit.test('no source gives an empty string', function (assert) {
+      assertDescriptions(assert, { 'nothing': '' });
+    });
+
+    QUnit.test('the description does not change the name', function (assert) {
+      assert.strictEqual(snapshot(byId('db-one')).name, 'Save');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <span id="help">Help text</span><span id="more-help">More help</span>
+  <span id="hidden-help" style="display: none">Hidden help</span>
+  <p id="help-paragraph">A <em>paragraph</em> of help.</p>
+  <button id="db-one" aria-describedby="help">Save</button>
+  <button id="db-two" aria-describedby="help more-help">Save</button>
+  <button id="db-hidden" aria-describedby="hidden-help">Save</button>
+  <button id="db-paragraph" aria-describedby="help-paragraph">Save</button>
+  <button id="desc-attr" aria-description="Described inline">Save</button>
+  <button id="db-beats-desc" aria-describedby="help" aria-description="Ignored">Save</button>
+  <button id="title-with-content" title="Tip">Save</button>
+  <button id="title-with-label" title="Tip" aria-label="Close"></button>
+  <button id="title-only" title="Tip"></button>
+  <button id="nothing">Save</button>
+</body>
+
+</html>
