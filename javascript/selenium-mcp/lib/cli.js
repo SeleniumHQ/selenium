@@ -36,7 +36,9 @@ Options:
   --allowed-origins <list>    semicolon-separated origins the browser may navigate to
   --blocked-origins <list>    semicolon-separated origins the browser may not navigate to
   --allow-unrestricted-file-access
-                              allow browser_navigate to open file:// URLs
+                              allow browser_navigate to open file:// URLs, and
+                              browser_file_upload to upload files outside the working directory
+  --allow-evaluate            offer browser_evaluate, which runs JavaScript the agent writes in the page
   --isolated                  accepted for compatibility; every session already uses a fresh profile
   --log-level <level>         log to stderr at this level: severe, warning (default), info, fine,
                               all (all includes raw WebDriver traffic, so typed text such as passwords)
@@ -47,7 +49,6 @@ Options:
 const NOT_YET = {
   port: 'HTTP transport is planned for a later version; v0 serves stdio only',
   caps: 'optional tool groups are planned for a later version',
-  'allow-evaluate': 'browser_evaluate is planned for a later version',
 }
 
 /**
@@ -56,7 +57,8 @@ const NOT_YET = {
  * @param {!Array<string>} argv arguments after the script name
  * @return {{help: boolean, version: boolean, browser: string, headless: boolean,
  *     grid: (string|undefined), allowedOrigins: !Array<string>,
- *     blockedOrigins: !Array<string>, allowFileAccess: boolean, logLevel: string}}
+ *     blockedOrigins: !Array<string>, allowFileAccess: boolean, allowEvaluate: boolean,
+ *     logLevel: string}}
  * @throws {Error} on an unknown or invalid option
  */
 function parseCommandLine(argv) {
@@ -75,6 +77,7 @@ function parseCommandLine(argv) {
       'blocked-origins': { type: 'string' },
       isolated: { type: 'boolean' },
       'allow-unrestricted-file-access': { type: 'boolean' },
+      'allow-evaluate': { type: 'boolean' },
       'log-level': { type: 'string', default: 'warning' },
       help: { type: 'boolean', short: 'h' },
       version: { type: 'boolean', short: 'v' },
@@ -109,6 +112,7 @@ function parseCommandLine(argv) {
     allowedOrigins: splitList(values['allowed-origins']),
     blockedOrigins: splitList(values['blocked-origins']),
     allowFileAccess: !!values['allow-unrestricted-file-access'],
+    allowEvaluate: !!values['allow-evaluate'],
     logLevel,
   }
 }

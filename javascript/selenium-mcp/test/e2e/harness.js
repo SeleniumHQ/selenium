@@ -33,7 +33,13 @@ const ROOTS = {
   '/fixtures/': path.resolve(__dirname, '../fixtures'),
 }
 
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png' }
+const TYPES = {
+  '.html': 'text/html',
+  '.json': 'application/json',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.png': 'image/png',
+}
 
 /**
  * Serves the test pages over HTTP; file:// URLs behave differently enough

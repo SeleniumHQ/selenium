@@ -55,9 +55,14 @@ describe('cli', function () {
     assert.deepStrictEqual(config.blockedOrigins, ['c.test'])
   })
 
-  it('explains flags that are planned but not in v0', function () {
+  it('explains flags that are planned but not supported yet', function () {
     assert.throws(() => parseCommandLine(['--port', '8931']), /HTTP transport/)
     assert.throws(() => parseCommandLine(['--caps=network']), /not supported yet/)
+  })
+
+  it('offers browser_evaluate only with --allow-evaluate', function () {
+    assert.strictEqual(parseCommandLine([]).allowEvaluate, false)
+    assert.strictEqual(parseCommandLine(['--allow-evaluate']).allowEvaluate, true)
   })
 
   it('keeps file:// blocked unless asked', function () {

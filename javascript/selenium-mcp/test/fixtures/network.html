@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Network</title>
+</head>
+<body>
+  <button onclick="load()">Load data</button>
+  <p role="status" id="out">Nothing yet</p>
+  <script>
+    async function load() {
+      const data = await (await fetch('data.json')).json()
+      const missing = await fetch('missing.json')
+      if (!missing.ok) console.error(`missing.json returned ${missing.status}`)
+      document.getElementById('out').textContent = data.ok ? 'Loaded' : 'Broken'
+    }
+  </script>
+</body>
+</html>

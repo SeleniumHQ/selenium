@@ -21,11 +21,17 @@ const assert = require('node:assert')
 
 const { allTools } = require('../../lib/server')
 const { checkOrigin, normalizeUrl } = require('../../lib/tools/navigate')
-const { parseChecked, parseKey } = require('../../lib/tools/interact')
-const { Key } = require('selenium-webdriver')
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
 
-/** Every tool the plan puts in v0, named as @playwright/mcp names them. */
-const V0_TOOLS = [
+const { framePartOf, parseChecked, parseKey, resolveUploadPaths } = require('../../lib/tools/interact')
+const { formatRequest, isStatic } = require('../../lib/tools/bidi')
+const { formatResult } = require('../../lib/tools/evaluate')
+const { Key, WebElement } = require('selenium-webdriver')
+
+/** Every tool offered by default, named as @playwright/mcp names them. */
+const DEFAULT_TOOLS = [
   'browser_snapshot',
   'browser_click',
   'browser_type',
@@ -42,16 +48,31 @@ const V0_TOOLS = [
   'browser_tabs',
   'browser_close',
   'browser_install',
+  'browser_drag',
+  'browser_file_upload',
+  'browser_resize',
+  'browser_network_requests',
 ]
+
+/** The plan's v1 gate: the default tool list stays at 25 or fewer. */
+const MAX_DEFAULT_TOOLS = 25
 
 /** Agents pay for the tool list on every turn; the plan caps it. */
 const TOOL_LIST_TOKEN_BUDGET = 4000
 
 const tools = allTools()
+const defaultTools = allTools({ allowEvaluate: false })
 
 describe('tools', function () {
-  it('are exactly the v0 set', function () {
-    assert.deepStrictEqual(tools.map((t) => t.name).sort(), [...V0_TOOLS].sort())
+  it('are exactly the default set unless more are asked for', function () {
+    assert.deepStrictEqual(defaultTools.map((t) => t.name).sort(), [...DEFAULT_TOOLS].sort())
+    assert.ok(defaultTools.length <= MAX_DEFAULT_TOOLS, `${defaultTools.length} default tools`)
+  })
+
+  it('offer browser_evaluate only with --allow-evaluate', function () {
+    const names = allTools({ allowEvaluate: true }).map((t) => t.name)
+    assert.ok(names.includes('browser_evaluate'))
+    assert.ok(!defaultTools.some((t) => t.name === 'browser_evaluate'))
   })
 
   it('stay well inside the token budget', function () {
@@ -71,6 +92,88 @@ describe('tools', function () {
       }
       assert.ok(tool.description.length <= 200, `${tool.name} description is long`)
     }
+  })
+
+  describe('framePartOf', function () {
+    it('separates the frame part of a ref from the element', function () {
+      assert.strictEqual(framePartOf('e12'), '')
+      assert.strictEqual(framePartOf('f5e1'), 'f5')
+      assert.strictEqual(framePartOf('[f5f2e3]'), 'f5f2')
+    })
+  })
+
+  describe('resolveUploadPaths', function () {
+    let root
+    let outside
+
+    before(function () {
+      root = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-upload-'))
+      fs.writeFileSync(path.join(root, 'a.txt'), 'a')
+      fs.mkdirSync(path.join(root, 'dir'))
+      outside = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-outside-'))
+      fs.writeFileSync(path.join(outside, 'secret.txt'), 's')
+      fs.symlinkSync(path.join(outside, 'secret.txt'), path.join(root, 'link.txt'))
+    })
+
+    after(function () {
+      fs.rmSync(root, { recursive: true, force: true })
+      fs.rmSync(outside, { recursive: true, force: true })
+    })
+
+    it('resolves paths relative to the working directory', function () {
+      assert.deepStrictEqual(resolveUploadPaths(['a.txt'], {}, root), [fs.realpathSync(path.join(root, 'a.txt'))])
+    })
+
+    it('refuses files outside the working directory, symlinks included', function () {
+      const secret = path.join(outside, 'secret.txt')
+      assert.throws(() => resolveUploadPaths([secret], {}, root), /outside the working directory/)
+      assert.throws(() => resolveUploadPaths(['link.txt'], {}, root), /outside the working directory/)
+      assert.deepStrictEqual(resolveUploadPaths([secret], { allowFileAccess: true }, root), [fs.realpathSync(secret)])
+    })
+
+    it('refuses missing files, directories and an empty list', function () {
+      assert.throws(() => resolveUploadPaths(['nope.txt'], {}, root), /No such file/)
+      assert.throws(() => resolveUploadPaths(['dir'], {}, root), /Not a file/)
+      assert.throws(() => resolveUploadPaths([], {}, root), /at least one/)
+    })
+  })
+
+  describe('network requests', function () {
+    it('formats requests the way @playwright/mcp does', function () {
+      assert.strictEqual(
+        formatRequest({ method: 'GET', url: 'https://a.test/', status: 200, statusText: 'OK' }),
+        '[GET] https://a.test/ => [200] OK',
+      )
+      assert.strictEqual(
+        formatRequest({ method: 'POST', url: 'https://a.test/x' }),
+        '[POST] https://a.test/x => pending',
+      )
+      assert.strictEqual(
+        formatRequest({ method: 'GET', url: 'https://a.test/y', error: 'net::ERR_FAILED' }),
+        '[GET] https://a.test/y => failed: net::ERR_FAILED',
+      )
+    })
+
+    it('treats images, fonts, scripts and stylesheets as static', function () {
+      assert.ok(isStatic({ destination: 'image' }))
+      assert.ok(isStatic({ destination: '', mimeType: 'text/css; charset=utf-8' }))
+      assert.ok(isStatic({ destination: '', mimeType: 'application/javascript' }))
+      assert.ok(!isStatic({ destination: '', mimeType: 'application/json' }))
+      assert.ok(!isStatic({ destination: 'document', mimeType: 'text/html' }))
+    })
+  })
+
+  describe('evaluate results', function () {
+    it('are JSON, with elements and undefined spelled out', function () {
+      assert.strictEqual(formatResult(undefined), 'undefined')
+      assert.strictEqual(formatResult(3), '3')
+      assert.strictEqual(formatResult({ a: undefined }), '{\n  "a": "<undefined>"\n}')
+      assert.strictEqual(formatResult([new WebElement(null, 'id')]), '[\n  "<element>"\n]')
+    })
+
+    it('are cut when very long', function () {
+      assert.match(formatResult('x'.repeat(30000)), /more characters cut/)
+    })
   })
 
   describe('normalizeUrl', function () {

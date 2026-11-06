@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Drag</title>
+</head>
+<body>
+  <!-- HTML5 drag and drop, which pointer actions alone do not start -->
+  <button draggable="true" id="card" ondragstart="event.dataTransfer.setData('text/plain', 'card')">Card</button>
+  <button id="bin" ondragover="event.preventDefault()"
+          ondrop="event.preventDefault(); document.getElementById('out').textContent = 'Dropped ' + event.dataTransfer.getData('text/plain')">Bin</button>
+
+  <!-- A drag built on mouse events, as libraries such as jQuery UI do -->
+  <button id="handle" onmousedown="window.dragging = true">Handle</button>
+  <button id="target" onmouseup="if (window.dragging) document.getElementById('out').textContent = 'Moved handle'">Target</button>
+  <script>
+    document.addEventListener('mouseup', () => setTimeout(() => { window.dragging = false }))
+  </script>
+  <p role="status" id="out">Nothing yet</p>
+</body>
+</html>
