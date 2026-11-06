@@ -23,6 +23,7 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
 from selenium.common.exceptions import WebDriverException
@@ -52,3 +53,9 @@ class Domain:
 
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
+
+    def _add_callback(self, event: str, callback: Callable[[dict[str, Any]], Any]) -> int:
+        return self._transport.add_callback(event, callback)
+
+    def _remove_callback(self, event: str, callback_id: int) -> None:
+        self._transport.remove_callback(event, callback_id)

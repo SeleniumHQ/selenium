@@ -19,7 +19,7 @@
 
 Hand-written (not generated). :class:`Transport` serializes a command's params,
 sends them over the session websocket, parses the reply into its declared result
-type, and exposes the underlying connection for event subscription.
+type, and relays event callbacks to the underlying connection, which stores them.
 
 This is internal, unsupported implementation. See
 https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -27,9 +27,21 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
 from selenium.webdriver.common._bidi.errors import exception_for
+
+
+class _RawEvent:
+    """The event object ``WebSocketConnection`` keys a callback by, handing the params through unparsed."""
+
+    def __init__(self, event_class: str) -> None:
+        self.event_class = event_class
+
+    @staticmethod
+    def from_json(params: Any) -> Any:
+        return params
 
 
 class Transport:
@@ -55,6 +67,13 @@ class Transport:
             raise self._error(reply)
         value = reply["result"]
         return result.from_json(value) if result is not None else value
+
+    def add_callback(self, event: str, callback: Callable[[dict[str, Any]], Any]) -> int:
+        """Register ``callback`` for the raw params of ``event`` and return the connection's id for it."""
+        return self._connection.add_callback(_RawEvent(event), callback)
+
+    def remove_callback(self, event: str, callback_id: int) -> None:
+        self._connection.remove_callback(_RawEvent(event), callback_id)
 
     @staticmethod
     def _error(reply: dict) -> Exception:
