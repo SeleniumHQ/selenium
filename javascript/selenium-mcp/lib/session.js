@@ -18,7 +18,6 @@
 'use strict'
 
 const { Builder, error } = require('selenium-webdriver')
-const remote = require('selenium-webdriver/remote')
 const chrome = require('selenium-webdriver/chrome')
 const edge = require('selenium-webdriver/edge')
 const firefox = require('selenium-webdriver/firefox')
@@ -106,11 +105,7 @@ class Session {
   async defaultBuildDriver_(options) {
     const builder = new Builder().withCapabilities(options)
     if (this.config.grid) builder.usingServer(this.config.grid)
-    const driver = await builder.build()
-    // Without it, a file path typed into a file input names a file on the
-    // Grid node rather than the one the agent means on this machine.
-    if (this.config.grid) driver.setFileDetector(new remote.FileDetector())
-    return driver
+    return builder.build()
   }
 
   /** @return {boolean} whether a browser is running */

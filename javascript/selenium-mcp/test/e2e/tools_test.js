@@ -18,6 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
 
 const { refOf, startMcp, startPageServer } = require('./harness')
 
@@ -35,8 +38,8 @@ describe('selenium-mcp tools', function () {
     if (pages) await pages.close()
   })
 
-  async function open(path) {
-    const result = await mcp.call('browser_navigate', { url: pages.url(path) })
+  async function open(urlPath) {
+    const result = await mcp.call('browser_navigate', { url: pages.url(urlPath) })
     assert.ok(!result.isError, result.text)
     return result.text
   }
@@ -297,10 +300,12 @@ describe('selenium-mcp tools', function () {
     })
 
     it('refuses files outside the working directory', async function () {
+      const outside = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-e2e-')), 'outside.txt')
+      fs.writeFileSync(outside, 'outside')
       const page = await open('/fixtures/upload.html')
       const result = await mcp.call('browser_file_upload', {
         ref: refOf(page, 'button "Choose photo"'),
-        paths: ['/etc/hostname'],
+        paths: [outside],
       })
       assert.ok(result.isError)
       assert.match(result.text, /outside the working directory/)

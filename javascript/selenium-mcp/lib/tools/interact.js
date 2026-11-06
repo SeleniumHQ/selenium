@@ -21,6 +21,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const { By, Key, error } = require('selenium-webdriver')
+const remote = require('selenium-webdriver/remote')
 
 const { ELEMENT, REF, ToolError, actionResult, elementFor, onElement } = require('./common')
 
@@ -489,8 +490,14 @@ const tools = [
         if (files.length > 1 && (await input.getAttribute('multiple')) === null) {
           throw new ToolError('This file input takes only one file.')
         }
+        // A path typed on a Grid names a file on the node, so each file is
+        // sent there first. One at a time: the bindings' file detector only
+        // handles a single path.
+        const detector = new remote.FileDetector()
+        const targets = []
+        for (const file of files) targets.push(ctx.config.grid ? await detector.handleFile(driver, file) : file)
         // File inputs accept typed paths even when hidden, one per line.
-        await input.sendKeys(files.join('\n'))
+        await input.sendKeys(targets.join('\n'))
       })
       return actionResult(ctx, `Chose ${files.length} file${files.length === 1 ? '' : 's'} for ${ref}`)
     },
