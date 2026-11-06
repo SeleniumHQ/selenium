@@ -7,7 +7,8 @@ snapshot with element refs, and acts on those refs. It never has to write or gue
 It is the Selenium bindings exposed as tools, not a test runner. Selenium Manager comes with the bindings, so there is
 no driver to install.
 
-> **Status: v0.** Chrome, headless by default, over stdio, one browser per server. See [What v0 covers](#what-v0-covers).
+> **Status: v1 in progress.** Chrome, headless by default, over stdio, one browser per server. See
+> [What it covers](#what-it-covers).
 
 ## Setup
 
@@ -48,7 +49,8 @@ Any other MCP client: run `npx @selenium/mcp@latest` as a stdio server.
 | `--grid <url>`             | Run the browser on a Selenium Grid instead of locally.                  |
 | `--allowed-origins <list>` | Semicolon-separated origins or hosts (`*.example.com`) the browser may navigate to. |
 | `--blocked-origins <list>` | Semicolon-separated origins or hosts it may not navigate to.            |
-| `--allow-unrestricted-file-access` | Let `browser_navigate` open `file://` URLs (blocked by default).  |
+| `--allow-unrestricted-file-access` | Let `browser_navigate` open `file://` URLs, and `browser_file_upload` send files from outside the working directory (both blocked by default). |
+| `--allow-evaluate`         | Offer `browser_evaluate`, which runs JavaScript the agent writes in the page. |
 | `--log-level <level>`      | Log to stderr: `severe`, `warning` (default), `info`, `fine`, `all`. `all` includes raw WebDriver traffic, so typed text such as passwords. |
 
 Flag names match `@playwright/mcp` wherever they mean the same thing.
@@ -69,13 +71,18 @@ over.
 | `browser_select_option`    | Choose options in a `<select>` by value or label.                    |
 | `browser_press_key`        | Press a key or chord (`Enter`, `Control+a`).                         |
 | `browser_hover`            | Move the mouse over a ref.                                           |
+| `browser_drag`             | Drag one ref and drop it on another.                                 |
+| `browser_file_upload`      | Choose files for a file input, or for the button that opens a hidden one. |
 | `browser_wait_for`         | Wait for text to appear or go, or for some seconds.                  |
 | `browser_handle_dialog`    | Accept or dismiss an alert, confirm or prompt.                       |
 | `browser_take_screenshot`  | PNG of the viewport or of one ref.                                   |
 | `browser_console_messages` | Console messages and uncaught errors, collected over WebDriver BiDi. |
+| `browser_network_requests` | Requests since the page loaded, with status, over WebDriver BiDi.    |
+| `browser_resize`           | Resize the browser window.                                           |
 | `browser_tabs`             | List, open, select or close tabs.                                    |
 | `browser_close`            | Close the browser; the next call starts a new one.                   |
 | `browser_install`          | Have Selenium Manager install the browser and driver.                |
+| `browser_evaluate`         | Run a JavaScript function on the page or a ref. Only with `--allow-evaluate`. |
 
 Every action returns the page's URL, title and a fresh snapshot, so the agent rarely needs to ask for one.
 
@@ -98,20 +105,22 @@ Every action returns the page's URL, title and a fresh snapshot, so the agent ra
 - Content inside an iframe gets refs prefixed with the frame's own ref (`f5e1`), and tools act on them directly.
 - Password values are never shown.
 
-## What v0 covers
+## What it covers
 
-v0 is the smallest useful server: Chrome, headless, stdio, the tools above. Not yet: other browsers under test, HTTP
-transport, more than one session, network and storage tools, `browser_evaluate`, and the
+Chrome, headless, stdio, and the tools above. Not yet: Firefox and Edge under test, the opt-in tool groups behind
+`--caps` (request interception, storage, coordinates, PDF), HTTP transport, more than one session, and the
 `selenium_*` tools (Grid status, `selenium_doctor`). Those come in later releases.
 
 ## Security
 
-- No tool runs arbitrary JavaScript in v0.
+- No tool runs JavaScript the agent writes unless the server is started with `--allow-evaluate`.
+- `browser_file_upload` sends only files inside the server's working directory unless started with
+  `--allow-unrestricted-file-access`, since an upload hands the file to whatever page is open.
 - `browser_navigate` opens only http(s), `about:blank` and `data:` URLs; `file://` needs
   `--allow-unrestricted-file-access`, and `data:` is refused when `--allowed-origins` is set.
 - `--allowed-origins` and `--blocked-origins` restrict where `browser_navigate` can go. They do not stop links,
   redirects or scripts on a page from going elsewhere, so they are not a browser-wide security boundary.
-- Snapshots and screenshots are the only page data returned.
+- Snapshots, screenshots, console messages and request URLs and statuses are the only page data returned by default.
 
 ## Development
 

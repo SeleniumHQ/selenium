@@ -28,6 +28,7 @@ const { RefTable } = require('./snapshot')
 const log_ = logging.getLogger('selenium.mcp.session')
 
 const MAX_CONSOLE_MESSAGES = 1000
+const MAX_NETWORK_REQUESTS = 500
 // How long close() waits for browsers discarded after a crash to quit.
 const DISCARD_WAIT_MS = 5000
 const WINDOW_SIZE = { width: 1280, height: 720 }
@@ -92,6 +93,8 @@ class Session {
     this.quitting_ = new Set()
     this.discardWaitMs_ = hooks.discardWaitMs ?? DISCARD_WAIT_MS
     this.consoleMessages = []
+    /** Requests since the page was loaded, by BiDi request id and redirect count. */
+    this.networkRequests = new Map()
     this.driver_ = null
     this.starting_ = null
     // Bumped by close(), so a start that finishes afterwards knows to quit.
@@ -133,11 +136,16 @@ class Session {
       await quietlyQuit(driver)
       throw new StartAbandonedError()
     }
-    this.consoleMessages = []
+    this.clearPageLogs()
     try {
       await this.listenToConsole_(driver)
     } catch (e) {
       log_.warning(`console messages unavailable: ${e.message}`)
+    }
+    try {
+      await this.listenToNetwork_(driver)
+    } catch (e) {
+      log_.warning(`network requests unavailable: ${e.message}`)
     }
     if (generation !== this.generation_) {
       await quietlyQuit(driver)
@@ -151,9 +159,11 @@ class Session {
   }
 
   async listenToConsole_(driver) {
-    const getLogInspector = require('selenium-webdriver/bidi/logInspector')
-    const inspector = await getLogInspector(driver)
-    await inspector.onLog((entry) => {
+    // Not bidi/logInspector: it reads every message on the connection as a
+    // log entry and throws on the network events listened to below.
+    const { getBidiConnection } = require('selenium-webdriver/lib/bidi_connection')
+    const bidi = await getBidiConnection(driver)
+    await bidi.addCallback('log.entryAdded', (entry) => {
       this.consoleMessages.push({
         level: normalizeLevel(entry.method || entry.level),
         text: entry.text,
@@ -161,6 +171,41 @@ class Session {
       })
       if (this.consoleMessages.length > MAX_CONSOLE_MESSAGES) this.consoleMessages.shift()
     })
+  }
+
+  async listenToNetwork_(driver) {
+    // Not bidi/network.js either: it hands every network event to every
+    // callback whatever its type, which would mix up the three below.
+    const { getBidiConnection } = require('selenium-webdriver/lib/bidi_connection')
+    const bidi = await getBidiConnection(driver)
+    await bidi.addCallback('network.beforeRequestSent', (params) => {
+      const { request } = params
+      this.networkRequests.set(requestKey(params), {
+        method: request.method,
+        url: request.url,
+        destination: request.destination || '',
+      })
+      if (this.networkRequests.size > MAX_NETWORK_REQUESTS) {
+        this.networkRequests.delete(this.networkRequests.keys().next().value)
+      }
+    })
+    await bidi.addCallback('network.responseCompleted', (params) => {
+      const entry = this.networkRequests.get(requestKey(params))
+      if (!entry) return
+      entry.status = params.response.status
+      entry.statusText = params.response.statusText
+      entry.mimeType = params.response.mimeType
+    })
+    await bidi.addCallback('network.fetchError', (params) => {
+      const entry = this.networkRequests.get(requestKey(params))
+      if (entry) entry.error = params.errorText
+    })
+  }
+
+  /** Forgets the console messages and requests of the page being left. */
+  clearPageLogs() {
+    this.consoleMessages = []
+    this.networkRequests.clear()
   }
 
   /**
@@ -208,6 +253,16 @@ class Session {
   isSessionGone(e) {
     return e instanceof error.NoSuchSessionError || (e && /ECONNREFUSED|session deleted/i.test(e.message || ''))
   }
+}
+
+/**
+ * A redirect reuses its request's id, so the redirect count tells the hops apart.
+ *
+ * @param {{request: {request: string}, redirectCount: number}} params a BiDi network event
+ * @return {string}
+ */
+function requestKey(params) {
+  return `${params.request.request}/${params.redirectCount || 0}`
 }
 
 /**

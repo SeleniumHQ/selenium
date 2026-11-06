@@ -17,7 +17,11 @@
 
 'use strict'
 
+const fs = require('node:fs')
+const path = require('node:path')
+
 const { By, Key, error } = require('selenium-webdriver')
+const remote = require('selenium-webdriver/remote')
 
 const { ELEMENT, REF, ToolError, actionResult, elementFor, onElement } = require('./common')
 
@@ -228,6 +232,74 @@ async function pageText(driver) {
     return texts.join('\\n')`)
 }
 
+/**
+ * @param {string} ref e.g. e12, or f5e1 for an element in a frame
+ * @return {string} the frame part of the ref, empty for the top document
+ */
+function framePartOf(ref) {
+  return String(ref)
+    .replace(/^\[|\]$/g, '')
+    .replace(/e\d+$/, '')
+}
+
+/**
+ * Resolves the paths an agent gave for upload, refusing anything outside the
+ * working directory unless the server was started to allow it: an upload
+ * hands the file's contents to whatever page is open.
+ *
+ * @param {!Array<string>} paths
+ * @param {{allowFileAccess: (boolean|undefined)}} config
+ * @param {string=} root
+ * @return {!Array<string>} absolute paths of existing files
+ * @throws {ToolError}
+ */
+function resolveUploadPaths(paths, config, root = process.cwd()) {
+  if (!paths.length) throw new ToolError('Give at least one file path.')
+  const realRoot = fs.realpathSync(root)
+  return paths.map((p) => {
+    const absolute = path.resolve(root, p)
+    let real
+    try {
+      real = fs.realpathSync(absolute)
+    } catch {
+      throw new ToolError(`No such file: ${absolute}`)
+    }
+    if (!fs.statSync(real).isFile()) throw new ToolError(`Not a file: ${absolute}`)
+    const inside = real === realRoot || real.startsWith(realRoot + path.sep)
+    if (!inside && !config.allowFileAccess) {
+      throw new ToolError(
+        `${absolute} is outside the working directory (${realRoot}). ` +
+          'Start the server with --allow-unrestricted-file-access to upload files from anywhere.',
+      )
+    }
+    return real
+  })
+}
+
+/**
+ * Finds the file input a ref stands for: the input itself, the input a label
+ * is for, or, since sites often hide the input behind a styled button that
+ * the snapshot shows instead, the only file input in the nearest enclosing
+ * element that has one.
+ *
+ * @return {!Promise<?Object>} the input element, or null if none fits
+ */
+async function fileInputFor(driver, element) {
+  return driver.executeScript(
+    `const el = arguments[0]
+     const isFile = (e) => e instanceof HTMLInputElement && e.type === 'file'
+     if (isFile(el)) return el
+     if (el instanceof HTMLLabelElement && isFile(el.control)) return el.control
+     for (let scope = el; scope; scope = scope.parentElement) {
+       const inputs = scope.querySelectorAll('input[type=file]')
+       if (inputs.length === 1) return inputs[0]
+       if (inputs.length > 1) return null
+     }
+     return null`,
+    element,
+  )
+}
+
 const tools = [
   {
     name: 'browser_click',
@@ -371,6 +443,66 @@ const tools = [
     },
   },
   {
+    name: 'browser_drag',
+    description: 'Drag one element and drop it on another',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        startElement: { ...ELEMENT, description: 'Human-readable description of the element to drag' },
+        startRef: { ...REF, description: 'Ref of the element to drag' },
+        endElement: { ...ELEMENT, description: 'Human-readable description of the element to drop on' },
+        endRef: { ...REF, description: 'Ref of the element to drop on' },
+      },
+      required: ['startRef', 'endRef'],
+    },
+    async run(ctx, { startRef, endRef }) {
+      if (framePartOf(startRef) !== framePartOf(endRef)) {
+        throw new ToolError(
+          `${startRef} and ${endRef} are in different frames; an element can only be dropped in its own frame.`,
+        )
+      }
+      const driver = await ctx.session.driver()
+      const source = await elementFor(ctx, startRef)
+      const target = await elementFor(ctx, endRef)
+      await onElement(startRef, () => driver.actions().dragAndDrop(source, target).perform())
+      return actionResult(ctx, `Dragged ${startRef} to ${endRef}`)
+    },
+  },
+  {
+    name: 'browser_file_upload',
+    description: 'Choose files for a file input, or for the button that opens one',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        element: ELEMENT,
+        ref: REF,
+        paths: { type: 'array', items: { type: 'string' }, description: 'Paths of the files to upload' },
+      },
+      required: ['ref', 'paths'],
+    },
+    async run(ctx, { ref, paths }) {
+      const files = resolveUploadPaths(paths, ctx.config)
+      const element = await elementFor(ctx, ref)
+      const driver = await ctx.session.driver()
+      await onElement(ref, async () => {
+        const input = await fileInputFor(driver, element)
+        if (!input) throw new ToolError(`${ref} is not a file input, and no single file input belongs to it.`)
+        if (files.length > 1 && (await input.getAttribute('multiple')) === null) {
+          throw new ToolError('This file input takes only one file.')
+        }
+        // A path typed on a Grid names a file on the node, so each file is
+        // sent there first. One at a time: the bindings' file detector only
+        // handles a single path.
+        const detector = new remote.FileDetector()
+        const targets = []
+        for (const file of files) targets.push(ctx.config.grid ? await detector.handleFile(driver, file) : file)
+        // File inputs accept typed paths even when hidden, one per line.
+        await input.sendKeys(targets.join('\n'))
+      })
+      return actionResult(ctx, `Chose ${files.length} file${files.length === 1 ? '' : 's'} for ${ref}`)
+    },
+  },
+  {
     name: 'browser_wait_for',
     description: 'Wait for text to appear or disappear, or for a time to pass',
     inputSchema: {
@@ -442,4 +574,4 @@ const tools = [
   },
 ]
 
-module.exports = { tools, parseChecked, parseKey, setSliderValue }
+module.exports = { tools, framePartOf, parseChecked, parseKey, resolveUploadPaths, setSliderValue }

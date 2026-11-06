@@ -34,13 +34,16 @@ const TOOL_GROUPS = [
   require('./tools/navigate').tools,
   require('./tools/interact').tools,
   require('./tools/bidi').tools,
+  require('./tools/evaluate').tools,
 ]
 
 /**
- * @return {!Array<!Object>} every v0 tool definition
+ * @param {!Object=} config parsed command line; omit for every tool there is
+ * @return {!Array<!Object>} the tool definitions this configuration offers
  */
-function allTools() {
-  return TOOL_GROUPS.flat()
+function allTools(config) {
+  const tools = TOOL_GROUPS.flat()
+  return config ? tools.filter((t) => !t.enabled || t.enabled(config)) : tools
 }
 
 /**
@@ -65,7 +68,7 @@ function packageVersion() {
 function createServer(config, deps = {}) {
   const session = deps.session || new Session(config)
   const ctx = { config, session }
-  const tools = allTools()
+  const tools = allTools(config)
   const byName = new Map(tools.map((t) => [t.name, t]))
 
   const server = new Server(

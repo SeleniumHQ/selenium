@@ -29,7 +29,8 @@ function fakeDriver() {
     async quit() {
       this.quits++
     },
-    async getBidi() {
+    // The BiDi connection starts by reading the session's capabilities.
+    async getCapabilities() {
       throw new Error('no BiDi in this test')
     },
   }
@@ -52,11 +53,11 @@ function controlledBuilds() {
 const CONFIG = { browser: 'chrome', headless: true }
 
 describe('Session lifecycle', function () {
-  it('hands out the browser only once console capture is listening', async function () {
+  it('hands out the browser only once console and network capture are listening', async function () {
     let listening
     const driver = {
       async quit() {},
-      getBidi: () =>
+      getCapabilities: () =>
         new Promise((_resolve, reject) => {
           listening = () => reject(new Error('no BiDi in this test'))
         }),

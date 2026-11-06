@@ -18,6 +18,9 @@
 'use strict'
 
 const assert = require('node:assert')
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
 
 const { refOf, startMcp, startPageServer } = require('./harness')
 
@@ -35,8 +38,8 @@ describe('selenium-mcp tools', function () {
     if (pages) await pages.close()
   })
 
-  async function open(path) {
-    const result = await mcp.call('browser_navigate', { url: pages.url(path) })
+  async function open(urlPath) {
+    const result = await mcp.call('browser_navigate', { url: pages.url(urlPath) })
     assert.ok(!result.isError, result.text)
     return result.text
   }
@@ -49,7 +52,7 @@ describe('selenium-mcp tools', function () {
 
   it('lists the tools without starting a browser', async function () {
     const { tools } = await mcp.client.listTools()
-    assert.strictEqual(tools.length, 16)
+    assert.strictEqual(tools.length, 20)
     assert.strictEqual(mcp.session.isOpen, false)
   })
 
@@ -240,6 +243,85 @@ describe('selenium-mcp tools', function () {
     })
   })
 
+  describe('drag, upload and resize', function () {
+    it('drags with HTML5 drag and drop', async function () {
+      const page = await open('/fixtures/drag.html')
+      const dropped = await ok('browser_drag', {
+        startRef: refOf(page, 'button "Card"'),
+        endRef: refOf(page, 'button "Bin"'),
+      })
+      assert.match(dropped, /status "Dropped card"/)
+    })
+
+    it('drags with mouse events', async function () {
+      const page = await open('/fixtures/drag.html')
+      const moved = await ok('browser_drag', {
+        startRef: refOf(page, 'button "Handle"'),
+        endRef: refOf(page, 'button "Target"'),
+      })
+      assert.match(moved, /status "Moved handle"/)
+    })
+
+    it('refuses to drag between frames', async function () {
+      const page = await open('/fixtures/frames.html')
+      const inner = refOf(page, /\[(f\d+e\d+)\]/)
+      const outer = refOf(page, 'button "Outer button"')
+      const result = await mcp.call('browser_drag', { startRef: inner, endRef: outer })
+      assert.ok(result.isError)
+      assert.match(result.text, /different frames/)
+    })
+
+    it('uploads through the button that opens a hidden file input', async function () {
+      const page = await open('/fixtures/upload.html')
+      const chosen = await ok('browser_file_upload', {
+        ref: refOf(page, 'button "Choose photo"'),
+        paths: ['test/fixtures/data.json'],
+      })
+      assert.match(chosen, /status "Chose data.json"/)
+    })
+
+    it('uploads several files when the input allows it', async function () {
+      const page = await open('/fixtures/upload.html')
+      const chosen = await ok('browser_file_upload', {
+        ref: refOf(page, 'button "Add documents"'),
+        paths: ['test/fixtures/data.json', 'test/fixtures/drag.html'],
+      })
+      assert.match(chosen, /status "Chose data.json, drag.html"/)
+    })
+
+    it('refuses several files for an input that takes one', async function () {
+      const page = await open('/fixtures/upload.html')
+      const result = await mcp.call('browser_file_upload', {
+        ref: refOf(page, 'button "Choose photo"'),
+        paths: ['test/fixtures/data.json', 'test/fixtures/drag.html'],
+      })
+      assert.ok(result.isError)
+      assert.match(result.text, /only one file/)
+    })
+
+    it('refuses files outside the working directory', async function () {
+      const outside = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-e2e-')), 'outside.txt')
+      fs.writeFileSync(outside, 'outside')
+      const page = await open('/fixtures/upload.html')
+      const result = await mcp.call('browser_file_upload', {
+        ref: refOf(page, 'button "Choose photo"'),
+        paths: [outside],
+      })
+      assert.ok(result.isError)
+      assert.match(result.text, /outside the working directory/)
+    })
+
+    it('resizes the window', async function () {
+      await open('/fixtures/interactions.html')
+      const resized = await ok('browser_resize', { width: 800, height: 600 })
+      assert.match(resized, /Resized the window to 800x600/)
+      const driver = await mcp.session.driver()
+      const rect = await driver.manage().window().getRect()
+      assert.deepStrictEqual([rect.width, rect.height], [800, 600])
+      await ok('browser_resize', { width: 1280, height: 720 })
+    })
+  })
+
   describe('dialogs', function () {
     it('answers a prompt and dismisses a confirm', async function () {
       let page = await open('/common/alerts.html')
@@ -310,6 +392,73 @@ describe('selenium-mcp tools', function () {
       const fresh = await ok('browser_console_messages', {})
       assert.ok(!fresh.includes('fixture warning'), fresh)
       await ok('browser_tabs', { action: 'close' })
+    })
+  })
+
+  describe('network', function () {
+    it('lists requests over BiDi, leaving out successful static ones by default', async function () {
+      const page = await open('/fixtures/network.html')
+      const loaded = await ok('browser_click', { ref: refOf(page, 'button "Load data"') })
+      assert.match(loaded, /status "Loaded"/)
+      const requests = await ok('browser_network_requests', {})
+      assert.match(requests, /\[GET\] http:\/\/[^ ]+\/fixtures\/network\.html => \[200\]/)
+      assert.match(requests, /\[GET\] [^ ]+\/fixtures\/data\.json => \[200\]/)
+      assert.match(requests, /\[GET\] [^ ]+\/fixtures\/missing\.json => \[404\]/)
+      const errors = await ok('browser_console_messages', { level: 'error' })
+      assert.match(errors, /missing\.json returned 404/)
+    })
+
+    it('starts over on a new page', async function () {
+      await open('/fixtures/network.html')
+      await open('/fixtures/interactions.html')
+      const requests = await ok('browser_network_requests', {})
+      assert.ok(!requests.includes('network.html'), requests)
+      assert.match(requests, /interactions\.html/)
+    })
+  })
+
+  describe('evaluate', function () {
+    let evaluating
+
+    before(async function () {
+      evaluating = await startMcp({ allowEvaluate: true })
+    })
+
+    after(async function () {
+      if (evaluating) await evaluating.close()
+    })
+
+    it('is offered only with --allow-evaluate', async function () {
+      const names = (await evaluating.client.listTools()).tools.map((t) => t.name)
+      assert.ok(names.includes('browser_evaluate'))
+      const unknown = await mcp.call('browser_evaluate', { function: '() => 1' })
+      assert.ok(unknown.isError)
+      assert.match(unknown.text, /Unknown tool/)
+    })
+
+    it('returns what a function returns, awaiting promises', async function () {
+      await evaluating.call('browser_navigate', { url: pages.url('/fixtures/interactions.html') })
+      const title = await evaluating.call('browser_evaluate', { function: '() => document.title' })
+      assert.strictEqual(title.text, '### Result\n"Interactions fixture"')
+      const later = await evaluating.call('browser_evaluate', {
+        function: 'async () => new Promise((r) => setTimeout(() => r({ n: 2 }), 50))',
+      })
+      assert.match(later.text, /"n": 2/)
+    })
+
+    it('passes the element for a ref', async function () {
+      const page = (await evaluating.call('browser_snapshot', {})).text
+      const text = await evaluating.call('browser_evaluate', {
+        function: '(el) => el.textContent',
+        ref: refOf(page, 'button "Hover me"'),
+      })
+      assert.strictEqual(text.text, '### Result\n"Hover me"')
+    })
+
+    it('reports a function that throws', async function () {
+      const thrown = await evaluating.call('browser_evaluate', { function: '() => { throw new Error("boom") }' })
+      assert.ok(thrown.isError)
+      assert.match(thrown.text, /threw: .*boom/)
     })
   })
 

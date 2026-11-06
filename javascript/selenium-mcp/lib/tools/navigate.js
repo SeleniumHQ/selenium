@@ -134,8 +134,8 @@ const tools = [
       checkOrigin(target, ctx.config)
       const driver = await ctx.session.driver()
       await driver.switchTo().defaultContent()
-      // Messages from the previous page would only mislead the agent about this one.
-      ctx.session.consoleMessages = []
+      // Messages and requests from the previous page would only mislead the agent about this one.
+      ctx.session.clearPageLogs()
       await driver.get(target)
       ctx.session.refs.clear()
       return actionResult(ctx, `Navigated to ${target}`)
@@ -147,7 +147,7 @@ const tools = [
     inputSchema: { type: 'object', properties: {} },
     async run(ctx) {
       const driver = await ctx.session.driver()
-      ctx.session.consoleMessages = []
+      ctx.session.clearPageLogs()
       await driver.navigate().back()
       ctx.session.refs.clear()
       return actionResult(ctx, 'Navigated back')
@@ -179,12 +179,12 @@ const tools = [
         case 'new':
           await driver.switchTo().newWindow('tab')
           ctx.session.refs.clear()
-          ctx.session.consoleMessages = []
+          ctx.session.clearPageLogs()
           return actionResult(ctx, 'Opened a new tab')
         case 'select':
           await driver.switchTo().window(pick(index))
           ctx.session.refs.clear()
-          ctx.session.consoleMessages = []
+          ctx.session.clearPageLogs()
           return actionResult(ctx, `Selected tab ${index}`)
         case 'close': {
           const current = await driver.getWindowHandle()
@@ -198,12 +198,33 @@ const tools = [
           const remaining = handles.filter((h) => h !== target)
           await driver.switchTo().window(target === current ? remaining[0] : current)
           ctx.session.refs.clear()
-          if (target === current) ctx.session.consoleMessages = []
+          if (target === current) ctx.session.clearPageLogs()
           return actionResult(ctx, `Closed tab ${index === undefined ? handles.indexOf(current) : index}`)
         }
         default:
           throw new ToolError(`Unknown action: ${action}`)
       }
+    },
+  },
+  {
+    name: 'browser_resize',
+    description: 'Resize the browser window',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        width: { type: 'number', description: 'Width in CSS pixels' },
+        height: { type: 'number', description: 'Height in CSS pixels' },
+      },
+      required: ['width', 'height'],
+    },
+    async run(ctx, { width, height }) {
+      for (const [name, value] of Object.entries({ width, height })) {
+        if (!Number.isInteger(value) || value <= 0) throw new ToolError(`${name} must be a whole number above 0.`)
+      }
+      const driver = await ctx.session.driver()
+      const rect = await driver.manage().window().setRect({ width, height })
+      // A window manager or the screen can cap the size, so report what it became.
+      return actionResult(ctx, `Resized the window to ${rect.width}x${rect.height}`)
     },
   },
   {
