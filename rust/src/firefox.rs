@@ -566,7 +566,7 @@ impl SeleniumManager for FirefoxManager {
             if X32.is(arch) || major_browser_version < 42 {
                 platform_label = "win32";
             } else if ARM64.is(arch) {
-                platform_label = "win-aarch64";
+                platform_label = "win64-aarch64";
             } else {
                 platform_label = "win64";
             }
@@ -801,6 +801,59 @@ mod unit_tests {
             firefox_manager.set_arch(d.get(2).unwrap().to_string());
             let driver_url = firefox_manager.get_driver_url().unwrap();
             assert_eq!(d.get(3).unwrap().to_string(), driver_url);
+        });
+    }
+
+    #[test]
+    fn test_browser_url() {
+        let mut firefox_manager = FirefoxManager::new().unwrap();
+
+        let data = vec![
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "x86",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win32/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "x86_64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win64/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "aarch64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win64-aarch64/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "nightly",
+                "162.0a1",
+                "windows",
+                "aarch64",
+                "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=win64-aarch64&lang=en-US",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "linux",
+                "aarch64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/linux-aarch64/en-US/firefox-145.0.tar.xz",
+            ],
+        ];
+
+        data.iter().for_each(|d| {
+            firefox_manager.set_browser_version(d.get(1).unwrap().to_string());
+            firefox_manager.set_os(d.get(2).unwrap().to_string());
+            firefox_manager.set_arch(d.get(3).unwrap().to_string());
+            let browser_url = firefox_manager
+                .get_browser_url_for_download(d.first().unwrap())
+                .unwrap();
+            assert_eq!(d.get(4).unwrap().to_string(), browser_url);
         });
     }
 }
