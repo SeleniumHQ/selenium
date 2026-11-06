@@ -42,6 +42,8 @@ from enum import Enum
 from importlib import import_module
 from typing import Any
 
+from typing_extensions import Self
+
 from selenium.common.exceptions import WebDriverException
 
 logger = logging.getLogger(__name__)
@@ -70,7 +72,7 @@ class UnsetType:
 
     _instance: UnsetType | None = None
 
-    def __new__(cls) -> UnsetType:
+    def __new__(cls) -> Self:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
