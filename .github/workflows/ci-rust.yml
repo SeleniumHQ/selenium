@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   tests:
@@ -15,11 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos, ubuntu-24.04-arm, windows]
-        # macOS runners are scarce, so only use for PRs and nightly runs
-        exclude:
-          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
