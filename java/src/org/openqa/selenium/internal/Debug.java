@@ -19,6 +19,7 @@ package org.openqa.selenium.internal;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -76,8 +77,8 @@ public class Debug {
    *
    * @return {@link Level#INFO} while {@link #isDebugging()} is {@code true}, {@link Level#FINE}
    *     otherwise
-   * @deprecated Log diagnostics at a fixed level such as {@link Level#FINE}. {@link
-   *     #configureLogger()} makes those records visible when debugging is enabled.
+   * @deprecated Log diagnostics through {@link #log(Logger, Level, String)} at a fixed level such
+   *     as {@link Level#FINE}.
    */
   @Deprecated(forRemoval = true)
   public static Level getDebugLogLevel() {
@@ -144,6 +145,50 @@ public class Debug {
         enable(enabledLevel);
       }
     }
+  }
+
+  /**
+   * Writes one diagnostic after {@link #configureLogger()}.
+   *
+   * <p>The debug switches are read on this call, so a caller created before debugging is turned on
+   * still emits the record. The record stays at {@code level} and is not promoted to {@link
+   * Level#INFO}.
+   *
+   * @param logger logger that receives the record
+   * @param level level of the record, usually {@link Level#FINE}
+   * @param message message text
+   */
+  public static void log(Logger logger, Level level, String message) {
+    configureLogger();
+    logger.log(level, message);
+  }
+
+  /**
+   * Writes one diagnostic, with an exception, after {@link #configureLogger()}.
+   *
+   * @param logger logger that receives the record
+   * @param level level of the record, usually {@link Level#FINE}
+   * @param message message text
+   * @param thrown exception attached to the record
+   * @see #log(Logger, Level, String)
+   */
+  public static void log(Logger logger, Level level, String message, Throwable thrown) {
+    configureLogger();
+    logger.log(level, message, thrown);
+  }
+
+  /**
+   * Writes one diagnostic after {@link #configureLogger()}. The supplier runs only when the record
+   * will be written.
+   *
+   * @param logger logger that receives the record
+   * @param level level of the record, usually {@link Level#FINE}
+   * @param message message built only when the logger will write the record
+   * @see #log(Logger, Level, String)
+   */
+  public static void log(Logger logger, Level level, Supplier<String> message) {
+    configureLogger();
+    logger.log(level, message);
   }
 
   /** Returns the level asked for by the debug switches, or {@code null} when none is enabled. */

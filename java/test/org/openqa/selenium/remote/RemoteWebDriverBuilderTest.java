@@ -41,6 +41,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -638,6 +642,61 @@ class RemoteWebDriverBuilderTest {
             .build();
 
     assertThat(driver).isInstanceOf(HasDevTools.class);
+  }
+
+  @Test
+  void oneOfMetadataAndCapabilityOverwritesLogAtFineWhenDebugIsEnabled() {
+    Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
+    Logger selenium = Logger.getLogger("org.openqa.selenium");
+    Level previousLoggerLevel = logger.getLevel();
+    Level previousSeleniumLevel = selenium.getLevel();
+    String previousDebug = System.getProperty("selenium.debug");
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(null);
+    selenium.setLevel(Level.INFO);
+    logger.addHandler(handler);
+    try {
+      RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
+      // The builder already exists. Return to the default threshold, then enable debugging.
+      selenium.setLevel(Level.INFO);
+      System.setProperty("selenium.debug", "true");
+      builder
+          .oneOf(new ImmutableCapabilities("browserName", "firefox"))
+          .oneOf(new ImmutableCapabilities("browserName", "chrome"))
+          .addMetadata("cloud:key", "one")
+          .addMetadata("cloud:key", "two")
+          .setCapability("se:cheese", "brie")
+          .setCapability("se:cheese", "cheddar");
+
+      assertThat(records)
+          .anyMatch(
+              record -> record.getMessage().contains("Removing existing requested capabilities"))
+          .anyMatch(record -> record.getMessage().contains("Overwriting metadata"))
+          .anyMatch(record -> record.getMessage().contains("Overwriting capability"))
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLoggerLevel);
+      selenium.setLevel(previousSeleniumLevel);
+      if (previousDebug == null) {
+        System.clearProperty("selenium.debug");
+      } else {
+        System.setProperty("selenium.debug", previousDebug);
+      }
+    }
   }
 
   @SuppressWarnings("unchecked")
