@@ -57,6 +57,7 @@ final class Schema {
   private final List<String> commands = new ArrayList<>();
   private final List<String> events = new ArrayList<>();
   private final Map<String, String> types = new LinkedHashMap<>();
+  private String vendor;
 
   /** Makes {@code ref} reachable as a command's params, i.e. sent by the caller. */
   Schema sends(String ref) {
@@ -109,6 +110,12 @@ final class Schema {
     return this;
   }
 
+  /** Sets the schema's vendor section, e.g. {@code {'moz': {'extends': {...}}}}. */
+  Schema vendor(String json) {
+    vendor = json;
+    return this;
+  }
+
   Generated generate() {
     String typesJson =
         types.entrySet().stream()
@@ -121,7 +128,9 @@ final class Schema {
                 + String.join(", ", events)
                 + "], 'types': {"
                 + typesJson
-                + "}}")
+                + "}"
+                + (vendor == null ? "" : ", 'vendor': " + vendor)
+                + "}")
             .replace('\'', '"');
     try {
       Path dir = Files.createTempDirectory("bidi-generator-test");
