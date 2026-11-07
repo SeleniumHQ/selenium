@@ -15062,7 +15062,8 @@
       "kind": "alias",
       "type": {
         "ref": "permissions.setPermission"
-      }
+      },
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissionscommand"
     },
     "permissions.PermissionDescriptor": {
       "kind": "record",
@@ -15076,6 +15077,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-permissiondescriptor",
       "outbound": true,
       "inbound": false
     },
@@ -15086,7 +15088,8 @@
         "denied",
         "prompt"
       ],
-      "primitive": "string"
+      "primitive": "string",
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-permissionstate"
     },
     "permissions.setPermission": {
       "kind": "record",
@@ -15108,6 +15111,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-setpermission",
       "outbound": false,
       "inbound": false
     },
@@ -15155,6 +15159,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-setpermissionparameters",
       "outbound": true,
       "inbound": false
     },

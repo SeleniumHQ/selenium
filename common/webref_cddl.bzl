@@ -9,7 +9,7 @@ see scripts/update_cddl.py for how they are resolved and when the pins advance.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 # The w3c/webref "main" commit every CDDL grammar and dfns index below is taken from.
-_COMMIT = "094e50116ac02149aba555e0e321ff30d00cd406"
+_COMMIT = "d1752443d7329c98477feb6c1fed484ee5eaf543"
 _CDDL_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/cddl".format(commit = _COMMIT)
 _DFNS_BASE_URL = "https://raw.githubusercontent.com/w3c/webref/{commit}/ed/dfns".format(commit = _COMMIT)
 
@@ -21,7 +21,7 @@ _BIDI_SPEC_HTML_URL = "https://raw.githubusercontent.com/w3c/webdriver-bidi/{com
     commit = _BIDI_SPEC_HTML_COMMIT,
 )
 
-# The last mozilla-firefox/firefox "beta" commit to change remote/webdriver-bidi/cddl.
+# The last mozilla-firefox/firefox "release" commit to change remote/webdriver-bidi/cddl.
 _MOZ_COMMIT = "511b0de4764c52d9acb0d813c7ef712cabd6b975"
 _MOZ_CDDL_BASE_URL = "https://raw.githubusercontent.com/mozilla-firefox/firefox/{commit}/remote/webdriver-bidi/cddl".format(commit = _MOZ_COMMIT)
 
@@ -40,7 +40,7 @@ _CDDL_FILES = [
 _DFNS_FILES = [
     ("webdriver_bidi_dfns", "webdriver-bidi.json", "947f44e610083fcf5430559aed829b56ccbcea15496c7148efcf05a0ac240c88"),
     ("digital_credentials_dfns", "digital-credentials.json", "48582ab383e7e7be22463d5068d02151974080c5793713ce7d8e7bb08c0fcbf5"),
-    ("permissions_dfns", "permissions.json", "bc5d2907c61e2548c6fc4a42a32c86396b56a68033c62299c4d563db510c105f"),
+    ("permissions_dfns", "permissions.json", "c8587b0853a10b056876e9448aa39a873038fa6ea85cb3c85d1aa7c99cda4bc2"),
     ("prefetch_dfns", "prefetch.json", "b647ef493f8f09a6266c2269c344b16b28344bd14b2b987d660df01ce5833433"),
     ("ua_client_hints_dfns", "ua-client-hints.json", "56a31bf6fd2ba03158500498d14742f8edd7a2d560580b4aa7f4a703977e40cf"),
     ("bluetooth_dfns", "bluetooth.json", "70e3db6d631c172b65d53e9a41b8f5e141fb7f73c7a96cc182d66505667550ce"),
