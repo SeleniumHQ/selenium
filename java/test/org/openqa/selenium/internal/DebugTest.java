@@ -231,6 +231,55 @@ class DebugTest {
   }
 
   @Test
+  void logDoesNothingToTheLoggerWhenDebuggingIsOff() {
+    Debug.log(Logger.getLogger(DebugTest.class.getName()), Level.FINE, "hidden");
+
+    assertThat(seleniumLogger().getLevel()).isEqualTo(oldLoggerLevel);
+    assertThat(addedHandlers()).isEmpty();
+  }
+
+  @Test
+  void logAppliesDebugSwitchesBeforeWritingTheRecord() {
+    Debug.configureLogger();
+    assertThat(addedHandlers()).isEmpty();
+
+    System.setProperty("selenium.debug", "true");
+    seleniumLogger().setLevel(Level.INFO);
+    List<LogRecord> records = new ArrayList<>();
+    Logger logger = Logger.getLogger(DebugTest.class.getName());
+    Level previous = logger.getLevel();
+    logger.setLevel(null);
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.addHandler(handler);
+    try {
+      Debug.log(logger, Level.FINE, "debug-log-helper");
+
+      assertThat(records)
+          .singleElement()
+          .satisfies(record -> {
+            assertThat(record.getMessage()).isEqualTo("debug-log-helper");
+            assertThat(record.getLevel()).isEqualTo(Level.FINE);
+          });
+      assertThat(seleniumLogger().getLevel()).isEqualTo(Level.FINE);
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previous);
+    }
+  }
+
+  @Test
   void debugLoggingStaysOnAfterThePropertyIsCleared() {
     System.setProperty("selenium.debug", "true");
     Debug.configureLogger();

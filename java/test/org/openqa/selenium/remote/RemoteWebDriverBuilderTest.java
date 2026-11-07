@@ -647,6 +647,9 @@ class RemoteWebDriverBuilderTest {
   @Test
   void oneOfMetadataAndCapabilityOverwritesLogAtFineWhenDebugIsEnabled() {
     Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
+    Logger selenium = Logger.getLogger("org.openqa.selenium");
+    Level previousLoggerLevel = logger.getLevel();
+    Level previousSeleniumLevel = selenium.getLevel();
     String previousDebug = System.getProperty("selenium.debug");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
@@ -662,10 +665,15 @@ class RemoteWebDriverBuilderTest {
           @Override
           public void close() {}
         };
+    logger.setLevel(null);
+    selenium.setLevel(Level.INFO);
     logger.addHandler(handler);
     try {
+      RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
+      // The builder already exists. Return to the default threshold, then enable debugging.
+      selenium.setLevel(Level.INFO);
       System.setProperty("selenium.debug", "true");
-      RemoteWebDriver.builder()
+      builder
           .oneOf(new ImmutableCapabilities("browserName", "firefox"))
           .oneOf(new ImmutableCapabilities("browserName", "chrome"))
           .addMetadata("cloud:key", "one")
@@ -681,6 +689,8 @@ class RemoteWebDriverBuilderTest {
           .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
     } finally {
       logger.removeHandler(handler);
+      logger.setLevel(previousLoggerLevel);
+      selenium.setLevel(previousSeleniumLevel);
       if (previousDebug == null) {
         System.clearProperty("selenium.debug");
       } else {

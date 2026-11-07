@@ -34,16 +34,8 @@ public class RetryRequest implements Filter {
   private static final int NEEDED_ATTEMPTS =
       Math.max(RETRIES_ON_CONNECTION_FAILURE, RETRIES_ON_SERVER_ERROR) + 1;
 
-  public RetryRequest() {
-    // `new RetryRequest()` does not go through RemoteWebDriver.
-    Debug.configureLogger();
-  }
-
   @Override
   public HttpHandler apply(HttpHandler next) {
-    // ClientConfig keeps a static instance created at class initialization, which can be
-    // before selenium.debug is set. apply() is the HTTP request entry point.
-    Debug.configureLogger();
     return req -> {
       // start to perform the request in a loop, to allow retries
       for (int i = 0; i < NEEDED_ATTEMPTS; i++) {
@@ -57,7 +49,7 @@ public class RetryRequest implements Filter {
 
           // must be a connection failure and check whether we have retries left for this
           if (isConnectionFailure && i < RETRIES_ON_CONNECTION_FAILURE) {
-            LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ConnectException", ex);
+            Debug.log(LOG, Level.FINE, "Retry #" + (i + 1) + " on ConnectException", ex);
             continue;
           }
 
@@ -72,7 +64,8 @@ public class RetryRequest implements Filter {
 
         // must be a server error and check whether we have retries left for this
         if (isServerError && i < RETRIES_ON_SERVER_ERROR) {
-          LOG.log(Level.FINE, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
+          Debug.log(
+              LOG, Level.FINE, "Retry #" + (i + 1) + " on ServerError: " + response.getStatus());
           continue;
         }
 

@@ -104,9 +104,7 @@ public class RemoteWebDriverBuilder {
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
-    // Access through RemoteWebDriver.builder. These diagnostics are logged before any
-    // RemoteWebDriver exists, so the debug switches have to be applied here.
-    Debug.configureLogger();
+    // Access through RemoteWebDriver.builder
   }
 
   /**
@@ -117,7 +115,8 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capabilities to use", maybeThis);
 
     if (!requestedCapabilities.isEmpty()) {
-      LOG.log(Level.FINE, "Removing existing requested capabilities: " + requestedCapabilities);
+      Debug.log(
+          LOG, Level.FINE, "Removing existing requested capabilities: " + requestedCapabilities);
       requestedCapabilities.clear();
     }
 
@@ -156,7 +155,8 @@ public class RemoteWebDriverBuilder {
 
     Object previous = metadata.put(key, value);
     if (previous != null) {
-      LOG.log(
+      Debug.log(
+          LOG,
           Level.FINE,
           String.format(
               "Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
@@ -177,7 +177,8 @@ public class RemoteWebDriverBuilder {
 
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
-      LOG.log(
+      Debug.log(
+          LOG,
           Level.FINE,
           () ->
               String.format(
