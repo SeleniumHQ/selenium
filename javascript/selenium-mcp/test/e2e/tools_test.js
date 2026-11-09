@@ -248,10 +248,11 @@ describe('selenium-mcp tools', function () {
     // directory, which the upload tool refuses, so these tests run from a
     // temporary directory that holds real copies of the fixtures.
     let originalCwd
+    let workDir
 
     before(function () {
       originalCwd = process.cwd()
-      const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-upload-'))
+      workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-upload-'))
       const fixtures = path.join(workDir, 'test', 'fixtures')
       fs.mkdirSync(fixtures, { recursive: true })
       for (const name of ['data.json', 'drag.html']) {
@@ -262,6 +263,7 @@ describe('selenium-mcp tools', function () {
 
     after(function () {
       if (originalCwd) process.chdir(originalCwd)
+      if (workDir) fs.rmSync(workDir, { recursive: true, force: true })
     })
 
     it('drags with HTML5 drag and drop', async function () {
