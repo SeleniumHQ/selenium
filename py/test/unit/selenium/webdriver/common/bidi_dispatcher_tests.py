@@ -48,11 +48,14 @@ class Browser:
         self.sent = []
         self.subscribe_error = None
         self.unsubscribe_error = None
+        self.during_unsubscribe = None
         self._subscriptions = 0
 
     def send(self, data):
         command = json.loads(data)
         self.sent.append(command)
+        if command["method"] == "session.unsubscribe" and self.during_unsubscribe:
+            self.during_unsubscribe()
         threading.Thread(target=self._deliver, args=(self._reply(command),)).start()
 
     def emit(self, method, params):
@@ -172,17 +175,28 @@ def test_a_failed_subscribe_drops_the_callback_and_raises(connection, browser):
     assert connection.event_receiver._registrations == []
 
 
-def test_a_refused_unsubscribe_still_drops_the_callback_and_raises(connection, browser):
+def test_a_refused_unsubscribe_still_drops_the_callback_and_is_logged(connection, browser, logged):
     received = queue.Queue()
     subscription = network(connection).add_before_request_sent_callback(received.put).subscription
     browser.unsubscribe_error = "invalid argument"
 
-    with pytest.raises(InvalidArgumentException, match="refused"):
-        network(connection).remove_callback(subscription)
+    network(connection).remove_callback(subscription)
     browser.emit("network.beforeRequestSent", REQUEST)
 
+    assert logged.get(timeout=5).getMessage() == "Unsubscribing sub-1 failed; its callback was removed anyway"
     assert connection.event_receiver._registrations == []
     assert received.empty()
+
+
+def test_an_event_sent_before_the_unsubscribe_reply_still_reaches_the_callback(connection, browser):
+    received = queue.Queue()
+    subscription = network(connection).add_before_request_sent_callback(received.put).subscription
+    browser.during_unsubscribe = lambda: browser.emit("network.beforeRequestSent", REQUEST)
+
+    network(connection).remove_callback(subscription)
+
+    assert received.get(timeout=5) == REQUEST
+    assert connection.event_receiver._registrations == []
 
 
 def test_removing_an_unknown_subscription_raises_without_a_wire_call(connection, browser):
