@@ -2,7 +2,6 @@ packages:
   - 'javascript/atoms'
   - 'javascript/grid-ui'
   - 'javascript/private'
-  - 'javascript/selenium-mcp'
   - 'javascript/selenium-webdriver'
 
 onlyBuiltDependencies: []
