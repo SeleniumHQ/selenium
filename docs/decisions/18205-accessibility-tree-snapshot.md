@@ -45,10 +45,9 @@ idiom; the `AccessibilitySnapshot` stem and the `AccessibilityNode` type name ar
 | .NET       | `await driver.GetAccessibilitySnapshotAsync()` | `await element.GetAccessibilitySnapshotAsync()` |
 | JavaScript | `await driver.getAccessibilitySnapshot()` | `await element.getAccessibilitySnapshot()` |
 
-Adding them must not break existing implementers of the driver and element types: Java uses
-`default` interface methods that throw `UnsupportedOperationException`, as `getAriaRole` does,
-and .NET adds virtual members to the `WebDriver` and `WebElement` classes rather than to
-`IWebDriver` and `IWebElement`.
+Adding them must not break existing implementers of the driver and element types. How each
+binding meets that (for example, Java's `default` interface methods, as `getAriaRole` does) is
+left to the implementing PRs.
 
 Both methods take one optional parameter, `interestingOnly`, which defaults to `true` and follows
 Puppeteer's `accessibility.snapshot({ interestingOnly })`. With the default the tree is pruned as
@@ -151,7 +150,7 @@ accuracy fixes, not schema changes, and can ship in any release.
 Every node backed by an element carries that element as a BiDi `SharedReference`, produced by
 ordinary `script.callFunction` result serialization with `maxDomDepth: 0`. Bindings surface it
 as their normal element type, so a snapshot node can be used without a second lookup. Shared ids
-are scoped to the document, not the realm, so references created in the sandbox are valid in any
+are scoped to the document, not the realm, so references created in a sandbox realm are valid in any
 realm of that document.
 
 Where a reference can be used depends on the command. BiDi commands that take a
@@ -173,16 +172,8 @@ parent and its DOM parent can differ; the reference still identifies the element
   of it, including role, accessible name and hidden-state computation, with no third-party
   runtime dependency. It ships as an atom in `@selenium/atoms` (exported as
   `@selenium/atoms/accessibility-snapshot`), in both the injectable-string and callable-function
-  forms the package already provides. Every binding embeds the same build artifact; no binding
+  forms the package already provides. Bindings run that atom over standard BiDi; no binding
   reimplements tree logic.
-- Bindings send the atom with each `script.callFunction`, once per browsing context, into a
-  named sandbox realm that keeps page scripts from interfering with it. There is no preload
-  script; a size ceiling on the atom bundle, enforced by a test, bounds the per-call cost.
-- Bindings call a wire entry (`@selenium/atoms/accessibility-snapshot-wire`) rather than the
-  plain one. It returns the tree as one JSON string, with each reference replaced by an index
-  into arrays of elements and frame windows that travel beside it, so each binding parses the
-  tree with its own JSON library and BiDi serializes every reference in one pass. The wire form
-  is internal to the bindings; the data model above is the contract.
 - The only per-binding code is the public methods above, frame stitching (running the script in
   each child context and attaching the result under its `iframe` node), mapping references to
   element types, and the text renderer.
