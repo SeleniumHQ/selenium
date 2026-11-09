@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: sha256-nM8iufI5Id1KvysOfGJDc1w8piX+VSKA1/9BvLLu6Wc=
+
 importers:
 
   .: {}
@@ -8210,6 +8212,7 @@ snapshots:
 
   recast@0.23.21:
     dependencies:
+      '@babel/parser': 7.29.13
       ast-types: 0.16.3
       esprima: 4.0.1
       source-map: 0.6.1
