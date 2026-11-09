@@ -46,6 +46,7 @@ class _Registration:
     event: str
     callback: Callable[[dict[str, Any]], Any]
     subscription: str | None = None
+    removing: bool = False
 
 
 class EventDispatcher:
@@ -87,14 +88,21 @@ class EventDispatcher:
 
     def remove_callback(self, subscription: str) -> None:
         with self._lock:
-            registration = next((r for r in self._registrations if r.subscription == subscription), None)
+            registration = next(
+                (r for r in self._registrations if r.subscription == subscription and not r.removing), None
+            )
             if registration is not None:
-                # Dropped before the unsubscribe: a concurrent remove must find nothing, and a
-                # refused unsubscribe must not leave a callable that could never be removed.
-                self._registrations.remove(registration)
+                # Claimed here so a concurrent remove finds nothing and sends no second unsubscribe.
+                registration.removing = True
         if registration is None:
             raise InvalidArgumentException(f"No callback is registered for subscription {subscription!r}")
-        self._session.unsubscribe(subscriptions=[subscription])
+        try:
+            self._session.unsubscribe(subscriptions=[subscription])
+        except WebDriverException:
+            logger.warning("Unsubscribing %s failed; its callback was removed anyway", subscription, exc_info=True)
+        finally:
+            # Kept until the reply: the subscription is live until then, and its events are still owed.
+            self._discard(registration)
 
     def receive(self, method: str, params: dict[str, Any]) -> None:
         with self._lock:

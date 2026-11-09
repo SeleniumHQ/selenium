@@ -62,6 +62,8 @@ class Domain:
         """Unsubscribe and drop the callable an ``add_<event>_callback`` method registered (internal, unsupported).
 
         ``subscription`` is the id in that method's result. An id no callable was registered under raises.
+        The callable keeps receiving events until the unsubscribe is answered; if the remote end
+        refuses it, the callable is dropped anyway and the refusal is logged.
         """
         self._transport.remove_callback(subscription)
 
