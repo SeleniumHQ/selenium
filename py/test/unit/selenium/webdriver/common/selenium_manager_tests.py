@@ -171,4 +171,3 @@ def test_process_logs(caplog):
     assert "error message" in caplog.text
     assert "info message" in caplog.text
     assert "debug message" in caplog.text
-
