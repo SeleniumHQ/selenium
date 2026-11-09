@@ -18,6 +18,7 @@ concurrency:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   build-index:
@@ -25,18 +26,15 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
-  actionlint:
-    name: Validate workflows
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Validate workflows
-        uses: raven-actions/actionlint@v2
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Workflows and Shell
+      run: ./go lint_workflows && ./go lint_shell
 
   format:
     name: Format
-    if: startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Format
@@ -71,7 +69,7 @@ jobs:
       - name: Decide whether to compute affected targets
         id: mode
         run: |
-          if [ "${{ github.event.repository.fork }}" = "true" ] || [ "${{ startsWith(github.head_ref, 'renovate/') }}" = "true" ]; then
+          if [ "${{ github.event.repository.fork }}" = "true" ]; then
             mode=none
           elif { [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.event_name }}" != "push" ]; } || [ "${{ startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository }}" = "true" ]; then
             mode=all
@@ -246,7 +244,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
+    needs: [lint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

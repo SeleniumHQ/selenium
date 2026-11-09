@@ -76,6 +76,11 @@ on:
         required: false
         type: boolean
         default: false
+      remote-cache:
+        description: Read the EngFlow remote cache (the nightly also writes it)
+        required: false
+        type: boolean
+        default: false
       use-cache:
         description: Restore the Bazel repository cache
         required: false
@@ -131,18 +136,6 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: ${{ steps.depth.outputs.val }}
-      - name: Pull latest changes from head ref for PRs
-        if: contains(github.head_ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$HEAD_REF"
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-      - name: Pull latest changes from ref for branch pushes
-        if: contains(github.ref, 'renovate/')
-        shell: bash
-        run: git pull origin "$GIT_REF"
-        env:
-          GIT_REF: ${{ github.ref }}
       - name: Delete browsers and drivers
         if: startsWith(inputs.os, 'ubuntu') || inputs.os == 'macos'
         run: ./scripts/github-actions/delete-browsers-drivers.sh
@@ -191,7 +184,9 @@ jobs:
         with:
           cache-save: ${{ inputs.cache-save }}
           bazelisk-cache: true
-          bazelrc: common --color=yes
+          bazelrc: |
+            common --color=yes
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'schedule' && 'build --config=remote-cache-write --noremote_accept_cached' || 'build --config=remote-cache') || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
@@ -237,7 +232,7 @@ jobs:
           sudo "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver" --enable
       - name: Configure RubyGems credentials via OIDC
         if: inputs.gem-trusted-publishing
-        uses: rubygems/configure-rubygems-credentials@main
+        uses: rubygems/configure-rubygems-credentials@v2.1.0
       - name: Run Bazel
         id: run-bazel
         continue-on-error: true
@@ -258,6 +253,25 @@ jobs:
         if: steps.run-bazel.outcome == 'failure' && (steps.retry-transient.outputs.retried != 'true' || steps.retry-transient.outcome == 'failure')
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
+      # The following two steps can be removed after collecting data evaluating effectiveness of remote caching
+      - name: Summarize remote cache use
+        id: remote-cache-summary
+        if: always() && inputs.remote-cache && github.repository_owner == 'SeleniumHQ'
+        continue-on-error: true
+        shell: bash
+        env:
+          JOB_NAME: ${{ inputs.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: ./scripts/github-actions/remote-cache-summary.sh
+      - name: Upload remote cache record
+        if: always() && steps.remote-cache-summary.outputs.record == 'true'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: remote-cache-${{ inputs.os }}-${{ job.check_run_id }}-${{ github.run_attempt }}
+          retention-days: 60
+          path: build/remote-cache/record.jsonl
       - name: Collect failed logs
         if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash

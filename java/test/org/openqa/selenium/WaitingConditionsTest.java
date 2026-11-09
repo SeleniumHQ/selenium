@@ -123,9 +123,8 @@ class WaitingConditionsTest extends JupiterTestBase {
 
   @Test
   void elementLocation_errorMessage() {
-    assertThatThrownBy(
-            () ->
-                wait.until(elementLocationToBe(driver.findElement(header), new Point(1000, 2000))))
+    assertThatThrownBy(() ->
+            wait.until(elementLocationToBe(driver.findElement(header), new Point(1000, 2000))))
         .isInstanceOf(TimeoutException.class)
         .hasMessageStartingWith(
             "Expected condition failed: waiting for location to be: (1000, 2000), but was: (")

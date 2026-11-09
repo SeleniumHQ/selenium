@@ -458,10 +458,9 @@ final class ExpectedConditionsTest {
           .thenThrow(new StaleElementReferenceException("Stale element #2"))
           .thenReturn(false);
 
-      assertThatThrownBy(
-              () ->
-                  wait.ignoring(StaleElementReferenceException.class)
-                      .until(visibilityOfAllElementsLocatedBy(testSelector)))
+      assertThatThrownBy(() ->
+              wait.ignoring(StaleElementReferenceException.class)
+                  .until(visibilityOfAllElementsLocatedBy(testSelector)))
           .isInstanceOf(TimeoutException.class)
           .hasMessageStartingWith(
               "Expected condition failed: waiting for visibility of all elements located by"
@@ -941,12 +940,11 @@ final class ExpectedConditionsTest {
       when(mockElement.getCssValue("data-test-id")).thenReturn("");
       when(mockElement.getAttribute("data-test-id")).thenReturn("67890");
 
-      assertThatThrownBy(
-              () ->
-                  wait.until(
-                      or(
-                          textToBePresentInElement(mockElement, "Good bye, World."),
-                          attributeToBe(mockElement, "data-test-id", "12345"))))
+      assertThatThrownBy(() ->
+              wait.until(
+                  or(
+                      textToBePresentInElement(mockElement, "Good bye, World."),
+                      attributeToBe(mockElement, "data-test-id", "12345"))))
           .isInstanceOf(TimeoutException.class)
           .hasMessageStartingWith(
               "Expected condition failed: waiting for at least one condition to be valid:"
@@ -985,12 +983,11 @@ final class ExpectedConditionsTest {
           .thenThrow(new StaleElementReferenceException("Disappeared 2"));
       when(mockElement.getText()).thenThrow(new StaleElementReferenceException("Disappeared 3"));
 
-      assertThatThrownBy(
-              () ->
-                  wait.until(
-                      or(
-                          textToBePresentInElement(mockElement, attributeName),
-                          attributeToBe(mockElement, attributeName, attributeName))))
+      assertThatThrownBy(() ->
+              wait.until(
+                  or(
+                      textToBePresentInElement(mockElement, attributeName),
+                      attributeToBe(mockElement, attributeName, attributeName))))
           .isInstanceOf(TimeoutException.class)
           .hasMessageStartingWith(
               "Expected condition failed: waiting for at least one condition to be valid:"
@@ -1012,12 +1009,11 @@ final class ExpectedConditionsTest {
       when(mockElement.getCssValue("data-test-id")).thenReturn("");
       when(mockElement.getAttribute("data-test-id")).thenReturn("report-123");
 
-      assertThatThrownBy(
-              () ->
-                  wait.until(
-                      and(
-                          textToBePresentInElement(mockElement, "Goodbye, yellow brick road"),
-                          attributeToBe(mockElement, "data-test-id", "report-456"))))
+      assertThatThrownBy(() ->
+              wait.until(
+                  and(
+                      textToBePresentInElement(mockElement, "Goodbye, yellow brick road"),
+                      attributeToBe(mockElement, "data-test-id", "report-456"))))
           .isInstanceOf(TimeoutException.class)
           .hasMessageStartingWith(
               String.format(
@@ -1035,12 +1031,11 @@ final class ExpectedConditionsTest {
           .thenReturn(mockElement);
       when(mockElement.getCssValue("data-test-id")).thenReturn("");
       when(mockElement.getAttribute("data-test-id")).thenReturn("report-123");
-      assertThatThrownBy(
-              () ->
-                  wait.until(
-                      and(
-                          presenceOfElementLocated(testSelector),
-                          attributeToBe(mockElement, "data-test-id", "report-456"))))
+      assertThatThrownBy(() ->
+              wait.until(
+                  and(
+                      presenceOfElementLocated(testSelector),
+                      attributeToBe(mockElement, "data-test-id", "report-456"))))
           .isInstanceOf(TimeoutException.class)
           .hasMessageStartingWith(
               String.format(
@@ -1226,9 +1221,8 @@ final class ExpectedConditionsTest {
         void negative() {
           when(mockNestedElement2.isDisplayed()).thenReturn(false);
 
-          assertThatThrownBy(
-                  () ->
-                      wait.until(visibilityOfNestedElementsLocatedBy(testSelector, nestedSelector)))
+          assertThatThrownBy(() ->
+                  wait.until(visibilityOfNestedElementsLocatedBy(testSelector, nestedSelector)))
               .isInstanceOf(TimeoutException.class)
               .hasMessageStartingWith(
                   "Expected condition failed: waiting for visibility of all child elements located"

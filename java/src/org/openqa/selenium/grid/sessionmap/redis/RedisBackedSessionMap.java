@@ -76,12 +76,11 @@ public class RedisBackedSessionMap extends SessionMap {
     bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     bus.addListener(
-        NodeRemovedEvent.listener(
-            nodeStatus ->
-                nodeStatus.getSlots().stream()
-                    .filter(slot -> slot.getSession() != null)
-                    .map(slot -> slot.getSession().getId())
-                    .forEach(this::remove)));
+        NodeRemovedEvent.listener(nodeStatus ->
+            nodeStatus.getSlots().stream()
+                .filter(slot -> slot.getSession() != null)
+                .map(slot -> slot.getSession().getId())
+                .forEach(this::remove)));
 
     bus.addListener(
         NodeRestartedEvent.listener(
@@ -300,11 +299,10 @@ public class RedisBackedSessionMap extends SessionMap {
     keyValues.stream()
         .filter(entry -> entry.getValue().equals(uri.toString()))
         .map(KeyValue::getKey)
-        .map(
-            key -> {
-              String[] sessionKey = key.split(":");
-              return new SessionId(sessionKey[1]);
-            })
+        .map(key -> {
+          String[] sessionKey = key.split(":");
+          return new SessionId(sessionKey[1]);
+        })
         .forEach(this::remove);
   }
 

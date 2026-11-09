@@ -1,0 +1,21 @@
+- document "Tables"
+  - table "Scores"
+    - caption
+      - text: Scores
+    - rowgroup
+      - row "Name Score"
+        - columnheader "Name"
+        - columnheader "Score"
+    - rowgroup
+      - row "Ada 10"
+        - rowheader "Ada"
+        - cell "10"
+      - row "Grace 9"
+        - rowheader "Grace"
+        - cell "9"
+  - grid
+    - rowgroup
+      - row "A B" [selected]
+        - gridcell "A"
+        - gridcell "B"
+  - text: Just layout

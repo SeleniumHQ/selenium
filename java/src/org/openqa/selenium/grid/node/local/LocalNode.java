@@ -231,30 +231,26 @@ public class LocalNode extends Node implements Closeable {
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
         Caffeine.newBuilder()
-            .removalListener(
-                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
-                  Optional.ofNullable(tempFS)
-                      .ifPresent(
-                          fs -> {
-                            fs.deleteTemporaryFiles();
-                            fs.deleteBaseDir();
-                          });
-                })
+            .removalListener((SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+              Optional.ofNullable(tempFS)
+                  .ifPresent(fs -> {
+                    fs.deleteTemporaryFiles();
+                    fs.deleteBaseDir();
+                  });
+            })
             .build();
 
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.downloadsTempFileSystem =
         Caffeine.newBuilder()
-            .removalListener(
-                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
-                  Optional.ofNullable(tempFS)
-                      .ifPresent(
-                          fs -> {
-                            fs.deleteTemporaryFiles();
-                            fs.deleteBaseDir();
-                          });
-                })
+            .removalListener((SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+              Optional.ofNullable(tempFS)
+                  .ifPresent(fs -> {
+                    fs.deleteTemporaryFiles();
+                    fs.deleteBaseDir();
+                  });
+            })
             .build();
 
     this.currentSessions =
@@ -265,46 +261,42 @@ public class LocalNode extends Node implements Closeable {
             .build();
 
     ScheduledExecutorService sessionCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("Local Node - Session Cleanup " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("Local Node - Session Cleanup " + externalUri);
+          return thread;
+        });
     sessionCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(currentSessions::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService uploadTempFileCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("UploadTempFile Cleanup Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("UploadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
     uploadTempFileCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(uploadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService downloadTempFileCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("DownloadTempFile Cleanup Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("DownloadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
     downloadTempFileCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(downloadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService heartbeatNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("HeartBeat Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("HeartBeat Node " + externalUri);
+          return thread;
+        });
     heartbeatNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(() -> bus.fire(new NodeHeartBeatEvent(getStatus()))),
         heartbeatPeriod.getSeconds(),
@@ -342,11 +334,10 @@ public class LocalNode extends Node implements Closeable {
 
     Runtime.getRuntime()
         .addShutdownHook(
-            new Thread(
-                () -> {
-                  stopAllSessions();
-                  drain();
-                }));
+            new Thread(() -> {
+              stopAllSessions();
+              drain();
+            }));
 
     new JMXHelper().register(this);
   }
@@ -611,10 +602,8 @@ public class LocalNode extends Node implements Closeable {
                 TemporaryFilesystem.getDefaultTmpFS()
                     .createTempDir("uuid", uuidForSessionDownloads.toString()));
 
-        LOG.info(
-            () ->
-                String.format(
-                    "Using file system: %s", downloadsTfs.getBaseDir().getAbsolutePath()));
+        LOG.info(() ->
+            String.format("Using file system: %s", downloadsTfs.getBaseDir().getAbsolutePath()));
 
         Capabilities enhanced = setDownloadsDirectory(downloadsTfs, desiredCapabilities);
         enhanced = desiredCapabilities.merge(enhanced);
@@ -623,10 +612,8 @@ public class LocalNode extends Node implements Closeable {
                 sessionRequest.getDownstreamDialects(), enhanced, sessionRequest.getMetadata());
       } else {
         downloadsTfs = null;
-        LOG.info(
-            () ->
-                String.format(
-                    "Not using file system: desiredCapabilities=%s", desiredCapabilities));
+        LOG.info(() ->
+            String.format("Not using file system: desiredCapabilities=%s", desiredCapabilities));
       }
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
@@ -747,12 +734,11 @@ public class LocalNode extends Node implements Closeable {
       LOG.log(Level.FINE, () -> String.format("Adding to capabilities: %s", map));
       return appendPrefs(caps, "moz:firefoxOptions", map);
     } else {
-      LOG.info(
-          () ->
-              String.format(
-                  "Browser is not one of (%s, %s, %s): %s -> not adding downloads directory to"
-                      + " capabilities",
-                  Browser.CHROME, Browser.EDGE, Browser.FIREFOX, caps.getBrowserName()));
+      LOG.info(() ->
+          String.format(
+              "Browser is not one of (%s, %s, %s): %s -> not adding downloads directory to"
+                  + " capabilities",
+              Browser.CHROME, Browser.EDGE, Browser.FIREFOX, caps.getBrowserName()));
     }
     return caps;
   }
@@ -993,11 +979,10 @@ public class LocalNode extends Node implements Closeable {
     String filename =
         Optional.ofNullable(incoming.get("name"))
             .map(Object::toString)
-            .orElseThrow(
-                () ->
-                    new WebDriverException(
-                        "Please specify file to download in payload as {\"name\":"
-                            + " \"fileToDownload\"}"));
+            .orElseThrow(() ->
+                new WebDriverException(
+                    "Please specify file to download in payload as {\"name\":"
+                        + " \"fileToDownload\"}"));
     File file = findDownloadedFile(downloadsDirectory, filename);
     String contentType =
         requireNonNullElseGet(
@@ -1213,12 +1198,11 @@ public class LocalNode extends Node implements Closeable {
       MutableCapabilities cdpFiltered = new MutableCapabilities();
       toUse
           .asMap()
-          .forEach(
-              (key, value) -> {
-                if (!key.startsWith("se:cdp")) {
-                  cdpFiltered.setCapability(key, value);
-                }
-              });
+          .forEach((key, value) -> {
+            if (!key.startsWith("se:cdp")) {
+              cdpFiltered.setCapability(key, value);
+            }
+          });
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
     }
 
@@ -1248,12 +1232,11 @@ public class LocalNode extends Node implements Closeable {
       MutableCapabilities bidiFiltered = new MutableCapabilities();
       toUse
           .asMap()
-          .forEach(
-              (key, value) -> {
-                if (!key.startsWith("webSocketUrl")) {
-                  bidiFiltered.setCapability(key, value);
-                }
-              });
+          .forEach((key, value) -> {
+            if (!key.startsWith("webSocketUrl")) {
+              bidiFiltered.setCapability(key, value);
+            }
+          });
       toUse = new PersistentCapabilities(bidiFiltered).setCapability("se:bidiEnabled", false);
     }
 
@@ -1281,12 +1264,11 @@ public class LocalNode extends Node implements Closeable {
   private Capabilities removeCapability(Capabilities caps, String name) {
     MutableCapabilities filtered = new MutableCapabilities();
     caps.asMap()
-        .forEach(
-            (key, value) -> {
-              if (!name.equals(key)) {
-                filtered.setCapability(key, value);
-              }
-            });
+        .forEach((key, value) -> {
+          if (!name.equals(key)) {
+            filtered.setCapability(key, value);
+          }
+        });
     return new PersistentCapabilities(filtered);
   }
 
@@ -1314,11 +1296,9 @@ public class LocalNode extends Node implements Closeable {
       } catch (URISyntaxException e) {
         // Fall through to the warning below.
       }
-      LOG.warning(
-          () ->
-              String.format(
-                  "Ignoring unusable se:remoteUrl '%s'; using %s for proxied URLs",
-                  value, gridUri));
+      LOG.warning(() ->
+          String.format(
+              "Ignoring unusable se:remoteUrl '%s'; using %s for proxied URLs", value, gridUri));
     }
     return gridUri;
   }
@@ -1327,30 +1307,26 @@ public class LocalNode extends Node implements Closeable {
   public NodeStatus getStatus() {
     Set<Slot> slots =
         factories.stream()
-            .map(
-                slot -> {
-                  Instant lastStarted = Instant.EPOCH;
-                  Session session = null;
-                  if (!slot.isAvailable()) {
-                    ActiveSession activeSession = slot.getSession();
-                    if (activeSession != null) {
-                      lastStarted = activeSession.getStartTime();
-                      session =
-                          new Session(
-                              activeSession.getId(),
-                              activeSession.getUri(),
-                              slot.getStereotype(),
-                              activeSession.getCapabilities(),
-                              activeSession.getStartTime());
-                    }
-                  }
+            .map(slot -> {
+              Instant lastStarted = Instant.EPOCH;
+              Session session = null;
+              if (!slot.isAvailable()) {
+                ActiveSession activeSession = slot.getSession();
+                if (activeSession != null) {
+                  lastStarted = activeSession.getStartTime();
+                  session =
+                      new Session(
+                          activeSession.getId(),
+                          activeSession.getUri(),
+                          slot.getStereotype(),
+                          activeSession.getCapabilities(),
+                          activeSession.getStartTime());
+                }
+              }
 
-                  return new Slot(
-                      new SlotId(getId(), slot.getId()),
-                      slot.getStereotype(),
-                      lastStarted,
-                      session);
-                })
+              return new Slot(
+                  new SlotId(getId(), slot.getId()), slot.getStereotype(), lastStarted, session);
+            })
             .collect(toUnmodifiableSet());
 
     Availability availability = isDraining() ? DRAINING : UP;

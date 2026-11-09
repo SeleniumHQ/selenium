@@ -1,0 +1,18 @@
+[
+  "001-headings-and-landmarks",
+  "002-text-and-inline",
+  "003-links-and-buttons",
+  "004-form-controls",
+  "005-lists",
+  "006-tables",
+  "007-images-and-figures",
+  "008-hidden-content",
+  "009-names-and-descriptions",
+  "010-generic-and-presentation",
+  "011-details-and-dialog",
+  "012-shadow-dom",
+  "013-aria-owns",
+  "014-iframe",
+  "015-widgets",
+  "016-whitespace-and-generated-content"
+]

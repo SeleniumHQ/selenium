@@ -23,7 +23,7 @@ bazel test --config=rbe-ci --build_tests_only \
   --keep_going --flaky_test_attempts=2 \
   --cache_test_results=${CACHE_RESULTS} \
   "${TEST_FILTER}" \
-  //... -- $(cat .skipped-tests | tr '\n' ' ')
+  //... -- $(tr '\n' ' ' < .skipped-tests)
 
 # Check the packaging rules in the test configuration so the analysis is reused; nightly and
 # release-preparation PRs package the real manager

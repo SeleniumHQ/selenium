@@ -191,7 +191,7 @@ jobs:
           name: pypi-distributions
           path: dist/
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           skip-existing: true
 

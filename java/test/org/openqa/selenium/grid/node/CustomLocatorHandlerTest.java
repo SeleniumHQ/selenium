@@ -127,15 +127,14 @@ class CustomLocatorHandlerTest {
     // CustomLocatorHandler successfully but stopped at the Node because
     // the actually does not exist.
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(
-            () ->
-                handler.execute(
-                    new HttpRequest(POST, "/session/1234/element")
-                        .setContent(
-                            Contents.asJson(
-                                Map.of(
-                                    "using", "cheese",
-                                    "value", "tasty")))));
+        .isThrownBy(() ->
+            handler.execute(
+                new HttpRequest(POST, "/session/1234/element")
+                    .setContent(
+                        Contents.asJson(
+                            Map.of(
+                                "using", "cheese",
+                                "value", "tasty")))));
   }
 
   @Test

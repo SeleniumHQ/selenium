@@ -86,6 +86,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Css;
 import org.openqa.selenium.remote.WebElementToJsonConverter;
 import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 
@@ -97,8 +98,6 @@ import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
-  private static final Pattern CSS_ESCAPE =
-      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]()])");
   private static final Pattern AT_LEAST_ONE_WHITESPACE = Pattern.compile(".*\\s.*");
 
   public W3CHttpCommandCodec() {
@@ -185,14 +184,14 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               if (AT_LEAST_ONE_WHITESPACE.matcher(stringValue).matches()) {
                 throw new InvalidSelectorException("Compound class names not permitted");
               }
-              return amendLocatorToCssSelector(parameters, "." + cssEscape(stringValue));
+              return amendLocatorToCssSelector(parameters, "." + Css.escape(stringValue));
 
             case "id":
-              return amendLocatorToCssSelector(parameters, "#" + cssEscape(stringValue));
+              return amendLocatorToCssSelector(parameters, "#" + Css.escape(stringValue));
 
             case "name":
               return amendLocatorToCssSelector(
-                  parameters, "*[name='" + cssEscape(stringValue) + "']");
+                  parameters, "*[name='" + Css.escape(stringValue) + "']");
 
             default:
               // Do nothing
@@ -285,13 +284,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         {
           Map<String, Object> merged = new LinkedHashMap<>();
 
-          parameters.forEach(
-              (key, val) -> {
-                if ("text".equals(key) || "value".equals(key)) {
-                  return;
-                }
-                merged.put(key, val);
-              });
+          parameters.forEach((key, val) -> {
+            if ("text".equals(key) || "value".equals(key)) {
+              return;
+            }
+            merged.put(key, val);
+          });
 
           merged.put("text", text);
           merged.put("value", stringToUtf8Array(text));
@@ -315,13 +313,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         {
           Map<String, Object> merged = new LinkedHashMap<>();
 
-          parameters.forEach(
-              (key, val) -> {
-                if (timeoutType.equals(key)) {
-                  return;
-                }
-                merged.put(key, val);
-              });
+          parameters.forEach((key, val) -> {
+            if (timeoutType.equals(key)) {
+              return;
+            }
+            merged.put(key, val);
+          });
           merged.put(timeoutType, duration);
 
           return Map.copyOf(merged);
@@ -360,7 +357,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       String script =
           ATOM_SCRIPTS.computeIfAbsent(
               atomFileName,
-              (fileName) -> {
+              fileName -> {
                 String rawFunction =
                     resourceAsString(getClass(), "/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");
@@ -386,20 +383,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private Map<String, String> asElement(Object id) {
     return Map.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
-  }
-
-  private String cssEscape(String using) {
-    using = CSS_ESCAPE.matcher(using).replaceAll("\\\\$1");
-    // CSS drops a backslash followed by a newline, so newlines need hex escapes instead.
-    using = using.replace("\\\n", "\\a ").replace("\\\r", "\\d ").replace("\\\f", "\\c ");
-    // CSS only requires the leading-digit escape for ASCII 0-9; non-ASCII Unicode digits
-    // (e.g. Arabic-Indic, fullwidth) are already valid identifier-start code points and must
-    // be left untouched, or they collide with the escape for a different ASCII digit.
-    char first = using.isEmpty() ? '\0' : using.charAt(0);
-    if (first >= '0' && first <= '9') {
-      using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
-    }
-    return using;
   }
 
   private Map<String, ?> amendLocatorToCssSelector(Map<String, ?> parameters, String value) {

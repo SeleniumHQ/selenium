@@ -161,11 +161,10 @@ class RedisBackedDistributorTest {
     LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, secret);
     builder.add(
         nodeCaps,
-        new TestSessionFactory(
-            (id, caps) -> {
-              attempts.incrementAndGet();
-              throw new SessionNotCreatedException("intentional failure");
-            }));
+        new TestSessionFactory((id, caps) -> {
+          attempts.incrementAndGet();
+          throw new SessionNotCreatedException("intentional failure");
+        }));
     builder.maximumConcurrentSessions(1);
     return builder.build();
   }

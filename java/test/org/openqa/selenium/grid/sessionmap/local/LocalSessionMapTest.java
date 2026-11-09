@@ -203,23 +203,21 @@ class LocalSessionMapTest {
     CountDownLatch latch = new CountDownLatch(2);
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    executor.submit(
-        () -> {
-          try {
-            eventBus.fire(new NodeRemovedEvent(nodeStatus1));
-          } finally {
-            latch.countDown();
-          }
-        });
+    executor.submit(() -> {
+      try {
+        eventBus.fire(new NodeRemovedEvent(nodeStatus1));
+      } finally {
+        latch.countDown();
+      }
+    });
 
-    executor.submit(
-        () -> {
-          try {
-            eventBus.fire(new NodeRestartedEvent(nodeStatus2));
-          } finally {
-            latch.countDown();
-          }
-        });
+    executor.submit(() -> {
+      try {
+        eventBus.fire(new NodeRestartedEvent(nodeStatus2));
+      } finally {
+        latch.countDown();
+      }
+    });
 
     assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue();
 
@@ -255,38 +253,36 @@ class LocalSessionMapTest {
 
     for (int i = 0; i < sessionCount; i++) {
       final int sessionIndex = i;
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("session-" + sessionIndex);
-              try {
-                Session session = sessionMap.get(sessionId);
-                if (session != null) {
-                  successfulGets.incrementAndGet();
-                }
-              } catch (NoSuchSessionException e) {
-                noSuchSessionExceptions.incrementAndGet();
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          SessionId sessionId = new SessionId("session-" + sessionIndex);
+          try {
+            Session session = sessionMap.get(sessionId);
+            if (session != null) {
+              successfulGets.incrementAndGet();
             }
-          });
+          } catch (NoSuchSessionException e) {
+            noSuchSessionExceptions.incrementAndGet();
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
     }
 
-    executor.submit(
-        () -> {
-          try {
-            startLatch.await();
-            eventBus.fire(new NodeRemovedEvent(nodeStatus));
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-          } finally {
-            completeLatch.countDown();
-          }
-        });
+    executor.submit(() -> {
+      try {
+        startLatch.await();
+        eventBus.fire(new NodeRemovedEvent(nodeStatus));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } finally {
+        completeLatch.countDown();
+      }
+    });
 
     startLatch.countDown();
 
@@ -322,49 +318,46 @@ class LocalSessionMapTest {
         final SessionId sessionId = new SessionId("node" + nodeIndex + "-session-" + sessionIndex);
         final Session session = createSession(sessionId, nodeUri);
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                sessionMap.add(session);
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        executor.submit(() -> {
+          try {
+            startLatch.await();
+            sessionMap.add(session);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          } finally {
+            completeLatch.countDown();
+          }
+        });
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                Thread.sleep(10); // Small delay to allow add operations
-                try {
-                  sessionMap.get(sessionId);
-                } catch (NoSuchSessionException e) {
-                  // Expected in concurrent scenarios
-                }
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        executor.submit(() -> {
+          try {
+            startLatch.await();
+            Thread.sleep(10); // Small delay to allow add operations
+            try {
+              sessionMap.get(sessionId);
+            } catch (NoSuchSessionException e) {
+              // Expected in concurrent scenarios
+            }
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          } finally {
+            completeLatch.countDown();
+          }
+        });
 
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                Thread.sleep(20); // Small delay to allow add/get operations
-                if (finalSessionIndex == 0) { // Only fire node event once per node
-                  eventBus.fire(new NodeRemovedEvent(nodeStatus));
-                }
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        executor.submit(() -> {
+          try {
+            startLatch.await();
+            Thread.sleep(20); // Small delay to allow add/get operations
+            if (finalSessionIndex == 0) { // Only fire node event once per node
+              eventBus.fire(new NodeRemovedEvent(nodeStatus));
+            }
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          } finally {
+            completeLatch.countDown();
+          }
+        });
       }
     }
 
@@ -389,64 +382,60 @@ class LocalSessionMapTest {
     for (int i = 0; i < sessionsPerNode; i++) {
       final int sessionIndex = i;
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
-              Session session = createSession(sessionId, nodeUri1);
-              sessionMap.add(session);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
+          Session session = createSession(sessionId, nodeUri1);
+          sessionMap.add(session);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
-              Session session = createSession(sessionId, nodeUri2);
-              sessionMap.add(session);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
+          Session session = createSession(sessionId, nodeUri2);
+          sessionMap.add(session);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(50); // Allow add operations to complete
-              SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
-              sessionMap.remove(sessionId);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          Thread.sleep(50); // Allow add operations to complete
+          SessionId sessionId = new SessionId("node1-session-" + sessionIndex);
+          sessionMap.remove(sessionId);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(100); // Allow add operations to complete
-              SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
-              if (sessionIndex == sessionsPerNode - 1) { // Only fire event once
-                NodeStatus nodeStatus = createNodeStatus(nodeUri2);
-                eventBus.fire(new NodeRemovedEvent(nodeStatus));
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          Thread.sleep(100); // Allow add operations to complete
+          SessionId sessionId = new SessionId("node2-session-" + sessionIndex);
+          if (sessionIndex == sessionsPerNode - 1) { // Only fire event once
+            NodeStatus nodeStatus = createNodeStatus(nodeUri2);
+            eventBus.fire(new NodeRemovedEvent(nodeStatus));
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
     }
 
     startLatch.countDown();
@@ -606,70 +595,66 @@ class LocalSessionMapTest {
     for (int i = 0; i < sessionsPerUri; i++) {
       final int sessionIndex = i;
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
-              Session session = createSession(sessionId, nodeUri1);
-              sessionMap.add(session);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
+          Session session = createSession(sessionId, nodeUri1);
+          sessionMap.add(session);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(10); // Small delay to allow add operation
-              SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
-              Session updatedSession = createSession(sessionId, nodeUri2);
-              sessionMap.add(updatedSession);
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          Thread.sleep(10); // Small delay to allow add operation
+          SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
+          Session updatedSession = createSession(sessionId, nodeUri2);
+          sessionMap.add(updatedSession);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
 
       if (sessionIndex % 2 == 0) {
-        executor.submit(
-            () -> {
-              try {
-                startLatch.await();
-                Thread.sleep(20); // Allow add/update operations
-                SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
-                sessionMap.remove(sessionId);
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-              } finally {
-                completeLatch.countDown();
-              }
-            });
+        executor.submit(() -> {
+          try {
+            startLatch.await();
+            Thread.sleep(20); // Allow add/update operations
+            SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
+            sessionMap.remove(sessionId);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          } finally {
+            completeLatch.countDown();
+          }
+        });
       } else {
         completeLatch.countDown(); // Account for skipped operation
       }
 
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              Thread.sleep(30); // Allow other operations to complete
-              SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
-              try {
-                sessionMap.get(sessionId);
-              } catch (NoSuchSessionException e) {
-                // Expected for removed sessions
-              }
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            } finally {
-              completeLatch.countDown();
-            }
-          });
+      executor.submit(() -> {
+        try {
+          startLatch.await();
+          Thread.sleep(30); // Allow other operations to complete
+          SessionId sessionId = new SessionId("uri-test-" + sessionIndex);
+          try {
+            sessionMap.get(sessionId);
+          } catch (NoSuchSessionException e) {
+            // Expected for removed sessions
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } finally {
+          completeLatch.countDown();
+        }
+      });
     }
 
     startLatch.countDown();

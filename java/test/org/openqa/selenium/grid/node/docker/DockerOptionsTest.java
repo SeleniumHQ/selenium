@@ -79,9 +79,8 @@ class DockerOptionsTest {
 
   @Test
   void nullStereotypeThrowsConfigExceptionNamingTheSource() {
-    assertThatThrownBy(
-            () ->
-                DockerOptions.parseStereotype("null", "docker image 'selenium/standalone-chrome'"))
+    assertThatThrownBy(() ->
+            DockerOptions.parseStereotype("null", "docker image 'selenium/standalone-chrome'"))
         .isInstanceOf(ConfigException.class)
         .hasMessageContaining("docker image 'selenium/standalone-chrome'");
   }

@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -25,7 +25,7 @@ jobs:
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          github_token: ${{ github.token }}
           publish_dir: common/src/web
           destination_dir: web
           user_name: Selenium CI Bot

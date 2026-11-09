@@ -99,10 +99,9 @@ public class v156Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
     exception.setStackTrace(
         trace.getCallFrames().stream()
-            .map(
-                frame ->
-                    new StackTraceElement(
-                        "", frame.getFunctionName(), frame.getUrl(), frame.getLineNumber()))
+            .map(frame ->
+                new StackTraceElement(
+                    "", frame.getFunctionName(), frame.getUrl(), frame.getLineNumber()))
             .toArray(StackTraceElement[]::new));
 
     return exception;
