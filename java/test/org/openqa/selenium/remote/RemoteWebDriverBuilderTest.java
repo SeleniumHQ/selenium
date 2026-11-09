@@ -645,12 +645,9 @@ class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  void oneOfMetadataAndCapabilityOverwritesLogAtFineWhenDebugIsEnabled() {
+  void oneOfMetadataAndCapabilityOverwritesLogAtFine() {
     Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
-    Logger selenium = Logger.getLogger("org.openqa.selenium");
     Level previousLoggerLevel = logger.getLevel();
-    Level previousSeleniumLevel = selenium.getLevel();
-    String previousDebug = System.getProperty("selenium.debug");
     List<LogRecord> records = new ArrayList<>();
     Handler handler =
         new Handler() {
@@ -665,15 +662,10 @@ class RemoteWebDriverBuilderTest {
           @Override
           public void close() {}
         };
-    logger.setLevel(null);
-    selenium.setLevel(Level.INFO);
+    logger.setLevel(Level.ALL);
     logger.addHandler(handler);
     try {
-      RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
-      // The builder already exists. Return to the default threshold, then enable debugging.
-      selenium.setLevel(Level.INFO);
-      System.setProperty("selenium.debug", "true");
-      builder
+      RemoteWebDriver.builder()
           .oneOf(new ImmutableCapabilities("browserName", "firefox"))
           .oneOf(new ImmutableCapabilities("browserName", "chrome"))
           .addMetadata("cloud:key", "one")
@@ -682,20 +674,21 @@ class RemoteWebDriverBuilderTest {
           .setCapability("se:cheese", "cheddar");
 
       assertThat(records)
-          .anyMatch(
+          .filteredOn(
               record -> record.getMessage().contains("Removing existing requested capabilities"))
-          .anyMatch(record -> record.getMessage().contains("Overwriting metadata"))
-          .anyMatch(record -> record.getMessage().contains("Overwriting capability"))
-          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting metadata"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting capability"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
     } finally {
       logger.removeHandler(handler);
       logger.setLevel(previousLoggerLevel);
-      selenium.setLevel(previousSeleniumLevel);
-      if (previousDebug == null) {
-        System.clearProperty("selenium.debug");
-      } else {
-        System.setProperty("selenium.debug", previousDebug);
-      }
     }
   }
 

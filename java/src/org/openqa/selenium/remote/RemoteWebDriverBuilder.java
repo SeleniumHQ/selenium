@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -48,7 +47,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -115,8 +113,7 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capabilities to use", maybeThis);
 
     if (!requestedCapabilities.isEmpty()) {
-      Debug.log(
-          LOG, Level.FINE, "Removing existing requested capabilities: " + requestedCapabilities);
+      LOG.fine("Removing existing requested capabilities: " + requestedCapabilities);
       requestedCapabilities.clear();
     }
 
@@ -155,9 +152,7 @@ public class RemoteWebDriverBuilder {
 
     Object previous = metadata.put(key, value);
     if (previous != null) {
-      Debug.log(
-          LOG,
-          Level.FINE,
+      LOG.fine(
           String.format(
               "Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
     }
@@ -177,13 +172,10 @@ public class RemoteWebDriverBuilder {
 
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
-      Debug.log(
-          LOG,
-          Level.FINE,
-          () ->
-              String.format(
-                  "Overwriting capability %s. Previous value %s, new value %s",
-                  capabilityName, previous, value));
+      LOG.fine(() ->
+          String.format(
+              "Overwriting capability %s. Previous value %s, new value %s",
+              capabilityName, previous, value));
     }
 
     return this;
