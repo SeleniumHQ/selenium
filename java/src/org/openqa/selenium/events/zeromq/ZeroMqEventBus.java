@@ -73,34 +73,30 @@ public class ZeroMqEventBus {
     String publish =
         config
             .get(EVENTS_SECTION, "publish")
-            .orElseGet(
-                () -> {
-                  URI uri =
-                      config
-                          .get("node", "hub")
-                          .map(Urls::from)
-                          .orElseThrow(
-                              () ->
-                                  new IllegalArgumentException(
-                                      "Unable to find address to publish events to."));
-                  return mungeUri(uri, "tcp", 4442);
-                });
+            .orElseGet(() -> {
+              URI uri =
+                  config
+                      .get("node", "hub")
+                      .map(Urls::from)
+                      .orElseThrow(() ->
+                          new IllegalArgumentException(
+                              "Unable to find address to publish events to."));
+              return mungeUri(uri, "tcp", 4442);
+            });
 
     String subscribe =
         config
             .get(EVENTS_SECTION, "subscribe")
-            .orElseGet(
-                () -> {
-                  URI uri =
-                      config
-                          .get("node", "hub")
-                          .map(Urls::from)
-                          .orElseThrow(
-                              () ->
-                                  new IllegalArgumentException(
-                                      "Unable to find address to subscribe for events from."));
-                  return mungeUri(uri, "tcp", 4443);
-                });
+            .orElseGet(() -> {
+              URI uri =
+                  config
+                      .get("node", "hub")
+                      .map(Urls::from)
+                      .orElseThrow(() ->
+                          new IllegalArgumentException(
+                              "Unable to find address to subscribe for events from."));
+              return mungeUri(uri, "tcp", 4443);
+            });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
     Duration heartbeatPeriod = getHeartbeatPeriod(config);

@@ -67,21 +67,19 @@ class NodePropertiesTest {
 
   @Test
   void attributesThatAreNotAnObjectAreRejected() {
-    assertThatThrownBy(
-            () ->
-                ConverterFunctions.JSON.toType(
-                    "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": \"oops\"}",
-                    NodeProperties.class))
+    assertThatThrownBy(() ->
+            ConverterFunctions.JSON.toType(
+                "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": \"oops\"}",
+                NodeProperties.class))
         .isInstanceOf(JsonException.class);
   }
 
   @Test
   void attributesWithNonStringValuesAreRejected() {
-    assertThatThrownBy(
-            () ->
-                ConverterFunctions.JSON.toType(
-                    "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": {\"id\": 1}}",
-                    NodeProperties.class))
+    assertThatThrownBy(() ->
+            ConverterFunctions.JSON.toType(
+                "{\"nodeType\": 1, \"childNodeCount\": 0, \"attributes\": {\"id\": 1}}",
+                NodeProperties.class))
         .isInstanceOf(JsonException.class);
   }
 }

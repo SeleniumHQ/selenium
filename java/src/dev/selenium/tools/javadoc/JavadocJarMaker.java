@@ -159,31 +159,30 @@ public class JavadocJarMaker {
           ZipOutputStream zos = new ZipOutputStream(os);
           Stream<Path> walk = Files.walk(outputToPath)) {
         walk.sorted(Comparator.naturalOrder())
-            .forEachOrdered(
-                path -> {
-                  if (path.equals(outputToPath)) {
-                    return;
-                  }
+            .forEachOrdered(path -> {
+              if (path.equals(outputToPath)) {
+                return;
+              }
 
-                  try {
-                    if (Files.isDirectory(path)) {
-                      String name = outputToPath.relativize(path) + "/";
-                      ZipEntry entry = new StableZipEntry(name);
-                      zos.putNextEntry(entry);
-                      zos.closeEntry();
-                    } else {
-                      String name = outputToPath.relativize(path).toString();
-                      ZipEntry entry = new StableZipEntry(name);
-                      zos.putNextEntry(entry);
-                      try (InputStream is = Files.newInputStream(path)) {
-                        is.transferTo(zos);
-                      }
-                      zos.closeEntry();
-                    }
-                  } catch (IOException e) {
-                    throw new UncheckedIOException(e);
+              try {
+                if (Files.isDirectory(path)) {
+                  String name = outputToPath.relativize(path) + "/";
+                  ZipEntry entry = new StableZipEntry(name);
+                  zos.putNextEntry(entry);
+                  zos.closeEntry();
+                } else {
+                  String name = outputToPath.relativize(path).toString();
+                  ZipEntry entry = new StableZipEntry(name);
+                  zos.putNextEntry(entry);
+                  try (InputStream is = Files.newInputStream(path)) {
+                    is.transferTo(zos);
                   }
-                });
+                  zos.closeEntry();
+                }
+              } catch (IOException e) {
+                throw new UncheckedIOException(e);
+              }
+            });
       }
     }
 

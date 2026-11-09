@@ -74,7 +74,7 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
    */
   public HttpRequest addQueryParameter(String name, String value) {
     queryParameters
-        .computeIfAbsent(Require.nonNull("Name", name), (n) -> new ArrayList<>())
+        .computeIfAbsent(Require.nonNull("Name", name), n -> new ArrayList<>())
         .add(Require.nonNull("Value", value));
     return this;
   }

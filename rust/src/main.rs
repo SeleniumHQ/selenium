@@ -29,8 +29,8 @@ use selenium_manager::metadata::clear_metadata;
 use selenium_manager::rules::write_rules_file;
 use selenium_manager::skills::write_skills_file;
 use selenium_manager::{
-    CACHE_TTL_DAYS, SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
-    prune_old_cache_entries,
+    CACHE_TTL_DAYS, SeleniumManager, clear_cache, format_error, get_manager_by_browser,
+    get_manager_by_driver, prune_old_cache_entries,
 };
 use selenium_manager::{REQUEST_TIMEOUT_SEC, SM_BETA_LABEL};
 use std::backtrace::{Backtrace, BacktraceStatus};
@@ -100,6 +100,11 @@ struct Cli {
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
     #[clap(long, value_parser)]
     proxy: Option<String>,
+
+    /// Disable TLS certificate validation for network requests (not recommended; use only when
+    /// the required CA cannot be added to the system trust store)
+    #[clap(long)]
+    insecure: bool,
 
     /// Timeout for network requests (in seconds)
     #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
@@ -299,6 +304,7 @@ fn main() {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_insecure(cli.insecure))
         .and_then(|_| selenium_manager.stats())
         .and_then(|_| selenium_manager.setup())
         .map(|driver_path| {
@@ -322,7 +328,7 @@ fn main() {
                     format!(
                         "There was an error managing {} ({}); using driver found in the cache",
                         selenium_manager.get_driver_name(),
-                        err
+                        format_error(&err)
                     ),
                     selenium_manager.is_offline(),
                 );
@@ -339,12 +345,7 @@ fn main() {
                 log_browser_path(&log, &browser_path);
                 flush_and_exit(OK, log, Some(err));
             } else {
-                let error_msg = if log.is_debug_enabled() {
-                    format!("{:?}", err)
-                } else {
-                    err.to_string()
-                };
-                log.error(error_msg);
+                log.error(format_error(&err));
                 flush_and_exit(DATAERR, log, Some(err));
             }
         });

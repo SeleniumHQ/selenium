@@ -6,8 +6,7 @@
   "DriverConfigs": {
     "Chrome": {
       "Browser": "Chrome",
-      "RemoteCapabilities": "chrome",
-      "Logging": false
+      "RemoteCapabilities": "chrome"
     },
 
     "ChromeDev": {
@@ -17,8 +16,7 @@
           "BrowserVersion": "dev"
         }
       },
-      "RemoteCapabilities": "chrome",
-      "Logging": false
+      "RemoteCapabilities": "chrome"
     },
 
     "EdgeIEMode": {
@@ -30,14 +28,12 @@
           "AttachToEdgeChrome": true
         }
       },
-      "RemoteCapabilities": "internet explorer",
-      "Logging": false
+      "RemoteCapabilities": "internet explorer"
     },
 
     "Edge": {
       "Browser": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge",
-      "Logging": false
+      "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "EdgeDev": {
@@ -47,8 +43,7 @@
           "BrowserVersion": "dev"
         }
       },
-      "RemoteCapabilities": "MicrosoftEdge",
-      "Logging": false
+      "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "Firefox": {
@@ -59,8 +54,7 @@
           "EnableDevToolsProtocol": true
         }
       },
-      "RemoteCapabilities": "firefox",
-      "Logging": false
+      "RemoteCapabilities": "firefox"
     },
 
     "FirefoxNightly": {
@@ -72,14 +66,12 @@
           "EnableDevToolsProtocol": true
         }
       },
-      "RemoteCapabilities": "firefox",
-      "Logging": false
+      "RemoteCapabilities": "firefox"
     },
 
     "Safari": {
       "Browser": "Safari",
-      "RemoteCapabilities": "safari",
-      "Logging": false
+      "RemoteCapabilities": "safari"
     },
 
     "SafariTechPreview": {
@@ -89,15 +81,13 @@
           "UseTechnologyPreview": true
         }
       },
-      "RemoteCapabilities": "safari",
-      "Logging": false
+      "RemoteCapabilities": "safari"
     },
 
     "Remote": {
       "Browser": "Remote",
       "RemoteCapabilities": "chrome",
-      "AutoStartRemoteServer": true,
-      "Logging": false
+      "AutoStartRemoteServer": true
     }
   }
 }

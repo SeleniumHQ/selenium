@@ -153,10 +153,9 @@ class RelayOptionsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     assertThatExceptionOfType(ConfigException.class)
-        .isThrownBy(
-            () ->
-                new RelayOptions(config)
-                    .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
+        .isThrownBy(() ->
+            new RelayOptions(config)
+                .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
   }
 
   @Test
@@ -173,10 +172,9 @@ class RelayOptionsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     assertThatExceptionOfType(ConfigException.class)
-        .isThrownBy(
-            () ->
-                new RelayOptions(config)
-                    .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
+        .isThrownBy(() ->
+            new RelayOptions(config)
+                .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
   }
 
   @Test
@@ -197,10 +195,9 @@ class RelayOptionsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     assertThatExceptionOfType(ConfigException.class)
-        .isThrownBy(
-            () ->
-                new RelayOptions(config)
-                    .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)))
+        .isThrownBy(() ->
+            new RelayOptions(config)
+                .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)))
         .withMessageContaining("relay config 1");
   }
 }

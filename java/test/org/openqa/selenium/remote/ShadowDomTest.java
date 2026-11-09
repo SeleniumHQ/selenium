@@ -63,10 +63,9 @@ class ShadowDomTest {
         req -> {
           HttpResponse res =
               cannedResponses.entrySet().stream()
-                  .filter(
-                      e ->
-                          e.getKey().getMethod() == req.getMethod()
-                              && e.getKey().getUri().equals(req.getUri()))
+                  .filter(e ->
+                      e.getKey().getMethod() == req.getMethod()
+                          && e.getKey().getUri().equals(req.getUri()))
                   .map(Map.Entry::getValue)
                   .findFirst()
                   .orElse(

@@ -246,10 +246,9 @@ class TakesScreenshotTest extends JupiterTestBase {
   private void waitForFramesToPaint(String... frameIds) {
     for (String frameId : frameIds) {
       wait.until(frameToBeAvailableAndSwitchToIt(By.id(frameId)));
-      wait.until(
-          d ->
-              !"rgba(0, 0, 0, 0)"
-                  .equals(d.findElement(By.id("cell11")).getCssValue("background-color")));
+      wait.until(d ->
+          !"rgba(0, 0, 0, 0)"
+              .equals(d.findElement(By.id("cell11")).getCssValue("background-color")));
       driver.switchTo().defaultContent();
     }
   }

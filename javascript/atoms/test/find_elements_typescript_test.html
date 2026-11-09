@@ -22,6 +22,11 @@ under the License.
   <meta charset="utf-8">
   <title>find_elements_typescript_test</title>
   <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <style>
+    /* qunit.css moves the fixture off-screen, which the link text locators
+       treat as hidden. */
+    #qunit-fixture { position: static; }
+  </style>
   <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
   <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="/filez/_main/javascript/atoms/typescript/find-elements-global.js"></script>
@@ -57,7 +62,12 @@ under the License.
     return elements.map(function(el) { return el.getAttribute('id'); });
   }
 
-  var fixture = document.getElementById('qunit-fixture');
+  // QUnit replaces #qunit-fixture with a fresh clone before every test, so a
+  // reference taken once would point at a detached element that is never shown.
+  var fixture;
+  QUnit.hooks.beforeEach(function() {
+    fixture = document.getElementById('qunit-fixture');
+  });
 
   QUnit.test('finds elements by css selector', function(assert) {
     var elements = findElements({'css selector': 'p'}, fixture);
@@ -172,6 +182,30 @@ under the License.
     var partialElements = findElements({'partial link text': 'lo Wo'}, fixture);
     assert.equal(partialElements.length, 1);
     assert.equal(partialElements[0].getAttribute('id'), 'nbsp-link');
+    fixture.removeChild(a);
+  });
+
+  QUnit.test('does not find hidden links by link text', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.display = 'none';
+    a.textContent = 'Hidden link';
+    fixture.appendChild(a);
+    assert.equal(findElements({'link text': 'Hidden link'}, fixture).length, 0);
+    assert.equal(findElements({'partial link text': 'idden li'}, fixture).length, 0);
+    fixture.removeChild(a);
+  });
+
+  QUnit.test('finds hidden links by the text of a visible child', function(assert) {
+    var a = document.createElement('a');
+    a.href = '#';
+    a.style.visibility = 'hidden';
+    a.innerHTML = 'Hidden <span style="visibility:visible">shown child</span>';
+    fixture.appendChild(a);
+    var elements = findElements({'link text': 'shown child'}, fixture);
+    assert.equal(elements.length, 1);
+    assert.strictEqual(elements[0], a);
+    assert.equal(findElements({'partial link text': 'Hidden'}, fixture).length, 0);
     fixture.removeChild(a);
   });
 

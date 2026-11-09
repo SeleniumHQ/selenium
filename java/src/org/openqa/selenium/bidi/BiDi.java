@@ -126,17 +126,16 @@ public class BiDi implements Closeable {
   // later: it is unique regardless of whether the subscription was scoped to events, contexts, or
   // user contexts, so there is no need to separately track how a listener was subscribed.
   private <X> String subscribe(Map<String, Object> params, Event<X> event, Consumer<X> handler) {
-    return whileHoldingSubscriptionLock(
-        () -> {
-          Map<String, Object> result = send(new Command<>("session.subscribe", params, Map.class));
-          Object subscriptionId = result.get("subscription");
-          if (!(subscriptionId instanceof String) || ((String) subscriptionId).isEmpty()) {
-            throw new BiDiException(
-                "session.subscribe did not return a valid subscription id: " + result);
-          }
-          connection.addListener((String) subscriptionId, event, handler);
-          return (String) subscriptionId;
-        });
+    return whileHoldingSubscriptionLock(() -> {
+      Map<String, Object> result = send(new Command<>("session.subscribe", params, Map.class));
+      Object subscriptionId = result.get("subscription");
+      if (!(subscriptionId instanceof String) || ((String) subscriptionId).isEmpty()) {
+        throw new BiDiException(
+            "session.subscribe did not return a valid subscription id: " + result);
+      }
+      connection.addListener((String) subscriptionId, event, handler);
+      return (String) subscriptionId;
+    });
   }
 
   public <X> void clearListener(Set<String> browsingContextIds, Event<X> event) {
@@ -154,14 +153,13 @@ public class BiDi implements Closeable {
     // The browser throws an error if we try to unsubscribe an event that was not subscribed in the
     // first place. Local callbacks are removed before unsubscribing so events that arrive during
     // the unsubscribe round trip are not delivered to a listener the caller has already cleared.
-    whileHoldingSubscriptionLock(
-        () -> {
-          if (connection.isEventSubscribed(event)) {
-            unsubscribe(
-                connection.detachListeners(event), Map.of("events", List.of(event.getMethod())));
-          }
-          return null;
-        });
+    whileHoldingSubscriptionLock(() -> {
+      if (connection.isEventSubscribed(event)) {
+        unsubscribe(
+            connection.detachListeners(event), Map.of("events", List.of(event.getMethod())));
+      }
+      return null;
+    });
   }
 
   public void removeListener(String id) {
@@ -169,13 +167,12 @@ public class BiDi implements Closeable {
 
     // The browser throws an error if we try to unsubscribe a subscription id that was not
     // subscribed in the first place
-    whileHoldingSubscriptionLock(
-        () -> {
-          if (connection.isSubscribed(id)) {
-            unsubscribe(connection.detachListeners(id), Map.of("subscriptions", List.of(id)));
-          }
-          return null;
-        });
+    whileHoldingSubscriptionLock(() -> {
+      if (connection.isSubscribed(id)) {
+        unsubscribe(connection.detachListeners(id), Map.of("subscriptions", List.of(id)));
+      }
+      return null;
+    });
   }
 
   private void unsubscribe(
@@ -191,11 +188,10 @@ public class BiDi implements Closeable {
   }
 
   public void clearListeners() {
-    whileHoldingSubscriptionLock(
-        () -> {
-          connection.clearListeners();
-          return null;
-        });
+    whileHoldingSubscriptionLock(() -> {
+      connection.clearListeners();
+      return null;
+    });
   }
 
   private <T> T whileHoldingSubscriptionLock(Supplier<T> change) {

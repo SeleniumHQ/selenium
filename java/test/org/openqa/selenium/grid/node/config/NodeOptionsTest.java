@@ -78,11 +78,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
     String expected = chromeDriverInfo.getDisplayName();
@@ -142,11 +141,10 @@ class NodeOptionsTest {
                     true)));
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
     String expected = driver.getDisplayName();
 
     Capabilities found =
@@ -171,11 +169,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported).is(supporting("firefox"));
@@ -202,11 +199,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     // There may be more drivers available, but we know that these are meant to be here.
     assertThat(reported).is(supporting("safari"));
@@ -223,11 +219,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.getPlatformName() != null)
@@ -242,17 +237,15 @@ class NodeOptionsTest {
     NodeOptions nodeOptions = new NodeOptions(config);
     NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
     Mockito.doReturn(true).when(nodeOptionsSpy).isVncEnabled();
-    nodeOptionsSpy.getSessionFactories(
-        caps -> {
-          reported.add(caps);
-          return Collections.singleton(HelperFactory.create(config, caps));
-        });
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
 
     assertThat(reported)
-        .filteredOn(
-            capabilities ->
-                capabilities.getCapability("se:vncEnabled") != null
-                    && capabilities.getCapability("se:noVncPort") != null)
+        .filteredOn(capabilities ->
+            capabilities.getCapability("se:vncEnabled") != null
+                && capabilities.getCapability("se:noVncPort") != null)
         .hasSize(reported.size());
   }
 
@@ -264,17 +257,15 @@ class NodeOptionsTest {
     NodeOptions nodeOptions = new NodeOptions(config);
     NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
     Mockito.doReturn(false).when(nodeOptionsSpy).isVncEnabled();
-    nodeOptionsSpy.getSessionFactories(
-        caps -> {
-          reported.add(caps);
-          return Collections.singleton(HelperFactory.create(config, caps));
-        });
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
 
     assertThat(reported)
-        .filteredOn(
-            capabilities ->
-                capabilities.getCapability("se:vncEnabled") == null
-                    && capabilities.getCapability("se:noVncPort") == null)
+        .filteredOn(capabilities ->
+            capabilities.getCapability("se:vncEnabled") == null
+                && capabilities.getCapability("se:noVncPort") == null)
         .hasSize(reported.size());
   }
 
@@ -283,11 +274,10 @@ class NodeOptionsTest {
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported).isEmpty();
   }
@@ -302,14 +292,12 @@ class NodeOptionsTest {
                     "detect-drivers", "false",
                     "driver-implementation", "[chrome]")));
     List<Capabilities> reported = new ArrayList<>();
-    assertThatThrownBy(
-            () ->
-                new NodeOptions(config)
-                    .getSessionFactories(
-                        caps -> {
-                          reported.add(caps);
-                          return Collections.singleton(HelperFactory.create(config, caps));
-                        }))
+    assertThatThrownBy(() ->
+            new NodeOptions(config)
+                .getSessionFactories(caps -> {
+                  reported.add(caps);
+                  return Collections.singleton(HelperFactory.create(config, caps));
+                }))
         .isInstanceOf(ConfigException.class)
         .hasMessage("Specific drivers cannot be added if 'detect-drivers' is set to false");
 
@@ -326,11 +314,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported).isNotEmpty();
   }
@@ -395,22 +382,20 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            capabilities -> {
-              reported.add(capabilities);
-              return Collections.singleton(HelperFactory.create(config, capabilities));
-            });
+        .getSessionFactories(capabilities -> {
+          reported.add(capabilities);
+          return Collections.singleton(HelperFactory.create(config, capabilities));
+        });
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported).is(supporting("firefox"));
     //noinspection unchecked
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
-        .anyMatch(
-            capabilities ->
-                ((Map<String, String>) capabilities.getCapability(ChromeOptions.CAPABILITY))
-                    .get("binary")
-                    .equalsIgnoreCase(chromeLocation));
+        .anyMatch(capabilities ->
+            ((Map<String, String>) capabilities.getCapability(ChromeOptions.CAPABILITY))
+                .get("binary")
+                .equalsIgnoreCase(chromeLocation));
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
         .hasSize(1);
@@ -419,11 +404,10 @@ class NodeOptionsTest {
     assertThat(reported)
         .filteredOn(
             capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
-        .anyMatch(
-            capabilities ->
-                ((Map<String, String>) capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS))
-                    .get("binary")
-                    .equalsIgnoreCase(firefoxLocation));
+        .anyMatch(capabilities ->
+            ((Map<String, String>) capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS))
+                .get("binary")
+                .equalsIgnoreCase(firefoxLocation));
 
     assertThat(reported)
         .filteredOn(
@@ -463,26 +447,23 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            capabilities -> {
-              reported.add(capabilities);
-              return Collections.singleton(HelperFactory.create(config, capabilities));
-            });
+        .getSessionFactories(capabilities -> {
+          reported.add(capabilities);
+          return Collections.singleton(HelperFactory.create(config, capabilities));
+        });
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported).is(supporting("firefox"));
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
-        .allMatch(
-            capabilities ->
-                chromeDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
+        .allMatch(capabilities ->
+            chromeDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
 
     assertThat(reported)
         .filteredOn(
             capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
-        .anyMatch(
-            capabilities ->
-                geckoDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
+        .anyMatch(capabilities ->
+            geckoDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
   }
 
   @Test
@@ -509,11 +490,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            capabilities -> {
-              reported.add(capabilities);
-              return Collections.singleton(HelperFactory.create(config, capabilities));
-            });
+        .getSessionFactories(capabilities -> {
+          reported.add(capabilities);
+          return Collections.singleton(HelperFactory.create(config, capabilities));
+        });
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported)
@@ -546,14 +526,12 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
-    assertThatThrownBy(
-            () ->
-                new NodeOptions(config)
-                    .getSessionFactories(
-                        caps -> {
-                          reported.add(caps);
-                          return Collections.singleton(HelperFactory.create(config, caps));
-                        }))
+    assertThatThrownBy(() ->
+            new NodeOptions(config)
+                .getSessionFactories(caps -> {
+                  reported.add(caps);
+                  return Collections.singleton(HelperFactory.create(config, caps));
+                }))
         .as("driver config needs the stereotype field")
         .isInstanceOf(ConfigException.class)
         .hasMessage(
@@ -580,11 +558,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            capabilities -> {
-              reported.add(capabilities);
-              return Collections.singleton(HelperFactory.create(config, capabilities));
-            });
+        .getSessionFactories(capabilities -> {
+          reported.add(capabilities);
+          return Collections.singleton(HelperFactory.create(config, capabilities));
+        });
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported).is(supporting("firefox"));
@@ -600,11 +577,10 @@ class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config)
-          .getSessionFactories(
-              caps -> {
-                reported.add(caps);
-                return Collections.singleton(HelperFactory.create(config, caps));
-              });
+          .getSessionFactories(caps -> {
+            reported.add(caps);
+            return Collections.singleton(HelperFactory.create(config, caps));
+          });
     } catch (ConfigException e) {
       // Fall through
     }
@@ -628,11 +604,10 @@ class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config)
-          .getSessionFactories(
-              caps -> {
-                reported.add(caps);
-                return Collections.singleton(HelperFactory.create(config, caps));
-              });
+          .getSessionFactories(caps -> {
+            reported.add(caps);
+            return Collections.singleton(HelperFactory.create(config, caps));
+          });
     } catch (ConfigException e) {
       // Fall through
     }
@@ -797,20 +772,18 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") != null)
         .hasSize(reported.size());
 
     assertThat(reported)
-        .allMatch(
-            capabilities ->
-                Boolean.TRUE.equals(capabilities.getCapability("se:deleteSessionOnUi")));
+        .allMatch(capabilities ->
+            Boolean.TRUE.equals(capabilities.getCapability("se:deleteSessionOnUi")));
   }
 
   @Test
@@ -826,11 +799,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") == null)
@@ -847,11 +819,10 @@ class NodeOptionsTest {
 
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config)
-        .getSessionFactories(
-            caps -> {
-              reported.add(caps);
-              return Collections.singleton(HelperFactory.create(config, caps));
-            });
+        .getSessionFactories(caps -> {
+          reported.add(caps);
+          return Collections.singleton(HelperFactory.create(config, caps));
+        });
 
     assertThat(reported)
         .filteredOn(capabilities -> capabilities.getCapability("se:deleteSessionOnUi") == null)

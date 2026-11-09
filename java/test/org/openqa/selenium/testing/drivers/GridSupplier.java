@@ -90,14 +90,13 @@ class GridSupplier implements Supplier<WebDriver> {
           new FluentWait<>(client)
               .ignoring(RuntimeException.class)
               .withTimeout(Duration.ofSeconds(30));
-      wait.until(
-          c -> {
-            HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
-            HttpResponse response = c.execute(req);
-            Map<?, ?> value = json.toType(string(response), Map.class);
+      wait.until(c -> {
+        HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
+        HttpResponse response = c.execute(req);
+        Map<?, ?> value = json.toType(string(response), Map.class);
 
-            return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
-          });
+        return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
+      });
     }
 
     started = true;

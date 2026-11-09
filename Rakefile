@@ -97,9 +97,8 @@ task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
-  sh "(git log --use-mailmap --format='%aN <%aE>' ; " \
-     'cat .OLD_AUTHORS ; cat AUTHORS) | ' \
-     'sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS'
+  authors = `git log --use-mailmap --format="%aN <%aE>"`.lines + File.readlines('AUTHORS')
+  File.write('AUTHORS', authors.uniq(&:upcase).sort_by(&:upcase).join)
 end
 
 desc 'Update dependencies for all bindings and Rust, plus pinned multitool binaries'
@@ -147,15 +146,23 @@ task :format do |_task, arguments|
   Rake::Task['all:format'].invoke(*args)
 end
 
-def lint_actions
+desc 'Lint GitHub workflows with actionlint'
+task :lint_workflows do
   shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
   Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+end
+
+desc 'Lint all shell scripts with shellcheck'
+task :lint_shell do
+  shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+  sh shellcheck, *SeleniumRake.git.ls_files('*.sh').keys
 end
 
 desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
 task :lint do
   SeleniumRake.aggregate_errors(
-    shellcheck_and_actionlint: -> { lint_actions },
+    workflows: -> { Rake::Task['lint_workflows'].invoke },
+    shell: -> { Rake::Task['lint_shell'].invoke },
     all: -> { Rake::Task['all:lint'].invoke }
   )
 end

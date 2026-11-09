@@ -272,13 +272,12 @@ class WebScriptTest extends JupiterTestBase {
         DateTimeFormatter.ofPattern("HH:mm:ss:SSS").withZone(systemDefault());
 
     String id =
-        script.addConsoleMessageHandler(
-            log -> {
-              String time = formatter.format(ofEpochMilli(log.getTimestamp()));
-              String message = String.format("%s %s", log.getText(), time);
-              logs.add(message);
-              latch.countDown();
-            });
+        script.addConsoleMessageHandler(log -> {
+          String time = formatter.format(ofEpochMilli(log.getTimestamp()));
+          String message = String.format("%s %s", log.getText(), time);
+          logs.add(message);
+          latch.countDown();
+        });
 
     try {
       page = appServer.whereIs("/bidi/logEntryAdded.html");

@@ -187,20 +187,19 @@ public abstract class HttpClientTestBase {
   @Test
   void shouldAllowConfigurationOfRequestTimeout() {
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(
-            () ->
-                executeWithinServer(
-                    new HttpRequest(GET, "/foo"),
-                    req -> {
-                      try {
-                        Thread.sleep(1000);
-                      } catch (InterruptedException e) {
-                        LOG.severe("Error during execution: " + e.getMessage());
-                      }
-                      return new HttpResponse()
-                          .setContent(Contents.utf8String(req.getHeader("user-agent")));
-                    },
-                    ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
+        .isThrownBy(() ->
+            executeWithinServer(
+                new HttpRequest(GET, "/foo"),
+                req -> {
+                  try {
+                    Thread.sleep(1000);
+                  } catch (InterruptedException e) {
+                    LOG.severe("Error during execution: " + e.getMessage());
+                  }
+                  return new HttpResponse()
+                      .setContent(Contents.utf8String(req.getHeader("user-agent")));
+                },
+                ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
   }
 
   @Test
@@ -250,23 +249,22 @@ public abstract class HttpClientTestBase {
         };
 
     return ClientConfig.defaultConfig()
-        .withFilter(
-            (handler) ->
-                (request) -> {
-                  try {
-                    executing.countDown();
-                    return handler.execute(request);
-                  } catch (WebDriverException ex) {
-                    if (ex.getCause() instanceof InterruptedException
-                        || ex.getCause() instanceof HttpTimeoutException) {
-                      interrupted.countDown();
-                    }
+        .withFilter(handler ->
+            request -> {
+              try {
+                executing.countDown();
+                return handler.execute(request);
+              } catch (WebDriverException ex) {
+                if (ex.getCause() instanceof InterruptedException
+                    || ex.getCause() instanceof HttpTimeoutException) {
+                  interrupted.countDown();
+                }
 
-                    throw ex;
-                  } finally {
-                    unlock.countDown();
-                  }
-                })
+                throw ex;
+              } finally {
+                unlock.countDown();
+              }
+            })
         .readTimeout(Duration.ofMillis(timeout));
   }
 

@@ -278,13 +278,12 @@ public abstract class Route implements HttpHandler, Routable {
 
       HttpRequest toForward = new HttpRequest(request.getMethod(), unprefixed);
 
-      request.forEachHeader(
-          (name, value) -> {
-            if (name == null) {
-              return;
-            }
-            toForward.addHeader(name, value);
-          });
+      request.forEachHeader((name, value) -> {
+        if (name == null) {
+          return;
+        }
+        toForward.addHeader(name, value);
+      });
 
       request
           .getAttributeNames()
@@ -301,10 +300,9 @@ public abstract class Route implements HttpHandler, Routable {
               .collect(Collectors.toUnmodifiableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
-      request.forEachQueryParameter(
-          (name, value) -> {
-            toForward.addQueryParameter(name, value);
-          });
+      request.forEachQueryParameter((name, value) -> {
+        toForward.addQueryParameter(name, value);
+      });
 
       toForward.setContent(request.getContent());
 
@@ -321,18 +319,16 @@ public abstract class Route implements HttpHandler, Routable {
       // routes as necessary.
       List<Routable> routables =
           routes
-              .flatMap(
-                  route -> {
-                    // flatten a nested CombinedRoute
-                    if (route instanceof CombinedRoute) {
-                      List<Routable> nestedRoutes =
-                          new ArrayList<>(((CombinedRoute) route).allRoutes);
-                      // reverse to have the identical behaviour like not flattened
-                      Collections.reverse(nestedRoutes);
-                      return nestedRoutes.stream();
-                    }
-                    return Stream.of(route);
-                  })
+              .flatMap(route -> {
+                // flatten a nested CombinedRoute
+                if (route instanceof CombinedRoute) {
+                  List<Routable> nestedRoutes = new ArrayList<>(((CombinedRoute) route).allRoutes);
+                  // reverse to have the identical behaviour like not flattened
+                  Collections.reverse(nestedRoutes);
+                  return nestedRoutes.stream();
+                }
+                return Stream.of(route);
+              })
               .collect(Collectors.toList());
       Collections.reverse(routables);
       allRoutes = List.copyOf(routables);
@@ -350,11 +346,10 @@ public abstract class Route implements HttpHandler, Routable {
           .filter(route -> route.matches(req))
           .findFirst()
           .map(route -> (HttpHandler) route)
-          .orElse(
-              request ->
-                  new HttpResponse()
-                      .setStatus(HTTP_NOT_FOUND)
-                      .setContent(utf8String("No handler found for " + request)))
+          .orElse(request ->
+              new HttpResponse()
+                  .setStatus(HTTP_NOT_FOUND)
+                  .setContent(utf8String("No handler found for " + request)))
           .execute(req);
     }
   }

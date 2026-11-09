@@ -339,26 +339,24 @@ class SessionCleanUpTest {
     new FluentWait<>(distributor)
         .withTimeout(Duration.ofSeconds(120))
         .pollingEvery(Duration.ofMillis(100))
-        .until(
-            d -> {
-              Set<NodeStatus> nodes = d.getStatus().getNodes();
-              return nodes.isEmpty();
-            });
+        .until(d -> {
+          Set<NodeStatus> nodes = d.getStatus().getNodes();
+          return nodes.isEmpty();
+        });
   }
 
   private void waitTillSessionIsRemoved(SessionMap sessionMap, SessionId id) {
     new FluentWait<>(sessionMap)
         .withTimeout(Duration.ofSeconds(15))
         .pollingEvery(Duration.ofMillis(100))
-        .until(
-            s -> {
-              try {
-                s.get(id);
-              } catch (NoSuchSessionException e) {
-                return true;
-              }
-              return false;
-            });
+        .until(s -> {
+          try {
+            s.get(id);
+          } catch (NoSuchSessionException e) {
+            return true;
+          }
+          return false;
+        });
   }
 
   public static class LocalTestSessionFactory {

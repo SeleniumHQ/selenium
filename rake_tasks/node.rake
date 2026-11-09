@@ -129,6 +129,36 @@ task :release do |_task, arguments|
   publish_npm_package(webdriver_publish_target, config, dry_run)
 end
 
+desc 'Release @selenium/manager standalone packages to npm (use dry-run to test without publishing)'
+task :release_manager do |_task, arguments|
+  args = arguments.to_a
+  nightly = args.delete('nightly')
+  dry_run = args.delete('dry-run')
+  config = args.delete('rbe') ? 'rbe_release' : 'release'
+
+  # Nightlies go to GitHub Packages, which only accepts the @seleniumhq scope;
+  # the manager is only ever published as @selenium/manager, so it skips them.
+  if nightly
+    puts '@selenium/manager is published only in releases — skipping nightly.'
+    next
+  end
+
+  Rake::Task['node:check_credentials'].invoke unless dry_run
+
+  targets = [
+    '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
+    '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
+    '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
+    '//javascript/selenium-manager-win32-ia32:selenium-manager-win32-ia32.publish',
+    '//javascript/selenium-manager:selenium-manager.publish'
+  ]
+
+  targets.each do |target|
+    puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
+    publish_npm_package(target, config, dry_run)
+  end
+end
+
 desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")

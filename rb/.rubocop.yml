@@ -41,6 +41,7 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
     - 'lib/selenium/webdriver/bidi/protocol/**/*'
+    - 'lib/selenium/webdriver/common/websocket_connection.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:

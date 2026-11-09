@@ -84,10 +84,9 @@ class MultimapTest {
   @Test
   void forEach() {
     Map<Integer, AtomicInteger> counters = new HashMap<>();
-    map.forEach(
-        (id, name) -> {
-          counters.computeIfAbsent(id, __ -> new AtomicInteger(0)).incrementAndGet();
-        });
+    map.forEach((id, name) -> {
+      counters.computeIfAbsent(id, __ -> new AtomicInteger(0)).incrementAndGet();
+    });
     assertThat(counters).hasSize(2);
     assertThat(counters.get(6).get()).isEqualTo(2);
     assertThat(counters.get(7).get()).isEqualTo(1);

@@ -110,14 +110,13 @@ class TunnelWebsocketTest {
     return uri ->
         HttpSessionId.getSessionId(uri)
             .map(SessionId::new)
-            .flatMap(
-                id -> {
-                  try {
-                    return Optional.of(sessions.getUri(id));
-                  } catch (NoSuchSessionException e) {
-                    return Optional.empty();
-                  }
-                });
+            .flatMap(id -> {
+              try {
+                return Optional.of(sessions.getUri(id));
+              } catch (NoSuchSessionException e) {
+                return Optional.empty();
+              }
+            });
   }
 
   private Server<?> createEchoBackend(
@@ -126,16 +125,15 @@ class TunnelWebsocketTest {
             new BaseServerOptions(emptyConfig),
             nullHandler,
             (uri, sink) ->
-                Optional.of(
-                    msg -> {
-                      if (msg instanceof TextMessage) {
-                        received.set(((TextMessage) msg).text());
-                        receivedLatch.countDown();
-                        if (!response.isEmpty()) {
-                          sink.accept(new TextMessage(response));
-                        }
-                      }
-                    }))
+                Optional.of(msg -> {
+                  if (msg instanceof TextMessage) {
+                    received.set(((TextMessage) msg).text());
+                    receivedLatch.countDown();
+                    if (!response.isEmpty()) {
+                      sink.accept(new TextMessage(response));
+                    }
+                  }
+                }))
         .start();
   }
 
@@ -235,13 +233,12 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof BinaryMessage) {
-                            received.set(((BinaryMessage) msg).data());
-                            latch.countDown();
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof BinaryMessage) {
+                        received.set(((BinaryMessage) msg).data());
+                        latch.countDown();
+                      }
+                    }))
             .start();
 
     SessionId id = new SessionId(UUID.randomUUID());
@@ -359,13 +356,12 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(httpsConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof TextMessage) {
-                            received.set(((TextMessage) msg).text());
-                            latch.countDown();
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof TextMessage) {
+                        received.set(((TextMessage) msg).text());
+                        latch.countDown();
+                      }
+                    }))
             .start();
 
     // backendServer.getUrl() is now https://localhost:<port>
@@ -412,13 +408,12 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof TextMessage) {
-                            count.updateAndGet(c -> c + 1);
-                            latch.countDown();
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof TextMessage) {
+                        count.updateAndGet(c -> c + 1);
+                        latch.countDown();
+                      }
+                    }))
             .start();
 
     SessionId id = new SessionId(UUID.randomUUID());
@@ -479,14 +474,13 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof TextMessage) {
-                            received.set(((TextMessage) msg).text());
-                            receivedLatch.countDown();
-                            sink.accept(new TextMessage("bidi-ack"));
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof TextMessage) {
+                        received.set(((TextMessage) msg).text());
+                        receivedLatch.countDown();
+                        sink.accept(new TextMessage("bidi-ack"));
+                      }
+                    }))
             .start();
 
     URI backendUri = backendServer.getUrl().toURI();
@@ -565,14 +559,13 @@ class TunnelWebsocketTest {
         uri ->
             HttpSessionId.getSessionId(uri)
                 .map(SessionId::new)
-                .flatMap(
-                    id -> {
-                      try {
-                        return Optional.of(gridSessions.getUri(id));
-                      } catch (NoSuchSessionException e) {
-                        return Optional.empty();
-                      }
-                    });
+                .flatMap(id -> {
+                  try {
+                    return Optional.of(gridSessions.getUri(id));
+                  } catch (NoSuchSessionException e) {
+                    return Optional.empty();
+                  }
+                });
 
     tunnelServer =
         new NettyServer(
@@ -739,13 +732,12 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof BinaryMessage) {
-                            received.set(((BinaryMessage) msg).data());
-                            latch.countDown();
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof BinaryMessage) {
+                        received.set(((BinaryMessage) msg).data());
+                        latch.countDown();
+                      }
+                    }))
             .start();
 
     SessionId id = new SessionId(UUID.randomUUID());
@@ -787,13 +779,12 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof TextMessage) {
-                            backendLatch.countDown();
-                            sink.accept(new TextMessage(">" + ((TextMessage) msg).text()));
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof TextMessage) {
+                        backendLatch.countDown();
+                        sink.accept(new TextMessage(">" + ((TextMessage) msg).text()));
+                      }
+                    }))
             .start();
 
     SessionId id = new SessionId(UUID.randomUUID());
@@ -847,12 +838,11 @@ class TunnelWebsocketTest {
                 new BaseServerOptions(emptyConfig),
                 nullHandler,
                 (uri, sink) ->
-                    Optional.of(
-                        msg -> {
-                          if (msg instanceof TextMessage) {
-                            sink.accept(new CloseMessage(1000, "done"));
-                          }
-                        }))
+                    Optional.of(msg -> {
+                      if (msg instanceof TextMessage) {
+                        sink.accept(new CloseMessage(1000, "done"));
+                      }
+                    }))
             .start();
 
     SessionId id = new SessionId(UUID.randomUUID());

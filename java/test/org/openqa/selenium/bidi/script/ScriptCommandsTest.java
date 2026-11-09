@@ -610,15 +610,14 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.disownBrowsingContextScript(id, handles);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                script.callFunctionInBrowsingContext(
-                    id,
-                    "arg => arg.a",
-                    false,
-                    Optional.of(arguments),
-                    Optional.empty(),
-                    Optional.empty()));
+        .isThrownBy(() ->
+            script.callFunctionInBrowsingContext(
+                id,
+                "arg => arg.a",
+                false,
+                Optional.of(arguments),
+                Optional.empty(),
+                Optional.empty()));
   }
 
   @Test
@@ -667,15 +666,14 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.disownRealmScript(evaluateResult.getRealmId(), handles);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                script.callFunctionInBrowsingContext(
-                    id,
-                    "arg => arg.a",
-                    false,
-                    Optional.of(arguments),
-                    Optional.empty(),
-                    Optional.empty()));
+        .isThrownBy(() ->
+            script.callFunctionInBrowsingContext(
+                id,
+                "arg => arg.a",
+                false,
+                Optional.of(arguments),
+                Optional.empty(),
+                Optional.empty()));
   }
 
   @Test

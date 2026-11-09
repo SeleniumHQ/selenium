@@ -31,8 +31,6 @@ public class DriverConfig
     public string RemoteCapabilities { get; set; }
 
     public bool AutoStartRemoteServer { get; set; }
-
-    public bool Logging { get; set; }
 }
 
 public sealed class DriverConfigOptions

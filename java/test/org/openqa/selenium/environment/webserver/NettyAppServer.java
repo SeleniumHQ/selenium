@@ -64,13 +64,11 @@ public class NettyAppServer implements AppServer {
           .withMaxAttempts(5)
           .withDelay(100, 1000, ChronoUnit.MILLIS)
           .handle(ServerBindException.class)
-          .onRetry(
-              e -> {
-                LOG.log(
-                    Level.WARNING,
-                    String.format("NettyAppServer retry #%s. ", e.getAttemptCount()));
-                initValues(secure != null);
-              })
+          .onRetry(e -> {
+            LOG.log(
+                Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount()));
+            initValues(secure != null);
+          })
           .onRetriesExceeded(e -> LOG.log(Level.WARNING, "NettyAppServer start aborted."))
           .build();
 
@@ -146,22 +144,21 @@ public class NettyAppServer implements AppServer {
   @Override
   public void start() {
     Failsafe.with(retryPolicy)
-        .run(
-            () -> {
-              server.start();
-              if (secure != null) {
-                try {
-                  secure.start();
-                } catch (Exception e) {
-                  try {
-                    server.stop();
-                  } catch (Exception ex) {
-                    e.addSuppressed(ex);
-                    throw e;
-                  }
-                }
+        .run(() -> {
+          server.start();
+          if (secure != null) {
+            try {
+              secure.start();
+            } catch (Exception e) {
+              try {
+                server.stop();
+              } catch (Exception ex) {
+                e.addSuppressed(ex);
+                throw e;
               }
-            });
+            }
+          }
+        });
   }
 
   @Override

@@ -88,31 +88,30 @@ class RemoteScript implements Script {
 
     this.script.addPreloadScript(scriptValue, List.of(new ChannelValue("channel_name")));
 
-    return this.script.onMessage(
-        message -> {
-          String value = message.getData().getValue().get().toString();
+    return this.script.onMessage(message -> {
+      String value = message.getData().getValue().get().toString();
 
-          Map<String, Object> values = JSON.toType(value, MAP_TYPE);
-          String id = (String) values.get("target");
+      Map<String, Object> values = JSON.toType(value, MAP_TYPE);
+      String id = (String) values.get("target");
 
-          List<WebElement> elements;
+      List<WebElement> elements;
 
-          synchronized (this) {
-            elements =
-                this.driver.findElements(
-                    By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
-          }
+      synchronized (this) {
+        elements =
+            this.driver.findElements(
+                By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
+      }
 
-          if (!elements.isEmpty()) {
-            DomMutation event =
-                new DomMutation(
-                    elements.get(0),
-                    String.valueOf(values.get("name")),
-                    String.valueOf(values.get("value")),
-                    String.valueOf(values.get("oldValue")));
-            consumer.accept(event);
-          }
-        });
+      if (!elements.isEmpty()) {
+        DomMutation event =
+            new DomMutation(
+                elements.get(0),
+                String.valueOf(values.get("name")),
+                String.valueOf(values.get("value")),
+                String.valueOf(values.get("oldValue")));
+        consumer.accept(event);
+      }
+    });
   }
 
   @Override

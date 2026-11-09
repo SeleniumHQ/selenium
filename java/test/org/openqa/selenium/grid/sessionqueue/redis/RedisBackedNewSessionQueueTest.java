@@ -137,10 +137,9 @@ class RedisBackedNewSessionQueueTest {
     new FluentWait<>(request)
         .withTimeout(Duration.ofSeconds(5))
         .pollingEvery(Duration.ofMillis(50))
-        .until(
-            r ->
-                queue.getQueueContents().stream()
-                    .anyMatch(src -> src.getRequestId().equals(r.getRequestId())));
+        .until(r ->
+            queue.getQueueContents().stream()
+                .anyMatch(src -> src.getRequestId().equals(r.getRequestId())));
   }
 
   @Test
