@@ -1128,6 +1128,22 @@ public class BiDiGenerator {
       // an integer or enum field here is actually held to its declared type, not silently
       // accepted from a string/fraction or matched case-insensitively.
       sb.append(m).append("  Json json = ConverterFunctions.JSON;\n");
+      // map.get() can't tell a missing key from an explicit null, so a required-nullable field
+      // would otherwise pass with its key absent. ConstructorCoercer rejects that
+      // (throwForMissingParameter); this keeps fromJson to the same contract.
+      for (FieldInfo f : fields) {
+        if (f.required) {
+          sb.append(m).append("  if (!map.containsKey(\"").append(f.wire).append("\")) {\n");
+          sb.append(m)
+              .append("    throw new org.openqa.selenium.json.JsonException(")
+              .append("\"Missing JSON value for ")
+              .append(cls)
+              .append(".")
+              .append(f.wire)
+              .append("\");\n");
+          sb.append(m).append("  }\n");
+        }
+      }
       for (FieldInfo f : fields) {
         String decodeType =
             f.required ? resolveJavaType(f.typeRef, domain, true) : fieldJavaType(f, domain);

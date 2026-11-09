@@ -68,6 +68,30 @@ class VendorExtensionGenerationTest {
   }
 
   @Test
+  void vendorFieldsOnAReceivedTypeKeepTheMissingKeyCheckForRequiredFields() {
+    Generated out =
+        new Schema()
+            .receives("browsingContext.Info")
+            .type(
+                "browsingContext.Info",
+                "{'kind': 'record', 'fields': [{'name': 'context', 'wire': 'context',"
+                    + " 'required': true, 'type': {'primitive': 'string'}},"
+                    + " {'name': 'originalOpener', 'wire': 'originalOpener', 'required': true,"
+                    + " 'type': {'primitive': 'string', 'nullable': true}}]}")
+            .vendor(
+                extending(
+                    "browsingContext.Info",
+                    "{'name': 'moz:name', 'wire': 'moz:name', 'required': false,"
+                        + " 'type': {'primitive': 'string'}}"))
+            .generate();
+
+    assertThat(out.type("browsingContext.Info"))
+        .contains("if (!map.containsKey(\"context\")) {")
+        .contains("if (!map.containsKey(\"originalOpener\")) {")
+        .doesNotContain("if (!map.containsKey(\"moz:name\")) {");
+  }
+
+  @Test
   void vendorFieldsOnACommandsParamsGoOnAVariantRecordSentOnlyByTheVendorModule() {
     Generated out =
         new Schema()
