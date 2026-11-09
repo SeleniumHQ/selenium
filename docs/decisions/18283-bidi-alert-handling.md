@@ -26,10 +26,10 @@ BiDi also supports interacting with `beforeUnload` prompts (the alert that asks 
 
 ## Decision
 
-1. **Alert handlers may be added or removed.** Two methods are made available directly on the driver object, and a registered handler applies to all contexts. 
-`addAlertHandler` returns a handle object; `removeAlertHandler` takes that handle and unregisters exactly that handler.
-There is no clear alert handlers equivalent. A binding may implement a way to add and remove a handler on behalf of a user
-so it applies for a specific block of code. 
+1. **Alert handlers may be added or removed through `driver.alerts`.** Like `driver.network` ([17685](17685-network-handler-behavior.md))
+and `driver.script`, the handlers live on a domain off the driver, and a registered handler applies to every window.
+`addHandler` returns a handle object; `removeHandler` takes that handle and unregisters exactly that handler.
+There is no clear alert handlers equivalent. A binding may implement a way to add and remove a handler on behalf of a user so it applies for a specific block of code.
 
 2. **A handler is a callable that acts on the alert object.** Inside the async handler the user has access to an alert object
 that describes its type and can read text, send keys, accept or dismiss just like in the current Alert API.
@@ -54,23 +54,31 @@ An alert must not be closed for the user after the callable is executed; a handl
 
 
 ```ruby
-handle = driver.add_alert_handler { |alert| alert.type == 'prompt' ? alert.accept : alert.dismiss }
+handle = driver.alerts.add_handler { |alert| alert.type == 'prompt' ? alert.accept : alert.dismiss }
 click_button_opening_alert
-driver.remove_alert_handler(handle)
+driver.alerts.remove_handler(handle)
 ```
 
 ```java
-var handle = driver.addAlertHandler(alert -> {
+var handle = driver.alerts().addHandler(alert -> {
   if (alert.getType() == AlertType.PROMPT) alert.accept(); else alert.dismiss();
 });
 clickButtonOpeningAlert();
-driver.removeAlertHandler(handle);
+driver.alerts().removeHandler(handle);
 ```
 
 ## Considered options
 
 - **Registration (decision 1).**
-  - Include `clearAlertHandlers` like network handlers. Rejected: only the newest handler is called (decision 6),
+  - Methods directly on the driver. Rejected: [17685](17685-network-handler-behavior.md) already rejected top-level
+    driver methods for network handlers, and `driver.script` follows the same shape, so a third shape for alerts would
+    leave users guessing where each family lives.
+  - Under `switchTo` next to the Alert API. Rejected: `switchTo` changes the focus of the current context, while a
+    handler is a policy for every window; and the Java and .NET target locators are interfaces that third parties implement.
+  - On a browsing context accessor, as [#17672](https://github.com/SeleniumHQ/selenium/pull/17672) proposes.
+    Rejected: that is the BiDi module name, which [17670](17670-bidi-implementation-boundaries.md) keeps internal.
+  - Name the methods `addAlertHandler` and so on. Rejected: the `alerts` domain already says it.
+  - Include `clearHandlers` like network handlers. Rejected: only the newest handler is called (decision 6),
     and users can and should manage this explicitly.
   - Name the API after BiDi's "user prompt". Rejected: "alert" is Selenium's existing word for
     these prompts.

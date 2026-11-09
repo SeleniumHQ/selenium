@@ -37,8 +37,8 @@ JavaScript-error, and DOM-mutation handlers.
 
 ### Alert handling API — _ADR pending_
 
-The cross-binding API for adding and removing alert handlers, and how the existing Alert API and
-`unhandledPromptBehavior` behave in a BiDi session.
+The cross-binding API for adding and removing alert handlers on `driver.alerts`, and how
+the existing Alert API and `unhandledPromptBehavior` behave in a BiDi session.
 
 ### Selenium Manager released API — _ADR pending_
 
