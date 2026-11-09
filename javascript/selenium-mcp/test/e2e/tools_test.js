@@ -244,6 +244,28 @@ describe('selenium-mcp tools', function () {
   })
 
   describe('drag, upload and resize', function () {
+    // Bazel runfiles can be symlinks whose real path is outside the working
+    // directory, which the upload tool refuses, so these tests run from a
+    // temporary directory that holds real copies of the fixtures.
+    let originalCwd
+    let workDir
+
+    before(function () {
+      originalCwd = process.cwd()
+      workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-upload-'))
+      const fixtures = path.join(workDir, 'test', 'fixtures')
+      fs.mkdirSync(fixtures, { recursive: true })
+      for (const name of ['data.json', 'drag.html']) {
+        fs.copyFileSync(path.join(originalCwd, 'test', 'fixtures', name), path.join(fixtures, name))
+      }
+      process.chdir(workDir)
+    })
+
+    after(function () {
+      if (originalCwd) process.chdir(originalCwd)
+      if (workDir) fs.rmSync(workDir, { recursive: true, force: true })
+    })
+
     it('drags with HTML5 drag and drop', async function () {
       const page = await open('/fixtures/drag.html')
       const dropped = await ok('browser_drag', {

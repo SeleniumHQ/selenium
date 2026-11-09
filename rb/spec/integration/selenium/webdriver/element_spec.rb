@@ -57,6 +57,7 @@ module Selenium
           wait_for_element(id: 'submitButton').submit
 
           wait_for_url('resultPage.html')
+          wait_for_title(title: 'We Arrive Here')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -65,6 +66,7 @@ module Selenium
           wait_for_element(id: 'checky').submit
 
           wait_for_url('resultPage.html')
+          wait_for_title(title: 'We Arrive Here')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -73,6 +75,7 @@ module Selenium
           wait_for_element(css: 'form > p').submit
 
           wait_for_url('resultPage.html')
+          wait_for_title(title: 'We Arrive Here')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -81,6 +84,7 @@ module Selenium
           wait_for_element(id: 'submit').submit
 
           wait_for_url('resultPage.html')
+          wait_for_title(title: 'We Arrive Here')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -89,6 +93,7 @@ module Selenium
           wait_for_element(name: 'submit').submit
 
           wait_for_url('resultPage.html')
+          wait_for_title(title: 'We Arrive Here')
           expect(driver.title).to eq('We Arrive Here')
         end
 
