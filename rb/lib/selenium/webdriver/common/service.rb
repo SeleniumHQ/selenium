@@ -63,6 +63,9 @@ module Selenium
       #
       # End users should use a class method for the desired driver, rather than using this directly.
       #
+      # @param env [Hash<String, String, nil>] environment variables for the driver process.
+      #   These are merged into the inherited environment; set a value to nil to remove an inherited variable.
+      #
       # @api private
       #
 

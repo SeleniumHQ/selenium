@@ -29,7 +29,7 @@ module Selenium
 
       @io: untyped
 
-      @env: Hash[String, String]?
+      @env: Hash[String, String?]?
 
       TimeoutError: untyped
 
@@ -41,7 +41,7 @@ module Selenium
 
       attr_accessor detach: untyped
 
-      attr_accessor env: Hash[String, String]?
+      attr_accessor env: Hash[String, String?]?
 
       attr_writer io: untyped
 

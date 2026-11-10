@@ -37,7 +37,7 @@ module Selenium
 
       @args: untyped
 
-      @env: Hash[String, String]
+      @env: Hash[String, String?]
 
       attr_reader self.driver_path: untyped
 
@@ -69,11 +69,11 @@ module Selenium
 
       attr_accessor args: untyped
 
-      attr_accessor env: Hash[String, String]
+      attr_accessor env: Hash[String, String?]
 
       alias extra_args args
 
-      def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?, ?env: Hash[String, String]?) -> void
+      def initialize: (?path: untyped?, ?port: untyped?, ?log: untyped?, ?args: untyped?, ?env: Hash[String, String?]?) -> void
 
       def launch: () -> untyped
 
