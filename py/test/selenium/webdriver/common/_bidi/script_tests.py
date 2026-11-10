@@ -32,12 +32,9 @@ from selenium.webdriver.common._bidi.script import (
     DateLocalValue,
     EvaluationResultException,
     EvaluationResultSuccess,
-    MessageParameters,
     NullValue,
     NumberValue,
     ObjectLocalValue,
-    RealmDestroyedParameters,
-    RealmInfo,
     RealmType,
     RemoteObjectReference,
     ResultOwnership,
@@ -631,32 +628,36 @@ def test_call_function_with_nested_object_argument(driver, pages):
 
 def test_realm_created_event(driver):
     events = []
-    subscription = Script(driver).add_realm_created_callback(events.append).subscription
+    subscription = Script(driver).add_realm_created_listener(events.append)
 
     context = BrowsingContext(driver).create(type=CreateType.TAB).context
-    realm = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e.get("context") == context), None))
-    Script(driver).remove_callback(subscription)
+
+    def realm_in_context(_):
+        return next((e for e in events if getattr(e, "context", None) == context), None)
+
+    realm = WebDriverWait(driver, 10).until(realm_in_context)
+    Script(driver).remove_listener(subscription)
     BrowsingContext(driver).close(context=context)
 
-    assert isinstance(RealmInfo.from_json(realm), WindowRealmInfo)
+    assert isinstance(realm, WindowRealmInfo)
 
 
 def test_realm_destroyed_event(driver):
     context = BrowsingContext(driver).create(type=CreateType.TAB).context
     realms = {realm.realm for realm in Script(driver).get_realms(context=context).realms}
     events = []
-    subscription = Script(driver).add_realm_destroyed_callback(events.append).subscription
+    subscription = Script(driver).add_realm_destroyed_listener(events.append)
 
     BrowsingContext(driver).close(context=context)
     WebDriverWait(driver, 10).until(lambda _: events)
-    Script(driver).remove_callback(subscription)
+    Script(driver).remove_listener(subscription)
 
-    assert RealmDestroyedParameters.from_json(events[0]).realm in realms
+    assert events[0].realm in realms
 
 
 def test_message_event(driver):
     events = []
-    subscription = Script(driver).add_message_callback(events.append).subscription
+    subscription = Script(driver).add_message_listener(events.append)
 
     Script(driver).call_function(
         function_declaration="channel => channel('hello')",
@@ -665,7 +666,7 @@ def test_message_event(driver):
         await_promise=False,
     )
     WebDriverWait(driver, 10).until(lambda _: events)
-    Script(driver).remove_callback(subscription)
+    Script(driver).remove_listener(subscription)
 
-    message = MessageParameters.from_json(events[0])
+    message = events[0]
     assert (message.channel, message.data.value) == ("greeting", "hello")

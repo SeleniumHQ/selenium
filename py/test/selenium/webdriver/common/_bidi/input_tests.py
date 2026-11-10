@@ -24,7 +24,6 @@ import pytest
 
 from selenium.webdriver.common._bidi.input import (
     ElementOrigin,
-    FileDialogInfo,
     Input,
     KeyDownAction,
     KeySourceActions,
@@ -669,7 +668,7 @@ def test_type_and_set_files_in_same_form(driver, pages):
 def test_file_dialog_opened_event(driver):
     driver.get("data:text/html,<input id=upload type=file multiple />")
     events = []
-    subscription = Input(driver).add_file_dialog_opened_callback(events.append).subscription
+    subscription = Input(driver).add_file_dialog_opened_listener(events.append)
 
     Script(driver).evaluate(
         expression="document.getElementById('upload').click()",
@@ -678,7 +677,7 @@ def test_file_dialog_opened_event(driver):
         user_activation=True,
     )
     WebDriverWait(driver, 10).until(lambda _: events)
-    Input(driver).remove_callback(subscription)
+    Input(driver).remove_listener(subscription)
 
-    dialog = FileDialogInfo.from_json(events[0])
+    dialog = events[0]
     assert (dialog.context, dialog.multiple) == (driver.current_window_handle, True)
