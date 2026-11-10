@@ -127,9 +127,11 @@ user context is left to a later record.
 - Every binding adds a window type, a user context type, result types, and registration and payload
   types for three event families. Methods that take a window handle accept a window object; no existing
   return type changes.
-- The existing browsing-context surfaces reachable from the driver are deprecated under 17670 when this
-  record is accepted, with messages pointing to the equivalent `windows` call, and may be removed no
-  earlier than the next major release.
+- The existing browsing-context surfaces reachable from the driver are deprecated under 17670 in each
+  binding when that binding ships `windows`, so a warning never points to a call the user does not have
+  yet. Each warning names the exact replacement call. Only calls that have a replacement are deprecated;
+  the rest stay as they are until a later record gives them one. They may be removed no earlier than the
+  next major release.
 - Event scoping must be tracked per window and per user context, since some bindings today key
   subscriptions by event name only.
 - Java must resolve the clash between the new window type and the existing nested `WebDriver.Window`.
