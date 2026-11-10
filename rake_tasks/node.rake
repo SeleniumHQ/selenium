@@ -163,6 +163,9 @@ desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
   SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{node_version}")
+  %w[manager-linux-x64 manager-linux-arm64 manager-darwin manager-win32-ia32 manager].each do |pkg|
+    SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2F#{pkg}/#{node_version}")
+  end
 end
 
 desc 'Alias for node:release'
