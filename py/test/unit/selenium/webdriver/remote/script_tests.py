@@ -15,16 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import dataclasses
+import json
 import math
+import time
 from unittest.mock import MagicMock
 
 import pytest
 
 from selenium.common.exceptions import JavascriptException, WebDriverException
+from selenium.webdriver.common.bidi._script_handlers import LogHandlerRegistry
+from selenium.webdriver.common.bidi.log import ConsoleLogEntry, JavascriptLogEntry
 from selenium.webdriver.remote.script import (
+    ConsoleMessage,
     PinnedScript,
+    Registration,
     Script,
+    ScriptError,
     ScriptResult,
+    StackTrace,
     deserialize_result,
     serialize_argument,
 )
@@ -160,9 +169,31 @@ def test_execute_converts_arguments_and_result(script, implementation, driver):
 def test_execute_uses_given_window(script, implementation):
     implementation.call_function.return_value = {"type": "success", "result": {"type": "undefined"}}
 
-    assert script.execute("() => {}", context_id="context-9") is None
+    assert script.execute("() => {}", window_handle="context-9") is None
     assert implementation.call_function.call_args.kwargs["target"] == {"context": "context-9"}
     assert implementation.call_function.call_args.kwargs["arguments"] is None
+
+
+def test_execute_context_id_is_deprecated(script, implementation):
+    implementation.call_function.return_value = {"type": "success", "result": {"type": "undefined"}}
+
+    with pytest.warns(DeprecationWarning, match="context_id argument of driver.script.execute"):
+        script.execute("() => {}", context_id="context-9")
+    assert implementation.call_function.call_args.kwargs["target"] == {"context": "context-9"}
+
+
+def test_execute_rejects_window_handle_and_context_id(script):
+    with pytest.raises(TypeError):
+        script.execute("() => {}", window_handle="context-1", context_id="context-9")
+
+
+def test_execute_pinned_passes_window_handle(script, implementation):
+    pinned = PinnedScript("preload-1", source="function f() { return 1 }")
+    implementation.execute.return_value = ScriptResult(value={"type": "number", "value": 1})
+
+    script.execute(pinned, "return f();", window_handle="context-9")
+
+    implementation.execute.assert_called_once_with(pinned, "return f();", context_id="context-9")
 
 
 def test_execute_raises_javascript_exception(script, implementation):
@@ -254,16 +285,10 @@ def test_dunder_lookups_are_not_forwarded(script):
 @pytest.mark.parametrize(
     ("method", "args"),
     [
-        ("add_console_handler", (print,)),
-        ("remove_console_handler", (1,)),
-        ("clear_console_handlers", ()),
-        ("add_console_message_handler", (print,)),
         ("remove_console_message_handler", (1,)),
-        ("add_error_handler", (print,)),
-        ("remove_error_handler", (1,)),
-        ("clear_error_handlers", ()),
-        ("add_javascript_error_handler", (print,)),
+        ("clear_console_handlers", ()),
         ("remove_javascript_error_handler", (1,)),
+        ("clear_error_handlers", ()),
         ("remove_dom_mutation_handler", (1,)),
         ("clear_dom_mutation_handlers", ()),
     ],
@@ -275,7 +300,292 @@ def test_handler_methods_delegate_without_warning(script, implementation, method
     assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
 
 
-def test_add_dom_mutation_handler_passes_mutation_types(script, implementation):
-    script.add_dom_mutation_handler(print, ("childList",))
+@pytest.mark.parametrize(
+    ("method", "args", "replacement"),
+    [
+        ("add_console_handler", (print,), "add_console_message_handler"),
+        ("remove_console_handler", (1,), "remove_console_message_handler"),
+        ("add_error_handler", (print,), "add_javascript_error_handler"),
+        ("remove_error_handler", (1,), "remove_javascript_error_handler"),
+    ],
+)
+def test_short_handler_names_are_deprecated(script, implementation, method, args, replacement):
+    implementation.add_console_handler.return_value = 1
+    implementation.add_error_handler.return_value = 2
 
-    implementation.add_dom_mutation_handler.assert_called_once_with(print, ("childList",))
+    with pytest.warns(DeprecationWarning, match=rf"driver\.script\.{method}\(\) is deprecated.*{replacement}"):
+        getattr(script, method)(*args)
+
+    getattr(implementation, method).assert_called_once_with(*args)
+
+
+@pytest.mark.parametrize(
+    ("method", "category"),
+    [("add_console_message_handler", "console"), ("add_javascript_error_handler", "error")],
+)
+def test_add_handlers_return_registrations(script, implementation, method, category, recwarn):
+    implementation._log_handlers.add_handler.return_value = 7
+
+    handler = getattr(script, method)(print)
+
+    assert isinstance(handler, Registration)
+    assert handler == 7
+    assert repr(handler) == "Registration(7)"
+    assert implementation._log_handlers.add_handler.call_args.args[:2] == (print, category)
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def test_add_dom_mutation_handler_returns_registration(script, implementation):
+    implementation.add_dom_mutation_handler.return_value = 3
+
+    handler = script.add_dom_mutation_handler(print)
+
+    assert isinstance(handler, Registration)
+    script.remove_dom_mutation_handler(handler)
+    implementation.remove_dom_mutation_handler.assert_called_once_with(handler)
+
+
+class FakeLogConnection:
+    # Browsing contexts and their parents: two windows, one iframe in the first.
+    TREE = {"context-1": None, "context-2": None, "frame-1": "context-1", "frame-2": "frame-1"}
+
+    def __init__(self):
+        self.callbacks = {}
+        self.tree_lookups = []
+
+    def execute(self, cmd):
+        payload = next(cmd)
+        assert payload["method"] == "browsingContext.getTree"
+        root = payload["params"]["root"]
+        self.tree_lookups.append(root)
+        time.sleep(0.01)  # a real round trip, so concurrent misses overlap
+        if root not in self.TREE:
+            raise WebDriverException("no such frame")
+        try:
+            cmd.send({"contexts": [{"context": root, "parent": self.TREE[root], "children": []}]})
+        except StopIteration as exc:
+            return exc.value
+        raise AssertionError("command generator did not finish")
+
+    def add_callback(self, event, callback):
+        callback_id = len(self.callbacks) + 1
+        self.callbacks[callback_id] = callback
+        return callback_id
+
+    def remove_callback(self, event, callback_id):
+        self.callbacks.pop(callback_id, None)
+
+    def emit(self, params):
+        for callback in list(self.callbacks.values()):
+            callback(params)
+
+
+@pytest.fixture
+def log_script(driver, monkeypatch):
+    import selenium.webdriver.common.bidi._script_handlers as handlers
+
+    monkeypatch.setattr(handlers, "_subscribe_to_event", lambda conn, event: "subscription-1")
+    monkeypatch.setattr(handlers, "_unsubscribe_from_event", lambda conn, event, subscription: None)
+    implementation = MagicMock()
+    implementation._conn = FakeLogConnection()
+    implementation._log_handlers = LogHandlerRegistry(implementation)
+    implementation.remove_console_message_handler.side_effect = implementation._log_handlers.remove_handler
+    return Script(implementation, driver), implementation._conn
+
+
+STACK = {
+    "callFrames": [
+        {"functionName": "boom", "url": "https://example.com/page.html", "lineNumber": 7, "columnNumber": 21}
+    ]
+}
+
+
+def console_entry():
+    return {
+        "type": "console",
+        "method": "log",
+        "level": "info",
+        "text": "Hello, world!",
+        "args": [{"type": "string", "value": "Hello, world!"}],
+        "source": {"realm": "realm-1", "context": "context-1"},
+        "timestamp": 1234,
+        "stackTrace": STACK,
+    }
+
+
+def error_entry():
+    return {
+        "type": "javascript",
+        "level": "error",
+        "text": "Error: Not working",
+        "source": {"realm": "realm-1", "context": "context-2"},
+        "timestamp": 99,
+        "stackTrace": STACK,
+    }
+
+
+def test_console_message_handler_delivers_console_message(log_script, recwarn):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(console_entry())
+    conn.emit(error_entry())
+
+    assert len(messages) == 1
+    message = messages[0]
+    assert isinstance(message, ConsoleMessage)
+    assert (message.level, message.text, message.type, message.method) == ("info", "Hello, world!", "console", "log")
+    assert message.args == [{"type": "string", "value": "Hello, world!"}]
+    assert message.timestamp == 1234
+    assert message.window_handle == "context-1"
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def test_console_message_is_still_a_console_log_entry(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(console_entry())
+
+    message = messages[0]
+    assert isinstance(message, ConsoleLogEntry)
+    assert dataclasses.is_dataclass(message)
+    assert dataclasses.asdict(message)["window_handle"] == "context-1"
+    assert message.type_ == "console"
+    assert message.source == {"realm": "realm-1", "context": "context-1"}
+    assert message.stack_trace == STACK
+
+
+def test_javascript_error_handler_delivers_script_error(log_script, recwarn):
+    script, conn = log_script
+    errors = []
+
+    script.add_javascript_error_handler(errors.append)
+    conn.emit(console_entry())
+    conn.emit(error_entry())
+
+    assert len(errors) == 1
+    error = errors[0]
+    assert isinstance(error, ScriptError)
+    assert error.message == "Error: Not working"
+    assert isinstance(error.stacktrace, StackTrace)
+    assert str(error.stacktrace) == "    at boom (https://example.com/page.html:7:21)"
+    assert error.window_handle == "context-2"
+    assert error.timestamp == 99
+    assert not [w for w in recwarn if issubclass(w.category, DeprecationWarning)]
+
+
+def test_script_error_is_still_a_javascript_log_entry(log_script):
+    script, conn = log_script
+    errors = []
+
+    script.add_javascript_error_handler(errors.append)
+    conn.emit(error_entry())
+
+    error = errors[0]
+    assert isinstance(error, JavascriptLogEntry)
+    assert dataclasses.is_dataclass(error)
+    assert error.text == "Error: Not working"
+    assert error.level == "error"
+    assert error.type_ == "javascript"
+    assert error.source == {"realm": "realm-1", "context": "context-2"}
+    assert error.stacktrace == STACK
+    assert isinstance(error.stacktrace, dict)
+    assert json.dumps(error.stacktrace) == json.dumps(STACK)
+
+
+def iframe_entry(context):
+    entry = console_entry()
+    entry["source"] = {"realm": "realm-9", "context": context}
+    return entry
+
+
+def test_console_message_from_an_iframe_names_its_window(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(iframe_entry("frame-2"))
+
+    assert messages[0].window_handle == "context-1"
+    assert messages[0].frame == "frame-2"
+    assert messages[0].source == {"realm": "realm-9", "context": "frame-2"}
+
+
+def test_console_message_from_a_window_has_no_frame(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(console_entry())
+
+    assert messages[0].window_handle == "context-1"
+    assert messages[0].frame is None
+
+
+def test_window_lookups_are_cached(log_script):
+    script, conn = log_script
+    messages = []
+
+    script.add_console_message_handler(messages.append)
+    conn.emit(iframe_entry("frame-2"))
+    conn.emit(iframe_entry("frame-1"))
+    conn.emit(console_entry())
+
+    assert conn.tree_lookups == ["frame-2", "frame-1", "context-1"]
+    assert [m.window_handle for m in messages] == ["context-1"] * 3
+
+
+def test_concurrent_entries_from_a_new_context_look_it_up_once(log_script):
+    import threading
+
+    script, conn = log_script
+    messages = []
+    started = threading.Barrier(8)
+
+    script.add_console_message_handler(messages.append)
+
+    def emit():
+        started.wait()
+        conn.emit(iframe_entry("frame-1"))
+
+    threads = [threading.Thread(target=emit) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert conn.tree_lookups == ["frame-1", "context-1"]
+    assert [m.window_handle for m in messages] == ["context-1"] * 8
+
+
+def test_unknown_context_has_no_window(log_script):
+    script, conn = log_script
+    errors = []
+
+    script.add_javascript_error_handler(errors.append)
+    conn.emit(dict(error_entry(), source={"realm": "realm-1", "context": "gone"}))
+
+    assert errors[0].window_handle is None
+    assert errors[0].frame is None
+
+
+def test_removing_a_registration_detaches_the_handler(log_script):
+    script, conn = log_script
+    messages = []
+
+    handler = script.add_console_message_handler(messages.append)
+    script.remove_console_message_handler(handler)
+    conn.emit(console_entry())
+
+    assert messages == []
+
+
+def test_stack_trace_formats_as_text():
+    trace = StackTrace(STACK)
+
+    assert str(trace) == "    at boom (https://example.com/page.html:7:21)"
+    assert trace.frames == STACK["callFrames"]
+    assert str(StackTrace({})) == ""

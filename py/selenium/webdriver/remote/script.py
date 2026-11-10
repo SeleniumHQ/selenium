@@ -55,53 +55,98 @@ _REPLACEMENTS = {
 }
 
 
-@dataclass
-class ScriptError:
-    """A JavaScript error observed in the browser.
+class StackTrace(dict):
+    """A JavaScript stack trace.
 
-    Attributes:
-        message: The error message.
-        source: Source file/URL where the error occurred (top stack frame).
-        line_number: Line number of the error.
-        column_number: Column number of the error.
-        stack_trace: Formatted stack trace, one ``at function (url:line:col)``
-            line per frame.
-        timestamp: Time the entry was generated, in milliseconds since epoch.
+    ``str()`` gives one ``at function (url:line:col)`` line per frame, and
+    ``frames`` lists the frames. It is also the mapping the browser reported,
+    so code that reads ``stacktrace["callFrames"]`` keeps working.
     """
 
-    message: str | None = None
-    source: str | None = None
-    line_number: int | None = None
-    column_number: int | None = None
-    stack_trace: str | None = None
-    timestamp: float | None = None
+    @property
+    def frames(self) -> list[dict]:
+        """The stack frames, innermost first."""
+        frames = self.get("callFrames")
+        return [frame for frame in frames if isinstance(frame, dict)] if isinstance(frames, list) else []
+
+    def __str__(self) -> str:
+        return "\n".join(
+            f"    at {frame.get('functionName') or '<anonymous>'} "
+            f"({frame.get('url')}:{frame.get('lineNumber')}:{frame.get('columnNumber')})"
+            for frame in self.frames
+        )
 
 
 @dataclass
 class ConsoleMessage:
     """A console message observed in the browser.
 
+    Delivered to handlers added with ``driver.script.add_console_message_handler()``.
+
     Attributes:
         level: Console level (``debug``, ``info``, ``warn`` or ``error``).
         text: The console message text.
-        source: Source file/URL the message originated from (top stack frame).
-        line_number: Line number where the message originated.
-        column_number: Column number where the message originated.
-        stack_trace: Formatted stack trace where available.
+        source: Deprecated; use ``window_handle`` to tell where the message
+            came from. A console message carries no stack trace.
+        line_number: Deprecated.
+        column_number: Deprecated.
+        stack_trace: Deprecated.
         timestamp: Time the entry was generated, in milliseconds since epoch.
         method: The console method used (e.g. ``log``, ``warn``).
-        args: The raw arguments passed to the console call.
+        args: The arguments passed to the console call.
+        window_handle: Handle of the window the message came from, or ``None``
+            if the window closed before it could be identified.
+        type: The kind of log entry, always ``console``.
+        frame: Identifier of the iframe the message came from, or ``None``
+            when it came from the window's own document.
     """
 
     level: str | None = None
     text: str | None = None
-    source: str | None = None
+    source: Any = None
     line_number: int | None = None
     column_number: int | None = None
-    stack_trace: str | None = None
+    stack_trace: Any = None
     timestamp: float | None = None
     method: str | None = None
     args: list[Any] | None = None
+    window_handle: str | None = None
+    type: str = "console"
+    frame: str | None = None
+
+
+@dataclass
+class ScriptError:
+    """A JavaScript error observed in the browser.
+
+    Delivered to handlers added with
+    ``driver.script.add_javascript_error_handler()``, and reported by
+    ``ScriptResult.error``.
+
+    Attributes:
+        message: The error message.
+        source: Deprecated; read the top frame of ``stacktrace`` instead.
+        line_number: Deprecated; read the top frame of ``stacktrace`` instead.
+        column_number: Deprecated; read the top frame of ``stacktrace`` instead.
+        stack_trace: Deprecated; use ``str(stacktrace)`` instead.
+        timestamp: Time the entry was generated, in milliseconds since epoch.
+        stacktrace: The ``StackTrace`` where the error was thrown, or ``None``
+            when the browser reported none.
+        window_handle: Handle of the window the error came from, or ``None``
+            if the window closed before it could be identified.
+        frame: Identifier of the iframe the error came from, or ``None``
+            when it came from the window's own document.
+    """
+
+    message: str | None = None
+    source: Any = None
+    line_number: int | None = None
+    column_number: int | None = None
+    stack_trace: Any = None
+    timestamp: float | None = None
+    stacktrace: StackTrace | None = None
+    window_handle: str | None = None
+    frame: str | None = None
 
 
 @dataclass
@@ -280,6 +325,30 @@ def deserialize_result(value: Any, driver: WebDriver | None = None) -> Any:
     return None
 
 
+class Registration(int):
+    """A handler registration, as returned by the ``driver.script.add_*_handler()`` methods.
+
+    Pass it to the matching ``remove_*_handler()`` method to detach the handler.
+    Subclasses ``int`` so existing code that treats the return value as a plain
+    handler id keeps working.
+    """
+
+    def __repr__(self) -> str:
+        return f"Registration({int(self)})"
+
+
+def _registration(callback_id: Any) -> Registration:
+    return callback_id if isinstance(callback_id, Registration) else Registration(callback_id)
+
+
+def _warn_deprecated_method(name: str, replacement: str) -> None:
+    warnings.warn(
+        f"driver.script.{name}() is deprecated and will be removed; use driver.script.{replacement}() instead",
+        DeprecationWarning,
+        stacklevel=3,
+    )
+
+
 class Script:
     """Pinned scripts, script execution and script event handlers.
 
@@ -290,10 +359,10 @@ class Script:
         self._script = script
         self._driver = driver
 
-    def _context(self, context_id: str | None) -> str | None:
-        if context_id is None and self._driver is not None:
+    def _context(self, window_handle: str | None) -> str | None:
+        if window_handle is None and self._driver is not None:
             return self._driver.current_window_handle
-        return context_id
+        return window_handle
 
     def pin(self, function_declaration: str) -> PinnedScript:
         """Pin a script so it runs in every new document and can be reused by ``execute()``.
@@ -315,7 +384,13 @@ class Script:
         """
         self._script.unpin(script_id)
 
-    def execute(self, function_declaration: str | PinnedScript, *args: Any, context_id: str | None = None) -> Any:
+    def execute(
+        self,
+        function_declaration: str | PinnedScript,
+        *args: Any,
+        window_handle: str | None = None,
+        context_id: str | None = None,
+    ) -> Any:
         """Execute JavaScript in the current window and return its result.
 
         Arguments and return values are converted as by ``execute_script``:
@@ -328,13 +403,14 @@ class Script:
             *args: Arguments passed to the function. When ``function_declaration`` is a
                 ``PinnedScript``, the single argument is the code to run with
                 the pinned source in scope, e.g. ``"return helper();"``.
-            context_id: The window handle to run in. Defaults to the current
-                window.
+            window_handle: The handle of the window to run in. Defaults to the
+                current window.
+            context_id: Deprecated; use ``window_handle`` instead.
 
         Returns:
             The function's return value. When ``function_declaration`` is a ``PinnedScript``,
             a ``ScriptResult`` instead, which reports failures through
-            ``ScriptResult.error`` rather than raising.
+            ``ScriptResult.error``.
 
         Raises:
             JavascriptException: If the script throws.
@@ -342,11 +418,21 @@ class Script:
         Example:
             `total = driver.script.execute("(a, b) => a + b", 1, 2)`
         """
+        if context_id is not None:
+            if window_handle is not None:
+                raise TypeError("pass window_handle or context_id, not both")
+            warnings.warn(
+                "The context_id argument of driver.script.execute() is deprecated and will be removed; "
+                "use window_handle instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            window_handle = context_id
         if isinstance(function_declaration, PinnedScript):
-            result = self._script.execute(function_declaration, *args, context_id=context_id)
+            result = self._script.execute(function_declaration, *args, context_id=window_handle)
             result.value = deserialize_result(result.value, self._driver)
             return result
-        context = self._context(context_id)
+        context = self._context(window_handle)
         raw = self._script.call_function(
             function_declaration=function_declaration,
             await_promise=True,
@@ -361,71 +447,79 @@ class Script:
             raw = raw.get("result")
         return deserialize_result(raw, self._driver)
 
-    def add_console_handler(self, callback: Callable[[ConsoleMessage], Any]) -> int:
+    def add_console_message_handler(self, callback: Callable[[ConsoleMessage], Any]) -> Registration:
         """Add a handler called with a ``ConsoleMessage`` for each console message.
 
         Returns:
-            An id for ``remove_console_handler()``.
-        """
-        return self._script.add_console_handler(callback)
+            A ``Registration`` for ``remove_console_message_handler()``.
 
-    def remove_console_handler(self, callback_id: int) -> None:
-        """Remove a handler added by ``add_console_handler()``."""
-        self._script.remove_console_handler(callback_id)
+        Example:
+            `handler = driver.script.add_console_message_handler(messages.append)`
+        """
+        from selenium.webdriver.common.bidi._script_handlers import console_log_message
+
+        return _registration(self._script._log_handlers.add_handler(callback, "console", payload=console_log_message))
+
+    def remove_console_message_handler(self, handler: Registration | int) -> None:
+        """Remove a handler added by ``add_console_message_handler()``.
+
+        Args:
+            handler: The ``Registration`` returned when the handler was added.
+        """
+        self._script.remove_console_message_handler(handler)
 
     def clear_console_handlers(self) -> None:
-        """Remove every console handler, including those added by ``add_console_message_handler()``."""
+        """Remove every console message handler."""
         self._script.clear_console_handlers()
 
-    def add_console_message_handler(self, callback: Callable) -> int:
-        """Add a handler called with a console log entry for each console message.
-
-        For payloads carrying source URL and line/column numbers, see
-        ``add_console_handler()``.
-
-        Returns:
-            An id for ``remove_console_message_handler()``.
-        """
-        return self._script.add_console_message_handler(callback)
-
-    def remove_console_message_handler(self, callback_id: int) -> None:
-        """Remove a handler added by ``add_console_message_handler()``."""
-        self._script.remove_console_message_handler(callback_id)
-
-    def add_error_handler(self, callback: Callable[[ScriptError], Any]) -> int:
+    def add_javascript_error_handler(self, callback: Callable[[ScriptError], Any]) -> Registration:
         """Add a handler called with a ``ScriptError`` for each uncaught JavaScript error.
 
         Returns:
-            An id for ``remove_error_handler()``.
-        """
-        return self._script.add_error_handler(callback)
+            A ``Registration`` for ``remove_javascript_error_handler()``.
 
-    def remove_error_handler(self, callback_id: int) -> None:
-        """Remove a handler added by ``add_error_handler()``."""
-        self._script.remove_error_handler(callback_id)
+        Example:
+            `handler = driver.script.add_javascript_error_handler(errors.append)`
+        """
+        from selenium.webdriver.common.bidi._script_handlers import javascript_log_error
+
+        return _registration(self._script._log_handlers.add_handler(callback, "error", payload=javascript_log_error))
+
+    def remove_javascript_error_handler(self, handler: Registration | int) -> None:
+        """Remove a handler added by ``add_javascript_error_handler()``.
+
+        Args:
+            handler: The ``Registration`` returned when the handler was added.
+        """
+        self._script.remove_javascript_error_handler(handler)
 
     def clear_error_handlers(self) -> None:
-        """Remove every JavaScript error handler, including those added by ``add_javascript_error_handler()``."""
+        """Remove every JavaScript error handler."""
         self._script.clear_error_handlers()
 
-    def add_javascript_error_handler(self, callback: Callable) -> int:
-        """Add a handler called with a JavaScript log entry for each uncaught JavaScript error.
+    def add_console_handler(self, callback: Callable[[ConsoleMessage], Any]) -> Registration:
+        """Deprecated: use ``add_console_message_handler()`` instead."""
+        _warn_deprecated_method("add_console_handler", "add_console_message_handler")
+        return _registration(self._script.add_console_handler(callback))
 
-        For payloads carrying source URL and line/column numbers, see
-        ``add_error_handler()``.
+    def remove_console_handler(self, callback_id: Registration | int) -> None:
+        """Deprecated: use ``remove_console_message_handler()`` instead."""
+        _warn_deprecated_method("remove_console_handler", "remove_console_message_handler")
+        self._script.remove_console_handler(callback_id)
 
-        Returns:
-            An id for ``remove_javascript_error_handler()``.
-        """
-        return self._script.add_javascript_error_handler(callback)
+    def add_error_handler(self, callback: Callable[[ScriptError], Any]) -> Registration:
+        """Deprecated: use ``add_javascript_error_handler()`` instead."""
+        _warn_deprecated_method("add_error_handler", "add_javascript_error_handler")
+        return _registration(self._script.add_error_handler(callback))
 
-    def remove_javascript_error_handler(self, callback_id: int) -> None:
-        """Remove a handler added by ``add_javascript_error_handler()``."""
-        self._script.remove_javascript_error_handler(callback_id)
+    def remove_error_handler(self, callback_id: Registration | int) -> None:
+        """Deprecated: use ``remove_javascript_error_handler()`` instead."""
+        _warn_deprecated_method("remove_error_handler", "remove_javascript_error_handler")
+        self._script.remove_error_handler(callback_id)
 
     def add_dom_mutation_handler(
         self, callback: Callable[[DomMutation], Any], mutation_types: str | Iterable[str] | None = None
-    ) -> int:
+    ) -> Registration:
         """Add a handler called with a ``DomMutation`` for each observed DOM mutation.
 
         Args:
@@ -435,13 +529,17 @@ class Script:
                 Defaults to ``("attributes",)``.
 
         Returns:
-            An id for ``remove_dom_mutation_handler()``.
+            A ``Registration`` for ``remove_dom_mutation_handler()``.
         """
-        return self._script.add_dom_mutation_handler(callback, mutation_types)
+        return _registration(self._script.add_dom_mutation_handler(callback, mutation_types))
 
-    def remove_dom_mutation_handler(self, callback_id: int) -> None:
-        """Remove a handler added by ``add_dom_mutation_handler()``."""
-        self._script.remove_dom_mutation_handler(callback_id)
+    def remove_dom_mutation_handler(self, handler: Registration | int) -> None:
+        """Remove a handler added by ``add_dom_mutation_handler()``.
+
+        Args:
+            handler: The ``Registration`` returned when the handler was added.
+        """
+        self._script.remove_dom_mutation_handler(handler)
 
     def clear_dom_mutation_handlers(self) -> None:
         """Remove every DOM mutation handler."""
