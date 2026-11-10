@@ -25,6 +25,9 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class SetDownloadBehaviorParametersTest {
+  private static final Path DOWNLOADS = Path.of("/tmp/downloads");
+  private static final String DOWNLOADS_PATH = DOWNLOADS.toAbsolutePath().toString();
+
   @Test
   void denied() {
     SetDownloadBehaviorParameters params =
@@ -49,38 +52,37 @@ class SetDownloadBehaviorParametersTest {
   @Test
   void allowed() {
     SetDownloadBehaviorParameters params =
-        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(Path.of("/tmp/downloads")));
+        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(DOWNLOADS));
     assertThat(params.toMap())
         .containsExactlyInAnyOrderEntriesOf(
             Map.of(
                 "downloadBehavior",
-                Map.of("type", "allowed", "destinationFolder", "/tmp/downloads")));
+                Map.of("type", "allowed", "destinationFolder", DOWNLOADS_PATH)));
   }
 
   @Test
   void allowed_withUserContexts() {
     SetDownloadBehaviorParameters params =
-        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(Path.of("/tmp/downloads")))
+        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(DOWNLOADS))
             .userContexts(List.of("window1", "tab2", "frame3"));
 
     assertThat(params.toMap())
         .containsExactlyInAnyOrderEntriesOf(
             Map.of(
-                "downloadBehavior",
-                    Map.of("type", "allowed", "destinationFolder", "/tmp/downloads"),
+                "downloadBehavior", Map.of("type", "allowed", "destinationFolder", DOWNLOADS_PATH),
                 "userContexts", List.of("window1", "tab2", "frame3")));
   }
 
   @Test
   void stringRepresentation() {
     SetDownloadBehaviorParameters params =
-        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(Path.of("/tmp/downloads")));
+        new SetDownloadBehaviorParameters(DownloadBehavior.allowed(DOWNLOADS));
 
     assertThat(params.toString())
         .contains(
             "SetDownloadBehaviorParameters{",
             "downloadBehavior=",
-            "destinationFolder=/tmp/downloads",
+            "destinationFolder=" + DOWNLOADS_PATH,
             "type=allowed");
   }
 }

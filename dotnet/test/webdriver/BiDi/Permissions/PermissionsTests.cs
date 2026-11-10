@@ -20,7 +20,6 @@
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Permissions;
 using OpenQA.Selenium.BiDi.Script;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.BiDi.Permissions;
 
@@ -37,7 +36,7 @@ internal class PermissionsTests : BiDiTestFixture
             Background = true
         })).Context;
 
-        var newPage = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+        var newPage = Urls.CreateInlinePage(new InlinePage()
             .WithBody("<div>new page</div>"));
 
         await window.NavigateAsync(newPage);

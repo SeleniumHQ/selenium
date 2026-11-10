@@ -51,20 +51,13 @@ module Selenium
         end
 
         #
-        # Initializes the bridge with the given server URL
-        # @param [String, URI] url url for the remote server
-        # @param [Object] http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @param [Object] http_client a configured HTTP client implementing the same protocol as Http::Default
         # @api private
         #
 
-        def initialize(url:, http_client: nil)
-          uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless uri.path.end_with?('/')
-
-          @http = http_client || Http::Default.new
-          @http.server_url = uri
+        def initialize(http_client:)
+          @http = http_client
           @file_detector = nil
-
           @locator_converter = self.class.locator_converter
         end
 
@@ -428,6 +421,18 @@ module Selenium
           execute :get_element_aria_label, id: element
         end
 
+        # The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
+        def accessibility_snapshot(root = nil, interesting_only: true)
+          unless bidi?
+            raise Error::UnsupportedOperationError,
+                  'accessibility_snapshot requires WebDriver BiDi; ' \
+                  'enable it by setting #web_socket_url to true in options class'
+          end
+
+          @accessibility_snapshotter ||= AccessibilitySnapshotter.new(self)
+          @accessibility_snapshotter.snapshot(root, interesting_only: interesting_only)
+        end
+
         def element_value(element)
           element_property element, 'value'
         end
@@ -600,9 +605,18 @@ module Selenium
           execute :click_fedcm_dialog_button, {}, {dialogButton: 'ConfirmIdpLoginContinue'}
         end
 
-        def bidi
-          msg = 'BiDi must be enabled by setting #web_socket_url to true in options class'
-          raise(WebDriver::Error::WebDriverError, msg)
+        def bidi(*)
+          raise WebDriver::Error::WebDriverError,
+                'BiDi must be enabled by setting #web_socket_url to true in options class'
+        end
+        alias connection bidi
+        alias web_extension bidi
+        alias install_web_extension bidi
+        alias uninstall_web_extension bidi
+        private :web_extension
+
+        def bidi?
+          !@bidi.nil?
         end
 
         def command_list
@@ -610,6 +624,16 @@ module Selenium
         end
 
         private
+
+        def encode_extension(path)
+          if File.directory?(path)
+            Zipper.zip(path)
+          elsif File.file?(path)
+            File.open(path, 'rb') { |file| Base64.strict_encode64(file.read) }
+          else
+            path # already base64-encoded bytes
+          end
+        end
 
         #
         # executes a command on the remote server.

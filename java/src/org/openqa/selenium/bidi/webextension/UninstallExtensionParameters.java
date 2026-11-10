@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.webextension;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class UninstallExtensionParameters {
 
   public final Map<String, Object> extension;

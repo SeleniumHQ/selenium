@@ -41,40 +41,10 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
-  void clientLogIsDeprecatedAndReturnsEmpty() {
-    driver.get(pages.formPage);
-    LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
-    assertThat(clientLogs.getAll())
-        .describedAs("Client logs should be empty (deprecated)")
-        .isEmpty();
-  }
-
-  @Test
   void driverLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes)
         .describedAs("Remote driver logs should be enabled by default")
         .contains(LogType.DRIVER);
-  }
-
-  @Test
-  @SuppressWarnings("deprecation")
-  void profilerLogIsDeprecatedAndReturnsEmpty() {
-    // PROFILER log type is deprecated and no longer functional
-    LogEntries profilerLogs = driver.manage().logs().get(LogType.PROFILER);
-    assertThat(profilerLogs.getAll())
-        .describedAs("Profiler logs should be empty (deprecated)")
-        .isEmpty();
-  }
-
-  @Test
-  @SuppressWarnings("deprecation")
-  void serverLogIsDeprecatedAndReturnsEmpty() {
-    // SERVER log type is deprecated - Grid no longer supports it
-    LogEntries serverLogs = driver.manage().logs().get(LogType.SERVER);
-    assertThat(serverLogs.getAll())
-        .describedAs("Server logs should be empty (deprecated)")
-        .isEmpty();
   }
 }

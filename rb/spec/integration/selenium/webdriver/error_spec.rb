@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe Error, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+    describe Error, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'raises an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
@@ -48,7 +48,7 @@ module Selenium
         expect(e.backtrace).not_to be_empty
       end
 
-      it 'has backtrace when using a remote server', exclusive: {driver: :remote} do
+      it 'has backtrace when using a remote server', skip_unless: {driver: :remote} do
         driver.send(:bridge).instance_variable_set(:@session_id, 'fake_session_id')
         driver.window_handle
       rescue WebDriver::Error::InvalidSessionIdError => e

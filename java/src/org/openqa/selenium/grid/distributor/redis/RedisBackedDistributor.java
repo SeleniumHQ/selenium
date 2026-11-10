@@ -145,40 +145,36 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
   private final Duration purgeNodesInterval;
 
   private final ScheduledExecutorService newSessionService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Redis Distributor - New Session Queue");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Redis Distributor - New Session Queue");
+        return thread;
+      });
 
   private final ScheduledExecutorService purgeDeadNodesService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Redis Distributor - Purge Dead Nodes");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Redis Distributor - Purge Dead Nodes");
+        return thread;
+      });
 
   private final ScheduledExecutorService nodeHealthCheckService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Redis Distributor - Node Health Check");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Redis Distributor - Node Health Check");
+        return thread;
+      });
 
   private final ScheduledExecutorService heartbeatService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Redis Distributor - Heartbeat");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Redis Distributor - Heartbeat");
+        return thread;
+      });
 
   private final ExecutorService sessionCreatorExecutor;
   private final NewSessionQueue sessionQueue;
@@ -284,10 +280,9 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
     URI redisUri =
         distributorOptions
             .getBackendUri()
-            .orElseThrow(
-                () ->
-                    new ConfigException(
-                        "RedisBackedDistributor requires [distributor] backend-url to be set"));
+            .orElseThrow(() ->
+                new ConfigException(
+                    "RedisBackedDistributor requires [distributor] backend-url to be set"));
 
     return new RedisBackedDistributor(
         tracer,
@@ -420,7 +415,7 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
               String.format(
-                  "%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+                  "%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps.asMap()));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
@@ -623,24 +618,23 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
 
         if (!stereotypes.isEmpty()) {
           List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
-          matchingRequests.forEach(
-              req -> {
-                try {
-                  sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
-                } catch (RejectedExecutionException e) {
-                  LOG.log(
-                      getDebugLogLevel(),
-                      "Dropping session creation task while shutting down distributor",
-                      e);
-                }
-              });
+          matchingRequests.forEach(req -> {
+            try {
+              sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
+            } catch (RejectedExecutionException e) {
+              LOG.log(
+                  getDebugLogLevel(),
+                  "Dropping session creation task while shutting down distributor",
+                  e);
+            }
+          });
         }
       }
 
       if (rejectUnsupportedCaps) {
         checkMatchingSlot(
             sessionQueue.getQueueContents().stream()
-                .filter((src) -> inQueue.contains(src.getRequestId()))
+                .filter(src -> inQueue.contains(src.getRequestId()))
                 .collect(Collectors.toList()));
       }
     }
@@ -648,23 +642,18 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
       Set<NodeStatus> upNodes = nodeRegistry.getUpNodes();
       sessionRequests.stream()
-          .filter(
-              request ->
-                  request.getDesiredCapabilities().stream()
-                      .noneMatch(
-                          caps ->
-                              upNodes.stream()
-                                  .anyMatch(node -> node.hasCapability(caps, slotMatcher))))
-          .forEach(
-              request -> {
-                LOG.info(
-                    "No nodes support the capabilities in the request: "
-                        + request.getDesiredCapabilities());
-                SessionNotCreatedException exception =
-                    new SessionNotCreatedException(
-                        "No nodes support the capabilities in the request");
-                sessionQueue.complete(request.getRequestId(), Either.left(exception));
-              });
+          .filter(request ->
+              request.getDesiredCapabilities().stream()
+                  .noneMatch(caps ->
+                      upNodes.stream().anyMatch(node -> node.hasCapability(caps, slotMatcher))))
+          .forEach(request -> {
+            LOG.info(
+                "No nodes support the capabilities in the request: "
+                    + request.getDesiredCapabilities());
+            SessionNotCreatedException exception =
+                new SessionNotCreatedException("No nodes support the capabilities in the request");
+            sessionQueue.complete(request.getRequestId(), Either.left(exception));
+          });
     }
 
     private void handleNewSessionRequest(SessionRequest sessionRequest) {

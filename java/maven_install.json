@@ -3,86 +3,80 @@
   "__INPUT_ARTIFACTS_HASH": {
     "args4j:args4j": 1223353088,
     "com.beust:jcommander": -1790778431,
-    "com.github.ben-manes.caffeine:caffeine": -671916614,
-    "com.github.javaparser:javaparser-core": -1357501843,
-    "com.github.spotbugs:spotbugs": 1913874159,
-    "com.github.stephenc.jcip:jcip-annotations": -1909337358,
+    "com.fasterxml.jackson.core:jackson-core": 1977162006,
+    "com.fasterxml.jackson.core:jackson-databind": 1925127134,
+    "com.fasterxml.jackson:jackson-bom": -289126421,
+    "com.github.ben-manes.caffeine:caffeine": 1146040953,
+    "com.github.javaparser:javaparser-core": -677443473,
+    "com.github.spotbugs:spotbugs": 2032505566,
     "com.google.auto.service:auto-service": -1729498094,
     "com.google.auto.service:auto-service-annotations": -843120535,
-    "com.google.auto:auto-common": -832702775,
     "com.google.closure-stylesheets:closure-stylesheets": -626365944,
     "com.google.code.findbugs:jsr305": 495355163,
-    "com.google.code.gson:gson": 245099245,
+    "com.google.code.gson:gson": 266105453,
     "com.google.dagger:dagger-producers": 1903545965,
     "com.google.errorprone:error_prone_annotations": -1035138750,
-    "com.google.googlejavaformat:google-java-format": -1756842473,
-    "com.google.guava:guava": -1756621521,
+    "com.google.googlejavaformat:google-java-format": -1269496956,
+    "com.google.guava:guava": -1528933390,
     "com.google.j2objc:j2objc-annotations": 2003271689,
-    "com.google.javascript:closure-compiler": -882503383,
+    "com.google.javascript:closure-compiler": 720270735,
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
-    "com.google.protobuf:protobuf-java": 1237026331,
-    "com.graphql-java:graphql-java": -1496602532,
-    "com.uber.nullaway:nullaway": -99678960,
+    "com.google.protobuf:protobuf-java": 130636446,
+    "com.graphql-java:graphql-java": -795537954,
+    "com.uber.nullaway:nullaway": -1216571949,
     "dev.failsafe:failsafe": -1314791755,
-    "io.fabric8:kubernetes-client": 1683435153,
-    "io.fabric8:kubernetes-client-api": -435085660,
-    "io.fabric8:kubernetes-model-batch": 752919582,
-    "io.fabric8:kubernetes-model-core": 2126143897,
-    "io.grpc:grpc-context": 1230623983,
-    "io.lettuce:lettuce-core": 1347096130,
+    "io.fabric8:kubernetes-client": -1899964461,
+    "io.fabric8:kubernetes-client-api": 276482022,
+    "io.fabric8:kubernetes-model-batch": 1464487264,
+    "io.fabric8:kubernetes-model-core": -1457255717,
+    "io.lettuce:lettuce-core": 910866245,
     "io.netty:netty-all": 41228384,
-    "io.netty:netty-bom": 888714378,
+    "io.netty:netty-bom": -515209971,
     "io.netty:netty-buffer": 74326261,
     "io.netty:netty-codec-http": -920101484,
-    "io.netty:netty-codec-http2": 590712764,
     "io.netty:netty-common": 1498958496,
     "io.netty:netty-handler": 1278819283,
-    "io.netty:netty-handler-proxy": -183560396,
     "io.netty:netty-transport": 320927026,
     "io.opentelemetry:opentelemetry-api": 237530819,
-    "io.opentelemetry:opentelemetry-bom": 424603183,
+    "io.opentelemetry:opentelemetry-bom": 653606600,
     "io.opentelemetry:opentelemetry-context": -543978024,
     "io.opentelemetry:opentelemetry-exporter-logging": -135306546,
     "io.opentelemetry:opentelemetry-sdk": -314306333,
     "io.opentelemetry:opentelemetry-sdk-common": -1695848327,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": 2007780383,
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -62380802,
-    "io.opentelemetry:opentelemetry-sdk-testing": -32635354,
     "io.opentelemetry:opentelemetry-sdk-trace": 1165401435,
-    "javax.inject:javax.inject": -297932879,
     "junit:junit": -744267592,
-    "net.bytebuddy:byte-buddy": 1750588375,
+    "net.bytebuddy:byte-buddy": 164807332,
     "net.java.dev.javacc:javacc": 520686333,
-    "org.apache.logging.log4j:log4j-core": 929898406,
     "org.assertj:assertj-core": -1145412507,
-    "org.bouncycastle:bcpkix-jdk18on": 1954093523,
-    "org.checkerframework:checker-qual": 1912379972,
+    "org.bouncycastle:bcpkix-jdk18on": 826697430,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 801759887,
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
     "org.hsqldb:hsqldb": 1426553323,
-    "org.htmlunit:htmlunit-core-js": 1345792447,
+    "org.htmlunit:htmlunit-core-js": -675228320,
     "org.jboss.marshalling:jboss-marshalling": -970194822,
+    "org.jetbrains:annotations": 989775437,
     "org.jsoup:jsoup": -1040080959,
-    "org.jspecify:jspecify": -382205121,
+    "org.jspecify:jspecify": 2105307712,
     "org.junit.jupiter:junit-jupiter-api": 194920406,
     "org.junit.jupiter:junit-jupiter-engine": -1886863302,
     "org.junit.jupiter:junit-jupiter-params": 1082310006,
     "org.junit.platform:junit-platform-commons": -1412868620,
-    "org.junit.platform:junit-platform-engine": -1644395090,
     "org.junit.platform:junit-platform-launcher": -354104948,
     "org.junit.platform:junit-platform-reporting": 1896713402,
-    "org.junit:junit-bom": 905501728,
-    "org.mockito:mockito-core": 1330163800,
-    "org.redisson:redisson": -1775284730,
+    "org.junit:junit-bom": 934130879,
+    "org.mockito:mockito-core": -466787559,
+    "org.redisson:redisson": -362652470,
     "org.seleniumhq.selenium:selenium-api": 1359790425,
     "org.seleniumhq.selenium:selenium-remote-driver": -1144232444,
     "org.seleniumhq.selenium:selenium-support": 204710084,
-    "org.slf4j:slf4j-api": -197708565,
-    "org.slf4j:slf4j-jdk14": 1467713585,
+    "org.slf4j:slf4j-api": -626942717,
+    "org.slf4j:slf4j-jdk14": 1038479433,
     "org.testcontainers:testcontainers": -1851951707,
-    "org.tomlj:tomlj": -8705859,
+    "org.tomlj:tomlj": -291605762,
     "org.zeromq:jeromq": -1244249324,
     "repositories": -1949687017,
     "uk.org.webcompere:system-stubs-core": -1875111381,
@@ -95,364 +89,362 @@
     "cglib:cglib-nodep:jar:sources": 193544996,
     "com.beust:jcommander": -2120169146,
     "com.beust:jcommander:jar:sources": -171511633,
-    "com.esotericsoftware:kryo": -482617235,
-    "com.esotericsoftware:kryo:jar:sources": -803891280,
+    "com.esotericsoftware:kryo": -693368450,
+    "com.esotericsoftware:kryo:jar:sources": 1494540957,
     "com.esotericsoftware:minlog": -2001219566,
     "com.esotericsoftware:minlog:jar:sources": 272312478,
     "com.esotericsoftware:reflectasm": 2111544468,
     "com.esotericsoftware:reflectasm:jar:sources": -1791654347,
-    "com.fasterxml.jackson.core:jackson-annotations": -85510638,
-    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": 467665637,
-    "com.fasterxml.jackson.core:jackson-core": -959071160,
-    "com.fasterxml.jackson.core:jackson-core:jar:sources": 1813389773,
-    "com.fasterxml.jackson.core:jackson-databind": -2046812024,
-    "com.fasterxml.jackson.core:jackson-databind:jar:sources": -1481966519,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": -1515319520,
-    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 1951576667,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": -1295820332,
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": -1702850488,
-    "com.github.ben-manes.caffeine:caffeine": -1877345241,
-    "com.github.ben-manes.caffeine:caffeine:jar:sources": -594702079,
-    "com.github.docker-java:docker-java-api": -531511207,
+    "com.fasterxml.jackson.core:jackson-annotations": -1589838737,
+    "com.fasterxml.jackson.core:jackson-annotations:jar:sources": -361747825,
+    "com.fasterxml.jackson.core:jackson-core": -1317907497,
+    "com.fasterxml.jackson.core:jackson-core:jar:sources": 1453466587,
+    "com.fasterxml.jackson.core:jackson-databind": -1517379764,
+    "com.fasterxml.jackson.core:jackson-databind:jar:sources": 869519278,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": 1628828367,
+    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:sources": 380981259,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": -1069648110,
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:sources": -1374881393,
+    "com.github.ben-manes.caffeine:caffeine": -1626319201,
+    "com.github.ben-manes.caffeine:caffeine:jar:sources": -1862682179,
+    "com.github.docker-java:docker-java-api": -215100454,
     "com.github.docker-java:docker-java-api:jar:sources": -964631834,
     "com.github.docker-java:docker-java-transport": -1526601578,
-    "com.github.docker-java:docker-java-transport-zerodep": 1975524173,
+    "com.github.docker-java:docker-java-transport-zerodep": -347166331,
     "com.github.docker-java:docker-java-transport-zerodep:jar:sources": -767880782,
     "com.github.docker-java:docker-java-transport:jar:sources": -1920988041,
-    "com.github.javaparser:javaparser-core": -1165910921,
-    "com.github.javaparser:javaparser-core:jar:sources": 939883591,
-    "com.github.spotbugs:spotbugs": 1189961820,
-    "com.github.spotbugs:spotbugs-annotations": 1784664812,
-    "com.github.spotbugs:spotbugs-annotations:jar:sources": -1367968760,
-    "com.github.spotbugs:spotbugs:jar:sources": -270818245,
+    "com.github.javaparser:javaparser-core": 561213315,
+    "com.github.javaparser:javaparser-core:jar:sources": -1181310143,
+    "com.github.spotbugs:spotbugs": 435477139,
+    "com.github.spotbugs:spotbugs-annotations": -1628657191,
+    "com.github.spotbugs:spotbugs-annotations:jar:sources": 506172046,
+    "com.github.spotbugs:spotbugs:jar:sources": 122229878,
     "com.github.stephenc.jcip:jcip-annotations": 2084352561,
     "com.github.stephenc.jcip:jcip-annotations:jar:sources": 888192437,
-    "com.google.auto.service:auto-service": 1620030782,
+    "com.google.auto.service:auto-service": -1349947971,
     "com.google.auto.service:auto-service-annotations": 262983930,
     "com.google.auto.service:auto-service-annotations:jar:sources": -1392999316,
     "com.google.auto.service:auto-service:jar:sources": -1296332334,
-    "com.google.auto:auto-common": 2122639405,
-    "com.google.auto:auto-common:jar:sources": -2100626169,
-    "com.google.closure-stylesheets:closure-stylesheets": 1198150034,
+    "com.google.auto:auto-common": 1455233952,
+    "com.google.auto:auto-common:jar:sources": -542679945,
+    "com.google.closure-stylesheets:closure-stylesheets": 676616526,
     "com.google.closure-stylesheets:closure-stylesheets:jar:sources": -1461998056,
     "com.google.code.findbugs:jsr305": 870839855,
     "com.google.code.findbugs:jsr305:jar:sources": -935881202,
-    "com.google.code.gson:gson": 2071377705,
-    "com.google.code.gson:gson:jar:sources": 907899269,
+    "com.google.code.gson:gson": -1393933128,
+    "com.google.code.gson:gson:jar:sources": 755669897,
     "com.google.dagger:dagger": -1865829880,
-    "com.google.dagger:dagger-producers": 567941131,
+    "com.google.dagger:dagger-producers": 121385537,
     "com.google.dagger:dagger-producers:jar:sources": -143178918,
     "com.google.dagger:dagger:jar:sources": 1572301086,
     "com.google.errorprone:error_prone_annotations": 967586345,
     "com.google.errorprone:error_prone_annotations:jar:sources": -1304692732,
-    "com.google.googlejavaformat:google-java-format": 39616931,
-    "com.google.googlejavaformat:google-java-format:jar:sources": 863436563,
+    "com.google.googlejavaformat:google-java-format": -1179767184,
+    "com.google.googlejavaformat:google-java-format:jar:sources": -534068925,
     "com.google.guava:failureaccess": 1715931538,
     "com.google.guava:failureaccess:jar:sources": 1303858893,
-    "com.google.guava:guava": -2132457458,
-    "com.google.guava:guava:jar:sources": 1246910673,
+    "com.google.guava:guava": -1636123135,
+    "com.google.guava:guava:jar:sources": -1067173521,
     "com.google.guava:listenablefuture": 1079558157,
     "com.google.j2objc:j2objc-annotations": 248818742,
     "com.google.j2objc:j2objc-annotations:jar:sources": -378364028,
-    "com.google.javascript:closure-compiler": 199441762,
+    "com.google.javascript:closure-compiler": -757781731,
     "com.google.javascript:closure-compiler-externs": -1499626471,
-    "com.google.javascript:closure-compiler-unshaded": 1039735351,
+    "com.google.javascript:closure-compiler-unshaded": -1470927691,
     "com.google.javascript:closure-compiler-unshaded:jar:sources": 953232666,
-    "com.google.javascript:closure-compiler:jar:sources": -155332960,
-    "com.google.jimfs:jimfs": -38911252,
+    "com.google.javascript:closure-compiler:jar:sources": 16484246,
+    "com.google.jimfs:jimfs": 1378943478,
     "com.google.jimfs:jimfs:jar:sources": 2087504201,
     "com.google.protobuf.nano:protobuf-javanano": -942503907,
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
-    "com.google.protobuf:protobuf-java": 1198356280,
-    "com.google.protobuf:protobuf-java:jar:sources": 2013970572,
-    "com.graphql-java:graphql-java": -428999358,
-    "com.graphql-java:graphql-java:jar:sources": 807352135,
-    "com.graphql-java:java-dataloader": 952679934,
-    "com.graphql-java:java-dataloader:jar:sources": -1301547853,
-    "com.uber.nullaway:nullaway": 2132658056,
-    "com.uber.nullaway:nullaway:jar:sources": 1302013966,
+    "com.google.protobuf:protobuf-java": -1812001120,
+    "com.google.protobuf:protobuf-java:jar:sources": -322237137,
+    "com.graphql-java:graphql-java": 1178948131,
+    "com.graphql-java:graphql-java:jar:sources": 250541727,
+    "com.graphql-java:java-dataloader": -1517887665,
+    "com.graphql-java:java-dataloader:jar:sources": -1676833358,
+    "com.uber.nullaway:nullaway": 749868116,
+    "com.uber.nullaway:nullaway:jar:sources": 423253002,
     "commons-codec:commons-codec": 1545666683,
     "commons-codec:commons-codec:jar:sources": -1502704019,
-    "commons-io:commons-io": -515402013,
-    "commons-io:commons-io:jar:sources": 1974419956,
+    "commons-io:commons-io": 1072619124,
+    "commons-io:commons-io:jar:sources": -238571367,
     "dev.failsafe:failsafe": -253921025,
     "dev.failsafe:failsafe:jar:sources": 890605467,
     "eu.neilalexander:jnacl": 1766068575,
     "eu.neilalexander:jnacl:jar:sources": 1104083541,
-    "io.fabric8:kubernetes-client": -1504739473,
-    "io.fabric8:kubernetes-client-api": 346531903,
-    "io.fabric8:kubernetes-client-api:jar:sources": -1381038166,
-    "io.fabric8:kubernetes-client:jar:sources": -407623425,
-    "io.fabric8:kubernetes-httpclient-vertx": 74851759,
-    "io.fabric8:kubernetes-httpclient-vertx:jar:sources": 1111993302,
-    "io.fabric8:kubernetes-model-admissionregistration": 111854688,
-    "io.fabric8:kubernetes-model-admissionregistration:jar:sources": -485690681,
-    "io.fabric8:kubernetes-model-apiextensions": 356181297,
-    "io.fabric8:kubernetes-model-apiextensions:jar:sources": -814865995,
-    "io.fabric8:kubernetes-model-apps": 436046953,
-    "io.fabric8:kubernetes-model-apps:jar:sources": 1151896203,
-    "io.fabric8:kubernetes-model-autoscaling": -783063171,
-    "io.fabric8:kubernetes-model-autoscaling:jar:sources": 467425585,
-    "io.fabric8:kubernetes-model-batch": -1078815441,
-    "io.fabric8:kubernetes-model-batch:jar:sources": 1432853887,
-    "io.fabric8:kubernetes-model-certificates": 1739217169,
-    "io.fabric8:kubernetes-model-certificates:jar:sources": -165656870,
-    "io.fabric8:kubernetes-model-common": 1765521557,
-    "io.fabric8:kubernetes-model-common:jar:sources": -1008739928,
-    "io.fabric8:kubernetes-model-coordination": -1582834429,
-    "io.fabric8:kubernetes-model-coordination:jar:sources": 1036814940,
-    "io.fabric8:kubernetes-model-core": 111039902,
-    "io.fabric8:kubernetes-model-core:jar:sources": 2062684633,
-    "io.fabric8:kubernetes-model-discovery": 1101682922,
-    "io.fabric8:kubernetes-model-discovery:jar:sources": -1186551945,
-    "io.fabric8:kubernetes-model-events": -1563915288,
-    "io.fabric8:kubernetes-model-events:jar:sources": -801252312,
-    "io.fabric8:kubernetes-model-extensions": 1131705059,
-    "io.fabric8:kubernetes-model-extensions:jar:sources": -2111853794,
-    "io.fabric8:kubernetes-model-flowcontrol": 198527809,
-    "io.fabric8:kubernetes-model-flowcontrol:jar:sources": 425102429,
-    "io.fabric8:kubernetes-model-gatewayapi": -1186027755,
-    "io.fabric8:kubernetes-model-gatewayapi:jar:sources": -1884925577,
-    "io.fabric8:kubernetes-model-metrics": -181319780,
-    "io.fabric8:kubernetes-model-metrics:jar:sources": -419408413,
-    "io.fabric8:kubernetes-model-networking": -800298858,
-    "io.fabric8:kubernetes-model-networking:jar:sources": 790580764,
-    "io.fabric8:kubernetes-model-node": 505082995,
-    "io.fabric8:kubernetes-model-node:jar:sources": -1769013350,
-    "io.fabric8:kubernetes-model-policy": 785432105,
-    "io.fabric8:kubernetes-model-policy:jar:sources": 830491163,
-    "io.fabric8:kubernetes-model-rbac": 198116408,
-    "io.fabric8:kubernetes-model-rbac:jar:sources": -566807052,
-    "io.fabric8:kubernetes-model-resource": 793271082,
-    "io.fabric8:kubernetes-model-resource:jar:sources": 1542901354,
-    "io.fabric8:kubernetes-model-scheduling": -1004572850,
-    "io.fabric8:kubernetes-model-scheduling:jar:sources": 1761455865,
-    "io.fabric8:kubernetes-model-storageclass": 1870313140,
-    "io.fabric8:kubernetes-model-storageclass:jar:sources": 1695114699,
-    "io.fabric8:zjsonpatch": -635403701,
-    "io.fabric8:zjsonpatch:jar:sources": -1586731430,
-    "io.grpc:grpc-api": 1783406226,
-    "io.grpc:grpc-api:jar:sources": -424175038,
-    "io.grpc:grpc-context": 168417266,
-    "io.grpc:grpc-context:jar:sources": 2089234811,
-    "io.lettuce:lettuce-core": 492642445,
-    "io.lettuce:lettuce-core:jar:sources": 1810752512,
-    "io.netty:netty-buffer": -615578812,
-    "io.netty:netty-buffer:jar:sources": 1274136475,
-    "io.netty:netty-codec": -1503174821,
-    "io.netty:netty-codec-base": -1481051624,
-    "io.netty:netty-codec-base:jar:sources": 2007438215,
-    "io.netty:netty-codec-compression": 2060173917,
-    "io.netty:netty-codec-compression:jar:sources": -350983440,
-    "io.netty:netty-codec-dns": 1959533174,
-    "io.netty:netty-codec-dns:jar:sources": -1375901253,
-    "io.netty:netty-codec-http": -811579422,
-    "io.netty:netty-codec-http2": -5611921,
-    "io.netty:netty-codec-http2:jar:sources": 616345142,
-    "io.netty:netty-codec-http:jar:sources": 1896382118,
-    "io.netty:netty-codec-marshalling": -1814641122,
-    "io.netty:netty-codec-marshalling:jar:sources": 1657627163,
-    "io.netty:netty-codec-protobuf": 1623818005,
-    "io.netty:netty-codec-protobuf:jar:sources": -1734035214,
-    "io.netty:netty-codec-socks": 207424945,
-    "io.netty:netty-codec-socks:jar:sources": -839826724,
-    "io.netty:netty-codec:jar:sources": -1968758177,
-    "io.netty:netty-common": 1898807211,
-    "io.netty:netty-common:jar:sources": -903781575,
-    "io.netty:netty-handler": 415458884,
-    "io.netty:netty-handler-proxy": -660698092,
-    "io.netty:netty-handler-proxy:jar:sources": -1635796732,
-    "io.netty:netty-handler:jar:sources": 493006588,
-    "io.netty:netty-resolver": -533538204,
-    "io.netty:netty-resolver-dns": -1631676286,
-    "io.netty:netty-resolver-dns:jar:sources": -733739096,
-    "io.netty:netty-resolver:jar:sources": 2006711257,
-    "io.netty:netty-transport": -1274025410,
-    "io.netty:netty-transport-native-unix-common": 258902559,
-    "io.netty:netty-transport-native-unix-common:jar:sources": -232671756,
-    "io.netty:netty-transport:jar:sources": -512553681,
+    "io.fabric8:kubernetes-client": -729197640,
+    "io.fabric8:kubernetes-client-api": -1905601491,
+    "io.fabric8:kubernetes-client-api:jar:sources": -1952409227,
+    "io.fabric8:kubernetes-client:jar:sources": -1358891590,
+    "io.fabric8:kubernetes-httpclient-vertx": 1942649572,
+    "io.fabric8:kubernetes-httpclient-vertx:jar:sources": -976854021,
+    "io.fabric8:kubernetes-model-admissionregistration": -1759354694,
+    "io.fabric8:kubernetes-model-admissionregistration:jar:sources": 1845927261,
+    "io.fabric8:kubernetes-model-apiextensions": -422351,
+    "io.fabric8:kubernetes-model-apiextensions:jar:sources": 768564408,
+    "io.fabric8:kubernetes-model-apps": 1798356010,
+    "io.fabric8:kubernetes-model-apps:jar:sources": -1592116314,
+    "io.fabric8:kubernetes-model-autoscaling": 1748669855,
+    "io.fabric8:kubernetes-model-autoscaling:jar:sources": -472797554,
+    "io.fabric8:kubernetes-model-batch": 350129807,
+    "io.fabric8:kubernetes-model-batch:jar:sources": -199258382,
+    "io.fabric8:kubernetes-model-certificates": 561650982,
+    "io.fabric8:kubernetes-model-certificates:jar:sources": -364514188,
+    "io.fabric8:kubernetes-model-common": 482606961,
+    "io.fabric8:kubernetes-model-common:jar:sources": -834616731,
+    "io.fabric8:kubernetes-model-coordination": -961177576,
+    "io.fabric8:kubernetes-model-coordination:jar:sources": -421839506,
+    "io.fabric8:kubernetes-model-core": 550188177,
+    "io.fabric8:kubernetes-model-core:jar:sources": 430104958,
+    "io.fabric8:kubernetes-model-discovery": 1172062415,
+    "io.fabric8:kubernetes-model-discovery:jar:sources": -1231353278,
+    "io.fabric8:kubernetes-model-events": 84416381,
+    "io.fabric8:kubernetes-model-events:jar:sources": -1804736328,
+    "io.fabric8:kubernetes-model-extensions": 1909106339,
+    "io.fabric8:kubernetes-model-extensions:jar:sources": -722003870,
+    "io.fabric8:kubernetes-model-flowcontrol": 969449427,
+    "io.fabric8:kubernetes-model-flowcontrol:jar:sources": 1301734564,
+    "io.fabric8:kubernetes-model-gatewayapi": 1728164444,
+    "io.fabric8:kubernetes-model-gatewayapi:jar:sources": -1021586357,
+    "io.fabric8:kubernetes-model-metrics": -1834014677,
+    "io.fabric8:kubernetes-model-metrics:jar:sources": 214989635,
+    "io.fabric8:kubernetes-model-networking": 883380043,
+    "io.fabric8:kubernetes-model-networking:jar:sources": 1150461925,
+    "io.fabric8:kubernetes-model-node": -495191469,
+    "io.fabric8:kubernetes-model-node:jar:sources": -317453306,
+    "io.fabric8:kubernetes-model-policy": 1779741950,
+    "io.fabric8:kubernetes-model-policy:jar:sources": 888653901,
+    "io.fabric8:kubernetes-model-rbac": -1600802900,
+    "io.fabric8:kubernetes-model-rbac:jar:sources": 2112069764,
+    "io.fabric8:kubernetes-model-resource": 297245586,
+    "io.fabric8:kubernetes-model-resource:jar:sources": -17530136,
+    "io.fabric8:kubernetes-model-scheduling": -2127445902,
+    "io.fabric8:kubernetes-model-scheduling:jar:sources": -1201846855,
+    "io.fabric8:kubernetes-model-storageclass": 1943092983,
+    "io.fabric8:kubernetes-model-storageclass:jar:sources": 432103442,
+    "io.fabric8:zjsonpatch": 1590032399,
+    "io.fabric8:zjsonpatch:jar:sources": -146843037,
+    "io.lettuce:lettuce-core": -283713301,
+    "io.lettuce:lettuce-core:jar:sources": 2132126069,
+    "io.netty:netty-buffer": 194929880,
+    "io.netty:netty-buffer:jar:sources": 663342431,
+    "io.netty:netty-codec": -648071766,
+    "io.netty:netty-codec-base": -1471828612,
+    "io.netty:netty-codec-base:jar:sources": 503137614,
+    "io.netty:netty-codec-compression": -356024987,
+    "io.netty:netty-codec-compression:jar:sources": 2138179243,
+    "io.netty:netty-codec-dns": -2113080008,
+    "io.netty:netty-codec-dns:jar:sources": 997025798,
+    "io.netty:netty-codec-http": -1757381714,
+    "io.netty:netty-codec-http2": 826680400,
+    "io.netty:netty-codec-http2:jar:sources": 1993343646,
+    "io.netty:netty-codec-http:jar:sources": 1460149809,
+    "io.netty:netty-codec-marshalling": 230705740,
+    "io.netty:netty-codec-marshalling:jar:sources": -997526183,
+    "io.netty:netty-codec-protobuf": 1952463591,
+    "io.netty:netty-codec-protobuf:jar:sources": 931471802,
+    "io.netty:netty-codec-socks": 416365288,
+    "io.netty:netty-codec-socks:jar:sources": -624959744,
+    "io.netty:netty-codec:jar:sources": 1364692927,
+    "io.netty:netty-common": -1525903729,
+    "io.netty:netty-common:jar:sources": 782053857,
+    "io.netty:netty-handler": -529744463,
+    "io.netty:netty-handler-proxy": 1609222878,
+    "io.netty:netty-handler-proxy:jar:sources": -1933400005,
+    "io.netty:netty-handler:jar:sources": 1530511575,
+    "io.netty:netty-resolver": -1600241075,
+    "io.netty:netty-resolver-dns": 1953966491,
+    "io.netty:netty-resolver-dns:jar:sources": 548158719,
+    "io.netty:netty-resolver:jar:sources": 1526761758,
+    "io.netty:netty-tcnative-classes": 664996679,
+    "io.netty:netty-tcnative-classes:jar:sources": -195648899,
+    "io.netty:netty-transport": 1348722655,
+    "io.netty:netty-transport-native-unix-common": 1696334627,
+    "io.netty:netty-transport-native-unix-common:jar:sources": -1718628960,
+    "io.netty:netty-transport:jar:sources": 1988867824,
     "io.opentelemetry.semconv:opentelemetry-semconv": 216316849,
     "io.opentelemetry.semconv:opentelemetry-semconv:jar:sources": -1308379394,
-    "io.opentelemetry:opentelemetry-api": -1017203393,
-    "io.opentelemetry:opentelemetry-api:jar:sources": 1191990967,
-    "io.opentelemetry:opentelemetry-common": -94233885,
-    "io.opentelemetry:opentelemetry-common:jar:sources": -1249330099,
-    "io.opentelemetry:opentelemetry-context": -173056963,
-    "io.opentelemetry:opentelemetry-context:jar:sources": -1644845062,
-    "io.opentelemetry:opentelemetry-exporter-logging": -1964571635,
-    "io.opentelemetry:opentelemetry-exporter-logging:jar:sources": 1050807063,
-    "io.opentelemetry:opentelemetry-sdk": 551540408,
-    "io.opentelemetry:opentelemetry-sdk-common": 872234393,
-    "io.opentelemetry:opentelemetry-sdk-common:jar:sources": 1029600798,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": -1056604549,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -1182087193,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:jar:sources": 1023307071,
-    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:jar:sources": 57494918,
-    "io.opentelemetry:opentelemetry-sdk-logs": -375205794,
-    "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": 743220901,
-    "io.opentelemetry:opentelemetry-sdk-metrics": 619301431,
-    "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": -1004882347,
-    "io.opentelemetry:opentelemetry-sdk-testing": 591791647,
-    "io.opentelemetry:opentelemetry-sdk-testing:jar:sources": 180961563,
-    "io.opentelemetry:opentelemetry-sdk-trace": 948438495,
-    "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": -295449843,
-    "io.opentelemetry:opentelemetry-sdk:jar:sources": -78251187,
-    "io.projectreactor:reactor-core": -2024052294,
-    "io.projectreactor:reactor-core:jar:sources": 144494895,
-    "io.reactivex.rxjava3:rxjava": -590997371,
-    "io.reactivex.rxjava3:rxjava:jar:sources": -673564760,
-    "io.vertx:vertx-auth-common": 242064388,
-    "io.vertx:vertx-auth-common:jar:sources": -926864419,
-    "io.vertx:vertx-core": -802038944,
-    "io.vertx:vertx-core:jar:sources": 1842538499,
-    "io.vertx:vertx-web-client": 1028968563,
-    "io.vertx:vertx-web-client:jar:sources": 347524565,
-    "io.vertx:vertx-web-common": 865473536,
-    "io.vertx:vertx-web-common:jar:sources": -471311804,
+    "io.opentelemetry:opentelemetry-api": 35575868,
+    "io.opentelemetry:opentelemetry-api:jar:sources": 441217381,
+    "io.opentelemetry:opentelemetry-common": -628658218,
+    "io.opentelemetry:opentelemetry-common:jar:sources": -1971806293,
+    "io.opentelemetry:opentelemetry-context": -893134364,
+    "io.opentelemetry:opentelemetry-context:jar:sources": 1900261266,
+    "io.opentelemetry:opentelemetry-exporter-logging": 430923708,
+    "io.opentelemetry:opentelemetry-exporter-logging:jar:sources": -1776262687,
+    "io.opentelemetry:opentelemetry-sdk": -604679489,
+    "io.opentelemetry:opentelemetry-sdk-common": -99563096,
+    "io.opentelemetry:opentelemetry-sdk-common:jar:sources": -766464553,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": -171714823,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": -100331950,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:jar:sources": 1535953235,
+    "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:jar:sources": -2113040407,
+    "io.opentelemetry:opentelemetry-sdk-logs": 1570554130,
+    "io.opentelemetry:opentelemetry-sdk-logs:jar:sources": -1634078553,
+    "io.opentelemetry:opentelemetry-sdk-metrics": -1446973510,
+    "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources": -2080338869,
+    "io.opentelemetry:opentelemetry-sdk-trace": -19974944,
+    "io.opentelemetry:opentelemetry-sdk-trace:jar:sources": -1852071164,
+    "io.opentelemetry:opentelemetry-sdk:jar:sources": 1536420409,
+    "io.projectreactor:reactor-core": -2143467537,
+    "io.projectreactor:reactor-core:jar:sources": 1595441070,
+    "io.reactivex.rxjava3:rxjava": -320548188,
+    "io.reactivex.rxjava3:rxjava:jar:sources": 1421703233,
+    "io.vertx:vertx-auth-common": -192756699,
+    "io.vertx:vertx-auth-common:jar:sources": 2025604333,
+    "io.vertx:vertx-core": 138818202,
+    "io.vertx:vertx-core:jar:sources": 532555024,
+    "io.vertx:vertx-web-client": 1526220448,
+    "io.vertx:vertx-web-client:jar:sources": 1364295691,
+    "io.vertx:vertx-web-common": 285014282,
+    "io.vertx:vertx-web-common:jar:sources": 470223455,
     "javax.cache:cache-api": -340959387,
     "javax.cache:cache-api:jar:sources": -414663888,
     "javax.inject:javax.inject": 698155243,
     "javax.inject:javax.inject:jar:sources": 1222576539,
-    "jaxen:jaxen": -61452587,
-    "jaxen:jaxen:jar:sources": -1282944954,
+    "jaxen:jaxen": 482013535,
+    "jaxen:jaxen:jar:sources": 1440924454,
     "junit:junit": -149895345,
     "junit:junit:jar:sources": 940567721,
-    "net.bytebuddy:byte-buddy": -749913489,
+    "net.bytebuddy:byte-buddy": 858364056,
     "net.bytebuddy:byte-buddy-agent": 1099087346,
     "net.bytebuddy:byte-buddy-agent:jar:sources": 1414786109,
-    "net.bytebuddy:byte-buddy:jar:sources": -1341936733,
+    "net.bytebuddy:byte-buddy:jar:sources": -962903092,
     "net.java.dev.javacc:javacc": 1095796166,
     "net.java.dev.javacc:javacc:jar:sources": -1183405047,
     "net.java.dev.jna:jna": 154162148,
     "net.java.dev.jna:jna:jar:sources": -1131590933,
-    "net.sf.saxon:Saxon-HE": -560158028,
-    "net.sf.saxon:Saxon-HE:jar:sources": 134942547,
-    "org.antlr:antlr4-runtime": 745607488,
-    "org.antlr:antlr4-runtime:jar:sources": -1096290475,
-    "org.apache.bcel:bcel": 901868717,
-    "org.apache.bcel:bcel:jar:sources": 1242074929,
-    "org.apache.commons:commons-compress": 921631058,
+    "net.sf.saxon:Saxon-HE": 1404898280,
+    "net.sf.saxon:Saxon-HE:jar:sources": 37033699,
+    "org.apache.bcel:bcel": -1563530983,
+    "org.apache.bcel:bcel:jar:sources": -1080242478,
+    "org.apache.commons:commons-compress": -616241776,
     "org.apache.commons:commons-compress:jar:sources": -1888643111,
     "org.apache.commons:commons-exec": 601232227,
     "org.apache.commons:commons-exec:jar:sources": -716664838,
-    "org.apache.commons:commons-lang3": 1244192954,
-    "org.apache.commons:commons-lang3:jar:sources": 321970823,
-    "org.apache.commons:commons-text": -1029172223,
-    "org.apache.commons:commons-text:jar:sources": 1814073236,
-    "org.apache.logging.log4j:log4j-api": -535303980,
-    "org.apache.logging.log4j:log4j-api:jar:sources": 1398816473,
-    "org.apache.logging.log4j:log4j-core": -1468872283,
-    "org.apache.logging.log4j:log4j-core:jar:sources": -310222995,
+    "org.apache.commons:commons-lang3": 348552720,
+    "org.apache.commons:commons-lang3:jar:sources": -190929117,
+    "org.apache.commons:commons-text": 35026164,
+    "org.apache.commons:commons-text:jar:sources": 400790036,
+    "org.apache.logging.log4j:log4j-api": -1175312709,
+    "org.apache.logging.log4j:log4j-api:jar:sources": 682344680,
+    "org.apache.logging.log4j:log4j-core": -771291131,
+    "org.apache.logging.log4j:log4j-core:jar:sources": -625900064,
     "org.apiguardian:apiguardian-api": 1279798469,
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
-    "org.assertj:assertj-core": 2064243319,
+    "org.assertj:assertj-core": -1056735155,
     "org.assertj:assertj-core:jar:sources": -697161745,
-    "org.bouncycastle:bcpkix-jdk18on": 234366076,
-    "org.bouncycastle:bcpkix-jdk18on:jar:sources": 256969312,
-    "org.bouncycastle:bcprov-jdk18on": 1775002659,
-    "org.bouncycastle:bcprov-jdk18on:jar:sources": -1585504180,
-    "org.bouncycastle:bcutil-jdk18on": 2088191088,
-    "org.bouncycastle:bcutil-jdk18on:jar:sources": -297807544,
+    "org.bouncycastle:bcpkix-jdk18on": -287047843,
+    "org.bouncycastle:bcpkix-jdk18on:jar:sources": -1855368494,
+    "org.bouncycastle:bcprov-jdk18on": -751439126,
+    "org.bouncycastle:bcprov-jdk18on:jar:sources": 485448997,
+    "org.bouncycastle:bcutil-jdk18on": -1269559261,
+    "org.bouncycastle:bcutil-jdk18on:jar:sources": 1897597974,
     "org.checkerframework:checker-compat-qual": -1467856161,
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
-    "org.checkerframework:checker-qual": -1868243245,
-    "org.checkerframework:checker-qual:jar:sources": -1826555423,
-    "org.checkerframework:dataflow-nullaway": 942876367,
-    "org.checkerframework:dataflow-nullaway:jar:sources": -943424700,
+    "org.checkerframework:checker-qual": -1543380368,
+    "org.checkerframework:checker-qual:jar:sources": 1584684922,
+    "org.checkerframework:dataflow-nullaway": 1153433772,
+    "org.checkerframework:dataflow-nullaway:jar:sources": -434420977,
+    "org.commonmark:commonmark": 1007679894,
+    "org.commonmark:commonmark-ext-gfm-tables": 906481356,
+    "org.commonmark:commonmark-ext-gfm-tables:jar:sources": 1402309037,
+    "org.commonmark:commonmark:jar:sources": 134511725,
     "org.dom4j:dom4j": -355280329,
     "org.dom4j:dom4j:jar:sources": 1794439119,
     "org.easymock:easymock": 1823521609,
     "org.easymock:easymock:jar:sources": 1100555462,
-    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": -212158090,
+    "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 456751666,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:sources": -1002647383,
     "org.hsqldb:hsqldb": 331478029,
     "org.hsqldb:hsqldb:jar:sources": -212896903,
-    "org.htmlunit:htmlunit-core-js": 1723621837,
-    "org.htmlunit:htmlunit-core-js:jar:sources": -277494304,
+    "org.htmlunit:htmlunit-core-js": -785871742,
+    "org.htmlunit:htmlunit-core-js:jar:sources": -498551326,
     "org.jboss.marshalling:jboss-marshalling": 1584464300,
     "org.jboss.marshalling:jboss-marshalling:jar:sources": -444808379,
-    "org.jetbrains:annotations": -845966580,
-    "org.jetbrains:annotations:jar:sources": 582621361,
+    "org.jetbrains:annotations": -1687668980,
+    "org.jetbrains:annotations:jar:sources": 381604573,
     "org.jodd:jodd-util": 270788956,
     "org.jodd:jodd-util:jar:sources": 1012711698,
     "org.jsoup:jsoup": -1583305582,
     "org.jsoup:jsoup:jar:sources": -1458122851,
-    "org.jspecify:jspecify": 117231129,
-    "org.jspecify:jspecify:jar:sources": -2134060298,
-    "org.junit.jupiter:junit-jupiter-api": -452374709,
-    "org.junit.jupiter:junit-jupiter-api:jar:sources": -812339151,
-    "org.junit.jupiter:junit-jupiter-engine": 1758090696,
-    "org.junit.jupiter:junit-jupiter-engine:jar:sources": 1609707780,
-    "org.junit.jupiter:junit-jupiter-params": -1984293032,
-    "org.junit.jupiter:junit-jupiter-params:jar:sources": -1461710354,
-    "org.junit.platform:junit-platform-commons": 880945443,
-    "org.junit.platform:junit-platform-commons:jar:sources": 1070778896,
-    "org.junit.platform:junit-platform-engine": -2133752461,
-    "org.junit.platform:junit-platform-engine:jar:sources": -1311806045,
-    "org.junit.platform:junit-platform-launcher": -1164782491,
-    "org.junit.platform:junit-platform-launcher:jar:sources": -1783349551,
-    "org.junit.platform:junit-platform-reporting": -708741566,
-    "org.junit.platform:junit-platform-reporting:jar:sources": -479417393,
-    "org.mockito:mockito-core": -2004852378,
-    "org.mockito:mockito-core:jar:sources": 1900207417,
+    "org.jspecify:jspecify": -109882726,
+    "org.jspecify:jspecify:jar:sources": 345277939,
+    "org.junit.jupiter:junit-jupiter-api": 1070908820,
+    "org.junit.jupiter:junit-jupiter-api:jar:sources": -1467607052,
+    "org.junit.jupiter:junit-jupiter-engine": -1247144809,
+    "org.junit.jupiter:junit-jupiter-engine:jar:sources": 1877878168,
+    "org.junit.jupiter:junit-jupiter-params": -1550272880,
+    "org.junit.jupiter:junit-jupiter-params:jar:sources": 2113169157,
+    "org.junit.platform:junit-platform-commons": -170148016,
+    "org.junit.platform:junit-platform-commons:jar:sources": -532139571,
+    "org.junit.platform:junit-platform-engine": 1018032853,
+    "org.junit.platform:junit-platform-engine:jar:sources": -1306626146,
+    "org.junit.platform:junit-platform-launcher": 404918870,
+    "org.junit.platform:junit-platform-launcher:jar:sources": 1409824250,
+    "org.junit.platform:junit-platform-reporting": 1588112906,
+    "org.junit.platform:junit-platform-reporting:jar:sources": 1717223596,
+    "org.mockito:mockito-core": -1622438436,
+    "org.mockito:mockito-core:jar:sources": 1799409451,
     "org.objenesis:objenesis": 1798216877,
     "org.objenesis:objenesis:jar:sources": 1586171112,
-    "org.opentest4j.reporting:open-test-reporting-tooling-spi": 1212162497,
-    "org.opentest4j.reporting:open-test-reporting-tooling-spi:jar:sources": -265562829,
+    "org.opentest4j.reporting:open-test-reporting-tooling-spi": -1725000643,
+    "org.opentest4j.reporting:open-test-reporting-tooling-spi:jar:sources": -160176410,
     "org.opentest4j:opentest4j": -1711174392,
     "org.opentest4j:opentest4j:jar:sources": -1740624156,
-    "org.ow2.asm:asm": -1385251582,
-    "org.ow2.asm:asm-analysis": 406759724,
-    "org.ow2.asm:asm-analysis:jar:sources": -1906245179,
-    "org.ow2.asm:asm-commons": -1289057325,
-    "org.ow2.asm:asm-commons:jar:sources": 1042529759,
-    "org.ow2.asm:asm-tree": 1481382205,
-    "org.ow2.asm:asm-tree:jar:sources": 2119696959,
-    "org.ow2.asm:asm-util": -1860008386,
-    "org.ow2.asm:asm-util:jar:sources": 1130229495,
-    "org.ow2.asm:asm:jar:sources": 1195325834,
+    "org.ow2.asm:asm": -873652610,
+    "org.ow2.asm:asm-analysis": 1677026089,
+    "org.ow2.asm:asm-analysis:jar:sources": -376603127,
+    "org.ow2.asm:asm-commons": -836543625,
+    "org.ow2.asm:asm-commons:jar:sources": 1647121548,
+    "org.ow2.asm:asm-tree": -1580575629,
+    "org.ow2.asm:asm-tree:jar:sources": -433592342,
+    "org.ow2.asm:asm-util": -1514090026,
+    "org.ow2.asm:asm-util:jar:sources": 1327357246,
+    "org.ow2.asm:asm:jar:sources": -213462900,
     "org.reactivestreams:reactive-streams": -164947187,
     "org.reactivestreams:reactive-streams:jar:sources": -122882922,
-    "org.redisson:redisson": -816509248,
-    "org.redisson:redisson:jar:sources": -1546915217,
-    "org.rnorth.duct-tape:duct-tape": -1059401544,
+    "org.redisson:redisson": -746372318,
+    "org.redisson:redisson:jar:sources": 1741527651,
+    "org.rnorth.duct-tape:duct-tape": 133152594,
     "org.rnorth.duct-tape:duct-tape:jar:sources": -1798015648,
-    "org.seleniumhq.selenium:selenium-api": -213282586,
+    "org.seleniumhq.selenium:selenium-api": 849837103,
     "org.seleniumhq.selenium:selenium-api:jar:sources": -2123713838,
-    "org.seleniumhq.selenium:selenium-http": -1190813029,
+    "org.seleniumhq.selenium:selenium-http": 142645278,
     "org.seleniumhq.selenium:selenium-http:jar:sources": 619643754,
-    "org.seleniumhq.selenium:selenium-json": 1992543294,
+    "org.seleniumhq.selenium:selenium-json": 1756634149,
     "org.seleniumhq.selenium:selenium-json:jar:sources": 822537794,
-    "org.seleniumhq.selenium:selenium-manager": -1419840704,
+    "org.seleniumhq.selenium:selenium-manager": -802116707,
     "org.seleniumhq.selenium:selenium-manager:jar:sources": -2122675189,
-    "org.seleniumhq.selenium:selenium-os": 1831430020,
+    "org.seleniumhq.selenium:selenium-os": -2127888353,
     "org.seleniumhq.selenium:selenium-os:jar:sources": -1535880779,
-    "org.seleniumhq.selenium:selenium-remote-driver": -122429789,
+    "org.seleniumhq.selenium:selenium-remote-driver": -1746878669,
     "org.seleniumhq.selenium:selenium-remote-driver:jar:sources": 593030798,
-    "org.seleniumhq.selenium:selenium-support": -793971165,
+    "org.seleniumhq.selenium:selenium-support": -1487432236,
     "org.seleniumhq.selenium:selenium-support:jar:sources": 2073088656,
-    "org.slf4j:slf4j-api": -1521593912,
-    "org.slf4j:slf4j-api:jar:sources": -1050183387,
-    "org.slf4j:slf4j-jdk14": 1520377765,
-    "org.slf4j:slf4j-jdk14:jar:sources": -1140555513,
+    "org.slf4j:slf4j-api": -736053657,
+    "org.slf4j:slf4j-api:jar:sources": -72528589,
+    "org.slf4j:slf4j-jdk14": -278434875,
+    "org.slf4j:slf4j-jdk14:jar:sources": 243667848,
     "org.snakeyaml:snakeyaml-engine": -1273354013,
     "org.snakeyaml:snakeyaml-engine:jar:sources": -1787221586,
-    "org.testcontainers:testcontainers": 1806256510,
+    "org.testcontainers:testcontainers": 1175907641,
     "org.testcontainers:testcontainers:jar:sources": 375219890,
-    "org.tomlj:tomlj": -1228854097,
-    "org.tomlj:tomlj:jar:sources": 195810171,
+    "org.tomlj:tomlj": -1200743285,
+    "org.tomlj:tomlj:jar:sources": 352072068,
     "org.xmlresolver:xmlresolver": -2072175398,
     "org.xmlresolver:xmlresolver:jar:data": 792867476,
     "org.xmlresolver:xmlresolver:jar:sources": 294380453,
-    "org.yaml:snakeyaml": 1308413731,
-    "org.yaml:snakeyaml:jar:sources": -140059451,
+    "org.yaml:snakeyaml": 1068613154,
+    "org.yaml:snakeyaml:jar:sources": -665563845,
     "org.zeromq:jeromq": 1328093465,
     "org.zeromq:jeromq:jar:sources": -1982898923,
-    "redis.clients.authentication:redis-authx-core": 442288662,
-    "redis.clients.authentication:redis-authx-core:jar:sources": -376828222,
-    "uk.org.webcompere:system-stubs-core": -133478800,
+    "redis.clients.authentication:redis-authx-core": 735969453,
+    "redis.clients.authentication:redis-authx-core:jar:sources": 698347100,
+    "uk.org.webcompere:system-stubs-core": 1044570886,
     "uk.org.webcompere:system-stubs-core:jar:sources": 550621394,
-    "uk.org.webcompere:system-stubs-jupiter": 701601246,
+    "uk.org.webcompere:system-stubs-jupiter": -1770030562,
     "uk.org.webcompere:system-stubs-jupiter:jar:sources": 409043156
   },
   "artifacts": {
@@ -479,10 +471,10 @@
     },
     "com.esotericsoftware:kryo": {
       "shasums": {
-        "jar": "4e8b1d2f4977187af8a51a957329722dc1cdc56a7c94fbb5a791e82897629cff",
-        "sources": "acd9090539befa5421466ea1001dd808927af3f7d0ff12340ff518c15a9c5f4e"
+        "jar": "b0c62617e99fa85ea98c602d0844d6800ffa224cb1e3f597358b009a5e83d619",
+        "sources": "0c8bbb3778469612edbe8f036224d0621c41fa6c3323d04ce057fe066e71f77c"
       },
-      "version": "5.6.2"
+      "version": "5.7.0"
     },
     "com.esotericsoftware:minlog": {
       "shasums": {
@@ -500,45 +492,45 @@
     },
     "com.fasterxml.jackson.core:jackson-annotations": {
       "shasums": {
-        "jar": "959a2ffb2d591436f51f183c6a521fc89347912f711bf0cae008cdf045d95319",
-        "sources": "6bdceeb142be2dc19f8ada2e7be1f028e47d94716d4b9ea8bd2c14b3cec0bca8"
+        "jar": "e5b60c3088e0887b290ff9226394354589a1dad583743944b7f5538661056b4c",
+        "sources": "1d68d572e75ff7696db44545c48383593183600570c800f77660cb4775ce80fd"
       },
-      "version": "2.20"
+      "version": "2.23"
     },
     "com.fasterxml.jackson.core:jackson-core": {
       "shasums": {
-        "jar": "bc0cf46075877201f8406ee7de2741ae7df6c066f5f0457bd80632a718c06e72",
-        "sources": "675bf321a4d8fbae2257ff61986ea5064c95599a446c4eea81c215ffb8251b21"
+        "jar": "449798beb4c4ec26de9cc25b39ca2198036883fb905ca968cbef7136d19a25d9",
+        "sources": "eaf7d94abf63f638d76ce74bbf301b779b29c45e59a84b8a1413bf49f2081260"
       },
-      "version": "2.20.0"
+      "version": "2.23.0"
     },
     "com.fasterxml.jackson.core:jackson-databind": {
       "shasums": {
-        "jar": "a70e146a6bf2cba4f9cd367169787f50adcfbb57122bc2e9c8390cd0b397ac30",
-        "sources": "e192ebfb2a0d705121cfff7419c4d28b9cf589bf52ca8e5cbe83de990c54f10b"
+        "jar": "abd1edd2736c764da03fe6cb7a9de70d48dd0a198aed131604c564bff62f9cc1",
+        "sources": "1f2f827e0e75c4dc2ee7d43a3cdafeb92d994a58dcab3a1a1b64ce0976c977ab"
       },
-      "version": "2.20.0"
+      "version": "2.23.0"
     },
     "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml": {
       "shasums": {
-        "jar": "cc3dec9fb8b56574797bfef62641325508f0e5bc968bd268568402818d55baae",
-        "sources": "82bccc2d665556b3213d7a68554f9dd10b3b048a1cac81a2d2f8a687242cf4b6"
+        "jar": "971bce7e65b63c7f78965c29aa35370143f01e21a420d02bb3cde32069360689",
+        "sources": "6abd603d8113befb99115f529361488aca348a3bad00da7bd2059a28fa8980d2"
       },
-      "version": "2.20.0"
+      "version": "2.23.0"
     },
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310": {
       "shasums": {
-        "jar": "8c32155975a935b1f7bfd677647bd5c8cdee12b144b84e4492a447b5ea2e94d5",
-        "sources": "172ffd492fec51805a4cb21a0f34a7760660a4d31e6fe58f296af594b19de8c3"
+        "jar": "f348f4de49644afa0ccbff6b018709a5f0f1468c76852e4217051890a0b8528c",
+        "sources": "b24041e992b00da8e275be7ffd3c8de743c5524741bcd85d448c06300fba7753"
       },
-      "version": "2.20.0"
+      "version": "2.23.0"
     },
     "com.github.ben-manes.caffeine:caffeine": {
       "shasums": {
-        "jar": "ca70c90a5d1ce1511880ce9c93d4ad22108f61111d3daf91eb52762b571bd179",
-        "sources": "60434a548af57d0dbe13b1aa4aaf08816e5bf1d3442264c669246f8929f4b757"
+        "jar": "1f916d052a3f8c0c10951f343f043f176ff2d3c2f9e380e15f0be673c5e67c48",
+        "sources": "b1c9e864d31e0faf8fdc9a7b846a4c931969fd7dec64d141286e5ee84ff514b1"
       },
-      "version": "3.2.3"
+      "version": "3.3.1"
     },
     "com.github.docker-java:docker-java-api": {
       "shasums": {
@@ -563,24 +555,24 @@
     },
     "com.github.javaparser:javaparser-core": {
       "shasums": {
-        "jar": "d3852d78461c02602eb9bfc15e9fc21ad7c765e6013a1b6d5809a5d0e7db5309",
-        "sources": "f9e998cde659ebfbdab9facd9ac047754d568b1c3399f6e6606dbcb6a8b2023c"
+        "jar": "b5499a3b1c40b16c0671fabe478c9aafeab38160c6fde74a6c13f42d86716ecd",
+        "sources": "80454e76782147891d3a3624516cf99fbc96682a3da882925f5464741e9ba7e8"
       },
-      "version": "3.28.0"
+      "version": "3.28.2"
     },
     "com.github.spotbugs:spotbugs": {
       "shasums": {
-        "jar": "4469bc080afe7cd2290a20bf63e28392b80abcc7c7ace33c8f55da52a17c7ca5",
-        "sources": "cbee8358dd239e81fdcf37c32d1e6bedf148d25638b0c8d1b687d97c3061ecd9"
+        "jar": "8d0af71a88a5324fbe10909cc2ac4145a358c9af52fd6f796bdc0b0e42c7665f",
+        "sources": "463c56c7190a0c27abbefacc08637eb575bc1b369ed892f009521cbc91864a79"
       },
-      "version": "4.9.8"
+      "version": "4.10.5"
     },
     "com.github.spotbugs:spotbugs-annotations": {
       "shasums": {
-        "jar": "6f69d6fe9c55a54dcb30e87d8fa2d5f52246af50d7a3445246d9539ef221be1c",
-        "sources": "075b2eed660c2fe2fb1ad1de028f8fdff5f358e25c1318706b95ab17bb28be44"
+        "jar": "2f28af17ad61a7daad0f3df070198c4a5807d3ffd98a5408f670cd19fc2dce84",
+        "sources": "d49eaae5b1632212eac00349903258a3b3ad083c63917a07b675de24b7f2b7b9"
       },
-      "version": "4.9.8"
+      "version": "4.10.5"
     },
     "com.github.stephenc.jcip:jcip-annotations": {
       "shasums": {
@@ -605,10 +597,10 @@
     },
     "com.google.auto:auto-common": {
       "shasums": {
-        "jar": "f50b1ce8a41fad31a8a819c052f8ffa362ea0a3dbe9ef8f7c7dc9a36d4738a59",
-        "sources": "173f0a89b59e20a3219074a13d1656d7e207391438459521d11b0adcb814769e"
+        "jar": "f43f29fe2a6ebaf04b2598cdeec32a4e346d49a9404e990f5fc19c19f3a28d0e",
+        "sources": "6802fc6e48f84cacadab9418bc8eba732f4c6a4189fc8569b1f619cb88112b25"
       },
-      "version": "1.2.2"
+      "version": "1.2.1"
     },
     "com.google.closure-stylesheets:closure-stylesheets": {
       "shasums": {
@@ -626,10 +618,10 @@
     },
     "com.google.code.gson:gson": {
       "shasums": {
-        "jar": "dd0ce1b55a3ed2080cb70f9c655850cda86c206862310009dcb5e5c95265a5e0",
-        "sources": "058974b69cb7b0a04712278e11870e84ee8cd8fb5f551bd8401e72ba6638bfef"
+        "jar": "96d3dd843dc2911de01cdabcd50064cb9e860353102a0a78c96fd833d396fc7d",
+        "sources": "e689856e33f12904741d481825ee582fa160f751c741836601bc16666dbc7249"
       },
-      "version": "2.13.2"
+      "version": "2.15.0"
     },
     "com.google.dagger:dagger": {
       "shasums": {
@@ -654,10 +646,10 @@
     },
     "com.google.googlejavaformat:google-java-format": {
       "shasums": {
-        "jar": "b2a52e363d51dd86b3b38d1a8dd51538541b42ff1048769684681c676550f043",
-        "sources": "2c3195a5032287616b3839078bd82d19780b2c0cb75932d9f92153421b6c2c93"
+        "jar": "7a03f28f7379dcb32e5fc5a6ded62524c4a31e9616e3b477a2f71d7124c5ccad",
+        "sources": "85ad72cd919e66199902e762b9d129a41e9fc129b99a39fb5a14c3008d67b818"
       },
-      "version": "1.35.0"
+      "version": "2.0.0"
     },
     "com.google.guava:failureaccess": {
       "shasums": {
@@ -668,10 +660,10 @@
     },
     "com.google.guava:guava": {
       "shasums": {
-        "jar": "1e301f0c52ac248b0b14fdc3d12283c77252d4d6f48521d572e7d8c4c2cc4ac7",
-        "sources": "79423ae87a2203950e0e3ce2a00682b3b8d8557e631bbf662dba5494fe3b55cb"
+        "jar": "97b79ec3f2c0a6313a0c2df51ce1abdf8907e6531803467b81efcaaf99b35161",
+        "sources": "4f183ff540044f5ce4f9c1084888510632dfac2953ced0da45760bc74d99f4ca"
       },
-      "version": "33.5.0-jre"
+      "version": "33.8.0-jre"
     },
     "com.google.guava:listenablefuture": {
       "shasums": {
@@ -688,10 +680,10 @@
     },
     "com.google.javascript:closure-compiler": {
       "shasums": {
-        "jar": "6fcbd20f75994edc6856e336bc0147ce3dd7110c6b3a132e93edf580673c72bb",
-        "sources": "ab8e499c90faee6cf5a9c1d76aa99f91e5d798a799261de96230633a3709a7a7"
+        "jar": "bafea6cadc931e84f5488cc61d65a1d130defe2a571f521405f70807ef54adec",
+        "sources": "692f4391ddf342fe895466672486844ee7f1e29b5c3e440f5925d6033680c08a"
       },
-      "version": "v20250402"
+      "version": "v20260913"
     },
     "com.google.javascript:closure-compiler-externs": {
       "shasums": {
@@ -722,31 +714,31 @@
     },
     "com.google.protobuf:protobuf-java": {
       "shasums": {
-        "jar": "ae0459030b54a6f3058ad349aa01fc2edcbb2d4a84b73699675bbd125df2e96d",
-        "sources": "240db630888d78b6d67c0977416c8a48dd4bce42fb48424d054b128b72420b20"
+        "jar": "0773e72eaf375e1285df330575bfec5bda5da674d544d0e142a17f89c8f754da",
+        "sources": "1120b59082bb0a6ab04ab3b0cd8f175f148d5bf5d7e92fab1524820c14cecad2"
       },
-      "version": "4.34.1"
+      "version": "4.36.2"
     },
     "com.graphql-java:graphql-java": {
       "shasums": {
-        "jar": "a9a9ffbbb20493b7b2ee4e07879d530096ce1b5c5cfc697bd28b9ee50daf0b1b",
-        "sources": "b0391a0c89d0e1fa196c68be26c5b6993cb3af43e43d53fd2f4939c2e1cbf945"
+        "jar": "2a87c9b6e64414806696a87a8aab006d32940568299bd6a1fe81c50f9e40f967",
+        "sources": "58c1e5a76a0bc3fea276cb861be2c5fe04a6a62e048f33d9329b3d79767f9c92"
       },
-      "version": "24.1"
+      "version": "26.1"
     },
     "com.graphql-java:java-dataloader": {
       "shasums": {
-        "jar": "de05a85f5be5a35989877ba3e23504f41903ffc0c4f3432adf34a81b479f089c",
-        "sources": "447746999a3cec8b26729b2d12946feaebfe4cffa6fd406d65870d202f3c0c1a"
+        "jar": "1c9ef058308381312c350f943d185c9e451b0eee0acab74b7b80fc4f56625501",
+        "sources": "ea1b61592602f06976ee20026083b79ce7677e28591a12d381e5ac3d56a46170"
       },
-      "version": "5.0.0"
+      "version": "6.0.0"
     },
     "com.uber.nullaway:nullaway": {
       "shasums": {
-        "jar": "be9ad201b92de86c3e493a45b0861b1b3dd955d8e7dcb11f8d80d18d7425d164",
-        "sources": "36d70fbe4a3bf56ba03fbeb7aab6e95f974051ec5b50de067ed865f891731752"
+        "jar": "440d3217f6a74d3b8dab766b0c63dbfbb87bea36d798879865218249dc3f1604",
+        "sources": "7b99638b5ba715c88d2fbcd75fd9c595dadb4b367fe2d8343c353bc9c9c4e3dd"
       },
-      "version": "0.13.1"
+      "version": "0.14.3"
     },
     "commons-codec:commons-codec": {
       "shasums": {
@@ -757,10 +749,10 @@
     },
     "commons-io:commons-io": {
       "shasums": {
-        "jar": "df90bba0fe3cb586b7f164e78fe8f8f4da3f2dd5c27fa645f888100ccc25dd72",
-        "sources": "7a87277538cce40da6389a7163a4d9458bc7a9c39937a329881b91d144be8e0d"
+        "jar": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758",
+        "sources": "de5acfae5fa2735276df7facf46cdb0347374208ea47db246b554fae59277fb5"
       },
-      "version": "2.20.0"
+      "version": "2.22.0"
     },
     "dev.failsafe:failsafe": {
       "shasums": {
@@ -778,325 +770,318 @@
     },
     "io.fabric8:kubernetes-client": {
       "shasums": {
-        "jar": "2dfe170d25b56ae55165e435df2e1300ce7c193b9bba70fc5097c41c51546754",
-        "sources": "6abf781186d0ac6201e2b258913d712e1bb2bf71075d421bedbb795f7b45f319"
+        "jar": "a4d7cf0456c32842d275432109da66cfa0e5e799d3c9a89e16baba9b2e1bfcfd",
+        "sources": "4f41693700e7147388cc5b158887891d6d92e79fa265bbcf13073cb43dd5eef4"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-client-api": {
       "shasums": {
-        "jar": "b14be8dd8b0962bee1e09a948c56c55f3c0aef0c7b1cb119e6c932c734517dcd",
-        "sources": "dfe18d8e374a3e7824fbfcfdf65dd0ab2c21e056a0b2bace7810ef64a6eabda4"
+        "jar": "bb122eda7c04ce528217945bf3574ff0a3ec22d5c12795f211cd578babb10a6c",
+        "sources": "92845a8ad14fe18219963beb120de3bb9bea7f87183eedbc4fd89fdb68dc09b2"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-httpclient-vertx": {
       "shasums": {
-        "jar": "1ab5909f840fba788b42c899f7930ed83d4845e3f3aefa88551020ef8040ceb2",
-        "sources": "1acd97743e03c36b4b1edd3f7c3ee4e7c6a508b5cf74ff056f5caca246c76323"
+        "jar": "33f2050984d0884fce52c5928dfeed14991bdda9279e53d031b34b490942cf2e",
+        "sources": "2b769ecd436de5409a273749fb3c86f82747eddc9e7cddf495184e42eb9d00b5"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-admissionregistration": {
       "shasums": {
-        "jar": "656b179c96bda7a727b3437c4aef419b6dd4e90ac5e433f59ea54a6e09c4f13e",
-        "sources": "13794d296bcabbb552d486ab223bc96d90c29b7807128a7bcf18c83d7b7b826a"
+        "jar": "af1c8cc05ae9e3a9a4a808de0eccf522aece2fcd32b7210fc4083f437f0c5fa1",
+        "sources": "aaa9b55b3e96fa8f3c53992871d9246a76640b7eda7c14c5837d271595231e38"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-apiextensions": {
       "shasums": {
-        "jar": "34d0d1a6a79dcb5b41cfd89c3af115b669b8dfb2af1f7a7063127e7f2addbd0c",
-        "sources": "dfc3031d0ebfbee10d8e52c7f56adda10cd037bbfff88a8e67af2a87dd2dfe88"
+        "jar": "a4ddfeaf2a27d980db4d756a33d9ad45e65d8aeda8ab15b71fb28d7b83515567",
+        "sources": "0fc23dbd23a140e9b2b2232ebbac23cac692b46b844f92906b26568f73ac71e5"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-apps": {
       "shasums": {
-        "jar": "8638f2a89283f42e9048186d516ddfa457751ae2030865470ad44daf1becc4cc",
-        "sources": "6ef98073c933412662b3960dc23bb9062eede75325ab643d111b837dd652a9b9"
+        "jar": "8060fb0d31d97114356b632d8548f52387970250bf4618f3d5613e062552c9bb",
+        "sources": "801f14dd5ea859f20fa26b9409e017ceb31fcd09c87df6b6fc71ac22e40f6518"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-autoscaling": {
       "shasums": {
-        "jar": "80de0e5b6db02da3890141750529eb52a0494663d5c8ad7f36562cbc43473550",
-        "sources": "f8e8947c35d1a4f6e71ffeed1e8af3c3759a855f9b6a4f97b645b7f6d78e06ad"
+        "jar": "e709c0a84637c9bdfc0f21700cb5a195dddfb9e28c6746b9d26e78df0038f49d",
+        "sources": "42faee7e3452b82b660bd4fa762c3dc24a7202113af60b830f2f77c5b3e92eb4"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-batch": {
       "shasums": {
-        "jar": "d2ffddb4e3f2aab1502f89bde7b7a61a1b0100d3df67ac15270191157b02501f",
-        "sources": "9f5e0a47797c5e512bce50200fcf036b27a23ff56cddeab19d8e3dc32e6e6784"
+        "jar": "433671d4e87ad11502ce3d85ff38dc4b7292719056bc6d1c9044a8b9e21a2de2",
+        "sources": "e6285fa88cf54e7b76cd895a081f19050f94a80dcd86fc0b69c8961e0edc5306"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-certificates": {
       "shasums": {
-        "jar": "dd51a82457d7bddae1eec178c14993a303afe6facd153af948aa5c49c3831daa",
-        "sources": "8e42b74e2c24599f512acdb6fe0cc72201e9300fb9539b6aa36ae53cdb2539f7"
+        "jar": "8c32abe889721bb4c93253e45d306a27307a1aa78260bb79e93f260a6844d3ed",
+        "sources": "83d559328c3d2b70644ddce5c84ffaa473ce39b749ecfb7ceb849f72431ab1f6"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-common": {
       "shasums": {
-        "jar": "1b0d9e90c449b4d97394097bc9393d56bbe745014e942ccc71277dd216fa9e1c",
-        "sources": "2d854601b2abb1e194d2f774564124df2f027558353a3b7b251eda7d1d7e8382"
+        "jar": "1cbd1d7ca89e155cb901e57c334c57e549e8093fd9a35fce2910af00e544609b",
+        "sources": "87a9fbd9b65ff40288ce34a5a7c6d053cf0224cc4321dfdba4e302df0d3867fe"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-coordination": {
       "shasums": {
-        "jar": "54c8e4466a75cd48f3186441b7b78f0b4173d36fef7b80fb12ee27d49f3d2a30",
-        "sources": "7e03e6a3a47e7fbcc66390321a239dad414be867009a6210e4971cb651a549f5"
+        "jar": "1c66a0af71953afbe92976d0adf0c433b999d324435b76ec89ea6264dc4241b2",
+        "sources": "a6f976a5e3933979a10f14cc9f5cd37ed07f3d0296f92251e6ce1d418e97d2f7"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-core": {
       "shasums": {
-        "jar": "635a7cd9d0e2caf8469cdad404d9ff7b37fc0aceaa4371f5295c2f380b2b554a",
-        "sources": "ca8c0fe7ba8f55ee9bfe502d3c8ebab00fe89a4c18d2d0ab24a90ec1be5de579"
+        "jar": "581d0963ef096e5eab4945ad46e180f2e91180f26ff0cdba64783586fff57948",
+        "sources": "403ee103d7e86991159d4f9267b377cfdd83a6234cb443556edac5e9d6cb2873"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-discovery": {
       "shasums": {
-        "jar": "b5f38b96df28c5fe6f33c0074e287e1fe36de815d0d11022f32266ca7df562cb",
-        "sources": "3c184c68ce68216f91eeb8a982ce3e4633a50a5ae083de4772bbea28e241ba9e"
+        "jar": "55658ab23c1d7bbd6412c9a32a25f4c3484072f0614b47a92c37333cbfef0e9e",
+        "sources": "28a0e7a2067ed614c12f8c78e57b6e1e262d1691705fa90690179d6367f1e3dd"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-events": {
       "shasums": {
-        "jar": "bed1926bf20b922e69b8966c8e3ed0a2deb5ed865351daf26852e82bf64a34a8",
-        "sources": "9a4dd5bc773293b320762c4832611d3934877271507611fabc758bf4055ace46"
+        "jar": "34940101c3245e950f6aa2a59b266315be0e2a38efe69a62edf239e95d488f8a",
+        "sources": "f149d3b9ccff25f136629c1308b9b4202871e34dce12731f0c6292582fd16359"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-extensions": {
       "shasums": {
-        "jar": "9a9d88d6c478dc3e0138086bff9f381836aaf54bc8b307561fa877e5489762ef",
-        "sources": "09bed404d274fb584357f1c9b8b97705c09c5df54c3db1d74701cc9c83f18eb1"
+        "jar": "395617ed5c06ee8f2e50003654e02f9ecf7d2a9d6ca8382b991d496a2cb3d6bf",
+        "sources": "d0766def2995e38b467ceee2cbe0a1106c70f2938a79b9d83ed4d743411a5473"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-flowcontrol": {
       "shasums": {
-        "jar": "2af44c89d785424b52e07367470c5fece75f11022e64f4339459d9032735246a",
-        "sources": "d659a519e68fc61b2a6e374a2130ce57c59f71fab47ed17ec7a8293ce35953ba"
+        "jar": "3f474134c52a3aa706b0a870c1787001823047e204f5207c1ee489d63677770d",
+        "sources": "818feedbe263f64130c28edb0d2549de18b2e42a9fee563eee3dd94cb9e55d70"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-gatewayapi": {
       "shasums": {
-        "jar": "25cc5250023d2358af6d7e0eb8afab0f3f9ebb703bb62a1e76b96b6fa261e10d",
-        "sources": "60add64f943cc2d42062c5b614206f16f82952b01fba1b0506fbb37c7ca5378d"
+        "jar": "2fa5065e6722cc48753e89a006d03689ba393dc2a7918fd7f4747b0584ff6497",
+        "sources": "95382f697d5b5bb7a3ec12e4465aec3e2c06974ef197189cb3910383f6873fa6"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-metrics": {
       "shasums": {
-        "jar": "0ab71127997200808ae4973666653f54e484c29b59a616b27423115db77f18d0",
-        "sources": "2ca3cf3f6060d5881869e1b1b84db3c8f3e0134a6aa32c837f6cb4067d55af49"
+        "jar": "98822421f039ee00e06a70f02ae80266a3095fa1c57ab964646ab93913f568ce",
+        "sources": "7fc42f0eeb956434af24264228b0e8037e7d23ae7e6d3fd3a00a87c157e997d9"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-networking": {
       "shasums": {
-        "jar": "534f8286f0f0da39e98e8d58994ab58df5cf6a762532e1ccf50a836bac1f274c",
-        "sources": "031fd35cec7815fae3a4a4e2ac5335349b8957da4b630911fdcd4894fdc752ac"
+        "jar": "e9d49a4170f7e1eb6f45d4d38913262f7d875f06c7c4cf547286c4522367d647",
+        "sources": "8190ca0c4ca290980c6fb4947ca8ffe6bd4f235d1c943b33f20154816813ca08"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-node": {
       "shasums": {
-        "jar": "c0fdf177b3e21f6e5be5bdad425c30158fb8df375e5b8a03aed945b1e8172f26",
-        "sources": "d8b854b4d7141ec0ce78f1b4f1be636056bbd6e495cd0185d770e395fb56ca62"
+        "jar": "cee24b3745874bf64a80f4cfe5073dbd066ed9f3ad44beecd2442c3fa7f30822",
+        "sources": "57ec6d3acc366aa290ac07d90578c197b1011ff962f19af85ba4cdd43d59968e"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-policy": {
       "shasums": {
-        "jar": "a11a53ca788091f2d525be3975df1a9a709f2fe3d2683f1094f99fd75286d393",
-        "sources": "98a374337c5ea22e892f1655c80a0bae1c42a5341d43dc600604a5a1214de886"
+        "jar": "d5c8cd820aa357bc93a154d4e56048e28af1c576f29e9bcb0cd549edee95a928",
+        "sources": "62880c9a5b8aa8a15c613873acba0fb28456a115b17284cb1d31e8fe4a648a66"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-rbac": {
       "shasums": {
-        "jar": "e8625fc65dd0813681e5cd0a48fdae03a7dc0bf3db147c871245b14f31275428",
-        "sources": "64066d4f8873b34e349ecab3c3a0e9c9e6db4b5c47312a11973fd80a0b279bad"
+        "jar": "660dd522e052521102bfd831920a778e24400e2b55c3391dcd4e1420d7de0983",
+        "sources": "e2a8862757a4168f2bd06b4174a6653bbf265b9e452cb86395e28e7f6aa03e20"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-resource": {
       "shasums": {
-        "jar": "8a30c73ad35c97202e9381bded6d3a0a5e28fcf7431ac279a74436e5e28bd149",
-        "sources": "ae25d472d0976392f7cb3dacdb746b2df8f3fb8b26e22984efe7c21e36db88e8"
+        "jar": "a3e605559d287950cce558c4d74045906275c0ccffab82d6bcbfa028e116197e",
+        "sources": "d2c2a038a528528da88867ae4eca1107c5f6c24ad8b839d075e76dc3b196a037"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-scheduling": {
       "shasums": {
-        "jar": "15a9ed0f725c9fa472ef586690cc99c676dd20807e48bfb482dab6c5bc96d8bb",
-        "sources": "2b9fcbb812e24dd1764267950539788c9429770d890050e972943a263c3459f5"
+        "jar": "b81940e6e7d10a0836e39f3ef6173fd755bbd9b451480e8a0ac287e9cdcba2ec",
+        "sources": "e4c36d87c9c4e101063b5719631d7774fe92c3cc09cc1e2abd55c2a92d4f2e97"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:kubernetes-model-storageclass": {
       "shasums": {
-        "jar": "69d5bc6f78728b3afddd2f9a926d4d586a79a2e15920ad989de302bc75997d2e",
-        "sources": "5440fe2fd520ef76d927de7ba920203531ed56707ea660378be06aa4b430f8d1"
+        "jar": "7236523e620b3d29a174a670f7e9a1c1f44c77a12d8992d119b5fe435b034cd0",
+        "sources": "ad5cb52b415ea3474d4c6c66fe224d0e28377aabdb984a99152eab1ac1e4fca1"
       },
-      "version": "7.6.1"
+      "version": "7.9.0"
     },
     "io.fabric8:zjsonpatch": {
       "shasums": {
-        "jar": "86c0094b823fb49111d03b87d5874e120333adea8f1ded2a911b3f2f0d9d9c6d",
-        "sources": "e5e5a0feff98b8106ed0835eb78a73ec7f8b7eafd1fdce839275ee155bb3bd0b"
+        "jar": "6e76bc8b955a746533b22d6cfb06bb75e72dfbeae61b89a200f642bc9007e7fc",
+        "sources": "a58907d8212bbf6e9a00c0246baf00644fb22fbd2d8895d28dab7f8c0ffd4764"
       },
-      "version": "7.6.1"
-    },
-    "io.grpc:grpc-api": {
-      "shasums": {
-        "jar": "3af18798cf5d705fb40187d47548345d017df9a22791b9c028d9643441be9759",
-        "sources": "ea270f1c8476289cc7cb9eb0f9e8a09746004a33727fe99266a4eea1de1b151d"
-      },
-      "version": "1.80.0"
-    },
-    "io.grpc:grpc-context": {
-      "shasums": {
-        "jar": "74a6fc8e6c9fc873c3683db41bc0ab5869bfd55b733cc62ac63eb276f37b0b0a",
-        "sources": "9f86ea8238acecb77905a6b4d54990c424528d21fdcc8a779440b15b4a5d03d9"
-      },
-      "version": "1.80.0"
+      "version": "7.9.0"
     },
     "io.lettuce:lettuce-core": {
       "shasums": {
-        "jar": "a5625d931c19427d821fa9bafb5b0b5610686b2c61c6c2d6fcb0501706ebf7eb",
-        "sources": "9fd38a3d84329ef8ff43ef818371694e330fe891cd6b4c6f01e1e394dbe01edb"
+        "jar": "d08f925e2f5b1207a6eb3724d07caaf79543b8c8687f4a7413047ccc397b5230",
+        "sources": "44364a627371809a0441611c4332007d10b931ef7a4400ea9885f720fd7ca733"
       },
-      "version": "7.5.1.RELEASE"
+      "version": "7.9.0.RELEASE"
     },
     "io.netty:netty-buffer": {
       "shasums": {
-        "jar": "20dffa0e42c7b90b8c114d00c73bdf8f8ff5b363e3180b449359b2609e339561",
-        "sources": "7cc7edd45c3d04c4237d454b1a9c9d6ef0d76c513659230c838c0345911c158b"
+        "jar": "794136fc6be78e44a286c2b1420a182e135c6d06eb8c397030c1551ee50acccd",
+        "sources": "36c1869f58c24167180546acb933749bbe92391834eca219d3a155a719d21f26"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec": {
       "shasums": {
-        "jar": "fd134579a021e6e10c0003fa0a64ff56b43f79885a30e0909be87579d32e4610",
-        "sources": "4e32c6fbb21206f3ef85fb5d093c79b01dfb895641d039e1fc81563166513738"
+        "jar": "f6616d7c26c6198c7fa3d94e20a1a0d17e8ef9fc2433de792f4009cf38b00c15",
+        "sources": "1506a304a30fca2ad116814309f5498882ba24f1331d6c7c7d00ebf94595fda9"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-base": {
       "shasums": {
-        "jar": "ea267e1006386fa24c40089e97740904095bbadd9e5014d2e953907816df9e25",
-        "sources": "ae853109fe466893e9f17c4dd40ef092203141bce765589da2adada163e3f534"
+        "jar": "5a66da26b86d7eecedd9e0d8fe0e22ef1733bbf873e476cb9b860afbed22210c",
+        "sources": "4524e76d427e3caa2d64d1793c50790b9d37d135881d157b8d96509cc0eb8330"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-compression": {
       "shasums": {
-        "jar": "ba123232dd562710744b98b9917083db63279190862f83f3c0c72a24f714ae15",
-        "sources": "f47e0c34354920db0cac3f125de0b581a25fd06c6da534a43300a8f49fa22fbd"
+        "jar": "7ebae4ac80c01e2d279d0e50d377bcdaf0cf8f2f65797e0578afc810a66ab57d",
+        "sources": "179e9deb63e784017d3e8e0d294d03a738da46ad740bbf62ec38dc3d7e0636c7"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-dns": {
       "shasums": {
-        "jar": "7473c1979ff6502ca014632a1f5ba609c756cf056c2b90d6871b761e3479326b",
-        "sources": "c08e0ab0e5a9cfda024ab37e09db41344fce3ffe8c63e5f618a8fe4ea39e1ec8"
+        "jar": "8296127e74eb871eea6e17520ad5d12aec37700252a61165057b28df6e5f9499",
+        "sources": "b54caaeba00dcdf83a1cbe523671931e4f687e3b4f51cbc895205c4bfe1c7cdc"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-http": {
       "shasums": {
-        "jar": "2e9a74893b73fa9baebec1d880c274b75a62db2d56a3aa4ba783f38fd2355805",
-        "sources": "1ccbc0169ba7919d51c96eec413c42321d76908c251159d94d9c3de211b5a19b"
+        "jar": "d08b0d473c48c61ebb2bc4d145111fa1777832aee4d2be1024891e904e36eaf5",
+        "sources": "940bb861827decaf8d194740b14611b788142171ea5b0c89fdc05b07dd2f9914"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-http2": {
       "shasums": {
-        "jar": "54eef9d85571083c76724bd263f609823a7416206765642b5ce13ab0f0a807cc",
-        "sources": "1ad019e3798143fbbf7a01c9c7e4498fe2bf8b611425fb15b6e33c115951fe46"
+        "jar": "168790c8d10d2e7cc53fa08906162e3d6c23b4528e7d062eea328d4a281484c6",
+        "sources": "8f5a23fe5ea32b0b45aad73af1e19a563d8176588a8a0c938c78332726ca1594"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-marshalling": {
       "shasums": {
-        "jar": "9fe544d4199e5d1ed584b20339d704618f3a0d9ee0e0aeec28e6cb1863009f0a",
-        "sources": "f89285eac1f1442a505ad6b74c7dcd078126820f0a111e304d226ba55c39be25"
+        "jar": "49ceb3f4f29f7f29a9acbb31b134b1c886d8fb843278d8dab530bf83cd6dfd0d",
+        "sources": "1a0ebe57e28190669efb8f3199c8445d6706ba8833ae6c35c060886d745b9956"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-protobuf": {
       "shasums": {
-        "jar": "8ff96befc2e6be25db67d2b73c343fb253ca1018ede682682f1357e85ad23896",
-        "sources": "3c26fb9e13e69be5cbd4d410abb58e0766af7f38cc83861e078aade3f42bbc60"
+        "jar": "dc995dcfc841c8593c482604d38aab0fa414e9a7c8ea49dc36ebf188064a6470",
+        "sources": "1853905a6ce4198384ebbe4839df45ed5133b2a63472103f21c7e3897b6c5039"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-codec-socks": {
       "shasums": {
-        "jar": "2e0ab8cba9cd6a7584e942ffd2c9ff42db5dff527fc92731956800b8ea353b96",
-        "sources": "c8d431cc1494691efff70b680d5722a5c8104eadc8a0494f52d3bdf55253a9fd"
+        "jar": "8510f0ceee40a4254760b2927431e2403a6588c4068022e2440356acfc5e24c1",
+        "sources": "a2867a1eff6b8079c6335f833d1c87c4dff788464d43b70b721cd1249fb2f639"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-common": {
       "shasums": {
-        "jar": "9b03e4d08ef4c3e4e97065186fd3e1485301532ef4303f9fc29049dd13475b8d",
-        "sources": "8bde0515975d6c50c6f23dedc733f4722831d5fdcdb90306648a438af677f388"
+        "jar": "5807fef7eb619bc0a5d1c0e6c83199ea9bca8503203a3eb73cfdccec2d215743",
+        "sources": "e43ff1befac9e534dfd1ce99db6dc74d1317fde27b3e786371e471c69e4d9f88"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-handler": {
       "shasums": {
-        "jar": "78fa734626bc67cef39191d1284325d95400e1efcb1b3fe75b59af3fab6992d9",
-        "sources": "691468eaf2b2ae482c6b411bd614200a5c3f5013b75b152ad260d69dcfc1394f"
+        "jar": "211dbbba074298046b37f841ad9ca89ed91968f6b9e97400c99ab4e6177b1f96",
+        "sources": "b86221a443145d7a3ef2fbf202aab4bb1857e9662c64cf85ba1c5ba835019fd0"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-handler-proxy": {
       "shasums": {
-        "jar": "0ffed89f83926e2886b808d4f957c6dbe8616c6346639b89fe924c22700347e5",
-        "sources": "77bc68eb07f40324f9c22988bed182ba2a1123fb2400082ffe444b5f660c7022"
+        "jar": "9fd508051bb39829117e4dbfa2d0b485aafb88d2d627ae6ec1fed5a3faa3842a",
+        "sources": "ac96a23a6446ec46439748b2484c5e334168bb906c6dab5ca7ef2c4cdf195529"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-resolver": {
       "shasums": {
-        "jar": "533be5715f97b5a3409844c095b8dd4ab7e2988fd1920cd82545873dddc812ca",
-        "sources": "5e898142eda9ace880e5d245bb25dcaeea140b4898c63ea977ed2fe9796b3dc0"
+        "jar": "cb7a6027e4f366fb28dcea7e1f7088ca16bd23c2cc38e8ddfdac77a77bd144dc",
+        "sources": "d9e1a998ceabda6453668e34345f5f1c9633046a3394d7deff5441370b105142"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-resolver-dns": {
       "shasums": {
-        "jar": "50c1e2539053c747db2d276d2d69bfaaabded9f644dc40ecc0b175e0f863fad7",
-        "sources": "86e1950ac4b02ba8fd792735392a3d23bfda0a64835ec81a384f7f94557ad134"
+        "jar": "9a1dc5abc7f146bf0ff0938dceb384f7c972dc052cd9cd2f367cb30a0718fa71",
+        "sources": "55daba64bac2ee9f98a942bcc703956ec17ce3b3a86366f432f1ba476381298e"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
+    },
+    "io.netty:netty-tcnative-classes": {
+      "shasums": {
+        "jar": "3c1bcba8d80d7002277effe67509979b3a7bd22341bab276b946837f0b76f831",
+        "sources": "7a43e520da58ae03600830b17226d6b2f5b1f70b3a5d96927e9ae8e4325bf329"
+      },
+      "version": "2.0.85.Final"
     },
     "io.netty:netty-transport": {
       "shasums": {
-        "jar": "5add99236edf95d005d429bc0cb9748678749b5b01fd69557aa7f63b6232fea8",
-        "sources": "275ad55c779317a738c15cb92fd04dc4df3ba43d46ce41495eb9b20417d49306"
+        "jar": "ff4f1f8158c714c1b485ef10cf2456fbd3c1b2930256b70287aeb7dc3ad94783",
+        "sources": "43dc1a7f6b3fb6b84da079983e5d30ee4792d1bf0a6d96a6e633671495675ad3"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.netty:netty-transport-native-unix-common": {
       "shasums": {
-        "jar": "18ab01d6ba0f44bb2a4393020a30f3a1f53998ea0c6e29d5076b6b652d4c9023",
-        "sources": "50e05ebe034082fc07df0174598431073b10057ca426738bea0f51bdd192c3a4"
+        "jar": "6f600d5cbd3ce39e50680de66b00d7e6a9652dac7d08a5b022101d717cb7fb52",
+        "sources": "3d9906bff4df25e298c237f91761015b480dac0406a77faf96f931a34dfe77c6"
       },
-      "version": "4.2.12.Final"
+      "version": "4.2.20.Final"
     },
     "io.opentelemetry.semconv:opentelemetry-semconv": {
       "shasums": {
@@ -1107,129 +1092,122 @@
     },
     "io.opentelemetry:opentelemetry-api": {
       "shasums": {
-        "jar": "8e4ea94bbe9b94d823ac6e7dda7c74624659a1352caf0529a07f43f86b6ca0d5",
-        "sources": "147a277449514e39d1eca45fde1dfd10ef50a6fd2294e92f320777b9a95bdd52"
+        "jar": "921398d19e2723a356a4e86442daa8e7cb3d8edd84e97e44f5e34807e9b46c2a",
+        "sources": "6824bce8b263249a75a276c20ee96db7cbb5db6a0b44ca8889b5da05bcc4670c"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-common": {
       "shasums": {
-        "jar": "6999a393236faa58f1d9549c0152c129864235f059627aac70a7c0459a503c56",
-        "sources": "375f0b943e063c4a5e2241d45e7db6c85be9af058f8cc6252182fd02bfb92cb7"
+        "jar": "c69addeb5de9c96c4ca036ed6935f21c12949032d2798698d76c5931f2b4bc2a",
+        "sources": "ad414a8b7eb69a909261234c0c3ce428744f0310c6b61e4d2b152a38b011ba44"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-context": {
       "shasums": {
-        "jar": "f311f8777cf1ca8824c00a1cef9e0f163d9efc273840d7f625b7982b29f0d53c",
-        "sources": "ae5217bf53f1018df675eef6a5a6f7c8fe47849e9a7df2a818bcf6d9d514757c"
+        "jar": "9ca2a322fbe6736c610086e2fecec8d292daca6fd755bd5670f751bb373c2b70",
+        "sources": "059ae24e9f81eea0258cc30ed1a073731434399036f777e356feff0d5c3d412d"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-exporter-logging": {
       "shasums": {
-        "jar": "a995897e420ad3667f99c105a87270537bc96855a2e230507a08b19a9c848987",
-        "sources": "d2cd7ae045e0ef7ac7c31b99456fc8d6f30fe31218d29faae905dfe1abe5c9b0"
+        "jar": "de416a322f724748d275ffaa0e8efe06c1e8591e9c3e53ed94fe2499fac3ebd0",
+        "sources": "e0892c06696ccef14629bb7ec09b9942df1b15d409d1b8c0d74ae5190db5a750"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk": {
       "shasums": {
-        "jar": "526aec104cfa42082cc04730c2206e9b412e5fbd111ad0b827e6dac0dadef960",
-        "sources": "01e1f55a1d56cb46ea19b471e9be70e94c6c19352afbb2bdec78e35ec5e1f7f4"
+        "jar": "49a59f222fa2c676e5868a67077ce06fc30f428de6e0eb542691c7b555f6cd33",
+        "sources": "6844d6891b5cae265c3fa822f118e408a8ef270050e439c60f37acefcbacb923"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-common": {
       "shasums": {
-        "jar": "75cc96713e2e11c9a30dda4cb88ccfecc2209367c1e980bb946c5fc8bb71858f",
-        "sources": "c5fbc717de24d1d1f4f20bd652c6c085064267f66e2c79ca08a5ec6585c65757"
+        "jar": "430c03d5c19d025209856bbb5492aa45db617625df32f0adcb5cc0d3e5f80be6",
+        "sources": "78e76bae9cff08b0a2eb6ec213eb1268e035dea4b16e91e716bb166e9ba7aa87"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "shasums": {
-        "jar": "8356af26794aa828b9b604b244b8d064c877b3c2dc10fd09c4b0ce9115784240",
-        "sources": "015cc3781501a52b5096d263de9d2aeff4a5a256a7e80b897f02b661fba13a1f"
+        "jar": "9b63bc0b671e14609eeff48e8bab60e7d02a33ea94fa5c66d98fd1bcc94e2fb4",
+        "sources": "0dd7afbd79141226e936b8bebe3c756bd3fc6e02b4370418907d359eada16c6d"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi": {
       "shasums": {
-        "jar": "6dd099660585586b7b635c0d7f7f412cafaa28e8277005459ebb97d6dc2d25f0",
-        "sources": "27743005802df061ef82aacac8c5247beb58676f95a6a106b9a25213216b6e07"
+        "jar": "2a4aed0e5bbf240dad4712a3b942f1a34d3695631eb1a2214871eba794dc8e2b",
+        "sources": "4646156260efa65c5ae0d554bb456d21f2695ba0ccba2f91d853fc647a1a82cb"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-logs": {
       "shasums": {
-        "jar": "e988f9520d2abf4e7b7731df80949fc22ff2350adf28b8e7499237d5ce0b0ded",
-        "sources": "8bff2f6f2fb45b84ac06d5bac1310588eae06c77939c0cbbcfd3a1941483c16b"
+        "jar": "dab55661dd2bc3c2bae39f5b6c505c1508602975ec1f7d0d05600f2723eefc18",
+        "sources": "0b91297ef69669520fb416f6125b645b35101060d53aac833dbafcb2de3e8353"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-metrics": {
       "shasums": {
-        "jar": "b2e1e2c0f7173520152f576552b377adecbbff36328e0bbc6bdf48a390d13f71",
-        "sources": "f2645c5ec2c7b6b21768dc6c6705325b21d4cd110b31b7b725c0a377f9053341"
+        "jar": "c9ff85bd4ba89e0431bd39d8b6ad5d409f9351881abff87e3002a7ee0e890787",
+        "sources": "e97cf07828639b15addf7e9bf240e7f4a86c4a9b0378815f2f038d8827868198"
       },
-      "version": "1.60.1"
-    },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "shasums": {
-        "jar": "51e28b0b7e339de61d9a74a87179cf3061032288da8ec82d630462ba60fdc8dc",
-        "sources": "7178f252c8640a963b736852a27398e27a10e5396664ad39b7a7c3941afb954d"
-      },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.opentelemetry:opentelemetry-sdk-trace": {
       "shasums": {
-        "jar": "38df8927f518599d94c05d6858a18ff745ded50014b54e28b976104174d5e826",
-        "sources": "2397d32834c6bfb23af83de9f23c0df3dc66fc98ac5e4de61a363ad4a2f8c991"
+        "jar": "101b87e9a95838e75771d4f07c4f04eacd9b95612de3ebaf744b3642404764e8",
+        "sources": "c93a0ba3e814d001a5e2d7cb1768bc7ebda4f4cfb0c02697b9bf1c4d32c03a3b"
       },
-      "version": "1.60.1"
+      "version": "1.68.0"
     },
     "io.projectreactor:reactor-core": {
       "shasums": {
-        "jar": "44f055fbd033b6c976c53fb2e04b59027e79fb2312c37d2eaa54c77ea1ea80fe",
-        "sources": "fee913ed4e41d79ce1cf7db4526d23e848719083b65a4041dea590f91b1ef2f6"
+        "jar": "9a5f1bfc5ad0416a410ff63beaa279cc30c2da3ae9b111a678c83c99298a1551",
+        "sources": "7547e61d9ebe6ffa34df02dc8f97d663edd69f91b58d295d7f008e1dddb30657"
       },
-      "version": "3.6.6"
+      "version": "3.8.7"
     },
     "io.reactivex.rxjava3:rxjava": {
       "shasums": {
-        "jar": "6890becbd4646347928746a4421cc559fca9f34d06ef2a7a947bd7adf7473246",
-        "sources": "288b3dc26dccc5ac6c3e221872ffe2f9b94179cdd85aac519b10e5b151586757"
+        "jar": "1808a433ef55dcc2965523e512ab914a5d0d727228a2683ed7559d7cccf44e37",
+        "sources": "9658c659f8ae1fbd61d81bd1c265728d37a9ad21b04ace5bb3deac6f3387bd2b"
       },
-      "version": "3.1.8"
+      "version": "3.1.12"
     },
     "io.vertx:vertx-auth-common": {
       "shasums": {
-        "jar": "f0b6c0c7afe4368dbc2cdd9af7839fd341ff601587f58cc910cb5e2949827df3",
-        "sources": "9de0055a4fad53a72859e179f52ff21fe26e6a465f1f3fc620f034b3f7537682"
+        "jar": "ca50cb70de4f27205dea350fd59c72fb8475b5fe786c19614cea71234d38c5d1",
+        "sources": "6eaca618a640cf4514b181b9279c6bbafc9dccd33934787b2799d071dbe7fcb9"
       },
-      "version": "4.5.24"
+      "version": "4.5.31"
     },
     "io.vertx:vertx-core": {
       "shasums": {
-        "jar": "61293b447a367514925c5fec9fc390f6d4acfa731231775dfb32bccf41b638bb",
-        "sources": "d1a75026237b8f17e4dad94d8ac2c8ac70e6d5ff7baaee15c009ed80533e2387"
+        "jar": "0402e5f4bfc26a33e56af25139dbd515dc8d7701975a0a329e1687f1b98ef89d",
+        "sources": "c90adfb6ddabc336ba05db2856f4fd319225080d5ab649a9d50137a736ad83c7"
       },
-      "version": "4.5.24"
+      "version": "4.5.31"
     },
     "io.vertx:vertx-web-client": {
       "shasums": {
-        "jar": "a666884d633beb4a294abd15866b5664b65e1def18c2feddd2571664ef0967c5",
-        "sources": "58d348a60f47bdb5a72b4253654f90118252091dba63703623854fbb9ba97454"
+        "jar": "d7c8ad9476ffaef92fb104be3a29029b07965022a95fad864e1bbac2d1778f6a",
+        "sources": "e3bca48d294dfa07ab206b65a27b210bacd1eceb3b88d5f3ac1f565494aa722e"
       },
-      "version": "4.5.24"
+      "version": "4.5.31"
     },
     "io.vertx:vertx-web-common": {
       "shasums": {
-        "jar": "74ed11a7194f2322088f0a5571d3d783cf7886094b2884c92c4d3f7a8d5f1068",
-        "sources": "816615f5f70b5e9ba296bdfcc5c15cc420c01ef1cf030d62985b02d9f73b5d15"
+        "jar": "000056cb34c7cbf015dfd1a8d7a0559c1c4392d0ca14d6ab85018b9f438e510c",
+        "sources": "9e8744be5ac1c2371626f50a048b0b2c25fcb945130075362ccf35b6ab7fcc21"
       },
-      "version": "4.5.24"
+      "version": "4.5.31"
     },
     "javax.cache:cache-api": {
       "shasums": {
@@ -1247,10 +1225,10 @@
     },
     "jaxen:jaxen": {
       "shasums": {
-        "jar": "9499e487a66268f47b8307d130cd1e13a58392105e98a51f6a525db79c615cc5",
-        "sources": "2eb519f8820ff64e8001f9b4c2c6cb09296cdd99f5b4eed083d522ad3a6f784e"
+        "jar": "3e2a755b283fd492fa4be204294c7abb7cd63ac94fb366baab9c7bb9afb00b6d",
+        "sources": "68d3cf89426a7497ab6f37c9abf0a6b87955f0035e3754e29d6221452b271bda"
       },
-      "version": "2.0.0"
+      "version": "2.0.6"
     },
     "junit:junit": {
       "shasums": {
@@ -1261,10 +1239,10 @@
     },
     "net.bytebuddy:byte-buddy": {
       "shasums": {
-        "jar": "ac30c4b0778111fbf65594df7ed0fbd32939eeabef9b17d7f3445aa28696fb86",
-        "sources": "169adbaf8e064889b6b30514956baf0ca95ca3ef8f34dc405840a0c7f4e9cbb0"
+        "jar": "bb78cc9d290d13e27e86fe89fb171521516a33c9822a528c0f151bece5790276",
+        "sources": "cd96515eb629f57b665a4df3783bbd4bab992b6ef67bf89a9fa63ea28000d8a8"
       },
-      "version": "1.18.8-jdk5"
+      "version": "1.18.17"
     },
     "net.bytebuddy:byte-buddy-agent": {
       "shasums": {
@@ -1289,24 +1267,17 @@
     },
     "net.sf.saxon:Saxon-HE": {
       "shasums": {
-        "jar": "8f3a9216a537367132293eacbba9df062eace8f8b16a184af59e2e4839d4cd41",
-        "sources": "e901b918d1afefd27ab4a1fdeace66dc6d10b0568e58a0396c8e5d641ae30441"
+        "jar": "b571af282f25d7301059f788b9a149aab8b5cdc14ef3d212dc5425d3dcbb9a97",
+        "sources": "967e316e399138d286941641826c5100d8d8400171d426a446fd36ca943b626b"
       },
-      "version": "12.9"
-    },
-    "org.antlr:antlr4-runtime": {
-      "shasums": {
-        "jar": "e06c6553c1ccc14d36052ec4b0fc6f13b808cf957b5b1dc3f61bf401996ada59",
-        "sources": "6fa0efb711a152842ecda1d41ceab94fb2049f833e00e360e161ac0e7a3819fe"
-      },
-      "version": "4.11.1"
+      "version": "12.10"
     },
     "org.apache.bcel:bcel": {
       "shasums": {
-        "jar": "5901a6439ffb2aff0eb533cfab4dc9c054d143e4caa1bd33460efaa575f7cfdb",
-        "sources": "bcf0d437e54be1f51f27b14b05ea1457949c02a9763fe97fbbc8b33e9ad458b8"
+        "jar": "a37a65752e861c07d313ca47bef0eb75bf7643152c82ca54c4f42d036850b4fb",
+        "sources": "49bacc56d277ab8edbf711fa8fc45cafa2d45d772a2381ad8df3126a2edc5655"
       },
-      "version": "6.11.0"
+      "version": "6.13.0"
     },
     "org.apache.commons:commons-compress": {
       "shasums": {
@@ -1324,31 +1295,31 @@
     },
     "org.apache.commons:commons-lang3": {
       "shasums": {
-        "jar": "32733ab4bc90b45b63eb72677d886961003fd4ed113e07b1028f9877cb2ac735",
-        "sources": "374170a7d58183d0f930e41b0f2845bc1e26c2a2183dbc6e0e2a7f03bf035a16"
+        "jar": "a2af247ec4db6eb8947e18e23e0433e4871a7c5d0a40e1f92e46ede54ae1defe",
+        "sources": "e0467ff7412bbedf5f120e78de484cddc0afcf995b8ef3e7cd132ef4bd101d01"
       },
-      "version": "3.19.0"
+      "version": "3.21.0"
     },
     "org.apache.commons:commons-text": {
       "shasums": {
-        "jar": "121fce2282910c8f0c3ba793a5436b31beb710423cbe2d574a3fb7a73c508e92",
-        "sources": "5330c503e49a845407d48eccfa41bc4ba29eade6f60feb49a6212fb5f57abaa5"
+        "jar": "58d2da30f058512a1e7f914e39241deca4dff5c27a085b4ed2faa9e7208067f6",
+        "sources": "6fa2f1db12dc4147094be928a5b54d567cea287df54e4c76b7dfb6096c05439d"
       },
-      "version": "1.14.0"
+      "version": "1.15.0"
     },
     "org.apache.logging.log4j:log4j-api": {
       "shasums": {
-        "jar": "c4b642a7f047275215de117e0e3847eb2c7711d84a0aa7433e7b3c096daf341d",
-        "sources": "b86680bcf8ffa25897b6114cae508bb8e6ecac8081a0fc8985e0c00e27d4f4ec"
+        "jar": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822",
+        "sources": "d136436fb50076930f99aa5f45a83c661f71b84c4bb99d08ba3850ff794281bd"
       },
-      "version": "2.25.4"
+      "version": "2.26.1"
     },
     "org.apache.logging.log4j:log4j-core": {
       "shasums": {
-        "jar": "10fee2c0485d54fa44ee75d314f6295508f7b932281873db61a91b88073200e6",
-        "sources": "4bb0e69f26d69c364ab0f084043682b9de5ff0378e3f23542fba3e73b1245ab1"
+        "jar": "2ec8c3bf5a6d7c89be8620116a2fc973f7dda1ad0261ad393c4d4726edfd3dcb",
+        "sources": "b17be9b1618ecf0f9792d5eebcf224815a4f209cfa6d0bee1fb81a20dd50f539"
       },
-      "version": "2.25.4"
+      "version": "2.26.1"
     },
     "org.apiguardian:apiguardian-api": {
       "shasums": {
@@ -1366,24 +1337,24 @@
     },
     "org.bouncycastle:bcpkix-jdk18on": {
       "shasums": {
-        "jar": "d3c4c6b700c74ef8164bb15e549d939721b8f14fc0ff89fe19b220243bcfcbd8",
-        "sources": "f1f0f0565a5d84f0bdde5e812d260a9abacf9be2f57c49e461bfe9ff58340bb9"
+        "jar": "8d8b41a4b149bdae8d331f059a578870954d1e3ff29f8269a9eb3ee19a7e4ef7",
+        "sources": "0bb00b50a80404e40c6465cb8012d3835d2a9100d94d16eaa9efed4587d7e34d"
       },
-      "version": "1.83"
+      "version": "1.86"
     },
     "org.bouncycastle:bcprov-jdk18on": {
       "shasums": {
-        "jar": "82cf3a2af766c3bc874f6d36b9f20a8b99a8f09762dc776e8a227a45d8daaafb",
-        "sources": "0c335c8d599b92e264f4591087ca104615de0339bbba46ecc3a51af032de0b16"
+        "jar": "2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f",
+        "sources": "34a8b7dcb030a08ddd5356d3d5be962f9299ca5275e1460273186f8fdbe44c34"
       },
-      "version": "1.83"
+      "version": "1.86"
     },
     "org.bouncycastle:bcutil-jdk18on": {
       "shasums": {
-        "jar": "ee7d0eb4e74de70a735f7fb36b604dd5c6ad35720d50b914604db042114a0185",
-        "sources": "935984a8b1d1893dd033a9f237b85898bcfa6ae7890a214f10bade935cd3536f"
+        "jar": "1c268e15f785aafb1e4670d8d6e5f856f69475e96c162dadcd1ff9b350e9139f",
+        "sources": "a79e8cdbc04a24aecf64503eda9a4aa61019132484c64f7ce32a68ac30ef6df7"
       },
-      "version": "1.83"
+      "version": "1.86"
     },
     "org.checkerframework:checker-compat-qual": {
       "shasums": {
@@ -1394,17 +1365,31 @@
     },
     "org.checkerframework:checker-qual": {
       "shasums": {
-        "jar": "a06f08bc5dfa51d751cc5bd2453443a99a14825d57bd3c576de2648d2c99fcb8",
-        "sources": "2c205702e5ee27b2f45f06fd9dfa5a05c6d3b7192e0c280cd6869d756601d70e"
+        "jar": "66c061a19e20fb005c173169534aba7bf78e904a8a6da6fe8c6e97d277f6d347",
+        "sources": "ee3d29a2f533b222d3921f923403dd6c97835127272f18354cad37f3bc55df0f"
       },
-      "version": "4.0.0"
+      "version": "4.3.1"
     },
     "org.checkerframework:dataflow-nullaway": {
       "shasums": {
-        "jar": "d0bc6e121f27a803e09404ae2f247f0e2b1f6022897f801cd792ebf375edec27",
-        "sources": "a349a9c24e16d63a06c739c45234f67febcc09b923a0b7951d64f6b191524476"
+        "jar": "dc7b9ceddc9a68a1ffa9d66b5d62967ca3843712a671127c5a6c184f23a4f940",
+        "sources": "10d4f8003daf33e77c4d084a16294f4a58083b02147e00572875204d12ba0cbe"
       },
-      "version": "3.53.0"
+      "version": "4.3.1"
+    },
+    "org.commonmark:commonmark": {
+      "shasums": {
+        "jar": "4c9b0fa481e36d7176f38e572c134656424cf9601bc190855d0f89478df901c6",
+        "sources": "cfcd4db6b4502fd995ab681bdf8500c968fc6ee9c56380cf6ebdb11852c484bc"
+      },
+      "version": "0.29.0"
+    },
+    "org.commonmark:commonmark-ext-gfm-tables": {
+      "shasums": {
+        "jar": "f263d284c0795b0ddd6071d4fa969f67d460644c20828e51957ad5aec0d75612",
+        "sources": "4e08e7742edd4785abdba2e7a81ef668d186ebeb1d7d53c47fc89f4565bf3133"
+      },
+      "version": "0.29.0"
     },
     "org.dom4j:dom4j": {
       "shasums": {
@@ -1436,10 +1421,10 @@
     },
     "org.htmlunit:htmlunit-core-js": {
       "shasums": {
-        "jar": "de0775fe443dd6c4c45e7258322e4f9feb5dd1de7e1955b3a96549134da976fd",
-        "sources": "300d25b8f89cc62cdfbcfd3c883b4c145e26a52b2f2ab84098199c606f06491b"
+        "jar": "6e03d3d242ab8940cb474038a0a9436b34c948f423e0bb3ef1eb2845f5ab9a74",
+        "sources": "bb7b0679eced8db17045e9c027ab831980b4d316779d235d8a18483e8247b76a"
       },
-      "version": "4.21.0"
+      "version": "5.7.0"
     },
     "org.jboss.marshalling:jboss-marshalling": {
       "shasums": {
@@ -1450,10 +1435,10 @@
     },
     "org.jetbrains:annotations": {
       "shasums": {
-        "jar": "195fb0da046d55bb042e91543484cf1da68b02bb7afbfe031f229e45ac84b3f2",
-        "sources": "b2c0d02e0a32c56d359e99634e7d769f9b1a8cd6e25061995abad1c1baf86f56"
+        "jar": "ebc7aec252ed0c7d2d04c039d7f00e69f7b86b1f493c741d67b3ef31b986b054",
+        "sources": "736d7e0e4bd95570ec8856cacffa3c34eb78ad8e45ca78c5df610d7347963b53"
       },
-      "version": "17.0.0"
+      "version": "26.1.0"
     },
     "org.jodd:jodd-util": {
       "shasums": {
@@ -1471,66 +1456,66 @@
     },
     "org.jspecify:jspecify": {
       "shasums": {
-        "jar": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab",
-        "sources": "adf0898191d55937fb3192ba971826f4f294292c4a960740f3c27310e7b70296"
+        "jar": "070d75f261fe4c5b8202508366715f7f2d4660f88c8ef7e6d3575e48c9683b66",
+        "sources": "230c491aac6d2a2b7e66b68d4331b1d2626f1bf3a372c33bbe2b077297e46c45"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     "org.junit.jupiter:junit-jupiter-api": {
       "shasums": {
-        "jar": "d655d7e6f0c7ae07f10a2f3bbaaebb6d30e9b26204a068ad9e9b3950aa28792c",
-        "sources": "8266d8da51d0c7d6a2ed4895a3cb76e0ec22194907f24364f2a4f3efd05f00a5"
+        "jar": "555d6cf20fa1710884dd01b86cc5785397ba73e21ada2d4b784f5f1a14dcafc4",
+        "sources": "ab473ece6cb3a3c6f88a22e3c87a51899118a702a2fcbaf831d63bd2df5d11e0"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.jupiter:junit-jupiter-engine": {
       "shasums": {
-        "jar": "1e2fab61ad27ea08fc7c70dd9677cf8c6d1ae5434d42dcfdd633b12c7e7c04d0",
-        "sources": "35706a9edf1b580bf22d6eca9d6a9165f478f75b0108840ad6f31481cd662d6c"
+        "jar": "414559e78bbfa3bdb2eab009ac3ab1e22369ac31117c270a0bd666da115c5c6c",
+        "sources": "bf8e7330b352f5735cccb958def28077dbc07ad59a4de78e3aba66587b903997"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.jupiter:junit-jupiter-params": {
       "shasums": {
-        "jar": "cf2947e2302b9f8c8a059259a277881c1cadae8fbc2514c16a925cfeb7beb2e5",
-        "sources": "f0dcf217100b06b98cd36c2e74fb919c74e3024faad868bac9eba6ff00c7c263"
+        "jar": "05c51cedba2c06a9770707391e006cee825876937dea580b94a265ce145d4939",
+        "sources": "e390dde576668008ebc75a853020540304303889b922072b5617d6277873320f"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.platform:junit-platform-commons": {
       "shasums": {
-        "jar": "39f262d09c3d52719fe0b77f080e90a3695e285d779a41b232e17963ae5da200",
-        "sources": "06cbe4a4bbd79339c3817983510cf3adc3d6a88a8a556c80c5b84eeb1ebd13dc"
+        "jar": "a4774ae923c109544034aeae7c762cf017fbcdd1342403ba90e0921984b608c3",
+        "sources": "b14f861a3a3056e5c13af5a7c2e6d9c8f7c2ac8a0d16c4ccfbc7afa2d7a97993"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.platform:junit-platform-engine": {
       "shasums": {
-        "jar": "491e9e4f745f161b8a8e4186a1a7c6a450ea12c70930c9aedae427215301d947",
-        "sources": "89a893566a97557dbbcb0706d9b5565c4e7a402050841753dc527f3e9139c9ac"
+        "jar": "21ad7ad3a35beda16387979317be1833a72a71d812f9a66ee4b9a7bafb56334c",
+        "sources": "1e9e7e5a1c23a421b56f21b31ba13aa3e75d39fdecdf5dc8e262cd4324333d0a"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.platform:junit-platform-launcher": {
       "shasums": {
-        "jar": "315608372e4dc44bca0ccb3ae8a07ecc206b3367033fa05748a03ccd563f1301",
-        "sources": "4fcbdb81cc882c0c3e73f742878db5884d3d2f86facc08369ca953e32796d144"
+        "jar": "1dec64b1fc0b7c47a11302aa5b4d37d8160c041b396e27067709ce775601a7b6",
+        "sources": "d30c7f1e7e4c224d5792812956a2bacdf2628c2e77a011f35a46eab3b9c109fa"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.junit.platform:junit-platform-reporting": {
       "shasums": {
-        "jar": "f19c5be871c37ebed493f3152b67a909f89a44dff67c2db8016dfe34167d5730",
-        "sources": "bbdda2b9c002dbd1b05cfec144bab91e8cca46ed8d58525f51b547f3a0a84a7d"
+        "jar": "d584a16cd87da5609af5e35428ed4f40b192681a2487dc59d02ecb62f6c417c2",
+        "sources": "bb35a4ce11ed0bc14e6d24492b87d9c658c9d56baed68394f25acee896c8b10d"
       },
-      "version": "6.0.3"
+      "version": "6.1.3"
     },
     "org.mockito:mockito-core": {
       "shasums": {
-        "jar": "ae295bebd5d11fab97ab297815dc7617188b86003cbce3dfd5c0d5c3a6cc4a0c",
-        "sources": "38f869a12a1168ca8dc2a4acd090d8129a7f81afc8f1fc61582701894755fefd"
+        "jar": "97a1f835ad84075255aa37809e4379eff541273c02c6201cbad49bd5950932cd",
+        "sources": "6941ad79b3a92ba2dbd8a00570b0e2dcaf15529de4452c789454f11660f03bf7"
       },
-      "version": "5.23.0"
+      "version": "5.24.0"
     },
     "org.objenesis:objenesis": {
       "shasums": {
@@ -1541,10 +1526,10 @@
     },
     "org.opentest4j.reporting:open-test-reporting-tooling-spi": {
       "shasums": {
-        "jar": "04ac4ecfcaf60abe0e6d5b18e8306320aec7cd9cbf15e59eeac54fa9faa16902",
-        "sources": "efe9672e74111726c0ff85a2508a0bc78be611a7cbe460560dc7cd429ee0a4ce"
+        "jar": "df237b68847637747f0bfdb88fa9cdd9c72cc85550fad0c41ddb33869a5ca516",
+        "sources": "949585ba9f11e9ffe23dc86d5a5b8fa1bbd7a71d64bd6b6ff98d6a13c859c2ea"
       },
-      "version": "0.2.4"
+      "version": "0.2.5"
     },
     "org.opentest4j:opentest4j": {
       "shasums": {
@@ -1555,38 +1540,38 @@
     },
     "org.ow2.asm:asm": {
       "shasums": {
-        "jar": "03d99a74ad1ee5c71334ef67437f4ef4fe3488caa7c96d8645abc73c8e2017d4",
-        "sources": "e37000a2a0bc9f0bef373714ad7dde4082212351847b74618d483057a4ae186c"
+        "jar": "5fe3b469b8646e5bc53a897840952d63b712d4923d2a7a26aebc585f1fec7676",
+        "sources": "7e8b9bdad4f324cf7d968a06c561a31b7d6499439a4ca7456211824b3c8088af"
       },
-      "version": "9.9"
+      "version": "9.11"
     },
     "org.ow2.asm:asm-analysis": {
       "shasums": {
-        "jar": "6a15d28e8bd29ba4fd5bca4baf9b50e8fba2d7b51fbf78cfa0c875a7214c678b",
-        "sources": "ff731d401ea2407759ea19b4b025800d32495a51a912f2553d987cddda424773"
+        "jar": "a1421c20978ca0a330f241b17923a751a23fb1c9423fda1aba7591bb086b01d8",
+        "sources": "44341d32582772e438aea69c4a5a3b060fda1d5004e93e4f09857bc548ab7c14"
       },
-      "version": "9.9"
+      "version": "9.11"
     },
     "org.ow2.asm:asm-commons": {
       "shasums": {
-        "jar": "db2f6f26150bbe7c126606b4a1151836bcc22a1e05a423b3585698bece995ff8",
-        "sources": "218bbb648e24578a385cb6b6a21ceff222a2a8f8b2d5f6a256a8099dd336dc76"
+        "jar": "fcff37e6a0227a9f5ee81a7c07f51249307fa15889b56a359ae6f773c164c22b",
+        "sources": "3a432534d33bed91412c6dcf8b75805e21c5a360844c01f48dab9bb68aedb314"
       },
-      "version": "9.9"
+      "version": "9.11"
     },
     "org.ow2.asm:asm-tree": {
       "shasums": {
-        "jar": "42178f3775c9c63f9e5e1446747d29b4eca4d91bd6e75e5c43cfa372a47d38c6",
-        "sources": "9d1fe261fa1d29904ca9dbc76878396e76bc225191676a8c16ad2669a205321a"
+        "jar": "da8ad24d0bf7efb0674a906f59a7d441692b641718371f3bce6762b191a169fd",
+        "sources": "203604136ea5f116a261aa10a415d25a8e74897749c128e532853ec4a748c572"
       },
-      "version": "9.9"
+      "version": "9.11"
     },
     "org.ow2.asm:asm-util": {
       "shasums": {
-        "jar": "3842e13cfe324ee9ab7cdc4914be9943541ead397c17e26daf0b8a755bede717",
-        "sources": "e518a00b1d004832e72c6448351c4865971ac95a7cfe78fb0315d76acb393a46"
+        "jar": "d5a23a677f31b8a7d2419895906e1fcbd9ac995beffb20944c8610c1bc377609",
+        "sources": "cf9be492118a6c8e2ebf8ec7f2389eb904b21eef0d8419897c7e7ed93aafc244"
       },
-      "version": "9.9"
+      "version": "9.11"
     },
     "org.reactivestreams:reactive-streams": {
       "shasums": {
@@ -1597,10 +1582,10 @@
     },
     "org.redisson:redisson": {
       "shasums": {
-        "jar": "42722b4a81fd2bdfa8177b496bfe9ecfe8bf6b3d1466bd5da35e57a1b10ec1f0",
-        "sources": "1b346b904971e530036e21d373820bcdb3784ef04b9bb4fa6b0715d97937da2d"
+        "jar": "cbaf6850dfd49f245c4d7232d0cf8acb5057e9a465251b5f1c0890096284d3b0",
+        "sources": "dafb57dfa0f684a89d6a7f6f5ea2a1d897f0b641d1e0b415a0ea210fd50692e1"
       },
-      "version": "4.3.1"
+      "version": "4.8.0"
     },
     "org.rnorth.duct-tape:duct-tape": {
       "shasums": {
@@ -1660,17 +1645,17 @@
     },
     "org.slf4j:slf4j-api": {
       "shasums": {
-        "jar": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832",
-        "sources": "db0d08d8efa05ad19d174d747bd9d8e68dbb02b596812fe7b3a681656e346694"
+        "jar": "7e1446499b359675d8aabe6af2de86b85e72ae8a2a932c0b40d0e5ba57097439",
+        "sources": "565e509928d095e20c5d93ca5e3a528e98fc7410c3ca4e84b05ccfadf21b40ba"
       },
-      "version": "2.0.17"
+      "version": "2.0.20"
     },
     "org.slf4j:slf4j-jdk14": {
       "shasums": {
-        "jar": "ead25c1b15f59db1fb5552b76fe63de4164f0df40024d19287b75dece47ad3be",
-        "sources": "6d2fc49bf67e5f52ba91e69b78acdb35144cfd3d22d027e1f246da70c613e444"
+        "jar": "f02f2e6015daea6bac93ab68dfa1af0c6601b33f5a2bd934275626c55a0332c7",
+        "sources": "42012e594c9224cea93d91fa53dff43381ffb1cc256bf89e98f421f628590a3f"
       },
-      "version": "2.0.17"
+      "version": "2.0.20"
     },
     "org.snakeyaml:snakeyaml-engine": {
       "shasums": {
@@ -1688,10 +1673,10 @@
     },
     "org.tomlj:tomlj": {
       "shasums": {
-        "jar": "383b7c66966c42ee4913ec977a7b6573631866bddc5318ec4a6215b688dd0d6c",
-        "sources": "533276104d58ebc92ce049c59a129717ce7daf0e9340969256fdb61f4f06f717"
+        "jar": "e1fc98734f3b4285b4f87d1f1f473300c83791f2fb406feb86bca67e371896e7",
+        "sources": "17836075d456c38cc8a5ec8c1ddb2f90e2dbcd9814bdaa82cd987a64284e3150"
       },
-      "version": "1.1.1"
+      "version": "2.2.0"
     },
     "org.xmlresolver:xmlresolver": {
       "shasums": {
@@ -1703,10 +1688,10 @@
     },
     "org.yaml:snakeyaml": {
       "shasums": {
-        "jar": "e6682acf1ace77508ef13649cbf4f8d09d2cf5457bdb61d25ffb6ac0233d78dd",
-        "sources": "7a7d307ca9fe1663219a60045a8e5a113a69331566f9ebbe1d3b12c6781909ac"
+        "jar": "c8f7a98e7394adda02f6317249710e4d1b4c7a25aa8c7eace0c2eea52eb8bf85",
+        "sources": "cd719ff3e52eec48ef7c541ba4f178c2eff0f6719fd0abe4f4e44bde41138ca2"
       },
-      "version": "2.5"
+      "version": "2.6"
     },
     "org.zeromq:jeromq": {
       "shasums": {
@@ -1717,10 +1702,10 @@
     },
     "redis.clients.authentication:redis-authx-core": {
       "shasums": {
-        "jar": "cc56edb08b3df8562cddac108dca61907d21cc4ad04de05e9f5d1b01058390af",
-        "sources": "f04df788868c471833d4aff0c9fdced4042069efe392c768f4373c04b559f5e3"
+        "jar": "67875cfeb9ff9e8325045b9ac81d709eb6267b475cb8273fdb9139563458056d",
+        "sources": "81fdedb8ce6cd898958a0d25bcc75b0e22f80a88deae7fe2a16708bcbca24057"
       },
-      "version": "0.1.1-beta2"
+      "version": "0.2.0"
     },
     "uk.org.webcompere:system-stubs-core": {
       "shasums": {
@@ -1738,15 +1723,16 @@
     }
   },
   "conflict_resolution": {
-    "com.fasterxml.jackson.core:jackson-core:2.16.1": "com.fasterxml.jackson.core:jackson-core:2.20.0",
     "com.google.guava:failureaccess:1.0.1": "com.google.guava:failureaccess:1.0.3",
-    "io.projectreactor:reactor-core:3.6.2": "io.projectreactor:reactor-core:3.6.6",
+    "commons-io:commons-io:2.20.0": "commons-io:commons-io:2.22.0",
+    "io.projectreactor:reactor-core:3.8.5": "io.projectreactor:reactor-core:3.8.7",
     "net.bytebuddy:byte-buddy-agent:1.17.4": "net.bytebuddy:byte-buddy-agent:1.17.7",
-    "org.apache.commons:commons-lang3:3.18.0": "org.apache.commons:commons-lang3:3.19.0",
+    "org.apache.commons:commons-lang3:3.18.0": "org.apache.commons:commons-lang3:3.21.0",
+    "org.apache.commons:commons-lang3:3.20.0": "org.apache.commons:commons-lang3:3.21.0",
     "org.objenesis:objenesis:1.2": "org.objenesis:objenesis:3.3",
-    "org.objenesis:objenesis:3.4": "org.objenesis:objenesis:3.3",
+    "org.objenesis:objenesis:3.6": "org.objenesis:objenesis:3.3",
     "org.reactivestreams:reactive-streams:1.0.4": "org.reactivestreams:reactive-streams:1.0.3",
-    "org.yaml:snakeyaml:2.4": "org.yaml:snakeyaml:2.5"
+    "org.yaml:snakeyaml:2.5": "org.yaml:snakeyaml:2.6"
   },
   "dependencies": {
     "com.esotericsoftware:kryo": [
@@ -1792,6 +1778,7 @@
       "org.apache.commons:commons-text",
       "org.apache.logging.log4j:log4j-core",
       "org.dom4j:dom4j",
+      "org.jspecify:jspecify",
       "org.ow2.asm:asm",
       "org.ow2.asm:asm-analysis",
       "org.ow2.asm:asm-commons",
@@ -1834,7 +1821,9 @@
       "org.checkerframework:checker-compat-qual"
     ],
     "com.google.googlejavaformat:google-java-format": [
-      "com.google.guava:guava"
+      "com.google.guava:guava",
+      "org.commonmark:commonmark",
+      "org.commonmark:commonmark-ext-gfm-tables"
     ],
     "com.google.guava:guava": [
       "com.google.errorprone:error_prone_annotations",
@@ -1925,7 +1914,8 @@
     ],
     "io.fabric8:kubernetes-model-batch": [
       "com.fasterxml.jackson.core:jackson-annotations",
-      "io.fabric8:kubernetes-model-core"
+      "io.fabric8:kubernetes-model-core",
+      "io.fabric8:kubernetes-model-scheduling"
     ],
     "io.fabric8:kubernetes-model-certificates": [
       "com.fasterxml.jackson.core:jackson-annotations",
@@ -1998,9 +1988,6 @@
     ],
     "io.fabric8:zjsonpatch": [
       "com.fasterxml.jackson.core:jackson-databind"
-    ],
-    "io.grpc:grpc-context": [
-      "io.grpc:grpc-api"
     ],
     "io.lettuce:lettuce-core": [
       "io.netty:netty-common",
@@ -2119,8 +2106,7 @@
       "io.opentelemetry:opentelemetry-common"
     ],
     "io.opentelemetry:opentelemetry-exporter-logging": [
-      "io.opentelemetry:opentelemetry-sdk",
-      "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi"
+      "io.opentelemetry:opentelemetry-sdk"
     ],
     "io.opentelemetry:opentelemetry-sdk": [
       "io.opentelemetry:opentelemetry-api",
@@ -2147,15 +2133,12 @@
       "io.opentelemetry:opentelemetry-api",
       "io.opentelemetry:opentelemetry-sdk-common"
     ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry:opentelemetry-api",
-      "io.opentelemetry:opentelemetry-sdk"
-    ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
       "io.opentelemetry:opentelemetry-api",
       "io.opentelemetry:opentelemetry-sdk-common"
     ],
     "io.projectreactor:reactor-core": [
+      "org.jspecify:jspecify",
       "org.reactivestreams:reactive-streams"
     ],
     "io.reactivex.rxjava3:rxjava": [
@@ -2174,6 +2157,7 @@
       "io.netty:netty-handler-proxy",
       "io.netty:netty-resolver",
       "io.netty:netty-resolver-dns",
+      "io.netty:netty-tcnative-classes",
       "io.netty:netty-transport"
     ],
     "io.vertx:vertx-web-client": [
@@ -2217,6 +2201,9 @@
     ],
     "org.checkerframework:dataflow-nullaway": [
       "org.checkerframework:checker-qual"
+    ],
+    "org.commonmark:commonmark-ext-gfm-tables": [
+      "org.commonmark:commonmark"
     ],
     "org.easymock:easymock": [
       "cglib:cglib-nodep",
@@ -2365,10 +2352,6 @@
       "org.rnorth.duct-tape:duct-tape",
       "org.slf4j:slf4j-api"
     ],
-    "org.tomlj:tomlj": [
-      "org.antlr:antlr4-runtime",
-      "org.checkerframework:checker-qual"
-    ],
     "org.zeromq:jeromq": [
       "eu.neilalexander:jnacl"
     ],
@@ -2432,9 +2415,7 @@
       "com.fasterxml.jackson.core.exc",
       "com.fasterxml.jackson.core.filter",
       "com.fasterxml.jackson.core.format",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.bte",
-      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.chr",
+      "com.fasterxml.jackson.core.internal.shaded.fdp.v2_23_0",
       "com.fasterxml.jackson.core.io",
       "com.fasterxml.jackson.core.io.schubfach",
       "com.fasterxml.jackson.core.json",
@@ -2718,7 +2699,8 @@
       "com.google.googlejavaformat",
       "com.google.googlejavaformat.java",
       "com.google.googlejavaformat.java.filer",
-      "com.google.googlejavaformat.java.javadoc"
+      "com.google.googlejavaformat.java.javadoc",
+      "com.google.googlejavaformat.layout"
     ],
     "com.google.guava:failureaccess": [
       "com.google.common.util.concurrent.internal"
@@ -2869,6 +2851,7 @@
       "com.google.javascript.jscomp.jarjar.org.apache.tools.zip",
       "com.google.javascript.jscomp.jarjar.org.kohsuke.args4j",
       "com.google.javascript.jscomp.jarjar.org.kohsuke.args4j.spi",
+      "com.google.javascript.jscomp.js",
       "com.google.javascript.jscomp.lint",
       "com.google.javascript.jscomp.modules",
       "com.google.javascript.jscomp.parsing",
@@ -2920,7 +2903,6 @@
     ],
     "com.graphql-java:graphql-java": [
       "graphql",
-      "graphql.agent.result",
       "graphql.analysis",
       "graphql.analysis.values",
       "graphql.collect",
@@ -2977,8 +2959,8 @@
       "graphql.schema.visibility",
       "graphql.schema.visitor",
       "graphql.util",
-      "graphql.validation",
-      "graphql.validation.rules"
+      "graphql.util.querygenerator",
+      "graphql.validation"
     ],
     "com.graphql-java:java-dataloader": [
       "org.dataloader",
@@ -3000,6 +2982,7 @@
       "com.uber.nullaway.fixserialization.adapters",
       "com.uber.nullaway.fixserialization.location",
       "com.uber.nullaway.fixserialization.out",
+      "com.uber.nullaway.fixserialization.scanners",
       "com.uber.nullaway.generics",
       "com.uber.nullaway.handlers",
       "com.uber.nullaway.handlers.contract",
@@ -3007,6 +2990,7 @@
       "com.uber.nullaway.handlers.stream",
       "com.uber.nullaway.handlers.temporary",
       "com.uber.nullaway.jarinfer",
+      "com.uber.nullaway.libmodel",
       "com.uber.nullaway.librarymodel"
     ],
     "commons-codec:commons-codec": [
@@ -3111,7 +3095,6 @@
     ],
     "io.fabric8:kubernetes-model-certificates": [
       "io.fabric8.kubernetes.api.model.certificates.v1",
-      "io.fabric8.kubernetes.api.model.certificates.v1alpha1",
       "io.fabric8.kubernetes.api.model.certificates.v1beta1"
     ],
     "io.fabric8:kubernetes-model-common": [
@@ -3129,7 +3112,7 @@
     "io.fabric8:kubernetes-model-core": [
       "io.fabric8.kubernetes.api",
       "io.fabric8.kubernetes.api.model",
-      "io.fabric8.kubernetes.api.model.clusterapi.v1beta1",
+      "io.fabric8.kubernetes.api.model.clusterapi.core.v1beta1",
       "io.fabric8.kubernetes.api.model.runtime",
       "io.fabric8.kubernetes.api.model.version",
       "io.fabric8.kubernetes.internal"
@@ -3186,20 +3169,19 @@
     "io.fabric8:kubernetes-model-scheduling": [
       "io.fabric8.kubernetes.api.model.scheduling.v1",
       "io.fabric8.kubernetes.api.model.scheduling.v1alpha1",
+      "io.fabric8.kubernetes.api.model.scheduling.v1alpha3",
       "io.fabric8.kubernetes.api.model.scheduling.v1beta1"
     ],
     "io.fabric8:kubernetes-model-storageclass": [
       "io.fabric8.kubernetes.api.model.storage",
       "io.fabric8.kubernetes.api.model.storage.v1alpha1",
       "io.fabric8.kubernetes.api.model.storage.v1beta1",
+      "io.fabric8.kubernetes.api.model.storagemigration.v1",
       "io.fabric8.kubernetes.api.model.storagemigration.v1beta1"
     ],
     "io.fabric8:zjsonpatch": [
       "io.fabric8.zjsonpatch",
       "io.fabric8.zjsonpatch.internal.collections4"
-    ],
-    "io.grpc:grpc-api": [
-      "io.grpc"
     ],
     "io.lettuce:lettuce-core": [
       "io.lettuce.authx",
@@ -3211,6 +3193,7 @@
       "io.lettuce.core.api.push",
       "io.lettuce.core.api.reactive",
       "io.lettuce.core.api.sync",
+      "io.lettuce.core.array",
       "io.lettuce.core.cluster",
       "io.lettuce.core.cluster.api",
       "io.lettuce.core.cluster.api.async",
@@ -3259,6 +3242,8 @@
       "io.lettuce.core.models.role",
       "io.lettuce.core.models.stream",
       "io.lettuce.core.output",
+      "io.lettuce.core.probabilistic",
+      "io.lettuce.core.probabilistic.arguments",
       "io.lettuce.core.protocol",
       "io.lettuce.core.pubsub",
       "io.lettuce.core.pubsub.api.async",
@@ -3337,6 +3322,8 @@
       "io.netty.util.internal.shaded.org.jctools.queues.atomic",
       "io.netty.util.internal.shaded.org.jctools.queues.atomic.unpadded",
       "io.netty.util.internal.shaded.org.jctools.queues.unpadded",
+      "io.netty.util.internal.shaded.org.jctools.queues.varhandle",
+      "io.netty.util.internal.shaded.org.jctools.queues.varhandle.unpadded",
       "io.netty.util.internal.shaded.org.jctools.util",
       "io.netty.util.internal.svm"
     ],
@@ -3361,6 +3348,9 @@
     ],
     "io.netty:netty-resolver-dns": [
       "io.netty.resolver.dns"
+    ],
+    "io.netty:netty-tcnative-classes": [
+      "io.netty.internal.tcnative"
     ],
     "io.netty:netty-transport": [
       "io.netty.bootstrap",
@@ -3387,6 +3377,7 @@
       "io.opentelemetry.api.baggage",
       "io.opentelemetry.api.baggage.propagation",
       "io.opentelemetry.api.common",
+      "io.opentelemetry.api.impl",
       "io.opentelemetry.api.internal",
       "io.opentelemetry.api.logs",
       "io.opentelemetry.api.metrics",
@@ -3395,7 +3386,8 @@
       "io.opentelemetry.api.trace.propagation.internal"
     ],
     "io.opentelemetry:opentelemetry-common": [
-      "io.opentelemetry.common"
+      "io.opentelemetry.common",
+      "io.opentelemetry.common.impl"
     ],
     "io.opentelemetry:opentelemetry-context": [
       "io.opentelemetry.context",
@@ -3415,7 +3407,8 @@
       "io.opentelemetry.sdk.common",
       "io.opentelemetry.sdk.common.export",
       "io.opentelemetry.sdk.common.internal",
-      "io.opentelemetry.sdk.resources"
+      "io.opentelemetry.sdk.resources",
+      "io.opentelemetry.sdk.resources.internal"
     ],
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": [
       "io.opentelemetry.sdk.autoconfigure",
@@ -3431,7 +3424,6 @@
     "io.opentelemetry:opentelemetry-sdk-logs": [
       "io.opentelemetry.sdk.logs",
       "io.opentelemetry.sdk.logs.data",
-      "io.opentelemetry.sdk.logs.data.internal",
       "io.opentelemetry.sdk.logs.export",
       "io.opentelemetry.sdk.logs.internal"
     ],
@@ -3450,30 +3442,14 @@
       "io.opentelemetry.sdk.metrics.internal.state",
       "io.opentelemetry.sdk.metrics.internal.view"
     ],
-    "io.opentelemetry:opentelemetry-sdk-testing": [
-      "io.opentelemetry.sdk.testing.assertj",
-      "io.opentelemetry.sdk.testing.context",
-      "io.opentelemetry.sdk.testing.exporter",
-      "io.opentelemetry.sdk.testing.junit4",
-      "io.opentelemetry.sdk.testing.junit5",
-      "io.opentelemetry.sdk.testing.logs",
-      "io.opentelemetry.sdk.testing.logs.internal",
-      "io.opentelemetry.sdk.testing.metrics",
-      "io.opentelemetry.sdk.testing.time",
-      "io.opentelemetry.sdk.testing.trace"
-    ],
     "io.opentelemetry:opentelemetry-sdk-trace": [
-      "io.opentelemetry.internal.shaded.jctools.counters",
-      "io.opentelemetry.internal.shaded.jctools.maps",
-      "io.opentelemetry.internal.shaded.jctools.queues",
-      "io.opentelemetry.internal.shaded.jctools.queues.atomic",
-      "io.opentelemetry.internal.shaded.jctools.queues.atomic.unpadded",
-      "io.opentelemetry.internal.shaded.jctools.queues.unpadded",
-      "io.opentelemetry.internal.shaded.jctools.util",
       "io.opentelemetry.sdk.trace",
       "io.opentelemetry.sdk.trace.data",
       "io.opentelemetry.sdk.trace.export",
       "io.opentelemetry.sdk.trace.internal",
+      "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues",
+      "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic",
+      "io.opentelemetry.sdk.trace.internal.shaded.jctools.util",
       "io.opentelemetry.sdk.trace.samplers"
     ],
     "io.projectreactor:reactor-core": [
@@ -3487,6 +3463,7 @@
       "reactor.util.concurrent",
       "reactor.util.context",
       "reactor.util.function",
+      "reactor.util.repeat",
       "reactor.util.retry"
     ],
     "io.reactivex.rxjava3:rxjava": [
@@ -3811,15 +3788,6 @@
       "net.sf.saxon.xpath",
       "net.sf.saxon.z"
     ],
-    "org.antlr:antlr4-runtime": [
-      "org.antlr.v4.runtime",
-      "org.antlr.v4.runtime.atn",
-      "org.antlr.v4.runtime.dfa",
-      "org.antlr.v4.runtime.misc",
-      "org.antlr.v4.runtime.tree",
-      "org.antlr.v4.runtime.tree.pattern",
-      "org.antlr.v4.runtime.tree.xpath"
-    ],
     "org.apache.bcel:bcel": [
       "org.apache.bcel",
       "org.apache.bcel.classfile",
@@ -3858,7 +3826,6 @@
       "org.apache.commons.compress.compressors.xz",
       "org.apache.commons.compress.compressors.z",
       "org.apache.commons.compress.compressors.zstandard",
-      "org.apache.commons.compress.harmony",
       "org.apache.commons.compress.harmony.archive.internal.nls",
       "org.apache.commons.compress.harmony.pack200",
       "org.apache.commons.compress.harmony.unpack200",
@@ -4013,12 +3980,17 @@
       "org.assertj.core.util.xml"
     ],
     "org.bouncycastle:bcpkix-jdk18on": [
+      "org.bouncycastle.cades",
       "org.bouncycastle.cert",
       "org.bouncycastle.cert.bc",
+      "org.bouncycastle.cert.c509",
+      "org.bouncycastle.cert.c509.bc",
+      "org.bouncycastle.cert.c509.jcajce",
       "org.bouncycastle.cert.cmp",
       "org.bouncycastle.cert.crmf",
       "org.bouncycastle.cert.crmf.bc",
       "org.bouncycastle.cert.crmf.jcajce",
+      "org.bouncycastle.cert.ct",
       "org.bouncycastle.cert.dane",
       "org.bouncycastle.cert.dane.fetcher",
       "org.bouncycastle.cert.jcajce",
@@ -4026,6 +3998,9 @@
       "org.bouncycastle.cert.ocsp.jcajce",
       "org.bouncycastle.cert.path",
       "org.bouncycastle.cert.path.validations",
+      "org.bouncycastle.cert.plants",
+      "org.bouncycastle.cert.plants.bc",
+      "org.bouncycastle.cert.plants.jcajce",
       "org.bouncycastle.cert.selector",
       "org.bouncycastle.cert.selector.jcajce",
       "org.bouncycastle.cmc",
@@ -4057,6 +4032,7 @@
       "org.bouncycastle.pkcs",
       "org.bouncycastle.pkcs.bc",
       "org.bouncycastle.pkcs.jcajce",
+      "org.bouncycastle.pkcs.util",
       "org.bouncycastle.pkix",
       "org.bouncycastle.pkix.jcajce",
       "org.bouncycastle.pkix.util",
@@ -4073,9 +4049,11 @@
       "org.bouncycastle.asn1.bc",
       "org.bouncycastle.asn1.cryptopro",
       "org.bouncycastle.asn1.gm",
+      "org.bouncycastle.asn1.iana",
       "org.bouncycastle.asn1.nist",
       "org.bouncycastle.asn1.ocsp",
       "org.bouncycastle.asn1.pkcs",
+      "org.bouncycastle.asn1.plants",
       "org.bouncycastle.asn1.sec",
       "org.bouncycastle.asn1.teletrust",
       "org.bouncycastle.asn1.ua",
@@ -4091,19 +4069,26 @@
       "org.bouncycastle.crypto.agreement.ecjpake",
       "org.bouncycastle.crypto.agreement.jpake",
       "org.bouncycastle.crypto.agreement.kdf",
+      "org.bouncycastle.crypto.agreement.owl",
       "org.bouncycastle.crypto.agreement.srp",
+      "org.bouncycastle.crypto.bls",
       "org.bouncycastle.crypto.commitments",
       "org.bouncycastle.crypto.constraints",
       "org.bouncycastle.crypto.digests",
       "org.bouncycastle.crypto.ec",
       "org.bouncycastle.crypto.encodings",
       "org.bouncycastle.crypto.engines",
-      "org.bouncycastle.crypto.examples",
       "org.bouncycastle.crypto.fpe",
       "org.bouncycastle.crypto.generators",
+      "org.bouncycastle.crypto.hash2curve",
+      "org.bouncycastle.crypto.hash2curve.data",
+      "org.bouncycastle.crypto.hash2curve.impl",
       "org.bouncycastle.crypto.hpke",
       "org.bouncycastle.crypto.io",
       "org.bouncycastle.crypto.kems",
+      "org.bouncycastle.crypto.kems.cmce",
+      "org.bouncycastle.crypto.kems.frodo",
+      "org.bouncycastle.crypto.kems.mlkem",
       "org.bouncycastle.crypto.macs",
       "org.bouncycastle.crypto.modes",
       "org.bouncycastle.crypto.modes.gcm",
@@ -4114,19 +4099,21 @@
       "org.bouncycastle.crypto.prng",
       "org.bouncycastle.crypto.prng.drbg",
       "org.bouncycastle.crypto.signers",
+      "org.bouncycastle.crypto.signers.lms",
+      "org.bouncycastle.crypto.signers.mldsa",
+      "org.bouncycastle.crypto.signers.slhdsa",
+      "org.bouncycastle.crypto.signers.xmss",
       "org.bouncycastle.crypto.threshold",
       "org.bouncycastle.crypto.tls",
       "org.bouncycastle.crypto.util",
       "org.bouncycastle.i18n",
       "org.bouncycastle.i18n.filter",
-      "org.bouncycastle.iana",
       "org.bouncycastle.internal.asn1.bsi",
       "org.bouncycastle.internal.asn1.cms",
       "org.bouncycastle.internal.asn1.cryptlib",
       "org.bouncycastle.internal.asn1.eac",
       "org.bouncycastle.internal.asn1.edec",
       "org.bouncycastle.internal.asn1.gnu",
-      "org.bouncycastle.internal.asn1.iana",
       "org.bouncycastle.internal.asn1.isara",
       "org.bouncycastle.internal.asn1.isismtt",
       "org.bouncycastle.internal.asn1.iso",
@@ -4141,6 +4128,8 @@
       "org.bouncycastle.jcajce.interfaces",
       "org.bouncycastle.jcajce.io",
       "org.bouncycastle.jcajce.provider.asymmetric",
+      "org.bouncycastle.jcajce.provider.asymmetric.cmce",
+      "org.bouncycastle.jcajce.provider.asymmetric.compositekem",
       "org.bouncycastle.jcajce.provider.asymmetric.compositesignatures",
       "org.bouncycastle.jcajce.provider.asymmetric.dh",
       "org.bouncycastle.jcajce.provider.asymmetric.dsa",
@@ -4150,12 +4139,14 @@
       "org.bouncycastle.jcajce.provider.asymmetric.ecgost12",
       "org.bouncycastle.jcajce.provider.asymmetric.edec",
       "org.bouncycastle.jcajce.provider.asymmetric.elgamal",
+      "org.bouncycastle.jcajce.provider.asymmetric.frodokem",
       "org.bouncycastle.jcajce.provider.asymmetric.gost",
       "org.bouncycastle.jcajce.provider.asymmetric.ies",
       "org.bouncycastle.jcajce.provider.asymmetric.mldsa",
       "org.bouncycastle.jcajce.provider.asymmetric.mlkem",
       "org.bouncycastle.jcajce.provider.asymmetric.rsa",
       "org.bouncycastle.jcajce.provider.asymmetric.slhdsa",
+      "org.bouncycastle.jcajce.provider.asymmetric.sm9",
       "org.bouncycastle.jcajce.provider.asymmetric.util",
       "org.bouncycastle.jcajce.provider.asymmetric.x509",
       "org.bouncycastle.jcajce.provider.config",
@@ -4163,7 +4154,7 @@
       "org.bouncycastle.jcajce.provider.drbg",
       "org.bouncycastle.jcajce.provider.kdf",
       "org.bouncycastle.jcajce.provider.kdf.hkdf",
-      "org.bouncycastle.jcajce.provider.kdf.pbepbkdf2",
+      "org.bouncycastle.jcajce.provider.kdf.pbkdf2",
       "org.bouncycastle.jcajce.provider.kdf.scrypt",
       "org.bouncycastle.jcajce.provider.keystore",
       "org.bouncycastle.jcajce.provider.keystore.bc",
@@ -4181,6 +4172,7 @@
       "org.bouncycastle.jce.netscape",
       "org.bouncycastle.jce.provider",
       "org.bouncycastle.jce.spec",
+      "org.bouncycastle.ldap",
       "org.bouncycastle.math",
       "org.bouncycastle.math.ec",
       "org.bouncycastle.math.ec.custom.djb",
@@ -4189,56 +4181,65 @@
       "org.bouncycastle.math.ec.endo",
       "org.bouncycastle.math.ec.rfc7748",
       "org.bouncycastle.math.ec.rfc8032",
+      "org.bouncycastle.math.ec.sm9",
       "org.bouncycastle.math.ec.tools",
       "org.bouncycastle.math.field",
       "org.bouncycastle.math.raw",
       "org.bouncycastle.pqc.asn1",
       "org.bouncycastle.pqc.crypto",
-      "org.bouncycastle.pqc.crypto.bike",
-      "org.bouncycastle.pqc.crypto.cmce",
-      "org.bouncycastle.pqc.crypto.crystals.dilithium",
+      "org.bouncycastle.pqc.crypto.aimer",
+      "org.bouncycastle.pqc.crypto.faest",
       "org.bouncycastle.pqc.crypto.falcon",
-      "org.bouncycastle.pqc.crypto.frodo",
+      "org.bouncycastle.pqc.crypto.haetae",
       "org.bouncycastle.pqc.crypto.hqc",
       "org.bouncycastle.pqc.crypto.lms",
       "org.bouncycastle.pqc.crypto.mayo",
-      "org.bouncycastle.pqc.crypto.mldsa",
-      "org.bouncycastle.pqc.crypto.mlkem",
+      "org.bouncycastle.pqc.crypto.mqom",
       "org.bouncycastle.pqc.crypto.newhope",
       "org.bouncycastle.pqc.crypto.ntru",
+      "org.bouncycastle.pqc.crypto.ntruplus",
       "org.bouncycastle.pqc.crypto.ntruprime",
-      "org.bouncycastle.pqc.crypto.picnic",
-      "org.bouncycastle.pqc.crypto.rainbow",
+      "org.bouncycastle.pqc.crypto.qruov",
       "org.bouncycastle.pqc.crypto.saber",
-      "org.bouncycastle.pqc.crypto.slhdsa",
+      "org.bouncycastle.pqc.crypto.sdith",
+      "org.bouncycastle.pqc.crypto.smaugt",
       "org.bouncycastle.pqc.crypto.snova",
       "org.bouncycastle.pqc.crypto.sphincs",
-      "org.bouncycastle.pqc.crypto.sphincsplus",
+      "org.bouncycastle.pqc.crypto.sqisign",
+      "org.bouncycastle.pqc.crypto.uov",
       "org.bouncycastle.pqc.crypto.util",
       "org.bouncycastle.pqc.crypto.xmss",
       "org.bouncycastle.pqc.crypto.xwing",
       "org.bouncycastle.pqc.jcajce.interfaces",
       "org.bouncycastle.pqc.jcajce.provider",
+      "org.bouncycastle.pqc.jcajce.provider.aimer",
       "org.bouncycastle.pqc.jcajce.provider.bike",
-      "org.bouncycastle.pqc.jcajce.provider.cmce",
-      "org.bouncycastle.pqc.jcajce.provider.dilithium",
+      "org.bouncycastle.pqc.jcajce.provider.faest",
       "org.bouncycastle.pqc.jcajce.provider.falcon",
-      "org.bouncycastle.pqc.jcajce.provider.frodo",
+      "org.bouncycastle.pqc.jcajce.provider.haetae",
       "org.bouncycastle.pqc.jcajce.provider.hqc",
-      "org.bouncycastle.pqc.jcajce.provider.kyber",
       "org.bouncycastle.pqc.jcajce.provider.lms",
       "org.bouncycastle.pqc.jcajce.provider.mayo",
+      "org.bouncycastle.pqc.jcajce.provider.mqom",
       "org.bouncycastle.pqc.jcajce.provider.newhope",
       "org.bouncycastle.pqc.jcajce.provider.ntru",
+      "org.bouncycastle.pqc.jcajce.provider.ntruplus",
       "org.bouncycastle.pqc.jcajce.provider.ntruprime",
-      "org.bouncycastle.pqc.jcajce.provider.picnic",
+      "org.bouncycastle.pqc.jcajce.provider.qruov",
       "org.bouncycastle.pqc.jcajce.provider.saber",
+      "org.bouncycastle.pqc.jcajce.provider.sdith",
+      "org.bouncycastle.pqc.jcajce.provider.smaugt",
       "org.bouncycastle.pqc.jcajce.provider.snova",
       "org.bouncycastle.pqc.jcajce.provider.sphincs",
-      "org.bouncycastle.pqc.jcajce.provider.sphincsplus",
+      "org.bouncycastle.pqc.jcajce.provider.sqisign",
+      "org.bouncycastle.pqc.jcajce.provider.uov",
       "org.bouncycastle.pqc.jcajce.provider.util",
       "org.bouncycastle.pqc.jcajce.provider.xmss",
       "org.bouncycastle.pqc.jcajce.spec",
+      "org.bouncycastle.pqc.legacy.bike",
+      "org.bouncycastle.pqc.legacy.crystals.dilithium",
+      "org.bouncycastle.pqc.legacy.hawk",
+      "org.bouncycastle.pqc.legacy.sphincsplus",
       "org.bouncycastle.pqc.math.ntru",
       "org.bouncycastle.pqc.math.ntru.parameters",
       "org.bouncycastle.util",
@@ -4265,7 +4266,6 @@
       "org.bouncycastle.asn1.ess",
       "org.bouncycastle.asn1.est",
       "org.bouncycastle.asn1.gnu",
-      "org.bouncycastle.asn1.iana",
       "org.bouncycastle.asn1.icao",
       "org.bouncycastle.asn1.isara",
       "org.bouncycastle.asn1.isismtt",
@@ -4283,6 +4283,8 @@
       "org.bouncycastle.asn1.rosstandart",
       "org.bouncycastle.asn1.smime",
       "org.bouncycastle.asn1.tsp",
+      "org.bouncycastle.cbor",
+      "org.bouncycastle.cbor.c509",
       "org.bouncycastle.oer",
       "org.bouncycastle.oer.its",
       "org.bouncycastle.oer.its.etsi102941",
@@ -4316,6 +4318,7 @@
       "org.checkerframework.checker.initialization.qual",
       "org.checkerframework.checker.interning.qual",
       "org.checkerframework.checker.lock.qual",
+      "org.checkerframework.checker.modifiability.qual",
       "org.checkerframework.checker.mustcall.qual",
       "org.checkerframework.checker.nonempty.qual",
       "org.checkerframework.checker.nullness.qual",
@@ -4377,10 +4380,31 @@
       "org.checkerframework.nullaway.dataflow.reachingdef",
       "org.checkerframework.nullaway.dataflow.util",
       "org.checkerframework.nullaway.javacutil",
-      "org.checkerframework.nullaway.javacutil.javacparse",
       "org.checkerframework.nullaway.javacutil.trees",
+      "org.checkerframework.nullaway.org.plumelib.javacparse",
       "org.checkerframework.nullaway.org.plumelib.reflection",
       "org.checkerframework.nullaway.org.plumelib.util"
+    ],
+    "org.commonmark:commonmark": [
+      "org.commonmark",
+      "org.commonmark.internal",
+      "org.commonmark.internal.inline",
+      "org.commonmark.internal.renderer",
+      "org.commonmark.internal.util",
+      "org.commonmark.node",
+      "org.commonmark.parser",
+      "org.commonmark.parser.beta",
+      "org.commonmark.parser.block",
+      "org.commonmark.parser.delimiter",
+      "org.commonmark.renderer",
+      "org.commonmark.renderer.html",
+      "org.commonmark.renderer.markdown",
+      "org.commonmark.renderer.text",
+      "org.commonmark.text"
+    ],
+    "org.commonmark:commonmark-ext-gfm-tables": [
+      "org.commonmark.ext.gfm.tables",
+      "org.commonmark.ext.gfm.tables.internal"
     ],
     "org.dom4j:dom4j": [
       "org.dom4j",
@@ -4444,6 +4468,9 @@
       "org.htmlunit.corejs.javascript.config",
       "org.htmlunit.corejs.javascript.debug",
       "org.htmlunit.corejs.javascript.dtoa",
+      "org.htmlunit.corejs.javascript.interpreterv2",
+      "org.htmlunit.corejs.javascript.interpreterv2.instruction",
+      "org.htmlunit.corejs.javascript.interpreterv2.operand",
       "org.htmlunit.corejs.javascript.json",
       "org.htmlunit.corejs.javascript.lc",
       "org.htmlunit.corejs.javascript.lc.member",
@@ -4452,6 +4479,7 @@
       "org.htmlunit.corejs.javascript.lc.type.impl.factory",
       "org.htmlunit.corejs.javascript.regexp",
       "org.htmlunit.corejs.javascript.serialize",
+      "org.htmlunit.corejs.javascript.sourcemap",
       "org.htmlunit.corejs.javascript.tools",
       "org.htmlunit.corejs.javascript.tools.debugger",
       "org.htmlunit.corejs.javascript.tools.debugger.treetable",
@@ -4504,6 +4532,7 @@
       "org.junit.jupiter.api.function",
       "org.junit.jupiter.api.io",
       "org.junit.jupiter.api.parallel",
+      "org.junit.jupiter.api.timeout",
       "org.junit.jupiter.api.util"
     ],
     "org.junit.jupiter:junit-jupiter-engine": [
@@ -4557,7 +4586,6 @@
       "org.junit.platform.launcher.tagexpression"
     ],
     "org.junit.platform:junit-platform-reporting": [
-      "org.junit.platform.reporting",
       "org.junit.platform.reporting.legacy",
       "org.junit.platform.reporting.legacy.xml",
       "org.junit.platform.reporting.open.xml",
@@ -4676,10 +4704,14 @@
       "org.redisson",
       "org.redisson.api",
       "org.redisson.api.annotation",
+      "org.redisson.api.array",
+      "org.redisson.api.atomic",
       "org.redisson.api.bitset",
+      "org.redisson.api.bitvector",
       "org.redisson.api.bloomfilter",
       "org.redisson.api.bucket",
       "org.redisson.api.condition",
+      "org.redisson.api.countmin",
       "org.redisson.api.cuckoofilter",
       "org.redisson.api.executor",
       "org.redisson.api.fanout",
@@ -4694,13 +4726,19 @@
       "org.redisson.api.pubsub.event",
       "org.redisson.api.queue",
       "org.redisson.api.queue.event",
+      "org.redisson.api.ratelimiter",
       "org.redisson.api.redisnode",
       "org.redisson.api.search",
       "org.redisson.api.search.aggregate",
       "org.redisson.api.search.index",
+      "org.redisson.api.search.profile",
       "org.redisson.api.search.query",
       "org.redisson.api.search.query.hybrid",
       "org.redisson.api.stream",
+      "org.redisson.api.tdigest",
+      "org.redisson.api.topk",
+      "org.redisson.api.ts",
+      "org.redisson.api.tsnative",
       "org.redisson.api.vector",
       "org.redisson.cache",
       "org.redisson.client",
@@ -5307,7 +5345,14 @@
     ],
     "org.tomlj:tomlj": [
       "org.tomlj",
-      "org.tomlj.internal"
+      "org.tomlj.internal",
+      "org.tomlj.internal.antlr.v4.runtime",
+      "org.tomlj.internal.antlr.v4.runtime.atn",
+      "org.tomlj.internal.antlr.v4.runtime.dfa",
+      "org.tomlj.internal.antlr.v4.runtime.misc",
+      "org.tomlj.internal.antlr.v4.runtime.tree",
+      "org.tomlj.internal.antlr.v4.runtime.tree.pattern",
+      "org.tomlj.internal.antlr.v4.runtime.tree.xpath"
     ],
     "org.xmlresolver:xmlresolver": [
       "org.xmlresolver",
@@ -5541,10 +5586,6 @@
       "io.fabric8:kubernetes-model-storageclass:jar:sources",
       "io.fabric8:zjsonpatch",
       "io.fabric8:zjsonpatch:jar:sources",
-      "io.grpc:grpc-api",
-      "io.grpc:grpc-api:jar:sources",
-      "io.grpc:grpc-context",
-      "io.grpc:grpc-context:jar:sources",
       "io.lettuce:lettuce-core",
       "io.lettuce:lettuce-core:jar:sources",
       "io.netty:netty-buffer",
@@ -5577,6 +5618,8 @@
       "io.netty:netty-resolver-dns",
       "io.netty:netty-resolver-dns:jar:sources",
       "io.netty:netty-resolver:jar:sources",
+      "io.netty:netty-tcnative-classes",
+      "io.netty:netty-tcnative-classes:jar:sources",
       "io.netty:netty-transport",
       "io.netty:netty-transport-native-unix-common",
       "io.netty:netty-transport-native-unix-common:jar:sources",
@@ -5602,8 +5645,6 @@
       "io.opentelemetry:opentelemetry-sdk-logs:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-metrics",
       "io.opentelemetry:opentelemetry-sdk-metrics:jar:sources",
-      "io.opentelemetry:opentelemetry-sdk-testing",
-      "io.opentelemetry:opentelemetry-sdk-testing:jar:sources",
       "io.opentelemetry:opentelemetry-sdk-trace",
       "io.opentelemetry:opentelemetry-sdk-trace:jar:sources",
       "io.opentelemetry:opentelemetry-sdk:jar:sources",
@@ -5637,8 +5678,6 @@
       "net.java.dev.jna:jna:jar:sources",
       "net.sf.saxon:Saxon-HE",
       "net.sf.saxon:Saxon-HE:jar:sources",
-      "org.antlr:antlr4-runtime",
-      "org.antlr:antlr4-runtime:jar:sources",
       "org.apache.bcel:bcel",
       "org.apache.bcel:bcel:jar:sources",
       "org.apache.commons:commons-compress",
@@ -5669,6 +5708,10 @@
       "org.checkerframework:checker-qual:jar:sources",
       "org.checkerframework:dataflow-nullaway",
       "org.checkerframework:dataflow-nullaway:jar:sources",
+      "org.commonmark:commonmark",
+      "org.commonmark:commonmark-ext-gfm-tables",
+      "org.commonmark:commonmark-ext-gfm-tables:jar:sources",
+      "org.commonmark:commonmark:jar:sources",
       "org.dom4j:dom4j",
       "org.dom4j:dom4j:jar:sources",
       "org.easymock:easymock",
@@ -5810,6 +5853,7 @@
     },
     "com.uber.nullaway:nullaway": {
       "com.google.errorprone.bugpatterns.BugChecker": [
+        "com.uber.nullaway.JSpecifyUnrecognizedAnnotationLocation",
         "com.uber.nullaway.NullAway",
         "com.uber.nullaway.RequireExplicitNullMarking"
       ]
@@ -5831,6 +5875,10 @@
       "io.fabric8.kubernetes.api.model.KubernetesResource": [
         "io.fabric8.kubernetes.api.model.admission.v1.AdmissionReview",
         "io.fabric8.kubernetes.api.model.admission.v1beta1.AdmissionReview",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicy",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyBinding",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyBindingList",
+        "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingAdmissionPolicyList",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingWebhookConfiguration",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.MutatingWebhookConfigurationList",
         "io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingAdmissionPolicy",
@@ -5915,8 +5963,10 @@
       "io.fabric8.kubernetes.api.model.KubernetesResource": [
         "io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequest",
         "io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequestList",
-        "io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundle",
-        "io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleList",
+        "io.fabric8.kubernetes.api.model.certificates.v1.ClusterTrustBundle",
+        "io.fabric8.kubernetes.api.model.certificates.v1.ClusterTrustBundleList",
+        "io.fabric8.kubernetes.api.model.certificates.v1.PodCertificateRequest",
+        "io.fabric8.kubernetes.api.model.certificates.v1.PodCertificateRequestList",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.CertificateSigningRequest",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.CertificateSigningRequestList",
         "io.fabric8.kubernetes.api.model.certificates.v1beta1.ClusterTrustBundle",
@@ -6054,6 +6104,16 @@
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.GatewayList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.HTTPRoute",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1.HTTPRouteList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ListenerSet",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ListenerSetList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ReferenceGrant",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.ReferenceGrantList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TCPRoute",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TCPRouteList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TLSRoute",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.TLSRouteList",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.UDPRoute",
+        "io.fabric8.kubernetes.api.model.gatewayapi.v1.UDPRouteList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.GRPCRoute",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.GRPCRouteList",
         "io.fabric8.kubernetes.api.model.gatewayapi.v1alpha2.ReferenceGrant",
@@ -6098,14 +6158,10 @@
         "io.fabric8.kubernetes.api.model.networking.v1.NetworkPolicyList",
         "io.fabric8.kubernetes.api.model.networking.v1.ServiceCIDR",
         "io.fabric8.kubernetes.api.model.networking.v1.ServiceCIDRList",
-        "io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddress",
-        "io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressList",
         "io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress",
         "io.fabric8.kubernetes.api.model.networking.v1beta1.IngressClass",
         "io.fabric8.kubernetes.api.model.networking.v1beta1.IngressClassList",
-        "io.fabric8.kubernetes.api.model.networking.v1beta1.IngressList",
-        "io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDR",
-        "io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRList"
+        "io.fabric8.kubernetes.api.model.networking.v1beta1.IngressList"
       ]
     },
     "io.fabric8:kubernetes-model-node": {
@@ -6146,6 +6202,8 @@
       "io.fabric8.kubernetes.api.model.KubernetesResource": [
         "io.fabric8.kubernetes.api.model.resource.v1.DeviceClass",
         "io.fabric8.kubernetes.api.model.resource.v1.DeviceClassList",
+        "io.fabric8.kubernetes.api.model.resource.v1.DeviceTaintRule",
+        "io.fabric8.kubernetes.api.model.resource.v1.DeviceTaintRuleList",
         "io.fabric8.kubernetes.api.model.resource.v1.ResourceClaim",
         "io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimList",
         "io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplate",
@@ -6168,6 +6226,8 @@
         "io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceSliceList",
         "io.fabric8.kubernetes.api.model.resource.v1alpha3.DeviceTaintRule",
         "io.fabric8.kubernetes.api.model.resource.v1alpha3.DeviceTaintRuleList",
+        "io.fabric8.kubernetes.api.model.resource.v1alpha3.ResourcePoolStatusRequest",
+        "io.fabric8.kubernetes.api.model.resource.v1alpha3.ResourcePoolStatusRequestList",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.DeviceClass",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.DeviceClassList",
         "io.fabric8.kubernetes.api.model.resource.v1beta1.ResourceClaim",
@@ -6178,6 +6238,8 @@
         "io.fabric8.kubernetes.api.model.resource.v1beta1.ResourceSliceList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceClass",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceClassList",
+        "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceTaintRule",
+        "io.fabric8.kubernetes.api.model.resource.v1beta2.DeviceTaintRuleList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaim",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaimList",
         "io.fabric8.kubernetes.api.model.resource.v1beta2.ResourceClaimTemplate",
@@ -6192,10 +6254,18 @@
         "io.fabric8.kubernetes.api.model.scheduling.v1.PriorityClassList",
         "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.PriorityClass",
         "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.PriorityClassList",
-        "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.Workload",
-        "io.fabric8.kubernetes.api.model.scheduling.v1alpha1.WorkloadList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.CompositePodGroup",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.CompositePodGroupList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.PodGroup",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.PodGroupList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.Workload",
+        "io.fabric8.kubernetes.api.model.scheduling.v1alpha3.WorkloadList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PodGroup",
+        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PodGroupList",
         "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClass",
-        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClassList"
+        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClassList",
+        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.Workload",
+        "io.fabric8.kubernetes.api.model.scheduling.v1beta1.WorkloadList"
       ]
     },
     "io.fabric8:kubernetes-model-storageclass": {
@@ -6226,8 +6296,8 @@
         "io.fabric8.kubernetes.api.model.storage.v1beta1.StorageClassList",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttachment",
         "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttachmentList",
-        "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttributesClass",
-        "io.fabric8.kubernetes.api.model.storage.v1beta1.VolumeAttributesClassList",
+        "io.fabric8.kubernetes.api.model.storagemigration.v1.StorageVersionMigration",
+        "io.fabric8.kubernetes.api.model.storagemigration.v1.StorageVersionMigrationList",
         "io.fabric8.kubernetes.api.model.storagemigration.v1beta1.StorageVersionMigration",
         "io.fabric8.kubernetes.api.model.storagemigration.v1beta1.StorageVersionMigrationList"
       ]
@@ -6269,12 +6339,8 @@
     },
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider": [
-        "io.opentelemetry.sdk.autoconfigure.EnvironmentResourceProvider"
-      ]
-    },
-    "io.opentelemetry:opentelemetry-sdk-testing": {
-      "io.opentelemetry.context.ContextStorageProvider": [
-        "io.opentelemetry.sdk.testing.context.SettableContextStorageProvider"
+        "io.opentelemetry.sdk.autoconfigure.EnvironmentResourceProvider",
+        "io.opentelemetry.sdk.autoconfigure.ServiceInstanceIdResourceProvider"
       ]
     },
     "io.projectreactor:reactor-core": {

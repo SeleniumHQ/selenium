@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class SerializationOptions {
   public enum IncludeShadowTree {
     NONE,

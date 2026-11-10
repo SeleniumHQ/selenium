@@ -73,6 +73,22 @@ fn grid_version_test(#[case] grid_version: &str) {
     assert!(jar_name.contains(version_label));
 }
 
+#[test]
+fn grid_without_java_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.env("PATH", "")
+        .env_remove("JAVA_HOME")
+        .args(["--grid", "--output", "json"])
+        .assert()
+        .success()
+        .code(0);
+
+    let stdout = get_stdout(&mut cmd);
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
+    assert!(Path::new(&json.result.driver_path).exists());
+    assert!(json.logs.iter().all(|log| !log.message.contains("Java")));
+}
+
 #[rstest]
 #[case("bad-version")]
 #[case("99.99.99")]

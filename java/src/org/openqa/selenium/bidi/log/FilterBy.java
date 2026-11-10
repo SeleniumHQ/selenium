@@ -16,8 +16,10 @@
 // under the License.
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class FilterBy {
 
   private final LogLevel level;

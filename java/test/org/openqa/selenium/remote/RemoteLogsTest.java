@@ -20,10 +20,8 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,85 +32,31 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 
 @Tag("UnitTests")
-@SuppressWarnings("deprecation")
 class RemoteLogsTest {
   @Mock private ExecuteMethod executeMethod;
-
-  @Mock private LocalLogs localLogs;
 
   private RemoteLogs remoteLogs;
 
   @BeforeEach
   public void createMocksAndRemoteLogs() {
     MockitoAnnotations.initMocks(this);
-    remoteLogs = new RemoteLogs(executeMethod, localLogs);
+    remoteLogs = new RemoteLogs(executeMethod);
   }
 
   @Test
-  void canGetProfilerLogs() {
-    List<LogEntry> entries = new ArrayList<>();
-    entries.add(new LogEntry(Level.INFO, 0, "hello"));
-    when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
-
-    when(executeMethod.execute(
-            DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+  void canGetBrowserLogs() {
+    when(executeMethod.execute(DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
         .thenReturn(
             singletonList(
-                Map.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
+                Map.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "hello")));
 
-    LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
-    List<LogEntry> allLogEntries = logEntries.getAll();
-    assertThat(allLogEntries).hasSize(2);
-    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
-    assertThat(allLogEntries.get(1).getMessage()).isEqualTo("world");
-  }
-
-  @Test
-  void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
-    List<LogEntry> entries = new ArrayList<>();
-    entries.add(new LogEntry(Level.INFO, 0, "hello"));
-    when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
-
-    when(executeMethod.execute(
-            DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenThrow(
-            new WebDriverException("IGNORE THIS LOG MESSAGE AND STACKTRACE; IT IS EXPECTED."));
-
-    LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
-    List<LogEntry> allLogEntries = logEntries.getAll();
-    assertThat(allLogEntries).hasSize(1);
-    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
-  }
-
-  @Test
-  void canGetClientLogs() {
-    List<LogEntry> entries = new ArrayList<>();
-    entries.add(new LogEntry(Level.SEVERE, 0, "hello"));
-    when(localLogs.get(LogType.CLIENT)).thenReturn(new LogEntries(entries));
-
-    LogEntries logEntries = remoteLogs.get(LogType.CLIENT);
+    LogEntries logEntries = remoteLogs.get(LogType.BROWSER);
     assertThat(logEntries.getAll()).hasSize(1);
     assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("hello");
-
-    // Client logs should not retrieve remote logs.
-    verifyNoMoreInteractions(executeMethod);
-  }
-
-  @Test
-  void serverLogsAreDeprecatedAndReturnEmpty() {
-    // SERVER log type is deprecated - Grid no longer supports it
-    LogEntries logEntries = remoteLogs.get(LogType.SERVER);
-    assertThat(logEntries.getAll()).isEmpty();
-
-    // Should not call executeMethod or localLogs since SERVER is intercepted
-    verifyNoMoreInteractions(executeMethod);
-    verifyNoMoreInteractions(localLogs);
   }
 
   @Test
@@ -126,22 +70,16 @@ class RemoteLogsTest {
 
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));
-
-    verifyNoMoreInteractions(localLogs);
   }
 
   @Test
   void canGetAvailableLogTypes() {
-    List<String> remoteAvailableLogTypes = List.of(LogType.PROFILER, LogType.SERVER);
+    List<String> remoteAvailableLogTypes = List.of(LogType.BROWSER, LogType.DRIVER);
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES))
         .thenReturn(remoteAvailableLogTypes);
 
-    Set<String> localAvailableLogTypes = Set.of(LogType.PROFILER, LogType.CLIENT);
-    when(localLogs.getAvailableLogTypes()).thenReturn(localAvailableLogTypes);
-
     Set<String> availableLogTypes = remoteLogs.getAvailableLogTypes();
 
-    assertThat(availableLogTypes)
-        .containsExactlyInAnyOrder(LogType.CLIENT, LogType.PROFILER, LogType.SERVER);
+    assertThat(availableLogTypes).containsExactlyInAnyOrder(LogType.BROWSER, LogType.DRIVER);
   }
 }

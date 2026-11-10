@@ -1,0 +1,3 @@
+# Marks this directory as a Bazel package so //javascript/selenium-webdriver/private:generate_bidi.bzl
+# can be loaded by label — a load() using full package-label syntax requires the package to exist,
+# even though generate_bidi.bzl itself declares no targets consumed from here directly.

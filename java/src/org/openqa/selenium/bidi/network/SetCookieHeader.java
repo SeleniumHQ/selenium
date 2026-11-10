@@ -18,7 +18,9 @@ package org.openqa.selenium.bidi.network;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class SetCookieHeader {
 
   private final Map<String, Object> map = new HashMap<>();

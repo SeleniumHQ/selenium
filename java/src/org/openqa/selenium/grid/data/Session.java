@@ -28,7 +28,6 @@ import java.util.TreeMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
 
 /**
@@ -44,15 +43,16 @@ public class Session implements Serializable {
   private final Capabilities capabilities;
   private final Instant startTime;
 
+  // Constructor parameter names are used as JSON field names.
   public Session(
-      SessionId id,
+      SessionId sessionId,
       URI uri,
       Capabilities stereotype,
       Capabilities capabilities,
-      Instant startTime) {
-    this.id = Require.nonNull("Session ID", id);
+      Instant start) {
+    this.id = Require.nonNull("Session ID", sessionId);
     this.uri = Require.nonNull("Where the session is running", uri);
-    this.startTime = Require.nonNull("Start time", startTime);
+    this.startTime = Require.nonNull("Start time", start);
 
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.capabilities =
@@ -88,47 +88,6 @@ public class Session implements Serializable {
     toReturn.put("start", getStartTime());
     toReturn.put("uri", getUri());
     return unmodifiableMap(toReturn);
-  }
-
-  @SuppressWarnings({"unused", "DataFlowIssue"})
-  private static Session fromJson(JsonInput input) {
-    SessionId id = null;
-    URI uri = null;
-    Capabilities caps = null;
-    Capabilities stereotype = null;
-    Instant start = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "capabilities":
-          caps = ImmutableCapabilities.copyOf(input.readNonNull(Capabilities.class));
-          break;
-
-        case "sessionId":
-          id = input.read(SessionId.class);
-          break;
-
-        case "start":
-          start = input.read(Instant.class);
-          break;
-
-        case "stereotype":
-          stereotype = input.read(Capabilities.class);
-          break;
-
-        case "uri":
-          uri = input.read(URI.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new Session(id, uri, stereotype, caps, start);
   }
 
   @Override

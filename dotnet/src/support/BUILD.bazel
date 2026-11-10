@@ -1,6 +1,7 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load(
     "//dotnet:defs.bzl",
-    "csharp_library",
+    "csharp_sourcelink_library",
     "generated_assembly_info",
     "nuget_pack",
     "nuget_package",
@@ -26,7 +27,19 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
-csharp_library(
+select_file(
+    name = "global-license",
+    srcs = "//:license",
+    subpath = "LICENSE",
+)
+
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+csharp_sourcelink_library(
     name = "support",
     srcs = glob([
         "**/*.cs",
@@ -54,6 +67,8 @@ csharp_library(
 nuget_pack(
     name = "support-pack",
     files = {
+        ":global-license": "LICENSE",
+        ":global-notice": "NOTICE",
         "//common/images:selenium_logo_small.png": "icon.png",
     },
     id = "Selenium.Support",

@@ -53,20 +53,18 @@ public class NewSessionQueueOptions {
     Optional<URI> host =
         config
             .get(SESSION_QUEUE_SECTION, "host")
-            .map(
-                str -> {
-                  try {
-                    URI sessionQueueUri = new URI(str);
-                    if (sessionQueueUri.getHost() == null || sessionQueueUri.getPort() == -1) {
-                      throw new ConfigException(
-                          "Undefined host or port in SessionQueue server URI: " + str);
-                    }
-                    return sessionQueueUri;
-                  } catch (URISyntaxException e) {
-                    throw new ConfigException(
-                        "Session queue server URI is not a valid URI: " + str);
-                  }
-                });
+            .map(str -> {
+              try {
+                URI sessionQueueUri = new URI(str);
+                if (sessionQueueUri.getHost() == null || sessionQueueUri.getPort() == -1) {
+                  throw new ConfigException(
+                      "Undefined host or port in SessionQueue server URI: " + str);
+                }
+                return sessionQueueUri;
+              } catch (URISyntaxException e) {
+                throw new ConfigException("Session queue server URI is not a valid URI: " + str);
+              }
+            });
 
     if (host.isPresent()) {
       return host.get();
@@ -159,5 +157,17 @@ public class NewSessionQueueOptions {
   public NewSessionQueue getSessionQueue(String implementation) {
     return config.getClass(
         SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
+  }
+
+  public Optional<URI> getBackendUri() {
+    return config
+        .get(SESSION_QUEUE_SECTION, "backend-url")
+        .map(str -> {
+          try {
+            return new URI(str);
+          } catch (URISyntaxException e) {
+            throw new ConfigException("SessionQueue backend-url is not a valid URI: " + str);
+          }
+        });
   }
 }

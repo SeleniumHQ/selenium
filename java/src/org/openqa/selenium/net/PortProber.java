@@ -25,6 +25,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Platform;
 
@@ -35,6 +36,42 @@ public class PortProber {
   private static final Random random = new Random();
   private static final EphemeralPortRangeDetector ephemeralRangeDetector;
   private static final Platform current = Platform.getCurrent();
+
+  /**
+   * Ports that browsers (Firefox, Chromium, WebKit) refuse to connect to. A fixture HTTP server
+   * bound to one of these will cause every navigation in those browsers to fail with an "unsafe
+   * port" / "denied port access" error, which surfaces in tests as an intermittent failure whenever
+   * the random port happens to land on the list. Sourced from Mozilla's {@code gBadPortList} (also
+   * mirrored, with minor differences, by Chromium's {@code kRestrictedPorts}). Only ports in the
+   * 1024-65535 range are included; ports below 1024 are already excluded by {@link
+   * #createAcceptablePort()}.
+   */
+  private static final Set<Integer> BROWSER_RESTRICTED_PORTS =
+      Set.of(
+          1719, // h323gatestat
+          1720, // h323hostcall
+          1723, // pptp
+          2049, // nfs
+          3659, // apple-sasl
+          4045, // lockd
+          4190, // sieve
+          5060, // sip
+          5061, // sips
+          6000, // x11
+          6566, // sane-port
+          6665, // irc (alternate)
+          6666, // irc (alternate)
+          6667, // irc (default)
+          6668, // irc (alternate)
+          6669, // irc (alternate)
+          6679, // irc ssl (alternate)
+          6697, // irc ssl
+          10080 // amanda
+          );
+
+  static boolean isBrowserRestrictedPort(int port) {
+    return BROWSER_RESTRICTED_PORTS.contains(port);
+  }
 
   static {
     if (current.is(Platform.LINUX)) {
@@ -51,8 +88,11 @@ public class PortProber {
   }
 
   public static int findFreePort() {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 10; i++) {
       int seedPort = createAcceptablePort();
+      if (isBrowserRestrictedPort(seedPort)) {
+        continue;
+      }
       int suggestedPort = checkPortIsFree(seedPort);
       if (suggestedPort != -1) {
         return suggestedPort;

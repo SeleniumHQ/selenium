@@ -19,7 +19,9 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class CaptureScreenshotParameters {
 
   public enum Origin {

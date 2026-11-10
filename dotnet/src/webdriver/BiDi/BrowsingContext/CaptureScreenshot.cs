@@ -22,7 +22,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
+internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip, ImageSize? ImageSize) : Parameters;
 
 public sealed record CaptureScreenshotOptions : CommandOptions
 {
@@ -31,6 +31,8 @@ public sealed record CaptureScreenshotOptions : CommandOptions
     public ImageFormat? Format { get; init; }
 
     public ClipRectangle? Clip { get; init; }
+
+    public ImageSize? ImageSize { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ScreenshotOrigin>))]
@@ -53,6 +55,13 @@ public abstract record ClipRectangle;
 public sealed record BoxClipRectangle(double X, double Y, double Width, double Height) : ClipRectangle;
 
 public sealed record ElementClipRectangle(Script.ISharedReference Element) : ClipRectangle;
+
+public sealed record ImageSize
+{
+    public long? MaxWidth { get; init; }
+
+    public long? MaxHeight { get; init; }
+}
 
 public sealed record CaptureScreenshotResult(ReadOnlyMemory<byte> Data) : EmptyResult
 {

@@ -19,8 +19,10 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class DownloadCanceled extends NavigationInfo {
   DownloadCanceled(
       String browsingContextId, @Nullable String navigationId, long timestamp, String url) {

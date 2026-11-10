@@ -36,8 +36,9 @@ public sealed record ContextGetTreeOptions : CommandOptions
     {
         Root = context,
         MaxDepth = options?.MaxDepth,
-        Timeout = options?.Timeout
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 
-public sealed record GetTreeResult(IReadOnlyList<Info> Contexts) : EmptyResult;
+public sealed record GetTreeResult(ImmutableArray<Info> Contexts) : EmptyResult;

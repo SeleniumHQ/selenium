@@ -30,9 +30,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.internal.Sets.sortedSetOf;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -488,22 +486,17 @@ class JsonOutputTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void convertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.BROWSER, Level.WARNING);
-    prefs.enable(LogType.CLIENT, Level.FINE);
     prefs.enable(LogType.DRIVER, Level.ALL);
-    prefs.enable(LogType.SERVER, Level.OFF);
 
     String json = convert(prefs);
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.get(BROWSER).getAsString()).isEqualTo("WARNING");
-    assertThat(converted.get(CLIENT).getAsString()).isEqualTo("DEBUG");
     assertThat(converted.get(DRIVER).getAsString()).isEqualTo("ALL");
-    assertThat(converted.get(SERVER).getAsString()).isEqualTo("OFF");
   }
 
   @Test

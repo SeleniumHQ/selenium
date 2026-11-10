@@ -25,6 +25,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/status",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
         artifact("org.jspecify:jspecify"),

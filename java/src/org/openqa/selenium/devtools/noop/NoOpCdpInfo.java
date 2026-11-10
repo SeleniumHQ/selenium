@@ -17,11 +17,20 @@
 
 package org.openqa.selenium.devtools.noop;
 
+import java.util.Collection;
 import org.openqa.selenium.devtools.CdpInfo;
 
 public class NoOpCdpInfo extends CdpInfo {
 
+  /**
+   * @deprecated use {@link #NoOpCdpInfo(String, Collection)} instead
+   */
+  @Deprecated(forRemoval = true)
   public NoOpCdpInfo() {
     super(1, dt -> new NoOpDomains());
+  }
+
+  public NoOpCdpInfo(String browserVersion, Collection<CdpInfo> availableCdpImplementations) {
+    super(1, dt -> new NoOpDomains(browserVersion, availableCdpImplementations));
   }
 }

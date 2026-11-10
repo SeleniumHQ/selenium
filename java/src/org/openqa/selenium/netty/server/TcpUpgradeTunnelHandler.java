@@ -168,25 +168,24 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
                 });
 
     ChannelFuture connectFuture = bootstrap.connect(host, port);
-    connectFuture.addListener(
-        future -> {
-          if (!future.isSuccess()) {
-            // The Node is unreachable (wrong network, K8s port-forward topology, etc.).
-            // Re-enable reads and pass the request to the next handler so that
-            // ProxyWebsocketsIntoGrid can try to handle it via its own HTTP client.
-            LOG.log(
-                Level.WARNING,
-                "TCP tunnel connect failed for "
-                    + host
-                    + ":"
-                    + port
-                    + ", falling back to WebSocket handler",
-                future.cause());
-            clientChannel.config().setAutoRead(true);
-            ctx.fireChannelRead(req);
-          }
-          // On success, NodeUpgradeResponseHandler.channelActive sends the request.
-        });
+    connectFuture.addListener(future -> {
+      if (!future.isSuccess()) {
+        // The Node is unreachable (wrong network, K8s port-forward topology, etc.).
+        // Re-enable reads and pass the request to the next handler so that
+        // ProxyWebsocketsIntoGrid can try to handle it via its own HTTP client.
+        LOG.log(
+            Level.WARNING,
+            "TCP tunnel connect failed for "
+                + host
+                + ":"
+                + port
+                + ", falling back to WebSocket handler",
+            future.cause());
+        clientChannel.config().setAutoRead(true);
+        ctx.fireChannelRead(req);
+      }
+      // On success, NodeUpgradeResponseHandler.channelActive sends the request.
+    });
   }
 
   private static boolean isWebSocketUpgrade(HttpRequest req) {
@@ -256,11 +255,10 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
           clientChannel.config().setAutoRead(true);
           clientChannel
               .writeAndFlush(errorResponse)
-              .addListener(
-                  f -> {
-                    clientChannel.close();
-                    ctx.close();
-                  });
+              .addListener(f -> {
+                clientChannel.close();
+                ctx.close();
+              });
           return;
         }
 
@@ -279,74 +277,69 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
 
         clientChannel
             .writeAndFlush(clientResponse)
-            .addListener(
-                writeFuture -> {
-                  if (!writeFuture.isSuccess()) {
-                    LOG.log(
-                        Level.WARNING,
-                        "Failed to write 101 response to client",
-                        writeFuture.cause());
-                    clientChannel.close();
-                    nodeChannel.close();
-                    return;
-                  }
+            .addListener(writeFuture -> {
+              if (!writeFuture.isSuccess()) {
+                LOG.log(
+                    Level.WARNING, "Failed to write 101 response to client", writeFuture.cause());
+                clientChannel.close();
+                nodeChannel.close();
+                return;
+              }
 
-                  // Rewire node channel: remove HTTP codec and this handler, add byte tunnel.
-                  // The "ssl" handler (if present) is intentionally left in place — it
-                  // transparently handles TLS framing for the raw byte stream.
-                  nodeChannel.pipeline().remove("upgrade-handler");
-                  nodeChannel.pipeline().remove("http-codec");
-                  nodeChannel.pipeline().addLast("tunnel", new TcpTunnelHandler(clientChannel));
+              // Rewire node channel: remove HTTP codec and this handler, add byte tunnel.
+              // The "ssl" handler (if present) is intentionally left in place — it
+              // transparently handles TLS framing for the raw byte stream.
+              nodeChannel.pipeline().remove("upgrade-handler");
+              nodeChannel.pipeline().remove("http-codec");
+              nodeChannel.pipeline().addLast("tunnel", new TcpTunnelHandler(clientChannel));
 
-                  // Rewire client channel: replace the tcp-tunnel intercept handler with a raw
-                  // byte tunnel, then strip remaining HTTP/WS handlers that are no longer needed.
-                  ChannelPipeline cp = clientChannel.pipeline();
-                  cp.replace("tcp-tunnel", "tunnel", new TcpTunnelHandler(nodeChannel));
-                  for (String name :
-                      new String[] {
-                        "codec",
-                        "keep-alive",
-                        "chunked-write",
-                        "ws-compression",
-                        "ws-protocol",
-                        "netty-to-se-messages",
-                        "se-to-netty-messages",
-                        "se-websocket-handler",
-                        "se-request",
-                        "se-response",
-                        "se-handler"
-                      }) {
-                    if (cp.get(name) != null) {
-                      cp.remove(name);
-                    }
-                  }
+              // Rewire client channel: replace the tcp-tunnel intercept handler with a raw
+              // byte tunnel, then strip remaining HTTP/WS handlers that are no longer needed.
+              ChannelPipeline cp = clientChannel.pipeline();
+              cp.replace("tcp-tunnel", "tunnel", new TcpTunnelHandler(nodeChannel));
+              for (String name :
+                  new String[] {
+                    "codec",
+                    "keep-alive",
+                    "chunked-write",
+                    "ws-compression",
+                    "ws-protocol",
+                    "netty-to-se-messages",
+                    "se-to-netty-messages",
+                    "se-websocket-handler",
+                    "se-request",
+                    "se-response",
+                    "se-handler"
+                  }) {
+                if (cp.get(name) != null) {
+                  cp.remove(name);
+                }
+              }
 
-                  // Install read-idle detection on both tunnel channels. The tunnel carries raw
-                  // WebSocket bytes (CDP / BiDi); application-level pings from the client (e.g.
-                  // Playwright's 30 s pings) flow through and reset the timer naturally. If no
-                  // bytes arrive for IDLE_TIMEOUT_SECONDS the upstream LB has silently dropped
-                  // the TCP connection — close both ends so the session slot is freed promptly.
-                  int idleSeconds = WebSocketKeepAliveHandler.PING_INTERVAL_SECONDS * 4;
-                  nodeChannel
-                      .pipeline()
-                      .addBefore(
-                          "tunnel",
-                          "node-idle",
-                          new IdleStateHandler(idleSeconds, 0, 0, TimeUnit.SECONDS));
-                  nodeChannel
-                      .pipeline()
-                      .addAfter(
-                          "node-idle", "node-idle-close", new IdleCloseHandler(clientChannel));
-                  cp.addBefore(
+              // Install read-idle detection on both tunnel channels. The tunnel carries raw
+              // WebSocket bytes (CDP / BiDi); application-level pings from the client (e.g.
+              // Playwright's 30 s pings) flow through and reset the timer naturally. If no
+              // bytes arrive for IDLE_TIMEOUT_SECONDS the upstream LB has silently dropped
+              // the TCP connection — close both ends so the session slot is freed promptly.
+              int idleSeconds = WebSocketKeepAliveHandler.PING_INTERVAL_SECONDS * 4;
+              nodeChannel
+                  .pipeline()
+                  .addBefore(
                       "tunnel",
-                      "client-idle",
+                      "node-idle",
                       new IdleStateHandler(idleSeconds, 0, 0, TimeUnit.SECONDS));
-                  cp.addAfter(
-                      "client-idle", "client-idle-close", new IdleCloseHandler(nodeChannel));
+              nodeChannel
+                  .pipeline()
+                  .addAfter("node-idle", "node-idle-close", new IdleCloseHandler(clientChannel));
+              cp.addBefore(
+                  "tunnel",
+                  "client-idle",
+                  new IdleStateHandler(idleSeconds, 0, 0, TimeUnit.SECONDS));
+              cp.addAfter("client-idle", "client-idle-close", new IdleCloseHandler(nodeChannel));
 
-                  // Re-enable reads on the client now that the tunnel is live.
-                  clientChannel.config().setAutoRead(true);
-                });
+              // Re-enable reads on the client now that the tunnel is live.
+              clientChannel.config().setAutoRead(true);
+            });
 
       } finally {
         ReferenceCountUtil.release(msg);
@@ -379,7 +372,7 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
    * the TCP connection without sending a FIN or RST (common with AWS ALB, k8s ingress-nginx at
    * their default 60 s idle timeout).
    */
-  private static final class IdleCloseHandler extends ChannelInboundHandlerAdapter {
+  static final class IdleCloseHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel peer;
 
@@ -390,6 +383,18 @@ class TcpUpgradeTunnelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
       if (evt instanceof IdleStateEvent) {
+        // Read-idle while backpressure has paused this channel is expected, not a sign of a
+        // dropped connection: the peer's outbound buffer crossed its high-water mark, the
+        // TcpTunnelHandler set autoRead=false on this side, and bytes will not be read again
+        // until the peer drains. Skip the close so a sustained slow consumer does not get the
+        // tunnel torn down underneath it.
+        if (!ctx.channel().config().isAutoRead()) {
+          LOG.log(
+              Level.FINE,
+              "TCP tunnel read-idle on {0} ignored: reads paused by backpressure",
+              ctx.channel());
+          return;
+        }
         LOG.log(
             Level.FINE,
             "TCP tunnel read-idle timeout on {0}, closing both channels",

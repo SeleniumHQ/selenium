@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.log;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum LogLevel {
   DEBUG("debug"),
   ERROR("error"),

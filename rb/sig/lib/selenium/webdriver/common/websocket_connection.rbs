@@ -1,3 +1,21 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+
 module Selenium
   module WebDriver
     class WebSocketConnection
@@ -17,9 +35,9 @@ module Selenium
 
       @messages: untyped
 
-      @incoming_frame: untyped
+      @pending_responses: Hash[Integer, Thread::ConditionVariable]
 
-      @wait: untyped
+      @incoming_frame: untyped
 
       @socket: untyped
 
@@ -34,6 +52,8 @@ module Selenium
       RESPONSE_WAIT_INTERVAL: Float
 
       MAX_LOG_MESSAGE_SIZE: Integer
+
+      MAX_FRAME_SIZE: Integer
 
       def initialize: (url: String) -> void
 
@@ -55,17 +75,29 @@ module Selenium
 
       def messages: () -> untyped
 
+      def pending_responses: () -> Hash[Integer, Thread::ConditionVariable]
+
+      def await_response: (Integer id) -> untyped
+
+      def release_pending_responses: () -> void
+
       def process_handshake: () -> untyped
 
       def attach_socket_listener: () -> untyped
+
+      def close_socket: () -> untyped
+
+      def process_incoming_frames: () -> untyped
+
+      def frame_dropped?: () -> bool
+
+      def apply_frame_size_limit: () -> void
 
       def incoming_frame: () -> untyped
 
       def process_frame: (untyped frame) -> (Hash[untyped, untyped] | untyped)
 
       def callback_thread: (untyped params) { (untyped) -> untyped } -> untyped
-
-      def wait: () -> untyped
 
       def socket: () -> untyped
 

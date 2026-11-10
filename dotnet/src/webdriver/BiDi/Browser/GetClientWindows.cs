@@ -21,4 +21,4 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed record GetClientWindowsOptions : CommandOptions;
 
-public sealed record GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> ClientWindows) : EmptyResult;
+public sealed record GetClientWindowsResult(ImmutableArray<ClientWindowInfo> ClientWindows) : EmptyResult;

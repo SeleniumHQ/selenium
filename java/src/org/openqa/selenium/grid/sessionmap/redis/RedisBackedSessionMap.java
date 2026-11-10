@@ -76,12 +76,11 @@ public class RedisBackedSessionMap extends SessionMap {
     bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     bus.addListener(
-        NodeRemovedEvent.listener(
-            nodeStatus ->
-                nodeStatus.getSlots().stream()
-                    .filter(slot -> slot.getSession() != null)
-                    .map(slot -> slot.getSession().getId())
-                    .forEach(this::remove)));
+        NodeRemovedEvent.listener(nodeStatus ->
+            nodeStatus.getSlots().stream()
+                .filter(slot -> slot.getSession() != null)
+                .map(slot -> slot.getSession().getId())
+                .forEach(this::remove)));
 
     bus.addListener(
         NodeRestartedEvent.listener(
@@ -188,7 +187,7 @@ public class RedisBackedSessionMap extends SessionMap {
               : JSON.toType(rawStereotype, Capabilities.class);
 
       String rawStart = connection.get(startKey(id));
-      Instant start = JSON.toType(rawStart, Instant.class);
+      Instant start = rawStart == null ? Instant.EPOCH : JSON.toType(rawStart, Instant.class);
 
       CAPABILITIES.accept(span, caps);
       CAPABILITIES_EVENT.accept(attributeMap, caps);
@@ -300,11 +299,10 @@ public class RedisBackedSessionMap extends SessionMap {
     keyValues.stream()
         .filter(entry -> entry.getValue().equals(uri.toString()))
         .map(KeyValue::getKey)
-        .map(
-            key -> {
-              String[] sessionKey = key.split(":");
-              return new SessionId(sessionKey[1]);
-            })
+        .map(key -> {
+          String[] sessionKey = key.split(":");
+          return new SessionId(sessionKey[1]);
+        })
         .forEach(this::remove);
   }
 

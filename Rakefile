@@ -52,22 +52,17 @@ end
 task default: [:grid]
 task grid: [:'java:grid']
 
-# ./go update_browser stable
-# ./go update_browser beta
 desc 'Update pinned browser versions'
-task :update_browsers, [:channel] do |_task, arguments|
-  chrome_channel = arguments[:channel] || 'Stable'
-  chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
-
+task :update_browsers do |_task, _arguments|
   puts 'pinning updated browsers and drivers'
-  Bazel.execute('run', args, '//scripts:pinned_browsers')
+  Bazel.execute('run', [], '//scripts:pinned_browsers')
 end
 
-desc 'Update Selenium Manager to latest release'
-task :update_manager do |_task, _arguments|
+desc 'Update Selenium Manager to the given selenium_manager_artifacts tag, or the latest release'
+task :update_manager, [:tag] do |_task, arguments|
   puts 'Updating Selenium Manager references'
-  Bazel.execute('run', [], '//scripts:selenium_manager')
+  args = arguments[:tag] ? ['--', arguments[:tag]] : []
+  Bazel.execute('run', args, '//scripts:selenium_manager')
 end
 
 desc 'Update multitool binaries to latest releases'
@@ -76,19 +71,25 @@ task :update_multitool do |_task, _arguments|
   Bazel.execute('run', [], '//scripts:update_multitool_binaries')
 end
 
-desc 'Update dependencies for release'
-task :release_update do |_task, _arguments|
-  Rake::Task[:update_multitool].invoke
+desc 'Update pinned CDDL spec files from w3c/webref and regenerate what they feed'
+task :update_cddl do |_task, _arguments|
+  puts 'Updating pinned CDDL spec references'
+  Bazel.execute('run', [], '//scripts:update_cddl')
+
+  if SeleniumRake.git.diff('HEAD').path('common/webref_cddl.bzl').none?
+    puts 'Pins unchanged; skipping regeneration'
+    next
+  end
+
+  puts 'Updating the checked-in BiDi schema'
+  Bazel.execute('run', [], '//common/bidi:update-schema')
+  Rake::Task['rb:update_cddl'].invoke
 end
 
 desc 'Update Chrome DevTools support'
-task :update_cdp, [:channel] do |_task, arguments|
-  chrome_channel = arguments[:channel] || 'stable'
-  chrome_channel = 'beta' if chrome_channel == 'early-stable'
-  args = ['--', "--chrome_channel=#{chrome_channel.capitalize}"]
-
-  puts "Updating Chrome DevTools references to include latest from #{chrome_channel} channel"
-  Bazel.execute('run', args, '//scripts:update_cdp')
+task :update_cdp do |_task, _arguments|
+  puts 'Updating Chrome DevTools references to include the latest from the Stable channel'
+  Bazel.execute('run', [], '//scripts:update_cdp')
 end
 
 task ios_driver: 'appium:build'
@@ -96,31 +97,34 @@ task ios_driver: 'appium:build'
 desc 'Update AUTHORS file'
 task :authors do
   puts 'Updating AUTHORS file'
-  sh "(git log --use-mailmap --format='%aN <%aE>' ; " \
-     'cat .OLD_AUTHORS ; cat AUTHORS) | ' \
-     'sort -uf > AUTHORS.tmp && mv AUTHORS.tmp AUTHORS'
+  authors = `git log --use-mailmap --format="%aN <%aE>"`.lines + File.readlines('AUTHORS')
+  File.write('AUTHORS', authors.uniq(&:upcase).sort_by(&:upcase).join)
 end
 
-# Example: `./go release_updates selenium-4.31.0 early-stable`
-# Example: `./go release_updates selenium-4.31.1-ruby`
+desc 'Update dependencies for all bindings and Rust, plus pinned multitool binaries'
+task :update do
+  Rake::Task['all:update'].invoke
+  Rake::Task['rust:update'].invoke
+  Rake::Task['update_multitool'].invoke
+end
+
+# Equivalent to `.github/workflows/pre-release.yml` in a single command
+# Example: `./go pre_release selenium-4.31.0`
+# Example: `./go pre_release selenium-4.31.1-ruby`
 desc 'Update everything in preparation for a release'
-task :release_updates, [:tag, :channel] do |_task, arguments|
+task :pre_release, [:tag] do |_task, arguments|
   parsed = SeleniumRake.parse_tag(arguments[:tag])
   version = parsed[:version]
   language = parsed[:language]
 
   if parsed[:patch].zero?
-    Rake::Task['update_browsers'].invoke(arguments[:channel])
-    Rake::Task['update_cdp'].invoke(arguments[:channel])
     Rake::Task['update_manager'].invoke
-    Rake::Task['update_multitool'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['rust:version'].invoke(version)
     Rake::Task['rust:changelogs'].invoke
   end
 
   Rake::Task["#{language}:version"].invoke(version)
-  Rake::Task["#{language}:update"].invoke
   Rake::Task["#{language}:changelogs"].invoke
 end
 
@@ -142,13 +146,25 @@ task :format do |_task, arguments|
   Rake::Task['all:format'].invoke(*args)
 end
 
-desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
-task :lint do
-  puts 'Linting shell scripts and GitHub Actions...'
+desc 'Lint GitHub workflows with actionlint'
+task :lint_workflows do
   shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
   Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
+end
 
-  Rake::Task['all:lint'].invoke
+desc 'Lint all shell scripts with shellcheck'
+task :lint_shell do
+  shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+  sh shellcheck, *SeleniumRake.git.ls_files('*.sh').keys
+end
+
+desc 'Run linters (may auto-fix some issues; stricter checks than :format)'
+task :lint do
+  SeleniumRake.aggregate_errors(
+    workflows: -> { Rake::Task['lint_workflows'].invoke },
+    shell: -> { Rake::Task['lint_shell'].invoke },
+    all: -> { Rake::Task['all:lint'].invoke }
+  )
 end
 
 # Legacy aliases - call namespaced tasks
@@ -171,6 +187,7 @@ namespace :all do
   desc 'Pin dependencies for all language bindings'
   task :pin do
     Rake::Task['java:pin'].invoke
+    Rake::Task['py:pin'].invoke
     Rake::Task['rb:pin'].invoke
     Rake::Task['node:pin'].invoke
     Rake::Task['dotnet:pin'].invoke
@@ -179,6 +196,7 @@ namespace :all do
   desc 'Update dependencies for all language bindings'
   task :update do
     Rake::Task['java:update'].invoke
+    Rake::Task['py:update'].invoke
     Rake::Task['rb:update'].invoke
     Rake::Task['node:update'].invoke
     Rake::Task['dotnet:update'].invoke
@@ -212,24 +230,18 @@ namespace :all do
   desc 'Validate release credentials for all languages'
   task :check_credentials do |_task, arguments|
     args = arguments.to_a
-    failures = []
-    %w[java py rb dotnet node].each do |lang|
-      Rake::Task["#{lang}:check_credentials"].invoke(*args)
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:check_credentials"].invoke(*args) }]
     end
-    raise "Credential check failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Verify all packages are published to their registries'
   task :verify do
-    failures = []
-    %w[java py rb dotnet node].each do |lang|
-      Rake::Task["#{lang}:verify"].invoke
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:verify"].invoke }]
     end
-    raise "Verification failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Release all artifacts for all language bindings'
@@ -254,15 +266,10 @@ namespace :all do
 
   desc 'Run linters for all language bindings'
   task :lint do
-    all_langs = %w[java py rb dotnet node]
-    failures = []
-    all_langs.each do |lang|
-      puts "Linting #{lang}..."
-      Rake::Task["#{lang}:lint"].invoke
-    rescue StandardError => e
-      failures << "#{lang}: #{e.message}"
+    steps = %w[java py rb dotnet node].to_h do |lang|
+      [lang.to_sym, -> { Rake::Task["#{lang}:lint"].invoke }]
     end
-    raise "Lint failed:\n#{failures.join("\n")}" unless failures.empty?
+    SeleniumRake.aggregate_errors(**steps)
   end
 
   desc 'Update versions for all language bindings'

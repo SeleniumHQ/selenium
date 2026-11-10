@@ -26,7 +26,7 @@ internal class StorageTests : BiDiTestFixture
     [Test]
     public async Task CanGetCookieByName()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         var cookiesResult = await bidi.Storage.GetCookiesAsync(new()
         {
@@ -44,7 +44,7 @@ internal class StorageTests : BiDiTestFixture
     [Test]
     public async Task CanGetCookieInDefaultUserContext()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
@@ -65,22 +65,22 @@ internal class StorageTests : BiDiTestFixture
     [Test]
     public async Task CanAddCookie()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
-        var partitionKey = await context.Storage.SetCookieAsync(new("fish", "cod", UrlBuilder.HostName));
+        var partitionKey = await context.Storage.SetCookieAsync(new("fish", "cod", Urls.HostName));
 
         Assert.That(partitionKey, Is.Not.Null);
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanAddAndGetCookie()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         var expiry = DateTimeOffset.Now.AddDays(1);
 
-        await context.Storage.SetCookieAsync(new("fish", "cod", UrlBuilder.HostName)
+        await context.Storage.SetCookieAsync(new("fish", "cod", Urls.HostName)
         {
             Path = "/common/animals",
             HttpOnly = true,
@@ -92,7 +92,7 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await context.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(1));
 
         var cookie = cookiesResult.Cookies[0];
 
@@ -107,10 +107,10 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanGetAllCookies()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         driver.Manage().Cookies.AddCookie(new("key1", "value1"));
         driver.Manage().Cookies.AddCookie(new("key2", "value2"));
@@ -118,7 +118,7 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(2));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(2));
         Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key1"));
         Assert.That(cookiesResult.Cookies[1].Name, Is.EqualTo("key2"));
     }
@@ -126,7 +126,7 @@ internal class StorageTests : BiDiTestFixture
     [Test]
     public async Task CanDeleteAllCookies()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         driver.Manage().Cookies.AddCookie(new("key1", "value1"));
         driver.Manage().Cookies.AddCookie(new("key2", "value2"));
@@ -142,10 +142,10 @@ internal class StorageTests : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Edge, "GetCookiesAsync returns incorrect cookies: https://github.com/MicrosoftEdge/EdgeWebDriver/issues/194")]
     public async Task CanDeleteCookieWithName()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
         driver.Manage().Cookies.AddCookie(new("key1", "value1"));
         driver.Manage().Cookies.AddCookie(new("key2", "value2"));
@@ -157,21 +157,21 @@ internal class StorageTests : BiDiTestFixture
         var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
         Assert.That(cookiesResult, Is.Not.Null);
-        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult.Cookies, Has.Length.EqualTo(1));
         Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key2"));
     }
 
     [Test]
     public async Task AddCookiesWithDifferentPathsThatAreRelatedToOurs()
     {
-        driver.Url = UrlBuilder.WhereIs("animals");
+        driver.Url = Urls.WhereIs("animals");
 
-        await context.Storage.SetCookieAsync(new("fish", "cod", UrlBuilder.HostName)
+        await context.Storage.SetCookieAsync(new("fish", "cod", Urls.HostName)
         {
             Path = "/common/animals"
         });
 
-        driver.Url = UrlBuilder.WhereIs("simpleTest");
+        driver.Url = Urls.WhereIs("simpleTest");
 
         var result = driver.Manage().Cookies.AllCookies;
 

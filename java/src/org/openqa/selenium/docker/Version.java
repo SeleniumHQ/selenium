@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import static java.math.BigInteger.ZERO;
+
+import java.math.BigInteger;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -51,7 +54,11 @@ class Version {
     int max = Math.max(segments.length, other.segments.length);
 
     for (int i = 0; i < max; i++) {
-      if (compare(segments, other.segments, i) > 0) {
+      int cmp = compare(segments, other.segments, i);
+      if (cmp < 0) {
+        return true;
+      }
+      if (cmp > 0) {
         return false;
       }
     }
@@ -63,8 +70,12 @@ class Version {
     int max = Math.max(segments.length, other.segments.length);
 
     for (int i = 0; i < max; i++) {
-      if (compare(segments, other.segments, i) < 0) {
+      int cmp = compare(segments, other.segments, i);
+      if (cmp < 0) {
         return false;
+      }
+      if (cmp > 0) {
+        return true;
       }
     }
 
@@ -79,16 +90,29 @@ class Version {
   // argument is less than, equal to, or greater than the second. We attempt
   // numerical comparisons first, and then a lexical comparison
   private int compare(String[] ours, String[] theirs, int index) {
-    try {
-      long mine = index < ours.length ? Long.parseLong(ours[index]) : 0L;
-      long others = index < theirs.length ? Long.parseLong(theirs[index]) : 0L;
+    String mine = index < ours.length ? ours[index] : "";
+    String others = index < theirs.length ? theirs[index] : "";
+    boolean mineIsNumber = isNumeric(mine) || mine.isEmpty();
+    boolean othersIsNumber = isNumeric(others) || others.isEmpty();
 
-      return Long.compare(mine, others);
-    } catch (NumberFormatException e) {
-      String mine = index < ours.length ? ours[index] : "";
-      String others = index < theirs.length ? theirs[index] : "";
-      return mine.compareTo(others);
+    if (mineIsNumber && othersIsNumber) {
+      return parseNumber(mine).compareTo(parseNumber(others));
     }
+    if (mineIsNumber) {
+      return 1;
+    }
+    if (othersIsNumber) {
+      return -1;
+    }
+    return mine.compareTo(others);
+  }
+
+  private boolean isNumeric(String value) {
+    return value.chars().allMatch(Character::isDigit);
+  }
+
+  private BigInteger parseNumber(String mine) {
+    return mine.isEmpty() ? ZERO : new BigInteger(mine);
   }
 
   @Override

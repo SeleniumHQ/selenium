@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>selected_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/is-selected-global.js"></script>
+  <script type="text/javascript">
+    // Ported from webdriver.atoms.element.isSelected, which answers false for
+    // anything that cannot be selected. The lower-level bot.dom.core.isSelected
+    // threw ELEMENT_NOT_SELECTABLE instead; this atom must not.
+    var isSelected = window.bot.dom.typescript.isSelected;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    QUnit.test('elements that cannot be selected answer false rather than throwing', function (assert) {
+      assert.strictEqual(isSelected(byId('a-div')), false, 'a div is not selectable');
+      assert.strictEqual(isSelected(byId('a-text-input')), false, 'a text input is not selectable');
+      assert.strictEqual(isSelected(document.body), false, 'the body is not selectable');
+    });
+
+    QUnit.test('reads the checked state of a checkbox', function (assert) {
+      assert.strictEqual(isSelected(byId('unchecked-checkbox')), false);
+      assert.strictEqual(isSelected(byId('checked-checkbox')), true);
+    });
+
+    QUnit.test('reads the checked state of a radio', function (assert) {
+      assert.strictEqual(isSelected(byId('unchecked-radio')), false);
+      assert.strictEqual(isSelected(byId('checked-radio')), true);
+    });
+
+    QUnit.test('reads the selected state of an option', function (assert) {
+      assert.strictEqual(isSelected(byId('selected-option')), true);
+      assert.strictEqual(isSelected(byId('unselected-option')), false);
+    });
+
+    QUnit.test('follows the property, not the attribute', function (assert) {
+      var checkbox = byId('unchecked-checkbox');
+      checkbox.checked = true;
+      assert.strictEqual(isSelected(checkbox), true, 'should see the property change');
+      checkbox.checked = false;
+      assert.strictEqual(isSelected(checkbox), false, 'should see it change back');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="a-div">not selectable</div>
+  <form id="a-form" onsubmit="return false;">
+    <input type="text" id="a-text-input" value="text">
+    <input type="checkbox" id="unchecked-checkbox">
+    <input type="checkbox" id="checked-checkbox" checked>
+    <input type="radio" name="r" id="unchecked-radio">
+    <input type="radio" name="r2" id="checked-radio" checked>
+    <select id="a-select">
+      <option id="selected-option" selected>first</option>
+      <option id="unselected-option">second</option>
+    </select>
+  </form>
+</body>
+
+</html>

@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Drawing;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests;
 
@@ -28,9 +27,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToDetermineTheLocationOfAnElement()
     {
-        driver.Url = xhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
-        IWebElement element = driver.FindElement(By.Id("username"));
+        IWebElement element = Driver.FindElement(By.Id("username"));
         Point location = element.Location;
 
         Assert.That(location.X, Is.GreaterThan(0));
@@ -40,7 +39,7 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAnElement()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/simple_page.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/simple_page.html");
         Assert.That(GetLocationInViewPort(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
     }
@@ -48,7 +47,7 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAnEmptyElement()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_empty_element.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_empty_element.html");
         Assert.That(GetLocationInViewPort(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
     }
@@ -56,7 +55,7 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfATransparentElement()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_transparent_element.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_transparent_element.html");
         Assert.That(GetLocationInViewPort(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
     }
@@ -64,7 +63,7 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAHiddenElement()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_hidden_element.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_hidden_element.html");
         Assert.That(GetLocationInViewPort(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
     }
@@ -72,7 +71,7 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAnInvisibleElement()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_invisible_element.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_invisible_element.html");
         Assert.That(GetLocationInViewPort(By.Id("box")), Is.EqualTo(new Point(0, 0)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(0, 0)));
     }
@@ -80,8 +79,8 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_element_out_of_view.html");
-        int windowHeight = driver.Manage().Window.Size.Height;
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_element_out_of_view.html");
+        int windowHeight = Driver.Manage().Window.Size.Height;
         Point location = GetLocationInViewPort(By.Id("box"));
         Assert.That(location.X, Is.EqualTo(10));
         Assert.That(location.Y, Is.GreaterThanOrEqualTo(0));
@@ -94,9 +93,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAnElementInAFrame()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_frame.html");
-        driver.SwitchTo().Frame("ifr");
-        IWebElement box = driver.FindElement(By.Id("box"));
+        Driver.Url = Urls.WhereIs("coordinates_tests/element_in_frame.html");
+        Driver.SwitchTo().Frame("ifr");
+        IWebElement box = Driver.FindElement(By.Id("box"));
         Assert.That(box.Location, Is.EqualTo(new Point(10, 10)));
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
     }
@@ -104,8 +103,8 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesInViewPortOfAnElementInAFrame()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_frame.html");
-        driver.SwitchTo().Frame("ifr");
+        Driver.Url = Urls.WhereIs("coordinates_tests/element_in_frame.html");
+        Driver.SwitchTo().Frame("ifr");
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         // GetLocationInViewPort only works within the context of a single frame
         // for W3C-spec compliant remote ends.
@@ -115,9 +114,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesInViewPortOfAnElementInANestedFrame()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_nested_frame.html");
-        driver.SwitchTo().Frame("ifr");
-        driver.SwitchTo().Frame("ifr");
+        Driver.Url = Urls.WhereIs("coordinates_tests/element_in_nested_frame.html");
+        Driver.SwitchTo().Frame("ifr");
+        Driver.SwitchTo().Frame("ifr");
         Assert.That(GetLocationOnPage(By.Id("box")), Is.EqualTo(new Point(10, 10)));
         // GetLocationInViewPort only works within the context of a single frame
         // for W3C-spec compliant remote ends.
@@ -127,11 +126,11 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldGetCoordinatesOfAnElementWithFixedPosition()
     {
-        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_fixed_element.html");
+        Driver.Url = Urls.WhereIs("coordinates_tests/page_with_fixed_element.html");
         Assert.That(GetLocationInViewPort(By.Id("fixed")).Y, Is.EqualTo(0));
         Assert.That(GetLocationOnPage(By.Id("fixed")).Y, Is.EqualTo(0));
 
-        driver.FindElement(By.Id("bottom")).Click();
+        Driver.FindElement(By.Id("bottom")).Click();
         Assert.That(GetLocationInViewPort(By.Id("fixed")).Y, Is.EqualTo(0));
         Assert.That(GetLocationOnPage(By.Id("fixed")).Y, Is.GreaterThan(0));
     }
@@ -139,9 +138,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight()
     {
-        driver.Url = xhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
-        IWebElement shrinko = driver.FindElement(By.Id("linkId"));
+        IWebElement shrinko = Driver.FindElement(By.Id("linkId"));
         Size size = shrinko.Size;
         Assert.That(size.Width, Is.GreaterThan(0), "Width expected to be greater than 0");
         Assert.That(size.Height, Is.GreaterThan(0), "Height expected to be greater than 0");
@@ -150,9 +149,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldHandleNonIntegerPositionAndSize()
     {
-        driver.Url = rectanglesPage;
+        Driver.Url = Urls.RectanglesPage;
 
-        IWebElement r2 = driver.FindElement(By.Id("r2"));
+        IWebElement r2 = Driver.FindElement(By.Id("r2"));
         string left = r2.GetCssValue("left");
         Assert.That(Math.Round(decimal.Parse(left.Replace("px", ""), System.Globalization.CultureInfo.InvariantCulture), 1), Is.EqualTo(10.9));
         string top = r2.GetCssValue("top");
@@ -171,9 +170,9 @@ public class PositionAndSizeTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToDetermineTheSizeOfAnElement()
     {
-        driver.Url = xhtmlTestPage;
+        Driver.Url = Urls.XhtmlTestPage;
 
-        IWebElement element = driver.FindElement(By.Id("username"));
+        IWebElement element = Driver.FindElement(By.Id("username"));
         Size size = element.Size;
 
         Assert.That(size.Width, Is.GreaterThan(0));
@@ -182,13 +181,13 @@ public class PositionAndSizeTests : DriverTestFixture
 
     private Point GetLocationInViewPort(By locator)
     {
-        IWebElement element = driver.FindElement(locator);
+        IWebElement element = Driver.FindElement(locator);
         return ((ILocatable)element).Coordinates.LocationInViewport;
     }
 
     private Point GetLocationOnPage(By locator)
     {
-        IWebElement element = driver.FindElement(locator);
+        IWebElement element = Driver.FindElement(locator);
         return ((ILocatable)element).Coordinates.LocationInDom;
     }
 }

@@ -23,8 +23,10 @@ module Selenium
   module WebDriver
     module Remote
       describe Features do
-        let(:http) { WebDriver::Remote::Http::Default.new }
-        let(:bridge) { Bridge.new(http_client: http, url: 'http://localhost') }
+        let(:http) do
+          WebDriver::Remote::Http::Default.new.tap { |client| client.server_url = 'http://localhost' }
+        end
+        let(:bridge) { Bridge.new(http_client: http) }
 
         before do
           allow(http).to receive(:request)
@@ -32,7 +34,7 @@ module Selenium
             .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
           bridge.create_session({})
-          bridge.extend(Features)
+          bridge.extend(described_class)
           bridge.add_commands(Features::REMOTE_COMMANDS)
         end
 

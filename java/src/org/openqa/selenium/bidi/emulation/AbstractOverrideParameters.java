@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public abstract class AbstractOverrideParameters implements OverrideParameters {
   private static final String CONTEXTS = "contexts";
   private static final String USER_CONTEXTS = "userContexts";

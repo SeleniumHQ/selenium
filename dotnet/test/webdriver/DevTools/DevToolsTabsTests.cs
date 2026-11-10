@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using CurrentCdpVersion = OpenQA.Selenium.DevTools.V147;
+using CurrentCdpVersion = OpenQA.Selenium.DevTools.V157;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
 [TestFixture]
 public class DevToolsTabsTests : DevToolsTestFixture
 {
-
     [Test]
     [IgnoreBrowser(Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
@@ -34,16 +33,30 @@ public class DevToolsTabsTests : DevToolsTestFixture
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
         await domains.Console.Enable();
-        var oldWindowHandle = driver.CurrentWindowHandle;
-        driver.SwitchTo().NewWindow(WindowType.Tab);
-        driver.SwitchTo().Window(oldWindowHandle);
-        driver.Close();
-        Assert.That(
-            async () =>
+        var oldWindowHandle = Driver.CurrentWindowHandle;
+        Driver.SwitchTo().NewWindow(WindowType.Tab);
+        Driver.SwitchTo().Window(oldWindowHandle);
+
+        var targetDetached = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        void targetDetachedHandler(object _, CurrentCdpVersion.Target.DetachedFromTargetEventArgs e)
+        {
+            if (e.TargetId == oldWindowHandle)
             {
-                await domains.Console.Enable();
-            },
-            Throws.Nothing
-        );
+                targetDetached.TrySetResult(true);
+            }
+        }
+
+        domains.Target.DetachedFromTarget += targetDetachedHandler;
+
+        try
+        {
+            Driver.Close();
+            await targetDetached.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.That(async () => await domains.Console.Enable(), Throws.Nothing);
+        }
+        finally
+        {
+            domains.Target.DetachedFromTarget -= targetDetachedHandler;
+        }
     }
 }

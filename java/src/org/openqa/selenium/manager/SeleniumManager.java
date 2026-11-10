@@ -41,6 +41,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
@@ -67,7 +68,6 @@ public class SeleniumManager {
   private static final String BINARY_PATH_FORMAT = "/manager/%s/%s";
   private static final String HOME = "~";
   private static final String CACHE_PATH_ENV = "SE_CACHE_PATH";
-  private static final String BETA_PREFIX = "0.";
   private static final String EXE = ".exe";
   private static final String SE_ENV_PREFIX = "SE_";
 
@@ -76,32 +76,10 @@ public class SeleniumManager {
   @Nullable private final String managerPath = System.getenv("SE_MANAGER_PATH");
 
   @Nullable private Path binary = managerPath == null ? null : Paths.get(managerPath);
-  private final String seleniumManagerVersion;
-  private boolean binaryInTemporalFolder = false;
 
   /** Wrapper for the Selenium Manager binary. */
   private SeleniumManager() {
-    BuildInfo info = new BuildInfo();
-    String releaseLabel = info.getReleaseLabel();
-    int lastDot = releaseLabel.lastIndexOf(".");
-    seleniumManagerVersion = BETA_PREFIX + releaseLabel.substring(0, lastDot);
-    if (managerPath == null) {
-      Runtime.getRuntime()
-          .addShutdownHook(
-              new Thread(
-                  () -> {
-                    if (binaryInTemporalFolder && binary != null && Files.exists(binary)) {
-                      try {
-                        Files.delete(binary);
-                      } catch (IOException e) {
-                        LOG.warning(
-                            String.format(
-                                "%s deleting temporal file: %s",
-                                e.getClass().getSimpleName(), e.getMessage()));
-                      }
-                    }
-                  }));
-    } else {
+    if (managerPath != null) {
       LOG.fine(String.format("Selenium Manager set by env 'SE_MANAGER_PATH': %s", managerPath));
     }
   }
@@ -154,7 +132,10 @@ public class SeleniumManager {
       code = process.exitValue();
       output = process.getOutput(StandardCharsets.UTF_8);
     } catch (Exception e) {
-      throw new WebDriverException("Failed to run command: " + arguments, e);
+      throw new WebDriverException(
+          String.format(
+              "Failed to run command \"%s\" with arguments %s", binary.toAbsolutePath(), arguments),
+          e);
     }
     SeleniumManagerOutput jsonOutput = null;
     JsonException failedToParse = null;
@@ -164,12 +145,10 @@ public class SeleniumManager {
         jsonOutput = new Json().toType(output, SeleniumManagerOutput.class);
         jsonOutput
             .getLogs()
-            .forEach(
-                logged -> {
-                  Level currentLevel =
-                      logged.getLevel() == Level.INFO ? Level.FINE : logged.getLevel();
-                  LOG.log(currentLevel, logged.getMessage());
-                });
+            .forEach(logged -> {
+              Level currentLevel = logged.getLevel() == Level.INFO ? Level.FINE : logged.getLevel();
+              LOG.log(currentLevel, logged.getMessage());
+            });
         dump = jsonOutput.getResult().getMessage();
       } catch (JsonException e) {
         failedToParse = e;
@@ -177,11 +156,16 @@ public class SeleniumManager {
     }
     if (code != 0) {
       throw new WebDriverException(
-          "Command failed with code: " + code + ", executed: " + arguments + "\n" + dump,
+          String.format(
+              "Command failed with code: %d, executed \"%s\" with arguments %s%n%s",
+              code, binary.toAbsolutePath(), arguments, dump),
           failedToParse);
     } else if (failedToParse != null || jsonOutput == null) {
       throw new WebDriverException(
-          "Failed to parse json output, executed: " + arguments + "\n" + dump, failedToParse);
+          String.format(
+              "Failed to parse json output, executed \"%s\" with arguments %s%n%s",
+              binary.toAbsolutePath(), arguments, dump),
+          failedToParse);
     }
     return jsonOutput.getResult();
   }
@@ -192,7 +176,7 @@ public class SeleniumManager {
    * @return the path to the Selenium Manager binary.
    */
   private synchronized Path getBinary() {
-    if (binary == null) {
+    if (binary == null || (managerPath == null && !Files.exists(binary))) {
       try {
         Platform current = Platform.getCurrent();
         String folder = "";
@@ -203,18 +187,16 @@ public class SeleniumManager {
         } else if (current.is(MAC)) {
           folder = "macos";
         } else if (current.is(LINUX)) {
-          if (System.getProperty("os.arch").contains("arm")
-              || System.getProperty("os.arch").contains("aarch64")) {
-            throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
-          } else {
-            folder = "linux";
-          }
+          folder =
+              System.getProperty("os.arch", "").toLowerCase().contains("aarch64")
+                  ? "linux-arm64"
+                  : "linux-x86_64";
         } else if (current.is(UNIX)) {
           LOG.warning(
               String.format(
                   "Selenium Manager binary may not be compatible with %s; verify settings",
                   current));
-          folder = "linux";
+          folder = "linux-x86_64";
         } else {
           throw new WebDriverException("Unsupported platform: " + current);
         }
@@ -299,14 +281,14 @@ public class SeleniumManager {
     cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
 
     // If cache path is not writable, SM will be extracted to a temporal folder
+    String releaseLabel = new BuildInfo().getReleaseLabel();
     Path cacheParent = Paths.get(cachePath);
-    if (!Files.isWritable(cacheParent)) {
-      cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
-      binaryInTemporalFolder = true;
+    if (!Files.isWritable(cacheParent) || "unknown".equals(releaseLabel)) {
+      cacheParent =
+          TemporaryFilesystem.getDefaultTmpFS().createTempDir(SELENIUM_MANAGER, "").toPath();
     }
 
     return Paths.get(
-        cacheParent.toString(),
-        String.format(BINARY_PATH_FORMAT, seleniumManagerVersion, binaryName));
+        cacheParent.toString(), String.format(BINARY_PATH_FORMAT, releaseLabel, binaryName));
   }
 }

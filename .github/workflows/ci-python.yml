@@ -2,69 +2,124 @@ name: CI - Python
 
 on:
   workflow_call:
+    inputs:
+      smoke:
+        description: Smoke tests always run; callers pass false to add the full matrix
+        required: false
+        type: boolean
+        default: true
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
+    inputs:
+      smoke:
+        description: Smoke tests only (default also runs the full matrix)
+        required: false
+        type: boolean
+        default: false
+      compile-manager:
+        description: Build Selenium Manager from source instead of downloading the pinned binary
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
+# Two tiers, mutually exclusive by content. `smoke` runs on every event, including
+# schedule, so the schedule-only flaky parser sees it. The full jobs run on schedule
+# or dispatch and exclude the smoke tags, so they are the nightly complement of
+# smoke rather than the whole tree.
 jobs:
-  build:
-    name: Build
+  lint-ruff:
+    name: Lint (ruff)
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Build
+      name: Lint (ruff)
+      run: bazel run //py:ruff-check -- --no-fix
+
+  lint-mypy:
+    name: Lint (mypy)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (mypy)
+      run: bazel run //py:mypy
+
+  lint-docs:
+    name: Lint (docs)
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint (docs)
       run: |
-        bazel build //py:selenium-wheel //py:selenium-sdist
+        bazel run //py:generate-api-listing
+        bazel run //py:sphinx-autogen
+        bazel build //py:docs
 
-  lint:
-    name: Lint
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Lint
-      run: ./go py:lint
-
+  # Tests on 3.10.20 (earliest supported version) are run in smoke and RBE.
+  # This job covers the latest supported version.
   unit-tests:
     name: Unit Tests
-    needs: build
+    if: github.event_name == 'schedule' || !inputs.smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.14']
-        os: [ubuntu, macos, windows]
+        python-version: ['3.15']
+        os: [ubuntu]
     with:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      run: bazel test --local_test_jobs 1 //py:unit
+      run: bazel test //py:unit
 
-  remote-tests:
-    name: Remote Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Integration Tests Remote
-      browser: yes
-      rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
-
-  browser-tests:
-    name: Browser Tests
-    needs: build
+  smoke:
+    name: ${{ matrix.os }}-smoke
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-bidi, edge]
+        os: [windows, macos]
+        tag_filters: ["unit,os-sensitive,se-manager,skip-rbe"]
+        # macOS runners are scarce, so only use for PRs and nightly runs
+        exclude:
+          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
+    with:
+      name: ${{ matrix.os }}
+      needs-display: true
+      os: ${{ matrix.os }}
+      rerun-with-debug: true
+      download-artifact-name: targets
+      run: >
+        [ -s bazel-targets-py.txt ] || echo //py/... > bazel-targets-py.txt;
+        ./scripts/github-actions/bazel-test-if-targets.sh
+        --config=gh-browser
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
+        --target_pattern_file=bazel-targets-py.txt
+
+  browser-tests:
+    name: Browser Tests
+    if: github.event_name == 'schedule' || !inputs.smoke
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, chrome-bidi, edge, chrome-grid, firefox-grid]
         os: [windows]
         include:
           - browser: safari
             os: macos
     with:
       name: Integration Tests (${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
+      needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+      run: >
+        bazel test
+        --config=gh-browser
+        ${{ inputs.compile-manager && '--manager=host' || '' }}
+        --test_tag_filters=-os-sensitive,-se-manager,-skip-rbe
+        //py:test-${{ matrix.browser }}

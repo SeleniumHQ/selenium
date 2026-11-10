@@ -17,14 +17,23 @@ common --legacy_external_runfiles
 startup --windows_enable_symlinks
 build --enable_runfiles
 
+# For Python, use a venv site-packages layout on to avoid MAX_PATH failures
+# when loading native extensions.
+build:windows --@rules_python//python/config_settings:venvs_site_packages=yes
+
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
+build --flag_alias=manager=//common:manager
 
-# Set the default java toolchain
-build --java_language_version=21
-build --java_runtime_version=remotejdk_21
-build --tool_java_language_version=21
-build --tool_java_runtime_version=remotejdk_21
+# Set the default java toolchain.
+# When bumping these, also update java_runtime in //common/remote-build/java to match.
+build --java_language_version=25
+build --java_runtime_version=remotejdk_25
+build --tool_java_language_version=25
+build --tool_java_runtime_version=remotejdk_25
+
+# Silence protobuf sun.misc.Unsafe warnings from the JDK 25 Java compile workers.
+build --extra_toolchains=//common/remote-build/java:java-toolchain_definition
 
 # We target java 11 by default
 build --javacopt="--release 11"
@@ -40,10 +49,17 @@ build --javacopt="-Xep:WildcardImport:ERROR"
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
 
+# Produce execution log for builds
+# See https://bazel.build/advanced/performance/build-performance-metrics#execution-log
+build --execution_log_compact_file=exec.log
+
 # More JS magic
 build --allow_unresolved_symlinks
 # Avoid a warning about directory tracking being unsound
 startup --host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1
+# Ceiling, not an allocation; small builds still use what they need.
+# Bazel's auto-sized default is too low for CI
+startup --host_jvm_args=-Xmx8g
 
 # Required for faster TS builds
 build --@aspect_rules_ts//ts:skipLibCheck=always
@@ -58,6 +74,15 @@ query --@aspect_rules_ts//ts:default_to_tsc_transpiler
 
 build --incompatible_strict_action_env
 
+# Prevent runner-provided ANDROID_HOME triggering rules_android's SDK fetch.
+# Creates a harmless empty repo instead of failing on missing API platforms.
+common --repo_env=ANDROID_HOME=
+
+# Add a Launchpad fallback for the pinned zlib .deb that rules_rs fetches from
+# snapshot.ubuntu.com, so an intermittent snapshot.ubuntu.com outage no longer
+# aborts every Rust-touching build. See third_party/bazel/downloader.cfg.
+common --downloader_config=third_party/bazel/downloader.cfg
+
 # Required for prebuilt protoc to be used
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
 
@@ -69,7 +94,6 @@ common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUIL
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 common --incompatible_enable_proto_toolchain_resolution
-build --incompatible_enable_cc_toolchain_resolution
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
@@ -78,7 +102,19 @@ build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 # For build stamping
 common --enable_platform_specific_config
 common:linux --host_platform=//:local_linux_gnu
-common:windows --host_platform=//:local_windows_gnullvm
+# Must match the crate universe's Windows ABI; a mismatch silently skips every Rust target
+common:windows --host_platform=//:local_windows_msvc
+# Keep the exec output dir short; Rust sysroot paths under it sit near Windows MAX_PATH
+common:windows --experimental_override_name_platform_in_output_dir=//:local_windows_msvc=winmsvc
+# @llvm has no msvc toolchain, so outrank it with Bazel's autoconfigured MSVC one
+common:windows --extra_toolchains=@local_config_cc_toolchains//:all
+
+# rules_rs 0.0.90 bundles a newer rules_rust whose cargo build-script runner
+# rejects libtool as the archiver (AR). macOS toolchains use libtool by default,
+# so build Rust against the hermetic @llvm toolchain (registered for macOS exec
+# in MODULE.bazel) with the rules_cc archiver switched from libtool to llvm-ar.
+common:macos --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common:macos --@rules_cc//cc/toolchains/args/archiver_flags:use_libtool_on_macos=False
 build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
@@ -97,6 +133,7 @@ test --test_env=MOZ_HEADLESS
 test --test_env=SELENIUM_BROWSER
 test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
+test --test_env=SE_CACHE_PATH
 
 # Remove once rules_ruby support proper $LOAD_PATH expansion.
 test --test_env=RUBYOPT="-Irb/lib -w"
@@ -114,14 +151,32 @@ test:windows --test_env=PROCESSOR_ARCHITECTURE
 test:windows --test_env=PROGRAMFILES="C:\\Program Files"
 test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 
-test --test_timeout=1800
+# Browser tests claim one `browser` each, and Bazel fails every action of a target that claims an
+# undeclared resource, so `build` (which `test` inherits) must declare it. CI lowers this to 1.
+build --local_resources=browser=HOST_CPUS
+
+# GitHub Actions browser tests run one browser at a time on the latest stable browser and driver from Selenium Manager.
+test:gh-browser --build_tests_only
+test:gh-browser --keep_going
+test:gh-browser --flaky_test_attempts=2
+test:gh-browser --local_resources=browser=1
+test:gh-browser --skip_incompatible_explicit_targets
+test:gh-browser --pin_browsers=false
+test:gh-browser --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+test:gh-browser --test_env=SE_SKIP_DRIVER_IN_PATH=true
 
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
 test:ruby_debug --test_output=streamed --test_env=RUBY_DEBUG_FORK_MODE=parent --run_under="@bundle//bin:rdbg --nonstop --open --command"
 
 
+# @llvm defaults to 14.0.
+build --macos_minimum_os=11.0
+
 build:release --stamp
 build:release --compilation_mode=opt
+# Match [profile.release] in rust/Cargo.toml, which Bazel doesn't read.
+build:release --@rules_rust//rust/settings:lto=fat
+build:release --@rules_rust//rust/settings:extra_rustc_flags=-Copt-level=z,-Ccodegen-units=1,-Cpanic=abort,-Cstrip=symbols
 
 # As regular `release` but all the build work happens on the RBE
 build:rbe_release --config=release

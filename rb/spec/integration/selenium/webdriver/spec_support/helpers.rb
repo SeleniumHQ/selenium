@@ -37,8 +37,8 @@ module Selenium
           GlobalTestEnv.create_driver!(...)
         end
 
-        def url_for(filename)
-          GlobalTestEnv.url_for filename
+        def url_for(filename, secure: false)
+          GlobalTestEnv.url_for filename, secure: secure
         end
 
         def fix_windows_path(path)
@@ -119,8 +119,8 @@ module Selenium
           wait_for_url(file_name)
         end
 
-        def wait(timeout = 10)
-          Wait.new(timeout: timeout)
+        def wait(timeout = 10, ignore: [Error::NoSuchElementError])
+          Wait.new(timeout: timeout, ignore:)
         end
 
         def png_size(path)
@@ -136,9 +136,9 @@ module Selenium
           [width, height]
         end
 
-        def create_tempfile
+        def create_tempfile(content = 'This is a dummy test file')
           Tempfile.new.tap do |file|
-            file.write('This is a dummy test file')
+            file.write(content)
             file.close
           end
         end

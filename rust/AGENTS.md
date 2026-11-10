@@ -41,11 +41,3 @@ Use doc comments for public APIs:
 /// # Errors
 /// Returns `ErrorType` when condition.
 ```
-
-## Formatting
-Rust files are formatted with **rustfmt** (standard Rust formatting, no custom config).
-Run `./go format` after changes; it will auto-fix all style issues.
-
-Key rules enforced:
-- Standard Rust style (rustfmt defaults): 4-space indentation, 100-char line length
-- `use` statements grouped and sorted per standard conventions

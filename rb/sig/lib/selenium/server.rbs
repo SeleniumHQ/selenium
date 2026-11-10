@@ -1,9 +1,23 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+
 module Selenium
   class Server
-    self.@latest: untyped
-
-    self.@available_assets: untyped
-
     @jar: String
 
     @host: String
@@ -31,19 +45,11 @@ module Selenium
     class Error < StandardError
     end
 
-    CL_RESET: untyped
-
     def self.get: (Symbol | String required_version, ?Hash[untyped, untyped] opts) -> Server
 
     def self.download: (Symbol | String required_version) -> String
 
-    def self.latest: () -> untyped
-
-    def self.available_assets: () -> untyped
-
-    def self.net_http_start: (untyped address) { () -> untyped } -> untyped
-
-    def self.download_server: (untyped uri, untyped destination) -> untyped
+    def self.latest: () -> String
 
     attr_accessor role: untyped
 

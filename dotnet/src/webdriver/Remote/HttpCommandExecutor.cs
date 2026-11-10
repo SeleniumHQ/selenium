@@ -112,6 +112,11 @@ public class HttpCommandExecutor : ICommandExecutor
     public string UserAgent { get; set; }
 
     /// <summary>
+    /// Gets the address of the remote end this executor connects to.
+    /// </summary>
+    internal Uri RemoteServerUri => this.remoteServerUri;
+
+    /// <summary>
     /// Gets the repository of objects containing information about commands.
     /// </summary>
     /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>

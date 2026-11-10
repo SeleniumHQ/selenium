@@ -44,20 +44,20 @@ def free_port() -> int:
         try:
             free_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
             free_socket.bind(("::1", 0))
-        except OSError:
+        except OSError as err:
             if free_socket:
                 free_socket.close()
-            raise RuntimeError("Can't find free port (Unable to bind to IPv4 or IPv6)")
+            raise RuntimeError("Can't find free port (Unable to bind to IPv4 or IPv6)") from err
     try:
         port: int = free_socket.getsockname()[1]
     except Exception as e:
-        raise RuntimeError(f"Can't find free port: ({e})")
+        raise RuntimeError(f"Can't find free port: ({e})") from e
     finally:
         free_socket.close()
     return port
 
 
-def find_connectable_ip(host: str | bytes | bytearray | None, port: int | None = None) -> str | None:
+def find_connectable_ip(host: str | bytes | None, port: int | None = None) -> str | None:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only

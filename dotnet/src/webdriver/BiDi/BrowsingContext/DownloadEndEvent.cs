@@ -24,64 +24,48 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
+[JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(
-    IBiDi BiDi,
-    BrowsingContext Context)
-    : EventArgs(BiDi);
+    BrowsingContext Context,
+    Navigation? Navigation,
+    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : EventArgs, IBaseNavigationInfo;
 
 public sealed record DownloadCanceledEventArgs(
-    IBiDi BiDi,
+    Download Download,
     BrowsingContext Context,
     Navigation? Navigation,
     DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
 public sealed record DownloadCompleteEventArgs(
-    IBiDi BiDi,
+    Download Download,
     string? Filepath,
     BrowsingContext Context,
     Navigation? Navigation,
     DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
+    string Url,
+    Browser.UserContext? UserContext)
+    : DownloadEndEventArgs(Context, Navigation, Timestamp, Url, UserContext);
 
-// https://github.com/dotnet/runtime/issues/72604
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "status")]
-//[JsonDerivedType(typeof(DownloadCanceledParams), "canceled")]
-//[JsonDerivedType(typeof(DownloadCompleteParams), "complete")]
-[JsonConverter(typeof(DownloadEndParamsConverter))]
-internal abstract record DownloadEndParams(BrowsingContext Context);
-
-internal sealed record DownloadCanceledParams(
-    BrowsingContext Context,
-    Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndParams(Context), IBaseNavigationInfo;
-
-internal sealed record DownloadCompleteParams(
-    string? Filepath,
-    BrowsingContext Context,
-    Navigation? Navigation,
-    [property: JsonConverter(typeof(DateTimeOffsetConverter))] DateTimeOffset Timestamp,
-    string Url)
-    : DownloadEndParams(Context), IBaseNavigationInfo;
-
-// https://github.com/dotnet/runtime/issues/72604
-internal class DownloadEndParamsConverter : JsonConverter<DownloadEndParams>
+internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArgs>
 {
-    public override DownloadEndParams? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DownloadEndEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return reader.GetDiscriminator("status") switch
+        var status = reader.GetDiscriminator("status");
+        return status switch
         {
-            "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledParams>()),
-            "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteParams>()),
-            _ => null,
+            "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventArgs>()),
+            "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventArgs>()),
+            _ => throw new JsonException($"Unknown download status '{status}'."),
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, DownloadEndParams value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DownloadEndEventArgs value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

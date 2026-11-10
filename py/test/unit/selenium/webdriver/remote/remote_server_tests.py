@@ -49,6 +49,18 @@ def test_server_with_kwargs():
     assert server.env == {"FOO": "bar"}
 
 
+def test_server_with_default_args():
+    server = Server()
+    assert server.args == list(Server.DEFAULT_ARGS)
+
+
+def test_server_with_args_override():
+    args = ["--detect-drivers", "false", "--driver-configuration", "display-name=chrome"]
+    server = Server(args=args)
+    assert server.args == args
+    assert server.args is not args
+
+
 def test_server_with_invalid_port():
     port = "invalid"
     msg = f"Server.__init__() got an invalid port: '{port}'"
@@ -77,7 +89,7 @@ def test_server_with_invalid_version():
 
 
 def test_server_with_invalid_log_level():
-    msg = ", ".join(("SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"))
+    msg = "SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST"
     with pytest.raises(TypeError, match=f"log_level must be one of: {msg}"):
         Server(log_level="BAD")
 

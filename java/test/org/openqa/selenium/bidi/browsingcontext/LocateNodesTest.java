@@ -180,10 +180,9 @@ public class LocateNodesTest extends JupiterTestBase {
     RemoteValue remoteValue = resultSuccess.getResult();
     List<RemoteValue> remoteValues = (List<RemoteValue>) remoteValue.getValue().get();
 
-    remoteValues.forEach(
-        value ->
-            startNodes.add(
-                new RemoteReference(RemoteReference.Type.SHARED_ID, value.getSharedId().get())));
+    remoteValues.forEach(value ->
+        startNodes.add(
+            new RemoteReference(RemoteReference.Type.SHARED_ID, value.getSharedId().get())));
 
     LocateNodeParameters parameters =
         new LocateNodeParameters(Locator.css("input"))

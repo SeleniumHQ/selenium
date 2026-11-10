@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class ProvideResponseParameters {
   private final Map<String, Object> map = new HashMap<>();
 

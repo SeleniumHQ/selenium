@@ -24,10 +24,10 @@ public record ResponseData(string Url,
     int Status, // TODO: should be unit
     string StatusText,
     bool FromCache,
-    IReadOnlyList<Header> Headers,
+    ImmutableArray<Header> Headers,
     string MimeType,
     long BytesReceived,
     long? HeadersSize,
     long? BodySize,
     ResponseContent Content,
-    IReadOnlyList<AuthChallenge>? AuthChallenges);
+    ImmutableArray<AuthChallenge>? AuthChallenges);

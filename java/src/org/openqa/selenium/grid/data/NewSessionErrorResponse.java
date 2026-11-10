@@ -22,7 +22,6 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.Map;
 import java.util.TreeMap;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 public class NewSessionErrorResponse {
 
@@ -47,31 +46,5 @@ public class NewSessionErrorResponse {
     toReturn.put("message", message);
     toReturn.put("requestId", requestId);
     return unmodifiableMap(toReturn);
-  }
-
-  @SuppressWarnings({"unused", "DataFlowIssue"})
-  private static NewSessionErrorResponse fromJson(JsonInput input) {
-    String message = null;
-    RequestId requestId = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "message":
-          message = input.read(String.class);
-          break;
-
-        case "requestId":
-          requestId = input.read(RequestId.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new NewSessionErrorResponse(requestId, message);
   }
 }

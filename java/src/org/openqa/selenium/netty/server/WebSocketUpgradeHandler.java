@@ -98,6 +98,15 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     return "ws://" + req.headers().get(HttpHeaderNames.HOST);
   }
 
+  private static void releaseHandlerOnHandshakeFailure(
+      Consumer<Message> handler, int code, String reason) {
+    try {
+      handler.accept(new CloseMessage(code, reason));
+    } catch (Exception ex) {
+      LOG.log(Level.FINE, "failed to release handler on handshake failure", ex);
+    }
+  }
+
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     if (msg instanceof HttpRequest) {
@@ -152,6 +161,10 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
             getWebSocketLocation(req), null, true, Integer.MAX_VALUE);
     handshaker = wsFactory.newHandshaker(req);
     if (handshaker == null) {
+      // The factory has already opened the upstream and (on the Node) acquired a connection
+      // slot. Drive the consumer through its CloseMessage cleanup path before we send the
+      // unsupported-version response, otherwise the upstream and the slot leak.
+      releaseHandlerOnHandshakeFailure(maybeHandler.get(), 1002, "unsupported websocket version");
       WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
     } else {
       ChannelFuture future = handshaker.handshake(ctx.channel(), req);
@@ -159,6 +172,11 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
           (ChannelFutureListener)
               channelFuture -> {
                 if (!future.isSuccess()) {
+                  // Same leak path: the consumer was never registered in the channel attr,
+                  // so the generic exceptionCaught handler will not see it. Drive cleanup
+                  // here so the upstream and any acquired slot are released.
+                  releaseHandlerOnHandshakeFailure(
+                      maybeHandler.get(), 1011, "websocket handshake failed");
                   ctx.fireExceptionCaught(future.cause());
                 } else {
                   Consumer<Message> handler = maybeHandler.get();

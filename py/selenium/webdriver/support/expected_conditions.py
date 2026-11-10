@@ -15,9 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import re
 from collections.abc import Callable, Iterable
-from typing import Any, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
 from selenium.common.exceptions import (
     NoAlertPresentException,
@@ -26,8 +28,10 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     WebDriverException,
 )
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.alert import Alert
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver

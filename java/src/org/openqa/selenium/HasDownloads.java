@@ -110,5 +110,11 @@ public interface HasDownloads {
     public long getSize() {
       return size;
     }
+
+    @Override
+    public String toString() {
+      return String.format(
+          "DownloadedFile{name='%s', modified at: %d, size: %d}", name, lastModifiedTime, size);
+    }
   }
 }

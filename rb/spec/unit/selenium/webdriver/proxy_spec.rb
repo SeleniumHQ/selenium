@@ -24,7 +24,6 @@ module Selenium
     describe Proxy do
       let :proxy_settings do # manual proxy settings
         {
-          ftp: 'mythicalftpproxy:21',
           http: 'mythicalproxy:80',
           no_proxy: 'noproxy',
           ssl: 'mythicalsslproxy',
@@ -57,7 +56,6 @@ module Selenium
       it 'allows valid options for a manual proxy', :aggregate_failures do
         proxy = described_class.new(proxy_settings)
 
-        expect(proxy.ftp).to            eq(proxy_settings[:ftp])
         expect(proxy.http).to           eq(proxy_settings[:http])
         expect(proxy.no_proxy).to       eq(proxy_settings[:no_proxy])
         expect(proxy.ssl).to            eq(proxy_settings[:ssl])
@@ -71,7 +69,6 @@ module Selenium
         proxy_json = described_class.new(proxy_settings).as_json
 
         expect(proxy_json['proxyType']).to     eq('manual')
-        expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
         expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
         expect(proxy_json['noProxy']).to       eq([proxy_settings[:no_proxy]])
         expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])

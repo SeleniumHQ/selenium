@@ -22,13 +22,13 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, ImmutableArray<BrowsingContext.BrowsingContext>? Contexts, ImmutableArray<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed record SetForcedColorsModeThemeOverrideOptions : CommandOptions
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; init; }
+    public ImmutableArray<BrowsingContext.BrowsingContext>? Contexts { get; init; }
 
-    public IEnumerable<Browser.UserContext>? UserContexts { get; init; }
+    public ImmutableArray<Browser.UserContext>? UserContexts { get; init; }
 }
 
 [JsonConverter(typeof(CamelCaseEnumConverter<ForcedColorsModeTheme>))]

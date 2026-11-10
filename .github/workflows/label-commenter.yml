@@ -1,5 +1,5 @@
 # Configuration for Label Commenter - ./.github/label-commenter-config.yml
-name: Label Commenter
+name: Webhook - Label Commenter
 
 on:
   issues:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout base repo to get config file
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           repository: seleniumhq/selenium

@@ -18,7 +18,6 @@
 package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
@@ -31,6 +30,7 @@ import java.io.StringReader;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -169,6 +169,76 @@ class JsonTest {
   }
 
   @Test
+  void convertReturnsNullForANullSource() {
+    String converted = new Json().convert(null, String.class);
+    assertThat(converted).isNull();
+  }
+
+  @Test
+  void convertCoercesAScalarSource() {
+    String text = new Json().convert("cheese", String.class);
+    Boolean flag = new Json().convert(true, Boolean.class);
+    assertThat(text).isEqualTo("cheese");
+    assertThat(flag).isTrue();
+  }
+
+  @Test
+  void convertWidensNumbersTheSameWayAStringParseDoes() {
+    // A parsed JSON integer is a Long; asking for a Double must still widen it, just as
+    // toType("3", Double.class) would.
+    Double widened = new Json().convert(3L, Double.class);
+    assertThat(widened).isEqualTo(3.0d);
+  }
+
+  @Test
+  void convertCoercesAMapSourceIntoABean() {
+    Object source = Map.of("value", "cheese");
+
+    NoDefaultConstructor bean = new Json().convert(source, NoDefaultConstructor.class);
+
+    assertThat(bean.getValue()).isEqualTo("cheese");
+  }
+
+  @Test
+  void convertCoercesAListSourceIntoATypedList() {
+    Object source = List.of(Map.of("value", "brie"), Map.of("value", "cheddar"));
+
+    List<NoDefaultConstructor> beans =
+        new Json().convert(source, new TypeToken<List<NoDefaultConstructor>>() {}.getType());
+
+    assertThat(beans).extracting(NoDefaultConstructor::getValue).containsExactly("brie", "cheddar");
+  }
+
+  @Test
+  void convertingAFieldOfAParsedMapMatchesParsingThatFieldDirectly() {
+    Map<String, Object> parsedOnce =
+        new Json().toType("{\"result\": {\"value\": \"cheese\"}}", MAP_TYPE);
+
+    NoDefaultConstructor viaConvert =
+        new Json().convert(parsedOnce.get("result"), NoDefaultConstructor.class);
+    NoDefaultConstructor viaParse =
+        new Json().toType("{\"value\": \"cheese\"}", NoDefaultConstructor.class);
+
+    assertThat(viaConvert.getValue()).isEqualTo(viaParse.getValue());
+  }
+
+  @Test
+  void convertRejectsASourceNestedDeeperThanTheOutputDepthLimit() {
+    // convert() round-trips the source through toJson(), so it inherits JsonOutput.MAX_DEPTH.
+    Map<String, Object> deep = new HashMap<>();
+    Map<String, Object> cursor = deep;
+    for (int i = 0; i < JsonOutput.MAX_DEPTH + 5; i++) {
+      Map<String, Object> next = new HashMap<>();
+      cursor.put("child", next);
+      cursor = next;
+    }
+
+    assertThatThrownBy(() -> new Json().convert(deep, MAP_TYPE))
+        .isInstanceOf(JsonException.class)
+        .hasMessageContaining("maximum depth");
+  }
+
+  @Test
   void canPopulateAMap() {
     String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
@@ -193,16 +263,12 @@ class JsonTest {
   }
 
   @Test
-  void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+  void canPopulateAnObjectOfAClassWithANamedConstructor() {
     String raw = "{\"value\": \"time\"}";
 
-    assertThatExceptionOfType(JsonException.class)
-        .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
-        .withMessage("Unable to parse: {\"value\": \"time\"}")
-        .havingCause()
-        .isInstanceOf(JsonException.class)
-        .withMessageStartingWith(
-            "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
+    NoDefaultConstructor bean = new Json().toType(raw, NoDefaultConstructor.class);
+
+    assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test

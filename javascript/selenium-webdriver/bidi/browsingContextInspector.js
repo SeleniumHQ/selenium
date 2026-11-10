@@ -124,7 +124,7 @@ class BrowsingContextInspector {
     this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
       if (params) {
-        let response = null
+        let response
         if ('navigation' in params) {
           response = new NavigationInfo(params.context, params.navigation, params.timestamp, params.url)
         } else if ('accepted' in params) {

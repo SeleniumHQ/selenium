@@ -27,8 +27,11 @@ namespace OpenQA.Selenium.BiDi;
 /// </summary>
 public sealed class BiDiOptionsBuilder
 {
+    private static readonly Func<Uri, CancellationToken, Task<ITransport>> DefaultTransportFactory =
+        (uri, ct) => WebSocketTransport.ConnectAsync(uri, null, ct);
+
     internal Func<Uri, CancellationToken, Task<ITransport>> TransportFactory { get; private set; }
-        = (uri, ct) => WebSocketTransport.ConnectAsync(uri, null, ct);
+        = DefaultTransportFactory;
 
     /// <summary>
     /// Configures the BiDi connection to use a WebSocket transport.
@@ -43,6 +46,27 @@ public sealed class BiDiOptionsBuilder
     public BiDiOptionsBuilder UseWebSocket(Action<ClientWebSocketOptions>? configure = null)
     {
         TransportFactory = (uri, ct) => WebSocketTransport.ConnectAsync(uri, configure, ct);
+        return this;
+    }
+
+    /// <summary>
+    /// Composes a transport factory into the current transport pipeline.
+    /// </summary>
+    /// <remarks>
+    /// The <paramref name="next"/> callback receives the current transport factory and returns
+    /// the next factory in the chain. BiDi takes ownership of the transport instance returned by
+    /// the final factory and will dispose it.
+    /// </remarks>
+    /// <param name="next">A callback that composes a new transport factory from the current one.</param>
+    /// <returns>The current <see cref="BiDiOptionsBuilder"/> instance for chaining.</returns>
+    public BiDiOptionsBuilder UseTransport(Func<Func<Uri, CancellationToken, Task<ITransport>>, Func<Uri, CancellationToken, Task<ITransport>>> next)
+    {
+        ArgumentNullException.ThrowIfNull(next);
+
+        var factory = next(TransportFactory)
+            ?? throw new InvalidOperationException("The transport factory decorator must return a non-null factory.");
+
+        TransportFactory = factory;
         return this;
     }
 }

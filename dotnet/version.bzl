@@ -1,15 +1,23 @@
 # BUILD FILE SYNTAX: STARLARK
 
-SE_VERSION = "4.44.0-nightly202604101016"
+load("//:version.bzl", "VERSIONS")
+
+SE_VERSION = VERSIONS["dotnet"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v146",
-    "v147",
-    "v145",
+    "v155",
+    "v156",
+    "v157",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"
 ASSEMBLY_COPYRIGHT = "Copyright © Software Freedom Conservancy 2023"
-ASSEMBLY_INFORMATIONAL_VERSION = SE_VERSION
+
+# Only stamped (release) builds compile the real version into the assemblies,
+# so a version bump does not invalidate every assembly and test.
+ASSEMBLY_INFORMATIONAL_VERSION = select({
+    "//common:stamp": SE_VERSION,
+    "//conditions:default": "VERSION_STUB",
+})
 ASSEMBLY_PRODUCT = "Selenium"
 ASSEMBLY_VERSION = "4.0.0.0"

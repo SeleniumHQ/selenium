@@ -122,14 +122,13 @@ public class ProtocolHandshake {
         .filter(Objects::nonNull)
         .findFirst()
         .<Either<SessionNotCreatedException, Result>>map(Either::right)
-        .orElseGet(
-            () ->
-                Either.left(
-                    new SessionNotCreatedException(
-                        String.format(
-                            "Handshake response does not match any supported protocol. "
-                                + "Response payload: %s",
-                            string(response)))));
+        .orElseGet(() ->
+            Either.left(
+                new SessionNotCreatedException(
+                    String.format(
+                        "Handshake response does not match any supported protocol. "
+                            + "Response payload: %s",
+                        string(response)))));
   }
 
   public static class Result {

@@ -3,10 +3,13 @@ load(
     _java_library = "java_library",
 )
 
+PARAMETER_METADATA_JAVACOPTS = ["-parameters"]
+
 def java_library(
         name,
         deps = [],
         srcs = [],
+        resources = [],
         exports = [],
         tags = [],
         visibility = None,
@@ -40,10 +43,11 @@ def java_library(
         name = name,
         deps = deps,
         srcs = srcs,
+        resources = resources + ["//:legal-stuff"],
         exports = exports,
         tags = tags,
         visibility = visibility,
         plugins = plugins + nullaway_plugins,
-        javacopts = javacopts + nullaway_javacopts,
+        javacopts = PARAMETER_METADATA_JAVACOPTS + javacopts + nullaway_javacopts,
         **kwargs
     )

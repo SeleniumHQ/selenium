@@ -59,11 +59,10 @@ class GetNextMatchingRequest implements HttpHandler {
 
       Map<Capabilities, Long> stereotypes = new HashMap<>();
 
-      stereotypesJson.forEach(
-          (k, v) -> {
-            Capabilities caps = JSON.toType(k, Capabilities.class);
-            stereotypes.put(caps, v);
-          });
+      stereotypesJson.forEach((k, v) -> {
+        Capabilities caps = JSON.toType(k, Capabilities.class);
+        stereotypes.put(caps, v);
+      });
 
       List<SessionRequest> sessionRequestList = queue.getNextAvailable(stereotypes);
 

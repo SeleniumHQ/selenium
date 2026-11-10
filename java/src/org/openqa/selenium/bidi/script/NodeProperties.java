@@ -16,13 +16,16 @@
 // under the License.
 package org.openqa.selenium.bidi.script;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.json.JsonException;
 
+@Beta
 public class NodeProperties {
   public enum Mode {
     OPEN("open"),
@@ -80,76 +83,61 @@ public class NodeProperties {
     this.shadowRoot = shadowRoot;
   }
 
-  public static NodeProperties fromJson(JsonInput input) {
-    Long nodeType = null;
-    Long childNodeCount = null;
+  /**
+   * Builds {@code NodeProperties} from an already-parsed JSON object. {@code children} and {@code
+   * shadowRoot} are remote values, so they are decoded through {@link RemoteValue#fromMap} rather
+   * than round-tripped through JSON text. See #18076.
+   */
+  static NodeProperties fromMap(Object raw) {
+    Map<String, Object> map = RemoteValue.asMap(raw, "node properties");
+
     Optional<Map<String, String>> attributes = Optional.empty();
-    Optional<List<RemoteValue>> children = Optional.empty();
-    Optional<String> localName = Optional.empty();
-    Optional<Mode> mode = Optional.empty();
-    Optional<String> namespaceURI = Optional.empty();
-    Optional<String> nodeValue = Optional.empty();
-    Optional<RemoteValue> shadowRoot = Optional.empty();
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "nodeType":
-          nodeType = input.read(Long.class);
-          break;
-
-        case "childNodeCount":
-          childNodeCount = input.read(Long.class);
-          break;
-
-        case "attributes":
-          attributes =
-              Optional.of(input.readNonNull(new TypeToken<Map<String, String>>() {}.getType()));
-          break;
-
-        case "children":
-          children =
-              Optional.of(input.readNonNull(new TypeToken<List<RemoteValue>>() {}.getType()));
-          break;
-
-        case "localName":
-          localName = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "mode":
-          mode = Optional.of(Mode.findByName(input.readNonNull(String.class)));
-          break;
-
-        case "namespaceURI":
-          namespaceURI = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "nodeValue":
-          nodeValue = Optional.of(input.readNonNull(String.class));
-          break;
-
-        case "shadowRoot":
-          shadowRoot = Optional.ofNullable(input.read(RemoteValue.class));
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
+    Object rawAttributes = map.get("attributes");
+    if (rawAttributes != null) {
+      Map<String, String> copy = new LinkedHashMap<>();
+      RemoteValue.asMap(rawAttributes, "node attributes")
+          .forEach((name, value) ->
+              copy.put(
+                  name, RemoteValue.coerceScalar(value, String.class, "node attribute " + name)));
+      attributes = Optional.of(copy);
     }
 
-    input.endObject();
+    Optional<List<RemoteValue>> children = Optional.empty();
+    Object rawChildren = map.get("children");
+    if (rawChildren != null) {
+      List<Object> items = RemoteValue.asList(rawChildren, "node children");
+      List<RemoteValue> list = new ArrayList<>(items.size());
+      for (Object item : items) {
+        list.add(RemoteValue.fromMap(item));
+      }
+      children = Optional.of(list);
+    }
+
+    Optional<Mode> mode =
+        Optional.ofNullable(RemoteValue.coerceScalar(map.get("mode"), Mode.class, "node mode"));
+
+    Optional<RemoteValue> shadowRoot =
+        Optional.ofNullable(RemoteValue.fromMap(map.get("shadowRoot")));
 
     return new NodeProperties(
-        Require.nonNegative("nodeType", nodeType),
-        Require.nonNegative("childNodeCount", childNodeCount),
+        requiredLong(map, "nodeType"),
+        requiredLong(map, "childNodeCount"),
         attributes,
         children,
-        localName,
+        RemoteValue.optionalString(map, "localName"),
         mode,
-        namespaceURI,
-        nodeValue,
+        RemoteValue.optionalString(map, "namespaceURI"),
+        RemoteValue.optionalString(map, "nodeValue"),
         shadowRoot);
+  }
+
+  // Same coercion as the constructor-based path this replaces: "1", 1.0 and "1e0" all become 1L.
+  private static long requiredLong(Map<String, Object> map, String key) {
+    Long value = RemoteValue.coerceScalar(map.get(key), Long.class, "node " + key);
+    if (value == null) {
+      throw new JsonException("Missing JSON value for node \"" + key + "\"");
+    }
+    return value;
   }
 
   public long getNodeType() {

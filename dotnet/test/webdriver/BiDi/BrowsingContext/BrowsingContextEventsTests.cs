@@ -26,11 +26,11 @@ internal class BrowsingContextEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenDownloadWillBeginEvent()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
 
         TaskCompletionSource<DownloadWillBeginEventArgs> tcs = new();
 
-        await using var subscription = await context.OnDownloadWillBeginAsync(tcs.SetResult);
+        await using var subscription = await context.DownloadWillBegin.SubscribeAsync(e => tcs.TrySetResult(e));
 
         driver.FindElement(By.Id("file-1")).Click();
 
@@ -45,11 +45,11 @@ internal class BrowsingContextEventsTests : BiDiTestFixture
     [Test]
     public async Task CanListenDownloadEndEvent()
     {
-        await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
 
         TaskCompletionSource<DownloadEndEventArgs> tcs = new();
 
-        await using var subscription = await context.OnDownloadEndAsync(tcs.SetResult);
+        await using var subscription = await context.DownloadEnd.SubscribeAsync(e => tcs.TrySetResult(e));
 
         driver.FindElement(By.Id("file-1")).Click();
 

@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@Beta
 public class ContinueRequestParameters {
   private final Map<String, Object> map = new HashMap<>();
 

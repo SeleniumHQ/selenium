@@ -9,6 +9,7 @@ load("//dotnet/private:nuget_pack.bzl", _nuget_pack = "nuget_pack")
 load("//dotnet/private:nuget_package.bzl", _nuget_package = "nuget_package")
 load("//dotnet/private:nuget_push.bzl", _nuget_push = "nuget_push")
 load("//dotnet/private:paket_deps.bzl", _paket_deps = "paket_deps")
+load("//dotnet/private:sourcelink.bzl", _csharp_sourcelink_library = "csharp_sourcelink_library")
 
 def devtools_version_targets():
     targets = []
@@ -18,6 +19,7 @@ def devtools_version_targets():
 
 csharp_binary = _csharp_binary
 csharp_library = _csharp_library
+csharp_sourcelink_library = _csharp_sourcelink_library
 csharp_test = _csharp_test
 dotnet_format = _dotnet_format
 dotnet_nunit_test_suite = _dotnet_nunit_test_suite

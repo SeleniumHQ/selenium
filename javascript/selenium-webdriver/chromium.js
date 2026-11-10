@@ -112,6 +112,7 @@ function createExecutor(url, vendorPrefix) {
   const agent = new http.Agent({ keepAlive: true })
   const client = url.then((url) => new http.HttpClient(url, agent))
   const executor = new http.Executor(client)
+  executor[Symbols.localDriverService] = true
   configureExecutor(executor, vendorPrefix)
   return executor
 }
@@ -506,7 +507,7 @@ class Options extends Capabilities {
    * __Example 1: Using a Pre-configured Device__
    *
    *     let options = new chrome.Options().setMobileEmulation(
-   *         {deviceName: 'Google Nexus 5'});
+   *         {deviceName: 'Pixel 10'});
    *
    *     let driver = chrome.Driver.createSession(options);
    *

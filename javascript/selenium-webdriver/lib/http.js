@@ -55,10 +55,11 @@ function requireAtom(module, bazelTarget) {
       return require(path.resolve(`../../../bazel-bin/${file}`))
     } catch (ex2) {
       log_.severe(ex2)
-      throw Error(
+      throw new Error(
         `Failed to import atoms module ${module}. If running in dev mode, you` +
           ` need to run \`bazel build ${bazelTarget}\` from the project` +
           `root: ${ex}`,
+        { cause: ex2 },
       )
     }
   }

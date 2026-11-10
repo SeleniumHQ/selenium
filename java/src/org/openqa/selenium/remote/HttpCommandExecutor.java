@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -34,45 +35,88 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
+public class HttpCommandExecutor implements CommandExecutor, Closeable {
 
   private final URL remoteServer;
-  public final HttpClient client;
-  protected final HttpClient.Factory httpClientFactory;
   protected final Map<String, CommandInfo> additionalCommands;
+
+  /**
+   * @deprecated this field will become {@code protected} in 4.53; read it from a subclass instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  public final HttpClient client;
+
+  /**
+   * The factory that created {@link #client}, or {@code null} when the executor was created from an
+   * {@link HttpClient}.
+   *
+   * @deprecated this field will be removed in 4.53; keep a reference to the factory in the subclass
+   *     instead.
+   */
+  @Deprecated(forRemoval = true, since = "4.50.0")
+  protected final HttpClient.@Nullable Factory httpClientFactory;
+
   protected @Nullable CommandCodec<HttpRequest> commandCodec;
   protected @Nullable ResponseCodec<HttpResponse> responseCodec;
 
-  @SuppressWarnings("deprecation")
-  private LocalLogs logs = LocalLogs.getNullLogger();
-
-  private static class DefaultClientFactoryHolder {
-    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
-  }
-
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public static HttpClient.Factory getDefaultClientFactory() {
-    return DefaultClientFactoryHolder.defaultClientFactory;
+    return RemoteWebDriver.DEFAULT_CLIENT_FACTORY;
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(ClientConfig config) {
     this(
         emptyMap(),
         Require.nonNull("HTTP client configuration", config),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
+  }
+
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports only standard commands.
+   *
+   * @param httpClient the HttpClient to execute commands with
+   * @param addressOfRemoteServer URL of remote end Selenium server
+   */
+  public HttpCommandExecutor(HttpClient httpClient, URL addressOfRemoteServer) {
+    this(httpClient, Map.of(), addressOfRemoteServer);
+  }
+
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports non-standard {@code additionalCommands} in
+   * addition to the standard.
+   *
+   * @param httpClient the HttpClient to execute commands with
+   * @param additionalCommands additional commands to allow the command executor to process
+   * @param addressOfRemoteServer URL of remote end Selenium server
+   */
+  public HttpCommandExecutor(
+      HttpClient httpClient,
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
+    this(httpClient, null, additionalCommands, addressOfRemoteServer);
+  }
+
+  private HttpCommandExecutor(
+      HttpClient httpClient,
+      HttpClient.@Nullable Factory httpClientFactory,
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
+    this.client = httpClient;
+    this.httpClientFactory = httpClientFactory;
+    this.additionalCommands =
+        new HashMap<>(Require.nonNull("Additional commands", additionalCommands));
+    this.remoteServer = addressOfRemoteServer;
   }
 
   /**
@@ -82,22 +126,25 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * @param additionalCommands additional commands to allow the command executor to process
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
     this(
         Require.nonNull("Additional commands", additionalCommands),
         Require.nonNull("Server URL", addressOfRemoteServer),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer, ClientConfig config) {
     this(
         additionalCommands,
         config.baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
-        getDefaultClientFactory());
+        HttpClient.Factory.createDefault());
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands,
       URL addressOfRemoteServer,
@@ -108,15 +155,16 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         httpClientFactory);
   }
 
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands,
       ClientConfig config,
       HttpClient.Factory httpClientFactory) {
-    remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
-    this.additionalCommands =
-        new HashMap<>(Require.nonNull("Additional commands", additionalCommands));
-    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
-    this.client = this.httpClientFactory.createClient(config);
+    this(
+        Require.nonNull("HTTP client factory", httpClientFactory).createClient(config),
+        httpClientFactory,
+        additionalCommands,
+        config.baseUrl());
   }
 
   /**
@@ -155,27 +203,12 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
-  /**
-   * @deprecated logging is not in the W3C WebDriver spec and is no longer supported.
-   */
-  @Override
-  @Deprecated(forRemoval = true)
-  @SuppressWarnings("deprecation")
-  public void setLocalLogs(LocalLogs logs) {
-    this.logs = logs;
-  }
-
-  @SuppressWarnings("deprecation")
-  private void log(String logType, LogEntry entry) {
-    logs.addEntry(logType, entry);
-  }
-
+  @Deprecated(forRemoval = true, since = "4.50.0")
   public URL getAddressOfRemoteServer() {
     return remoteServer;
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public Response execute(Command command) throws IOException {
     if (command.getSessionId() == null) {
       if (QUIT.equals(command.getName())) {
@@ -192,7 +225,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         throw new SessionNotCreatedException("Session already exists");
       }
       ProtocolHandshake handshake = new ProtocolHandshake();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       ProtocolHandshake.Result result = handshake.createSession(client, command);
       Dialect dialect = result.getDialect();
       commandCodec = dialect.getCommandCodec();
@@ -200,7 +232,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         defineCommand(entry.getKey(), entry.getValue());
       }
       responseCodec = dialect.getResponseCodec();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
       return result.createResponse();
     }
 
@@ -217,9 +248,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
 
     try {
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse httpResponse = client.execute(httpRequest);
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       Response response = responseCodec.decode(httpResponse);
       if (response.getSessionId() == null) {
@@ -232,7 +261,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (QUIT.equals(command.getName())) {
         client.close();
-        httpClientFactory.cleanupIdleClients();
       }
       return response;
     } catch (UnsupportedCommandException e) {
@@ -242,5 +270,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       throw e;
     }
+  }
+
+  @Override
+  public void close() {
+    client.close();
   }
 }

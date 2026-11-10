@@ -19,5 +19,10 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record NavigationFailedEventArgs(IBiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url, Browser.UserContext? UserContext)
-    : NavigationEventArgs(BiDi, Context, Navigation, Timestamp, Url, UserContext);
+public sealed record NavigationFailedEventArgs(
+    BrowsingContext Context,
+    Navigation? Navigation,
+    DateTimeOffset Timestamp,
+    string Url,
+    Browser.UserContext? UserContext)
+    : NavigationEventArgs(Context, Navigation, Timestamp, Url, UserContext);

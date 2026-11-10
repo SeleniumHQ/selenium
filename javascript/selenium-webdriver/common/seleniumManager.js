@@ -21,7 +21,7 @@
  *  Wrapper for getting information from the Selenium Manager binaries
  */
 
-const { platform } = require('node:process')
+const { platform, arch } = require('node:process')
 const path = require('node:path')
 const fs = require('node:fs')
 const spawnSync = require('node:child_process').spawnSync
@@ -39,7 +39,7 @@ function getBinary() {
     darwin: 'macos',
     win32: 'windows',
     cygwin: 'windows',
-    linux: 'linux',
+    linux: arch === 'arm64' ? 'linux-arm64' : 'linux-x86_64',
   }[platform]
 
   const file = directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
@@ -90,7 +90,7 @@ function binaryPaths(args) {
   try {
     output = JSON.parse(spawnResult.stdout.toString())
   } catch (e) {
-    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`, { cause: e })
   }
 
   logOutput(output)

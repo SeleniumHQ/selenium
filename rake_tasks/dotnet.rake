@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 def dotnet_version
-  File.foreach('dotnet/version.bzl') do |line|
-    return line.split('=').last.strip.tr('"', '') if line.include?('SE_VERSION')
-  end
+  SeleniumRake.version('dotnet')
 end
 
 desc 'Build nupkg files'
@@ -13,8 +11,8 @@ end
 
 desc 'Package .NET bindings into zipped assets and stage for release'
 task :package do |_task, arguments|
-  args = arguments.to_a.empty? ? ['--stamp'] : arguments.to_a
-  Rake::Task['dotnet:build'].invoke(*args)
+  args = arguments.to_a.empty? ? ['--config=release'] : arguments.to_a
+  Bazel.execute('build', args, '//dotnet:release')
   mkdir_p 'build/dist'
   FileUtils.rm_f(Dir.glob('build/dist/*dotnet*'))
 
@@ -35,11 +33,14 @@ end
 desc 'Build, package, and push nupkg files to NuGet'
 task :release do |_task, arguments|
   nightly = arguments.to_a.include?('nightly')
+  config = arguments.to_a.include?('rbe') ? 'rbe_release' : 'release'
+
   Rake::Task['dotnet:check_credentials'].invoke(*arguments.to_a)
 
   if nightly
-    puts 'Updating .NET version to nightly...'
     Rake::Task['dotnet:version'].invoke('nightly')
+    # Each nightly publish needs its own version; the committed one has no timestamp
+    SeleniumRake.write_version('dotnet', "#{dotnet_version}#{Time.now.strftime('%Y%m%d%H%M')}")
     ENV['NUGET_API_KEY'] = ENV.fetch('GITHUB_TOKEN', nil)
     ENV['NUGET_SOURCE'] = 'https://nuget.pkg.github.com/seleniumhq/index.json'
   else
@@ -47,16 +48,17 @@ task :release do |_task, arguments|
   end
 
   puts 'Building and packaging .NET artifacts...'
-  Rake::Task['dotnet:package'].invoke('--config=release')
+  Rake::Task['dotnet:package'].invoke("--config=#{config}")
 
   puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
-  Bazel.execute('run', ['--config=release'], '//dotnet:publish')
+  Bazel.execute('run', ["--config=#{config}"], '//dotnet:publish')
 end
 
 desc 'Verify .NET packages are published on NuGet'
 task :verify do
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.webdriver/#{dotnet_version}.json")
-  SeleniumRake.verify_package_published("https://api.nuget.org/v3/registration5-semver1/selenium.support/#{dotnet_version}.json")
+  base = 'https://api.nuget.org/v3/registration5-semver1'
+  SeleniumRake.verify_package_published("#{base}/selenium.webdriver/#{dotnet_version}.json", timeout: 900)
+  SeleniumRake.verify_package_published("#{base}/selenium.support/#{dotnet_version}.json", timeout: 900)
 end
 
 desc 'Generate and stage .NET documentation'
@@ -73,12 +75,15 @@ task :docs_generate do
   puts 'Generating .NET documentation'
   FileUtils.rm_rf('build/docs/api/dotnet/')
   Bazel.execute('run', [], '//dotnet:docs')
+rescue RuntimeError
+  FileUtils.rm_rf('build/docs/api/dotnet/')
+  raise
 end
 
 desc 'Install .NET packages to local NuGet cache'
 task :install do
-  Bazel.execute('build', [], '//dotnet/src/webdriver:webdriver-pack')
-  Bazel.execute('build', [], '//dotnet/src/support:support-pack')
+  Bazel.execute('build', ['--stamp'], '//dotnet/src/webdriver:webdriver-pack')
+  Bazel.execute('build', ['--stamp'], '//dotnet/src/support:support-pack')
   Dir.glob('bazel-bin/dotnet/src/**/*.nupkg').each do |nupkg|
     sh 'dotnet', 'nuget', 'push', nupkg, '--source', "#{Dir.home}/.nuget/packages"
   end
@@ -93,17 +98,14 @@ end
 desc 'Update .NET version'
 task :version, [:version] do |_task, arguments|
   old_version = dotnet_version
-  nightly = "-nightly#{Time.now.strftime('%Y%m%d%H%M')}"
-  new_version = SeleniumRake.updated_version(old_version, arguments[:version], nightly)
+  new_version = SeleniumRake.updated_version(old_version, arguments[:version], '-nightly')
   puts "Updating .NET from #{old_version} to #{new_version}"
-
-  file = 'dotnet/version.bzl'
-  text = File.read(file).gsub(old_version, new_version)
-  File.open(file, 'w') { |f| f.puts text }
+  SeleniumRake.write_version('dotnet', new_version)
 end
 
 desc 'Update .NET dependencies to latest versions'
 task :update do
+  # Effectively a no-op while paket.dependencies uses exact versions and STRATEGY: MIN
   Bazel.execute('run', [], '//dotnet:paket-update')
   Rake::Task['dotnet:pin'].invoke
 end
@@ -127,14 +129,16 @@ end
 
 desc 'Run .NET linter (dotnet format analyzers, docs)'
 task :lint do
-  puts '  Running dotnet format analyzers...'
-  Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format')
-  Rake::Task['dotnet:docs_generate'].invoke
+  steps = {
+    dotnet_format_analyzers: -> { Bazel.execute('run', ['--', 'analyzers', '--verify-no-changes'], '//dotnet:format') },
+    dotnet_docs: -> { Rake::Task['dotnet:docs_generate'].invoke }
+  }
 
-  # TODO: Identify specific diagnostics that we want to enforce but can't be auto-corrected (e.g., 'IDE0060'):
   enforced_diagnostics = []
-  next if enforced_diagnostics.empty?
+  if enforced_diagnostics&.any?
+    arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
+    steps[:dotnet_format_style] = -> { Bazel.execute('run', arguments, '//dotnet:format') }
+  end
 
-  arguments = %w[-- style --severity info --verify-no-changes --diagnostics] + enforced_diagnostics
-  Bazel.execute('run', arguments, '//dotnet:format')
+  SeleniumRake.aggregate_errors(**steps)
 end

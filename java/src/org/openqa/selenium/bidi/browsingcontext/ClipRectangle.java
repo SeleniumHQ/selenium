@@ -17,7 +17,9 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 
+@Beta
 public abstract class ClipRectangle {
   enum Type {
     ELEMENT("element"),

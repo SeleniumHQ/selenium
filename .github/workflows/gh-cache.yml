@@ -1,0 +1,64 @@
+name: Scheduled - Update Bazel Cache
+
+on:
+  push:
+    branches: [trunk]
+    # Keep in sync with the repository-cache key files in bazel.yml.
+    paths:
+      - 'MODULE.bazel'
+      - 'multitool.lock.json'
+      - 'pnpm-lock.yaml'
+      - 'rust/Cargo.lock'
+      - 'java/maven_install.json'
+      - 'py/requirements_lock.txt'
+      - 'rb/Gemfile.lock'
+      - 'dotnet/paket.lock'
+      - 'common/selenium_manager.bzl'
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: gh-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  populate:
+    name: Populate Cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, macos, windows]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: ${{ matrix.os }}
+      os: ${{ matrix.os }}
+      cache-save: true
+      # Cache Selenium Manager binaries but not the pinned browser/driver binaries
+      run: >-
+        bazel build --nobuild --build_tests_only --keep_going --pin_browsers=false
+        //java/test/... //py:* //rb/spec/... //rust/tests/...
+        //javascript/selenium-webdriver:* //dotnet/test/... &&
+        bazel fetch --repo=@download_sm_linux_x86_64 --repo=@download_sm_linux_arm64
+        --repo=@download_sm_macos --repo=@download_sm_windows
+  prune:
+    name: Prune Superseded Caches
+    needs: populate
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Prune superseded setup-bazel caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --key setup-bazel- --limit 1000 --json id,key,createdAt \
+            --jq '[.[] | . + {group: (.key | sub("-[0-9a-f]+$"; ""))}]
+                  | group_by(.group) | map(sort_by(.createdAt) | reverse | .[1:])
+                  | flatten | .[].id' \
+            | xargs -r -n1 gh cache delete

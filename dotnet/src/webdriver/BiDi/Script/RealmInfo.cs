@@ -51,7 +51,7 @@ public sealed record WindowRealmInfo(
 public sealed record DedicatedWorkerRealmInfo(
     Realm Realm,
     string Origin,
-    IReadOnlyList<Realm> Owners) : RealmInfo(Realm, Origin);
+    ImmutableArray<Realm> Owners) : RealmInfo(Realm, Origin);
 
 public sealed record SharedWorkerRealmInfo(
     Realm Realm,
@@ -94,7 +94,7 @@ internal class RealmInfoConverter : JsonConverter<RealmInfo>
             "paint-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PaintWorkletRealmInfo>()),
             "audio-worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<AudioWorkletRealmInfo>()),
             "worklet" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WorkletRealmInfo>()),
-            _ => throw new BiDiException($"Unknown realm type '{type}'")
+            _ => throw new JsonException($"Unknown realm type '{type}'.")
         };
     }
 

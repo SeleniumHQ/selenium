@@ -91,6 +91,17 @@ module Selenium
       end
 
       #
+      # Returns the WebDriver BiDi connection for this session.
+      #
+      # @return [BiDi]
+      # @raise [Error::WebDriverError] if BiDi was not enabled for this session
+      #
+
+      def bidi
+        @bridge.bidi
+      end
+
+      #
       # @return [Navigation]
       # @see Navigation
       #
@@ -266,6 +277,50 @@ module Selenium
         @network ||= WebDriver::Network.new(bridge)
       end
 
+      #
+      # Takes an accessibility snapshot of the whole page: the tree of roles, names,
+      # states and values computed from the DOM (ADR 18205), rooted at the document of
+      # the current window's top-level browsing context whatever frame the driver has
+      # switched to, with every reachable child frame's tree attached under its iframe
+      # node. Requires a BiDi session.
+      #
+      # @param [Boolean] interesting_only with true, the default, elements of role generic,
+      #   none or presentation with no name produce no node and their children take their
+      #   place; with false every rendered element produces a node, as Puppeteer's
+      #   accessibility.snapshot({interestingOnly: false}) does
+      # @return [AccessibilityNode] the root of the snapshot
+      # @raise [Error::UnsupportedOperationError] when the session has no BiDi connection
+      # @see AccessibilityNode#to_text
+      #
+
+      def accessibility_snapshot(interesting_only: true)
+        bridge.accessibility_snapshot(nil, interesting_only: interesting_only)
+      end
+
+      #
+      # Installs a browser extension from an unpacked directory, a packed extension (.xpi/.crx/.zip),
+      # or base64-encoded bytes; works with remote (Grid) sessions.
+      #
+      # @note Chromium requires a BiDi session and installs only unpacked directories
+      #   (SeleniumHQ/selenium#16541); Firefox falls back to the classic endpoint without BiDi.
+      # @param [String] path directory, packed extension, or base64-encoded bytes
+      # @return [WebExtension] the installed extension
+      #
+
+      def install_web_extension(...)
+        bridge.install_web_extension(...)
+      end
+
+      #
+      # Uninstalls a browser extension installed with {#install_web_extension}.
+      #
+      # @param [WebExtension] extension the extension returned by {#install_web_extension}
+      #
+
+      def uninstall_web_extension(extension)
+        bridge.uninstall_web_extension(extension.id)
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
@@ -319,9 +374,9 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(caps:, url:, http_client: nil)
+      def create_bridge(caps:, http_client:)
         klass = caps['webSocketUrl'] ? Remote::BiDiBridge : Remote::Bridge
-        klass.new(http_client: http_client, url: url).tap do |bridge|
+        klass.new(http_client: http_client).tap do |bridge|
           bridge.create_session(caps)
         end
       end

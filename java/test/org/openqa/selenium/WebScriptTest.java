@@ -55,7 +55,7 @@ class WebScriptTest extends JupiterTestBase {
       throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
 
-    long id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -84,8 +84,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<ConsoleLogEntry> consumer1 = future1::complete;
     Consumer<ConsoleLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(consumer2);
 
     // Removing the second consumer, so it will no longer get the console message.
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id2);
@@ -109,7 +109,7 @@ class WebScriptTest extends JupiterTestBase {
   void canAddJsErrorHandler() throws ExecutionException, InterruptedException, TimeoutException {
     CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
 
-    long id = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -134,8 +134,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<JavascriptLogEntry> consumer1 = future1::complete;
     Consumer<JavascriptLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
 
     // Removing the second consumer, so it will no longer get the JS error.
     ((RemoteWebDriver) driver).script().removeJavaScriptErrorHandler(id2);
@@ -166,8 +166,8 @@ class WebScriptTest extends JupiterTestBase {
     Consumer<JavascriptLogEntry> consumer1 = future1::complete;
     Consumer<JavascriptLogEntry> consumer2 = future2::complete;
 
-    long id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
-    long id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
+    String id1 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer1);
+    String id2 = ((RemoteWebDriver) driver).script().addJavaScriptErrorHandler(consumer2);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -195,8 +195,7 @@ class WebScriptTest extends JupiterTestBase {
     driver.get(pages.dynamicPage);
     triggerDomMutation();
 
-    assertThat(mutations).isNotEmpty();
-    assertThat(lastOf(mutations)).isEqualTo("style: 'display:none;' -> ''");
+    waitForRevealMutation(mutations);
   }
 
   @Test
@@ -204,11 +203,11 @@ class WebScriptTest extends JupiterTestBase {
   void canRemoveDomMutationHandler() {
     List<String> mutations = new CopyOnWriteArrayList<>();
     Script script = ((RemoteWebDriver) driver).script();
-    long id = script.addDomMutationHandler(mutationHandler(mutations));
+    String id = script.addDomMutationHandler(mutationHandler(mutations));
 
     driver.get(pages.dynamicPage);
     triggerDomMutation();
-    assertThat(mutations).isNotEmpty();
+    waitForRevealMutation(mutations);
 
     script.removeDomMutationHandler(id);
 
@@ -223,6 +222,13 @@ class WebScriptTest extends JupiterTestBase {
     reveal.click();
     WebElement revealed = driver.findElement(By.id("revealed"));
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(visibilityOf(revealed));
+  }
+
+  // Firefox reports extra style mutations on the clicked button, so the reveal need not be last.
+  private void waitForRevealMutation(List<String> mutations) {
+    new WebDriverWait(driver, Duration.ofSeconds(10))
+        .withMessage(() -> "Received mutations: " + mutations)
+        .until(d -> mutations.contains("style: 'display:none;' -> ''"));
   }
 
   private static Consumer<DomMutation> mutationHandler(List<String> mutations) {
@@ -241,7 +247,7 @@ class WebScriptTest extends JupiterTestBase {
 
     ((RemoteWebDriver) driver).script().pin("() => { console.log('Hello!'); }");
 
-    long id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
+    String id = ((RemoteWebDriver) driver).script().addConsoleMessageHandler(future::complete);
 
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
@@ -265,14 +271,13 @@ class WebScriptTest extends JupiterTestBase {
     DateTimeFormatter formatter =
         DateTimeFormatter.ofPattern("HH:mm:ss:SSS").withZone(systemDefault());
 
-    long id =
-        script.addConsoleMessageHandler(
-            log -> {
-              String time = formatter.format(ofEpochMilli(log.getTimestamp()));
-              String message = String.format("%s %s", log.getText(), time);
-              logs.add(message);
-              latch.countDown();
-            });
+    String id =
+        script.addConsoleMessageHandler(log -> {
+          String time = formatter.format(ofEpochMilli(log.getTimestamp()));
+          String message = String.format("%s %s", log.getText(), time);
+          logs.add(message);
+          latch.countDown();
+        });
 
     try {
       page = appServer.whereIs("/bidi/logEntryAdded.html");
@@ -292,9 +297,5 @@ class WebScriptTest extends JupiterTestBase {
     } finally {
       script.removeConsoleMessageHandler(id);
     }
-  }
-
-  private static <T> T lastOf(List<T> list) {
-    return list.get(list.size() - 1);
   }
 }

@@ -21,7 +21,7 @@ using System.Buffers;
 
 namespace OpenQA.Selenium.BiDi;
 
-interface ITransport : IAsyncDisposable
+public interface ITransport : IAsyncDisposable
 {
     Task ReceiveAsync(IBufferWriter<byte> writer, CancellationToken cancellationToken);
 

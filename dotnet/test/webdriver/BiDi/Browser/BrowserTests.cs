@@ -40,7 +40,7 @@ internal class BrowserTests : BiDiTestFixture
         var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
         Assert.That(userContextsResult, Is.Not.Null);
-        Assert.That(userContextsResult.UserContexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(userContextsResult.UserContexts, Has.Length.GreaterThanOrEqualTo(2));
         Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Contain(userContext1.UserContext));
         Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Contain(userContext2.UserContext));
     }
@@ -65,7 +65,7 @@ internal class BrowserTests : BiDiTestFixture
         var clientWindowsResult = await bidi.Browser.GetClientWindowsAsync();
 
         Assert.That(clientWindowsResult, Is.Not.Null);
-        Assert.That(clientWindowsResult.ClientWindows, Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(clientWindowsResult.ClientWindows, Has.Length.GreaterThanOrEqualTo(1));
         Assert.That(clientWindowsResult.ClientWindows[0].ClientWindow, Is.Not.Null);
     }
 

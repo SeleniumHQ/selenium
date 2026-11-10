@@ -1,9 +1,8 @@
-# Configuration for Stale - https://github.com/actions/stale
-name: 'Close stale issues'
+name: Scheduled - Close Stale and Lock Issues
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 10,20 * * *'
+    - cron: '15 10 * * 6'
 
 permissions:
   contents: read
@@ -16,7 +15,7 @@ jobs:
       pull-requests: write  # for actions/stale to close stale PRs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           stale-issue-message: 'This issue is stale because it has been open 180 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
@@ -25,24 +24,41 @@ jobs:
           days-before-stale: 180
           days-before-close: 14
           exempt-all-milestones: true
-      - uses: actions/stale@v9
+          operations-per-run: 100
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-awaiting answer'
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-logging'
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
           stale-issue-label: 'J-issue-template'
           days-before-stale: -1
           days-before-close: 14
           labels-to-add-when-unstale: 'A-needs-triaging'
+
+  lock:
+    if: github.event.repository.fork == false
+    permissions:
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v6
+        with:
+          process-only: 'issues'
+          issue-inactive-days: '30'
+          issue-lock-reason: ''
+          issue-comment: >
+            This issue has been automatically locked since there
+            has not been any recent activity since it was closed.
+            Please open a new issue for related bugs.

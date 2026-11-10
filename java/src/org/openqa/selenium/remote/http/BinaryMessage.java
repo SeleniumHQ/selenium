@@ -26,7 +26,7 @@ public class BinaryMessage implements Message {
 
   public BinaryMessage(ByteBuffer data) {
     ByteBuffer copy = Require.nonNull("Data to use", data).asReadOnlyBuffer();
-    this.data = new byte[copy.capacity()];
+    this.data = new byte[copy.remaining()];
     copy.get(this.data);
   }
 
@@ -35,6 +35,28 @@ public class BinaryMessage implements Message {
 
     this.data = new byte[data.length];
     System.arraycopy(data, 0, this.data, 0, data.length);
+  }
+
+  /**
+   * Returns a {@link BinaryMessage} backed directly by {@code data} with no defensive copy. The
+   * caller transfers ownership of the array — once wrapped it must not be mutated, otherwise a
+   * downstream reader will see the mutation. Intended for callers that have just produced a fresh
+   * array (for example {@link java.io.ByteArrayOutputStream#toByteArray()}) and want to avoid the
+   * second allocation that the public constructor performs.
+   */
+  public static BinaryMessage wrap(byte[] data) {
+    return new BinaryMessage(Require.nonNull("Data to use", data), Ownership.TRANSFER);
+  }
+
+  // Sentinel for the private no-copy constructor below — gives it a distinct signature from
+  // the public defensive-copy BinaryMessage(byte[]) and documents the contract at the call site.
+  private enum Ownership {
+    TRANSFER
+  }
+
+  private BinaryMessage(byte[] data, Ownership ownership) {
+    Require.nonNull("Ownership", ownership);
+    this.data = data;
   }
 
   public byte[] data() {

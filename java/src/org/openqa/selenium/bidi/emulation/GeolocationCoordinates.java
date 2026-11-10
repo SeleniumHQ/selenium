@@ -20,8 +20,10 @@ package org.openqa.selenium.bidi.emulation;
 import java.util.HashMap;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+@Beta
 public class GeolocationCoordinates {
   private static final String ALTITUDE = "altitude";
   private static final double DEFAULT_ACCURACY = 1.0;

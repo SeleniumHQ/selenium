@@ -17,7 +17,9 @@
 package org.openqa.selenium.bidi.script;
 
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class WindowRealmInfo extends RealmInfo {
 
   private final String browsingContext;

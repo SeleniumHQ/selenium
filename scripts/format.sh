@@ -33,7 +33,13 @@ section() {
 }
 
 # Find what's changed compared to trunk (skip if --all)
-trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
+# When on trunk, compare against origin/trunk instead.
+current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+if [[ "$current_branch" == "trunk" ]]; then
+    trunk_ref="$(git rev-parse --verify origin/trunk 2>/dev/null || echo "")"
+else
+    trunk_ref="$(git rev-parse --verify trunk 2>/dev/null || echo "")"
+fi
 
 if [[ "$format_all" == "false" && -n "$trunk_ref" ]]; then
     base="$(git merge-base HEAD "$trunk_ref" 2>/dev/null || echo "")"
@@ -71,6 +77,18 @@ WORKSPACE_ROOT="$(bazel info workspace)"
 # Capture baseline to detect formatter-introduced changes (allows pre-existing uncommitted work)
 baseline="$(git status --porcelain)"
 
+# The formatters run on the working tree, so a pushed file that also has uncommitted changes
+# would hide its committed formatting behind the baseline above. Refuse rather than guess.
+if [[ "$mode" == "pre-push" && "$format_all" == "false" && -n "$changed" ]]; then
+    dirty="$(printf '%s\n' "$changed" | tr '\n' '\0' | xargs -0 git status --porcelain --untracked-files=no --)"
+    if [[ -n "$dirty" ]]; then
+        echo "Cannot verify the formatting of the commits being pushed: these files also have uncommitted changes:" >&2
+        echo "$dirty" >&2
+        echo "Commit or stash them, then push again." >&2
+        exit 1
+    fi
+fi
+
 # Always run buildifier and copyright
 section "Buildifier"
 echo "    buildifier" >&2
@@ -100,6 +118,8 @@ if changed_matches '^rb/|^rake_tasks/|^Rakefile'; then
     echo "    rubocop -a" >&2
     if [[ "$run_lint" == "true" ]]; then
         bazel run //rb:rubocop -- -a
+        echo "    steep check" >&2
+        bazel run //rb:steep
     else
         bazel run //rb:rubocop -- -a --fail-level F
     fi
@@ -111,14 +131,15 @@ if changed_matches '^rust/'; then
     bazel run @rules_rust//:rustfmt
 fi
 
-if changed_matches '^py/'; then
+if changed_matches '\.py$'; then
     section "Python"
-    if [[ "$run_lint" == "true" ]]; then
-        echo "    ruff check" >&2
-        bazel run //py:ruff-check
-    fi
+    RUFF="$(bazel run --run_under=echo @multitool//tools/ruff)"
+    RUFF_COMMON=(--config=py/pyproject.toml --exclude '**/node_modules/**' --exclude '**/.bundle/**' --exclude '**/bidi/**' --exclude '**/devtools/**' py scripts common dotnet java javascript rb)
+    echo "    ruff check" >&2
+    # Apply auto-fixable lint issues; don't fail on unfixable violations unless lint defined
+    "$RUFF" check --fix --show-fixes "${RUFF_COMMON[@]}" || [[ "$run_lint" != "true" ]]
     echo "    ruff format" >&2
-    bazel run //py:ruff-format
+    "$RUFF" format "${RUFF_COMMON[@]}"
 fi
 
 if changed_matches '^dotnet/'; then
@@ -134,6 +155,8 @@ if [[ "$run_lint" == "true" ]]; then
     echo "    actionlint (with shellcheck)" >&2
     SHELLCHECK="$(bazel run --run_under=echo @multitool//tools/shellcheck)"
     bazel run @multitool//tools/actionlint:cwd -- -shellcheck "$SHELLCHECK"
+    echo "    shellcheck scripts" >&2
+    (cd "$WORKSPACE_ROOT" && git ls-files -z '*.sh' | xargs -0 "$SHELLCHECK")
 fi
 
 # Check if formatting introduced new changes (comparing to baseline)
@@ -141,6 +164,9 @@ if [[ "$(git status --porcelain)" != "$baseline" ]]; then
     echo "" >&2
     echo "Formatters modified files:" >&2
     git diff --name-only >&2
+    if [[ "$mode" == "pre-push" ]]; then
+        echo "Commit these changes (e.g. git commit --amend --no-edit), then push again." >&2
+    fi
     exit 1
 fi
 

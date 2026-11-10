@@ -44,7 +44,12 @@ class Server:
             Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".
         env: Mapping that defines the environment variables for the server process.
         java_path: Path to the java executable to run the server.
+        args: Arguments for the standalone server command. Defaults to enabling Selenium
+            Manager and managed downloads; pass a list to override these entirely (e.g. to
+            pin drivers with "--driver-configuration").
     """
+
+    DEFAULT_ARGS = ("--selenium-manager", "true", "--enable-managed-downloads", "true")
 
     def __init__(
         self,
@@ -56,6 +61,7 @@ class Server:
         env=None,
         java_path=None,
         startup_timeout=10,
+        args=None,
     ):
         if path and version:
             raise TypeError("Not allowed to specify a version when using an existing server path")
@@ -68,6 +74,7 @@ class Server:
         self.env = env
         self.java_path = java_path
         self.startup_timeout = startup_timeout
+        self.args = list(args) if args is not None else list(self.DEFAULT_ARGS)
         self.process = None
 
     @property
@@ -101,8 +108,8 @@ class Server:
     def port(self, port):
         try:
             port = int(port)
-        except ValueError:
-            raise TypeError(f"{__class__.__name__}.__init__() got an invalid port: '{port}'")
+        except ValueError as err:
+            raise TypeError(f"{__class__.__name__}.__init__() got an invalid port: '{port}'") from err
         if not (0 <= port <= 65535):
             raise ValueError("port must be 0-65535")
         self._port = port
@@ -113,9 +120,8 @@ class Server:
 
     @version.setter
     def version(self, version):
-        if version:
-            if not re.match(r"^\d+\.\d+\.\d+$", str(version)):
-                raise TypeError(f"{__class__.__name__}.__init__() got an invalid version: '{version}'")
+        if version and not re.match(r"^\d+\.\d+\.\d+$", str(version)):
+            raise TypeError(f"{__class__.__name__}.__init__() got an invalid version: '{version}'")
         self._version = version
 
     @property
@@ -190,10 +196,7 @@ class Server:
             str(self.port),
             "--log-level",
             self.log_level,
-            "--selenium-manager",
-            "true",
-            "--enable-managed-downloads",
-            "true",
+            *self.args,
         ]
         if self.host is not None:
             command.extend(["--host", self.host])
@@ -209,7 +212,7 @@ class Server:
             self.process = subprocess.Popen(command, env=self.env)
             print(f"Selenium server running as process: {self.process.pid}")
             if not self._wait_for_server(timeout=self.startup_timeout):
-                raise TimeoutError(f"Timed out waiting for Selenium server at {self.status_url}")
+                raise TimeoutError(f"Timed out waiting for Selenium server at {self.status_url}") from None
             print("Selenium server is ready")
         return self.process
 

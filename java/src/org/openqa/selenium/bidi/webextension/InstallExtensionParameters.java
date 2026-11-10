@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.webextension;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public class InstallExtensionParameters {
 
   private final ExtensionData extensionData;

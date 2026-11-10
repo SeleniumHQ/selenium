@@ -347,12 +347,11 @@ public class ContainerConfig {
 
     List<Map<String, String>> devicesMapping =
         this.devices.stream()
-            .map(
-                device ->
-                    Map.of(
-                        "PathOnHost", device.getPathOnHost(),
-                        "PathInContainer", device.getPathInContainer(),
-                        "CgroupPermissions", device.getCgroupPermissions()))
+            .map(device ->
+                Map.of(
+                    "PathOnHost", device.getPathOnHost(),
+                    "PathInContainer", device.getPathInContainer(),
+                    "CgroupPermissions", device.getCgroupPermissions()))
             .collect(Collectors.toList());
 
     Map<String, Object> hostConfig =

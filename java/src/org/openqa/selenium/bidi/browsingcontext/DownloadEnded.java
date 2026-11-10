@@ -18,8 +18,10 @@
 package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.JsonInput;
 
+@Beta
 public class DownloadEnded {
 
   private static final String CANCELED = "canceled";

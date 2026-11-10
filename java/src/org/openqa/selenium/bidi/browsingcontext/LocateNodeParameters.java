@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.bidi.script.RemoteReference;
 import org.openqa.selenium.bidi.script.SerializationOptions;
 
+@Beta
 public class LocateNodeParameters {
 
   private final Locator locator;
@@ -64,12 +66,11 @@ public class LocateNodeParameters {
     maxNodeCount.ifPresent(value -> map.put("maxNodeCount", value));
     sandbox.ifPresent(value -> map.put("sandbox", value));
     serializationOptions.ifPresent(value -> map.put("serializationOptions", value.toJson()));
-    startNodes.ifPresent(
-        value -> {
-          List<Map<String, Object>> startNodesJson = new ArrayList<>();
-          value.forEach(remoteNode -> startNodesJson.add(remoteNode.toJson()));
-          map.put("startNodes", startNodesJson);
-        });
+    startNodes.ifPresent(value -> {
+      List<Map<String, Object>> startNodesJson = new ArrayList<>();
+      value.forEach(remoteNode -> startNodesJson.add(remoteNode.toJson()));
+      map.put("startNodes", startNodesJson);
+    });
 
     return Map.copyOf(map);
   }

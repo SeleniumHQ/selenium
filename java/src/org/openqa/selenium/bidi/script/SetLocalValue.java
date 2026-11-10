@@ -19,7 +19,9 @@ package org.openqa.selenium.bidi.script;
 
 import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.Beta;
 
+@Beta
 public class SetLocalValue extends LocalValue {
 
   private final Set<LocalValue> value;

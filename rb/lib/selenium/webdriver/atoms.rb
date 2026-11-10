@@ -28,7 +28,10 @@ module Selenium
       private
 
       def read_atom(function)
-        File.read(File.expand_path("../atoms/#{function}.js", __FILE__))
+        file = "selenium/webdriver/atoms/#{function}.js"
+        lib = File.expand_path('../..', __dir__.to_s)
+        dir = [lib, *$LOAD_PATH].find { |path| File.exist?(File.expand_path(file, path)) }
+        File.read(File.expand_path(file, dir || lib))
       end
 
       def execute_atom(function_name, *)

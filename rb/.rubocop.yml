@@ -4,19 +4,14 @@ plugins:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.3
   NewCops: enable
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
 
-Gemspec/DevelopmentDependencies:
-  EnforcedStyle: gemspec
-
 Layout/LineLength:
   AllowedPatterns:
     - '^\s*#'
-  Exclude:
-    - '../rake_tasks/**/*'
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -44,6 +39,9 @@ Metrics/ClassLength:
   Exclude:
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
+    - 'lib/selenium/webdriver/common/websocket_connection.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:
@@ -61,9 +59,11 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   CountComments: false
-  Max: 110
+  Max: 120
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
+    - 'lib/selenium/webdriver/bidi/serialization/record.rb'
+    - 'lib/selenium/webdriver/bidi/support/bidi_generate.rb'
     - 'spec/**/*'
 
 Metrics/PerceivedComplexity:
@@ -71,8 +71,19 @@ Metrics/PerceivedComplexity:
   Exclude:
     - '../rake_tasks/**/*'
 
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 Naming/BlockForwarding:
   EnforcedStyle: explicit
+
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
+
+Naming/PredicatePrefix:
+  Exclude:
+    - 'lib/selenium/webdriver/bidi/protocol/**/*'
 
 Naming/FileName:
   Exclude:
@@ -106,6 +117,7 @@ RSpec/InstanceVariable:
   Exclude:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
     - 'spec/integration/selenium/webdriver/chrome/print_pdf_spec.rb'
+    - 'spec/integration/selenium/webdriver/spec_helper.rb'
 
 RSpec/MultipleExpectations:
   Enabled: false

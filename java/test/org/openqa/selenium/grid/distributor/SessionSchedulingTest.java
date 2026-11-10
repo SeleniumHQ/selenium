@@ -100,10 +100,9 @@ public class SessionSchedulingTest extends DistributorTestBase {
             .add(massive);
 
     wait.until(obj -> local.getStatus().getNodes().size() == 4);
-    wait.until(
-        ignored ->
-            local.getStatus().getNodes().stream()
-                .allMatch(node -> node.getAvailability() == UP && node.hasCapacity()));
+    wait.until(ignored ->
+        local.getStatus().getNodes().stream()
+            .allMatch(node -> node.getAvailability() == UP && node.hasCapacity()));
     wait.until(obj -> local.getStatus().hasCapacity());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =

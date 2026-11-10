@@ -40,10 +40,12 @@ import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Script;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.Pages;
 
+@CloseExtraWindowsAfterTest
 public class ScriptCommandsTest extends JupiterTestBase {
 
   @Test
@@ -608,15 +610,14 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.disownBrowsingContextScript(id, handles);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                script.callFunctionInBrowsingContext(
-                    id,
-                    "arg => arg.a",
-                    false,
-                    Optional.of(arguments),
-                    Optional.empty(),
-                    Optional.empty()));
+        .isThrownBy(() ->
+            script.callFunctionInBrowsingContext(
+                id,
+                "arg => arg.a",
+                false,
+                Optional.of(arguments),
+                Optional.empty(),
+                Optional.empty()));
   }
 
   @Test
@@ -665,15 +666,14 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.disownRealmScript(evaluateResult.getRealmId(), handles);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                script.callFunctionInBrowsingContext(
-                    id,
-                    "arg => arg.a",
-                    false,
-                    Optional.of(arguments),
-                    Optional.empty(),
-                    Optional.empty()));
+        .isThrownBy(() ->
+            script.callFunctionInBrowsingContext(
+                id,
+                "arg => arg.a",
+                false,
+                Optional.of(arguments),
+                Optional.empty(),
+                Optional.empty()));
   }
 
   @Test

@@ -33,8 +33,8 @@ public class GuardedRunnable {
     return () -> {
       try {
         runnable.run();
-      } catch (Exception e) {
-        LOG.log(Level.WARNING, "Unable to execute task ", e);
+      } catch (Throwable t) {
+        LOG.log(Level.WARNING, "Unable to execute task ", t);
       }
     };
   }

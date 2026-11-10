@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.speculation;
 
+import org.openqa.selenium.Beta;
+
+@Beta
 public enum PreloadingStatus {
   PENDING("pending"),
   READY("ready"),

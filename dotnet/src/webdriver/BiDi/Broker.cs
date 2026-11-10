@@ -19,10 +19,12 @@
 
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Channels;
 using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Internal.Telemetry;
 
 namespace OpenQA.Selenium.BiDi;
 
@@ -37,10 +39,7 @@ internal sealed class Broker : IAsyncDisposable
     private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly ITransport _transport;
-    private readonly EventDispatcher _eventDispatcher;
     private readonly BiDi _bidi;
-
-    private readonly ConcurrentDictionary<string, EventMetadata> _eventMetadata = new();
 
     private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
 
@@ -62,59 +61,13 @@ internal sealed class Broker : IAsyncDisposable
     {
         _transport = transport;
         _bidi = bidi;
-        _eventDispatcher = new EventDispatcher();
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
         _receivingTask = Task.Run(() => ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token));
         _processingTask = Task.Run(ProcessMessagesAsync);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Action<TEventArgs> action, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeAction(EventArgs args) { action((TEventArgs)args); return default; }
-        return await SubscribeAsync(descriptor.Name, InvokeAction, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    public async Task<Subscription> SubscribeAsync<TEventArgs, TEventParams>(Event<TEventArgs, TEventParams> descriptor, Func<TEventArgs, Task> func, SubscriptionOptions? options, CancellationToken cancellationToken)
-        where TEventArgs : EventArgs
-    {
-        ValueTask InvokeFunc(EventArgs args) => new(func((TEventArgs)args));
-        return await SubscribeAsync(descriptor.Name, InvokeFunc, (bidi, ep) => descriptor.Factory(bidi, (TEventParams)ep), descriptor.JsonTypeInfo, options, cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<Subscription> SubscribeAsync(string eventName, Func<EventArgs, ValueTask> handler, Func<IBiDi, object, EventArgs> argsFactory, JsonTypeInfo jsonTypeInfo, SubscriptionOptions? options, CancellationToken cancellationToken)
-    {
-        var metadata = _eventMetadata.GetOrAdd(eventName, new EventMetadata(jsonTypeInfo, argsFactory));
-
-        if (metadata.JsonTypeInfo != jsonTypeInfo)
-        {
-            throw new ArgumentException($"Event '{eventName}' is already registered with different metadata.", nameof(eventName));
-        }
-
-        _eventDispatcher.AddHandler(eventName, handler);
-
-        try
-        {
-            var subscribeResult = await _bidi.Session.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }, cancellationToken)
-                .ConfigureAwait(false);
-
-            return new Subscription(subscribeResult.Subscription, this, eventName) { Handler = handler };
-        }
-        catch
-        {
-            _eventDispatcher.RemoveHandler(eventName, handler);
-            throw;
-        }
-    }
-
-    public async ValueTask UnsubscribeAsync(Subscription subscription, CancellationToken cancellationToken)
-    {
-        await _bidi.Session.UnsubscribeAsync([subscription.SubscriptionId], null, cancellationToken).ConfigureAwait(false);
-        _eventDispatcher.RemoveHandler(subscription.EventName, subscription.Handler);
-    }
-
-    public async Task<TResult> ExecuteAsync<TParameters, TResult>(Command<TParameters, TResult> descriptor, TParameters @params, CommandOptions? options, CancellationToken cancellationToken)
+    public async Task<TResult> ExecuteAsync<TParameters, TResult>(string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
         where TParameters : Parameters
         where TResult : EmptyResult
     {
@@ -123,31 +76,72 @@ internal sealed class Broker : IAsyncDisposable
             throw new BiDiException("The broker is no longer processing messages due to a transport error.", terminalException);
         }
 
+        using var activity = SeleniumActivitySource.Instance.StartActivity(method, ActivityKind.Client);
+
         var id = Interlocked.Increment(ref _currentCommandId);
 
+        try
+        {
+            var result = await ExecuteCommandAsync(id, method, @params, paramsTypeInfo, resultTypeInfo, options, cancellationToken).ConfigureAwait(false);
+
+            activity?.SetStatus(ActivityStatusCode.Ok);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // Avoid recording the exception message: BiDi protocol errors can carry remote/user-supplied content.
+            activity?.SetStatus(ActivityStatusCode.Error, ex.GetType().Name);
+            throw;
+        }
+    }
+
+    private async Task<TResult> ExecuteCommandAsync<TParameters, TResult>(long id, string method, TParameters @params, JsonTypeInfo<TParameters> paramsTypeInfo, JsonTypeInfo<TResult> resultTypeInfo, CommandOptions? options, CancellationToken cancellationToken)
+        where TParameters : Parameters
+        where TResult : EmptyResult
+    {
         var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        using var cts = cancellationToken.CanBeCanceled
-            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
-            : new CancellationTokenSource();
+        using CancellationTokenSource? cts = cancellationToken.CanBeCanceled
+            ? null
+            : new CancellationTokenSource(DefaultCommandTimeout);
 
-        var timeout = options?.Timeout ?? DefaultCommandTimeout;
-        cts.CancelAfter(timeout);
+        var effectiveToken = cts?.Token ?? cancellationToken;
 
         var sendBuffer = RentBuffer();
 
         try
         {
-            using (BiDiContext.Use(_bidi))
-            using (var writer = new Utf8JsonWriter(sendBuffer))
+            using var writer = new Utf8JsonWriter(sendBuffer);
+            writer.WriteStartObject();
+            writer.WriteNumber("id"u8, id);
+            writer.WriteString("method"u8, method);
+            writer.WritePropertyName("params"u8);
+
+            if (options is { AdditionalData: { IsEmpty: false } additionalData })
             {
-                writer.WriteStartObject();
-                writer.WriteNumber("id"u8, id);
-                writer.WriteString("method"u8, descriptor.Method);
-                writer.WritePropertyName("params"u8);
-                JsonSerializer.Serialize(writer, @params, descriptor.ParamsTypeInfo);
-                writer.WriteEndObject();
+                // Cannot mutate the shared Parameters.Empty singleton; create a fresh instance to hold the extra data.
+                if (ReferenceEquals(@params, Parameters.Empty))
+                {
+                    @params = (TParameters)(object)new Parameters();
+                }
+                @params.RawAdditionalData ??= [];
+                foreach (var prop in additionalData)
+                {
+                    @params.RawAdditionalData[prop.Name] = prop.Value;
+                }
             }
+
+            JsonSerializer.Serialize(writer, @params, paramsTypeInfo);
+            if (options is not null)
+            {
+                foreach (var prop in options.AdditionalMessageData)
+                {
+                    writer.WritePropertyName(prop.Name);
+                    prop.Value.WriteTo(writer);
+                }
+            }
+            writer.WriteEndObject();
         }
         catch
         {
@@ -155,12 +149,12 @@ internal sealed class Broker : IAsyncDisposable
             throw;
         }
 
-        var commandInfo = new CommandInfo(tcs, descriptor.ResultTypeInfo);
+        var commandInfo = new CommandInfo(tcs, resultTypeInfo);
         _pendingCommands[id] = commandInfo;
 
-        using var ctsRegistration = cts.Token.Register(() =>
+        using var ctsRegistration = effectiveToken.Register(() =>
         {
-            tcs.TrySetCanceled(cts.Token);
+            tcs.TrySetCanceled(effectiveToken);
             _pendingCommands.TryRemove(id, out _);
         });
 
@@ -175,7 +169,7 @@ internal sealed class Broker : IAsyncDisposable
 #endif
             }
 
-            await _transport.SendAsync(sendBuffer.WrittenMemory, cts.Token).ConfigureAwait(false);
+            await _transport.SendAsync(sendBuffer.WrittenMemory, effectiveToken).ConfigureAwait(false);
         }
         catch
         {
@@ -192,10 +186,14 @@ internal sealed class Broker : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        _receiveMessagesCancellationTokenSource.Cancel();
-
         try
         {
+            // Dispose subscriptions while transport and processing loop are still active,
+            // allowing wire unsubscribe commands to be sent and handler drain tasks to complete.
+            await _bidi.EventDispatcher.CompleteAllAsync(_terminalReceiveException).ConfigureAwait(false);
+
+            _receiveMessagesCancellationTokenSource.Cancel();
+
             try
             {
                 await _receivingTask.ConfigureAwait(false);
@@ -205,11 +203,9 @@ internal sealed class Broker : IAsyncDisposable
                 // Expected when cancellation is requested, ignore.
             }
 
-            await _transport.DisposeAsync().ConfigureAwait(false);
-
             await _processingTask.ConfigureAwait(false);
 
-            await _eventDispatcher.DisposeAsync().ConfigureAwait(false);
+            await _transport.DisposeAsync().ConfigureAwait(false);
         }
         finally
         {
@@ -224,7 +220,6 @@ internal sealed class Broker : IAsyncDisposable
 
     private void ProcessReceivedMessage(ReadOnlySpan<byte> data)
     {
-        using var scope = BiDiContext.Use(_bidi);
         const int TypeSuccess = 1;
         const int TypeEvent = 2;
         const int TypeError = 3;
@@ -236,6 +231,7 @@ internal sealed class Broker : IAsyncDisposable
         string? message = default;
         Utf8JsonReader resultReader = default;
         Utf8JsonReader paramsReader = default;
+        Dictionary<string, JsonElement>? additionalMessageData = null;
 
         Utf8JsonReader reader = new(data);
         reader.Read(); // "{"
@@ -283,7 +279,10 @@ internal sealed class Broker : IAsyncDisposable
             }
             else
             {
+                var propName = reader.GetString()!;
                 reader.Read();
+                additionalMessageData ??= [];
+                additionalMessageData[propName] = JsonElement.ParseValue(ref reader);
             }
 
             reader.Skip();
@@ -301,6 +300,11 @@ internal sealed class Broker : IAsyncDisposable
                     {
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new BiDiException("Remote end returned null command result in the 'result' property.");
+
+                        if (additionalMessageData is not null)
+                        {
+                            ((EmptyResult)commandResult).AdditionalMessageData = AdditionalData.FromDictionary(additionalMessageData);
+                        }
 
                         command.TaskCompletionSource.TrySetResult((EmptyResult)commandResult);
                     }
@@ -322,22 +326,15 @@ internal sealed class Broker : IAsyncDisposable
             case TypeEvent:
                 if (method is null) throw new BiDiException($"The remote end responded with 'event' message type, but missed required 'method' property. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
 
-                if (!_eventMetadata.TryGetValue(method, out var metadata))
+                try
                 {
-                    if (_logger.IsEnabled(LogEventLevel.Warn))
-                    {
-                        _logger.Warn($"Received BiDi event with method '{method}', but no event type mapping was found. Event will be ignored. Message content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
-                    }
-
-                    break;
+                    _bidi.EventDispatcher.DeserializeAndDispatch(method, ref paramsReader, additionalMessageData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn($"Failed to deserialize and dispatch '{method}' event: {ex}.\nMessage content: {System.Text.Encoding.UTF8.GetString(data.ToArray())}");
                 }
 
-                var eventParams = JsonSerializer.Deserialize(ref paramsReader, metadata.JsonTypeInfo)
-                    ?? throw new BiDiException("Remote end returned null event args in the 'params' property.");
-
-                var eventArgs = metadata.CreateEventArgs(_bidi, eventParams);
-
-                _eventDispatcher.EnqueueEvent(method, eventArgs);
                 break;
 
             case TypeError:
@@ -415,6 +412,7 @@ internal sealed class Broker : IAsyncDisposable
 
     private async Task ProcessMessagesAsync()
     {
+        using var scope = BiDiContext.Use(_bidi);
         var reader = _receivedMessages.Reader;
 
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
@@ -442,6 +440,7 @@ internal sealed class Broker : IAsyncDisposable
         // Channel is fully drained. Fail any commands that didn't get a response:
         // either with the transport error or cancellation for clean shutdown.
         var terminalException = _terminalReceiveException;
+
         foreach (var id in _pendingCommands.Keys)
         {
             if (_pendingCommands.TryRemove(id, out var pendingCommand))
@@ -473,11 +472,6 @@ internal sealed class Broker : IAsyncDisposable
     }
 
     private readonly record struct CommandInfo(TaskCompletionSource<EmptyResult> TaskCompletionSource, JsonTypeInfo JsonResultTypeInfo);
-
-    private readonly record struct EventMetadata(JsonTypeInfo JsonTypeInfo, Func<IBiDi, object, EventArgs> ArgsFactory)
-    {
-        public EventArgs CreateEventArgs(IBiDi bidi, object eventParams) => ArgsFactory(bidi, eventParams);
-    }
 
     private sealed class PooledBufferWriter : IBufferWriter<byte>, IDisposable
     {

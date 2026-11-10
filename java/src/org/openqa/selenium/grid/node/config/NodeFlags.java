@@ -161,7 +161,7 @@ public class NodeFlags implements HasRoles {
               + "It is recommended to provide this type of configuration through a toml config "
               + "file to improve readability. Command line example: "
               + "--driver-configuration display-name=\"Firefox Nightly\" max-sessions=2 "
-              + "webdriver-path=\"/usr/local/bin/geckodriver\" "
+              + "webdriver-executable=\"/usr/local/bin/geckodriver\" "
               + "stereotype=\"{\\\"browserName\\\": \\\"firefox\\\", "
               + "\\\"browserVersion\\\": \\\"86\\\", "
               + "\\\"moz:firefoxOptions\\\": "

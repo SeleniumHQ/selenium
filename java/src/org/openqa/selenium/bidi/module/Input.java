@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDi;
@@ -30,6 +31,7 @@ import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.script.RemoteReference;
 import org.openqa.selenium.interactions.Sequence;
 
+@Beta
 public class Input {
   private final BiDi bidi;
 
@@ -45,39 +47,34 @@ public class Input {
     List<Map<String, Object>> encodedActions =
         actions.stream().map(Sequence::encode).collect(Collectors.toList());
 
-    encodedActions.forEach(
-        encodedAction -> {
-          String type = (String) encodedAction.get("type");
-          // Element as origin is only possible for input pointer or wheel
-          if (type.equals("pointer") || type.equals("wheel")) {
-            List<Map<String, Object>> actionList =
-                (List<Map<String, Object>>) encodedAction.get("actions");
+    encodedActions.forEach(encodedAction -> {
+      String type = (String) encodedAction.get("type");
+      // Element as origin is only possible for input pointer or wheel
+      if (type.equals("pointer") || type.equals("wheel")) {
+        List<Map<String, Object>> actionList =
+            (List<Map<String, Object>>) encodedAction.get("actions");
 
-            actionList.stream()
-                .filter(
-                    action ->
-                        // For pointer only pointMove action can have element as origin
-                        action.get("type").equals("pointerMove")
-                            || action.get("type").equals("scroll"))
-                .filter(action -> action.get("origin") instanceof WebElement)
-                .forEach(
-                    action -> {
-                      Object element = action.get("origin");
-                      try {
-                        // Using reflection because adding RemoteWebElement as a dependency creates
-                        // a circular dependency in Bazel
-                        String id = (String) element.getClass().getMethod("getId").invoke(element);
-                        // sharedId is required by BiDi, the reason for this step
-                        action.put(
-                            "origin", Map.of("type", "element", "element", Map.of("sharedId", id)));
-                      } catch (NoSuchMethodException
-                          | InvocationTargetException
-                          | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                      }
-                    });
-          }
-        });
+        actionList.stream()
+            .filter(action ->
+                // For pointer only pointMove action can have element as origin
+                action.get("type").equals("pointerMove") || action.get("type").equals("scroll"))
+            .filter(action -> action.get("origin") instanceof WebElement)
+            .forEach(action -> {
+              Object element = action.get("origin");
+              try {
+                // Using reflection because adding RemoteWebElement as a dependency creates
+                // a circular dependency in Bazel
+                String id = (String) element.getClass().getMethod("getId").invoke(element);
+                // sharedId is required by BiDi, the reason for this step
+                action.put("origin", Map.of("type", "element", "element", Map.of("sharedId", id)));
+              } catch (NoSuchMethodException
+                  | InvocationTargetException
+                  | IllegalAccessException e) {
+                throw new RuntimeException(e);
+              }
+            });
+      }
+    });
     bidi.send(
         new Command<>(
             "input.performActions",

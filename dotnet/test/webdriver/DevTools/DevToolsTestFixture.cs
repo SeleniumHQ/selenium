@@ -19,11 +19,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
-public class DevToolsTestFixture : DriverTestFixture
+public abstract class DevToolsTestFixture : DriverTestFixture
 {
     protected IDevTools devTools;
     protected IDevToolsSession session;
@@ -34,8 +34,12 @@ public class DevToolsTestFixture : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
-        devTools = driver as IDevTools;
+        if (Driver is null)
+        {
+            CreateFreshDriver();
+        }
+
+        devTools = Driver as IDevTools;
         if (devTools == null)
         {
             Assert.Ignore($"{EnvironmentManager.Instance.Browser} does not support Chrome DevTools Protocol");
@@ -51,9 +55,8 @@ public class DevToolsTestFixture : DriverTestFixture
         if (session != null)
         {
             session.Dispose();
-            EnvironmentManager.Instance.CloseCurrentDriver();
+            CloseDriver();
             session = null;
-            driver = null;
         }
     }
 }

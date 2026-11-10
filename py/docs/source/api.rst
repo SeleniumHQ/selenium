@@ -50,6 +50,7 @@ webdriver.common
 
    selenium.webdriver.common.action_chains
    selenium.webdriver.common.alert
+   selenium.webdriver.common.api_request_context
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.driver_finder
@@ -63,6 +64,7 @@ webdriver.common
    selenium.webdriver.common.timeouts
    selenium.webdriver.common.utils
    selenium.webdriver.common.virtual_authenticator
+   selenium.webdriver.common.web_extension
    selenium.webdriver.common.webdriver
    selenium.webdriver.common.window
 
@@ -91,6 +93,8 @@ webdriver.common.bidi
 .. autosummary::
    :toctree: selenium_webdriver_common_bidi
 
+   selenium.webdriver.common.bidi._event_manager
+   selenium.webdriver.common.bidi.bluetooth
    selenium.webdriver.common.bidi.browser
    selenium.webdriver.common.bidi.browsing_context
    selenium.webdriver.common.bidi.cdp
@@ -103,7 +107,9 @@ webdriver.common.bidi
    selenium.webdriver.common.bidi.permissions
    selenium.webdriver.common.bidi.script
    selenium.webdriver.common.bidi.session
+   selenium.webdriver.common.bidi.speculation
    selenium.webdriver.common.bidi.storage
+   selenium.webdriver.common.bidi.user_agent_client_hints
    selenium.webdriver.common.bidi.webextension
 
 webdriver.common.fedcm

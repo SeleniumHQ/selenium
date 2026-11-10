@@ -19,8 +19,10 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WindowType;
 
+@Beta
 public class CreateContextParameters {
   private final Map<String, Object> map = new HashMap<>();
   private final WindowType windowType;

@@ -26,11 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 
 /**
  * @see <a href="https://www.w3.org/TR/webdriver-bidi/#cddl-type-scriptlocalvalue">BiDi spec</a>
  */
+@Beta
 public abstract class LocalValue {
 
   private static final Json JSON = new Json();

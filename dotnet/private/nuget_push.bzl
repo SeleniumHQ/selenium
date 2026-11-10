@@ -38,6 +38,8 @@ def _create_unix_script(ctx, dotnet, nupkg_files):
     """Create bash script for Unix/macOS/Linux."""
     push_commands = []
     for nupkg in nupkg_files:
+        if nupkg.basename.endswith(".snupkg"):
+            continue
         nupkg_runfiles_path = _to_runfiles_path(nupkg.short_path)
         push_commands.append(
             '"$DOTNET" nuget push "$RUNFILES_DIR/{nupkg}" --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE" --skip-duplicate'.format(nupkg = nupkg_runfiles_path),
@@ -77,6 +79,8 @@ def _create_windows_script(ctx, dotnet, nupkg_files):
     """Create batch script for Windows."""
     push_commands = []
     for nupkg in nupkg_files:
+        if nupkg.basename.endswith(".snupkg"):
+            continue
         nupkg_runfiles_path = _to_runfiles_path(nupkg.short_path).replace("/", "\\")
         push_commands.append(
             '"%%DOTNET%%" nuget push "%%~dp0%s" --api-key "%%NUGET_API_KEY%%" --source "%%NUGET_SOURCE%%" --skip-duplicate' % nupkg_runfiles_path,
@@ -107,7 +111,7 @@ nuget_push = rule(
         "packages": attr.label_list(
             doc = "The nupkg files to push",
             mandatory = True,
-            allow_files = [".nupkg"],
+            allow_files = [".nupkg", ".snupkg"],
         ),
         "_windows_constraint": attr.label(
             default = "@platforms//os:windows",

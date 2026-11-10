@@ -130,7 +130,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             });
 
             Handlebars.Configuration.TextEncoder = null;
-            return Handlebars.Compile(templateContents);
+            var generator = Handlebars.Compile(templateContents);
+            m_templateGenerators[templatePath] = generator;
+            return generator;
         }
     }
 }

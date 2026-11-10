@@ -19,7 +19,7 @@
 
 const jszip = require('jszip')
 const path = require('node:path')
-const fs = require('fs/promises')
+const fs = require('node:fs/promises')
 const io = require('./index')
 const { InvalidArgumentError } = require('../lib/error')
 

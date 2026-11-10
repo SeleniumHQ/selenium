@@ -22,24 +22,29 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe Network, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                        only: {browser: %i[chrome edge firefox]} do
+      describe Network, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
         after { |example| reset_driver!(example: example) }
 
-        it 'adds an intercept' do
+        it 'adds an intercept',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(intercept).not_to be_nil
         end
 
-        it 'adds an intercept with a default pattern type' do
+        it 'adds an intercept with a default pattern type',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]], url_patterns: pattern)
           expect(intercept).not_to be_nil
         end
 
-        it 'adds an intercept with a url pattern' do
+        it 'adds an intercept with a url pattern',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           pattern = 'http://localhost:4444/formPage.html'
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]],
@@ -48,13 +53,17 @@ module Selenium
           expect(intercept).not_to be_nil
         end
 
-        it 'removes an intercept' do
+        it 'removes an intercept',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
           expect(network.remove_intercept(intercept['intercept'])).to be_empty
         end
 
-        it 'continues with auth' do
+        it 'continues with auth',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           username = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first
           password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last
           network = described_class.new(driver.bidi)
@@ -69,7 +78,9 @@ module Selenium
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
         end
 
-        it 'continues without auth' do
+        it 'continues without auth',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
@@ -80,7 +91,9 @@ module Selenium
           expect { driver.navigate.to url_for('basicAuth') }.to raise_error(Error::WebDriverError)
         end
 
-        it 'cancels auth' do
+        it 'cancels auth',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:auth_required]])
           network.on(:auth_required) do |event|
@@ -92,7 +105,9 @@ module Selenium
           expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
         end
 
-        it 'continues request' do
+        it 'continues request',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
@@ -104,7 +119,9 @@ module Selenium
           expect(driver.find_element(name: 'login')).to be_displayed
         end
 
-        it 'fails request' do
+        it 'fails request',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:before_request]])
           network.on(:before_request) do |event|
@@ -115,7 +132,9 @@ module Selenium
           expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::WebDriverError)
         end
 
-        it 'continues response' do
+        it 'continues response',
+           pending_if: {browser_family: :safari,
+                        reason: 'Safari does not support the BiDi network domain'} do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|
@@ -127,8 +146,10 @@ module Selenium
           expect(driver.find_element(name: 'login')).to be_displayed
         end
 
-        it 'provides response', except: {browser: :firefox,
-                                         reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
+        it 'provides response',
+           pending_if: [{browser: :firefox, reason: 'https://github.com/w3c/webdriver-bidi/issues/747'},
+                        {browser_family: :safari,
+                         reason: 'Safari does not support the BiDi network domain'}] do
           network = described_class.new(driver.bidi)
           network.add_intercept(phases: [described_class::PHASES[:response_started]])
           network.on(:response_started) do |event|

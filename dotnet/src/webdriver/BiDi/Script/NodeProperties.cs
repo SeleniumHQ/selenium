@@ -17,6 +17,17 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed record NodeProperties(long NodeType, long ChildNodeCount, IReadOnlyDictionary<string, string>? Attributes, IReadOnlyList<NodeRemoteValue>? Children, string? LocalName, Mode? Mode, string? NamespaceUri, string? NodeValue, NodeRemoteValue? ShadowRoot);
+public sealed record NodeProperties(
+    long NodeType,
+    long ChildNodeCount,
+    ImmutableDictionary<string, string>? Attributes,
+    ImmutableArray<NodeRemoteValue>? Children,
+    string? LocalName,
+    Mode? Mode,
+    [property: JsonPropertyName("namespaceURI")] string? NamespaceUri,
+    string? NodeValue,
+    NodeRemoteValue? ShadowRoot);

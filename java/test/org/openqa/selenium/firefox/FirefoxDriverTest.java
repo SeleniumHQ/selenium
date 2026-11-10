@@ -230,8 +230,9 @@ class FirefoxDriverTest extends JupiterTestBase {
   @NoDriverAfterTest
   @Test
   void canSetContext() {
-    localDriver =
-        new FirefoxDriver(getDefaultOptions().addArguments("-remote-allow-system-access"));
+    GeckoDriverService service =
+        new GeckoDriverService.Builder().withAllowSystemAccess(true).build();
+    localDriver = new FirefoxDriver(service, getDefaultOptions());
     HasContext context = (HasContext) localDriver;
 
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CONTENT);

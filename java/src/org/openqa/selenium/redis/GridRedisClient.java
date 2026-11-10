@@ -106,6 +106,35 @@ public class GridRedisClient implements Closeable {
     connection.sync().pexpire(key, ttlMillis);
   }
 
+  /** Appends a value to the tail of the list stored at {@code key}. */
+  public void rpush(String key, String value) {
+    connection.sync().rpush(key, value);
+  }
+
+  /** Prepends a value to the head of the list stored at {@code key}. */
+  public void lpush(String key, String value) {
+    connection.sync().lpush(key, value);
+  }
+
+  /** Returns the elements of the list stored at {@code key} within the inclusive range. */
+  public List<String> lrange(String key, long start, long stop) {
+    return connection.sync().lrange(key, start, stop);
+  }
+
+  /**
+   * Removes all occurrences of {@code value} from the list stored at {@code key}, returning the
+   * number of elements removed. Used as an atomic "claim" primitive: a return value greater than 0
+   * means this caller won the race to remove the element.
+   */
+  public long lrem(String key, String value) {
+    return connection.sync().lrem(key, 0, value);
+  }
+
+  /** Returns the number of elements in the list stored at {@code key}. */
+  public long llen(String key) {
+    return connection.sync().llen(key);
+  }
+
   @Nullable
   public Long getAsLong(String key) {
     String value = connection.sync().get(key);

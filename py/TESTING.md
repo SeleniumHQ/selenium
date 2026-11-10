@@ -1,0 +1,188 @@
+# Python Testing Guide
+
+This guide helps contributors write tests in the Selenium Python codebase.
+
+## Test Framework
+
+* Tests use [pytest](https://pytest.org).
+* Test HTML pages live in `common/src/web/`.
+* `pages` fixture loads test pages via `pages.load("pageName.html")`.
+* Assertions use standard pytest `assert` statements.
+
+```python
+import pytest
+from selenium.webdriver.common.by import By
+
+def test_element_is_displayed(driver, pages):
+    pages.load("javascriptPage.html")
+
+    element = driver.find_element(By.ID, "displayed")
+    assert element.is_displayed() is True
+
+@pytest.mark.xfail_safari(reason="Safari doesn't support this")
+def test_something_safari_fails(driver, pages):
+    # Expected to fail on Safari
+    pass
+```
+
+## Running Tests
+
+Bazel creates test targets for each browser. Tests run in parallel by default.
+
+```shell
+bazel test //py/...  # All tests
+bazel test //py:unit  # Unit tests (no browser)
+bazel test //py:test-chrome  # Chrome browser tests
+bazel test //py:test-firefox  # Firefox browser tests
+bazel test //py:test-chrome-common  # Common (cross-browser) tests with Chrome
+
+# A single test file with Chrome (target = test/<path>/<file>-<browser>[-variant]).
+# Discover exact names with: bazel query //py:all | grep window_tests
+bazel test //py:test/selenium/webdriver/common/window_tests-chrome
+
+# With BiDi protocol
+bazel test //py:test-chrome-bidi
+
+# Against a Grid server (chrome and firefox only). The suite starts its own
+# Selenium standalone server and talks to it with webdriver.Remote.
+bazel test //py:test-chrome-remote
+bazel test //py:test-chrome-grid     # only the Grid-specific tests
+bazel test //py:test-remote          # every remote suite
+
+# Test filters
+bazel test //py/... --test_tag_filters=chrome
+
+# Additional arguments
+bazel test //py/... --flaky_test_attempts=3
+bazel test //py/... --test_output=all
+bazel test //py/... --test_output=streamed  # Live output for debugging
+bazel test //py:test-chrome --headless
+
+# Run a specific test in a test file
+bazel test //py:test/selenium/webdriver/common/bidi/browsing_context_tests-chrome-bidi \
+  --test_arg=-k \
+  --test_arg=test_get_tree_with_child \
+
+# View all targets
+bazel query //py/...
+```
+
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
+
+## Running Tests Without Bazel (using pytest)
+
+You can run tests directly with pytest after setting up the development environment.
+
+### Setup
+
+Install the required dependencies and copy the generated files into your local source tree:
+
+```shell
+./go py:local_dev
+```
+
+### Running with pytest
+
+```shell
+# Run all tests in a directory
+pytest py/test/selenium/webdriver/chrome/ --driver chrome
+
+# Run a specific test file
+pytest py/test/selenium/webdriver/common/window_tests.py
+
+# Run a specific test function
+pytest py/test/selenium/webdriver/common/window_tests.py::test_should_get_the_size_of_the_current_window
+
+# With pytest options
+pytest py/test/selenium/webdriver/chrome/ --driver chrome --headless -v
+```
+> **Note:**
+> For running BiDi tests, use the `--bidi` flag.
+>
+> To run against a Grid server, add `--remote`. It starts a Selenium standalone
+> server and runs the tests through `webdriver.Remote`, so it needs the Grid jar
+> built first (`bazel build //java/src/org/openqa/selenium/grid:selenium_server_deploy.jar`).
+>
+> A BiDi test file with Grid-specific behavior can be listed in `REMOTE_BIDI_TESTS`
+> in `py/BUILD.bazel`; it then also runs with `--bidi --remote` as part of
+> `test-<browser>-remote`.
+
+## Skipping Tests
+
+Skips use pytest markers; each accepts optional `reason` and `run` parameters
+(`run=False` skips the test entirely instead of expecting a failure).
+
+| Marker | When to Use |
+|--------|-------------|
+| `@pytest.mark.xfail_chrome` | Test expected to fail on Chrome |
+| `@pytest.mark.xfail_firefox` | Test expected to fail on Firefox |
+| `@pytest.mark.xfail_safari` | Test expected to fail on Safari |
+| `@pytest.mark.xfail_edge` | Test expected to fail on Edge |
+| `@pytest.mark.xfail_ie` | Test expected to fail on IE |
+| `@pytest.mark.xfail_remote` | Test expected to fail with Remote WebDriver |
+
+```python
+@pytest.mark.xfail_chrome(reason="Not implemented yet")
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/123")
+def test_something(driver, pages):
+    pass
+
+@pytest.mark.xfail_safari(run=False)  # Skip entirely instead of xfail
+def test_skip_safari(driver, pages):
+    pass
+```
+
+## Driver Lifecycle
+
+| Marker | When to Use |
+|--------|-------------|
+| `@pytest.mark.no_driver_after_test` | Teardown driver after test |
+| `@pytest.mark.needs_fresh_driver` | Restart driver for test isolation |
+
+## Fixtures
+
+We make use of
+[pytest fixtures](https://docs.pytest.org/en/stable/reference/fixtures.html)
+to simplify test setup/teardown. There are several
+[built-in pytest fixtures](https://docs.pytest.org/en/stable/reference/fixtures.html),
+and many of our own internal fixtures. If a fixture is specific to a module, you will
+find it defined within the test file that uses it. If it is shared among several
+modules, you will find the main fixtures in `conftest.py`:
+
+| Fixture | Description |
+|---------|-------------|
+| `driver` | WebDriver instance, auto-parametrized by browser |
+| `pages` | Load test pages: `pages.load("page.html")` or `pages.url("page.html")` |
+| `webserver` | Test HTTP server reference |
+| `clean_driver` | Fresh driver without parametrization |
+| `clean_options` | Fresh browser options instance |
+| `headless` | Whether the browser was started headless, for tests asserting on behavior a headless browser does not model (e.g. window focus) |
+
+## Test Organization
+
+```
+py/test/
+├── unit/                    # Unit tests (no browser)
+│   └── selenium/webdriver/
+└── selenium/webdriver/      # Integration tests
+    ├── common/              # Cross-browser tests
+    ├── chrome/
+    ├── firefox/
+    ├── safari/
+    └── remote/
+```
+
+Test files end in `_tests.py` (e.g., `visibility_tests.py`).
+
+## Build Files
+
+* Adding tests shouldn't require Bazel changes—files matching `*_tests.py` are picked up automatically.
+* Make sure the test file is in a directory covered by existing `py_test_suite` targets.

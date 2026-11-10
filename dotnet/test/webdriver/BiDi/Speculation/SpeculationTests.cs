@@ -19,29 +19,28 @@
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Speculation;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
 
 namespace OpenQA.Selenium.Tests.BiDi.Speculation;
 
 internal class SpeculationTests : BiDiTestFixture
 {
     [Test]
-    [IgnoreBrowser(Infrastructure.Browser.Firefox, "Not supported yet?")]
+    [IgnoreBrowser(Testing.NUnit.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenToPrefetchStatusUpdatedEvent()
     {
         var tcs = new TaskCompletionSource<PrefetchStatusUpdatedEventArgs>();
 
         var speculation = bidi.AsSpeculation();
 
-        await using var subscription = await speculation.OnPrefetchStatusUpdatedAsync(args =>
+        await using var subscription = await speculation.PrefetchStatusUpdated.SubscribeAsync(args =>
         {
             tcs.TrySetResult(args);
         });
 
         // Navigate to a blank page first
-        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+        await context.NavigateAsync(Urls.SimpleTestPage, new() { Wait = ReadinessState.Complete });
 
-        var targetUrl = UrlBuilder.WhereIs("formPage.html");
+        var targetUrl = Urls.FormsPage;
 
         // Add speculation rules with "immediate" eagerness AND a clickable link
         // The link is necessary for the where clause to match

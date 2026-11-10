@@ -48,6 +48,9 @@ public sealed class FirefoxDriverService : DriverService
     }
 
     /// <inheritdoc />
+    protected override string DriverServiceEnvironmentVariableName => "SE_GECKODRIVER";
+
+    /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new FirefoxOptions();
@@ -114,6 +117,13 @@ public sealed class FirefoxDriverService : DriverService
     /// Directory in which GeckoDriver creates profiles.
     /// </summary>
     public string? ProfileRoot { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to allow GeckoDriver to access system-level
+    /// Firefox APIs, such as switching to the chrome command context. This cannot be requested
+    /// via capabilities and must be configured on the driver service.
+    /// </summary>
+    public bool AllowSystemAccess { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -231,6 +241,11 @@ public sealed class FirefoxDriverService : DriverService
                 }
 
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --profile-root \"{0}\"", this.ProfileRoot);
+            }
+
+            if (this.AllowSystemAccess)
+            {
+                argsBuilder.Append(" --allow-system-access");
             }
 
             return argsBuilder.ToString().Trim();

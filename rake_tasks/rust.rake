@@ -23,6 +23,26 @@ task :lint do
   puts '  Rust linting not configured'
 end
 
+desc 'Pin Rust dependencies'
+task :pin do
+  puts 'pinning Cargo.lock and Bazel crate metadata'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'generate-lockfile', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+  Bazel.execute('fetch', ['--repo_env=CARGO_BAZEL_REPIN=true'], '@crates//...')
+end
+
+desc 'Update Rust dependencies to latest versions within specified range'
+task :update do
+  puts 'updating Cargo.lock'
+  manifest = File.expand_path('rust/Cargo.toml')
+  Bazel.execute('run',
+                ['--', 'update', '--manifest-path', manifest],
+                '@rules_rust//tools/upstream_wrapper:cargo')
+  Rake::Task['rust:pin'].invoke
+end
+
 desc 'Update Rust changelog'
 task :changelogs do
   header = "#{rust_version}\n======"
@@ -44,8 +64,11 @@ task :version, [:version] do |_task, arguments|
   new_version = updated.split(/\.|-/).tap { |v| v.delete_at(2) }.unshift('0').join('.').gsub('.nightly', '-nightly')
   puts "Updating Rust from #{old_version} to #{new_version}"
 
-  ['rust/Cargo.toml', 'rust/BUILD.bazel'].each do |file|
-    text = File.read(file).gsub(old_version, new_version)
+  # Anchor on the package name: other crates in Cargo.lock sit at the same
+  # 0.4.x numbers (e.g. `tar`), as do dependency literals in Cargo.toml.
+  pattern = /(name = "selenium-manager".*?version = ")#{Regexp.escape(old_version)}(")/m
+  ['rust/Cargo.toml', 'rust/BUILD.bazel', 'rust/Cargo.lock'].each do |file|
+    text = File.read(file).sub(pattern, "\\1#{new_version}\\2")
     File.open(file, 'w') { |f| f.puts text }
   end
 end

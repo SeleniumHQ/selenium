@@ -24,11 +24,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -38,10 +43,12 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.Script;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 
+@CloseExtraWindowsAfterTest
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
@@ -49,17 +56,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToWindowBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }
@@ -71,15 +75,16 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
     Map<String, BrowsingContextInfo> closedWindows = new HashMap<>();
 
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      inspector.onBrowsingContextDestroyed(
-          context -> {
-            // here may arrive events from the previous tests
-            closedWindows.put(context.getId(), context);
-          });
+      inspector.onBrowsingContextDestroyed(context -> {
+        // here may arrive events from the previous tests
+        closedWindows.put(context.getId(), context);
+      });
 
+      String originalWindow = driver.getWindowHandle();
       String windowHandle = driver.switchTo().newWindow(WindowType.WINDOW).getWindowHandle();
 
       driver.close();
+      driver.switchTo().window(originalWindow);
 
       wait.until(d -> closedWindows.containsKey(windowHandle));
 
@@ -96,16 +101,14 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   void canListenToTabBrowsingContextCreatedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
-      CompletableFuture<BrowsingContextInfo> future = new CompletableFuture<>();
-      inspector.onBrowsingContextCreated(future::complete);
+      Map<String, BrowsingContextInfo> createdWindows = new ConcurrentHashMap<>();
+      inspector.onBrowsingContextCreated(info -> createdWindows.put(info.getId(), info));
 
       String windowHandle = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
-      BrowsingContextInfo browsingContextInfo = future.get(5, TimeUnit.SECONDS);
-
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
+      wait.until(d -> createdWindows.containsKey(windowHandle));
+      BrowsingContextInfo browsingContextInfo = createdWindows.get(windowHandle);
       assertThat("about:blank").isEqualTo(browsingContextInfo.getUrl());
-      assertThat(browsingContextInfo.getId()).isEqualTo(windowHandle);
       assertThat(browsingContextInfo.getChildren()).isEqualTo(null);
       assertThat(browsingContextInfo.getParentBrowsingContext()).isEqualTo(null);
     }
@@ -300,12 +303,11 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
 
-      assertThatThrownBy(
-              () ->
-                  context.navigate(
-                      "http://invalid-domain-that-does-not-exist.test/",
-                      ReadinessState.COMPLETE,
-                      ofSeconds(1)))
+      assertThatThrownBy(() ->
+              context.navigate(
+                  "http://invalid-domain-that-does-not-exist.test/",
+                  ReadinessState.COMPLETE,
+                  ofSeconds(1)))
           .as("Expect an exception due to navigation failure")
           .isInstanceOf(BiDiException.class);
 
@@ -315,6 +317,70 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
           .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
       assertThat(navigationInfo.getTimestamp())
           .isBetween(currentTimeMillis() - 1000, currentTimeMillis());
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForBrowsingContext()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+      inspector.onDomContentLoaded(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+
+      // Clear listeners for this browsing context
+      inspector.clearListener(context.getId());
+
+      // Re-subscribe and verify events still work after re-subscribing
+      CompletableFuture<NavigationInfo> newFuture = new CompletableFuture<>();
+      inspector.onDomContentLoaded(newFuture::complete);
+
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo newNavigationInfo = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newNavigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(newNavigationInfo.getUrl()).contains("/simpleTest.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canClearListenersForMultipleBrowsingContexts()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    Set<String> browsingContextIds = new HashSet<>();
+    browsingContextIds.add(driver.getWindowHandle());
+
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      List<NavigationInfo> receivedEvents = new ArrayList<>();
+      CountDownLatch latch = new CountDownLatch(1);
+      inspector.onNavigationStarted(info -> {
+        receivedEvents.add(info);
+        latch.countDown();
+      });
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+
+      latch.await(5, TimeUnit.SECONDS);
+      assertThat(receivedEvents).hasSizeGreaterThanOrEqualTo(1);
+
+      // Clear listeners for the set of browsing context ids
+      inspector.clearListeners(browsingContextIds);
+
+      // Re-subscribe with a new listener after clearing
+      CompletableFuture<NavigationInfo> newFuture = new CompletableFuture<>();
+      inspector.onNavigationStarted(newFuture::complete);
+
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      NavigationInfo newNavigationInfo = newFuture.get(5, TimeUnit.SECONDS);
+      assertThat(newNavigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
     }
   }
 
