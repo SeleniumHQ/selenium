@@ -30,7 +30,8 @@ supported API.
 
 2. **Windows are reached through a `windows` entry on the driver**, alongside `network` and `script`. It
    opens a window, lists the open top-level windows in every user context, and returns the current one.
-   Opening a window does not change which window the driver's own commands target.
+   Opening one takes a choice of tab or window, a tab by default, and does not change which window the
+   driver's own commands target.
 
 3. **A window carries the navigation and capture verbs, named as they are on the driver**: `get`,
    `refresh`, `back`, `forward`, `close`, `screenshot` and `print_page`, plus `activate` (bring to the
