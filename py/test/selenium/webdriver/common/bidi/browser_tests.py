@@ -19,7 +19,7 @@ import os
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.bidi.browser import (
     ClientWindowInfo,
     ClientWindowNamedState,
@@ -99,7 +99,7 @@ def test_get_client_windows(driver):
 
 
 def test_raises_exception_when_removing_default_user_context(driver):
-    with pytest.raises(Exception):
+    with pytest.raises(WebDriverException):
         driver.browser.remove_user_context("default")
 
 
