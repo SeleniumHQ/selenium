@@ -22,7 +22,6 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 
 import java.net.URI;
 import java.time.Duration;
@@ -226,7 +225,7 @@ public class LocalNodeRegistry implements NodeRegistry {
       }
     } catch (Exception e) {
       LOG.log(
-          getDebugLogLevel(), String.format("Exception while adding Node %s", node.getUri()), e);
+          Level.FINE, String.format("Exception while adding Node %s", node.getUri()), e);
       return;
     }
 
@@ -296,7 +295,7 @@ public class LocalNodeRegistry implements NodeRegistry {
     writeLock.lock();
     try {
       LOG.log(
-          getDebugLogLevel(),
+          Level.FINE,
           String.format("Health check result for %s was %s", nodeUri, availability));
       model.setAvailability(id, availability);
       model.updateHealthCheckCount(id, availability);
@@ -308,7 +307,7 @@ public class LocalNodeRegistry implements NodeRegistry {
   @Override
   public void runHealthChecks() {
     if (!healthChecksInProgress.compareAndSet(false, true)) {
-      LOG.log(getDebugLogLevel(), "Skipping health checks because previous cycle is still running");
+      LOG.log(Level.FINE, "Skipping health checks because previous cycle is still running");
       return;
     }
 
@@ -332,7 +331,7 @@ public class LocalNodeRegistry implements NodeRegistry {
           futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
         } catch (RejectedExecutionException e) {
           LOG.log(
-              getDebugLogLevel(),
+              Level.FINE,
               String.format(
                   "Unable to schedule health check for node %s, running in caller thread", nodeId),
               e);
@@ -347,7 +346,7 @@ public class LocalNodeRegistry implements NodeRegistry {
           Thread.currentThread().interrupt();
           break;
         } catch (Exception e) {
-          LOG.log(getDebugLogLevel(), "Error waiting for health check execution", e);
+          LOG.log(Level.FINE, "Error waiting for health check execution", e);
         }
       }
     } finally {
@@ -448,7 +447,7 @@ public class LocalNodeRegistry implements NodeRegistry {
     try {
       check.run();
     } catch (Throwable t) {
-      LOG.log(getDebugLogLevel(), "Health check execution failed for node " + nodeId, t);
+      LOG.log(Level.FINE, "Health check execution failed for node " + nodeId, t);
     }
   }
 
@@ -458,7 +457,7 @@ public class LocalNodeRegistry implements NodeRegistry {
     return () -> {
       boolean checkFailed = false;
       Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running healthcheck for Node " + node.getUri());
+      LOG.log(Level.FINE, "Running healthcheck for Node " + node.getUri());
 
       HealthCheck.Result result;
       try {
@@ -496,7 +495,7 @@ public class LocalNodeRegistry implements NodeRegistry {
       NodeId nodeId = slotId.getOwningNodeId();
       Node node = nodes.get(nodeId);
       if (node == null) {
-        LOG.log(getDebugLogLevel(), String.format("Unable to find node with id %s", slotId));
+        LOG.log(Level.FINE, String.format("Unable to find node with id %s", slotId));
         return false;
       }
 

@@ -112,7 +112,6 @@ import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.FileHandler;
@@ -399,7 +398,7 @@ public class LocalNode extends Node implements Closeable {
           }
         }
       } else {
-        LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+        LOG.log(Level.FINE, "Received stop session notification with null values");
         span.setStatus(Status.INVALID_ARGUMENT);
         span.addEvent("Received stop session notification with null values", attributeMap);
       }
@@ -1416,7 +1415,7 @@ public class LocalNode extends Node implements Closeable {
     if (this.drainAfterSessions) {
       int remainingSessions = this.sessionCount.decrementAndGet();
       LOG.log(
-          Debug.getDebugLogLevel(),
+          Level.FINE,
           "{0} remaining sessions before draining Node",
           remainingSessions);
       return remainingSessions >= 0;
@@ -1432,7 +1431,7 @@ public class LocalNode extends Node implements Closeable {
     if (this.drainAfterSessions) {
       int remainingSessions = this.sessionCount.incrementAndGet();
       LOG.log(
-          Debug.getDebugLogLevel(),
+          Level.FINE,
           "Session creation failed, restored count. {0} remaining sessions before draining Node",
           remainingSessions);
     }
