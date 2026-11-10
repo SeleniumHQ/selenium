@@ -22,7 +22,7 @@ command into a wire frame and back, and the `Domain` base every generated module
 subclasses. The websocket is stood in by `DrivingConnection`, which drives the
 command coroutine with the exact next()/send() protocol `WebSocketConnection`
 uses, so the seam is tested against the real contract rather than a mock of it.
-Event callbacks are covered in bidi_dispatcher_tests, against a real socket.
+Event listeners are covered in bidi_dispatcher_tests, against a real socket.
 """
 
 from dataclasses import dataclass, field
@@ -170,9 +170,9 @@ def test_execute_treats_the_presence_of_error_as_an_error_not_its_truthiness():
         Transport(connection).execute("bad.command", result=Result)
 
 
-def test_event_callbacks_need_a_dispatcher_on_the_connection():
+def test_event_listeners_need_a_dispatcher_on_the_connection():
     with pytest.raises(WebDriverException, match="no event dispatcher"):
-        Transport(DrivingConnection({})).add_callback("some.event", lambda params: None)
+        Transport(DrivingConnection({})).add_listener("some.event", None, lambda payload: None)
 
 
 # --- Domain seam ---

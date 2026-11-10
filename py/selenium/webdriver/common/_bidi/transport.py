@@ -19,7 +19,7 @@
 
 Hand-written (not generated). :class:`Transport` serializes a command's params,
 sends them over the session websocket, parses the reply into its declared result
-type, and relays event callbacks to the connection's dispatcher, which stores them.
+type, and relays event listeners to the connection's dispatcher, which stores them.
 
 This is internal, unsupported implementation. See
 https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -32,7 +32,6 @@ from typing import TYPE_CHECKING, Any
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.errors import exception_for
-from selenium.webdriver.common._bidi.serialization import UNSET, UnsetType
 
 if TYPE_CHECKING:
     from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
@@ -43,7 +42,7 @@ class Transport:
     """Serializes params, sends over a websocket connection, parses the reply.
 
     Deliberately narrow: it holds only an immutable connection reference (the id
-    counter lives on the shared ``WebSocketConnection``, and event callables on the
+    counter lives on the shared ``WebSocketConnection``, and event listeners on the
     dispatcher attached to it). Each domain wraps the session's connection in its
     own ``Transport``; all the state that matters lives on the shared connection,
     so those transports are equivalent.
@@ -64,18 +63,19 @@ class Transport:
         value = reply["result"]
         return result.from_json(value) if result is not None else value
 
-    def add_callback(
+    def add_listener(
         self,
         event: str,
-        callback: Callable[[dict[str, Any]], Any],
-        contexts: list[str] | UnsetType = UNSET,
-        user_contexts: list[str] | UnsetType = UNSET,
+        payload_type: type | None,
+        listener: Callable[[Any], Any],
+        browsing_context: str | None = None,
+        user_context: str | None = None,
     ) -> SubscribeResult:
-        """Subscribe ``callback`` to the raw params of ``event`` through the connection's dispatcher."""
-        return self._dispatcher().add_callback(event, callback, contexts=contexts, user_contexts=user_contexts)
+        """Subscribe ``listener`` to the ``payload_type`` payloads of ``event`` through the connection's dispatcher."""
+        return self._dispatcher().add_listener(event, payload_type, listener, browsing_context, user_context)
 
-    def remove_callback(self, subscription: str) -> None:
-        self._dispatcher().remove_callback(subscription)
+    def remove_listener(self, subscription: SubscribeResult) -> None:
+        self._dispatcher().remove_listener(subscription)
 
     def _dispatcher(self) -> EventDispatcher:
         dispatcher = getattr(self._connection, "event_receiver", None)

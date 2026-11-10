@@ -291,7 +291,7 @@ def test_a_vendor_field_is_type_checked_like_any_other_field():
     assert connection.sent is None
 
 
-# --- event types (the generated callback methods are exercised in bidi_dispatcher_tests) ---
+# --- event types (the generated listener methods are exercised in bidi_dispatcher_tests) ---
 
 
 @pytest.mark.parametrize("domain", _DOMAINS_WITH_EVENTS)

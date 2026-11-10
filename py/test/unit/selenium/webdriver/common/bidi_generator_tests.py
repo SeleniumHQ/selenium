@@ -52,7 +52,7 @@ from generate_bidi_protocol import (
     _emit_command,
     _emit_domain_class,
     _emit_enum,
-    _emit_event_callback,
+    _emit_event_listener,
     _emit_field,
     _emit_record,
     _emit_union,
@@ -641,21 +641,20 @@ def test_a_command_with_union_parameters_dispatches_through_build():
 # --------------------------------------------------------------------------- #
 
 
-def test_an_event_emits_a_subscribing_callback_method_bound_to_its_wire_name():
+def test_an_event_emits_a_subscribing_listener_method_typed_by_its_payload():
     event = EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters")
 
-    lines = _emit_event_callback(event)
+    lines = _emit_event_listener(event)
 
     assert lines[0].splitlines() == [
-        "    def add_thing_happened_callback(",
+        "    def add_thing_happened_listener(",
         "        self,",
-        "        callback: Callable[[dict[str, Any]], Any],",
-        "        contexts: list[str] | UnsetType = UNSET,",
-        "        user_contexts: list[str] | UnsetType = UNSET,",
+        "        listener: Callable[[ThingHappenedParameters], Any],",
+        "        browsing_context: str | None = None,",
+        "        user_context: str | None = None,",
         "    ) -> SubscribeResult:",
     ]
-    assert "        The callback gets the raw params; ``ThingHappenedParameters.from_json`` parses them." in lines
-    assert lines[-1] == '        return self._add_callback("x.thingHappened", callback, contexts, user_contexts)'
+    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener, browsing_context, user_context)'
 
 
 def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
@@ -679,15 +678,15 @@ def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
     assert '        "thing_happened": "x.thingHappened",' in emitted
     assert '        "x.thingHappened": ThingHappenedParameters,' in emitted
     assert '        "x.bare": None,' in emitted
-    assert "    def add_thing_happened_callback(" in emitted
-    assert "    def add_bare_callback(" in emitted
+    assert "    def add_thing_happened_listener(" in emitted
+    assert "    def add_bare_listener(" in emitted
 
 
 @pytest.mark.parametrize(
     ("command", "owner"),
-    [("addThingCallback", r"event x\.thing"), ("removeCallback", r"Domain\.remove_callback")],
+    [("addThingListener", r"event x\.thing"), ("removeListener", r"Domain\.remove_listener")],
 )
-def test_a_command_that_would_shadow_a_callback_method_is_rejected(command, owner):
+def test_a_command_that_would_shadow_a_listener_method_is_rejected(command, owner):
     schema = Schema(
         {
             "types": {},

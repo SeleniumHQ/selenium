@@ -27,19 +27,11 @@ from selenium.webdriver.common._bidi.browsing_context import (
     BoxClipRectangle,
     BrowsingContext,
     CaptureScreenshotParametersOrigin,
-    ContextCreatedParameters,
     CreateType,
     CssLocator,
-    DownloadEndParams,
     DownloadEndParamsCompleteParams,
-    DownloadWillBeginParams,
-    HistoryUpdatedParameters,
-    Info,
     InnerTextLocator,
-    NavigationInfo,
     ReadinessState,
-    UserPromptClosedParameters,
-    UserPromptOpenedParameters,
     UserPromptType,
     Viewport,
     XPathLocator,
@@ -576,20 +568,20 @@ def test_locate_nodes_given_start_nodes(driver, pages):
     assert len(nodes) == 3
 
 
-def test_callbacks_for_one_event_are_removed_independently(driver, pages):
+def test_listeners_for_one_event_are_removed_independently(driver, pages):
     first, second = [], []
-    first_subscription = BrowsingContext(driver).add_load_callback(first.append).subscription
-    second_subscription = BrowsingContext(driver).add_load_callback(second.append).subscription
+    first_subscription = BrowsingContext(driver).add_load_listener(first.append)
+    second_subscription = BrowsingContext(driver).add_load_listener(second.append)
 
     driver.get(pages.url("simpleTest.html"))
     WebDriverWait(driver, 10).until(lambda _: first and second)
-    BrowsingContext(driver).remove_callback(first_subscription)
+    BrowsingContext(driver).remove_listener(first_subscription)
     driver.get(pages.url("blank.html"))
     WebDriverWait(driver, 10).until(lambda _: len(second) == 2)
-    BrowsingContext(driver).remove_callback(second_subscription)
+    BrowsingContext(driver).remove_listener(second_subscription)
 
-    assert [NavigationInfo.from_json(params).url for params in first] == [pages.url("simpleTest.html")]
-    assert [NavigationInfo.from_json(params).url for params in second] == [
+    assert [e.url for e in first] == [pages.url("simpleTest.html")]
+    assert [e.url for e in second] == [
         pages.url("simpleTest.html"),
         pages.url("blank.html"),
     ]
@@ -597,40 +589,40 @@ def test_callbacks_for_one_event_are_removed_independently(driver, pages):
 
 def test_context_created_event(driver):
     events = []
-    subscription = BrowsingContext(driver).add_context_created_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_context_created_listener(events.append)
 
     context = BrowsingContext(driver).create(type=CreateType.TAB).context
     # Subscribing also reports the contexts that already exist.
-    created = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e["context"] == context), None))
-    BrowsingContext(driver).remove_callback(subscription)
+    created = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e.context == context), None))
+    BrowsingContext(driver).remove_listener(subscription)
     BrowsingContext(driver).close(context=context)
 
-    assert ContextCreatedParameters.from_json(created).url == "about:blank"
+    assert created.url == "about:blank"
 
 
 def test_context_destroyed_event(driver):
     context = BrowsingContext(driver).create(type=CreateType.TAB).context
     events = []
-    subscription = BrowsingContext(driver).add_context_destroyed_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_context_destroyed_listener(events.append)
 
     BrowsingContext(driver).close(context=context)
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert Info.from_json(events[0]).context == context
+    assert events[0].context == context
 
 
 @pytest.mark.parametrize("event", ["navigation_started", "navigation_committed", "dom_content_loaded", "load"])
 def test_navigation_events(driver, pages, event):
     url = pages.url("simpleTest.html")
     events = []
-    subscription = getattr(BrowsingContext(driver), f"add_{event}_callback")(events.append).subscription
+    subscription = getattr(BrowsingContext(driver), f"add_{event}_listener")(events.append)
 
     driver.get(url)
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    navigation = NavigationInfo.from_json(events[0])
+    navigation = events[0]
     assert (navigation.context, navigation.url) == (driver.current_window_handle, url)
 
 
@@ -638,90 +630,108 @@ def test_fragment_navigated_event(driver, pages):
     url = pages.url("linked_image.html")
     driver.get(url)
     events = []
-    subscription = BrowsingContext(driver).add_fragment_navigated_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_fragment_navigated_listener(events.append)
 
     driver.get(url + "#link")
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert NavigationInfo.from_json(events[0]).url == url + "#link"
+    assert events[0].url == url + "#link"
 
 
 @pytest.mark.xfail_firefox
 def test_navigation_failed_event(driver):
     url = "http://invalid-domain-that-does-not-exist.test/"
     events = []
-    subscription = BrowsingContext(driver).add_navigation_failed_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_navigation_failed_listener(events.append)
 
     with pytest.raises(WebDriverException):
         BrowsingContext(driver).navigate(context=driver.current_window_handle, url=url)
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert NavigationInfo.from_json(events[0]).url == url
+    assert events[0].url == url
 
 
 def test_history_updated_event(driver, pages):
     driver.get(pages.url("simpleTest.html"))
     events = []
-    subscription = BrowsingContext(driver).add_history_updated_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_history_updated_listener(events.append)
 
     driver.execute_script("history.pushState({}, '', '/new-path')")
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert HistoryUpdatedParameters.from_json(events[0]).url.endswith("/new-path")
+    assert events[0].url.endswith("/new-path")
 
 
 def test_user_prompt_opened_event(driver, pages):
     driver.get(pages.url("alerts.html"))
     events = []
-    subscription = BrowsingContext(driver).add_user_prompt_opened_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_user_prompt_opened_listener(events.append)
 
     driver.find_element(By.ID, "alert").click()
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
     BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle)
 
-    prompt = UserPromptOpenedParameters.from_json(events[0])
+    prompt = events[0]
     assert (prompt.type, prompt.message) == (UserPromptType.ALERT, "cheese")
 
 
 def test_user_prompt_closed_event(driver, pages):
     driver.get(pages.url("alerts.html"))
     events = []
-    subscription = BrowsingContext(driver).add_user_prompt_closed_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_user_prompt_closed_listener(events.append)
     driver.find_element(By.ID, "alert").click()
     WebDriverWait(driver, 5).until(EC.alert_is_present())
 
     BrowsingContext(driver).handle_user_prompt(context=driver.current_window_handle, accept=True)
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert UserPromptClosedParameters.from_json(events[0]).accepted is True
+    assert events[0].accepted is True
 
 
 def test_download_will_begin_event(driver, pages):
     driver.get(pages.url("downloads/download.html"))
     events = []
-    subscription = BrowsingContext(driver).add_download_will_begin_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_download_will_begin_listener(events.append)
 
     driver.find_element(By.ID, "file-1").click()
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    assert "file_1" in DownloadWillBeginParams.from_json(events[0]).suggested_filename
+    assert "file_1" in events[0].suggested_filename
 
 
 def test_download_end_event(driver, pages):
     driver.get(pages.url("downloads/download.html"))
     events = []
-    subscription = BrowsingContext(driver).add_download_end_callback(events.append).subscription
+    subscription = BrowsingContext(driver).add_download_end_listener(events.append)
 
     driver.find_element(By.ID, "file-1").click()
     WebDriverWait(driver, 10).until(lambda _: events)
-    BrowsingContext(driver).remove_callback(subscription)
+    BrowsingContext(driver).remove_listener(subscription)
 
-    download = DownloadEndParams.from_json(events[0])
+    download = events[0]
     assert isinstance(download, DownloadEndParamsCompleteParams)
     assert download.url == pages.url("downloads/file_1.txt")
+
+
+def test_a_scoped_listener_gets_its_pages_events_and_no_others(driver, pages):
+    window = driver.current_window_handle
+    other = BrowsingContext(driver).create(type=CreateType.TAB).context
+    scoped, unscoped = [], []
+    scoped_subscription = BrowsingContext(driver).add_load_listener(scoped.append, browsing_context=window)
+    unscoped_subscription = BrowsingContext(driver).add_load_listener(unscoped.append)
+
+    BrowsingContext(driver).navigate(context=other, url=pages.url("blank.html"), wait=ReadinessState.COMPLETE)
+    BrowsingContext(driver).navigate(context=window, url=pages.url("iframes.html"), wait=ReadinessState.COMPLETE)
+    WebDriverWait(driver, 10).until(lambda _: len(scoped) >= 2 and len(unscoped) >= 3)
+    BrowsingContext(driver).remove_listener(scoped_subscription)
+    BrowsingContext(driver).remove_listener(unscoped_subscription)
+    BrowsingContext(driver).close(context=other)
+
+    assert {e.url for e in scoped} == {pages.url("iframes.html"), pages.url("formPage.html")}
+    assert {e.url for e in unscoped} == {pages.url("blank.html"), pages.url("iframes.html"), pages.url("formPage.html")}
