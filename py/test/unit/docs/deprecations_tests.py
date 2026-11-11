@@ -147,6 +147,22 @@ def f():
     assert "line" not in entry
 
 
+def test_reads_the_python_version_from_the_shared_version_file(tmp_path):
+    version_bzl = tmp_path / "version.bzl"
+    version_bzl.write_text('VERSIONS = {\n    "java": "4.53.0-SNAPSHOT",\n    "python": "4.53.0.dev0",\n}\n')
+
+    assert gd.python_version(version_bzl) == "4.53.0.dev0"
+
+
+def test_refuses_to_guess_when_the_version_file_has_no_python_entry(tmp_path):
+    """A dataset stamped with a made-up version is worse than a failed build."""
+    version_bzl = tmp_path / "version.bzl"
+    version_bzl.write_text('VERSIONS = {\n    "java": "4.53.0-SNAPSHOT",\n}\n')
+
+    with pytest.raises(SystemExit):
+        gd.python_version(version_bzl)
+
+
 def test_the_published_dataset_matches_the_source():
     """The dataset is committed, so it can drift; regenerate with `./go py:docs_generate`."""
     py_dir = pathlib.Path(gd.__file__).resolve().parent

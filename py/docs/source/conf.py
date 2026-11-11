@@ -91,10 +91,16 @@ copyright = "Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom
 release = importlib.import_module("selenium").__version__
 version = ".".join(release.split(".")[:2])
 
-# A released version corresponds to a tag; a nightly does not, so its links point
-# at trunk. Used to build source links and to describe this build to machines.
-_is_release = release.count(".") == 2
-git_ref = f"selenium-{release}" if _is_release else "trunk"
+
+def source_ref(release):
+    """A released version corresponds to a tag; a nightly does not, so its links point at trunk."""
+    return f"selenium-{release}" if release.count(".") == 2 else "trunk"
+
+
+# Resolved in `setup` rather than here: the Bazel docs target supplies the real
+# release with -D, which Sphinx applies only after this file has run, while the
+# imported `selenium` carries the test placeholder version.
+git_ref = "trunk"
 
 
 def linkcode_resolve(domain, info):
@@ -284,3 +290,12 @@ html_show_sphinx = False
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "Seleniumdoc"
+
+
+def _pin_source_ref(app, config):
+    global git_ref
+    git_ref = source_ref(config.release)
+
+
+def setup(app):
+    app.connect("config-inited", _pin_source_ref)

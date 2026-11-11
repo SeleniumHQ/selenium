@@ -1,6 +1,6 @@
 {
   "binding": "python",
-  "version": "4.50.0.202609091537",
+  "version": "4.53.0.dev0",
   "policy": "https://github.com/SeleniumHQ/selenium/blob/trunk/AGENTS.md#deprecation-policy",
   "description": "Deprecated APIs in the Selenium Python bindings and their replacements, extracted from the deprecation warnings in the source of this release. An API listed here still works but will be removed; use the replacement instead.",
   "deprecations": [
@@ -31,6 +31,34 @@
       "deprecated": "using ignore_local_proxy_environment_variables in Options",
       "replacement": "instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, pass the proxy instance into a ClientConfig constructor, pass the client config instance into the Webdriver constructor",
       "message": "using ignore_local_proxy_environment_variables in Options has been deprecated, instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, pass the proxy instance into a ClientConfig constructor, pass the client config instance into the Webdriver constructor"
+    },
+    {
+      "module": "selenium.webdriver.firefox.webdriver",
+      "api": "selenium.webdriver.firefox.webdriver.WebDriver.install_addon",
+      "deprecated": "install_addon",
+      "replacement": "use install_web_extension instead",
+      "message": "install_addon is deprecated, use install_web_extension instead"
+    },
+    {
+      "module": "selenium.webdriver.firefox.webdriver",
+      "api": "selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon",
+      "deprecated": "uninstall_addon",
+      "replacement": "use uninstall_web_extension instead",
+      "message": "uninstall_addon is deprecated, use uninstall_web_extension instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.client_config",
+      "api": "selenium.webdriver.remote.client_config._ClientConfigDescriptor.__set__",
+      "deprecated": null,
+      "replacement": null,
+      "message": "websocket_interval does nothing and will be removed"
+    },
+    {
+      "module": "selenium.webdriver.remote.client_config",
+      "api": "selenium.webdriver.remote.client_config.ClientConfig.__init__",
+      "deprecated": null,
+      "replacement": null,
+      "message": "websocket_interval does nothing and will be removed"
     },
     {
       "module": "selenium.webdriver.remote.remote_connection",
@@ -96,6 +124,20 @@
       "message": "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead"
     },
     {
+      "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.PinnedScript.realm",
+      "deprecated": null,
+      "replacement": null,
+      "message": "PinnedScript.realm is deprecated and will be removed; it is an implementation detail"
+    },
+    {
+      "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.Script.__getattr__",
+      "deprecated": null,
+      "replacement": null,
+      "message": "driver.script.... is deprecated and will be removed; ..."
+    },
+    {
       "module": "selenium.webdriver.remote.webdriver",
       "api": "selenium.webdriver.remote.webdriver.WebDriver.pin_script",
       "deprecated": "pin_script",
@@ -113,8 +155,29 @@
       "module": "selenium.webdriver.remote.webdriver",
       "api": "selenium.webdriver.remote.webdriver.WebDriver.get_pinned_scripts",
       "deprecated": "get_pinned_scripts",
-      "replacement": "use driver.script.pin() to manage preload scripts instead",
-      "message": "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead"
+      "replacement": "use driver.script.pin() instead",
+      "message": "get_pinned_scripts is deprecated, use driver.script.pin() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.webdriver",
+      "api": "selenium.webdriver.remote.webdriver.WebDriver.webextension",
+      "deprecated": "driver.webextension",
+      "replacement": "use driver.install_web_extension() and driver.uninstall_web_extension() instead",
+      "message": "driver.webextension is deprecated, use driver.install_web_extension() and driver.uninstall_web_extension() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.websocket_connection",
+      "api": "selenium.webdriver.remote.websocket_connection.WebSocketConnection.__init__",
+      "deprecated": null,
+      "replacement": null,
+      "message": "interval does nothing and will be removed"
+    },
+    {
+      "module": "selenium.webdriver.support.relative_locator",
+      "api": "selenium.webdriver.support.relative_locator.with_tag_name",
+      "deprecated": null,
+      "replacement": null,
+      "message": "This method is deprecated and may be removed in future versions. Please use `locate_with` instead."
     }
   ]
 }

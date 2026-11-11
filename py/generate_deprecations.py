@@ -197,13 +197,13 @@ def build_dataset(package_root, version):
     }
 
 
-def _version_from(pyproject):
-    with open(pyproject, encoding="utf-8") as f:
-        for line in f:
-            match = re.match(r'^version\s*=\s*"(?P<version>[^"]+)"', line)
-            if match:
-                return match.group("version")
-    return "unknown"
+def python_version(version_bzl):
+    """Read the Python binding's version from the repository's shared `version.bzl`."""
+    with open(version_bzl, encoding="utf-8") as f:
+        match = re.search(r'^\s*"python":\s*"(?P<version>[^"]+)"', f.read(), re.MULTILINE)
+    if not match:
+        raise SystemExit(f"No python entry in {version_bzl}")
+    return match.group("version")
 
 
 def main():
@@ -218,7 +218,8 @@ def main():
     parser.add_argument("--version", default=None)
     args = parser.parse_args()
 
-    dataset = build_dataset(args.package, args.version or _version_from(os.path.join(py_dir, "pyproject.toml")))
+    version = args.version or python_version(os.path.join(py_dir, os.pardir, "version.bzl"))
+    dataset = build_dataset(args.package, version)
 
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     with open(args.output, "w", encoding="utf-8") as f:
