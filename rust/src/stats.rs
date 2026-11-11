@@ -105,8 +105,10 @@ fn sanitize_browser_version(browser_version: &str) -> String {
     if VALID_VERSION_LABELS.contains(&version.as_str()) {
         return version;
     }
-    // Report only the numeric major component, never a full version or free text
-    let major = version.split('.').next().unwrap_or_default();
+    // Report only the numeric major component, never a full version or free text.
+    // Electron accepts pins with a leading "v" (e.g. v36.2.1)
+    let numeric = version.strip_prefix('v').unwrap_or(&version);
+    let major = numeric.split('.').next().unwrap_or_default();
     if !major.is_empty() && major.bytes().all(|b| b.is_ascii_digit()) {
         major.to_string()
     } else {
@@ -164,6 +166,9 @@ mod tests {
         assert_eq!(sanitize_browser_version("BETA"), "beta");
         assert_eq!(sanitize_browser_version("stable"), "stable");
         assert_eq!(sanitize_browser_version(""), "");
+        assert_eq!(sanitize_browser_version("v36.2.1"), "36");
+        assert_eq!(sanitize_browser_version("V36.2.1"), "36");
+        assert_eq!(sanitize_browser_version("v"), STATS_OTHER);
         assert_eq!(sanitize_browser_version("12a.0"), STATS_OTHER);
         assert_eq!(sanitize_browser_version(XSS_PAYLOAD), STATS_OTHER);
     }
