@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>inject_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/execute-script-global.js"></script>
+  <script src="../typescript/execute-async-script-global.js"></script>
+  <script src="../typescript/get-element-from-cache-global.js"></script>
+  <script src="../typescript/find-element-fragment-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <div style="display:none">
+    <iframe id="test-frame" src="testdata/blank_page.html"></iframe>
+  </div>
+  <p id="target" class="needle">target</p>
+  <div id="root"><span class="needle">inside root</span></div>
+  <script type="text/javascript">
+    // Assertions ported from inject_test.html, which is the behaviour spec for
+    // these atoms. That page reaches into bot.inject.wrapValue / unwrapValue /
+    // cache.addElement directly; none of those are atoms, and each atom here is
+    // a separate bundle, so the same behaviour is driven through the atoms
+    // themselves. The element cache lives on document['$wdc_'], so an id
+    // minted inside executeScript is readable by getElementFromCache -- which
+    // is also the property the cross-atom contract depends on.
+    //
+    // Statuses are W3C error strings, not bot.ErrorCode numbers, and success
+    // is the string 'success'.
+    var ts = window.bot.inject.typescript;
+    var executeScript = ts.executeScript;
+    var executeAsyncScript = ts.executeAsyncScript;
+    var getElementFromCache = ts.getElementFromCache;
+    var findElementFragment = ts.findElementFragment;
+
+    var CACHE_KEY = '$wdc_';
+
+    window.MY_GLOBAL_CONSTANT = 123;
+
+    var frame, frameWin, frameDoc;
+
+    // Cache a value the way the wire does: return it from a script.
+    function wrap(value) {
+      var result = executeScript(function() { return value; }, []);
+      if (result.status !== 'success') {
+        throw Error('wrap failed: ' + JSON.stringify(result));
+      }
+      return result.value;
+    }
+
+    function elementId(value) {
+      return wrap(value).ELEMENT;
+    }
+
+    QUnit.testStart(function() {
+      frame = document.getElementById('test-frame');
+      frameWin = frame.contentWindow;
+      frameDoc = frame.contentDocument;
+
+      document[CACHE_KEY] = null;
+      frameDoc[CACHE_KEY] = null;
+    });
+
+    QUnit.test('AddWindowToCache', function(assert) {
+      var id = wrap(frameWin).WINDOW;
+      assert.strictEqual(getElementFromCache(id), frameWin);
+    });
+
+    QUnit.test('AddWindowToCacheMultipleTimesReusesIds', function(assert) {
+      assert.strictEqual(wrap(frameWin).WINDOW, wrap(frameWin).WINDOW);
+    });
+
+    QUnit.test('GetElementThrowsIfWindowIsClosed', function(assert) {
+      var id = wrap({document: 1, closed: true, setInterval: 1}).WINDOW;
+      assert.throws(function() { getElementFromCache(id); },
+          function(e) { return e.code === 'no such window'; });
+      // The closed window is evicted, so a second read is stale, not closed.
+      assert.throws(function() { getElementFromCache(id); },
+          function(e) { return e.code === 'stale element reference'; });
+    });
+
+    QUnit.test('ShouldBeAbleToCacheElements', function(assert) {
+      assert.strictEqual(getElementFromCache(elementId(document.body)), document.body);
+    });
+
+    QUnit.test('ShouldReuseExistingIdIfElementAlreadyExistsInTheCache', function(assert) {
+      assert.strictEqual(elementId(document.body), elementId(document.body));
+    });
+
+    QUnit.test('IdsCarryTheSharedPrefix', function(assert) {
+      // Shared with every other atom injected into the page, Closure ones
+      // included, so it must not drift.
+      assert.ok(/^:wdc:\d+$/.test(elementId(document.body)), elementId(document.body));
+      assert.ok(document[CACHE_KEY], 'cache stored on the document');
+    });
+
+    QUnit.test('ShouldThrowIfElementDoesNotExistInTheCache', function(assert) {
+      assert.throws(function() { getElementFromCache('not-there'); },
+          function(e) { return e.code === 'stale element reference'; });
+    });
+
+    QUnit.test('ShouldDecodeIdsWhenRetrievingFromTheCache', function(assert) {
+      var id = encodeURIComponent(elementId(document.body));
+      assert.strictEqual(getElementFromCache(id), document.body);
+    });
+
+    QUnit.test('ShouldThrowIfCachedElementIsNoLongerAttachedToTheDom', function(assert) {
+      var div = document.createElement('DIV');
+      document.body.appendChild(div);
+
+      var id = elementId(div);
+      assert.strictEqual(getElementFromCache(id), div);
+
+      document.body.removeChild(div);
+      assert.throws(function() { getElementFromCache(id); },
+          function(e) { return e.code === 'stale element reference'; });
+    });
+
+    QUnit.test('ElementsInsideAShadowRootAreStillAttached', function(assert) {
+      var host = document.createElement('div');
+      document.body.appendChild(host);
+      var inner = host.attachShadow({mode: 'open'});
+      var span = document.createElement('span');
+      inner.appendChild(span);
+
+      assert.strictEqual(getElementFromCache(elementId(span)), span);
+      document.body.removeChild(host);
+    });
+
+    QUnit.test('DoesNotWrapStringBooleansNumbersOrNull', function(assert) {
+      assert.strictEqual(wrap('foo'), 'foo');
+      assert.strictEqual(wrap(123), 123);
+      assert.strictEqual(wrap(true), true);
+      assert.strictEqual(wrap(null), null);
+    });
+
+    QUnit.test('ConvertsUndefinedValueToNullForWrapping', function(assert) {
+      assert.strictEqual(wrap(undefined), null);
+    });
+
+    QUnit.test('FunctionsAreWrappedAsTheirSource', function(assert) {
+      var fn = function() { return 1; };
+      assert.strictEqual(wrap(fn), fn.toString());
+    });
+
+    QUnit.test('ShouldAddElementsToCacheWhenWrapping', function(assert) {
+      var wrapped = wrap(document.body);
+      assert.ok('ELEMENT' in wrapped);
+      assert.strictEqual(getElementFromCache(wrapped.ELEMENT), document.body);
+    });
+
+    QUnit.test('ShouldRecursivelyWrapArrays', function(assert) {
+      var unwrapped = [123, 'abc', null, document.body];
+      var wrapped = wrap(unwrapped);
+
+      assert.strictEqual(wrapped.length, unwrapped.length);
+      assert.strictEqual(wrapped[0], unwrapped[0]);
+      assert.strictEqual(wrapped[1], unwrapped[1]);
+      assert.strictEqual(wrapped[2], unwrapped[2]);
+      assert.strictEqual(getElementFromCache(wrapped[3].ELEMENT), unwrapped[3]);
+    });
+
+    QUnit.test('ShouldBeAbleToWrapNodeListsAsArrays', function(assert) {
+      var unwrapped = document.getElementsByTagName('body');
+      var wrapped = wrap(unwrapped);
+
+      assert.ok(Array.isArray(wrapped), 'should return an array');
+      assert.strictEqual(wrapped.length, unwrapped.length);
+      assert.strictEqual(getElementFromCache(wrapped[0].ELEMENT), document.body);
+    });
+
+    QUnit.test('ShouldThrowWhenWrappingRecursiveStructure', function(assert) {
+      var obj1 = {};
+      var obj2 = {};
+      obj1['obj2'] = obj2;
+      obj2['obj1'] = obj1;
+      var result = executeScript(function() { return obj1; }, []);
+      assert.strictEqual(result.status, 'javascript error');
+      assert.strictEqual(result.value.message, 'Recursive object cannot be transferred');
+    });
+
+    QUnit.test('SharedArraysAreNotRecursiveButSharedObjectsAre', function(assert) {
+      // Inherited from bot.inject.wrapValue: arrays never join the recursion
+      // guard, objects do and are never removed from it.
+      var arr = [1];
+      assert.deepEqual(wrap([arr, arr]), [[1], [1]]);
+
+      var obj = {a: 1};
+      var result = executeScript(function() { return [obj, obj]; }, []);
+      assert.strictEqual(result.status, 'javascript error');
+    });
+
+    QUnit.test('ShouldBeAbleToUnWrapWrappedValues', function(assert) {
+      var unwrapped = [123, 'abc', null, document.body];
+      var result = executeScript(function() {
+        return Array.prototype.slice.call(arguments);
+      }, wrap(unwrapped));
+      assert.deepEqual(result.value, wrap(unwrapped));
+
+      var seen = executeScript(function(a, b, c, d) {
+        return [a, b, c, d === document.body];
+      }, wrap(unwrapped));
+      assert.deepEqual(seen.value, [123, 'abc', null, true]);
+    });
+
+    QUnit.test('ShouldBeAbleToUnWrapNestedArrays', function(assert) {
+      var wrapped = wrap([document.body, null, [document.body]]);
+      var result = executeScript(function(arr) {
+        return [arr[0] === document.body, arr[1], arr[2][0] === document.body];
+      }, [wrapped]);
+      assert.deepEqual(result.value, [true, null, true]);
+    });
+
+    QUnit.test('ShouldBeAbleToUnWrapNestedObjects', function(assert) {
+      var wrapped = wrap({'foo': {'bar': document.body}});
+      var result = executeScript(function(obj) {
+        return obj['foo']['bar'] === document.body;
+      }, [wrapped]);
+      assert.strictEqual(result.value, true);
+    });
+
+    QUnit.test('ShouldUnWrapElementsUsingTheGivenDocumentsCache', function(assert) {
+      var wrapped = wrap(frameDoc.body);
+
+      assert.throws(function() { getElementFromCache(wrapped.ELEMENT); },
+          'the frame element is not in the top document cache');
+      assert.strictEqual(getElementFromCache(wrapped.ELEMENT, frameDoc), frameDoc.body);
+    });
+
+    QUnit.test('ShouldBeAbleToUnwrapArgumentsExecuteScriptAndWrapResult', function(assert) {
+      var id = elementId(document.body);
+      var result = executeScript(function() { return arguments[0]; }, [{ELEMENT: id}]);
+
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(getElementFromCache(result.value.ELEMENT), document.body);
+    });
+
+    QUnit.test('ShouldTrapAndReturnWrappedErrorsFromInjectedScripts', function(assert) {
+      var result = executeScript(function() { throw Error('ouch'); }, []);
+      assert.strictEqual(result.status, 'unknown error');
+      assert.strictEqual(result.value.message, 'ouch');
+    });
+
+    QUnit.test('NonStringErrorCodesAreUnknownError', function(assert) {
+      // DOMException carries a legacy numeric code; it is not a W3C status.
+      var result = executeScript(function() {
+        document.querySelector('[');
+      }, []);
+      assert.strictEqual(result.status, 'unknown error');
+    });
+
+    QUnit.test('ShouldResetCacheWhenPageIsRefreshed', function(assert) {
+      var done = assert.async();
+      var id = wrap(frameDoc.body).ELEMENT;
+      assert.strictEqual(getElementFromCache(id, frameDoc), frameDoc.body);
+
+      frame.addEventListener('load', function onLoad() {
+        frame.removeEventListener('load', onLoad);
+        frameDoc = frame.contentDocument;
+        assert.throws(function() { getElementFromCache(id, frameDoc); });
+        done();
+      });
+      frameWin.location.reload();
+    });
+
+    QUnit.test('ShouldStringifyResultsWhenAskedToDoSo', function(assert) {
+      var result = executeScript(function() {
+        return arguments[0] + arguments[1];
+      }, ['abc', 123], true);
+
+      assert.strictEqual(typeof result, 'string');
+      var json = JSON.parse(result);
+      assert.strictEqual(json.status, 'success');
+      assert.strictEqual(json.value, 'abc123');
+    });
+
+    QUnit.test('ShouldStringifyErrorsWhenAskedForStringResults', function(assert) {
+      var result = executeScript(function() {
+        var e = Error('ouch');
+        e.code = 'no such element';
+        throw e;
+      }, [], true);
+
+      assert.strictEqual(typeof result, 'string');
+      var json = JSON.parse(result);
+      assert.strictEqual(json.status, 'no such element');
+      assert.strictEqual(json.value.message, 'ouch');
+    });
+
+    QUnit.test('ShouldBeAbleToExecuteAsyncScript', function(assert) {
+      var done = assert.async();
+      executeAsyncScript(
+          'var cb = arguments[0]; window.setTimeout(function() { cb(1); }, 10)',
+          [], 250, function(result) {
+        assert.strictEqual(result.status, 'success');
+        assert.strictEqual(result.value, 1);
+        done();
+      });
+    });
+
+    QUnit.test('ShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously', function(assert) {
+      var done = assert.async();
+      executeAsyncScript('arguments[0](1)', [], 0, function(result) {
+        assert.strictEqual(result.status, 'success');
+        assert.strictEqual(result.value, 1);
+        done();
+      });
+    });
+
+    // Nothing is left to time out, so no timer should outlive the call.
+    QUnit.test('a synchronous callback arms no timeout', function(assert) {
+      var realSetTimeout = window.setTimeout;
+      var armed = 0;
+      window.setTimeout = function() { armed++; return realSetTimeout.apply(window, arguments); };
+      var result;
+      try {
+        executeAsyncScript('arguments[0](1)', [], 60000, function(r) { result = r; });
+      } finally {
+        window.setTimeout = realSetTimeout;
+      }
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(armed, 0);
+    });
+
+    // As executeScript does; bot.inject threw both out of the atom instead.
+    QUnit.test('a syntax error reaches the callback', function(assert) {
+      var result;
+      executeAsyncScript('this is not javascript', [], 0, function(r) { result = r; });
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'unknown error');
+    });
+
+    QUnit.test('a stale element argument reaches the callback', function(assert) {
+      var result;
+      executeAsyncScript('arguments[1](1)', [{ELEMENT: ':wdc:999999999'}], 0, function(r) { result = r; });
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'stale element reference');
+    });
+
+    QUnit.test('a callback value that cannot be transferred is reported, not thrown', function(assert) {
+      var result, thrown = null;
+      executeAsyncScript(
+          'var cyclic = {}; cyclic.self = cyclic; try { arguments[0](cyclic); } catch (e) { window.__thrown = e; }',
+          [], 0, function(r) { result = r; });
+      thrown = window.__thrown || null;
+      delete window.__thrown;
+      assert.strictEqual(thrown, null, 'nothing thrown into the script');
+      assert.ok(result, 'called back synchronously');
+      assert.strictEqual(result.status, 'javascript error');
+    });
+
+    QUnit.test('a response is delivered once even when delivery throws', function(assert) {
+      var done = assert.async();
+      var calls = 0;
+      executeAsyncScript('arguments[0](1)', [], 20, function() {
+        calls++;
+        throw new Error('delivery failed');
+      });
+      window.setTimeout(function() {
+        assert.strictEqual(calls, 1);
+        done();
+      }, 60);
+    });
+
+    QUnit.test('a handle naming the cache counter is stale', function(assert) {
+      var result = executeScript('return arguments[0];', [{ELEMENT: 'nextId'}]);
+      assert.strictEqual(result.status, 'stale element reference');
+    });
+
+    QUnit.test('ShouldBeAbleToExecuteAsyncFunc', function(assert) {
+      var done = assert.async();
+      executeAsyncScript(function(callback) { callback(1); }, [], 0, function(result) {
+        assert.strictEqual(result.status, 'success');
+        assert.strictEqual(result.value, 1);
+        done();
+      });
+    });
+
+    QUnit.test('ShouldThrowOnExecuteAsyncException', function(assert) {
+      var done = assert.async();
+      executeAsyncScript('nosuchfunc()', [], 0, function(result) {
+        assert.strictEqual(result.status, 'unknown error');
+        done();
+      });
+    });
+
+    QUnit.test('ShouldTimeoutInExecuteAsync', function(assert) {
+      var done = assert.async();
+      executeAsyncScript('', [], 0, function(result) {
+        assert.strictEqual(result.status, 'script timeout');
+        done();
+      });
+    });
+
+    QUnit.test('OnlyTheFirstResponseIsSent', function(assert) {
+      var done = assert.async();
+      var calls = 0;
+      executeAsyncScript('arguments[0](1); arguments[0](2);', [], 0, function(result) {
+        calls++;
+        assert.strictEqual(result.value, 1);
+      });
+      window.setTimeout(function() {
+        assert.strictEqual(calls, 1);
+        done();
+      }, 50);
+    });
+
+    QUnit.test('ShouldBeAbleToStringifyResult', function(assert) {
+      var done = assert.async();
+      executeAsyncScript('', [], 0, function(jsonResult) {
+        assert.strictEqual(typeof jsonResult, 'string');
+        assert.strictEqual(JSON.parse(jsonResult).status, 'script timeout');
+        done();
+      }, true);
+    });
+
+    QUnit.test('ShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript', function(assert) {
+      var done = assert.async();
+      var id = elementId(document.body);
+      executeAsyncScript('arguments[1](arguments[0])', [{ELEMENT: id}], 0, function(result) {
+        assert.strictEqual(result.status, 'success');
+        assert.strictEqual(getElementFromCache(result.value.ELEMENT), document.body);
+        done();
+      });
+    });
+
+    QUnit.test('ShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow', function(assert) {
+      var done = assert.async();
+      executeAsyncScript(function(callback) {
+        callback({
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT': (typeof window.top.MY_GLOBAL_CONSTANT)
+        });
+      }, [], 0, function(result) {
+        var jsonResult = JSON.stringify(result);
+        assert.strictEqual(result.status, 'success', jsonResult);
+        var value = result.value;
+        assert.strictEqual(value['this == window'], true, jsonResult);
+        assert.strictEqual(value['this == top'], false, jsonResult);
+        assert.strictEqual(value['typeof window.MY_GLOBAL_CONSTANT'], 'undefined', jsonResult);
+        assert.strictEqual(value['typeof window.top.MY_GLOBAL_CONSTANT'], 'number', jsonResult);
+        done();
+      }, false, frameWin);
+    });
+
+    QUnit.test('ShouldExecuteScriptsInTheContextOfTheSpecifiedWindow', function(assert) {
+      var result = executeScript(function() {
+        return {
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT': (typeof window.top.MY_GLOBAL_CONSTANT)
+        };
+      }, [], false, frameWin);
+
+      var jsonResult = JSON.stringify(result);
+      assert.strictEqual(result.status, 'success', jsonResult);
+      var value = result.value;
+      assert.strictEqual(value['this == window'], true, jsonResult);
+      assert.strictEqual(value['this == top'], false, jsonResult);
+      assert.strictEqual(value['typeof window.MY_GLOBAL_CONSTANT'], 'undefined', jsonResult);
+      assert.strictEqual(value['typeof window.top.MY_GLOBAL_CONSTANT'], 'number', jsonResult);
+    });
+
+    QUnit.test('CorrectlyUnwrapsFunctionArgsForInjectedScripts', function(assert) {
+      var result = executeScript(function() {
+        return arguments[0]();
+      }, [function() { return 1; }]);
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(result.value, 1);
+    });
+
+    QUnit.test('CorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts', function(assert) {
+      var done = assert.async();
+      executeAsyncScript(function() {
+        var callback = arguments[arguments.length - 1];
+        callback(arguments[0]());
+      }, [function() { return 1; }], 0, function(result) {
+        assert.strictEqual(result.status, 'success');
+        assert.strictEqual(result.value, 1);
+        done();
+      }, false);
+    });
+
+    QUnit.test('CorrectlyUnwrapsArgsForInjectedScripts', function(assert) {
+      var wrapped = wrap(frameDoc.body);
+
+      var result = executeScript(function() {
+        return [arguments[0], arguments[0].tagName.toUpperCase()];
+      }, [wrapped], false, frameWin);
+
+      assert.strictEqual(result.status, 'success');
+      var value = result.value;
+      assert.ok(Array.isArray(value));
+      assert.strictEqual(value.length, 2);
+      assert.strictEqual(value[0].ELEMENT, wrapped.ELEMENT);
+      assert.strictEqual(value[1], 'BODY');
+    });
+
+    QUnit.test('CorrectlyUnwrapsArgsForInjectedAsyncScripts', function(assert) {
+      var wrapped = wrap(frameDoc.body);
+
+      var done = assert.async();
+      executeAsyncScript(function(element, callback) {
+        callback([element, element.tagName.toUpperCase()]);
+      }, [wrapped], 0, function(result) {
+        assert.strictEqual(result.status, 'success');
+        var value = result.value;
+        assert.ok(Array.isArray(value));
+        assert.strictEqual(value.length, 2);
+        assert.strictEqual(value[0].ELEMENT, wrapped.ELEMENT);
+        assert.strictEqual(value[1], 'BODY');
+        done();
+      }, false, frameWin);
+    });
+
+    QUnit.test('ExecuteScriptShouldBeAbleToRecurseOnItself', function(assert) {
+      var json = executeScript(executeScript, ['return 1 +2;'], true);
+      var result = JSON.parse(json);
+
+      assert.strictEqual(result.status, 'success', json);
+      var innerResult = result.value;
+      assert.strictEqual(innerResult.status, 'success', json);
+      assert.strictEqual(innerResult.value, 3, json);
+    });
+
+    // find_element_fragment: the stringified inject wrapper over find_element.
+    // No Closure page covers it directly; these pin the envelope.
+
+    QUnit.test('FindElementFragmentReturnsAStringifiedHandle', function(assert) {
+      var json = findElementFragment('id', 'target');
+      assert.strictEqual(typeof json, 'string');
+      var result = JSON.parse(json);
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(getElementFromCache(result.value.ELEMENT),
+          document.getElementById('target'));
+    });
+
+    QUnit.test('FindElementFragmentReturnsNullWhenNothingMatches', function(assert) {
+      var result = JSON.parse(findElementFragment('id', 'not-there'));
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(result.value, null);
+    });
+
+    QUnit.test('FindElementFragmentSearchesUnderAWrappedRoot', function(assert) {
+      var root = wrap(document.getElementById('root'));
+      var result = JSON.parse(findElementFragment('class name', 'needle', root));
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(getElementFromCache(result.value.ELEMENT).textContent, 'inside root');
+    });
+
+    QUnit.test('FindElementFragmentSearchesInAWrappedWindow', function(assert) {
+      var win = wrap(frameWin);
+      var result = JSON.parse(findElementFragment('tag name', 'body', undefined, win));
+      assert.strictEqual(result.status, 'success');
+      assert.strictEqual(getElementFromCache(result.value.ELEMENT, frameDoc), frameDoc.body);
+    });
+
+    QUnit.test('FindElementFragmentReportsStaleRoots', function(assert) {
+      var result = JSON.parse(findElementFragment('id', 'target', {ELEMENT: 'not-there'}));
+      assert.strictEqual(result.status, 'stale element reference');
+    });
+
+    QUnit.test('FindElementFragmentReportsInvalidSelectors', function(assert) {
+      var result = JSON.parse(findElementFragment('css selector', '['));
+      assert.strictEqual(result.status, 'invalid selector');
+    });
+  </script>
+</body>
+
+</html>

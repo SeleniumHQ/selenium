@@ -111,7 +111,7 @@ test.suite(function (env) {
 
   // Proxy support not implemented.
   test
-    .ignore(env.browsers(Browser.CHROME, Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX))
+    .ignore(env.browsers(Browser.CHROME, Browser.EDGE, Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX))
     .describe('manual proxy settings', function () {
       it('can configure HTTP proxy host', async function () {
         await createDriver(
@@ -151,7 +151,7 @@ test.suite(function (env) {
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
   test
-    .ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.CHROME, Browser.FIREFOX))
+    .ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.CHROME, Browser.EDGE, Browser.FIREFOX))
     .describe('pac proxy settings', function () {
       it('can configure proxy through PAC file', async function () {
         await createDriver(proxy.pac(proxyServer.url('/proxy.pac')))

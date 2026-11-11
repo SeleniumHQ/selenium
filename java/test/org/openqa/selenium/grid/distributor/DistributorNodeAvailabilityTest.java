@@ -129,7 +129,7 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
         new RemoteDistributor(
             tracer,
             new PassthroughHttpClient.Factory(local),
-            new URL("http://does.not.exist"),
+            new URL("http://does.not.exist.invalid"),
             registrationSecret);
     distributor.add(node);
     distributor.remove(node.getId());
@@ -236,15 +236,14 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
                 new TestSessionFactory(
                     (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
             .advanced()
-            .healthCheck(
-                () -> {
-                  if (count.get() <= 4) {
-                    count.incrementAndGet();
-                    return new HealthCheck.Result(DOWN, "Down");
-                  }
-                  latch.countDown();
-                  return new HealthCheck.Result(UP, "Up");
-                })
+            .healthCheck(() -> {
+              if (count.get() <= 4) {
+                count.incrementAndGet();
+                return new HealthCheck.Result(DOWN, "Down");
+              }
+              latch.countDown();
+              return new HealthCheck.Result(UP, "Up");
+            })
             .build();
     handler.addHandler(node);
 

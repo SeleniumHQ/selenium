@@ -25,7 +25,6 @@ module Selenium
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
         WEBDRIVER_PREFS = {
-          port: 'webdriver_firefox_port',
           log_file: 'webdriver.log.file'
         }.freeze
 
@@ -74,14 +73,12 @@ module Selenium
           @model = verify_model(model)
 
           @additional_prefs = read_model_prefs
-          @extensions = {}
         end
 
         def layout_on_disk
           profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-profile')
           FileReaper << profile_dir
 
-          install_extensions(profile_dir)
           delete_lock_files(profile_dir)
           delete_extensions_cache(profile_dir)
           update_user_prefs_in(profile_dir)
@@ -108,30 +105,9 @@ module Selenium
           @additional_prefs[key.to_s] = value
         end
 
-        def port=(port)
-          WebDriver.logger.deprecate('Firefox::Profile#port=', 'the Service class', id: :firefox_profile)
-          self[WEBDRIVER_PREFS[:port]] = port
-        end
-
-        def secure_ssl=(value)
-          WebDriver.logger.deprecate('Firefox::Profile#secure_ssl=', id: :firefox_profile)
-          @secure_ssl = value
-        end
-
-        def load_no_focus_lib=(value)
-          WebDriver.logger.deprecate('Firefox::Profile#load_no_focus_lib=', id: :firefox_profile)
-          @load_no_focus_lib = value
-        end
-
         def log_file=(file)
           @log_file = file
           self[WEBDRIVER_PREFS[:log_file]] = file
-        end
-
-        def add_extension(path, name = extension_name_for(path))
-          WebDriver.logger.deprecate('Firefox::Profile#add_extension', 'Driver#install_addon',
-                                     id: :firefox_profile)
-          @extensions[name] = Extension.new(path)
         end
 
         def proxy=(proxy)
@@ -169,15 +145,6 @@ module Selenium
           self["network.proxy.#{key}_port"] = Integer(port) if port
         end
 
-        def install_extensions(directory)
-          destination = File.join(directory, 'extensions')
-
-          @extensions.each do |name, extension|
-            WebDriver.logger.debug({extension: name}.inspect, id: :firefox_profile)
-            extension.write_to(destination)
-          end
-        end
-
         def read_model_prefs
           return {} unless @model
 
@@ -192,10 +159,6 @@ module Selenium
           LOCK_FILES.each do |name|
             FileUtils.rm_f File.join(directory, name)
           end
-        end
-
-        def extension_name_for(path)
-          File.basename(path, File.extname(path))
         end
 
         def update_user_prefs_in(directory)

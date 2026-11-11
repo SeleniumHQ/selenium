@@ -1,4 +1,4 @@
-name: Nightly
+name: Release - Nightly
 on:
   schedule:
     - cron: 0 0 * * *
@@ -72,7 +72,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly ${{ matrix.language }} Release
-      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly', matrix.language) || 'echo skipping' }}
+      run: ${{ (needs.prepare.outputs.language == 'all' || needs.prepare.outputs.language == matrix.language) && format('./go {0}:release nightly rbe', matrix.language) || 'echo skipping' }}
       artifact-name: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-name || '' }}
       artifact-path: ${{ matrix.language == 'java' && needs.prepare.outputs.artifact-path || '' }}
     secrets: inherit
@@ -101,6 +101,6 @@ jobs:
           SLACK_COLOR: failure
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
-          SLACK_TITLE: Nightly ${{ needs.prepare.outputs.language }} Release failed
-          MSG_MINIMAL: actions url
+          SLACK_MESSAGE: "${{ needs.prepare.outputs.language == 'all' && 'Nightly release failed' || format('Nightly {0} release failed', needs.prepare.outputs.language) }}: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -202,6 +202,7 @@ def test_sending_keys_to_active_element_with_modifier(driver, pages):
 def test_sending_keys_to_element(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
+    driver.execute_script('arguments[0].scrollIntoView({block: "center", inline: "nearest"});', e)
 
     ActionChains(driver).send_keys_to_element(e, "abc").perform()
 

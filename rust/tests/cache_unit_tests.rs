@@ -299,3 +299,65 @@ fn empty_driver_version_is_not_cached_in_metadata() {
         "empty driver_version must not be cached in metadata — this test fails if the !driver_version.is_empty() guard is removed from should_cache_driver_version()"
     );
 }
+
+#[test]
+fn unparseable_metadata_falls_back_to_empty() {
+    let tmp = tempdir().unwrap();
+    let cache = tmp.path().to_path_buf();
+    fs::write(cache.join("se-metadata.json"), "{ not json").unwrap();
+
+    let metadata = get_metadata(
+        &selenium_manager::logger::Logger::default(),
+        &Some(cache.clone()),
+    );
+
+    assert!(
+        metadata.browsers.is_empty()
+            && metadata.drivers.is_empty()
+            && metadata.stats.is_empty()
+            && metadata.cached_assets.is_empty(),
+        "an unusable metadata cache must degrade to empty metadata, not stop Selenium Manager"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn unreadable_metadata_falls_back_to_empty() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let tmp = tempdir().unwrap();
+    let cache = tmp.path().to_path_buf();
+    let log = selenium_manager::logger::Logger::default();
+
+    // Cache a driver so the assertion below only holds if the file was never read.
+    let metadata = Metadata {
+        browsers: Vec::new(),
+        drivers: vec![create_driver_metadata(
+            "120",
+            "chromedriver",
+            "120.0.0",
+            3600,
+        )],
+        stats: Vec::new(),
+        cached_assets: Vec::new(),
+    };
+    write_metadata(&metadata, &log, Some(cache.clone()));
+
+    let metadata_path = cache.join("se-metadata.json");
+    fs::set_permissions(&metadata_path, fs::Permissions::from_mode(0o000)).unwrap();
+
+    // Mode 0o000 does not stop root, so skip rather than fail in root containers.
+    if fs::File::open(&metadata_path).is_ok() {
+        return;
+    }
+
+    let read_back = get_metadata(&log, &Some(cache.clone()));
+
+    assert!(
+        read_back.browsers.is_empty()
+            && read_back.drivers.is_empty()
+            && read_back.stats.is_empty()
+            && read_back.cached_assets.is_empty(),
+        "a metadata cache that cannot be opened must degrade to empty metadata, not panic"
+    );
+}

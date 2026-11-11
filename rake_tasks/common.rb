@@ -40,6 +40,20 @@ module SeleniumRake
     {version: version, language: language, patch: patch}
   end
 
+  VERSION_FILE = 'version.bzl'
+
+  def self.version(binding)
+    match = File.read(VERSION_FILE).match(/^\s*"#{binding}": "([^"]+)"/)
+    raise "No #{binding} entry in #{VERSION_FILE}" unless match
+
+    match[1]
+  end
+
+  def self.write_version(binding, new_version)
+    text = File.read(VERSION_FILE).sub(/^(\s*"#{binding}": ")[^"]+(")/, "\\1#{new_version}\\2")
+    File.write(VERSION_FILE, text)
+  end
+
   def self.updated_version(current, desired = nil, nightly = nil)
     if !desired.nil? && desired != 'nightly'
       # If desired is present, return full 3 digit version
@@ -85,7 +99,7 @@ module SeleniumRake
     skip_patterns = /^(bump|update.*version|Bumping to nightly)/i
     tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
 
-    command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
+    command = "git log #{tag}...HEAD --pretty=format:%s --reverse -- #{path}"
     log = `#{command}`
     raise "Failed to generate changelog: #{command}" unless $CHILD_STATUS.success?
 
@@ -132,10 +146,17 @@ module SeleniumRake
     end
   end
 
-  def self.verify_package_published(url)
+  def self.verify_package_published(url, timeout: 300)
     puts "Verifying #{url}..."
-    res = get_request(url)
-    raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+    loop do
+      res = get_request(url)
+      break if res.is_a?(Net::HTTPSuccess)
+      raise "Package not published: #{url}" if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+      puts "  #{res.code} from registry, retrying in 15s..."
+      sleep 15
+    end
 
     puts 'Verified!'
   end

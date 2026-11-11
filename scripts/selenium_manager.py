@@ -2,29 +2,32 @@
 
 import json
 import os
+import sys
 from pathlib import Path
 
 import urllib3
 
-# Get latest version of selenium manager with sha256 values
-# updates `//common:selenium_manager.bzl`
+# Pins the selenium manager release given as the first argument, or the latest one,
+# with sha256 values; updates `//common:selenium_manager.bzl`
 
-http = urllib3.PoolManager()
+RELEASES = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases"
+RAW = "https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts"
 
-
-def get_url():
-    r = http.request(
-        "GET",
-        "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/latest",
-    )
-    return r.url.replace("tag", "download")
+http = urllib3.PoolManager(
+    retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
+)
 
 
-def get_sha_json():
-    r = http.request(
-        "GET",
-        "https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts/trunk/latest.json",
-    )
+def get_latest_tag():
+    r = http.request("GET", f"{RELEASES}/latest")
+    return r.url.rsplit("/", 1)[-1]
+
+
+# Each release tag points at the commit holding that release's hashes
+def get_sha_json(tag):
+    r = http.request("GET", f"{RAW}/{tag}/latest.json")
+    if r.status != 200:
+        raise RuntimeError(f"No hashes found for {tag} (HTTP {r.status})")
     return json.loads(r.data)
 
 
@@ -99,8 +102,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 def selenium_manager():
 """
-    base_url = get_url()
-    sha_dict = get_sha_json()
+    tag = sys.argv[1] if len(sys.argv) > 1 else get_latest_tag()
+    base_url = f"{RELEASES}/download/{tag}"
+    sha_dict = get_sha_json(tag)
     content = content + print_linux_x86_64(base_url, sha_dict["linux-x86_64"])
     content = content + print_linux_arm64(base_url, sha_dict["linux-arm64"])
     content = content + print_macos(base_url, sha_dict["macos"])

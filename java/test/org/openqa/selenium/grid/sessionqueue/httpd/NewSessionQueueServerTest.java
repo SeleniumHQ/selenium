@@ -34,10 +34,8 @@ class NewSessionQueueServerTest {
 
   @Test
   void redisImplementationIsOnClasspath() {
-    assertThatCode(
-            () ->
-                Class.forName(
-                    "org.openqa.selenium.grid.sessionqueue.redis.RedisBackedNewSessionQueue"))
+    assertThatCode(() ->
+            Class.forName("org.openqa.selenium.grid.sessionqueue.redis.RedisBackedNewSessionQueue"))
         .doesNotThrowAnyException();
   }
 }

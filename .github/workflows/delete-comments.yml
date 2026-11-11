@@ -1,4 +1,4 @@
-name: Delete Comments
+name: Webhook - Delete Comments
 
 on:
   issue_comment:

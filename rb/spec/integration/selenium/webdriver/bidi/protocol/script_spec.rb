@@ -92,7 +92,7 @@ module Selenium
                 arguments: [Script::NumberValue.new(value: 2), Script::NumberValue.new(value: 3)]
               )
 
-              expect(result).to be_a(Script::EvaluateResultSuccess)
+              expect(result).to be_a(Script::EvaluationResultSuccess)
               expect(result.result).to eq(Script::NumberValue.new(value: 5))
             end
 
@@ -110,7 +110,7 @@ module Selenium
                 user_activation: true
               )
 
-              expect(result).to be_a(Script::EvaluateResultSuccess)
+              expect(result).to be_a(Script::EvaluationResultSuccess)
               expect(result.result).to eq(Script::StringValue.new(value: 'Ruby BiDi'))
             end
           end
@@ -131,7 +131,7 @@ module Selenium
             it 'evaluates an expression in the current context' do
               result = evaluate('1 + 2')
 
-              expect(result).to be_a(Script::EvaluateResultSuccess)
+              expect(result).to be_a(Script::EvaluationResultSuccess)
               expect(result.result).to eq(Script::NumberValue.new(value: 3))
               expect(result.realm).to be_a(String)
             end
@@ -146,7 +146,7 @@ module Selenium
                 serialization_options: Script::SerializationOptions.new(max_object_depth: 1)
               )
 
-              expect(result).to be_a(Script::EvaluateResultSuccess)
+              expect(result).to be_a(Script::EvaluationResultSuccess)
               expect(result.result).to be_a(Script::ObjectRemoteValue)
               expect(result.result.handle).to be_a(String)
             ensure

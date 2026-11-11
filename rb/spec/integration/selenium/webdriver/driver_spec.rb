@@ -22,8 +22,6 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver, skip_unless: {bidi: false, reason: 'Not yet implemented with BiDi'} do
-      after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
-
       it_behaves_like 'driver that can be started concurrently', skip_if: [
         {browser_family: :safari},
         {browser: :firefox, reason: 'https://github.com/SeleniumHQ/selenium/issues/15451'},
@@ -364,6 +362,8 @@ module Selenium
 
     describe Driver do
       context 'when BiDi is enabled',
+              skip_if: {browser_family: :safari,
+                        reason: 'Unskip when the web extensions probe in safari_support_probe_spec.rb passes'},
               skip_unless: {bidi: true, reason: 'extensions install over the webExtension BiDi command'} do
         let(:extensions) { '../../../../../common/extensions/' }
 

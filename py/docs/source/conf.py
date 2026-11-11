@@ -87,14 +87,9 @@ master_doc = "index"
 project = "Selenium"
 copyright = "Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy"
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The short X.Y version.
-version = "4.50"
-# The full version, including alpha/beta/rc tags.
-release = "4.50.0.202609091537"
+# The Bazel docs target overrides these with -D; elsewhere generate_version_module.py writes the module first.
+release = importlib.import_module("selenium").__version__
+version = ".".join(release.split(".")[:2])
 
 # A released version corresponds to a tag; a nightly does not, so its links point
 # at trunk. Used to build source links and to describe this build to machines.

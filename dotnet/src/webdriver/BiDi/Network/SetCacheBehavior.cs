@@ -33,7 +33,9 @@ public sealed record ContextSetCacheBehaviorOptions : CommandOptions
 {
     internal static SetCacheBehaviorOptions WithContext(ContextSetCacheBehaviorOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
-        Contexts = [context]
+        Contexts = [context],
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

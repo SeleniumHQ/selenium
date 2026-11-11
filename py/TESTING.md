@@ -46,6 +46,7 @@ bazel test //py:test-chrome-bidi
 # Against a Grid server (chrome and firefox only). The suite starts its own
 # Selenium standalone server and talks to it with webdriver.Remote.
 bazel test //py:test-chrome-remote
+bazel test //py:test-chrome-grid     # only the Grid-specific tests
 bazel test //py:test-remote          # every remote suite
 
 # Test filters
@@ -66,19 +67,23 @@ bazel test //py:test/selenium/webdriver/common/bidi/browsing_context_tests-chrom
 bazel query //py/...
 ```
 
+By default on Linux and macOS, Bazel uses pinned versions of the browser and driver, so tests do not
+depend on what the machine has installed. To have Selenium Manager handle this instead, pass
+`--pin_browsers=false`. Selenium Manager uses an installed browser or a driver on `PATH` if present;
+to ensure the latest stable version, pass
+`--test_env=SE_FORCE_BROWSER_DOWNLOAD=true --test_env=SE_SKIP_DRIVER_IN_PATH=true`.
+
+Our CI runs the x64 Linux targets on Remote Build Execution (RBE), which only has network access for
+the Rust and Selenium Manager tests. We use GitHub Actions runners only for what the RBE results
+cannot tell us, such as OS-specific behavior and Selenium Manager on other platforms.
+
 ## Running Tests Without Bazel (using pytest)
 
 You can run tests directly with pytest after setting up the development environment.
 
 ### Setup
 
-First, install the required dependencies:
-
-```shell
-pip install -r py/requirements_lock.txt
-```
-
-Then build the generated files and copy them into your local source tree:
+Install the required dependencies and copy the generated files into your local source tree:
 
 ```shell
 ./go py:local_dev

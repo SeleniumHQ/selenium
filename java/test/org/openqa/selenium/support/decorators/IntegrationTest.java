@@ -63,8 +63,8 @@ class IntegrationTest {
     CountCalls decorator = new CountCalls();
     WebDriver originalDriver = mock(WebDriver.class);
     WebDriver decoratedDriver = decorator.decorate(originalDriver);
-    decoratedDriver.get("http://test.com/");
-    verify(originalDriver).get("http://test.com/");
+    decoratedDriver.get("http://example.test/");
+    verify(originalDriver).get("http://example.test/");
     assertThat(decorator.counterBefore).isEqualTo(1);
     assertThat(decorator.counterAfter).isEqualTo(1);
   }

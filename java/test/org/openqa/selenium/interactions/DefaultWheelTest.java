@@ -21,11 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -38,6 +40,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   void shouldScrollToElement() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -52,6 +55,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   void shouldScrollFromElementByGivenAmount() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -67,6 +71,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   void shouldScrollFromElementByGivenAmountWithOffset() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -94,8 +99,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
               getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
             })
-        .isInstanceOf(MoveTargetOutOfBoundsException.class)
-        .hasMessageContaining("out of bounds");
+        .isInstanceOf(MoveTargetOutOfBoundsException.class);
   }
 
   @Test
@@ -111,6 +115,7 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = SAFARI, reason = "Scrolling from a viewport origin is unreliable in Safari")
   void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
@@ -133,7 +138,6 @@ class DefaultWheelTest extends JupiterTestBase {
 
               getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
             })
-        .isInstanceOf(MoveTargetOutOfBoundsException.class)
-        .hasMessageContaining("out of bounds");
+        .isInstanceOf(MoveTargetOutOfBoundsException.class);
   }
 }

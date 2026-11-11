@@ -17,37 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: SingleSessionBrowser(Browser.Safari, Browser.IE)]
 
 namespace OpenQA.Selenium.Support.Tests;
 
 [SetUpFixture]
-public class AssemblyFixture
+public class AssemblyFixture : AssemblyFixtureBase
 {
-    public AssemblyFixture()
-    {
-    }
-
-    [OneTimeSetUp]
-    public async Task RunBeforeAnyTestAsync()
-    {
-        Internal.Logging.Log.SetLevel(Internal.Logging.LogEventLevel.Trace);
-
-        await EnvironmentManager.Instance.WebServer.StartAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StartAsync();
-        }
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTestsAsync()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        await EnvironmentManager.Instance.WebServer.StopAsync();
-        if (EnvironmentManager.Instance.Browser == Browser.Remote)
-        {
-            await EnvironmentManager.Instance.RemoteServer.StopAsync();
-        }
-    }
 }

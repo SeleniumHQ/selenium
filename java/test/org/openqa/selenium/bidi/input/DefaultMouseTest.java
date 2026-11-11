@@ -417,10 +417,8 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   private void resetMousePointer() {
-    WebElement body = driver.findElement(By.tagName("body"));
-    Dimension size = body.getSize();
     Collection<Sequence> moveToLeftUpperCorner =
-        getBuilder(driver).moveToElement(body, -size.width / 2, -size.height / 2).getSequences();
+        getBuilder(driver).moveToLocation(0, 0).getSequences();
     inputModule.perform(windowHandle, moveToLeftUpperCorner);
   }
 }

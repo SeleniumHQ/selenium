@@ -172,7 +172,7 @@ public class IeSpecificTests : DriverTestFixture
         Driver.Url = Urls.WhereIs("transformable.xml");
         Driver.FindElement(By.Id("x")).Click();
         // Sleep is required; driver may not be fast enough after this Click().
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         Assert.That(Driver.Title, Is.EqualTo("XHTML Test Page"));
 
         // Act on the result page to make sure the window handling is still valid.
@@ -203,7 +203,7 @@ public class IeSpecificTests : DriverTestFixture
         setColorButton.Click();
         IWebElement openWindowButton = Driver.FindElement(By.Id("openwindowbutton"));
         openWindowButton.Click();
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         string startWindow = Driver.CurrentWindowHandle;
         Driver.SwitchTo().Window("cookiedestwindow");
         string bodyStyle = Driver.FindElement(By.TagName("body")).GetAttribute("style");
@@ -329,7 +329,7 @@ public class IeSpecificTests : DriverTestFixture
 
         // Launch second modal
         Driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
-        System.Threading.Thread.Sleep(5000);
+        Thread.Sleep(5000);
         WaitFor(() => { return Driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
         ReadOnlyCollection<string> windows_1 = Driver.WindowHandles;
         string secondWindowHandle = windows_1.Except(windows).First();

@@ -26,7 +26,7 @@ use crate::metadata::{
 };
 use crate::{
     BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
-    SeleniumManager, create_http_client, format_three_args, format_two_args,
+    SeleniumManager, format_three_args, format_two_args,
 };
 use anyhow::Error;
 use anyhow::anyhow;
@@ -36,6 +36,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -76,7 +77,7 @@ pub struct FirefoxManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -88,13 +89,11 @@ impl FirefoxManager {
         let browser_name = FIREFOX_NAME;
         let driver_name = GECKODRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(FirefoxManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -111,7 +110,7 @@ impl FirefoxManager {
         let browser_version = self.get_browser_version().to_string();
         let firefox_versions_url = self.create_firefox_details_url(endpoint);
         let firefox_versions =
-            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
 
         let versions_map = firefox_versions.as_object().unwrap();
         let filter_key = if browser_version.contains('.') {
@@ -148,12 +147,12 @@ impl SeleniumManager for FirefoxManager {
         browser_names
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -243,7 +242,7 @@ impl SeleniumManager for FirefoxManager {
                 let driver_version_url =
                     self.get_driver_mirror_versions_url_or_default(DRIVER_VERSIONS_URL);
                 let driver_version = match parse_json_from_url::<GeckodriverReleases>(
-                    self.get_http_client(),
+                    self.get_http_client()?,
                     &driver_version_url,
                 ) {
                     Ok(driver_releases) => {
@@ -291,7 +290,7 @@ impl SeleniumManager for FirefoxManager {
                             LATEST_RELEASE
                         );
                         read_redirect_from_link(
-                            self.get_http_client(),
+                            self.get_http_client()?,
                             latest_url,
                             self.get_logger(),
                         )?
@@ -426,7 +425,7 @@ impl SeleniumManager for FirefoxManager {
 
         let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
         let firefox_versions =
-            parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+            parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
         let browser_version = firefox_versions
             .get(FIREFOX_STABLE_LABEL)
             .unwrap()
@@ -449,7 +448,7 @@ impl SeleniumManager for FirefoxManager {
         if self.is_unstable(browser_version) {
             let firefox_versions_url = self.create_firefox_details_url(FIREFOX_VERSIONS_ENDPOINT);
             let firefox_versions =
-                parse_json_from_url::<Value>(self.get_http_client(), &firefox_versions_url)?;
+                parse_json_from_url::<Value>(self.get_http_client()?, &firefox_versions_url)?;
             let version_label = if self.is_beta(browser_version) {
                 FIREFOX_BETA_LABEL
             } else if self.is_dev(browser_version) {
@@ -507,7 +506,7 @@ impl SeleniumManager for FirefoxManager {
                 );
                 self.get_logger()
                     .trace(format!("Checking release URL: {}", release_url));
-                let content = read_content_from_link(self.get_http_client(), &release_url)?;
+                let content = read_content_from_link(self.get_http_client()?, &release_url)?;
                 if !content.contains("Not Found") {
                     return Ok(version.to_string());
                 }
@@ -567,7 +566,7 @@ impl SeleniumManager for FirefoxManager {
             if X32.is(arch) || major_browser_version < 42 {
                 platform_label = "win32";
             } else if ARM64.is(arch) {
-                platform_label = "win-aarch64";
+                platform_label = "win64-aarch64";
             } else {
                 platform_label = "win64";
             }
@@ -802,6 +801,59 @@ mod unit_tests {
             firefox_manager.set_arch(d.get(2).unwrap().to_string());
             let driver_url = firefox_manager.get_driver_url().unwrap();
             assert_eq!(d.get(3).unwrap().to_string(), driver_url);
+        });
+    }
+
+    #[test]
+    fn test_browser_url() {
+        let mut firefox_manager = FirefoxManager::new().unwrap();
+
+        let data = vec![
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "x86",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win32/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "x86_64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win64/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "windows",
+                "aarch64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/win64-aarch64/en-US/Firefox%20Setup%20145.0.exe",
+            ],
+            vec![
+                "nightly",
+                "162.0a1",
+                "windows",
+                "aarch64",
+                "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=win64-aarch64&lang=en-US",
+            ],
+            vec![
+                "145.0",
+                "145.0",
+                "linux",
+                "aarch64",
+                "https://ftp.mozilla.org/pub/firefox/releases/145.0/linux-aarch64/en-US/firefox-145.0.tar.xz",
+            ],
+        ];
+
+        data.iter().for_each(|d| {
+            firefox_manager.set_browser_version(d.get(1).unwrap().to_string());
+            firefox_manager.set_os(d.get(2).unwrap().to_string());
+            firefox_manager.set_arch(d.get(3).unwrap().to_string());
+            let browser_url = firefox_manager
+                .get_browser_url_for_download(d.first().unwrap())
+                .unwrap();
+            assert_eq!(d.get(4).unwrap().to_string(), browser_url);
         });
     }
 }

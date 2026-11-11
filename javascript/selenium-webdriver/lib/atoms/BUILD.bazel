@@ -59,6 +59,18 @@ js_run_binary(
     visibility = ["//javascript/selenium-webdriver:__pkg__"],
 )
 
+js_run_binary(
+    name = "accessibility_snapshot",
+    srcs = ["//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js"],
+    outs = ["accessibility-snapshot.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js)",
+        "$(rootpath :accessibility-snapshot.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
 copy_file(
     name = "mutation-listener",
     src = "//javascript/cdp-support:mutation-listener.js",

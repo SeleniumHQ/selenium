@@ -19,10 +19,12 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed record StartScreencastParameters(BrowsingContext Context, string? MimeType, MediaTrackConstraints? Video, bool? Audio) : Parameters;
+internal sealed record StartScreencastParameters(BrowsingContext Context, string? DestinationFolder, string? MimeType, MediaTrackConstraints? Video, bool? Audio) : Parameters;
 
 public sealed record StartScreencastOptions : CommandOptions
 {
+    public string? DestinationFolder { get; init; }
+
     public string? MimeType { get; init; }
 
     public MediaTrackConstraints? Video { get; init; }

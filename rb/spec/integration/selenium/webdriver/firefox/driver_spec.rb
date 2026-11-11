@@ -86,7 +86,7 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
@@ -101,7 +101,7 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
@@ -116,7 +116,7 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
@@ -124,17 +124,14 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory', pending_if: {browser: :firefox,
-                                                                    platform: :windows,
-                                                                    reason: 'signature must be different for windows,
-                                                                skipping everywhere until Firefox 127 is released'} do
+          it 'install and uninstall signed directory' do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
 
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
@@ -149,7 +146,7 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example-v3@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
@@ -165,7 +162,7 @@ module Selenium
             expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
             driver.navigate.to url_for('blank.html')
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_web_extension(extension)
@@ -179,7 +176,7 @@ module Selenium
             expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
             driver.navigate.to url_for('blank.html')
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_web_extension(extension)
@@ -189,17 +186,17 @@ module Selenium
             let(:ext) { File.expand_path("#{extensions}/webextensions-selenium-example-signed", __dir__) }
 
             it 'runs in a private window when allowed' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+              reset_driver!(args: ['-private-window']) do |driver|
                 driver.install_web_extension(ext, allow_private_browsing: true)
                 driver.navigate.to url_for('blank.html')
 
-                injected = driver.find_element(id: 'webextensions-selenium-example')
+                injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
                 expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
               end
             end
 
             it 'does not run in a private window when disabled' do
-              reset_driver!(prefs: {'browser.privatebrowsing.autostart': true}) do |driver|
+              reset_driver!(args: ['-private-window']) do |driver|
                 driver.install_web_extension(ext, allow_private_browsing: false)
                 driver.navigate.to url_for('blank.html')
                 expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
@@ -217,7 +214,7 @@ module Selenium
             expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
             driver.navigate.to url_for('blank.html')
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_web_extension(extension)
@@ -229,7 +226,7 @@ module Selenium
             expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
             driver.navigate.to url_for('blank.html')
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_web_extension(extension)
@@ -241,7 +238,7 @@ module Selenium
             expect(extension.id).to eq 'webextensions-selenium-example-v3@example.com'
 
             driver.navigate.to url_for('blank.html')
-            injected = driver.find_element(id: 'webextensions-selenium-example')
+            injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
             expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_web_extension(extension)
@@ -255,7 +252,7 @@ module Selenium
                 driver.install_web_extension(ext, allow_private_browsing: true)
                 driver.navigate.to url_for('blank.html')
 
-                injected = driver.find_element(id: 'webextensions-selenium-example')
+                injected = wait.until { driver.find_element(id: 'webextensions-selenium-example') }
                 expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
               end
             end

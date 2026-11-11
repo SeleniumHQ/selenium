@@ -27,6 +27,7 @@ module Selenium
         # @api private
         # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
         class Permissions < Domain
+          # @see https://w3c.github.io/permissions/#cddl-type-permissions-permissionstate
           PERMISSION_STATE = {
             granted: 'granted',
             denied: 'denied',
@@ -35,10 +36,12 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/permissions/#cddl-type-permissions-permissiondescriptor
           PermissionDescriptor = Serialization::Record.define(name: {wire_key: 'name', primitive: 'string'})
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
+          # @see https://w3c.github.io/permissions/#cddl-type-permissions-setpermissionparameters
           SetPermissionParameters = Serialization::Record.define(
             descriptor: {wire_key: 'descriptor', ref: 'Permissions::PermissionDescriptor'},
             state: {wire_key: 'state', enum: 'Permissions::PERMISSION_STATE'},

@@ -96,11 +96,10 @@ class RouterTest {
     new FluentWait<>(router)
         .withTimeout(duration)
         .pollingEvery(Duration.ofMillis(100))
-        .until(
-            r -> {
-              Map<String, Object> status = getStatus(router);
-              return ready.equals(status.get("ready"));
-            });
+        .until(r -> {
+          Map<String, Object> status = getStatus(router);
+          return ready.equals(status.get("ready"));
+        });
   }
 
   @BeforeEach
@@ -185,8 +184,8 @@ class RouterTest {
   void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
-    URI firstNodeUri = new URI("https://example1.com");
-    URI secondNodeUri = new URI("https://example2.com");
+    URI firstNodeUri = new URI("https://node1.example.test");
+    URI secondNodeUri = new URI("https://node2.example.test");
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
@@ -194,10 +193,9 @@ class RouterTest {
         LocalNode.builder(tracer, bus, firstNodeUri, firstNodeUri, registrationSecret)
             .add(
                 chromeCapabilities,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(
-                            id, firstNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(
+                        id, firstNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
             .advanced()
             .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
             .build();
@@ -206,10 +204,9 @@ class RouterTest {
         LocalNode.builder(tracer, bus, secondNodeUri, secondNodeUri, registrationSecret)
             .add(
                 firefoxCapabilities,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(
-                            id, secondNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(
+                        id, secondNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
             .advanced()
             .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
             .build();
@@ -243,14 +240,12 @@ class RouterTest {
         LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
             .add(
                 chromeCapabilities,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
             .add(
                 firefoxCapabilities,
-                new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+                new TestSessionFactory((id, caps) ->
+                    new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
             .maximumConcurrentSessions(1)
             .advanced()
             .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -286,9 +281,8 @@ class RouterTest {
     return LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(
             capabilities,
-            new TestSessionFactory(
-                (id, caps) ->
-                    new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+            new TestSessionFactory((id, caps) ->
+                new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(availability.get(), "TL;DR"))
         .build();

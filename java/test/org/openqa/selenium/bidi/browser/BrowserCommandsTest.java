@@ -46,6 +46,7 @@ import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -171,6 +172,7 @@ class BrowserCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetDownloadBehaviorWithUserContext() throws InterruptedException {
     String userContext = browser.createUserContext();
 
@@ -234,23 +236,21 @@ class BrowserCommandsTest extends JupiterTestBase {
       Optional<String> result =
           foundFiles.stream().filter(f -> expectedFileName.matcher(f).matches()).findAny();
       if (result.isPresent()) {
-        LOG.info(
-            () ->
-                "Found file: "
-                    + result.get()
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+        LOG.info(() ->
+            "Found file: "
+                + result.get()
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       } else {
-        LOG.info(
-            () ->
-                "Not found file: "
-                    + expectedFileName
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+        LOG.info(() ->
+            "Not found file: "
+                + expectedFileName
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       }
       return result.isPresent();
     }

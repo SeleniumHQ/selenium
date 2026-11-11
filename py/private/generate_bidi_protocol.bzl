@@ -13,6 +13,7 @@ _MODULES = [
     "bluetooth",
     "browser",
     "browsing_context",
+    "digital_credentials",
     "emulation",
     "input",
     "log",

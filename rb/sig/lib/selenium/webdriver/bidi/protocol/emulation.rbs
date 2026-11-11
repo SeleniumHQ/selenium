@@ -29,6 +29,8 @@ module Selenium
 
           SCREEN_ORIENTATION_TYPE: Hash[Symbol, String]
 
+          TEXT_LAYOUT_MODE: Hash[Symbol, String]
+
           MEDIA_FEATURES_ANY_HOVER: Hash[Symbol, String]
 
           MEDIA_FEATURES_ANY_POINTER: Hash[Symbol, String]
@@ -232,6 +234,13 @@ module Selenium
             def self.new: (scrollbar_type: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
           end
 
+          class SetTextLayoutModeOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
+            attr_reader text_layout_mode: Symbol?
+            attr_reader contexts: untyped
+            attr_reader user_contexts: untyped
+            def self.new: (text_layout_mode: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> instance
+          end
+
           class SetTimezoneOverrideParameters < ::Selenium::WebDriver::BiDi::Serialization::Record
             attr_reader timezone: String?
             attr_reader contexts: untyped
@@ -261,6 +270,7 @@ module Selenium
           def set_screen_settings_override: (screen_area: ::Selenium::WebDriver::BiDi::Protocol::Emulation::ScreenArea?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_scripting_enabled: (enabled: bool?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_scrollbar_type_override: (scrollbar_type: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
+          def set_text_layout_mode_override: (text_layout_mode: Symbol?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_timezone_override: (timezone: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_touch_override: (max_touch_points: Integer?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped
           def set_user_agent_override: (user_agent: String?, ?contexts: Array[String], ?user_contexts: Array[String]) -> untyped

@@ -1,3 +1,39 @@
+## 4.52.0
+
+- Support CDP versions: v154, v155, v156
+- [build] scope RBE internet access to the tests that exercise Selenium Manager (#18147)
+- [build] carry CDDL numeric bounds into the BiDi schema (#18194)
+- only track the page request in the BiDi 'can request cookies' test (#18186)
+- port the atoms Appium uses from Closure to TypeScript (#18175)
+- [build] Automated Dependency Update (#18201)
+- move the JavaScript version to version.bzl and keep it and the changelog out of test inputs (#18221)
+- [build] Automated Browser Version Update (major) with CDP (#18214)
+- require Node releases that block the compromised eMudhra keys (#18249)
+
+## 4.51.0
+
+- Support CDP versions: v153, v154, v155
+- [build] Automated Dependency Update (#18124)
+- [bidi] Add vendor specific class generation (#18125)
+- Add webextension methods on the driver with BiDi and fallback (#18127)
+- [build] Automated Browser Version Update (major) with CDP (#18131)
+
+## 4.50.0
+
+- Support CDP versions: v152, v153, v154
+- [build] Automated Dependency Update (#18032)
+- [build] generate webref_cddl.bzl from the BiDi spec's external specifications list (#18055)
+- [build] replace the BiDi KNOWN_INCOMPLETE allowlist with spec-shaped CDDL overlays (#18057)
+- [build] Automated Dependency Update (#18061)
+- [build] generate the BiDi schema vendor section from Mozilla's Firefox CDDL (#18060)
+- remove deprecated Firefox profile extension and cert methods (#18066)
+- [build] add support for Mozilla's Commands fragment in the BiDi schema (#18071)
+- Align BiDi Generator with the low-level contract (#17973)
+- [build] Automated Browser Version Update (major) with CDP (#18067)
+- [build] Automated CDDL Spec Update (#18075)
+- [build] Automated Dependency Update (#18082)
+- Run tests on Grid, MacOS and Windows (#18081)
+
 ## 4.49.0
 
 - Support CDP versions: v151, v152, v153

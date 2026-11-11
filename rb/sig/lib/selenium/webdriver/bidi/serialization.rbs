@@ -78,17 +78,35 @@ module Selenium
 
             def check_outbound_primitive: (untyped field, untyped value) -> void
 
+            def check_outbound_map: (untyped field, untyped value) -> void
+
             def fixed?: (untyped field) -> bool
 
             def wire_value: (untyped field, Hash[untyped, untyped] json_payload) -> untyped
 
             def read: (untyped field, untyped raw) -> untyped
 
+            def hold_integer: (untyped field, untyped value) -> untyped
+
             def read_ref: (untyped field, untyped raw) -> untyped
 
             def check_shape: (untyped field, untyped raw) -> void
 
             def check_primitive: (untyped field, untyped raw) -> void
+
+            def primitive_mismatch: (untyped field, untyped value) -> String?
+
+            def element_mismatch: (untyped field, String | Array[String] primitives, untyped value) -> String?
+
+            def bound_mismatch: (untyped field, untyped value) -> String?
+
+            def violated_min: (untyped field, untyped value) -> String?
+
+            def violated_max: (untyped field, untyped value) -> String?
+
+            def check_map: (untyped field, untyped raw) -> untyped
+
+            def map_mismatch: (untyped field, untyped value) -> String?
 
             def enum_hash: (untyped field) -> untyped
 

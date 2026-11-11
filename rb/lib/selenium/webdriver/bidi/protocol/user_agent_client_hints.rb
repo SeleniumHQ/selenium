@@ -45,7 +45,7 @@ module Selenium
             mobile: {wire_key: 'mobile', required: false, primitive: 'boolean'},
             bitness: {wire_key: 'bitness', required: false, primitive: 'string'},
             wow64: {wire_key: 'wow64', required: false, primitive: 'boolean'},
-            form_factors: {wire_key: 'formFactors', required: false, list: true}
+            form_factors: {wire_key: 'formFactors', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -60,8 +60,8 @@ module Selenium
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetClientHintsOverrideCommandParams = Serialization::Record.define(
             client_hints: {wire_key: 'clientHints', nullable: true, ref: 'UserAgentClientHints::ClientHintsMetadata'},
-            contexts: {wire_key: 'contexts', required: false, list: true},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           def client_hints_metadata(**) = ClientHintsMetadata.new(**)

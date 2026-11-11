@@ -19,7 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Tests.Infrastructure.Environment;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests.DevTools;
 
@@ -34,7 +34,11 @@ public abstract class DevToolsTestFixture : DriverTestFixture
     [SetUp]
     public void Setup()
     {
-        Driver = EnvironmentManager.Instance.GetCurrentDriver();
+        if (Driver is null)
+        {
+            CreateFreshDriver();
+        }
+
         devTools = Driver as IDevTools;
         if (devTools == null)
         {
@@ -51,9 +55,8 @@ public abstract class DevToolsTestFixture : DriverTestFixture
         if (session != null)
         {
             session.Dispose();
-            EnvironmentManager.Instance.CloseCurrentDriver();
+            CloseDriver();
             session = null;
-            Driver = null;
         }
     }
 }

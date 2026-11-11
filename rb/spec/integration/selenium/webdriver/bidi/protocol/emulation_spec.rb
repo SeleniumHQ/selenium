@@ -49,6 +49,7 @@ module Selenium
 
           describe '#set_forced_colors_mode_theme_override',
                    pending_if: [{browser_family: :chromium,
+                                 version: 'stable',
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
                                  reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
@@ -196,6 +197,22 @@ module Selenium
                      )).to be_empty
               expect(emulation.set_scrollbar_type_override(
                        scrollbar_type: nil,
+                       contexts: [driver.window_handle]
+                     )).to be_empty
+            end
+          end
+
+          describe '#set_text_layout_mode_override',
+                   pending_if: [{browser: :firefox,
+                                 exception: {class: Error::UnknownCommandError},
+                                 reason: 'Firefox returns unknown command for setTextLayoutModeOverride'}] do
+            it 'sets and clears text layout mode override' do
+              expect(emulation.set_text_layout_mode_override(
+                       text_layout_mode: :mobile,
+                       contexts: [driver.window_handle]
+                     )).to be_empty
+              expect(emulation.set_text_layout_mode_override(
+                       text_layout_mode: nil,
                        contexts: [driver.window_handle]
                      )).to be_empty
             end

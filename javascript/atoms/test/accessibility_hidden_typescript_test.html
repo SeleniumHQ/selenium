@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>accessibility_hidden_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/testing/accessibility-global.js"></script>
+  <style>
+    .gone { display: none; }
+    .shown[hidden] { display: block; }
+    .invisible { visibility: hidden; }
+    .visible { visibility: visible; }
+    .collapsed { visibility: collapse; }
+    .transparent { opacity: 0; }
+    .offscreen { position: absolute; left: -9999px; }
+    .clip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  </style>
+  <script type="text/javascript">
+    // "Hidden" in the accname sense (https://w3c.github.io/accname/#dfn-hidden):
+    // not rendered, or aria-hidden=true on the element or an ancestor. This is
+    // deliberately not bot.dom.isShown: WebDriver's displayedness also prunes
+    // zero-size, transparent and off-screen content, which assistive technology
+    // does reach, and the "visually hidden" CSS pattern relies on exactly that.
+    //
+    // The module is reached through a test-only bundle (typescript/testing/
+    // accessibility.ts) because the public atom only exposes hidden-ness
+    // through the tree walk, which has its own page.
+    var testing = window.bot.accessibility.typescript.testing;
+    var isHidden = testing.isHidden;
+    var hiddenState = testing.hiddenState;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) {
+        throw new Error('no fixture with id ' + id);
+      }
+      return element;
+    }
+
+    function assertHidden(assert, ids) {
+      ids.forEach(function (id) {
+        assert.ok(isHidden(byId(id)), '#' + id + ' should be hidden');
+      });
+    }
+
+    function assertRendered(assert, ids) {
+      ids.forEach(function (id) {
+        assert.notOk(isHidden(byId(id)), '#' + id + ' should not be hidden');
+      });
+    }
+
+    QUnit.module('aria-hidden');
+
+    QUnit.test('aria-hidden=true hides the element and everything below it', function (assert) {
+      assertHidden(assert, ['aria-hidden', 'aria-hidden-child', 'aria-hidden-grandchild']);
+    });
+
+    QUnit.test('aria-hidden=false cannot un-hide a subtree an ancestor hid', function (assert) {
+      assertHidden(assert, ['aria-hidden-false-inside-true']);
+    });
+
+    QUnit.test('aria-hidden=false on its own changes nothing', function (assert) {
+      assertRendered(assert, ['aria-hidden-false']);
+    });
+
+    QUnit.test('aria-hidden matches its value case-insensitively and ignores other values', function (assert) {
+      assertHidden(assert, ['aria-hidden-upper']);
+      assertRendered(assert, ['aria-hidden-bogus']);
+    });
+
+    QUnit.module('not rendered');
+
+    QUnit.test('display none hides the element and its descendants, inline or from a stylesheet', function (assert) {
+      assertHidden(assert, ['display-none', 'display-none-child', 'display-none-class', 'display-none-class-child']);
+    });
+
+    QUnit.test('the hidden attribute hides through the UA stylesheet, so author CSS can show it again', function (assert) {
+      assertHidden(assert, ['hidden-attribute', 'hidden-attribute-child']);
+      assertRendered(assert, ['hidden-attribute-shown']);
+    });
+
+    QUnit.test('visibility hidden and collapse hide the element itself', function (assert) {
+      assertHidden(assert, ['visibility-hidden', 'visibility-hidden-child', 'visibility-collapse']);
+    });
+
+    QUnit.test('a visible descendant of a visibility hidden element is not hidden', function (assert) {
+      assertRendered(assert, ['visible-in-invisible']);
+    });
+
+    QUnit.test('content of a closed details is hidden, except its summary', function (assert) {
+      assertHidden(assert, ['closed-details-content', 'closed-details-nested']);
+      assertRendered(assert, ['closed-details-summary', 'closed-details']);
+    });
+
+    QUnit.test('content of an open details is not hidden', function (assert) {
+      assertRendered(assert, ['open-details-content', 'open-details-summary']);
+    });
+
+    QUnit.test('script, style, noscript, head content and hidden inputs are never rendered', function (assert) {
+      assertHidden(assert, ['script', 'style', 'noscript', 'input-hidden']);
+      assert.ok(isHidden(document.querySelector('title')), 'title should be hidden');
+      assert.ok(isHidden(document.querySelector('meta')), 'meta should be hidden');
+    });
+
+    QUnit.test('template content lives in an inert fragment and is hidden', function (assert) {
+      var template = byId('template');
+      assert.ok(isHidden(template), 'the template element itself');
+      assert.ok(isHidden(template.content.firstElementChild), 'an element inside template.content');
+    });
+
+    QUnit.test('a detached element is hidden', function (assert) {
+      assert.ok(isHidden(document.createElement('div')));
+    });
+
+    QUnit.test('inert content is hidden', function (assert) {
+      assertHidden(assert, ['inert', 'inert-child']);
+    });
+
+    QUnit.test('content-visibility hidden keeps the element but hides its contents', function (assert) {
+      assertRendered(assert, ['cv']);
+      assertHidden(assert, ['cv-child', 'cv-grandchild']);
+    });
+
+    QUnit.test('image map areas are rendered through the image that uses their map', function (assert) {
+      // The UA stylesheet gives area display: none, which is not what decides.
+      assertRendered(assert, ['area-used']);
+      assertHidden(assert, ['area-unused', 'area-hidden-img']);
+    });
+
+    QUnit.module('still rendered for accessibility');
+
+    QUnit.test('opacity, off-screen position and the clip pattern do not hide', function (assert) {
+      // bot.dom.isShown reports all three as not displayed. accname does not.
+      assertRendered(assert, ['transparent', 'offscreen', 'clip', 'clip-child']);
+    });
+
+    QUnit.test('empty elements are rendered', function (assert) {
+      assertRendered(assert, ['empty-div', 'empty-span']);
+    });
+
+    QUnit.module('shadow DOM, in the flat tree');
+
+    QUnit.test('a host with display none hides its shadow tree', function (assert) {
+      var host = byId('hidden-host');
+      assert.ok(isHidden(host.shadowRoot.getElementById('in-hidden-host')));
+    });
+
+    QUnit.test('a slotted element follows its slot, not its light-DOM parent', function (assert) {
+      assertHidden(assert, ['slotted-into-hidden']);
+      assertRendered(assert, ['slotted-default', 'fills-slot']);
+    });
+
+    QUnit.test('a light-DOM child no slot takes is not rendered', function (assert) {
+      assertHidden(assert, ['unslotted']);
+    });
+
+    QUnit.test('slot fallback content is rendered only while the slot is empty', function (assert) {
+      var root = byId('slot-host').shadowRoot;
+      assert.ok(isHidden(root.getElementById('fallback-replaced')), 'fallback of a filled slot');
+      assert.notOk(isHidden(root.getElementById('fallback-shown')), 'fallback of an empty slot');
+    });
+
+    QUnit.module('hiddenState, for the tree walk');
+
+    QUnit.test('reports what an element does to itself and its subtree', function (assert) {
+      assert.strictEqual(hiddenState(byId('empty-div')), 'rendered');
+      assert.strictEqual(hiddenState(byId('aria-hidden')), 'subtree');
+      assert.strictEqual(hiddenState(byId('display-none')), 'subtree');
+      assert.strictEqual(hiddenState(byId('hidden-attribute')), 'subtree');
+      assert.strictEqual(hiddenState(byId('visibility-hidden')), 'self', 'visibility can be overridden below');
+      assert.strictEqual(hiddenState(byId('visibility-collapse')), 'self');
+      assert.strictEqual(hiddenState(byId('transparent')), 'rendered');
+      assert.strictEqual(hiddenState(byId('inert')), 'subtree');
+      assert.strictEqual(hiddenState(byId('cv')), 'contents', 'own box rendered, nothing below it');
+    });
+
+    QUnit.test('ancestors are not consulted; that is isHidden\'s job', function (assert) {
+      assert.strictEqual(hiddenState(byId('aria-hidden-child')), 'rendered');
+      assert.strictEqual(hiddenState(byId('closed-details-content')), 'rendered');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <div id="aria-hidden" aria-hidden="true">
+    <div id="aria-hidden-child"><span id="aria-hidden-grandchild">x</span></div>
+    <div id="aria-hidden-false-inside-true" aria-hidden="false">x</div>
+  </div>
+  <div id="aria-hidden-false" aria-hidden="false">x</div>
+  <div id="aria-hidden-upper" aria-hidden="TRUE">x</div>
+  <div id="aria-hidden-bogus" aria-hidden="yes">x</div>
+
+  <div id="display-none" style="display: none"><span id="display-none-child">x</span></div>
+  <div id="display-none-class" class="gone"><span id="display-none-class-child">x</span></div>
+  <div id="hidden-attribute" hidden><span id="hidden-attribute-child">x</span></div>
+  <div id="hidden-attribute-shown" class="shown" hidden>x</div>
+  <div id="visibility-hidden" class="invisible">
+    <span id="visibility-hidden-child">x</span>
+    <span id="visible-in-invisible" class="visible">x</span>
+  </div>
+  <span id="visibility-collapse" class="collapsed">x</span>
+
+  <details id="closed-details">
+    <summary id="closed-details-summary">summary</summary>
+    <div id="closed-details-content"><span id="closed-details-nested">x</span></div>
+  </details>
+  <details id="open-details" open>
+    <summary id="open-details-summary">summary</summary>
+    <div id="open-details-content">x</div>
+  </details>
+
+  <script id="script" type="text/plain">x</script>
+  <style id="style">/* x */</style>
+  <noscript id="noscript">x</noscript>
+  <input id="input-hidden" type="hidden" value="x">
+  <template id="template"><div id="in-template">x</div></template>
+
+  <div id="transparent" class="transparent">x</div>
+  <div id="offscreen" class="offscreen">x</div>
+  <div id="clip" class="clip"><span id="clip-child">x</span></div>
+  <div id="empty-div"></div><span id="empty-span"></span>
+
+  <div id="inert" inert><button id="inert-child">x</button></div>
+  <div id="cv" style="content-visibility: hidden"><div id="cv-child"><span id="cv-grandchild">x</span></div></div>
+  <img src="/testdata/map.png" usemap="#used-map" alt="used">
+  <map name="used-map"><area id="area-used" href="#" shape="rect" coords="0,0,1,1" alt="a"></map>
+  <map name="unused-map"><area id="area-unused" href="#" shape="rect" coords="0,0,1,1" alt="b"></map>
+  <img src="/testdata/map.png" usemap="#hidden-img-map" alt="hidden" style="display: none">
+  <map name="hidden-img-map"><area id="area-hidden-img" href="#" shape="rect" coords="0,0,1,1" alt="c"></map>
+
+  <div id="hidden-host" style="display: none"></div>
+  <div id="slot-host">
+    <span id="slotted-into-hidden" slot="hidden-slot">x</span>
+    <span id="slotted-default">x</span>
+    <span id="unslotted" slot="nowhere">x</span>
+    <span id="fills-slot" slot="filled">x</span>
+  </div>
+  <script type="text/javascript">
+    document.getElementById('hidden-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<div id="in-hidden-host">x</div>';
+    document.getElementById('slot-host').attachShadow({ mode: 'open' }).innerHTML =
+      '<div style="display: none"><slot name="hidden-slot"></slot></div>' +
+      '<slot></slot>' +
+      '<slot name="filled"><span id="fallback-replaced">fallback</span></slot>' +
+      '<slot name="empty"><span id="fallback-shown">fallback</span></slot>';
+  </script>
+</body>
+
+</html>

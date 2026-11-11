@@ -123,31 +123,28 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final Duration purgeNodesInterval;
 
   private final ScheduledExecutorService newSessionService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Local Distributor - New Session Queue");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - New Session Queue");
+        return thread;
+      });
 
   private final ScheduledExecutorService purgeDeadNodesService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Local Distributor - Purge Dead Nodes");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Purge Dead Nodes");
+        return thread;
+      });
 
   private final ScheduledExecutorService nodeHealthCheckService =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName("Local Distributor - Node Health Check");
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Node Health Check");
+        return thread;
+      });
 
   private final ExecutorService sessionCreatorExecutor;
 
@@ -451,34 +448,30 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   @Nullable
   private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
-    // Use read lock for slot selection to allow concurrent reads
-    // This reduces contention compared to using write lock for the entire operation
-    Set<SlotId> slotIds;
-    Lock readLock = lock.readLock();
-    readLock.lock();
+    // Select and reserve under the same write lock, so the next request sees this reservation
+    // in the node load. Otherwise, concurrent requests pick the same node and fill it before
+    // using the others.
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
-      slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
-    } finally {
-      readLock.unlock();
-    }
-
-    if (slotIds.isEmpty()) {
-      LOG.log(
-          getDebugLogLevel(),
-          String.format("No slots found for request %s and capabilities %s", requestId, caps));
-      return null;
-    }
-
-    // Try to reserve each candidate slot
-    // The reserve() method uses write lock briefly and atomic operations ensure thread safety
-    // Multiple threads may select the same slot but only one will successfully reserve it
-    for (SlotId slotId : slotIds) {
-      if (reserve(slotId)) {
-        return slotId;
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes(), slotMatcher);
+      if (slotIds.isEmpty()) {
+        LOG.log(
+            getDebugLogLevel(),
+            String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
       }
-    }
 
-    return null;
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   private boolean isNotSupported(Capabilities caps) {
@@ -568,24 +561,23 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (!stereotypes.isEmpty()) {
           List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
-          matchingRequests.forEach(
-              req -> {
-                try {
-                  sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
-                } catch (RejectedExecutionException e) {
-                  LOG.log(
-                      getDebugLogLevel(),
-                      "Dropping session creation task while shutting down distributor",
-                      e);
-                }
-              });
+          matchingRequests.forEach(req -> {
+            try {
+              sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
+            } catch (RejectedExecutionException e) {
+              LOG.log(
+                  getDebugLogLevel(),
+                  "Dropping session creation task while shutting down distributor",
+                  e);
+            }
+          });
         }
       }
 
       if (rejectUnsupportedCaps) {
         checkMatchingSlot(
             sessionQueue.getQueueContents().stream()
-                .filter((src) -> inQueue.contains(src.getRequestId()))
+                .filter(src -> inQueue.contains(src.getRequestId()))
                 .collect(Collectors.toList()));
       }
     }
@@ -596,23 +588,18 @@ public class LocalDistributor extends Distributor implements Closeable {
       // Filter and reject only requests where NO capabilities are supported by ANY UP node
       // This prevents rejecting requests when nodes support capabilities but are just busy
       sessionRequests.stream()
-          .filter(
-              request ->
-                  request.getDesiredCapabilities().stream()
-                      .noneMatch(
-                          caps ->
-                              upNodes.stream()
-                                  .anyMatch(node -> node.hasCapability(caps, slotMatcher))))
-          .forEach(
-              request -> {
-                LOG.info(
-                    "No nodes support the capabilities in the request: "
-                        + request.getDesiredCapabilities());
-                SessionNotCreatedException exception =
-                    new SessionNotCreatedException(
-                        "No nodes support the capabilities in the request");
-                sessionQueue.complete(request.getRequestId(), Either.left(exception));
-              });
+          .filter(request ->
+              request.getDesiredCapabilities().stream()
+                  .noneMatch(caps ->
+                      upNodes.stream().anyMatch(node -> node.hasCapability(caps, slotMatcher))))
+          .forEach(request -> {
+            LOG.info(
+                "No nodes support the capabilities in the request: "
+                    + request.getDesiredCapabilities());
+            SessionNotCreatedException exception =
+                new SessionNotCreatedException("No nodes support the capabilities in the request");
+            sessionQueue.complete(request.getRequestId(), Either.left(exception));
+          });
     }
 
     private void handleNewSessionRequest(SessionRequest sessionRequest) {

@@ -114,7 +114,10 @@ describe('wire contract — representation', function () {
     })
 
     it('writes to the literal wire key, not the JS property name, when serialized', function () {
-      const built = new NameMirror({ specWireKey: 'hello' })
+      // Constructed with the JS-facing name, same as inbound's `parsed.jsPropertyName`
+      // above and the same as a caller filling in the generated TS interface — only the
+      // *serialized* form uses the wire key.
+      const built = new NameMirror({ jsPropertyName: 'hello' })
       assert.strictEqual(JSON.stringify(built), JSON.stringify({ specWireKey: 'hello' }))
       // The instance itself is still JS-facing — only its wire representation changes.
       assert.strictEqual(built.jsPropertyName, 'hello')

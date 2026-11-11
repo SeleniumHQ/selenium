@@ -42,6 +42,7 @@ module Selenium
         @port = config.port
         @io = config.log
         @extra_args = config.args
+        @env = config.env
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
@@ -80,6 +81,7 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
+        @process.env = @env
         if ENV.key?('SE_DEBUG')
           if @io && @io != WebDriver.logger.io
             WebDriver.logger.warn('SE_DEBUG is set; overriding user-specified driver log output to use stderr',

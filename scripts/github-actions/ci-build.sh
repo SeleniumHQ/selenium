@@ -23,7 +23,10 @@ bazel test --config=rbe-ci --build_tests_only \
   --keep_going --flaky_test_attempts=2 \
   --cache_test_results=${CACHE_RESULTS} \
   "${TEST_FILTER}" \
-  //... -- $(cat .skipped-tests | tr '\n' ' ')
+  //... -- $(tr '\n' ' ' < .skipped-tests)
 
-# Build the packages we want to ship to users
-bazel build --config=rbe-ci --build_tag_filters=release-artifact //...
+# Check the packaging rules in the test configuration so the analysis is reused; nightly and
+# release-preparation PRs package the real manager
+if [ "${SKIP_RELEASE_ARTIFACTS:-false}" != "true" ]; then
+  bazel build --config=rbe-ci --manager=stub --build_tag_filters=release-artifact //...
+fi

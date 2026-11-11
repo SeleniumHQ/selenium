@@ -277,7 +277,7 @@ public class ElementAttributeTests : DriverTestFixture
     public void ShouldCorrectlyReportValueOfColspan()
     {
         Driver.Url = Urls.Tables;
-        System.Threading.Thread.Sleep(1000);
+        Thread.Sleep(1000);
 
         IWebElement th1 = Driver.FindElement(By.Id("th1"));
         IWebElement td2 = Driver.FindElement(By.Id("td2"));

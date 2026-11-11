@@ -22,11 +22,11 @@
             "integration_id": 15368
           },
           {
-            "context": "CI Success",
+            "context": "Prepare Release / Prepare Release",
             "integration_id": 15368
           },
           {
-            "context": "Validate workflows",
+            "context": "CI Success",
             "integration_id": 15368
           },
           {

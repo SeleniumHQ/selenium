@@ -24,6 +24,7 @@ import contextlib
 import copy
 import functools
 import inspect
+import logging
 import os
 import pkgutil
 import tempfile
@@ -35,6 +36,7 @@ from base64 import b64decode, urlsafe_b64encode
 from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
+from io import BytesIO
 from typing import TYPE_CHECKING, Any, Concatenate, ParamSpec, TypeVar, cast
 
 from typing_extensions import Self
@@ -46,18 +48,26 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
 )
+from selenium.webdriver.common._bidi.web_extension import (
+    ExtensionBase64Encoded,
+    ExtensionDataValue,
+    ExtensionPath,
+)
+from selenium.webdriver.common._bidi.web_extension import WebExtension as WebExtensionProtocol
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
 from selenium.webdriver.common.bidi.emulation import Emulation
 from selenium.webdriver.common.bidi.input import Input
 from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
-from selenium.webdriver.common.bidi.script import Script
+from selenium.webdriver.common.bidi.script import Script as BidiScript
 from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
-from selenium.webdriver.common.bidi.webextension import WebExtension
+from selenium.webdriver.common.bidi.webextension import WebExtension as BidiWebExtension
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
+from selenium.webdriver.common.web_extension import WebExtension
+from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode, AccessibilitySnapshotter
 from selenium.webdriver.remote.bidi_connection import BidiConnection
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
@@ -67,6 +77,7 @@ from selenium.webdriver.remote.file_detector import FileDetector, LocalFileDetec
 from selenium.webdriver.remote.locator_converter import LocatorConverter
 from selenium.webdriver.remote.mobile import Mobile
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.script import Script
 from selenium.webdriver.remote.script_key import ScriptKey
 from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.remote.switch_to import SwitchTo
@@ -75,6 +86,57 @@ from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 cdp = None
+
+logger = logging.getLogger(__name__)
+
+# Remote ends that do not implement a command answer in one of these shapes.
+_UNSUPPORTED_COMMAND_MARKERS = (
+    "Unrecognized command: POST",
+    "Command not found: POST ",
+    '{"status":405,"value":["GET","HEAD","DELETE"]}',
+)
+
+
+def _is_unsupported_command(message: str) -> bool:
+    return any(marker in message for marker in _UNSUPPORTED_COMMAND_MARKERS)
+
+
+# Mirrors FirefoxRemoteConnection, which only a `webdriver.Firefox` session gets.
+_FIREFOX_ADDON_COMMANDS = {
+    "INSTALL_ADDON": ("POST", "/session/$sessionId/moz/addon/install"),
+    "UNINSTALL_ADDON": ("POST", "/session/$sessionId/moz/addon/uninstall"),
+}
+
+
+def _zip_directory(directory: str, root: str) -> str:
+    """Zip `directory` recursively and return the archive base64-encoded.
+
+    Entry names are relative to `root`: passing the directory itself puts its
+    contents at the archive root, passing the parent keeps the directory as the
+    archive's single top-level entry.
+    """
+    directory = os.path.normpath(directory)
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as archive:
+        for base, _, files in os.walk(directory):
+            for name in files:
+                filename = os.path.join(base, name)
+                archive.write(filename, os.path.relpath(filename, root))
+    return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+
+def _encode_extension(path: str) -> str:
+    """Return the extension at `path` as a base64-encoded archive.
+
+    A directory is zipped with its contents at the archive root, a file is read
+    as-is, and anything else is assumed to already be base64-encoded bytes.
+    """
+    if os.path.isdir(path):
+        return _zip_directory(path, root=path)
+    if os.path.isfile(path):
+        with open(path, "rb") as extension:
+            return base64.b64encode(extension.read()).decode("utf-8")
+    return path
 
 
 def import_cdp() -> None:
@@ -298,12 +360,13 @@ class WebDriver(BaseWebDriver):
 
         self._websocket_connection: WebSocketConnection | None = None
         self._script: Script | None = None
+        self._accessibility_snapshotter: AccessibilitySnapshotter | None = None
         self._network: Network | None = None
         self._browser: Browser | None = None
         self._bidi_session: Session | None = None
         self._browsing_context: BrowsingContext | None = None
         self._storage: Storage | None = None
-        self._webextension: WebExtension | None = None
+        self._webextension: BidiWebExtension | None = None
         self._permissions: Permissions | None = None
         self._emulation: Emulation | None = None
         self._input: Input | None = None
@@ -541,7 +604,7 @@ class WebDriver(BaseWebDriver):
         """Store a JavaScript script by a unique hashable ID for later execution.
 
         .. deprecated::
-            Use ``driver.script.pin()`` instead, which uses the WebDriver BiDi protocol.
+            Use ``driver.script.pin()`` instead.
 
         Example:
             `script = "return document.getElementById('foo').value"`
@@ -559,7 +622,7 @@ class WebDriver(BaseWebDriver):
         """Remove a pinned script from storage.
 
         .. deprecated::
-            Use ``driver.script.unpin()`` instead, which uses the WebDriver BiDi protocol.
+            Use ``driver.script.unpin()`` instead.
 
         Example:
             `driver.unpin(script_key)`
@@ -578,13 +641,13 @@ class WebDriver(BaseWebDriver):
         """Return a list of all pinned scripts.
 
         .. deprecated::
-            Use ``driver.script.pin()`` to manage preload scripts via the WebDriver BiDi protocol.
+            Use ``driver.script.pin()`` instead.
 
         Example:
             `pinned_scripts = driver.get_pinned_scripts()`
         """
         warnings.warn(
-            "get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead",
+            "get_pinned_scripts is deprecated, use driver.script.pin() instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -689,6 +752,47 @@ class WebDriver(BaseWebDriver):
         """Invokes the window manager-specific 'minimize' operation."""
         self.execute(Command.MINIMIZE_WINDOW)
 
+    def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
+        """Snapshot the accessibility tree of the page.
+
+        The tree is computed in the page from the DOM, following WAI-ARIA,
+        html-aam and accname; it is not the browser's own accessibility tree.
+        It is rooted at the top-level browsing context of the current window,
+        whatever frame the driver has switched to, and every child frame's
+        tree is attached under its ``iframe`` node. To scope to a frame, take
+        ``element.accessibility_snapshot()`` of its ``iframe`` element. The
+        snapshot is a copy taken at one point in time.
+
+        Args:
+            interesting_only: With the default ``True``, elements of role
+                ``generic``, ``none`` or ``presentation`` with no name produce
+                no node and their children take their place. With ``False``
+                every rendered element produces a node, as Puppeteer's
+                ``accessibility.snapshot({interestingOnly: false})`` does.
+
+        Returns:
+            The root node, of role ``document``, named from the title.
+
+        Raises:
+            WebDriverException: When the session has no WebDriver BiDi connection.
+
+        Example:
+            >>> tree = driver.accessibility_snapshot()
+            >>> print(tree.to_text())
+            >>> tree.children[0].element.click()
+        """
+        return self._accessibility().snapshot(None, interesting_only)
+
+    def _accessibility(self) -> AccessibilitySnapshotter:
+        if not self.caps.get("webSocketUrl"):
+            raise WebDriverException(
+                "accessibility_snapshot() requires a WebDriver BiDi session; "
+                "enable it with options.enable_bidi = True before starting the driver"
+            )
+        if self._accessibility_snapshotter is None:
+            self._accessibility_snapshotter = AccessibilitySnapshotter(self)
+        return self._accessibility_snapshotter
+
     def print_page(self, print_options: PrintOptions | None = None) -> str:
         """Takes PDF of the current page.
 
@@ -733,7 +837,7 @@ class WebDriver(BaseWebDriver):
         """Refreshes the current page."""
         self.execute(Command.REFRESH)
 
-    def get_cookies(self) -> list[dict]:
+    def get_cookies(self) -> list[dict[str, Any]]:
         """Get all cookies visible to the current WebDriver instance.
 
         Returns:
@@ -932,17 +1036,23 @@ class WebDriver(BaseWebDriver):
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
-            _pkg = ".".join(__name__.split(".")[:-1])
-            raw_data = pkgutil.get_data(_pkg, "findElements.js")
-            if raw_data is None:
-                raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
-            raw_function = raw_data.decode("utf8")
-            find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
-            return self.execute_script(find_element_js, by.to_dict())
+            return self._find_elements_relative(by)
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
         return self.execute(Command.FIND_ELEMENTS, {"using": by, "value": value})["value"] or []
+
+    def _find_elements_relative(self, by: RelativeBy, root: WebElement | ShadowRoot | None = None) -> list[WebElement]:
+        """Find elements with a relative locator, searching from root, or the document when root is None."""
+        _pkg = ".".join(__name__.split(".")[:-1])
+        raw_data = pkgutil.get_data(_pkg, "findElements.js")
+        if raw_data is None:
+            raise FileNotFoundError(f"Could not find findElements.js in package {_pkg}")
+        raw_function = raw_data.decode("utf8")
+        find_element_js = f"/* findElements */return ({raw_function}).apply(null, arguments);"
+        if root is None:
+            return self.execute_script(find_element_js, by.to_dict())
+        return self.execute_script(find_element_js, by.to_dict(), root)
 
     @property
     def capabilities(self) -> dict:
@@ -1170,11 +1280,7 @@ class WebDriver(BaseWebDriver):
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         if not isinstance(self.command_executor, RemoteConnection):
             raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
-        self._websocket_connection = WebSocketConnection(
-            ws_url,
-            self.command_executor.client_config.websocket_timeout,
-            self.command_executor.client_config.websocket_interval,
-        )
+        self._websocket_connection = WebSocketConnection(ws_url, self.command_executor.client_config.websocket_timeout)
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
         for target in targets:
             if target.target_id == self.current_window_handle:
@@ -1214,11 +1320,21 @@ class WebDriver(BaseWebDriver):
 
     @property
     def script(self) -> Script:
+        """Pinned scripts, script execution and console, error and DOM-mutation handlers.
+
+        Returns:
+            The session's ``Script`` object.
+
+        Examples:
+            `total = driver.script.execute("(a, b) => a + b", 1, 2)`
+            `pinned = driver.script.pin("() => { window.helper = () => 42 }")`
+            `handler_id = driver.script.add_console_handler(messages.append)`
+        """
         if not self._websocket_connection:
             self._start_bidi()
 
         if not self._script:
-            self._script = Script(self._websocket_connection, self)
+            self._script = Script(BidiScript(self._websocket_connection, self), self)
 
         return self._script
 
@@ -1231,11 +1347,7 @@ class WebDriver(BaseWebDriver):
         if not isinstance(self.command_executor, RemoteConnection):
             raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
 
-        self._websocket_connection = WebSocketConnection(
-            ws_url,
-            self.command_executor.client_config.websocket_timeout,
-            self.command_executor.client_config.websocket_interval,
-        )
+        self._websocket_connection = WebSocketConnection(ws_url, self.command_executor.client_config.websocket_timeout)
 
     @property
     def network(self) -> Network:
@@ -1352,24 +1464,170 @@ class WebDriver(BaseWebDriver):
         return self._permissions
 
     @property
-    def webextension(self) -> WebExtension:
+    def webextension(self) -> BidiWebExtension:
         """Get a webextension module object for BiDi webextension commands.
+
+        .. deprecated::
+            Use ``driver.install_web_extension()`` and
+            ``driver.uninstall_web_extension()`` instead.
 
         Returns:
             An object containing access to BiDi webextension commands.
-
-        Examples:
-            `extension_path = "/path/to/extension"`
-            `extension_result = driver.webextension.install(path=extension_path)`
-            `driver.webextension.uninstall(extension_result)`
         """
+        warnings.warn(
+            "driver.webextension is deprecated, use driver.install_web_extension() "
+            "and driver.uninstall_web_extension() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not self._websocket_connection:
             self._start_bidi()
 
         if self._webextension is None:
-            self._webextension = WebExtension(self._websocket_connection)
+            self._webextension = BidiWebExtension(self._websocket_connection)
 
         return self._webextension
+
+    def install_web_extension(
+        self,
+        path: str,
+        *,
+        permanent: bool | None = None,
+        allow_private_browsing: bool | None = None,
+    ) -> WebExtension:
+        """Install a web extension into the running session.
+
+        Args:
+            path: An unpacked extension directory, a packed extension archive
+                (`.xpi`, `.crx` or `.zip`), or the base64-encoded bytes of such
+                an archive. Chromium installs unpacked directories only.
+            permanent: Firefox only. Install the extension permanently rather
+                than for the lifetime of the session. When omitted, the default
+                depends on the protocol: BiDi installs temporarily, while the
+                WebDriver-Classic fallback installs permanently. Firefox installs
+                only a packed, signed extension permanently; a directory is
+                rejected.
+            allow_private_browsing: Firefox only. Let the extension run in
+                private browsing windows. On Android it additionally requires
+                `permanent=True`.
+
+        Returns:
+            A `WebExtension` wrapping the id the browser assigned. Pass it to
+            `uninstall_web_extension` to remove the extension again.
+
+        Raises:
+            ValueError: If a Firefox-only option is given for another browser.
+            WebDriverException: If the session cannot install extensions, such as
+                a Chromium session started without BiDi.
+
+        Example:
+            extension = driver.install_web_extension("/path/to/extension")
+            driver.uninstall_web_extension(extension)
+        """
+        options: dict[str, Any] = {"permanent": permanent, "allow_private_browsing": allow_private_browsing}
+        options = {name: value for name, value in options.items() if value is not None}
+        if options and not self._is_firefox():
+            raise ValueError(
+                f"{', '.join(sorted(options))} is only supported on Firefox, not {self.caps.get('browserName')}"
+            )
+
+        if not self._bidi_enabled():
+            if self._is_firefox():
+                return WebExtension(self._install_addon_over_classic(path, **options))
+            raise WebDriverException(
+                f"Installing a web extension on {self.caps.get('browserName')} needs a WebDriver BiDi session; "
+                "enable it with `options.enable_bidi = True`."
+            )
+
+        # The generated vendor arguments carry the namespace the wire keys spell as
+        # `moz:permanent` / `moz:allowPrivateBrowsing`, so the classic names map straight over.
+        vendor = {f"moz_{name}": value for name, value in options.items()}
+        result = WebExtensionProtocol(self).install(self._web_extension_data(path), **vendor)
+        return WebExtension(result.extension)
+
+    def uninstall_web_extension(self, extension: WebExtension) -> None:
+        """Uninstall a web extension installed with `install_web_extension`.
+
+        Args:
+            extension: The `WebExtension` returned by `install_web_extension`.
+
+        Raises:
+            TypeError: If something other than a `WebExtension` is given.
+            WebDriverException: If the session cannot uninstall extensions, such
+                as a Chromium session started without BiDi.
+        """
+        if not isinstance(extension, WebExtension):
+            raise TypeError(
+                "uninstall_web_extension takes the WebExtension returned by "
+                f"install_web_extension, not {type(extension).__name__}"
+            )
+
+        if not self._bidi_enabled():
+            if self._is_firefox():
+                self._register_classic_addon_commands()
+                self.execute("UNINSTALL_ADDON", {"id": extension.id})
+                return
+            raise WebDriverException(
+                f"Uninstalling a web extension on {self.caps.get('browserName')} needs a WebDriver BiDi session; "
+                "enable it with `options.enable_bidi = True`."
+            )
+
+        WebExtensionProtocol(self).uninstall(extension.id)
+
+    def _bidi_enabled(self) -> bool:
+        return bool(self.caps.get("webSocketUrl"))
+
+    def _is_firefox(self) -> bool:
+        return self.caps.get("browserName", "").lower() == "firefox"
+
+    def _web_extension_data(self, path: str) -> ExtensionDataValue:
+        """Resolve `path` into the `webExtension.install` extension data for it."""
+        if not os.path.isdir(path):
+            return ExtensionBase64Encoded(value=_encode_extension(path))
+        # A directory only resolves on the machine running the browser, so a remote session
+        # uploads it first and installs from the path the remote end hands back.
+        return ExtensionPath(path=self._upload_web_extension(path) if self._is_remote else path)
+
+    def _upload_web_extension(self, directory: str) -> str:
+        """Upload `directory` to the remote end and return the path it unpacked to."""
+        archive = _zip_directory(directory, root=os.path.dirname(os.path.normpath(directory)))
+        try:
+            return self.execute(Command.UPLOAD_FILE, {"file": archive})["value"]
+        except WebDriverException as e:
+            if _is_unsupported_command(str(e)):
+                raise WebDriverException(
+                    "Could not upload the extension directory to the remote end. Installing an "
+                    "unpacked extension over a remote session needs a remote end that accepts "
+                    "file uploads, such as the Selenium Grid."
+                ) from e
+            raise
+
+    def _register_classic_addon_commands(self) -> None:
+        """Teach the command executor the Firefox-classic addon endpoints.
+
+        `webdriver.Firefox` registers these in its own connection, but a Grid session
+        driven through `webdriver.Remote` uses the plain one, which does not have them.
+        """
+        executor = cast(RemoteConnection, self.command_executor)
+        for name, (method, url) in _FIREFOX_ADDON_COMMANDS.items():
+            if executor.get_command(name) is None:
+                executor.add_command(name, method, url)
+
+    def _install_addon_over_classic(
+        self,
+        path: str,
+        permanent: bool | None = None,
+        allow_private_browsing: bool | None = None,
+    ) -> str:
+        """Install through the Firefox-classic endpoint and return the extension id."""
+        payload: dict[str, Any] = {"addon": _encode_extension(path)}
+        if permanent is not None:
+            payload["temporary"] = not permanent
+        if allow_private_browsing is not None:
+            payload["allowPrivateBrowsing"] = allow_private_browsing
+        logger.debug("Installing web extension over the WebDriver-Classic endpoint")
+        self._register_classic_addon_commands()
+        return self.execute("INSTALL_ADDON", payload)["value"]
 
     @property
     def emulation(self) -> Emulation:

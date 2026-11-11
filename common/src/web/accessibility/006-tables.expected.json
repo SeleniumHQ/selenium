@@ -1,0 +1,181 @@
+{
+  "role": "document",
+  "name": "Tables",
+  "description": "",
+  "states": {},
+  "element": "root",
+  "children": [
+    {
+      "role": "table",
+      "name": "Scores",
+      "description": "",
+      "states": {},
+      "element": "table",
+      "children": [
+        {
+          "role": "caption",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "caption",
+          "children": [
+            {
+              "role": "text",
+              "name": "Scores",
+              "description": "",
+              "states": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "role": "rowgroup",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "thead",
+          "children": [
+            {
+              "role": "row",
+              "name": "Name Score",
+              "description": "",
+              "states": {},
+              "element": "hrow",
+              "children": [
+                {
+                  "role": "columnheader",
+                  "name": "Name",
+                  "description": "",
+                  "states": {},
+                  "element": "th1",
+                  "children": []
+                },
+                {
+                  "role": "columnheader",
+                  "name": "Score",
+                  "description": "",
+                  "states": {},
+                  "element": "th2",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "role": "rowgroup",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "tbody",
+          "children": [
+            {
+              "role": "row",
+              "name": "Ada 10",
+              "description": "",
+              "states": {},
+              "element": "row1",
+              "children": [
+                {
+                  "role": "rowheader",
+                  "name": "Ada",
+                  "description": "",
+                  "states": {},
+                  "element": "rh1",
+                  "children": []
+                },
+                {
+                  "role": "cell",
+                  "name": "10",
+                  "description": "",
+                  "states": {},
+                  "element": "c1",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "role": "row",
+              "name": "Grace 9",
+              "description": "",
+              "states": {},
+              "element": "row2",
+              "children": [
+                {
+                  "role": "rowheader",
+                  "name": "Grace",
+                  "description": "",
+                  "states": {},
+                  "element": "rh2",
+                  "children": []
+                },
+                {
+                  "role": "cell",
+                  "name": "9",
+                  "description": "",
+                  "states": {},
+                  "element": "c2",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "grid",
+      "name": "",
+      "description": "",
+      "states": {},
+      "element": "grid",
+      "children": [
+        {
+          "role": "rowgroup",
+          "name": "",
+          "description": "",
+          "states": {},
+          "element": "grid-body",
+          "children": [
+            {
+              "role": "row",
+              "name": "A B",
+              "description": "",
+              "states": {
+                "selected": true
+              },
+              "element": "grid-row",
+              "children": [
+                {
+                  "role": "gridcell",
+                  "name": "A",
+                  "description": "",
+                  "states": {},
+                  "element": "grid-cell",
+                  "children": []
+                },
+                {
+                  "role": "gridcell",
+                  "name": "B",
+                  "description": "",
+                  "states": {
+                    "selected": false
+                  },
+                  "element": "grid-cell-2",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "text",
+      "name": "Just layout",
+      "description": "",
+      "states": {},
+      "children": []
+    }
+  ]
+}

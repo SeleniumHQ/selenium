@@ -78,13 +78,14 @@ public class JdkHttpClient implements HttpClient {
   private static final AtomicInteger POOL_COUNTER = new AtomicInteger(0);
   private final JdkHttpMessages messages;
   private final HttpHandler handler;
+  private final HttpClient.Factory factory;
   private java.net.http.HttpClient client;
   private final List<WebSocket> websockets;
   private final ExecutorService executorService;
   private final Duration readTimeout;
   private final Duration connectTimeout;
 
-  JdkHttpClient(ClientConfig config) {
+  JdkHttpClient(HttpClient.Factory factory, ClientConfig config) {
     Objects.requireNonNull(config, "Client config must be set");
 
     this.messages = new JdkHttpMessages(config);
@@ -96,12 +97,11 @@ public class JdkHttpClient implements HttpClient {
     String poolName = "JdkHttpClient-" + POOL_COUNTER.getAndIncrement();
     AtomicInteger threadCounter = new AtomicInteger(0);
     executorService =
-        Executors.newCachedThreadPool(
-            r -> {
-              Thread thread = new Thread(r, poolName + "-" + threadCounter.getAndIncrement());
-              thread.setDaemon(true);
-              return thread;
-            });
+        Executors.newCachedThreadPool(r -> {
+          Thread thread = new Thread(r, poolName + "-" + threadCounter.getAndIncrement());
+          thread.setDaemon(true);
+          return thread;
+        });
 
     java.net.http.HttpClient.Builder builder =
         java.net.http.HttpClient.newBuilder()
@@ -146,6 +146,7 @@ public class JdkHttpClient implements HttpClient {
       builder.version(Version.valueOf(version));
     }
 
+    this.factory = factory;
     this.client = builder.build();
   }
 
@@ -393,28 +394,26 @@ public class JdkHttpClient implements HttpClient {
 
     // the actual http request
     Future<?> future =
-        executorService.submit(
-            () -> {
-              try {
-                HttpResponse response = handler.execute(request);
+        executorService.submit(() -> {
+          try {
+            HttpResponse response = handler.execute(request);
 
-                cf.complete(response);
-              } catch (Throwable t) {
-                cf.completeExceptionally(t);
-              }
-            });
-
-    cf.whenComplete(
-        (result, throwable) -> {
-          if (throwable instanceof java.util.concurrent.CancellationException) {
-            // try to interrupt the http request in case someone canceled the future returned
-            future.cancel(true);
-          } else if (throwable instanceof java.util.concurrent.TimeoutException) {
-            // try to interrupt the http request in case of a timeout, to avoid
-            // https://bugs.openjdk.org/browse/JDK-8258397
-            future.cancel(true);
+            cf.complete(response);
+          } catch (Throwable t) {
+            cf.completeExceptionally(t);
           }
         });
+
+    cf.whenComplete((result, throwable) -> {
+      if (throwable instanceof java.util.concurrent.CancellationException) {
+        // try to interrupt the http request in case someone canceled the future returned
+        future.cancel(true);
+      } else if (throwable instanceof java.util.concurrent.TimeoutException) {
+        // try to interrupt the http request in case of a timeout, to avoid
+        // https://bugs.openjdk.org/browse/JDK-8258397
+        future.cancel(true);
+      }
+    });
 
     // will complete exceptionally with a java.util.concurrent.TimeoutException
     return cf.orTimeout(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
@@ -562,14 +561,13 @@ public class JdkHttpClient implements HttpClient {
     return response
         .headers()
         .firstValue("location")
-        .orElseThrow(
-            () -> {
-              String message =
-                  String.format(
-                      "HTTP response with status %d but without \"location\" header (%s %s)",
-                      response.statusCode(), method, maskUrlCredentials(uri));
-              return new ProtocolException(message);
-            });
+        .orElseThrow(() -> {
+          String message =
+              String.format(
+                  "HTTP response with status %d but without \"location\" header (%s %s)",
+                  response.statusCode(), method, maskUrlCredentials(uri));
+          return new ProtocolException(message);
+        });
   }
 
   @Override
@@ -588,17 +586,17 @@ public class JdkHttpClient implements HttpClient {
 
     if (this.client instanceof AutoCloseable) {
       AutoCloseable closeable = (AutoCloseable) this.client;
-      executorService.submit(
-          () -> {
-            try {
-              closeable.close();
-            } catch (Exception e) {
-              LOG.log(Level.WARNING, "failed to close the http client: " + closeable, e);
-            }
-          });
+      executorService.submit(() -> {
+        try {
+          closeable.close();
+        } catch (Exception e) {
+          LOG.log(Level.WARNING, "failed to close the http client: " + closeable, e);
+        }
+      });
     }
     this.client = null;
     executorService.shutdown();
+    this.factory.cleanupIdleClients();
   }
 
   @AutoService(HttpClient.Factory.class)
@@ -608,7 +606,7 @@ public class JdkHttpClient implements HttpClient {
     @Override
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config must be set");
-      return new JdkHttpClient(config);
+      return new JdkHttpClient(this, config);
     }
   }
 

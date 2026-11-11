@@ -102,11 +102,10 @@ public class KubernetesOptions {
     String imagePullPolicy =
         config
             .get(K8S_SECTION, "image-pull-policy")
-            .orElseGet(
-                () ->
-                    inheritedPodSpec.getImagePullPolicy() != null
-                        ? inheritedPodSpec.getImagePullPolicy()
-                        : DEFAULT_IMAGE_PULL_POLICY);
+            .orElseGet(() ->
+                inheritedPodSpec.getImagePullPolicy() != null
+                    ? inheritedPodSpec.getImagePullPolicy()
+                    : DEFAULT_IMAGE_PULL_POLICY);
 
     String serviceAccount =
         config
@@ -147,7 +146,8 @@ public class KubernetesOptions {
         throw new ConfigException("Unable to find JSON config for: " + configKey);
       }
       Capabilities caps =
-          options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
+          options.enhanceStereotype(
+              parseStereotype(allConfigs.get(i), "kubernetes config '" + configKey + "'"));
 
       if (configKey.startsWith(CONFIGMAP_PREFIX)) {
         // Template mode: load Job template from ConfigMap
@@ -293,11 +293,8 @@ public class KubernetesOptions {
 
     boolean hasBrowserContainer =
         containers.stream()
-            .anyMatch(
-                c ->
-                    "browser".equals(c.getName())
-                        && c.getImage() != null
-                        && !c.getImage().isEmpty());
+            .anyMatch(c ->
+                "browser".equals(c.getName()) && c.getImage() != null && !c.getImage().isEmpty());
     if (!hasBrowserContainer) {
       throw new ConfigException(
           String.format(
@@ -328,21 +325,20 @@ public class KubernetesOptions {
     // in-cluster service account namespace file, and KUBERNETES_NAMESPACE env var.
     return config
         .get(K8S_SECTION, "namespace")
-        .orElseGet(
-            () -> {
-              if (kubeClient != null) {
-                try {
-                  String clientNamespace = kubeClient.getNamespace();
-                  if (clientNamespace != null && !clientNamespace.isEmpty()) {
-                    LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
-                    return clientNamespace;
-                  }
-                } catch (RuntimeException e) {
-                  LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
-                }
+        .orElseGet(() -> {
+          if (kubeClient != null) {
+            try {
+              String clientNamespace = kubeClient.getNamespace();
+              if (clientNamespace != null && !clientNamespace.isEmpty()) {
+                LOG.info("Auto-detected K8s namespace from client: " + clientNamespace);
+                return clientNamespace;
               }
-              return "default";
-            });
+            } catch (RuntimeException e) {
+              LOG.warning("Failed to read namespace from Kubernetes client: " + e.getMessage());
+            }
+          }
+          return "default";
+        });
   }
 
   private Duration getServerStartTimeout() {
@@ -545,5 +541,14 @@ public class KubernetesOptions {
       }
     }
     return result;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

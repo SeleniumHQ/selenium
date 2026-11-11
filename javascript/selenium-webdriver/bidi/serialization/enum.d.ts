@@ -15,16 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-export interface EnumEntry<T extends string> {
+export interface EnumEntry<T extends string | number | boolean> {
   readonly values: readonly T[]
   includes(value: unknown): value is T
 }
 
 /**
- * Registers a schema `enum` — a closed set of string values a field may hold.
+ * Registers a schema `enum` — a closed set of string, number, or boolean values a
+ * field may hold (e.g. emulation.MediaFeaturesGrid, CSS's `grid` media feature, is
+ * spec'd as the integer 0 or 1, not a string; the schema projector's literalPrimitive()
+ * recognizes a boolean-literal choice the same way).
  * @param name Schema type name, e.g. 'network.InterceptPhase'.
  * @param values The enum's valid values.
  * @returns The registered entry, used by validateValue() to check a ref'd value's
  *   membership; also returned so a generator can build a discoverable constant from it.
  */
-export function defineEnum<T extends string>(name: string, values: readonly T[]): EnumEntry<T>
+export function defineEnum<T extends string | number | boolean>(name: string, values: readonly T[]): EnumEntry<T>
