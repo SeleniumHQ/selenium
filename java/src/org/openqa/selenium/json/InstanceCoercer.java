@@ -265,6 +265,9 @@ class InstanceCoercer extends TypeCoercer<Object> {
      * accessibility problems to invocation time just as reflective calls always have.
      */
     private static @Nullable BiConsumer<Object, Object> compileSetter(Method method) {
+      if (!SimplePropertyDescriptor.isLinkableFromSelenium(method)) {
+        return null;
+      }
       try {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         MethodHandle handle = lookup.unreflect(method);

@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 
@@ -55,39 +56,61 @@ class JsonTypeCoercer {
    * class loaders) remain eligible for garbage collection — important for callers that deserialize
    * into dynamically generated classes, since {@link Json} shares a single coercer for the life of
    * the JVM.
+   *
+   * <p>Only the shared coercer uses it. The cached functions refer back to their coercer, and so to
+   * this {@code ClassValue}, which keeps an entry stored on a class that is never unloaded (such as
+   * {@code Object} or {@code Map}) alive forever (JDK-8136353). Other coercers, created with extra
+   * coercers, cache in {@link #knownCoercers} instead, which is freed along with them.
    */
-  private final ClassValue<BiFunction<JsonInput, PropertySetting, Object>> classCoercers =
-      new ClassValue<BiFunction<JsonInput, PropertySetting, Object>>() {
-        @Override
-        protected BiFunction<JsonInput, PropertySetting, Object> computeValue(Class<?> type) {
-          return buildCoercer(type);
-        }
-      };
+  private final @Nullable ClassValue<BiFunction<JsonInput, PropertySetting, Object>> classCoercers;
 
   /**
    * Cache of resolved coercion functions for parameterized types passed directly to {@link #coerce}
-   * — in practice, the handful of {@link TypeToken} constants in the codebase. Unlike {@link
-   * #classCoercers}, entries here live as long as this coercer does, so the map is capped: if a
-   * caller funnels many distinct types through it (say, types built around generated classes), it
-   * is cleared rather than allowed to pin those classes forever.
+   * — in practice, the handful of {@link TypeToken} constants in the codebase — and, for coercers
+   * that don't use {@link #classCoercers}, for classes too. Unlike {@link #classCoercers}, entries
+   * here live as long as this coercer does, so the map is capped: if a caller funnels many distinct
+   * types through it (say, types built around generated classes), it is cleared rather than allowed
+   * to pin those classes forever.
    */
-  private static final int MAX_CACHED_GENERIC_TYPES = 256;
+  private static final int MAX_CACHED_TYPES = 1024;
 
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers =
       new ConcurrentHashMap<>();
 
   JsonTypeCoercer() {
-    this(Stream.of());
+    this(Stream.of(), false);
   }
 
   JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
     this(
         Stream.concat(
             StreamSupport.stream(coercers.spliterator(), false),
-            coercer.additionalCoercers.stream()));
+            coercer.additionalCoercers.stream()),
+        false);
   }
 
-  private JsonTypeCoercer(Stream<TypeCoercer<?>> coercers) {
+  /**
+   * Create the coercer shared for the life of the JVM, which caches coercion functions for classes
+   * on the classes themselves.
+   */
+  static JsonTypeCoercer createShared() {
+    return new JsonTypeCoercer(Stream.of(), true);
+  }
+
+  boolean hasAdditionalCoercers() {
+    return !additionalCoercers.isEmpty();
+  }
+
+  private JsonTypeCoercer(Stream<TypeCoercer<?>> coercers, boolean shared) {
+    this.classCoercers =
+        shared
+            ? new ClassValue<BiFunction<JsonInput, PropertySetting, Object>>() {
+              @Override
+              protected BiFunction<JsonInput, PropertySetting, Object> computeValue(Class<?> type) {
+                return buildCoercer(type);
+              }
+            }
+            : null;
     this.additionalCoercers =
         coercers.collect(collectingAndThen(toSet(), Collections::unmodifiableSet));
 
@@ -134,23 +157,23 @@ class JsonTypeCoercer {
             Capabilities.class,
             this,
             MutableCapabilities::new,
-            (caps) -> ((k, v) -> caps.setCapability((String) k, v))));
+            caps -> ((k, v) -> caps.setCapability((String) k, v))));
 
     // Container types
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, (list) -> list::add));
+    builder.add(new CollectionCoercer<>(List.class, this, ArrayList::new, list -> list::add));
     //noinspection unchecked
-    builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, (set) -> set::add));
+    builder.add(new CollectionCoercer<>(Set.class, this, HashSet::new, set -> set::add));
     //noinspection unchecked
     builder.add(
         new CollectionCoercer<>(
-            Collection.class, this, ArrayList::new, (collection) -> collection::add));
+            Collection.class, this, ArrayList::new, collection -> collection::add));
 
     builder.add(new OptionalCoercer(this));
 
     builder.add(new StaticInitializerCoercer());
 
-    builder.add(new MapCoercer<>(Map.class, this, LinkedHashMap::new, (map) -> map::put));
+    builder.add(new MapCoercer<>(Map.class, this, LinkedHashMap::new, map -> map::put));
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
@@ -179,7 +202,7 @@ class JsonTypeCoercer {
    * @return {@link BiFunction} object to deserialize the specified Java type
    */
   BiFunction<JsonInput, PropertySetting, Object> resolve(Type type) {
-    if (type instanceof Class) {
+    if (classCoercers != null && type instanceof Class) {
       return classCoercers.get((Class<?>) type);
     }
 
@@ -187,7 +210,7 @@ class JsonTypeCoercer {
     // computeIfAbsent would allocate on every call.
     BiFunction<JsonInput, PropertySetting, Object> coercer = knownCoercers.get(type);
     if (coercer == null) {
-      if (knownCoercers.size() >= MAX_CACHED_GENERIC_TYPES) {
+      if (knownCoercers.size() >= MAX_CACHED_TYPES) {
         knownCoercers.clear();
       }
       coercer = knownCoercers.computeIfAbsent(type, this::buildCoercer);

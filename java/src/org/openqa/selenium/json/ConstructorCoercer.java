@@ -162,7 +162,9 @@ class ConstructorCoercer extends TypeCoercer<Object> {
   }
 
   private Object coerceValue(Object value, Type type, PropertySetting setting) {
-    if (value != null && type instanceof Class) {
+    // Extra coercers may handle scalars differently (BiDi's strict coercers reject a number for a
+    // String, for example), so only the built-in coercers can be bypassed.
+    if (value != null && type instanceof Class && !coercer.hasAdditionalCoercers()) {
       Object direct = tryDirectCoercion(value, (Class<?>) type);
       if (direct != null) {
         return direct;

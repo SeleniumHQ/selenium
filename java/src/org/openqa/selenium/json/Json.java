@@ -116,7 +116,7 @@ public class Json {
    * single shared instance lets that cache accumulate across the many short-lived {@code Json}
    * instances created throughout the codebase.
    */
-  private static final JsonTypeCoercer DEFAULT_COERCER = new JsonTypeCoercer();
+  private static final JsonTypeCoercer DEFAULT_COERCER = JsonTypeCoercer.createShared();
 
   /** Strings longer than this are parsed through a {@link StringReader} instead of copied. */
   private static final int MAX_DIRECT_PARSE_LENGTH = 1024 * 1024;

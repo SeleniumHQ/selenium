@@ -707,10 +707,14 @@ public class JsonInput implements Closeable {
   @SuppressWarnings("unchecked")
   public <T> List<T> readArray(Type type) {
     List<T> toReturn = new ArrayList<>();
-    BiFunction<JsonInput, PropertySetting, Object> elementCoercer = coercer.resolve(type);
+    BiFunction<JsonInput, PropertySetting, Object> elementCoercer = null;
 
     beginArray();
     while (hasNext()) {
+      // Resolved on the first element, so an empty array never needs a coercer for its type.
+      if (elementCoercer == null) {
+        elementCoercer = coercer.resolve(type);
+      }
       toReturn.add((T) elementCoercer.apply(this, setter));
     }
     endArray();

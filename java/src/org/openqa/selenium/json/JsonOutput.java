@@ -203,13 +203,12 @@ public class JsonOutput implements Closeable {
         }
         out.beginObject();
         ((Map<?, ?>) obj)
-            .forEach(
-                (key, value) -> {
-                  if (value instanceof Optional && ((Optional<?>) value).isEmpty()) {
-                    return;
-                  }
-                  out.name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
-                });
+            .forEach((key, value) -> {
+              if (value instanceof Optional && ((Optional<?>) value).isEmpty()) {
+                return;
+              }
+              out.name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
+            });
         out.endObject();
       };
     }
