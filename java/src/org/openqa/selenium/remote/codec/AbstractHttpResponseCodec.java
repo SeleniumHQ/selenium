@@ -20,15 +20,12 @@ package org.openqa.selenium.remote.codec;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Objects.requireNonNullElse;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.http.HttpHeader;
@@ -40,7 +37,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
 public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpResponse> {
-  private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
 
   /**
@@ -51,8 +47,9 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
    */
   @Override
   public HttpResponse encode(Supplier<HttpResponse> factory, Response response) {
-    int responseStatus = requireNonNullElse(response.getStatus(), 0);
-    int status = responseStatus == ErrorCodes.SUCCESS ? HTTP_OK : HTTP_INTERNAL_ERROR;
+    // A response with no state has always been encoded as a success.
+    String state = response.getState();
+    int status = state == null || "success".equals(state) ? HTTP_OK : HTTP_INTERNAL_ERROR;
 
     byte[] data = json.toJson(getValueToEncode(response)).getBytes(UTF_8);
 
@@ -94,36 +91,19 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
     Response response = new Response();
     int statusCode = encodedResponse.getStatus();
-    if (statusCode < 200 || statusCode > 299) {
+    if (statusCode == HTTP_OK) {
+      response.setState("success");
+    } else if (statusCode > 399 && statusCode < 500) {
       // 4xx represents an unknown command or a bad request.
-      if (statusCode > 399 && statusCode < 500) {
-        response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
-      } else {
-        response.setStatus(ErrorCodes.UNHANDLED_ERROR);
-      }
+      response.setState("unknown command");
+    } else if (statusCode < 200 || statusCode > 299) {
+      response.setState("unknown error");
     }
 
     if (!content.isEmpty()) {
       response.setValue(content);
     }
 
-    Integer status = response.getStatus();
-    String state = response.getState();
-
-    if (status != null && state == null) {
-      response.setState(errorCodes.toState(status));
-    } else if (status == null && state != null) {
-      response.setStatus(errorCodes.toStatus(state, Optional.of(encodedResponse.getStatus())));
-    } else if (statusCode == 200) {
-      response.setStatus(ErrorCodes.SUCCESS);
-      response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
-    }
-
-    if (status != null) {
-      response.setState(errorCodes.toState(status));
-    } else if (statusCode == 200) {
-      response.setState(errorCodes.toState(ErrorCodes.SUCCESS));
-    }
     return response;
   }
 
