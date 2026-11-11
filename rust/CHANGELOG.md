@@ -1,3 +1,49 @@
+0.4.52
+======
+* stop resolving a Java runtime on --grid so the jar lookup no longer depends on a JRE download (#18157)
+* Update Selenium Manager dependencies (#18202)
+* Remove fs2 crate and use standard mechanism for file lock (#18203)
+* Use sevenz_rust2 create instead of sevenz_rust (unmaintained) (#18204)
+* return the cached artifact once the lock is held instead of re-downloading (#18206)
+* Validate TLS certificates in Selenium Manager HTTP client (#18220)
+* Add opt-in insecure mode to Selenium Manager (#18222)
+* Create Selenium Manager HTTP client on first use and explain TLS certificate errors (#18224)
+
+0.4.51
+======
+* Degrade to empty metadata when the cache cannot be read (#18101)
+* configure the Chrome sandbox after unpacking a Chrome for Testing build on Windows (#18139)
+
+0.4.50
+======
+* Show a proper error message if we can't open metdata_path (#18087)
+
+0.4.49
+======
+* fix Windows architecture detection under WOW64 (#17987)
+* Add license and notice links to Selenium Manager help (#17986)
+* Add support for Chrome arm64 on Linux (#17915)
+
+0.4.48
+======
+* Honour the `DO_NOT_TRACK` env var (#17931)
+
+0.4.47
+======
+* honor --browser-version in Selenium Manager Electron driver resolution (#17567)
+* locate Chrome and Edge in known install directories (#17838)
+* Prevent empty driver version from being cached in metadata (#17757)
+* Test Selenium Manager on Linux arm64 (#16045)
+
+0.4.46
+======
+* [build] Automated Browser Version Update (#17687)
+* Support pbzx-compressed macOS .pkg payloads (#17691)
+* Use PKG again for Firefox macOS downloads (#17702)
+* [selenium-manager]: do not ignore browser path when version is specified (#17659)
+* Support multiple names for Firefox binary in Linux (#17695)
+* Prevent path traversal in tar and pkg extraction (#17668). Reported by @Encrypter-404
+
 0.4.45
 ======
 * update reqwest to 0.13 (#17488)

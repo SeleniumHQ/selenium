@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -260,6 +261,65 @@ public class JsonInput implements Closeable {
    * @throws UncheckedIOException if an I/O exception is encountered
    */
   public Number nextNumber() {
+    NumberLexeme lexeme = readNumberLexeme();
+    StringBuilder text = lexeme.text;
+
+    try {
+      // Fast path for integers: Long-valued when no fraction/exponent was present.
+      if (!lexeme.isDecimal) {
+        // At most 18 digits (plus a sign) always fits in a long, so the allocation-free parse
+        // cannot overflow. Longer inputs take the String path, which reports overflow with the
+        // historical NumberFormatException message.
+        if (text.length() <= (text.charAt(0) == '-' ? 19 : 18)) {
+          return Long.parseLong(text, 0, text.length(), 10);
+        }
+        return Long.valueOf(text.toString());
+      }
+      double value = parseDouble(text);
+      if (Double.isInfinite(value) || Double.isNaN(value)) {
+        throw new JsonException("Number is out of range for a double: " + text + ". " + input);
+      }
+      return value;
+    } catch (NumberFormatException e) {
+      throw new JsonException("Unable to parse to a number: " + text + ". " + input, e);
+    }
+  }
+
+  /**
+   * Reads the next JSON number token as an exact {@link BigDecimal}, preserving the fractional and
+   * range information that {@link #nextNumber()}'s {@code double}-valued decimal/exponent path
+   * loses (a JSON integer beyond {@code double}'s 53-bit mantissa, or a decimal/exponent lexeme
+   * that happens to be a whole number, both go through that {@code double} conversion — see its own
+   * fast-path comment). Consumes the number from the stream exactly like {@link #nextNumber()}; the
+   * two are not meant to be called on the same token.
+   *
+   * @return the number's exact value as a {@link BigDecimal}
+   * @throws JsonException if the next element isn't a number, or is a syntactically valid JSON
+   *     number {@link BigDecimal} still can't represent (RFC 8259 places no bound on an exponent's
+   *     magnitude; {@code BigDecimal}'s scale is a 32-bit {@code int}, so an exponent with enough
+   *     digits overflows it)
+   * @throws UncheckedIOException if an I/O exception is encountered
+   */
+  public BigDecimal nextExactNumber() {
+    String lexeme = readNumberLexeme().text.toString();
+    try {
+      return new BigDecimal(lexeme);
+    } catch (NumberFormatException e) {
+      throw new JsonException("Unable to parse to a number: " + lexeme + ". " + input, e);
+    }
+  }
+
+  private static final class NumberLexeme {
+    final StringBuilder text;
+    final boolean isDecimal;
+
+    NumberLexeme(StringBuilder text, boolean isDecimal) {
+      this.text = text;
+      this.isDecimal = isDecimal;
+    }
+  }
+
+  private NumberLexeme readNumberLexeme() {
     expect(JsonType.NUMBER);
     StringBuilder builder = new StringBuilder();
     boolean isDecimal = false;
@@ -314,25 +374,7 @@ public class JsonInput implements Closeable {
       input.appendDigits(builder);
     }
 
-    try {
-      // Fast path for integers: Long-valued when no fraction/exponent was present.
-      if (!isDecimal) {
-        // At most 18 digits (plus a sign) always fits in a long, so the allocation-free parse
-        // cannot overflow. Longer inputs take the String path, which reports overflow with the
-        // historical NumberFormatException message.
-        if (builder.length() <= (builder.charAt(0) == '-' ? 19 : 18)) {
-          return Long.parseLong(builder, 0, builder.length(), 10);
-        }
-        return Long.valueOf(builder.toString());
-      }
-      double value = parseDouble(builder);
-      if (Double.isInfinite(value) || Double.isNaN(value)) {
-        throw new JsonException("Number is out of range for a double: " + builder + ". " + input);
-      }
-      return value;
-    } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder + ". " + input, e);
-    }
+    return new NumberLexeme(builder, isDecimal);
   }
 
   private static boolean isDigit(int c) {

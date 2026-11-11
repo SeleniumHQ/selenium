@@ -23,20 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PreferencesTest {
-
-  private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
-  private StringReader defaults;
-
-  @BeforeEach
-  public void setUp() {
-    defaults = new StringReader(emptyDefaults);
-  }
 
   @Test
   void stringifyVsStringFormat() {
@@ -50,7 +41,7 @@ class PreferencesTest {
 
   @Test
   void detectStringification() {
-    Preferences a = new Preferences(defaults);
+    Preferences a = new Preferences();
 
     assertThat(canSet(a, "\"\"")).as("Empty String").isFalse();
     assertThat(canSet(a, ("\"Julian\""))).as("Valid stringified string").isFalse();
@@ -68,7 +59,7 @@ class PreferencesTest {
   @Test
   void parsePreferences_boolean() {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
-    Preferences prefs = new Preferences(defaults, lines);
+    Preferences prefs = new Preferences(lines);
 
     assertThat(prefs.getPreference("extensions.update.notifyUser")).isEqualTo(false);
   }
@@ -76,7 +67,7 @@ class PreferencesTest {
   @Test
   void parsePreferences_integer() {
     StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
-    Preferences prefs = new Preferences(defaults, lines);
+    Preferences prefs = new Preferences(lines);
 
     assertThat(prefs.getPreference("dom.max_script_run_time")).isEqualTo(34);
   }
@@ -96,7 +87,7 @@ class PreferencesTest {
                 + "user_pref(\"print.print_command\", \""
                 + prefWithQuotes
                 + "\");");
-    Preferences prefs = new Preferences(defaults, lines);
+    Preferences prefs = new Preferences(lines);
 
     assertThat(prefs.getPreference("general.useragent.override")).isEqualTo(prefWithComma);
     assertThat(prefs.getPreference("print.print_command")).isEqualTo(prefWithQuotes);
@@ -108,21 +99,10 @@ class PreferencesTest {
         new StringReader(
             "user_pref(\"extensions.update.notifyUser\", false);\n"
                 + "user_pref(\"dom.max_script_run_time\", 32);");
-    Preferences prefs = new Preferences(defaults, lines);
+    Preferences prefs = new Preferences(lines);
 
     assertThat(prefs.getPreference("extensions.update.notifyUser")).isEqualTo(false);
     assertThat(prefs.getPreference("dom.max_script_run_time")).isEqualTo(32);
-  }
-
-  @Test
-  void canOverrideAFrozenPreferenceWithTheFrozenValue() {
-    StringReader reader =
-        new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
-    Preferences preferences = new Preferences(reader);
-
-    preferences.setPreference("frozen.pref", true);
-
-    assertThat(preferences.asMap()).containsExactly(Map.entry("frozen.pref", true));
   }
 
   @Test

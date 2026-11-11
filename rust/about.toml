@@ -1,0 +1,28 @@
+# Licenses present in the crate tree; cargo-about won't emit the NOTICE without this list.
+accepted = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "0BSD",
+    "Zlib",
+    "MPL-2.0",
+    "Unlicense",
+    "CC0-1.0",
+    "BSL-1.0",
+    "OpenSSL",
+    "CDLA-Permissive-2.0",
+    "bzip2-1.0.6",
+]
+
+ignore-dev-dependencies = true
+
+# Resolve licenses from the crates themselves; don't depend on the clearlydefined service.
+no-clearly-defined = true
+
+# ring ships a license-file rather than an SPDX expression.
+workarounds = ["ring"]

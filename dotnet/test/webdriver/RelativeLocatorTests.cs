@@ -28,7 +28,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithTagName()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("below"));
 
@@ -41,7 +41,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("bottomLeft"));
 
@@ -54,7 +54,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToFindElementsAboveAnotherWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         IWebElement lowest = Driver.FindElement(By.Id("below"));
 
@@ -67,7 +67,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFilters()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.TagName("td")).Above(By.Id("center")).RightOf(By.Id("top")));
 
@@ -78,7 +78,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFiltersWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.XPath("//td[1]")).Below(By.Id("top")).Above(By.Id("bottomLeft")));
 
@@ -89,7 +89,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldBeAbleToCombineFiltersWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(
             RelativeBy.WithLocator(By.CssSelector("td")).Above(By.Id("center")).RightOf(By.Id("top")));
@@ -101,7 +101,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithTagName()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.TagName("td")).Near(By.Id("center")));
 
@@ -121,7 +121,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithXpath()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.XPath("//td")).Near(By.Id("center")));
 
@@ -141,7 +141,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ExerciseNearLocatorWithCssSelector()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         ReadOnlyCollection<IWebElement> seen = Driver.FindElements(RelativeBy.WithLocator(By.CssSelector("td")).Near(By.Id("center")));
 
@@ -199,7 +199,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void NearLocatorShouldFindNearElements()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var rect1 = Driver.FindElement(By.Id("rect1"));
 
@@ -211,7 +211,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void NearLocatorShouldNotFindFarElements()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var rect = Driver.FindElement(By.Id("rect1"));
 
@@ -222,6 +222,56 @@ public class RelativeLocatorTests : DriverTestFixture
         }, Throws.TypeOf<NoSuchElementException>().With.Message.EqualTo("Unable to find element; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception"));
     }
 
+    [Test]
+    public void ShouldOnlySearchWithinTheContextElement()
+    {
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
+            .WithTitle("Scoped Relative Locator")
+            .WithBody(
+                "<div id='scope' style='position: absolute; left: 0; top: 0;'>",
+                "  <div id='anchor' style='position: absolute; left: 0; top: 0; width: 50px; height: 20px;'>anchor</div>",
+                "  <p id='inside' style='position: absolute; left: 0; top: 40px;'>inside</p>",
+                "</div>",
+                "<p id='outside' style='position: absolute; left: 0; top: 80px;'>outside</p>"));
+
+        IWebElement scope = Driver.FindElement(By.Id("scope"));
+        IWebElement anchor = Driver.FindElement(By.Id("anchor"));
+
+        // Both paragraphs are below the anchor, but only "inside" is within the scope element.
+        var scoped = scope.FindElements(RelativeBy.WithLocator(By.TagName("p")).Below(anchor));
+        Assert.That(scoped.Select(element => element.GetDomAttribute("id")), Is.EqualTo(new[] { "inside" }));
+
+        // The same locator from the driver is not scoped, so it sees both.
+        var fromDriver = Driver.FindElements(RelativeBy.WithLocator(By.TagName("p")).Below(anchor));
+        Assert.That(fromDriver.Select(element => element.GetDomAttribute("id")), Is.EqualTo(new[] { "inside", "outside" }));
+    }
+
+    [Test]
+    public void ShouldOnlySearchWithinTheShadowRoot()
+    {
+        Driver.Url = Urls.CreateInlinePage(new InlinePage()
+            .WithTitle("Shadow Root Relative Locator")
+            .WithBody(
+                "<div id='host' style='position: absolute; left: 0; top: 0;'></div>",
+                "<p id='outside' style='position: absolute; left: 0; top: 80px;'>outside</p>",
+                "<script>",
+                "  document.getElementById('host').attachShadow({mode: 'open'}).innerHTML =",
+                "      '<div id=\"shadow-anchor\" style=\"position: absolute; left: 0; top: 0; width: 50px; height: 20px;\">anchor</div>'",
+                "      + '<p id=\"inside\" style=\"position: absolute; left: 0; top: 40px;\">inside</p>';",
+                "</script>"));
+
+        ISearchContext shadowRoot = Driver.FindElement(By.Id("host")).GetShadowRoot();
+        IWebElement anchor = shadowRoot.FindElement(By.CssSelector("#shadow-anchor"));
+
+        var withElementAnchor = shadowRoot.FindElements(RelativeBy.WithLocator(By.TagName("p")).Below(anchor));
+        Assert.That(withElementAnchor.Select(element => element.GetDomAttribute("id")), Is.EqualTo(new[] { "inside" }));
+
+        var withLocatorAnchor = shadowRoot.FindElements(RelativeBy.WithLocator(By.TagName("p")).Below(By.Id("shadow-anchor")));
+        Assert.That(withLocatorAnchor.Select(element => element.GetDomAttribute("id")), Is.EqualTo(new[] { "inside" }));
+
+        Assert.That(shadowRoot.FindElement(RelativeBy.WithLocator(By.TagName("p")).Below(anchor)).GetDomAttribute("id"), Is.EqualTo("inside"));
+    }
+
     //------------------------------------------------------------------
     // Tests below here are not included in the Java test suite
     //------------------------------------------------------------------
@@ -229,7 +279,7 @@ public class RelativeLocatorTests : DriverTestFixture
     [Test]
     public void ShouldReturnEmptyListWhenNoElementsFound()
     {
-        Driver.Url = (Urls.WhereIs("relative_locators.html"));
+        Driver.Url = Urls.WhereIs("relative_locators.html");
 
         var elements = Driver.FindElements(RelativeBy.WithLocator(By.TagName("does-not-exist")));
 

@@ -113,8 +113,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can make window full screen', pending_if: {browser: %i[chrome edge], headless: true},
-                                        skip_if: {browser: %i[safari safari_preview], ci: :github,
+      it 'can make window full screen', pending_if: {browser_family: :chromium, headless: true},
+                                        skip_if: {browser_family: :safari, ci: :github,
                                                   reason: 'Net::ReadTimeout'} do
         window.size = old_size = Dimension.new(700, 700)
 
@@ -126,8 +126,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', flaky: {browser: %i[chrome edge], platform: :macosx, ci: :github},
-                                    pending_if: [{browser: %i[chrome edge], headless: true}] do
+      it 'can minimize the window', flaky: {browser_family: :chromium, platform: :macosx, ci: :github},
+                                    pending_if: [{browser_family: :chromium, headless: true}] do
         window.minimize
         expect {
           wait.until { driver.execute_script('return document.hidden;') }

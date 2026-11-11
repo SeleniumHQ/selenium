@@ -9,3 +9,6 @@ handle_push_trigger = true
 push_commands = [
     "/agentic_review",
 ]
+
+[agentic_review]
+extra_instructions = "Look at the guidelines in .github/pr_review.md when evaluating this PR."

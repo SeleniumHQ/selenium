@@ -44,6 +44,8 @@ module Selenium
 
         def disposition: () -> Array[untyped]?
 
+        def pending_exception_guard: () -> untyped
+
         def satisfied?: (untyped guard) -> untyped
 
         private

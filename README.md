@@ -34,8 +34,8 @@ For people looking to get started using Selenium, please check out
 our [User Manual](https://selenium.dev/documentation/) for detailed examples and descriptions, and if you
 get stuck, there are several ways to [Get Help](https://www.selenium.dev/support/).
 
-[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
-[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
+[![CI](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci.yml)
+[![CI - RBE](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml/badge.svg?event=push)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-rbe.yml)
 [![Releases downloads](https://img.shields.io/github/downloads/SeleniumHQ/selenium/total.svg)](https://github.com/SeleniumHQ/selenium/releases)
 
 ## Contributing
@@ -154,6 +154,25 @@ dependencies (e.g. `http_archive` tarballs). Both directories grow unbounded ove
 periodically if disk space matters. Keep the cache on the same filesystem as your checkouts so Bazel
 can hardlink instead of copy.
 
+Bazel also creates a separate **output base** (compiled outputs, analysis cache, and the Bazel
+server) per checkout path. Unlike the caches above, it is **not** removed when you delete a worktree —
+so frequently created and discarded worktrees leak gigabytes of stale output.
+
+On macOS/Linux, make a worktree self-cleaning by pointing its output base inside the worktree. Add
+this to that worktree's `.bazelrc.local`:
+
+```
+startup --output_base=.local/output-base
+```
+
+`.local/` is gitignored and excluded in `.bazelignore`, so removing the worktree removes its output
+base with it. The shared `--disk_cache`/`--repository_cache` above still keep downloads and action
+outputs shared across worktrees.
+
+(Windows users should instead keep `startup --output_user_root=C:/tmp` in `.bazelrc.windows.local` as
+described above, to avoid path-length limits — do not nest the output base deeper inside the repo on
+Windows.)
+
 ## Building
 
 Selenium is built using a common build tool called [Bazel](https://bazel.build/), to
@@ -252,13 +271,10 @@ There is also an auto-formatting script that can be run: `./scripts/format.sh`
 
 #### Local Installation
 
-To run Python code locally without building/installing the package, you must first install the dependencies:
+Both tasks below install into the active
+[virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments).
 
-```shell
-pip install -r py/requirements_lock.txt
-```
-
-Then, build the generated files and copy them into your local source tree:
+To run Python code locally without building/installing the package, install the dependencies and copy the generated files into your local source tree:
 
 ```shell
 ./go py:local_dev
@@ -271,11 +287,6 @@ Instead of running from source, you can build and install the selenium package (
 ```shell
 ./go py:install
 ```
-
-This will attempt to install into the global Python `site-packages` directory,
-which might not be writable. To avoid this, you should create and activate a
-[virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments)
-before installing.
 
 
 ### Ruby
@@ -312,6 +323,8 @@ There are a number of bazel configurations specific for testing.
 
 Here are examples of arguments we make use of in testing the Selenium code:
 * `--pin_browsers=false` - use Selenium Manager to locate browsers/drivers
+* `--manager=host` - compile Selenium Manager from source for the host platform instead of downloading the pinned binary (other platforms get a stub)
+* `--manager=stub` - bundle a stub in place of every Selenium Manager binary, for tests that never execute it (Linux and macOS hosts only)
 * `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
@@ -343,198 +356,7 @@ bazel test //<language>/... --test_tag_filters=this,-not-this
 If there are multiple `--test_tag_filters`, only the last one is considered,
 so be careful if also using an inherited config
 
-### Java
-
-<details>
-<summary>Click to see Java Test Commands</summary>
-
-To run unit tests:
-
-```shell
-bazel test //java/... --test_size_filters=small
-```
-To run integration tests:
-
-```shell
-bazel test //java/... --test_size_filters=medium
-```
-To run browser tests:
-
-```shell
-bazel test //java/... --test_size_filters=large --test_tag_filters=<browser>
-```
-
-To run a specific test:
-
-```shell
-bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
-```
-
-</details>
-
-### JavaScript
-
-<details>
-<summary>Click to see JavaScript Test Commands</summary>
-
-To run the tests run:
-
-```shell
-bazel test //javascript/selenium-webdriver:all
-```
-
-You can use `--test_env` to pass in the browser name as `SELENIUM_BROWSER`.
-
-```shell
-bazel test //javascript/selenium-webdriver:all --test_env=SELENIUM_BROWSER=firefox
-```
-
-</details>
-
-### Python
-
-<details>
-<summary>Click to see Python Test Commands</summary>
-
-Run unit tests with:
-```shell
-bazel test //py:unit
-```
-
-To run all tests with a specific browser:
-
-```shell
-bazel test //py:test-<browsername>
-```
-
-To run common tests with a specific browser (include BiDi tests):
-
-```shell
-bazel test //py:test-<browsername>-bidi
-```
-
-To run all Python tests:
-
-```shell
-bazel test //py:all
-```
-
-To run tests headless:
-```shell
-bazel test //py:test-<browsername> --//common:headless=true
-```
-
-
-</details>
-
-### Ruby
-
-<details>
-<summary>Click to see Ruby Test Commands</summary>
-
-Test targets:
-
-| Command                                                                          | Description                                        |
-| -------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `bazel test //rb/...`                                                            | Run unit and all integration tests                 |
-| `bazel test //rb/spec/...`                                                       | Run unit and integration tests for all browsers    |
-| `bazel test //rb/spec/... --test_size_filters small`                             | Run unit tests                                     |
-| `bazel test //rb/spec/unit/...`                                                  | Run unit tests                                     |
-| `bazel test //rb/spec/... --test_size_filters large`                             | Run integration tests for all browsers             |
-| `bazel test //rb/spec/integration/...`                                           | Run integration tests for all browsers             |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox`        | Run integration tests for every Firefox variant (local, remote, beta, bidi) |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox-local`  | Run integration tests for local Firefox only                                |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote` | Run integration tests for remote Firefox only                               |
-| `bazel test //rb/spec/integration/... --test_tag_filters bidi`           | Run bidi-mode tests across every browser that supports BiDi                 |
-
-All unit specs run as a single target, `//rb/spec/unit:unit`.
-
-Integration test targets have the same name as the spec file with `_spec.rb` removed, plus a
-browser-variant suffix to control which browser to pick and whether to use Grid or BiDi
-(e.g. `-chrome`, `-chrome-remote`, `-chrome-beta-bidi`), so you can run them individually.
-
-| Test file                                               | Test target                                                      |
-| ------------------------------------------------------- | ---------------------------------------------------------------- |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`         |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`  |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox`        |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox-remote` |
-
-Supported browsers:
-
-* `chrome`
-* `edge`
-* `firefox`
-* `firefox-beta`
-* `ie`
-* `safari`
-* `safari-preview`
-
-In addition to the [Common Options Examples](#common-options-examples), here are some additional Ruby specific ones:
-* `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
-* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//bin:rspec -- --help`)
-
-Supported environment variables for use with `--test_env`:
-
-- `WD_SPEC_DRIVER` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
-- `WD_REMOTE_BROWSER` - when `WD_SPEC_DRIVER` is `remote`; the name of the browser to test (gets set by Bazel)
-- `WD_REMOTE_URL` - URL of an already running server to use for remote tests
-- `DOWNLOAD_SERVER` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
-- `DEBUG` - turns on verbose debugging
-- `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
-- `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
-- `CHROME_BINARY` - path to test specific Chrome browser
-- `CHROMEDRIVER_BINARY` - path to test specific ChromeDriver
-- `EDGE_BINARY` - path to test specific Edge browser
-- `MSEDGEDRIVER_BINARY` - path to test specific msedgedriver
-- `FIREFOX_BINARY` - path to test specific Firefox browser
-- `GECKODRIVER_BINARY` - path to test specific GeckoDriver
-
-To run with a specific version of Ruby you can change the version in `rb/.ruby-version` or from command line:
-
-```shell
-echo '<X.Y.Z>' > rb/.ruby-version
-```
-</details>
-
-### .NET
-
-<details>
-<summary>Click to see .NET Test Commands</summary>
-
-.NET tests currently only work with pinned browsers, so make sure to include that.
-
-Run all tests with:
-
-```shell
-bazel test //dotnet/test/common
-```
-
-You can run specific tests by specifying the class name:
-
-```shell
-bazel test //dotnet/test/common:ElementFindingTests
-```
-
-If the module supports multiple browsers:
-
-```shell
-bazel test //dotnet/test/common:ElementFindingTests-edge
-```
-
-</details>
-
-### Rust
-
-<details>
-<summary>Click to see Rust Test Commands</summary>
-
-Rust tests are run with:
-
-```shell
-bazel test //rust/...
-```
-</details>
+Language specific testing guides can be found in a `TESTING.md` file in the applicable directory.
 
 ### Linux
 

@@ -117,7 +117,7 @@ class AnnotationsTest {
     }
   }
 
-  @FindByXXXX() public WebElement findBy_xxx;
+  @FindByXXXX public WebElement findBy_xxx;
 
   @Test
   void testDefault() throws Exception {

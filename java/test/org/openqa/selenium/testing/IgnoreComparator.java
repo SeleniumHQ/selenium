@@ -49,11 +49,10 @@ class IgnoreComparator {
   }
 
   public boolean shouldIgnore(Stream<Ignore> ignoreList) {
-    return ignoreList.anyMatch(
-        driver ->
-            (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
-                && (!driver.gitHubActions() || TestUtilities.isOnGitHubActions())
-                && isOpen(driver.issue()));
+    return ignoreList.anyMatch(driver ->
+        (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
+            && (!driver.gitHubActions() || TestUtilities.isOnGitHubActions())
+            && isOpen(driver.issue()));
   }
 
   private boolean isOpen(String issue) {

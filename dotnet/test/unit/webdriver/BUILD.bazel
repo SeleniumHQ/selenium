@@ -1,0 +1,21 @@
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
+
+dotnet_nunit_test_suite(
+    name = "unit",
+    size = "small",
+    srcs = glob(
+        ["**/*.cs"],
+        exclude = [
+            "bin/**",
+            "obj/**",
+        ],
+    ),
+    out = "Selenium.WebDriver.UnitTests",
+    tags = ["unit"],
+    target_frameworks = ["net10.0"],
+    deps = [
+        "//dotnet/src/webdriver:webdriver-net8.0",
+        nuget_package("Moq"),
+        nuget_package("NUnit.Analyzers"),
+    ],
+)

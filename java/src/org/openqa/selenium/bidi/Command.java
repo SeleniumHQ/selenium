@@ -23,37 +23,49 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 @Beta
+@ApiStatus.Internal
 public class Command<X> {
 
   private final String method;
   private final Map<String, @Nullable Object> params;
-  private final Function<JsonInput, X> mapper;
+  private final Function<@Nullable Object, X> mapper;
   private final boolean sendsResponse;
 
   public Command(String method, Map<String, @Nullable Object> params) {
     this(method, params, Object.class);
   }
 
+  // Decodes through ConverterFunctions.JSON, not a fresh Json(): a command result and an event
+  // payload are both inbound BiDi wire data and must be held to the same strictness — a quoted
+  // network.ResponseData.status ("200" instead of 200) or a quoted network.FetchTimingInfo.
+  // timeOrigin ("1.5" instead of 1.5) must be rejected either way, not decoded more leniently just
+  // because it arrived as a command result.
   public Command(String method, Map<String, @Nullable Object> params, Type typeOfX) {
     this(
-        method, params, input -> input.readNonNull(Require.nonNull("Type to convert to", typeOfX)));
+        method,
+        params,
+        result ->
+            Require.nonNull(
+                "Command result",
+                ConverterFunctions.JSON.convert(
+                    result, Require.nonNull("Type to convert to", typeOfX))));
   }
 
   public Command(
-      String method, Map<String, @Nullable Object> params, Function<JsonInput, X> mapper) {
+      String method, Map<String, @Nullable Object> params, Function<@Nullable Object, X> mapper) {
     this(method, params, mapper, true);
   }
 
   public Command(
       String method,
       Map<String, @Nullable Object> params,
-      Function<JsonInput, X> mapper,
+      Function<@Nullable Object, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
     this.params = unmodifiableMap(new HashMap<>(Require.nonNull("Command parameters", params)));
@@ -73,7 +85,7 @@ public class Command<X> {
     return sendsResponse;
   }
 
-  Function<JsonInput, X> getMapper() {
+  Function<@Nullable Object, X> getMapper() {
     return mapper;
   }
 }

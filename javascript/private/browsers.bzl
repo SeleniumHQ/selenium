@@ -28,6 +28,22 @@ BROWSERS = {
             "//conditions:default": {},
         }),
     },
+    "edge": {
+        "data": select({
+            "@selenium//common:use_pinned_linux_edge": [
+                "@linux_edge//:edge-js",
+                "@linux_edgedriver//:msedgedriver-js",
+            ],
+            "//conditions:default": [],
+        }),
+        "env": select({
+            "@selenium//common:use_pinned_linux_edge": {
+                "SE_EDGEDRIVER": "linux_edgedriver/msedgedriver",
+                "SE_EDGE": "linux_edge/opt/microsoft/msedge/microsoft-edge",
+            },
+            "//conditions:default": {},
+        }),
+    },
     "firefox": {
         "data": select({
             "@selenium//common:use_pinned_linux_firefox": [

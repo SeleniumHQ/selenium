@@ -19,7 +19,6 @@ package org.openqa.selenium.remote;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 
 public class Response {
@@ -105,32 +104,24 @@ public class Response {
   }
 
   private static Response fromJson(Map<String, Object> json) {
-    ErrorCodes errorCodes = new ErrorCodes();
     Response response = new Response();
 
     if (json.get("error") instanceof String) {
-      String state = (String) json.get("error");
-      response.setState(state);
-      response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+      response.setState((String) json.get("error"));
       response.setValue(json.get("message"));
     }
 
     if (json.get("state") instanceof String) {
-      String state = (String) json.get("state");
-      response.setState(state);
-      response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+      response.setState((String) json.get("state"));
     }
 
     if (json.get("status") != null) {
       Object status = json.get("status");
       if (status instanceof String) {
-        String state = (String) status;
-        response.setState(state);
-        response.setStatus(errorCodes.toStatus(state, Optional.empty()));
+        response.setState((String) status);
       } else {
-        int intStatus = ((Number) status).intValue();
-        response.setState(errorCodes.toState(intStatus));
-        response.setStatus(intStatus);
+        // JSON Wire payloads carry an integer status; read it, but only as the W3C state.
+        response.setState(new ErrorCodes().toState(((Number) status).intValue()));
       }
     }
 

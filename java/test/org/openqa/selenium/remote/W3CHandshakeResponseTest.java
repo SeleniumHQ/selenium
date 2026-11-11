@@ -46,7 +46,6 @@ class W3CHandshakeResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat(response.getStatus()).isEqualTo(0);
     assertThat(response.getValue())
         .asInstanceOf(MAP)
         .containsExactlyInAnyOrderEntriesOf(caps.asMap());
@@ -92,9 +91,7 @@ class W3CHandshakeResponseTest {
     assertThatExceptionOfType(SessionNotCreatedException.class)
         .isThrownBy(() -> new W3CHandshakeResponse().getResponseFunction().apply(initialResponse))
         .withMessageContaining("me no likey")
-        .satisfies(
-            e ->
-                assertThat(e.getAdditionalInformation())
-                    .contains("I have no idea what went wrong"));
+        .satisfies(e ->
+            assertThat(e.getAdditionalInformation()).contains("I have no idea what went wrong"));
   }
 }

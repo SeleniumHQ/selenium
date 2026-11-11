@@ -29,7 +29,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -112,7 +111,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeCommandInterceptor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.docker.DockerSession;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
@@ -145,6 +143,7 @@ public class LocalNode extends Node implements Closeable {
   private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
+  private final boolean gridUrlSpecified;
   private final Duration heartbeatPeriod;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
@@ -175,6 +174,7 @@ public class LocalNode extends Node implements Closeable {
       EventBus bus,
       URI uri,
       URI gridUri,
+      boolean gridUrlSpecified,
       @Nullable HealthCheck healthCheck,
       int maxSessionCount,
       int drainAfterSessionCount,
@@ -200,6 +200,7 @@ public class LocalNode extends Node implements Closeable {
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
+    this.gridUrlSpecified = gridUrlSpecified;
     this.maxSessionCount =
         Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
@@ -230,30 +231,26 @@ public class LocalNode extends Node implements Closeable {
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
         Caffeine.newBuilder()
-            .removalListener(
-                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
-                  Optional.ofNullable(tempFS)
-                      .ifPresent(
-                          fs -> {
-                            fs.deleteTemporaryFiles();
-                            fs.deleteBaseDir();
-                          });
-                })
+            .removalListener((SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+              Optional.ofNullable(tempFS)
+                  .ifPresent(fs -> {
+                    fs.deleteTemporaryFiles();
+                    fs.deleteBaseDir();
+                  });
+            })
             .build();
 
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.downloadsTempFileSystem =
         Caffeine.newBuilder()
-            .removalListener(
-                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
-                  Optional.ofNullable(tempFS)
-                      .ifPresent(
-                          fs -> {
-                            fs.deleteTemporaryFiles();
-                            fs.deleteBaseDir();
-                          });
-                })
+            .removalListener((SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+              Optional.ofNullable(tempFS)
+                  .ifPresent(fs -> {
+                    fs.deleteTemporaryFiles();
+                    fs.deleteBaseDir();
+                  });
+            })
             .build();
 
     this.currentSessions =
@@ -264,46 +261,42 @@ public class LocalNode extends Node implements Closeable {
             .build();
 
     ScheduledExecutorService sessionCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("Local Node - Session Cleanup " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("Local Node - Session Cleanup " + externalUri);
+          return thread;
+        });
     sessionCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(currentSessions::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService uploadTempFileCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("UploadTempFile Cleanup Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("UploadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
     uploadTempFileCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(uploadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService downloadTempFileCleanupNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("DownloadTempFile Cleanup Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("DownloadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
     downloadTempFileCleanupNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(downloadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService heartbeatNodeService =
-        Executors.newSingleThreadScheduledExecutor(
-            r -> {
-              Thread thread = new Thread(r);
-              thread.setDaemon(true);
-              thread.setName("HeartBeat Node " + externalUri);
-              return thread;
-            });
+        Executors.newSingleThreadScheduledExecutor(r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("HeartBeat Node " + externalUri);
+          return thread;
+        });
     heartbeatNodeService.scheduleAtFixedRate(
         GuardedRunnable.guard(() -> bus.fire(new NodeHeartBeatEvent(getStatus()))),
         heartbeatPeriod.getSeconds(),
@@ -341,11 +334,10 @@ public class LocalNode extends Node implements Closeable {
 
     Runtime.getRuntime()
         .addShutdownHook(
-            new Thread(
-                () -> {
-                  stopAllSessions();
-                  drain();
-                }));
+            new Thread(() -> {
+              stopAllSessions();
+              drain();
+            }));
 
     new JMXHelper().register(this);
   }
@@ -610,10 +602,8 @@ public class LocalNode extends Node implements Closeable {
                 TemporaryFilesystem.getDefaultTmpFS()
                     .createTempDir("uuid", uuidForSessionDownloads.toString()));
 
-        LOG.info(
-            () ->
-                String.format(
-                    "Using file system: %s", downloadsTfs.getBaseDir().getAbsolutePath()));
+        LOG.info(() ->
+            String.format("Using file system: %s", downloadsTfs.getBaseDir().getAbsolutePath()));
 
         Capabilities enhanced = setDownloadsDirectory(downloadsTfs, desiredCapabilities);
         enhanced = desiredCapabilities.merge(enhanced);
@@ -622,10 +612,8 @@ public class LocalNode extends Node implements Closeable {
                 sessionRequest.getDownstreamDialects(), enhanced, sessionRequest.getMetadata());
       } else {
         downloadsTfs = null;
-        LOG.info(
-            () ->
-                String.format(
-                    "Not using file system: desiredCapabilities=%s", desiredCapabilities));
+        LOG.info(() ->
+            String.format("Not using file system: desiredCapabilities=%s", desiredCapabilities));
       }
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
@@ -746,12 +734,11 @@ public class LocalNode extends Node implements Closeable {
       LOG.log(Level.FINE, () -> String.format("Adding to capabilities: %s", map));
       return appendPrefs(caps, "moz:firefoxOptions", map);
     } else {
-      LOG.info(
-          () ->
-              String.format(
-                  "Browser is not one of (%s, %s, %s): %s -> not adding downloads directory to"
-                      + " capabilities",
-                  Browser.CHROME, Browser.EDGE, Browser.FIREFOX, caps.getBrowserName()));
+      LOG.info(() ->
+          String.format(
+              "Browser is not one of (%s, %s, %s): %s -> not adding downloads directory to"
+                  + " capabilities",
+              Browser.CHROME, Browser.EDGE, Browser.FIREFOX, caps.getBrowserName()));
     }
     return caps;
   }
@@ -898,10 +885,11 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public HttpResponse downloadFile(HttpRequest req, SessionId id) {
-    // When the session is running in a Docker container, the download file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the download file command needs to be
+    // forwarded to that environment, since the Node does not share a filesystem with the browser.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
     if (!this.managedDownloadsEnabled) {
@@ -929,11 +917,6 @@ public class LocalNode extends Node implements Closeable {
       if (req.getMethod().equals(HttpMethod.GET) && req.getUri().endsWith("/se/files")) {
         return listDownloadedFiles(downloadsDirectory);
       }
-      if (req.getMethod().equals(HttpMethod.GET)) {
-        // Left here for backward compatibility.
-        // Remove this IF in Selenium 4.41, 4.42 or 4.43
-        return getDownloadedFile(downloadsDirectory, extractFileName(req));
-      }
       if (req.getMethod().equals(HttpMethod.DELETE)) {
         return deleteDownloadedFile(downloadsDirectory);
       }
@@ -941,19 +924,6 @@ public class LocalNode extends Node implements Closeable {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  private String extractFileName(HttpRequest req) {
-    return extractFileName(req.getUri());
-  }
-
-  String extractFileName(String uri) {
-    String prefix = "/se/files/";
-    int index = uri.lastIndexOf(prefix);
-    if (index < 0) {
-      throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
-    }
-    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
   }
 
   /** User wants to list files that can be downloaded */
@@ -1009,11 +979,10 @@ public class LocalNode extends Node implements Closeable {
     String filename =
         Optional.ofNullable(incoming.get("name"))
             .map(Object::toString)
-            .orElseThrow(
-                () ->
-                    new WebDriverException(
-                        "Please specify file to download in payload as {\"name\":"
-                            + " \"fileToDownload\"}"));
+            .orElseThrow(() ->
+                new WebDriverException(
+                    "Please specify file to download in payload as {\"name\":"
+                        + " \"fileToDownload\"}"));
     File file = findDownloadedFile(downloadsDirectory, filename);
     String contentType =
         requireNonNullElseGet(
@@ -1031,17 +1000,6 @@ public class LocalNode extends Node implements Closeable {
             "contents", content);
     Map<String, Map<String, Object>> result = Map.of("value", data);
     return new HttpResponse().setContent(asJson(result));
-  }
-
-  /** Left here for backward compatibility. Remove this method in Selenium 4.41, 4.42 or 4.43 */
-  @Deprecated
-  private HttpResponse getDownloadedFile(File downloadsDirectory, String fileName)
-      throws IOException {
-    if (fileName.isEmpty()) {
-      throw new WebDriverException("Please specify file to download in URL");
-    }
-    File file = findDownloadedFile(downloadsDirectory, fileName);
-    return fileAsBinaryResponse(file);
   }
 
   private HttpResponse fileAsBinaryResponse(File file) throws IOException {
@@ -1106,10 +1064,13 @@ public class LocalNode extends Node implements Closeable {
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
-    // When the session is running in a Docker container, the upload file command
-    // needs to be forwarded to the container as well.
+    // When the browser runs in a separate environment from the Node (e.g. a Docker container, a
+    // Kubernetes Pod, or a relayed remote endpoint), the upload file command needs to be forwarded
+    // to that environment, since the Node does not share a filesystem with the browser. Otherwise
+    // the file would be written to the Node's filesystem and be unreachable from the browser when
+    // sendKeys runs.
     SessionSlot slot = currentSessions.getIfPresent(id);
-    if (slot != null && slot.getSession() instanceof DockerSession) {
+    if (slot != null && slot.getSession() != null && slot.getSession().isRemoteFileSystem()) {
       return executeWebDriverCommand(req);
     }
 
@@ -1221,21 +1182,27 @@ public class LocalNode extends Node implements Closeable {
     Capabilities toUse =
         ImmutableCapabilities.copyOf(requestCapabilities.merge(other.getCapabilities()));
 
+    URI baseUri = resolvePublicGridUri(toUse);
+
+    // se:remoteUrl is transport-only: it is consumed above to resolve the public URI, so drop it
+    // from the returned capabilities rather than echo it (and any embedded credentials) back to the
+    // client, into session-created events, or into the session-created log line.
+    toUse = removeCapability(toUse, "se:remoteUrl");
+
     // Add se:cdp if necessary to send the cdp url back
     if ((isSupportingCdp || toUse.getCapability("se:cdp") != null) && cdpEnabled) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
+      toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath, baseUri));
     } else {
       // Remove any se:cdp* from the response, CDP is not supported nor enabled
       MutableCapabilities cdpFiltered = new MutableCapabilities();
       toUse
           .asMap()
-          .forEach(
-              (key, value) -> {
-                if (!key.startsWith("se:cdp")) {
-                  cdpFiltered.setCapability(key, value);
-                }
-              });
+          .forEach((key, value) -> {
+            if (!key.startsWith("se:cdp")) {
+              cdpFiltered.setCapability(key, value);
+            }
+          });
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
     }
 
@@ -1259,18 +1226,17 @@ public class LocalNode extends Node implements Closeable {
       toUse =
           new PersistentCapabilities(toUse)
               .setCapability("se:gridWebSocketUrl", uri)
-              .setCapability("webSocketUrl", rewrite(bidiPath));
+              .setCapability("webSocketUrl", rewrite(bidiPath, baseUri));
     } else {
       // Remove any "webSocketUrl" from the response, BiDi is not supported nor enabled
       MutableCapabilities bidiFiltered = new MutableCapabilities();
       toUse
           .asMap()
-          .forEach(
-              (key, value) -> {
-                if (!key.startsWith("webSocketUrl")) {
-                  bidiFiltered.setCapability(key, value);
-                }
-              });
+          .forEach((key, value) -> {
+            if (!key.startsWith("webSocketUrl")) {
+              bidiFiltered.setCapability(key, value);
+            }
+          });
       toUse = new PersistentCapabilities(bidiFiltered).setCapability("se:bidiEnabled", false);
     }
 
@@ -1278,51 +1244,89 @@ public class LocalNode extends Node implements Closeable {
     boolean isVncEnabled = toUse.getCapability("se:vncLocalAddress") != null;
     if (isVncEnabled) {
       String vncPath = String.format("/session/%s/se/vnc", other.getId());
-      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath));
+      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath, baseUri));
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());
   }
 
-  private URI rewrite(String path) {
+  private URI rewrite(String path, URI baseUri) {
     try {
-      String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
-      path = NodeOptions.normalizeSubPath(gridUri.getPath()) + path;
+      String scheme = "https".equalsIgnoreCase(baseUri.getScheme()) ? "wss" : "ws";
+      path = NodeOptions.normalizeSubPath(baseUri.getPath()) + path;
       return new URI(
-          scheme, gridUri.getUserInfo(), gridUri.getHost(), gridUri.getPort(), path, null, null);
+          scheme, baseUri.getUserInfo(), baseUri.getHost(), baseUri.getPort(), path, null, null);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Capabilities removeCapability(Capabilities caps, String name) {
+    MutableCapabilities filtered = new MutableCapabilities();
+    caps.asMap()
+        .forEach((key, value) -> {
+          if (!name.equals(key)) {
+            filtered.setCapability(key, value);
+          }
+        });
+    return new PersistentCapabilities(filtered);
+  }
+
+  // A configured grid-url always wins; only when the node falls back to its auto-detected address
+  // (which may be unreachable behind Docker/proxy) do we use the client-advertised se:remoteUrl.
+  private URI resolvePublicGridUri(Capabilities caps) {
+    if (gridUrlSpecified) {
+      return gridUri;
+    }
+    Object raw = caps.getCapability("se:remoteUrl");
+    if (raw instanceof String && !((String) raw).isEmpty()) {
+      String value = (String) raw;
+      try {
+        URI uri = new URI(value);
+        String scheme = uri.getScheme();
+        if (uri.getHost() != null
+            && ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))) {
+          // Use only the reachable origin (scheme/userinfo/host/port). se:remoteUrl advertises
+          // where the client reached the Grid so proxied URLs get a reachable host/port; the URL's
+          // path is the client's HTTP endpoint (e.g. "/wd/hub"), not a Grid sub-path. Folding it in
+          // would produce websocket URLs the Node's routes (keyed off the configured grid-url
+          // sub-path) do not match. A real reverse-proxy path prefix is configured via grid-url.
+          return new URI(scheme, uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+        }
+      } catch (URISyntaxException e) {
+        // Fall through to the warning below.
+      }
+      LOG.warning(() ->
+          String.format(
+              "Ignoring unusable se:remoteUrl '%s'; using %s for proxied URLs", value, gridUri));
+    }
+    return gridUri;
   }
 
   @Override
   public NodeStatus getStatus() {
     Set<Slot> slots =
         factories.stream()
-            .map(
-                slot -> {
-                  Instant lastStarted = Instant.EPOCH;
-                  Session session = null;
-                  if (!slot.isAvailable()) {
-                    ActiveSession activeSession = slot.getSession();
-                    if (activeSession != null) {
-                      lastStarted = activeSession.getStartTime();
-                      session =
-                          new Session(
-                              activeSession.getId(),
-                              activeSession.getUri(),
-                              slot.getStereotype(),
-                              activeSession.getCapabilities(),
-                              activeSession.getStartTime());
-                    }
-                  }
+            .map(slot -> {
+              Instant lastStarted = Instant.EPOCH;
+              Session session = null;
+              if (!slot.isAvailable()) {
+                ActiveSession activeSession = slot.getSession();
+                if (activeSession != null) {
+                  lastStarted = activeSession.getStartTime();
+                  session =
+                      new Session(
+                          activeSession.getId(),
+                          activeSession.getUri(),
+                          slot.getStereotype(),
+                          activeSession.getCapabilities(),
+                          activeSession.getStartTime());
+                }
+              }
 
-                  return new Slot(
-                      new SlotId(getId(), slot.getId()),
-                      slot.getStereotype(),
-                      lastStarted,
-                      session);
-                })
+              return new Slot(
+                  new SlotId(getId(), slot.getId()), slot.getStereotype(), lastStarted, session);
+            })
             .collect(toUnmodifiableSet());
 
     Availability availability = isDraining() ? DRAINING : UP;
@@ -1457,6 +1461,7 @@ public class LocalNode extends Node implements Closeable {
     private final Secret registrationSecret;
     private final List<SessionSlot> factories;
     private final List<NodeCommandInterceptor> interceptors = new ArrayList<>();
+    private boolean gridUrlSpecified = false;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1548,12 +1553,18 @@ public class LocalNode extends Node implements Closeable {
       return this;
     }
 
+    public Builder gridUrlSpecified(boolean configured) {
+      this.gridUrlSpecified = configured;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
           tracer,
           bus,
           uri,
           gridUri,
+          gridUrlSpecified,
           healthCheck,
           maxSessions,
           drainAfterSessionCount,

@@ -149,6 +149,7 @@ public class GeckoDriverService extends FirefoxDriverService {
     private @Nullable File profileRoot;
     private @Nullable Integer marionettePort;
     private @Nullable Integer websocketPort;
+    private @Nullable Boolean allowSystemAccess;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -231,6 +232,18 @@ public class GeckoDriverService extends FirefoxDriverService {
       return this;
     }
 
+    /**
+     * Allows GeckoDriver to access system-level Firefox APIs, such as switching to the chrome
+     * command context. This must be configured on the driver service itself, not via capabilities.
+     *
+     * @param allowSystemAccess whether to allow system access.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder withAllowSystemAccess(@Nullable Boolean allowSystemAccess) {
+      this.allowSystemAccess = allowSystemAccess;
+      return this;
+    }
+
     @Override
     protected void loadSystemProperties() {
       parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
@@ -298,6 +311,9 @@ public class GeckoDriverService extends FirefoxDriverService {
       if (allowHosts != null) {
         args.add("--allow-hosts");
         args.addAll(List.of(allowHosts.split(" ")));
+      }
+      if (Boolean.TRUE.equals(allowSystemAccess)) {
+        args.add("--allow-system-access");
       }
       return unmodifiableList(args);
     }

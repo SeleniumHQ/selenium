@@ -51,6 +51,10 @@ module Selenium
           def exclude?: () -> untyped
 
           def exclusive?: () -> untyped
+
+          def exception?: () -> untyped
+
+          def matches_exception?: (untyped exception) -> untyped
         end
       end
     end

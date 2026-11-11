@@ -9,6 +9,5 @@ genrule(
     cmd = "java -jar $(location jruby-complete.jar) $(location update.rb) $@",
     tags = [
         "no-sandbox",
-        "requires-network",
     ],
 )

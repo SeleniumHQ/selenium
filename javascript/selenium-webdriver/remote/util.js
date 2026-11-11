@@ -31,11 +31,10 @@ function getJavaPath() {
 
 /**
  * @param {string} seleniumStandalonePath path to standalone server
+ * @param {string=} javaPath the java executable; defaults to {@link getJavaPath}
  * @returns {boolean}
  */
-function isSelenium3x(seleniumStandalonePath) {
-  const javaPath = getJavaPath()
-
+function isSelenium3x(seleniumStandalonePath, javaPath = getJavaPath()) {
   const execRes = cp.execFileSync(javaPath, ['-jar', seleniumStandalonePath, '--version'])
 
   return execRes.toString().trim().startsWith('Selenium server version: 3')
@@ -44,11 +43,12 @@ function isSelenium3x(seleniumStandalonePath) {
 /**
  * @param {string} seleniumStandalonePath path to standalone server
  * @param {Array.<string>} args spawn arguments array
+ * @param {string=} javaPath the java executable; defaults to {@link getJavaPath}
  * returns formatted args based on selenium standalone server version
  * @returns {Array.<string>}
  */
-function formatSpawnArgs(seleniumStandalonePath, args) {
-  if (isSelenium3x(seleniumStandalonePath)) {
+function formatSpawnArgs(seleniumStandalonePath, args, javaPath = getJavaPath()) {
+  if (isSelenium3x(seleniumStandalonePath, javaPath)) {
     logging
       .getLogger(logging.Type.SERVER)
       .warning('Deprecation: Support for Standalone Server 3.x will be removed soon. Please update to version 4.x')

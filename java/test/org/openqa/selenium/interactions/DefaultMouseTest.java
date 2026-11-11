@@ -49,9 +49,7 @@ class DefaultMouseTest extends JupiterTestBase {
 
   @BeforeEach
   void resetMousePointer() {
-    WebElement body = driver.findElement(By.tagName("body"));
-    Dimension size = body.getSize();
-    getBuilder(driver).moveToElement(body, -size.width / 2, -size.height / 2).perform();
+    getBuilder(driver).moveToLocation(0, 0).perform();
   }
 
   private Actions getBuilder(WebDriver driver) {
@@ -90,7 +88,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
@@ -100,7 +97,6 @@ class DefaultMouseTest extends JupiterTestBase {
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDraggingElementWithMouseFiresEvents() {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -122,7 +118,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDrop() {
     driver.get(pages.droppableItems);
 
@@ -141,7 +136,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -205,7 +199,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testMovingPastViewPortThrowsException() {
     assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
         .isThrownBy(() -> getBuilder(driver).moveByOffset(-1000, -1000).perform());
@@ -328,7 +321,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -363,7 +355,6 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 

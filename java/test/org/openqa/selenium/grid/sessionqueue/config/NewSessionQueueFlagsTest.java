@@ -39,12 +39,11 @@ class NewSessionQueueFlagsTest {
   void sessionQueueImplementationFlagIsAccepted() {
     String impl = "org.openqa.selenium.grid.sessionqueue.redis.RedisBackedNewSessionQueue";
 
-    assertThatCode(
-            () ->
-                JCommander.newBuilder()
-                    .addObject(flags)
-                    .build()
-                    .parse("--sessionqueue-implementation", impl))
+    assertThatCode(() ->
+            JCommander.newBuilder()
+                .addObject(flags)
+                .build()
+                .parse("--sessionqueue-implementation", impl))
         .doesNotThrowAnyException();
   }
 

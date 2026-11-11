@@ -48,9 +48,10 @@ use fs_extra::file::CopyOptions;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{env, fs, thread};
+use std::{env, fs, io, thread};
 use walkdir::{DirEntry, WalkDir};
 use which::which;
 
@@ -63,7 +64,6 @@ pub mod files;
 pub mod firefox;
 pub mod grid;
 pub mod iexplorer;
-pub mod jre;
 pub mod lock;
 pub mod logger;
 pub mod metadata;
@@ -103,10 +103,11 @@ pub const OFFLINE_REQUEST_ERR_MSG: &str = "Unable to discover proper {} version 
 pub const OFFLINE_DOWNLOAD_ERR_MSG: &str = "Unable to download {} in offline mode";
 pub const UNAVAILABLE_DOWNLOAD_ERR_MSG: &str = "{}{} not available for download";
 pub const UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG: &str =
-    "{} {} not available for download (minimum version: {})";
+    "{} {} not available for download on {} (minimum version: {})";
 pub const NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG: &str =
     "{} can only be installed in Windows with administrator permissions";
 pub const ONLINE_DISCOVERY_ERROR_MESSAGE: &str = "Unable to discover {}{} in online repository";
+pub const TLS_CERTIFICATE_ERR_MSG: &str = "TLS certificate validation failed. If a proxy or mirror on your network uses its own certificate authority, add it to the system trust store (on Linux, SSL_CERT_FILE can point to a CA bundle)";
 pub const UNC_PREFIX: &str = r"\\?\";
 pub const SM_BETA_LABEL: &str = "0.";
 pub const LATEST_RELEASE: &str = "latest";
@@ -120,9 +121,9 @@ pub trait SeleniumManager {
 
     fn get_browser_names_in_path(&self) -> Vec<&str>;
 
-    fn get_http_client(&self) -> &Client;
+    fn get_http_client_cell(&self) -> &OnceLock<Client>;
 
-    fn set_http_client(&mut self, http_client: Client);
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client>;
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
@@ -198,7 +199,7 @@ pub trait SeleniumManager {
             &driver_path_in_cache,
             Some(driver_name_with_extension.clone()),
         )?;
-        if !lock.exists() && driver_path_in_cache.exists() {
+        if driver_path_in_cache.exists() {
             self.get_logger().debug(format!(
                 "Driver already in cache: {}",
                 driver_path_in_cache.display()
@@ -214,7 +215,7 @@ pub trait SeleniumManager {
             driver_url
         ));
         let (_tmp_folder, driver_zip_file) =
-            download_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
+            download_to_tmp_folder(self.get_http_client()?, driver_url, self.get_logger())?;
 
         if self.is_grid() {
             let driver_path_in_cache = self.get_driver_path_in_cache()?;
@@ -234,6 +235,8 @@ pub trait SeleniumManager {
         Ok(())
     }
 
+    fn configure_browser_in_cache(&self, _browser_path_in_cache: &Path) {}
+
     fn download_browser(
         &mut self,
         original_browser_version: &str,
@@ -251,10 +254,11 @@ pub trait SeleniumManager {
             && !self.is_browser_version_empty()
             && major_browser_version_int < min_browser_version_for_download
         {
-            let mut message = format_three_args(
+            let mut message = format_four_args(
                 UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
                 self.get_browser_name(),
                 &major_browser_version,
+                self.get_arch(),
                 &min_browser_version_for_download.to_string(),
             );
             let versions_url = self.get_browser_versions_url();
@@ -351,9 +355,8 @@ pub trait SeleniumManager {
 
         let browser_path_in_cache = self.get_browser_path_in_cache()?;
         let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
-        // If lock file was deleted, another process held it and released (deleting the file).
-        // Check if that process already downloaded the browser.
-        if !lock.exists() && browser_binary_path.exists() {
+        // Another process may have downloaded the browser while this one waited for the lock
+        if browser_binary_path.exists() {
             self.get_logger().debug(format!(
                 "{} {} now available at {}",
                 self.get_browser_name(),
@@ -379,7 +382,7 @@ pub trait SeleniumManager {
             install_note
         ));
         let (_tmp_folder, driver_zip_file) =
-            download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+            download_to_tmp_folder(self.get_http_client()?, browser_url, self.get_logger())?;
 
         let browser_label_for_download =
             self.get_browser_label_for_download(original_browser_version)?;
@@ -391,6 +394,7 @@ pub trait SeleniumManager {
             None,
             browser_label_for_download,
         )?;
+        self.configure_browser_in_cache(&browser_path_in_cache);
         lock.release();
 
         if browser_binary_path.exists() {
@@ -421,7 +425,27 @@ pub trait SeleniumManager {
             .unwrap_or_default()
     }
 
+    fn detect_browser_in_known_locations(&self) -> Option<PathBuf> {
+        None
+    }
+
     fn detect_browser_path(&mut self) -> Option<PathBuf> {
+        // A driver's binary search is channel-agnostic and finds system browsers, so mirror it only
+        // for the default channel and when the user hasn't asked to skip browsers in the path.
+        if !self.is_browser_version_unstable()
+            && !self.is_skip_browser_in_path()
+            && let Some(browser_path) = self.detect_browser_in_known_locations()
+        {
+            let canon_browser_path = self.canonicalize_path(browser_path);
+            self.get_logger().debug(format!(
+                "{} detected at {}",
+                self.get_browser_name(),
+                canon_browser_path
+            ));
+            self.set_browser_path(canon_browser_path.clone());
+            return Some(Path::new(&canon_browser_path).to_path_buf());
+        }
+
         let browser_version = self.get_browser_version();
         let browser_path = self.get_browser_path_from_version(browser_version);
 
@@ -771,7 +795,8 @@ pub trait SeleniumManager {
     }
 
     fn is_webview2(&self) -> bool {
-        self.get_browser_name().eq(WEBVIEW2_NAME)
+        // Browser selection matches case-insensitively but keeps the original casing (e.g. "WebView2").
+        self.get_browser_name().eq_ignore_ascii_case(WEBVIEW2_NAME)
     }
 
     fn is_browser_version_beta(&self) -> bool {
@@ -968,18 +993,22 @@ pub trait SeleniumManager {
 
     fn stats(&self) -> Result<(), Error> {
         if !self.is_avoid_stats() && !self.is_offline() {
-            let props = Props {
-                browser: self.get_browser_name().to_ascii_lowercase(),
-                browser_version: self.get_browser_version().to_ascii_lowercase(),
-                os: self.get_os().to_ascii_lowercase(),
-                arch: self
-                    .get_normalized_arch()
-                    .unwrap_or(ARCH_OTHER)
-                    .to_ascii_lowercase(),
-                lang: self.get_language_binding().to_ascii_lowercase(),
-                selenium_version: self.get_selenium_version().to_ascii_lowercase(),
+            let props = Props::sanitized(
+                self.get_browser_name(),
+                self.get_browser_version(),
+                self.get_os(),
+                self.get_normalized_arch().unwrap_or(ARCH_OTHER),
+                self.get_language_binding(),
+                self.get_selenium_version(),
+            );
+            let http_client = match self.get_http_client() {
+                Ok(http_client) => http_client.to_owned(),
+                Err(err) => {
+                    self.get_logger()
+                        .debug(format!("Skipping stats: {}", format_error(&err)));
+                    return Ok(());
+                }
             };
-            let http_client = self.get_http_client().to_owned();
             let sender = self.get_sender().to_owned();
             let cache_path = self.get_cache_path()?;
             let mut metadata = get_metadata(self.get_logger(), &cache_path);
@@ -1008,7 +1037,11 @@ pub trait SeleniumManager {
     ) -> Result<(), Error> {
         if *is_driver_in_path && self.is_fallback_driver_from_cache() {
             self.get_logger().debug_or_warn(
-                format!("Exception managing {}: {}", self.get_browser_name(), err),
+                format!(
+                    "Exception managing {}: {}",
+                    self.get_browser_name(),
+                    format_error(&err)
+                ),
                 self.is_offline(),
             );
             Ok(())
@@ -1121,10 +1154,6 @@ pub trait SeleniumManager {
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Error> {
         get_index_version(full_version, 0)
-    }
-
-    fn get_minor_version(&self, full_version: &str) -> Result<String, Error> {
-        get_index_version(full_version, 1)
     }
 
     fn get_selenium_release_version(&self) -> Result<String, Error> {
@@ -1540,9 +1569,10 @@ pub trait SeleniumManager {
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Error> {
         if !proxy.is_empty() && !self.is_offline() {
+            Proxy::all(&proxy)?;
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
             self.get_config_mut().proxy = proxy;
-            self.update_http_client()?;
+            self.reset_http_client();
         }
         Ok(())
     }
@@ -1556,17 +1586,39 @@ pub trait SeleniumManager {
             self.get_config_mut().timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
-            self.update_http_client()?;
+            self.reset_http_client();
         }
         Ok(())
     }
 
-    fn update_http_client(&mut self) -> Result<(), Error> {
-        let proxy = self.get_proxy();
-        let timeout = self.get_timeout();
-        let http_client = create_http_client(timeout, proxy)?;
-        self.set_http_client(http_client);
+    fn is_insecure(&self) -> bool {
+        self.get_config().insecure
+    }
+
+    fn set_insecure(&mut self, insecure: bool) -> Result<(), Error> {
+        if insecure && !self.is_insecure() {
+            self.get_config_mut().insecure = true;
+            self.reset_http_client();
+        }
+        if self.is_insecure() {
+            self.get_logger().warn(
+                "TLS certificate validation is disabled (insecure mode). Downloaded drivers and browsers cannot be verified",
+            );
+        }
         Ok(())
+    }
+
+    fn get_http_client(&self) -> Result<&Client, Error> {
+        if let Some(http_client) = self.get_http_client_cell().get() {
+            return Ok(http_client);
+        }
+        let http_client =
+            create_http_client(self.get_timeout(), self.get_proxy(), self.is_insecure())?;
+        Ok(self.get_http_client_cell().get_or_init(|| http_client))
+    }
+
+    fn reset_http_client(&mut self) {
+        self.get_http_client_cell_mut().take();
     }
 
     fn get_ttl(&self) -> u64 {
@@ -1823,17 +1875,26 @@ fn delete_cached_asset(log: &Logger, cache: &Path, asset_name: &str, asset_versi
     }
 }
 
-pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Error> {
+pub fn create_http_client(timeout: u64, proxy: &str, insecure: bool) -> Result<Client, Error> {
     // Ensure the ring provider is installed. Returns Err if already set, which
     // is fine — we just need it present before ClientBuilder::build() runs.
     let _ = rustls::crypto::ring::default_provider().install_default();
-    let mut client_builder = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .timeout(Duration::from_secs(timeout));
+    let mut client_builder = Client::builder().timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
         client_builder = client_builder.proxy(Proxy::all(proxy)?);
     }
-    Ok(client_builder.build().unwrap_or_default())
+    if insecure {
+        client_builder = client_builder.danger_accept_invalid_certs(true);
+    }
+    Ok(client_builder.build()?)
+}
+
+pub fn format_error(err: &Error) -> String {
+    if is_tls_certificate_error(err) {
+        format!("{err:#}. {TLS_CERTIFICATE_ERR_MSG}")
+    } else {
+        format!("{err:#}")
+    }
 }
 
 #[cfg(test)]
@@ -1852,6 +1913,21 @@ mod tests {
         let escaped = manager.get_escaped_path(folder.to_string_lossy().to_string());
 
         assert_eq!(escaped, manager.canonicalize_path(folder));
+    }
+
+    #[test]
+    fn download_driver_returns_cached_jar_without_downloading() {
+        let tmp = tempfile::tempdir().unwrap();
+        let mut manager = crate::grid::GridManager::new("4.51.0".to_string()).unwrap();
+        manager.get_config_mut().cache_path = tmp.path().to_string_lossy().to_string();
+        let jar = manager.get_driver_path_in_cache().unwrap();
+        std::fs::create_dir_all(jar.parent().unwrap()).unwrap();
+        std::fs::write(&jar, b"cached").unwrap();
+
+        manager.download_driver().unwrap();
+
+        assert_eq!(std::fs::read(&jar).unwrap(), b"cached");
+        assert!(!jar.parent().unwrap().join("sm.lock").exists());
     }
 
     #[test]
@@ -1944,6 +2020,39 @@ mod tests {
         let log = Logger::new();
         prune_old_cache_entries(&log, "/nonexistent/path/that/does/not/exist", 30);
     }
+
+    #[test]
+    fn http_client_is_not_created_until_needed() {
+        let mut manager = crate::chrome::ChromeManager::new().unwrap();
+        assert!(manager.get_http_client_cell().get().is_none());
+
+        manager.get_config_mut().insecure = true;
+        manager.get_http_client().unwrap();
+
+        assert!(manager.get_http_client_cell().get().is_some());
+    }
+
+    #[test]
+    fn format_error_adds_hint_for_untrusted_certificate() {
+        let tls_error = io::Error::new(
+            io::ErrorKind::InvalidData,
+            rustls::Error::InvalidCertificate(rustls::CertificateError::UnknownIssuer),
+        );
+        let err = Error::new(io::Error::other(tls_error)).context("error sending request");
+
+        assert!(format_error(&err).ends_with(TLS_CERTIFICATE_ERR_MSG));
+    }
+
+    #[test]
+    fn format_error_shows_cause_without_hint_for_other_errors() {
+        let err =
+            Error::new(io::Error::other("connection refused")).context("error sending request");
+
+        assert_eq!(
+            format_error(&err),
+            "error sending request: connection refused"
+        );
+    }
 }
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
@@ -1961,14 +2070,79 @@ pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> St
         .replacen("{}", arg3, 1)
 }
 
+pub fn format_four_args(string: &str, arg1: &str, arg2: &str, arg3: &str, arg4: &str) -> String {
+    string
+        .replacen("{}", arg1, 1)
+        .replacen("{}", arg2, 1)
+        .replacen("{}", arg3, 1)
+        .replacen("{}", arg4, 1)
+}
+
 // ----------------------------------------------------------
 // Private functions
 // ----------------------------------------------------------
 
 fn get_index_version(full_version: &str, index: usize) -> Result<String, Error> {
+    if full_version.is_empty() {
+        return Err(anyhow!(format!("Wrong version: {}", full_version)));
+    }
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
         .ok_or(anyhow!(format!("Wrong version: {}", full_version)))?
         .to_string())
+}
+
+fn is_tls_certificate_error(err: &Error) -> bool {
+    err.chain().any(|cause| {
+        let mut current = cause;
+        // io::Error::source() skips the error it wraps (and reqwest nests them), so unwrap by hand
+        while let Some(inner) = current
+            .downcast_ref::<io::Error>()
+            .and_then(|io_error| io_error.get_ref())
+        {
+            current = inner;
+        }
+        matches!(
+            current.downcast_ref::<rustls::Error>(),
+            Some(rustls::Error::InvalidCertificate(_))
+        )
+    })
+}
+
+#[cfg(test)]
+mod index_version_tests {
+    use super::*;
+
+    #[test]
+    fn get_index_version_major() {
+        assert_eq!(get_index_version("120.0.6099.109", 0).unwrap(), "120");
+    }
+
+    #[test]
+    fn get_index_version_minor() {
+        assert_eq!(get_index_version("120.0.6099.109", 1).unwrap(), "0");
+    }
+
+    #[test]
+    fn get_index_version_patch() {
+        assert_eq!(get_index_version("120.0.6099.109", 2).unwrap(), "6099");
+    }
+
+    #[test]
+    fn get_index_version_single_component() {
+        assert_eq!(get_index_version("115", 0).unwrap(), "115");
+    }
+
+    #[test]
+    fn get_index_version_out_of_bounds_errors() {
+        let result = get_index_version("115", 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_index_version_empty_string_errors() {
+        let result = get_index_version("", 0);
+        assert!(result.is_err());
+    }
 }

@@ -37,7 +37,9 @@ module Selenium
 
           caps = process_options(options, capabilities)
           http_client ||= Remote::Http::Default.new(client_config: client_config)
-          http_client.server_url = url || client_config&.server_url || "http://#{Platform.localhost}:4444/wd/hub"
+          server_url = url || client_config&.server_url || "http://#{Platform.localhost}:4444/wd/hub"
+          http_client.server_url = server_url
+          caps['se:remoteUrl'] = server_url.to_s.chomp('/')
           super(caps: caps, http_client: http_client, **)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
           command_list = @bridge.command_list

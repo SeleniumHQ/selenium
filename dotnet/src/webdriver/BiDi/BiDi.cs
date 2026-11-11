@@ -60,7 +60,11 @@ public sealed class BiDi : IBiDi
         BiDiOptionsBuilder builder = new();
         configure?.Invoke(builder);
 
-        var transport = await builder.TransportFactory(url, cancellationToken).ConfigureAwait(false);
+        var transportFactoryTask = builder.TransportFactory(url, cancellationToken)
+            ?? throw new InvalidOperationException("The transport factory must return a non-null Task<ITransport> instance.");
+
+        var transport = await transportFactoryTask.ConfigureAwait(false)
+            ?? throw new InvalidOperationException("The transport factory must return a non-null ITransport instance.");
 
         BiDi bidi = new();
 

@@ -1,1 +1,0 @@
-@.local/AGENTS.md

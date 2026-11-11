@@ -18,13 +18,14 @@
 use crate::config::ManagerConfig;
 use crate::config::OS::MACOS;
 use crate::files::BrowserPath;
-use crate::{Logger, STABLE, SeleniumManager, create_http_client};
+use crate::{Logger, STABLE, SeleniumManager};
 use anyhow::Error;
 use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::string::ToString;
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -43,7 +44,7 @@ pub struct SafariTPManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -55,13 +56,11 @@ impl SafariTPManager {
         let browser_name = SAFARITP_NAMES[0];
         let driver_name = SAFARITPDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(SafariTPManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -80,12 +79,12 @@ impl SeleniumManager for SafariTPManager {
         vec![self.get_browser_name()]
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {

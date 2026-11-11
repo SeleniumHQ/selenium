@@ -174,24 +174,22 @@ public class ModuleGenerator {
           List.of(
               "--module-path",
               modulePath.stream()
-                  .map(
-                      (s) -> {
-                        String file = s.getFileName().toString();
+                  .map(s -> {
+                    Path fileName = s.getFileName();
+                    if (fileName != null && fileName.toString().startsWith("processed_")) {
+                      Path copy = tmp.resolve(fileName.toString().substring(10));
 
-                        if (file.startsWith("processed_")) {
-                          Path copy = tmp.resolve(file.substring(10));
+                      try {
+                        Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
+                      } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                      }
 
-                          try {
-                            Files.copy(s, copy, StandardCopyOption.REPLACE_EXISTING);
-                          } catch (IOException e) {
-                            throw new UncheckedIOException(e);
-                          }
+                      return copy.toString();
+                    }
 
-                          return copy.toString();
-                        }
-
-                        return s.toString();
-                      })
+                    return s.toString();
+                  })
                   .collect(Collectors.joining(File.pathSeparator))));
     }
     jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
@@ -201,7 +199,7 @@ public class ModuleGenerator {
     PrintStream origErr = System.err;
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    PrintStream printStream = new PrintStream(bos);
+    PrintStream printStream = new PrintStream(bos, false, StandardCharsets.UTF_8);
 
     int result;
     try {
@@ -226,7 +224,8 @@ public class ModuleGenerator {
         new SimpleFileVisitor<>() {
           @Override
           public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-            if ("module-info.java".equals(file.getFileName().toString())) {
+            Path fileName = file.getFileName();
+            if (fileName != null && "module-info.java".equals(fileName.toString())) {
               moduleInfo.set(file);
             }
             return FileVisitResult.TERMINATE;
@@ -268,14 +267,13 @@ public class ModuleGenerator {
     if (modulePath != null) {
       URL[] urls =
           Stream.concat(Stream.of(inJar.toAbsolutePath()), modulePath.stream())
-              .map(
-                  path -> {
-                    try {
-                      return path.toUri().toURL();
-                    } catch (MalformedURLException e) {
-                      throw new UncheckedIOException(e);
-                    }
-                  })
+              .map(path -> {
+                try {
+                  return path.toUri().toURL();
+                } catch (MalformedURLException e) {
+                  throw new UncheckedIOException(e);
+                }
+              })
               .toArray(URL[]::new);
 
       classLoader = new URLClassLoader(urls);
@@ -289,35 +287,32 @@ public class ModuleGenerator {
     Set<String> exportedPackages = new HashSet<>();
     if (!isOpen) {
       if (!exports.isEmpty()) {
-        exports.forEach(
-            export -> {
-              if (!packages.contains(export)) {
-                throw new RuntimeException(
-                    String.format("Exported package '%s' not found in jar. %s", export, packages));
-              }
-              exportedPackages.add(export);
-              moduleDeclaration.addDirective(
-                  new ModuleExportsDirective(new Name(export), new NodeList<>()));
-            });
+        exports.forEach(export -> {
+          if (!packages.contains(export)) {
+            throw new RuntimeException(
+                String.format("Exported package '%s' not found in jar. %s", export, packages));
+          }
+          exportedPackages.add(export);
+          moduleDeclaration.addDirective(
+              new ModuleExportsDirective(new Name(export), new NodeList<>()));
+        });
       } else {
-        packages.forEach(
-            export -> {
-              if (!hides.contains(export)) {
-                exportedPackages.add(export);
-                moduleDeclaration.addDirective(
-                    new ModuleExportsDirective(new Name(export), new NodeList<>()));
-              }
-            });
+        packages.forEach(export -> {
+          if (!hides.contains(export)) {
+            exportedPackages.add(export);
+            moduleDeclaration.addDirective(
+                new ModuleExportsDirective(new Name(export), new NodeList<>()));
+          }
+        });
       }
     }
 
-    openTo.forEach(
-        module ->
-            moduleDeclaration.addDirective(
-                new ModuleOpensDirective(
-                    new Name(module),
-                    new NodeList(
-                        exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
+    openTo.forEach(module ->
+        moduleDeclaration.addDirective(
+            new ModuleOpensDirective(
+                new Name(module),
+                new NodeList(
+                    exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
 
     ClassWriter classWriter = new ClassWriter(0);
     classWriter.visit(V11, ACC_MODULE, "module-info", null, null, null);
@@ -525,16 +520,15 @@ public class ModuleGenerator {
 
     private int getByteBuddyModifier(NodeList<Modifier> modifiers) {
       return modifiers.stream()
-          .mapToInt(
-              mod -> {
-                switch (mod.getKeyword()) {
-                  case STATIC:
-                    return ACC_STATIC_PHASE;
-                  case TRANSITIVE:
-                    return ACC_TRANSITIVE;
-                }
-                throw new RuntimeException("Unknown modifier: " + mod);
-              })
+          .mapToInt(mod -> {
+            switch (mod.getKeyword()) {
+              case STATIC:
+                return ACC_STATIC_PHASE;
+              case TRANSITIVE:
+                return ACC_TRANSITIVE;
+            }
+            throw new RuntimeException("Unknown modifier: " + mod);
+          })
           .reduce(0, (l, r) -> l | r);
     }
 

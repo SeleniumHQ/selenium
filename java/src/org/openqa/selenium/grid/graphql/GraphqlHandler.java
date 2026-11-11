@@ -111,23 +111,20 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
 
     graphQl =
         GraphQL.newGraphQL(schema)
-            .preparsedDocumentProvider(
-                (executionInput, computeFunction) -> {
-                  String query = executionInput.getQuery();
+            .preparsedDocumentProvider((executionInput, computeFunction) -> {
+              String query = executionInput.getQuery();
 
-                  // Query size validation with bypass for oversized queries
-                  if (query.getBytes(StandardCharsets.UTF_8).length > MAX_QUERY_SIZE_BYTES) {
-                    // Bypass cache for oversized queries to prevent cache pollution
-                    return CompletableFuture.supplyAsync(
-                        () -> computeFunction.apply(executionInput));
-                  }
+              // Query size validation with bypass for oversized queries
+              if (query.getBytes(StandardCharsets.UTF_8).length > MAX_QUERY_SIZE_BYTES) {
+                // Bypass cache for oversized queries to prevent cache pollution
+                return CompletableFuture.supplyAsync(() -> computeFunction.apply(executionInput));
+              }
 
-                  return cache.get(
-                      query,
-                      key ->
-                          CompletableFuture.supplyAsync(
-                              () -> computeFunction.apply(executionInput)));
-                })
+              return cache.get(
+                  query,
+                  key ->
+                      CompletableFuture.supplyAsync(() -> computeFunction.apply(executionInput)));
+            })
             .build();
   }
 
@@ -212,12 +209,11 @@ public class GraphqlHandler implements HttpHandler, AutoCloseable {
     cache
         .asMap()
         .values()
-        .forEach(
-            future -> {
-              if (!future.isDone()) {
-                future.cancel(true);
-              }
-            });
+        .forEach(future -> {
+          if (!future.isDone()) {
+            future.cancel(true);
+          }
+        });
 
     // Invalidate and clean cache
     cache.invalidateAll();

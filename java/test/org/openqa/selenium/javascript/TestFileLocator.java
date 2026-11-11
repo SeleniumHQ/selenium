@@ -51,7 +51,9 @@ class TestFileLocator {
             directory,
             Integer.MAX_VALUE,
             (path, basicFileAttributes) -> {
-              String name = path.getFileName().toString();
+              Path fileName = path.getFileName();
+              if (fileName == null) return false;
+              String name = fileName.toString();
               return name.endsWith("_test.html");
               // TODO: revive support for _test.js files.
               //        Path sibling = path.resolveSibling(name.replace(".js", ".html"));

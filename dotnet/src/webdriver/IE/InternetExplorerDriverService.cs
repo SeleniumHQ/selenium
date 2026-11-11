@@ -42,6 +42,9 @@ public sealed class InternetExplorerDriverService : DriverService
     }
 
     /// <inheritdoc />
+    protected override string DriverServiceEnvironmentVariableName => "SE_IEDRIVER";
+
+    /// <inheritdoc />
     protected override DriverOptions GetDefaultDriverOptions()
     {
         return new InternetExplorerOptions();

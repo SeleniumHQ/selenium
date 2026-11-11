@@ -80,6 +80,40 @@ class JsonInputTest {
   }
 
   @Test
+  void nextExactNumberPreservesOrdinaryValuesExactly() {
+    try (JsonInput input = newInput("42")) {
+      assertThat(input.nextExactNumber()).isEqualByComparingTo(new java.math.BigDecimal("42"));
+    }
+    try (JsonInput input = newInput("42.5")) {
+      assertThat(input.nextExactNumber()).isEqualByComparingTo(new java.math.BigDecimal("42.5"));
+    }
+    try (JsonInput input = newInput("2e3")) {
+      assertThat(input.nextExactNumber()).isEqualByComparingTo(new java.math.BigDecimal("2e3"));
+    }
+  }
+
+  @Test
+  void nextExactNumberWrapsAnOversizedPositiveExponentInAJsonException() {
+    // RFC 8259 places no bound on an exponent's digit count; BigDecimal's scale is a 32-bit int,
+    // so an exponent with enough digits overflows it — a syntactically valid JSON number that
+    // BigDecimal still can't represent, which must surface as JsonException, not leak
+    // BigDecimal's own NumberFormatException. The exact digit count that overflows is JDK-version
+    // dependent (BigDecimal's own overflow check has changed between releases — compare
+    // "Exponent overflow" on JDK 17 with "Too many nonzero exponent digits" on JDK 25), so this
+    // uses a 33-digit exponent, comfortably past Integer.MAX_VALUE (10 digits) on any JDK.
+    try (JsonInput input = newInput("1e999999999999999999999999999999")) {
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::nextExactNumber);
+    }
+  }
+
+  @Test
+  void nextExactNumberWrapsAnOversizedNegativeExponentInAJsonException() {
+    try (JsonInput input = newInput("1e-999999999999999999999999999999")) {
+      assertThatExceptionOfType(JsonException.class).isThrownBy(input::nextExactNumber);
+    }
+  }
+
+  @Test
   void shouldHandleNullValues() {
     try (JsonInput input = newInput("null")) {
       assertThat(input.peek()).isEqualTo(NULL);

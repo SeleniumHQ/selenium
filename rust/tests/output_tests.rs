@@ -15,20 +15,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::common::{get_selenium_manager, get_stderr, get_stdout};
+use crate::common::{get_selenium_manager, get_stderr, get_stdout, is_linux_arm64};
 
 use selenium_manager::logger::{DRIVER_PATH, JsonOutput, MinimalJson};
 use std::path::Path;
 
 mod common;
 
+const LICENSE: &str = include_str!("../LICENSE");
+const NOTICE: &str = include_str!("../NOTICE");
+
+#[test]
+fn license_output_includes_license_and_notice() {
+    let mut cmd = get_selenium_manager();
+    cmd.arg("--license").assert().success().code(0);
+
+    let stdout = get_stdout(&mut cmd);
+    assert_eq!(stdout, format!("{}\n{}", LICENSE, NOTICE));
+}
+
 #[test]
 fn json_output_test() {
     let mut cmd = get_selenium_manager();
-    cmd.args(["--browser", "chrome", "--output", "json"])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "json",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = get_stdout(&mut cmd);
 
@@ -43,12 +64,47 @@ fn json_output_test() {
 }
 
 #[test]
-fn shell_output_test() {
+fn json_output_keeps_stderr_empty_with_rust_log() {
     let mut cmd = get_selenium_manager();
-    cmd.args(["--browser", "chrome", "--output", "shell"])
+    cmd.env("RUST_LOG", "trace")
+        .args([
+            "--browser",
+            if is_linux_arm64() {
+                "firefox"
+            } else {
+                "chrome"
+            },
+            "--output",
+            "json",
+        ])
         .assert()
         .success()
         .code(0);
+
+    let stderr = get_stderr(&mut cmd);
+    assert!(stderr.is_empty(), "stderr: {}", stderr);
+
+    let stdout = get_stdout(&mut cmd);
+    let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(json.result.code, 0);
+}
+
+#[test]
+fn shell_output_test() {
+    let mut cmd = get_selenium_manager();
+    cmd.args([
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "shell",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = get_stdout(&mut cmd);
     assert!(stdout.contains(DRIVER_PATH));
@@ -57,10 +113,19 @@ fn shell_output_test() {
 #[test]
 fn mixed_output_test() {
     let mut cmd = get_selenium_manager();
-    cmd.args(["--browser", "chrome", "--output", "mixed"])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--browser",
+        if is_linux_arm64() {
+            "firefox"
+        } else {
+            "chrome"
+        },
+        "--output",
+        "mixed",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = get_stdout(&mut cmd);
     let json: MinimalJson = serde_json::from_str(&stdout).unwrap();

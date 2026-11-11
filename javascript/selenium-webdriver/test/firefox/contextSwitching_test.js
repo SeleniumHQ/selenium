@@ -21,7 +21,7 @@ const assert = require('node:assert')
 const error = require('selenium-webdriver/lib/error')
 const { Browser } = require('selenium-webdriver/index')
 const { Context } = require('selenium-webdriver/firefox')
-const { suite } = require('../../lib/test')
+const { ignore, suite } = require('../../lib/test')
 const firefox = require('selenium-webdriver/firefox')
 
 suite(
@@ -37,11 +37,13 @@ suite(
         return driver && driver.quit()
       })
 
-      describe('context switching', function () {
+      // System access can only be granted to a local geckodriver, not a Grid session.
+      ignore(env.remote()).describe('context switching', function () {
         beforeEach(async function () {
-          let options = env.builder().getFirefoxOptions() || new firefox.Options()
-          options.addArguments('-remote-allow-system-access')
-          driver = await env.builder().setFirefoxOptions(options).build()
+          const builder = env.builder()
+          const service = builder.getFirefoxService() || new firefox.ServiceBuilder()
+          service.addArguments('--allow-system-access')
+          driver = await builder.setFirefoxService(service).build()
         })
 
         it('can get context', async function () {

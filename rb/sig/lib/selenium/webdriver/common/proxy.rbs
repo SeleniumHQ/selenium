@@ -21,8 +21,6 @@ module Selenium
     class Proxy
       include _Proxy
 
-      @ftp: untyped
-
       @http: untyped
 
       @no_proxy: untyped
@@ -54,8 +52,6 @@ module Selenium
       def ==: (untyped other) -> untyped
 
       alias eql? ==
-
-      def ftp=: (untyped value) -> untyped
 
       def http=: (untyped value) -> untyped
 

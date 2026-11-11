@@ -140,14 +140,13 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
     this.bus.addListener(NodeRemovedEvent.listener(nodeStatus -> remove(nodeStatus.getNodeId())));
     this.bus.addListener(NodeDrainComplete.listener(this::remove));
     this.bus.addListener(
-        NodeHeartBeatEvent.listener(
-            nodeStatus -> {
-              if (nodes.containsKey(nodeStatus.getNodeId())) {
-                model.touch(nodeStatus);
-              } else {
-                register(nodeStatus);
-              }
-            }));
+        NodeHeartBeatEvent.listener(nodeStatus -> {
+          if (nodes.containsKey(nodeStatus.getNodeId())) {
+            model.touch(nodeStatus);
+          } else {
+            register(nodeStatus);
+          }
+        }));
 
     // Rebuild local proxy map from Redis on startup so this replica is immediately usable.
     reconstructLocalNodesFromRedis();
@@ -160,13 +159,12 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
         TimeUnit.MILLISECONDS);
 
     this.nodeHealthCheckExecutor =
-        Executors.newCachedThreadPool(
-            r -> {
-              Thread t = new Thread(r);
-              t.setName("node-health-check-" + t.getId());
-              t.setDaemon(true);
-              return t;
-            });
+        Executors.newCachedThreadPool(r -> {
+          Thread t = new Thread(r);
+          t.setName("node-health-check-" + t.getId());
+          t.setDaemon(true);
+          return t;
+        });
 
     if (!this.purgeNodesInterval.isZero()) {
       this.purgeDeadNodesService.scheduleAtFixedRate(
@@ -392,31 +390,29 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
       }
 
       List<Future<?>> futures = new ArrayList<>(nodeHealthChecks.size());
-      nodeHealthChecks.forEach(
-          (nodeId, check) -> {
-            // Distributed leader election: only the replica that wins the lock runs this check.
-            long lockTtlMillis = healthcheckInterval.toMillis() + 30_000L;
-            boolean won =
-                redis.setIfAbsent("grid:healthcheck:lock:" + nodeId, instanceId, lockTtlMillis);
-            if (!won) {
-              LOG.log(
-                  getDebugLogLevel(),
-                  "Another replica is handling health check for node {0}, skipping",
-                  nodeId);
-              return;
-            }
-            try {
-              futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
-            } catch (RejectedExecutionException e) {
-              LOG.log(
-                  getDebugLogLevel(),
-                  String.format(
-                      "Unable to schedule health check for node %s, running in caller thread",
-                      nodeId),
-                  e);
-              runHealthCheck(nodeId, check);
-            }
-          });
+      nodeHealthChecks.forEach((nodeId, check) -> {
+        // Distributed leader election: only the replica that wins the lock runs this check.
+        long lockTtlMillis = healthcheckInterval.toMillis() + 30_000L;
+        boolean won =
+            redis.setIfAbsent("grid:healthcheck:lock:" + nodeId, instanceId, lockTtlMillis);
+        if (!won) {
+          LOG.log(
+              getDebugLogLevel(),
+              "Another replica is handling health check for node {0}, skipping",
+              nodeId);
+          return;
+        }
+        try {
+          futures.add(nodeHealthCheckExecutor.submit(() -> runHealthCheck(nodeId, check)));
+        } catch (RejectedExecutionException e) {
+          LOG.log(
+              getDebugLogLevel(),
+              String.format(
+                  "Unable to schedule health check for node %s, running in caller thread", nodeId),
+              e);
+          runHealthCheck(nodeId, check);
+        }
+      });
 
       for (Future<?> future : futures) {
         try {
@@ -629,16 +625,15 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
       allChecks.clear();
       nodes
           .values()
-          .forEach(
-              n -> {
-                if (n instanceof RemoteNode) {
-                  try {
-                    ((RemoteNode) n).close();
-                  } catch (Exception e) {
-                    LOG.log(Level.WARNING, "Unable to close node properly: " + e.getMessage());
-                  }
-                }
-              });
+          .forEach(n -> {
+            if (n instanceof RemoteNode) {
+              try {
+                ((RemoteNode) n).close();
+              } catch (Exception e) {
+                LOG.log(Level.WARNING, "Unable to close node properly: " + e.getMessage());
+              }
+            }
+          });
       nodes.clear();
     } finally {
       writeLock.unlock();

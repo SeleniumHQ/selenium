@@ -28,6 +28,14 @@ _logger.Debug("diagnostic: request details for debugging");
 [Obsolete("Use NewMethod instead")]
 public void OldMethod() { }
 ```
+When code inside the assembly must still reference an obsolete member (e.g. a field
+or method the obsolete API is built on), wrap just that usage to keep the build
+warning-clean (see `UserPromptHandler.cs`):
+```csharp
+#pragma warning disable CS0618 // Type or member is obsolete
+this.legacyThing.DoWork();
+#pragma warning restore CS0618 // Type or member is obsolete
+```
 
 ### Async patterns
 The codebase is migrating to async

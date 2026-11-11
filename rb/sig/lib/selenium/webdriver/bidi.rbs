@@ -23,6 +23,8 @@ module Selenium
 
       @session: Session
 
+      attr_reader ws: WebSocketConnection
+
       def initialize: (url: String) -> void
 
       def add_callback: (String | Symbol event) { () -> void } -> Integer

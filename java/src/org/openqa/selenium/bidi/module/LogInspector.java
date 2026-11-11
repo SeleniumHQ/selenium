@@ -67,7 +67,7 @@ public class LogInspector implements AutoCloseable {
     this.logEntryAddedEvent = Log.entryAdded();
   }
 
-  public long onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
+  public String onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry -> logEntry.getConsoleLogEntry().ifPresent(consumer);
 
@@ -95,17 +95,16 @@ public class LogInspector implements AutoCloseable {
     addLogEntryAddedListener(logEntryConsumer);
   }
 
-  public long onJavaScriptException(Consumer<JavascriptLogEntry> consumer) {
+  public String onJavaScriptException(Consumer<JavascriptLogEntry> consumer) {
     Consumer<LogEntry> logEntryConsumer =
         logEntry ->
             logEntry
                 .getJavascriptLogEntry()
-                .ifPresent(
-                    entry -> {
-                      if (entry.getLevel() == LogLevel.ERROR) {
-                        consumer.accept(entry);
-                      }
-                    });
+                .ifPresent(entry -> {
+                  if (entry.getLevel() == LogLevel.ERROR) {
+                    consumer.accept(entry);
+                  }
+                });
 
     return addLogEntryAddedListener(logEntryConsumer);
   }
@@ -146,7 +145,7 @@ public class LogInspector implements AutoCloseable {
     addLogEntryAddedListener(logEntryConsumer);
   }
 
-  private long addLogEntryAddedListener(Consumer<LogEntry> consumer) {
+  private String addLogEntryAddedListener(Consumer<LogEntry> consumer) {
     if (browsingContextIds.isEmpty()) {
       return this.bidi.addListener(this.logEntryAddedEvent, consumer);
     } else {

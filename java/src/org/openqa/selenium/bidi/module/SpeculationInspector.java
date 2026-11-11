@@ -59,7 +59,7 @@ public class SpeculationInspector implements AutoCloseable {
     this.prefetchStatusUpdatedEvent = Speculation.prefetchStatusUpdated();
   }
 
-  public long onPrefetchStatusUpdated(Consumer<PrefetchStatusUpdatedParameters> consumer) {
+  public String onPrefetchStatusUpdated(Consumer<PrefetchStatusUpdatedParameters> consumer) {
     if (browsingContextIds.isEmpty()) {
       return this.bidi.addListener(this.prefetchStatusUpdatedEvent, consumer);
     } else {
@@ -67,7 +67,7 @@ public class SpeculationInspector implements AutoCloseable {
     }
   }
 
-  public void removeListener(long subscriptionId) {
+  public void removeListener(String subscriptionId) {
     this.bidi.removeListener(subscriptionId);
   }
 

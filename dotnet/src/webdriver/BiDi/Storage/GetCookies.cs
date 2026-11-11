@@ -39,7 +39,8 @@ public sealed record ContextGetCookiesOptions : CommandOptions
     {
         Filter = options?.Filter,
         Partition = new ContextPartitionDescriptor(context),
-        Timeout = options?.Timeout
+        AdditionalData = options?.AdditionalData ?? AdditionalData.Empty,
+        AdditionalMessageData = options?.AdditionalMessageData ?? AdditionalData.Empty
     };
 }
 

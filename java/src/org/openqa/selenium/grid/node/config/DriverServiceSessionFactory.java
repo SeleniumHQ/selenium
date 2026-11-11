@@ -157,7 +157,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
             ClientConfig.defaultConfig().readTimeout(sessionTimeout).baseUrl(serviceURL);
         client = clientFactory.createClient(clientConfig);
 
-        Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
+        Command command =
+            new Command(
+                null,
+                DriverCommand.NEW_SESSION(SessionFactory.stripPerHopCapabilities(capabilities)));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 

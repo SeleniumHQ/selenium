@@ -1,9 +1,25 @@
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("//common:defs.bzl", "copy_file")
 
+copy_file(
+    name = "license_header_local",
+    src = "//scripts:license_header.txt",
+    out = "license_header.txt",
+)
+
+copy_file(
+    name = "generated_note_local",
+    src = "//scripts:generated_note_template.txt",
+    out = "generated_note_template.txt",
+)
+
 js_binary(
     name = "make_atoms_module",
-    data = ["make-atoms-module.js"],
+    data = [
+        "make-atoms-module.js",
+        ":generated_note_local",
+        ":license_header_local",
+    ],
     entry_point = ":make-atoms-module.js",
 )
 
@@ -38,6 +54,18 @@ js_run_binary(
     args = [
         "$(rootpath //javascript/atoms/fragments:find-elements-typescript.js)",
         "$(rootpath :find-elements.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+js_run_binary(
+    name = "accessibility_snapshot",
+    srcs = ["//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js"],
+    outs = ["accessibility-snapshot.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js)",
+        "$(rootpath :accessibility-snapshot.js)",
     ],
     tool = ":make_atoms_module",
     visibility = ["//javascript/selenium-webdriver:__pkg__"],

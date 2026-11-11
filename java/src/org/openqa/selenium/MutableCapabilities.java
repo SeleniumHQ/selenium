@@ -49,12 +49,11 @@ public class MutableCapabilities implements Capabilities {
   }
 
   public MutableCapabilities(Map<String, ?> capabilities) {
-    capabilities.forEach(
-        (key, value) -> {
-          if (value != null) {
-            setCapability(key, value);
-          }
-        });
+    capabilities.forEach((key, value) -> {
+      if (value != null) {
+        setCapability(key, value);
+      }
+    });
   }
 
   /**

@@ -174,8 +174,12 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append($" -allowed-ips={this.AllowedIPAddresses}");
             }
 
-            // Unconditionally redirect browser logs to the same log as the driver
-            argsBuilder.Append(" --enable-chrome-logs");
+            // Redirect browser logs to the driver log, unless the user set CHROME_LOG_FILE, which
+            // --enable-chrome-logs would otherwise override.
+            if (Environment.GetEnvironmentVariable("CHROME_LOG_FILE") is null)
+            {
+                argsBuilder.Append(" --enable-chrome-logs");
+            }
 
             return argsBuilder.ToString();
         }

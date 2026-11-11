@@ -6,6 +6,7 @@ java_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     tags = ["skip-rbe"],
+    target_compatible_with = ["@platforms//os:linux"],
     deps = [
         "//java/src/org/openqa/selenium/events/local",
         "//java/src/org/openqa/selenium/grid/config",

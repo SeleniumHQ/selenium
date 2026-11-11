@@ -32,7 +32,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -51,7 +50,6 @@ public abstract class JupiterTestBase {
   protected AppServer appServer;
   protected Pages pages;
   protected WebDriver driver;
-  private String initialWindowHandle;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
   protected WebDriver localDriver;
@@ -71,13 +69,6 @@ public abstract class JupiterTestBase {
     driver = seleniumExtension.getDriver();
     wait = seleniumExtension::waitUntil;
     shortWait = seleniumExtension::shortWaitUntil;
-
-    if (driver != null) {
-      initialWindowHandle = driver.getWindowHandle();
-      driver.get("about:blank");
-      driver.get(pages.blankPage + "?test=" + seleniumExtension.currentTest());
-      driver.manage().deleteAllCookies();
-    }
   }
 
   @AfterEach
@@ -90,25 +81,6 @@ public abstract class JupiterTestBase {
       } catch (RuntimeException e) {
         LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
         // fall through
-      }
-    }
-  }
-
-  @AfterEach
-  final void switchToInitialWindow() {
-    if (driver == null) {
-      return;
-    }
-
-    if (initialWindowHandle != null) {
-      try {
-        driver.switchTo().window(initialWindowHandle);
-      } catch (NoSuchWindowException | NoSuchSessionException ok) {
-        LOG.log(
-            Level.FINE,
-            String.format(
-                "The initial window has been closed in test %s: %s",
-                seleniumExtension.currentTest(), ok));
       }
     }
   }

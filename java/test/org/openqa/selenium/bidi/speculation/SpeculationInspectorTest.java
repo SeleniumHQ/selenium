@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.bidi.module.SpeculationInspector;
@@ -94,11 +95,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -131,11 +131,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -164,12 +163,11 @@ class SpeculationInspectorTest extends JupiterTestBase {
 
     // Set up for success event
     CompletableFuture<PrefetchStatusUpdatedParameters> successFuture = new CompletableFuture<>();
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          if (event.getStatus() == PreloadingStatus.SUCCESS) {
-            successFuture.complete(event);
-          }
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      if (event.getStatus() == PreloadingStatus.SUCCESS) {
+        successFuture.complete(event);
+      }
+    });
 
     // Navigate to the prefetched page by clicking the link
     script.callFunctionInBrowsingContext(
@@ -196,11 +194,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -229,15 +226,15 @@ class SpeculationInspectorTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
   void canClearListenersForBrowsingContext() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -259,11 +256,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch newLatch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          newEvents.add(event);
-          newLatch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      newEvents.add(event);
+      newLatch.countDown();
+    });
 
     driver.get(testUrl);
 
@@ -284,15 +280,15 @@ class SpeculationInspectorTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
+  @Disabled("https://github.com/SeleniumHQ/selenium/issues/17764")
   void canClearListenersForMultipleBrowsingContexts() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          events.add(event);
-          latch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      events.add(event);
+      latch.countDown();
+    });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);
@@ -316,11 +312,10 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch newLatch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> newEvents = new ArrayList<>();
 
-    speculationInspector.onPrefetchStatusUpdated(
-        event -> {
-          newEvents.add(event);
-          newLatch.countDown();
-        });
+    speculationInspector.onPrefetchStatusUpdated(event -> {
+      newEvents.add(event);
+      newLatch.countDown();
+    });
 
     driver.get(testUrl);
 
@@ -345,12 +340,11 @@ class SpeculationInspectorTest extends JupiterTestBase {
     CountDownLatch latch = new CountDownLatch(1);
     List<PrefetchStatusUpdatedParameters> events = new ArrayList<>();
 
-    long subscriptionId =
-        speculationInspector.onPrefetchStatusUpdated(
-            event -> {
-              events.add(event);
-              latch.countDown();
-            });
+    String subscriptionId =
+        speculationInspector.onPrefetchStatusUpdated(event -> {
+          events.add(event);
+          latch.countDown();
+        });
 
     String testUrl = appServer.whereIs("/common/blank.html");
     driver.get(testUrl);

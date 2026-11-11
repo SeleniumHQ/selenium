@@ -26,6 +26,8 @@ module Selenium
 
         @options: Hash[untyped, untyped]
 
+        @vendor_options: Hash[String | Symbol, untyped]
+
         attr_accessor debugger_address: untyped
 
         KEY: String
@@ -41,6 +43,8 @@ module Selenium
         def add_argument: (untyped arg) -> untyped
 
         def add_preference: (untyped name, untyped value) -> untyped
+
+        def add_firefox_option: (untyped name, untyped value) -> untyped
 
         def profile=: (untyped profile) -> untyped
 
