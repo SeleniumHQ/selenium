@@ -17,6 +17,11 @@ java_export(
     exports = [
         "//java/src/org/openqa/selenium/grid",
     ],
+    # Overrides the vulnerable Jackson that fabric8 7.x pulls in; fabric8 must be pinned to 7.x while we support Java 11
+    runtime_deps = [
+        artifact("com.fasterxml.jackson.core:jackson-core"),
+        artifact("com.fasterxml.jackson.core:jackson-databind"),
+    ],
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium/events",

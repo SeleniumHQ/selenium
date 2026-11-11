@@ -236,23 +236,21 @@ class BrowserCommandsTest extends JupiterTestBase {
       Optional<String> result =
           foundFiles.stream().filter(f -> expectedFileName.matcher(f).matches()).findAny();
       if (result.isPresent()) {
-        LOG.info(
-            () ->
-                "Found file: "
-                    + result.get()
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+        LOG.info(() ->
+            "Found file: "
+                + result.get()
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       } else {
-        LOG.info(
-            () ->
-                "Not found file: "
-                    + expectedFileName
-                    + " in temp dir: "
-                    + dir.toAbsolutePath()
-                    + ". All found files: "
-                    + foundFiles);
+        LOG.info(() ->
+            "Not found file: "
+                + expectedFileName
+                + " in temp dir: "
+                + dir.toAbsolutePath()
+                + ". All found files: "
+                + foundFiles);
       }
       return result.isPresent();
     }

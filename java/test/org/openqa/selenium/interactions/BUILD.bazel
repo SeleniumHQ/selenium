@@ -30,6 +30,13 @@ java_selenium_test_suite(
         ["*Test.java"],
         exclude = SMALL_TESTS,
     ),
+    extra_tags = {
+        "CombinedInputActionsTest.java": ["os-sensitive"],
+        "DefaultKeyboardTest.java": ["os-sensitive"],
+        "DefaultMouseTest.java": ["os-sensitive"],
+        "DefaultWheelTest.java": ["os-sensitive"],
+        "DragAndDropTest.java": ["os-sensitive"],
+    },
     javacopts = [
         "--release",
         TOOLS_JAVA_VERSION,

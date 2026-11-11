@@ -1353,18 +1353,16 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return actualValue
-            .map(
-                value ->
-                    String.format(
-                        "element found by %s to have attribute or CSS value \"%s\" containing"
-                            + " \"%s\", but the attribute had value \"%s\".",
-                        locator, attributeName, expectedValue, value))
-            .orElseGet(
-                () ->
-                    String.format(
-                        "element found by %s to have attribute or CSS value \"%s\" containing"
-                            + " \"%s\", but such attribute was not found.",
-                        locator, attributeName, expectedValue));
+            .map(value ->
+                String.format(
+                    "element found by %s to have attribute or CSS value \"%s\" containing"
+                        + " \"%s\", but the attribute had value \"%s\".",
+                    locator, attributeName, expectedValue, value))
+            .orElseGet(() ->
+                String.format(
+                    "element found by %s to have attribute or CSS value \"%s\" containing"
+                        + " \"%s\", but such attribute was not found.",
+                    locator, attributeName, expectedValue));
       }
     };
   }

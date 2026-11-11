@@ -8,6 +8,6 @@ SE_MANAGER_TEST_DATA = select({
 })
 
 SE_MANAGER_TEST_ENV = select({
-    "//common:manager_stub": {"SE_MANAGER_PATH": "$(rlocationpath //rust:selenium-manager)"},
+    "//common:manager_stub": {"SE_MANAGER_PATH": "$(rootpath //rust:selenium-manager)"},
     "//conditions:default": {},
 })

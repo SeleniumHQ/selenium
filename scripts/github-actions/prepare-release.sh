@@ -25,6 +25,6 @@ fi
 if wanted python; then targets+=(//py:selenium-wheel //py:selenium-sdist); fi
 if wanted ruby; then targets+=(//rb:selenium-webdriver //rb:selenium-devtools); fi
 if wanted dotnet; then targets+=(//dotnet:release); fi
-if wanted javascript; then targets+=(//javascript/selenium-webdriver:selenium-webdriver); fi
+if wanted javascript; then targets+=(//javascript/atoms:selenium-atoms-package //javascript/selenium-webdriver:selenium-webdriver); fi
 
 bazel build --config=rbe-ci --config=release --keep_going "${targets[@]}"

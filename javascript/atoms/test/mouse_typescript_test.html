@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>mouse_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/testing/mouse-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <div id="outerA" style="padding:20px"><button id="a">a</button></div>
+  <div id="outerB" style="padding:20px"><input id="b"></div>
+  <div id="plain" style="width:50px;height:20px">plain</div>
+  <label id="lab" for="chk">label</label><input type="checkbox" id="chk">
+  <a id="link" href="#clicked">link</a>
+  <form id="form" target="sink" action="about:blank"><button id="submit">go</button></form>
+  <iframe name="sink" style="display:none"></iframe>
+  <button id="disabled" disabled>disabled</button>
+  <div id="host"></div>
+  <script type="text/javascript">
+    // The expected sequences are what Chrome produces for a real WebDriver
+    // click (recorded 2026-10-13); Firefox produces the same events and only
+    // orders pointermove before the compatibility mouseover. Ported from
+    // mouse_test.html in substance -- that page asserts per-engine sequences
+    // for IE, MSPointer and Firefox 3 that no longer apply.
+    var Mouse = window.bot.mouse.typescript.Mouse;
+    var mouse;
+    var listeners = [];
+
+    var TYPES = ['pointerover', 'pointerenter', 'pointerdown', 'pointermove', 'pointerup', 'pointerout',
+        'pointerleave', 'mouseover', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
+        'mouseleave', 'click', 'focus', 'blur', 'input', 'change'];
+
+    function $(id) { return document.getElementById(id); }
+
+    function on(el, type, fn) {
+      el.addEventListener(type, fn, true);
+      listeners.push([el, type, fn]);
+    }
+
+    // type@target, plus " rX" for a related target, recorded in capture so
+    // non-bubbling enter/leave/focus/blur are seen too.
+    function record(opt_types) {
+      var log = [];
+      (opt_types || TYPES).forEach(function(type) {
+        on(document, type, function(e) {
+          var t = e.target && e.target.id;
+          if (!t) return;
+          var rel = e.relatedTarget ? ' r' + (e.relatedTarget.id || e.relatedTarget.tagName) : '';
+          log.push(type + '@' + t + rel);
+        });
+      });
+      return log;
+    }
+
+    QUnit.testStart(function() {
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      $('chk').checked = false;
+      $('b').value = '';
+      mouse = new Mouse();
+    });
+
+    QUnit.testDone(function() {
+      listeners.forEach(function(l) { l[0].removeEventListener(l[1], l[2], true); });
+      listeners = [];
+    });
+
+    QUnit.test('first move enters from nowhere', function(assert) {
+      var log = record();
+      mouse.move($('a'));
+      assert.deepEqual(log, [
+        'pointerover@a', 'pointerenter@outerA', 'pointerenter@a',
+        'mouseover@a', 'mouseenter@outerA', 'mouseenter@a',
+        'pointermove@a', 'mousemove@a']);
+    });
+
+    QUnit.test('moving between elements leaves and enters up to the common ancestor', function(assert) {
+      mouse.move($('a'));
+      var log = record();
+      mouse.move($('b'));
+      assert.deepEqual(log, [
+        'pointerout@a rb', 'pointerleave@a rb', 'pointerleave@outerA rb',
+        'pointerover@b ra', 'pointerenter@outerB ra', 'pointerenter@b ra',
+        'mouseout@a rb', 'mouseleave@a rb', 'mouseleave@outerA rb',
+        'mouseover@b ra', 'mouseenter@outerB ra', 'mouseenter@b ra',
+        'pointermove@b', 'mousemove@b']);
+    });
+
+    QUnit.test('moving within the same element only moves', function(assert) {
+      mouse.move($('a'));
+      var log = record();
+      mouse.move($('a'), {x: 1, y: 1});
+      assert.deepEqual(log, ['pointermove@a', 'mousemove@a']);
+    });
+
+    QUnit.test('a click is down, focus, up, click', function(assert) {
+      mouse.move($('b'));
+      var log = record();
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.deepEqual(log, ['pointerdown@b', 'mousedown@b', 'focus@b', 'pointerup@b', 'mouseup@b', 'click@b']);
+      assert.strictEqual(document.activeElement, $('b'));
+    });
+
+    QUnit.test('event fields: buttons, click count, position, pointer', function(assert) {
+      var seen = {};
+      ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click', 'mousemove'].forEach(function(type) {
+        on($('a'), type, function(e) { seen[type] = e; });
+      });
+      mouse.move($('a'), {x: 3, y: 4});
+      mouse.pressButton();
+      mouse.releaseButton();
+      var rect = $('a').getBoundingClientRect();
+      assert.strictEqual(seen.mousemove.clientX, rect.left + 3);
+      assert.strictEqual(seen.mousemove.clientY, rect.top + 4);
+      assert.strictEqual(seen.mousemove.detail, 0);
+      assert.deepEqual([seen.pointerdown.buttons, seen.mousedown.buttons, seen.pointerup.buttons,
+          seen.mouseup.buttons, seen.click.buttons], [1, 1, 0, 0, 0]);
+      assert.deepEqual([seen.mousedown.detail, seen.mouseup.detail, seen.click.detail], [1, 1, 1]);
+      assert.strictEqual(seen.pointerdown.pointerType, 'mouse');
+      assert.strictEqual(seen.pointerdown.isPrimary, true);
+      assert.strictEqual(seen.click.button, 0);
+    });
+
+    // Recorded from real WebDriver input in Chrome and Firefox (2026-10-14):
+    // pointer events where no button changed report -1; the compatibility
+    // mouse events report 0 throughout.
+    QUnit.test('button is -1 on pointer events that change no button', function(assert) {
+      var seen = {};
+      var types = ['pointerover', 'pointerenter', 'pointermove', 'pointerdown', 'pointerup', 'pointerout',
+          'pointerleave', 'mouseover', 'mouseenter', 'mousemove', 'mousedown', 'mouseup', 'mouseout',
+          'mouseleave', 'click'];
+      types.forEach(function(type) {
+        on(document, type, function(e) { if (e.target.id === 'a') seen[type] = e.button; });
+      });
+      mouse.move($('a'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      mouse.move($('b'));
+      assert.deepEqual(seen, {
+        pointerover: -1, pointerenter: -1, pointermove: -1, pointerdown: 0, pointerup: 0,
+        pointerout: -1, pointerleave: -1,
+        mouseover: 0, mouseenter: 0, mousemove: 0, mousedown: 0, mouseup: 0, click: 0,
+        mouseout: 0, mouseleave: 0});
+    });
+
+    QUnit.test('the default position is the centre of the element', function(assert) {
+      var x;
+      on($('a'), 'mousemove', function(e) { x = e.clientX; });
+      mouse.move($('a'));
+      var rect = $('a').getBoundingClientRect();
+      assert.ok(Math.abs(x - (rect.left + rect.width / 2)) <= 1);
+    });
+
+    QUnit.test('cancelling pointerdown suppresses mousedown, mouseup and focus but not click', function(assert) {
+      mouse.move($('b'));
+      on($('b'), 'pointerdown', function(e) { e.preventDefault(); });
+      var log = record();
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.deepEqual(log, ['pointerdown@b', 'pointerup@b', 'click@b']);
+      assert.notStrictEqual(document.activeElement, $('b'));
+    });
+
+    QUnit.test('cancelling mousedown keeps focus where it was', function(assert) {
+      $('b').focus();
+      mouse.move($('a'));
+      on($('a'), 'mousedown', function(e) { e.preventDefault(); });
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.strictEqual(document.activeElement, $('b'));
+    });
+
+    QUnit.test('a mousedown handler that moves focus is not overridden', function(assert) {
+      mouse.move($('a'));
+      on($('a'), 'mousedown', function() { $('b').focus(); });
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.strictEqual(document.activeElement, $('b'));
+    });
+
+    QUnit.test('clicking non-focusable content blurs the focused field', function(assert) {
+      $('b').focus();
+      mouse.move($('plain'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.notStrictEqual(document.activeElement, $('b'));
+    });
+
+    QUnit.test('a checkbox toggles natively, with input and change', function(assert) {
+      mouse.move($('chk'));
+      var log = record(['click', 'input', 'change']);
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.ok($('chk').checked);
+      assert.deepEqual(log, ['click@chk', 'input@chk', 'change@chk']);
+    });
+
+    QUnit.test('a label forwards its click to its control', function(assert) {
+      mouse.move($('lab'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.ok($('chk').checked);
+    });
+
+    QUnit.test('a link navigates once', function(assert) {
+      var done = assert.async();
+      location.hash = '';
+      var changes = 0;
+      function onHash() { changes++; }
+      window.addEventListener('hashchange', onHash);
+      mouse.move($('link'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      setTimeout(function() {
+        window.removeEventListener('hashchange', onHash);
+        assert.strictEqual(location.hash, '#clicked');
+        assert.strictEqual(changes, 1);
+        done();
+      }, 200);
+    });
+
+    QUnit.test('a submit button submits its form', function(assert) {
+      var submitted = 0;
+      on($('form'), 'submit', function(e) { submitted++; e.preventDefault(); });
+      mouse.move($('submit'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.strictEqual(submitted, 1);
+    });
+
+    QUnit.test('the click still fires when mouseup hides the element', function(assert) {
+      mouse.move($('a'));
+      var clicked = false;
+      on($('a'), 'mouseup', function() { $('a').style.display = 'none'; });
+      on($('a'), 'click', function() { clicked = true; });
+      mouse.pressButton();
+      mouse.releaseButton();
+      $('a').style.display = '';
+      assert.ok(clicked);
+    });
+
+    QUnit.test('a disabled control gets no events', function(assert) {
+      var log = record();
+      mouse.move($('disabled'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.deepEqual(log.filter(function(e) { return e.indexOf('@disabled') > 0; }), []);
+    });
+
+    // UI Events: the click goes to the nearest common ancestor of the mousedown
+    // and mouseup targets. bot.Mouse fired no click at all here.
+    QUnit.test('releasing over a different element clicks their common ancestor', function(assert) {
+      mouse.move($('a'));
+      mouse.pressButton();
+      mouse.move($('b'));
+      var log = record(['mouseup', 'click']);
+      var clicked = null;
+      on(document, 'click', function(e) { clicked = e.target; });
+      mouse.releaseButton();
+      assert.deepEqual(log, ['mouseup@b'], 'neither a nor b is clicked');
+      assert.strictEqual(clicked, document.body);
+    });
+
+    QUnit.test('button rules', function(assert) {
+      mouse.move($('a'));
+      assert.throws(function() { mouse.releaseButton(); },
+          function(e) { return e.code === 'unknown error'; }, 'nothing pressed');
+      mouse.pressButton();
+      assert.throws(function() { mouse.pressButton(); },
+          function(e) { return e.code === 'unknown error'; }, 'already pressed');
+      mouse.releaseButton();
+    });
+
+    QUnit.test('a click inside a shadow root reaches the document', function(assert) {
+      var host = $('host');
+      var root = host.shadowRoot || host.attachShadow({mode: 'open'});
+      root.innerHTML = '<button>inner</button>';
+      var seen = null;
+      on(document, 'click', function(e) { seen = e.target; });
+      mouse.move(root.querySelector('button'));
+      mouse.pressButton();
+      mouse.releaseButton();
+      assert.strictEqual(seen, host);
+    });
+  </script>
+</body>
+
+</html>

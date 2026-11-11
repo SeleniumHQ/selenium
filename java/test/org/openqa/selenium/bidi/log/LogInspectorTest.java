@@ -474,11 +474,10 @@ class LogInspectorTest extends JupiterTestBase {
     try (LogInspector logInspector = new LogInspector(driver)) {
       List<ConsoleLogEntry> receivedEntries = new ArrayList<>();
       CountDownLatch latch = new CountDownLatch(1);
-      logInspector.onConsoleEntry(
-          entry -> {
-            receivedEntries.add(entry);
-            latch.countDown();
-          });
+      logInspector.onConsoleEntry(entry -> {
+        receivedEntries.add(entry);
+        latch.countDown();
+      });
 
       page = appServer.whereIs("/bidi/logEntryAdded.html");
       driver.get(page);

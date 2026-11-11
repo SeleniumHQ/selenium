@@ -135,3 +135,14 @@ def test_can_init_empty_proxy():
     proxy_capabilities = {}
     proxy_capabilities["proxyType"] = "unspecified"
     assert proxy_capabilities == options.to_capabilities().get("proxy")
+
+
+def test_can_init_manual_proxy_with_ssl_proxy_only():
+    proxy = Proxy(raw={"sslProxy": "ssl.proxy:1234"})
+    assert ProxyType.MANUAL == proxy.proxy_type
+    assert "ssl.proxy:1234" == proxy.ssl_proxy
+
+
+def test_cannot_set_ssl_proxy_when_direct_proxy_type():
+    with pytest.raises(ValueError):
+        Proxy(raw={"proxyType": "direct", "sslProxy": "ssl.proxy:1234"})

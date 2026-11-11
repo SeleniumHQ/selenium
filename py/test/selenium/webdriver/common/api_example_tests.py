@@ -150,7 +150,7 @@ def test_is_selected_and_toggle(driver, pages):
 
 def test_navigate(driver, pages):
     pages.load("formPage.html")
-    driver.find_element(By.ID, "imageButton").submit()
+    driver.find_element(By.ID, "imageButton").click()
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
     driver.back()
     assert "We Leave From Here" == driver.title

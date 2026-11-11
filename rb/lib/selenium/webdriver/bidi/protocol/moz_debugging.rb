@@ -49,7 +49,9 @@ module Selenium
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
-          ListScriptsResult = Serialization::Record.define(scripts: {wire_key: 'scripts', list: true})
+          ListScriptsResult = Serialization::Record.define(
+            scripts: {wire_key: 'scripts', list: true, primitive: 'string'}
+          )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
@@ -70,9 +72,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetBreakpointParameters::Location = Serialization::Record.define(
-            line: {wire_key: 'line', primitive: 'integer'},
+            line: {wire_key: 'line', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             url: {wire_key: 'url', primitive: 'string'},
-            column: {wire_key: 'column', required: false, primitive: 'integer'}
+            column: {wire_key: 'column', required: false, primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private
@@ -82,16 +84,16 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           BaseLocation = Serialization::Record.define(
-            line: {wire_key: 'line', primitive: 'integer'},
+            line: {wire_key: 'line', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             url: {wire_key: 'url', primitive: 'string'}
           )
 
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           SetDebuggerEnabledParameters = Serialization::Record.define(
-            contexts: {wire_key: 'contexts', required: false, list: true},
+            contexts: {wire_key: 'contexts', required: false, list: true, primitive: 'string'},
             enabled: {wire_key: 'enabled', nullable: true, primitive: 'boolean'},
-            user_contexts: {wire_key: 'userContexts', required: false, list: true}
+            user_contexts: {wire_key: 'userContexts', required: false, list: true, primitive: 'string'}
           )
 
           # @api private
@@ -111,8 +113,8 @@ module Selenium
           PausedParameters = Serialization::Record.define(
             context: {wire_key: 'context', primitive: 'string'},
             url: {wire_key: 'url', primitive: 'string'},
-            line: {wire_key: 'line', primitive: 'integer'},
-            column: {wire_key: 'column', primitive: 'integer'},
+            line: {wire_key: 'line', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
+            column: {wire_key: 'column', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             call_frames: {wire_key: 'callFrames', ref: 'MozDebugging::PausedParametersCallFrame', list: true}
           )
 
@@ -128,9 +130,9 @@ module Selenium
           # @api private
           # @see https://www.selenium.dev/documentation/warnings/bidi-implementation/
           PausedParametersCallFrame::Location = Serialization::Record.define(
-            line: {wire_key: 'line', primitive: 'integer'},
+            line: {wire_key: 'line', primitive: 'integer', min: 0, max: 9_007_199_254_740_991},
             url: {wire_key: 'url', primitive: 'string'},
-            column: {wire_key: 'column', primitive: 'integer'}
+            column: {wire_key: 'column', primitive: 'integer', min: 0, max: 9_007_199_254_740_991}
           )
 
           # @api private

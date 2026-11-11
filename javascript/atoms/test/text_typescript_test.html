@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>text_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/get-text-global.js"></script>
+  <style>
+    .transparent {
+      opacity: 0;
+    }
+  </style>
+  <script type="text/javascript">
+    var getText = window.bot.dom.typescript.getText;
+
+    function byId(id) {
+      var element = document.getElementById(id);
+      if (!element) { throw new Error('no such element: ' + id); }
+      return element;
+    }
+
+    function textOf(id) { return getText(byId(id)); }
+
+    function assertContains(assert, expected, actual) {
+      assert.ok(actual.indexOf(expected) >= 0,
+        'Expected [' + actual + '] to contain [' + expected + ']');
+    }
+
+    function assertStartsWith(assert, expected, actual) {
+      assert.ok(actual.indexOf(expected) === 0,
+        'Expected [' + actual + '] to start with [' + expected + ']');
+    }
+
+    function assertEndsWith(assert, expected, actual) {
+      assert.ok(actual.endsWith(expected),
+        'Expected [' + actual + '] to end with [' + expected + ']');
+    }
+
+    // ── ported verbatim from text_test.html (the Closure spec page) ───────────
+
+    QUnit.test('returns one line text', function (assert) {
+      assert.strictEqual(textOf('oneline'), 'A single line of text');
+    });
+
+    QUnit.test('returns multiline text', function (assert) {
+      var text = textOf('multiline');
+      assertContains(assert, 'A div containing', text);
+      assertContains(assert, 'More than one line of text', text);
+      assertContains(assert, 'and block level elements', text);
+    });
+
+    QUnit.test('block-level element introduces a newline', function (assert) {
+      var text = textOf('multiline');
+      assertStartsWith(assert, 'A div containing\n', text);
+      assertContains(assert, 'More than one line of text\n', text);
+      assertEndsWith(assert, 'and block level elements', text);
+    });
+
+    QUnit.test('collapses multiple spaces into one', function (assert) {
+      assert.strictEqual(textOf('lotsofspaces'), 'This line has lots of spaces.');
+    });
+
+    QUnit.test('converts NBSP to a regular space', function (assert) {
+      assert.strictEqual(textOf('nbsp'), 'This line has a non-breaking space');
+    });
+
+    QUnit.test('does not collapse NBSP into adjacent regular spaces', function (assert) {
+      // 'a   non-breaking' — three spaces after conversion, not one.
+      assert.strictEqual(textOf('nbspandspaces'),
+        'This line has a   non-breaking space and spaces');
+    });
+
+    QUnit.test('does not trim trailing NBSP', function (assert) {
+      assert.strictEqual(textOf('trailingnbsp'),
+        'This line has trailing non-breaking spaces   ');
+    });
+
+    QUnit.test('does not trim NBSP at the end of a middle line', function (assert) {
+      assertStartsWith(assert, 'These lines  \n', textOf('multilinetrailingnbsp'));
+    });
+
+    QUnit.test('does not trim NBSP at the start of a middle line', function (assert) {
+      assertContains(assert, '\n  have', textOf('multilinetrailingnbsp'));
+    });
+
+    QUnit.test('does not trim trailing NBSP in multiline text', function (assert) {
+      assertEndsWith(assert, 'trailing NBSPs  ', textOf('multilinetrailingnbsp'));
+    });
+
+    QUnit.test('inline elements do not introduce line breaks', function (assert) {
+      assert.strictEqual(textOf('inline'),
+        'This line has text within elements that are meant to be displayed inline');
+    });
+
+    QUnit.test('returns the text of a span', function (assert) {
+      assert.strictEqual(textOf('span'), 'An inline element');
+    });
+
+    QUnit.test('returns empty string for all-whitespace text', function (assert) {
+      assert.strictEqual(textOf('spaces'), '');
+    });
+
+    QUnit.test('returns empty string for empty element', function (assert) {
+      assert.strictEqual(textOf('empty'), '');
+    });
+
+    QUnit.test('trims whitespace inside an inline span', function (assert) {
+      assert.strictEqual(textOf('inlinespan'), 'line has text');
+    });
+
+    QUnit.test('handles adjacent inline elements without spaces between them', function (assert) {
+      assert.strictEqual(textOf('inlinenospaces'), 'oooOooo');
+      assert.strictEqual(textOf('inlinenospaces2'), 'A B');
+    });
+
+    QUnit.test('does not add extra spaces around inline elements', function (assert) {
+      assert.strictEqual(textOf('descartes'), 'Dubito, ergo cogito, ergo sum.');
+      assert.strictEqual(textOf('abc'), 'a bc');
+    });
+
+    QUnit.test('br inside an inline element creates a line break', function (assert) {
+      assertContains(assert, 'foo\nbar', textOf('label1'));
+    });
+
+    QUnit.test('omits display:none subtrees', function (assert) {
+      assert.strictEqual(textOf('suppressedParagraph'), '');
+    });
+
+    QUnit.test('includes an explicitly-visible child of a visibility:hidden parent', function (assert) {
+      assert.strictEqual(textOf('outer'), 'sub-element that is explicitly visible');
+    });
+
+    QUnit.test('sibling block-level elements', function (assert) {
+      assert.strictEqual(textOf('twoblocks'), 'Some text\nSome more text');
+    });
+
+    QUnit.test('nested block-level elements', function (assert) {
+      assert.strictEqual(textOf('nestedblocks'),
+        'Cheese\nSome text\nSome more text\nand also\nBrie');
+    });
+
+    QUnit.test('does not trim spaces when a td line wraps', function (assert) {
+      assert.strictEqual(textOf('wrappingtd'), 'beforeSpace afterSpace');
+    });
+
+    QUnit.test('handles trailing whitespace anchors', function (assert) {
+      assert.strictEqual(textOf('trailingSpaces'), '1 2 3 4');
+    });
+
+    QUnit.test('handles a trailing br', function (assert) {
+      assert.strictEqual(textOf('trailingBreaks'), 'a\nb');
+    });
+
+    QUnit.test('keeps NBSP before a tag boundary', function (assert) {
+      assert.strictEqual(textOf('id2'), 'this is the second element');
+    });
+
+    QUnit.test('removes zero-width characters', function (assert) {
+      assert.strictEqual(textOf('zerowidth'),
+        'This line has a bunch of zero-width characters in it.');
+    });
+
+    QUnit.test('omits text rendered at opacity 0', function (assert) {
+      assert.strictEqual(textOf('opaque'), 'Some text');
+    });
+
+    // ── pre-formatted text (mandatory) ────────────────────────────────────────
+
+    QUnit.test('pre element preserves internal whitespace', function (assert) {
+      assert.strictEqual(textOf('preformatted'),
+        '   This section has a preformatted\n    text block\n  split in four lines\n         ');
+    });
+
+    QUnit.test('pre inside a block preserves whitespace', function (assert) {
+      assert.strictEqual(textOf('div-with-pre'),
+        'before pre\n   This section has a preformatted\n    text block\n  split in four lines\n         \nafter pre');
+    });
+
+    // ── text-transform (mandatory) ────────────────────────────────────────────
+
+    QUnit.test('text-transform:capitalize titlecases ASCII words', function (assert) {
+      assert.strictEqual(textOf('capitalized'), 'Hello, World! Bla-Bla-BLA');
+    });
+
+    QUnit.test('text-transform:lowercase', function (assert) {
+      assert.strictEqual(textOf('lowercased'), 'hello, world! bla-bla-bla');
+    });
+
+    QUnit.test('text-transform:uppercase', function (assert) {
+      assert.strictEqual(textOf('uppercased'), 'HELLO, WORLD! BLA-BLA-BLA');
+    });
+
+    QUnit.test('capitalize handles accented characters', function (assert) {
+      assert.strictEqual(textOf('capitalized_accented_character'), 'Fecha De Expiración');
+    });
+
+    QUnit.test('capitalize handles the letter ñ', function (assert) {
+      assert.strictEqual(textOf('capitalized_enye'), 'Mañana');
+    });
+
+    QUnit.test('capitalize: underscore is not a word boundary', function (assert) {
+      assert.strictEqual(textOf('capitalized-9'), 'Test_text');
+    });
+
+    QUnit.test('capitalize handles Cyrillic', function (assert) {
+      assert.strictEqual(textOf('capitalized-cyrillic'),
+        'Привет Мир');
+    });
+
+    QUnit.test('capitalize: Cyrillic underscore does not capitalise after underscore', function (assert) {
+      assert.strictEqual(textOf('capitalized-cyrillic-underscore'),
+        'Привет_мир');
+    });
+  </script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <!-- Fixtures: ported verbatim from text_test.html -->
+  <p id="oneline">A single line of text</p>
+
+  <div id="multiline">
+    <div>
+      <p>A div containing</p>
+      More than one line of text<br/>
+      <div>and block level elements</div>
+    </div>
+  </div>
+
+  <span id="span">An inline element</span>
+
+  <p id="lotsofspaces">This line has lots
+
+      of spaces.
+  </p>
+
+  <p id="nbsp">This line has a&nbsp;non-breaking space</p>
+
+  <p id="spaces">        </p>
+
+  <p id="empty"></p>
+
+  <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+  <p id="outer" style="visibility: hidden">A <b id="visibleSubElement" style="visibility: visible">sub-element that is explicitly visible</b> using CSS visibility=visible</p>
+
+  <p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
+  <p id="trailingnbsp">This line has trailing non-breaking spaces&nbsp;&nbsp;&nbsp;</p>
+  <p id="multilinetrailingnbsp">These lines &nbsp<br />&nbsp have leading and trailing NBSPs&nbsp;&nbsp;</p>
+
+  <p id="inline">This <span id="inlinespan">    line has <em>text</em>  </span> within elements that are meant to be displayed
+      <!-- not as a block but --> inline</p>
+
+  <div id="div-with-pre">
+    <p>before pre</p>
+    <pre id="preformatted">   This section has a preformatted
+    text block
+  split in four lines
+         </pre>
+    <p>after pre</p>
+  </div>
+
+  <div id="twoblocks"><p>Some text</p><p>Some more text</p></div>
+
+  <div id="nestedblocks">Cheese <div><p>Some text</p><div><p>Some more text</p><p>and also</p></div></div>Brie</div>
+
+  <div id="inlinenospaces">ooo<strong>O</strong>ooo</div>
+  <div id="inlinenospaces2"><span>A <span></span>B</span></div>
+
+  <form action="resultPage.html">
+    <p>
+      <input type="checkbox" id="checkbox1">
+      <label id="label1" for="checkbox1">foo<br />bar</label>
+    </p>
+  </form>
+
+  <div id="trailingSpaces">
+1
+<a href="">2</a>
+3
+<a href="">4</a></div>
+
+  <div id="trailingBreaks">
+    <span>a<br></span><span>b</span>
+  </div>
+
+  <table id="wrappingtable">
+    <tbody>
+      <tr><td id="wrappingtd" style="width: 10px;"><span>beforeSpace</span><span> </span><span>afterSpace</span></td></tr>
+    </tbody>
+  </table>
+
+  <span><strong id="descartes">Dubito, <em>ergo cogito</em>, ergo sum.</strong></span>
+  <span id="abc"><b>a</b> <b>b</b>c</span>
+
+  <a id="id2">this is the&nbsp;<b>second</b> <span>element</span></a>
+
+  <div id="opaque">Some <span class="transparent">transparent</span> text</div>
+
+  <span id="zerowidth">This line has a bunch of ze&#8203;ro-width&lrm; characters&rlm; in it.</span>
+
+  <div>
+    <a id="capitalized" style="text-transform: capitalize">hello, world! bla-bla-BLA</a><br/>
+    <a id="lowercased" style="text-transform: lowercase">Hello, world! bla-bla-BLA</a><br/>
+    <a id="uppercased" style="text-transform: uppercase">hello, world! bla-bla-BLA</a><br/>
+  </div>
+
+  <div>
+    <a id="capitalized_accented_character" style="text-transform: capitalize">Fecha de expiraci&#243;n</a><br/>
+    <a id="capitalized_enye" style="text-transform: capitalize">ma&#241;ana</a><br/>
+  </div>
+
+  <div>
+    <a id="capitalized-9" style="text-transform: capitalize">test_text</a><br/>
+    <a id="capitalized-cyrillic" style="text-transform: capitalize">&#x43F;&#x440;&#x438;&#x432;&#x435;&#x442; &#x43C;&#x438;&#x440;</a><br/>
+    <a id="capitalized-cyrillic-underscore" style="text-transform: capitalize">&#x43F;&#x440;&#x438;&#x432;&#x435;&#x442;_&#x43C;&#x438;&#x440;</a><br/>
+  </div>
+</body>
+
+</html>

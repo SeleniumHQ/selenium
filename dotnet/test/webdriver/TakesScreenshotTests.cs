@@ -221,88 +221,37 @@ public class TakesScreenshotTests : DriverTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
-    [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
-    [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
-    [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
     {
-#if NET10_0
-        Assert.Ignore("Skipping test: this framework can not process colors.");
-#endif
-
         if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
         Driver.Url = Urls.WhereIs("screen/screen_frames.html");
+        Screenshot pageScreenshot = screenshotCapableDriver.GetScreenshot();
 
         Driver.SwitchTo().Frame(Driver.FindElement(By.Id("frame2")));
+        Screenshot frameScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-        HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                   /* stepX in pixels */ 5,
-                                                   /* stepY in pixels */ 5);
-
-        HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6);
-        expectedColors.UnionWith(GenerateExpectedColors( /* initial color */ 0xDFDFDF,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6));
-
-        // expectation is that screenshot at page with frames after switching to a frame
-        // will be taken for full page
-        CompareColors(expectedColors, actualColors);
+        Assert.That(frameScreenshot.AsBase64EncodedString, Is.EqualTo(pageScreenshot.AsBase64EncodedString));
     }
 
     [Test]
-    [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
-    [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
-    [IgnoreBrowser(Browser.Chrome, "Color comparisons fail on Chrome")]
-    [IgnoreBrowser(Browser.Edge, "Color comparisons fail on Edge")]
     public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
     {
-#if NET10_0
-        Assert.Ignore("Skipping test: this framework can not process colors.");
-#endif
-
         if (Driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
 
         Driver.Url = Urls.WhereIs("screen/screen_iframes.html");
-
-        // Resize the window to avoid scrollbars in screenshot
-        Size originalSize = Driver.Manage().Window.Size;
-        Driver.Manage().Window.Size = new Size(1040, 700);
+        Screenshot pageScreenshot = screenshotCapableDriver.GetScreenshot();
 
         Driver.SwitchTo().Frame(Driver.FindElement(By.Id("iframe2")));
+        Screenshot frameScreenshot = screenshotCapableDriver.GetScreenshot();
 
-        Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-        Driver.Manage().Window.Size = originalSize;
-
-        HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                   /* stepX in pixels */ 5,
-                                                   /* stepY in pixels */ 5);
-
-        HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6);
-        expectedColors.UnionWith(GenerateExpectedColors( /* initial color */ 0xDFDFDF,
-                                                 /* color step*/ 1000,
-                                                 /* grid X size */ 6,
-                                                 /* grid Y size */ 6));
-
-        // expectation is that screenshot at page with Iframes after switching to a Iframe
-        // will be taken for full page
-        CompareColors(expectedColors, actualColors);
+        Assert.That(frameScreenshot.AsBase64EncodedString, Is.EqualTo(pageScreenshot.AsBase64EncodedString));
     }
 
     private string FormatColorToHex(int colorValue)

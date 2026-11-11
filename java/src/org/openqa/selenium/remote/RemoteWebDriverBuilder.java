@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -114,8 +113,7 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capabilities to use", maybeThis);
 
     if (!requestedCapabilities.isEmpty()) {
-      LOG.log(
-          getDebugLogLevel(), "Removing existing requested capabilities: " + requestedCapabilities);
+      LOG.fine("Removing existing requested capabilities: " + requestedCapabilities);
       requestedCapabilities.clear();
     }
 
@@ -154,8 +152,7 @@ public class RemoteWebDriverBuilder {
 
     Object previous = metadata.put(key, value);
     if (previous != null) {
-      LOG.log(
-          getDebugLogLevel(),
+      LOG.fine(
           String.format(
               "Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
     }
@@ -175,12 +172,10 @@ public class RemoteWebDriverBuilder {
 
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
-      LOG.log(
-          getDebugLogLevel(),
-          () ->
-              String.format(
-                  "Overwriting capability %s. Previous value %s, new value %s",
-                  capabilityName, previous, value));
+      LOG.fine(() ->
+          String.format(
+              "Overwriting capability %s. Previous value %s, new value %s",
+              capabilityName, previous, value));
     }
 
     return this;
@@ -324,31 +319,27 @@ public class RemoteWebDriverBuilder {
     Optional<Supplier<WebDriver>> first =
         requestedCapabilities.stream()
             .map(caps -> caps.merge(additional))
-            .flatMap(
-                caps ->
-                    infos.stream()
-                        .filter(info -> info.isSupporting(caps))
-                        .filter(WebDriverInfo::isAvailable)
-                        .map(
-                            info ->
-                                (Supplier<WebDriver>)
-                                    () ->
-                                        info.createDriver(caps, clientConfig)
-                                            .orElseThrow(
-                                                () ->
-                                                    new SessionNotCreatedException(
-                                                        "Unable to create session with " + caps))))
+            .flatMap(caps ->
+                infos.stream()
+                    .filter(info -> info.isSupporting(caps))
+                    .filter(WebDriverInfo::isAvailable)
+                    .map(info ->
+                        (Supplier<WebDriver>)
+                            () ->
+                                info.createDriver(caps, clientConfig)
+                                    .orElseThrow(() ->
+                                        new SessionNotCreatedException(
+                                            "Unable to create session with " + caps))))
             .findFirst();
 
     Supplier<WebDriver> supplier =
-        first.orElseThrow(
-            () ->
-                new SessionNotCreatedException(
-                    String.format(
-                        "Unable to find matching driver for capabilities%n"
-                            + "  requestedCapabilities: %s%n "
-                            + "  infos: %s",
-                        requestedCapabilities, infos)));
+        first.orElseThrow(() ->
+            new SessionNotCreatedException(
+                String.format(
+                    "Unable to find matching driver for capabilities%n"
+                        + "  requestedCapabilities: %s%n "
+                        + "  infos: %s",
+                    requestedCapabilities, infos)));
     return supplier.get();
   }
 
@@ -554,16 +545,15 @@ public class RemoteWebDriverBuilder {
         } finally {
           if (req.getMethod() == DELETE) {
             HttpSessionId.getSessionId(req.getUri())
-                .ifPresent(
-                    id -> {
-                      if (("/session/" + id).equals(req.getUri())) {
-                        try {
-                          client.close();
-                        } catch (Exception e) {
-                          LOG.log(WARNING, "Exception swallowed while closing http client", e);
-                        }
-                      }
-                    });
+                .ifPresent(id -> {
+                  if (("/session/" + id).equals(req.getUri())) {
+                    try {
+                      client.close();
+                    } catch (Exception e) {
+                      LOG.log(WARNING, "Exception swallowed while closing http client", e);
+                    }
+                  }
+                });
           }
         }
       };

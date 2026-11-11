@@ -115,7 +115,7 @@ module Selenium
           # @see https://bluetooth.spec.whatwg.org/#cddl-type-bluetoothscanrecord
           ScanRecord = Serialization::Record.define(
             name: {wire_key: 'name', required: false, primitive: 'string'},
-            uuids: {wire_key: 'uuids', required: false, list: true},
+            uuids: {wire_key: 'uuids', required: false, list: true, primitive: 'string'},
             appearance: {wire_key: 'appearance', required: false, primitive: 'number'},
             manufacturer_data: {
               wire_key: 'manufacturerData',
@@ -181,7 +181,7 @@ module Selenium
             address: {wire_key: 'address', primitive: 'string'},
             name: {wire_key: 'name', primitive: 'string'},
             manufacturer_data: {wire_key: 'manufacturerData', ref: 'Bluetooth::BluetoothManufacturerData', list: true},
-            known_service_uuids: {wire_key: 'knownServiceUuids', list: true}
+            known_service_uuids: {wire_key: 'knownServiceUuids', list: true, primitive: 'string'}
           )
 
           # @api private
@@ -254,7 +254,7 @@ module Selenium
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_CHARACTERISTIC_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
@@ -280,7 +280,7 @@ module Selenium
             descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::SIMULATE_DESCRIPTOR_RESPONSE_PARAMETERS_TYPE'},
             code: {wire_key: 'code', primitive: 'integer'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
@@ -309,7 +309,7 @@ module Selenium
             service_uuid: {wire_key: 'serviceUuid', primitive: 'string'},
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::CHARACTERISTIC_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           # @api private
@@ -322,7 +322,7 @@ module Selenium
             characteristic_uuid: {wire_key: 'characteristicUuid', primitive: 'string'},
             descriptor_uuid: {wire_key: 'descriptorUuid', primitive: 'string'},
             type: {wire_key: 'type', enum: 'Bluetooth::DESCRIPTOR_EVENT_GENERATED_PARAMETERS_TYPE'},
-            data: {wire_key: 'data', required: false, list: true}
+            data: {wire_key: 'data', required: false, list: true, primitive: 'integer'}
           )
 
           EVENT_TYPES = {

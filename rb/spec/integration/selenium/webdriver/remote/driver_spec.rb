@@ -82,8 +82,8 @@ module Selenium
           driver.find_element(id: 'file-1').click
           driver.find_element(id: 'file-2').click
 
-          wait.until { driver.downloadable_files.include? 'file_1.txt' }
-          wait.until { driver.downloadable_files.include? 'file_2.jpg' }
+          # Firefox can still list in-progress .part files after the final names appear
+          wait.until { driver.downloadable_files.sort == %w[file_1.txt file_2.jpg] }
         end
       end
     end # Remote

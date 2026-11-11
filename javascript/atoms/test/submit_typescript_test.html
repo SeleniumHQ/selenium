@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>submit_typescript_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script src="../typescript/submit-global.js"></script>
+</head>
+
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <form id="form_one" action="javascript:submitted()">
+    <input type="text" id="typer">
+    <input type="submit" id="submit-button" value="Submit!">
+  </form>
+  <form id="form_two" action="javascript:submitted()">
+    <input type="text" id="typer2">
+    <input type="submit" id="submit" name="submit" value="Submit!">
+  </form>
+  <form id="form_three" action="javascript:submitted()">
+    <input type="text" id="required" required>
+  </form>
+  <input type="text" id="owned" form="form_one">
+  <script type="text/javascript">
+    // Ported from the submit cases of action_test.html, plus form= ownership
+    // and the deliberate absence of constraint validation.
+    var submit = window.bot.action.typescript.submit;
+    var listeners = [];
+    window.submitted = function() {};
+
+    function $(id) { return document.getElementById(id); }
+
+    function on(el, type, fn) {
+      el.addEventListener(type, fn);
+      listeners.push([el, type, fn]);
+    }
+
+    // Resolves once the form's javascript: action runs, which is the form
+    // actually submitting rather than only firing its submit event.
+    function expectSubmission(assert, check) {
+      var done = assert.async();
+      window.submitted = function() {
+        window.submitted = function() {};
+        check();
+        done();
+      };
+    }
+
+    QUnit.testDone(function() {
+      listeners.forEach(function(l) { l[0].removeEventListener(l[1], l[2]); });
+      listeners = [];
+    });
+
+    QUnit.test('submitting outside a form throws no such element', function(assert) {
+      assert.throws(function() { submit(document.body); },
+          function(e) { return e.code === 'no such element'; });
+    });
+
+    QUnit.test('a cancelled submit event does not submit', function(assert) {
+      var events = 0;
+      var submittedForm = false;
+      window.submitted = function() { submittedForm = true; };
+      on($('form_one'), 'submit', function(e) { events++; e.preventDefault(); });
+      submit($('form_one'));
+      var done = assert.async();
+      setTimeout(function() {
+        assert.strictEqual(events, 1);
+        assert.notOk(submittedForm);
+        window.submitted = function() {};
+        done();
+      }, 100);
+    });
+
+    QUnit.test('an uncancelled submit event submits', function(assert) {
+      var events = 0;
+      on($('form_one'), 'submit', function() { events++; });
+      expectSubmission(assert, function() { assert.strictEqual(events, 1); });
+      submit($('form_one'));
+    });
+
+    QUnit.test('submits from any element inside the form', function(assert) {
+      var target = null;
+      on($('form_one'), 'submit', function(e) { target = e.target; });
+      expectSubmission(assert, function() { assert.strictEqual(target, $('form_one')); });
+      submit($('typer'));
+    });
+
+    QUnit.test('submits a form with a control named submit', function(assert) {
+      expectSubmission(assert, function() {
+        assert.strictEqual($('submit').id, 'submit');
+        assert.strictEqual($('submit').name, 'submit');
+      });
+      submit($('typer2'));
+    });
+
+    QUnit.test('submits the form a control is owned by through form=', function(assert) {
+      var target = null;
+      on($('form_one'), 'submit', function(e) { target = e.target; e.preventDefault(); });
+      submit($('owned'));
+      assert.strictEqual(target, $('form_one'));
+    });
+
+    QUnit.test('the submit event is a SubmitEvent with no submitter', function(assert) {
+      var event = null;
+      on($('form_one'), 'submit', function(e) { event = e; e.preventDefault(); });
+      submit($('form_one'));
+      assert.ok(event instanceof SubmitEvent);
+      assert.strictEqual(event.submitter, null);
+    });
+
+    // As bot.action.submit always did; requestSubmit() would block here.
+    QUnit.test('constraint validation is skipped', function(assert) {
+      expectSubmission(assert, function() { assert.ok(true); });
+      submit($('required'));
+    });
+  </script>
+</body>
+
+</html>

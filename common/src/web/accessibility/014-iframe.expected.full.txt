@@ -1,0 +1,8 @@
+- document "Frames"
+  - generic
+    - paragraph
+      - text: Before the frame
+    - iframe "Embedded content"
+    - iframe
+    - paragraph
+      - text: After the frame

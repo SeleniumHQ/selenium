@@ -27,6 +27,7 @@ import os
 import re
 import socket
 import ssl
+import sys
 import threading
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -210,7 +211,8 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    pass
+    # On Windows SO_REUSEADDR lets a parallel test session bind the port this one is already listening on
+    allow_reuse_address = sys.platform != "win32"
 
 
 class SimpleWebServer:
@@ -218,7 +220,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = host if host else DEFAULT_HOST_IP
+        host = host or DEFAULT_HOST_IP
         while True:
             try:
                 self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)
@@ -235,8 +237,8 @@ class SimpleWebServer:
         context.load_cert_chain(CERT_FILE, KEY_FILE)
         self.secure_server.socket = context.wrap_socket(self.secure_server.socket, server_side=True)
 
-        self.thread = threading.Thread(target=self._run_web_server, args=(self.server,))
-        self.secure_thread = threading.Thread(target=self._run_web_server, args=(self.secure_server,))
+        self.thread = threading.Thread(target=self._run_web_server, args=(self.server,), daemon=True)
+        self.secure_thread = threading.Thread(target=self._run_web_server, args=(self.secure_server,), daemon=True)
 
     def _run_web_server(self, server):
         """Runs the server loop."""
@@ -271,8 +273,6 @@ def main(argv=None):
     from time import sleep
 
     if argv is None:
-        import sys
-
         argv = sys.argv
 
     parser = OptionParser("%prog [options]")

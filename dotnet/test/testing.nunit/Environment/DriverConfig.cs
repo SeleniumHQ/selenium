@@ -17,20 +17,64 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenQA.Selenium.Testing.NUnit.Environment;
 
 public class DriverConfig
 {
-    public string DriverTypeName { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
+    [ConfigurationKeyName("Browser")]
     public Browser BrowserValue { get; set; }
+
+    public DriverConfigOptions Options { get; set; } = new();
 
     public string RemoteCapabilities { get; set; }
 
     public bool AutoStartRemoteServer { get; set; }
+}
 
-    public bool Logging { get; set; }
+public sealed class DriverConfigOptions
+{
+    public ChromeDriverConfigOptions Chrome { get; set; }
+
+    public EdgeDriverConfigOptions Edge { get; set; }
+
+    public InternetExplorerDriverConfigOptions InternetExplorer { get; set; }
+
+    public FirefoxDriverConfigOptions Firefox { get; set; }
+
+    public SafariDriverConfigOptions Safari { get; set; }
+}
+
+public sealed class ChromeDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+}
+
+public sealed class EdgeDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+}
+
+public sealed class InternetExplorerDriverConfigOptions
+{
+    public bool RequireWindowFocus { get; set; }
+
+    public bool UsePerProcessProxy { get; set; }
+
+    public bool AttachToEdgeChrome { get; set; }
+}
+
+public sealed class FirefoxDriverConfigOptions
+{
+    public string BrowserVersion { get; set; }
+
+    public bool AcceptInsecureCertificates { get; set; }
+
+    public bool EnableDevToolsProtocol { get; set; }
+}
+
+public sealed class SafariDriverConfigOptions
+{
+    public bool UseTechnologyPreview { get; set; }
 }

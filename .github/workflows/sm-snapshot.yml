@@ -73,8 +73,9 @@ jobs:
       - name: "Build release binary"
         run: cargo build --target i686-pc-windows-msvc --release
         working-directory: rust
-      # The Bazel suite only runs the x86_64 build, so this is the one place the published binary executes.
+      # Bazel only tests x86_64, so trunk pushes test the 32-bit binary here; releases rebuild that same code.
       - name: "Run the Grid tests against the 32-bit binary"
+        if: github.event_name == 'push'
         run: cargo test --target i686-pc-windows-msvc --release --test grid_tests
         working-directory: rust
       - name: "Rename binary"

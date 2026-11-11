@@ -52,6 +52,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.AccessibilityNode;
+import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -74,6 +76,7 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -89,6 +92,7 @@ import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialMana
 import org.openqa.selenium.federatedcredentialmanagement.HasFederatedCredentialManagement;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Css;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
@@ -119,8 +123,9 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  // Configure before subclass constructor arguments can trigger driver discovery logs.
   static {
-    org.openqa.selenium.internal.Debug.configureLogger();
+    Debug.configureLogger();
   }
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -145,6 +150,7 @@ public class RemoteWebDriver
   private final Logs remoteLogs = new RemoteLogs(executeMethod);
 
   @Nullable private Script remoteScript;
+  @Nullable private AccessibilitySnapshotter accessibilitySnapshotter;
 
   @Nullable private Network remoteNetwork;
 
@@ -229,6 +235,20 @@ public class RemoteWebDriver
     this(executor, capabilities, DEFAULT_CLIENT_FACTORY, clientConfig);
   }
 
+  /**
+   * Creates a driver and starts a new session through the given executor.
+   *
+   * <p>Before the session starts, the current Selenium debug switches ({@code selenium.debug},
+   * {@code selenium.webdriver.verbose} and {@code SE_DEBUG}) are applied to Selenium's logger, so a
+   * switch set after this class was loaded still takes effect for this driver.
+   *
+   * @param executor the executor that sends commands to the remote end
+   * @param capabilities the capabilities requested for the new session
+   * @param clientFactory the factory used to create HTTP clients for this driver
+   * @param clientConfig the HTTP client configuration used by this driver
+   * @throws IllegalArgumentException if any argument is {@code null}
+   * @throws SessionNotCreatedException if the remote end cannot start a session
+   */
   // ignore WEBDRIVER_REMOTE_ENABLE_TRACING here, to allow extended external control
   public RemoteWebDriver(
       CommandExecutor executor,
@@ -239,6 +259,7 @@ public class RemoteWebDriver
     this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
     this.capabilities = Require.nonNull("Capabilities", capabilities);
+    Debug.configureLogger();
 
     try {
       startSession(capabilities);
@@ -518,11 +539,10 @@ public class RemoteWebDriver
   public Handle getHandle() {
     return maybeGetBiDi()
         .map(BiDi::asHandle)
-        .orElseThrow(
-            () ->
-                new BiDiException(
-                    "Check if this browser version supports BiDi and if the"
-                        + " 'webSocketUrl: true' capability is set."));
+        .orElseThrow(() ->
+            new BiDiException(
+                "Check if this browser version supports BiDi and if the"
+                    + " 'webSocketUrl: true' capability is set."));
   }
 
   // Misc
@@ -647,6 +667,30 @@ public class RemoteWebDriver
       this.remoteScript = new RemoteScript(this);
     }
     return this.remoteScript;
+  }
+
+  @Override
+  public AccessibilityNode getAccessibilitySnapshot() {
+    return getAccessibilitySnapshot(AccessibilitySnapshotOptions.defaults());
+  }
+
+  @Override
+  public AccessibilityNode getAccessibilitySnapshot(AccessibilitySnapshotOptions options) {
+    return accessibility().snapshot(null, Require.nonNull("Options", options));
+  }
+
+  // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
+  @SuppressWarnings("deprecation")
+  AccessibilitySnapshotter accessibility() {
+    if (maybeGetBiDi().isEmpty()) {
+      throw new UnsupportedCommandException(
+          "getAccessibilitySnapshot() requires a WebDriver BiDi session; enable it with"
+              + " options.enableBiDi() before starting the driver");
+    }
+    if (this.accessibilitySnapshotter == null) {
+      this.accessibilitySnapshotter = new AccessibilitySnapshotter(this);
+    }
+    return this.accessibilitySnapshotter;
   }
 
   public Network network() {
@@ -841,13 +885,12 @@ public class RemoteWebDriver
     Map<String, Object> value = (Map<String, Object>) response.getValue();
     List<Map<String, Object>> files = (List<Map<String, Object>>) value.get("files");
     return files.stream()
-        .map(
-            file ->
-                new DownloadedFile(
-                    (String) file.get("name"),
-                    (Long) file.get("creationTime"),
-                    (Long) file.get("lastModifiedTime"),
-                    (Long) file.get("size")))
+        .map(file ->
+            new DownloadedFile(
+                (String) file.get("name"),
+                (Long) file.get("creationTime"),
+                (Long) file.get("lastModifiedTime"),
+                (Long) file.get("size")))
         .collect(Collectors.toUnmodifiableList());
   }
 
@@ -1136,30 +1179,26 @@ public class RemoteWebDriver
       ((Collection<?>) returned)
           .stream()
               .map(o -> (Map<String, Object>) o)
-              .map(
-                  rawCookie -> {
-                    // JSON object keys are defined in
-                    // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
-                    Cookie.Builder builder =
-                        new Cookie.Builder(
-                                (String) rawCookie.get("name"), (String) rawCookie.get("value"))
-                            .path((String) rawCookie.get("path"))
-                            .domain((String) rawCookie.get("domain"))
-                            .isSecure(
-                                rawCookie.containsKey("secure")
-                                    && (Boolean) rawCookie.get("secure"))
-                            .isHttpOnly(
-                                rawCookie.containsKey("httpOnly")
-                                    && (Boolean) rawCookie.get("httpOnly"))
-                            .sameSite((String) rawCookie.get("sameSite"));
+              .map(rawCookie -> {
+                // JSON object keys are defined in
+                // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
+                Cookie.Builder builder =
+                    new Cookie.Builder(
+                            (String) rawCookie.get("name"), (String) rawCookie.get("value"))
+                        .path((String) rawCookie.get("path"))
+                        .domain((String) rawCookie.get("domain"))
+                        .isSecure(
+                            rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
+                        .isHttpOnly(
+                            rawCookie.containsKey("httpOnly")
+                                && (Boolean) rawCookie.get("httpOnly"))
+                        .sameSite((String) rawCookie.get("sameSite"));
 
-                    Number expiryNum = (Number) rawCookie.get("expiry");
-                    builder.expiresOn(
-                        expiryNum == null
-                            ? null
-                            : new Date(SECONDS.toMillis(expiryNum.longValue())));
-                    return builder.build();
-                  })
+                Number expiryNum = (Number) rawCookie.get("expiry");
+                builder.expiresOn(
+                    expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
+                return builder.build();
+              })
               .forEach(toReturn::add);
 
       return toReturn;
@@ -1326,8 +1365,7 @@ public class RemoteWebDriver
 
     @Override
     public WebDriver frame(String frameName) {
-      String name =
-          frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
+      String name = Css.escape(frameName);
       List<WebElement> frameElements =
           RemoteWebDriver.this.findElements(
               By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));

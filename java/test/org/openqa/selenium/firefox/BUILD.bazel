@@ -21,9 +21,6 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS + REMOTE_TESTS,
     ),
-    tags = [
-        "requires-network",
-    ],
     deps = [
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/remote",
@@ -56,6 +53,9 @@ java_selenium_test_suite(
     data = [
         "//common/extensions",
     ],
+    extra_tags = {
+        "TakesFullPageScreenshotTest.java": ["os-sensitive"],
+    },
     resources = [
         "//common/extensions",
     ],

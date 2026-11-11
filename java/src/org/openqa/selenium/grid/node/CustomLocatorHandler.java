@@ -153,24 +153,22 @@ class CustomLocatorHandler implements Routable {
 
     Function<Object, By> customLocator = extraLocators.get(using);
     if (customLocator == null) {
-      LOG.warning(
-          () ->
-              String.format(
-                  "No custom locator found for '%s', the remote end will determine if the locator"
-                      + " is valid.",
-                  using));
+      LOG.warning(() ->
+          String.format(
+              "No custom locator found for '%s', the remote end will determine if the locator"
+                  + " is valid.",
+              using));
       return toNode.execute(req);
     }
 
     String usingLocator = String.valueOf(using);
     if ("id".equalsIgnoreCase(usingLocator) || "name".equalsIgnoreCase(usingLocator)) {
-      LOG.warning(
-          () ->
-              String.format(
-                  "Custom conversion to a CSS locator from '%s' will be removed soon. Please switch"
-                      + " to a valid W3C WebDriver locator strategy"
-                      + " https://www.w3.org/TR/webdriver1/#locator-strategies",
-                  using));
+      LOG.warning(() ->
+          String.format(
+              "Custom conversion to a CSS locator from '%s' will be removed soon. Please switch"
+                  + " to a valid W3C WebDriver locator strategy"
+                  + " https://www.w3.org/TR/webdriver1/#locator-strategies",
+              using));
     }
 
     CommandExecutor executor = new NodeWrappingExecutor(toNode);
@@ -178,10 +176,8 @@ class CustomLocatorHandler implements Routable {
         new CustomWebDriver(
             executor,
             HttpSessionId.getSessionId(req.getUri())
-                .orElseThrow(
-                    () ->
-                        new IllegalArgumentException(
-                            "Cannot locate session ID from " + req.getUri())));
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
 
     SearchContext context = null;
     RemoteWebElement element;

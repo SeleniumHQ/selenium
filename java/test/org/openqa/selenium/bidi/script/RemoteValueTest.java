@@ -240,9 +240,8 @@ class RemoteValueTest {
     assertThat(fromDecimalAndExponent.getNodeType()).isEqualTo(1L);
     assertThat(fromDecimalAndExponent.getChildNodeCount()).isEqualTo(2L);
 
-    assertThatThrownBy(
-            () ->
-                decode("{\"type\":\"node\",\"value\":{\"nodeType\":\"abc\",\"childNodeCount\":0}}"))
+    assertThatThrownBy(() ->
+            decode("{\"type\":\"node\",\"value\":{\"nodeType\":\"abc\",\"childNodeCount\":0}}"))
         .isInstanceOf(JsonException.class);
   }
 

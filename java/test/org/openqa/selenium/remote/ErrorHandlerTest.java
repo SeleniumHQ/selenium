@@ -153,10 +153,8 @@ class ErrorHandlerTest {
   @Test
   void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123))
         .withNoCause()
         .satisfies(expected -> assertThat(expected).isExactlyInstanceOf(WebDriverException.class))
         .withMessageContaining("boom")
@@ -166,10 +164,9 @@ class ErrorHandlerTest {
   @Test
   void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, Map.of("message", "boom")), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(
+                createResponse(ErrorCodes.UNHANDLED_ERROR, Map.of("message", "boom")), 123))
         .withNoCause()
         .withMessageContaining("boom")
         .withMessageContaining(new WebDriverException().getMessage());
@@ -178,13 +175,12 @@ class ErrorHandlerTest {
   @Test
   void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(
-                        ErrorCodes.UNHANDLED_ERROR,
-                        Map.of("message", "boom", "class", NullPointerException.class.getName())),
-                    123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(
+                createResponse(
+                    ErrorCodes.UNHANDLED_ERROR,
+                    Map.of("message", "boom", "class", NullPointerException.class.getName())),
+                123))
         .withMessage(
             new WebDriverException(
                     "boom (WARNING: The server did not provide any stacktrace information)\n"
@@ -197,24 +193,22 @@ class ErrorHandlerTest {
   @Test
   void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(
-                        ErrorCodes.UNHANDLED_ERROR,
-                        Map.of("message", "boom", "class", NullPointerException.class.getName())),
-                    1234))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(
+                createResponse(
+                    ErrorCodes.UNHANDLED_ERROR,
+                    Map.of("message", "boom", "class", NullPointerException.class.getName())),
+                1234))
         .withMessage(
             new WebDriverException(
                     "boom (WARNING: The server did not provide any stacktrace information)\n"
                         + "Command duration or timeout: 1.23 seconds")
                 .getMessage())
         .withCauseInstanceOf(NullPointerException.class)
-        .satisfies(
-            expected -> {
-              assertThat(expected.getCause()).hasMessage("boom");
-              assertThat(expected.getCause().getStackTrace()).isEmpty();
-            });
+        .satisfies(expected -> {
+          assertThat(expected.getCause()).hasMessage("boom");
+          assertThat(expected.getCause().getStackTrace()).isEmpty();
+        });
   }
 
   @Test
@@ -223,18 +217,15 @@ class ErrorHandlerTest {
         new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(
+                createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123))
         .withMessage(new WebDriverException(serverError.getMessage()).getMessage())
         .withCauseInstanceOf(serverError.getClass())
-        .satisfies(
-            expected -> {
-              assertThat(expected.getCause().getMessage()).isEqualTo(serverError.getMessage());
-              assertStackTracesEqual(
-                  expected.getCause().getStackTrace(), serverError.getStackTrace());
-            });
+        .satisfies(expected -> {
+          assertThat(expected.getCause().getMessage()).isEqualTo(serverError.getMessage());
+          assertStackTracesEqual(expected.getCause().getStackTrace(), serverError.getStackTrace());
+        });
   }
 
   @Test
@@ -244,23 +235,20 @@ class ErrorHandlerTest {
     data.remove("class");
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessage(
             new WebDriverException(
                     serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
                     new WebDriverException())
                 .getMessage())
         .withCauseInstanceOf(WebDriverException.class)
-        .satisfies(
-            expected -> {
-              Throwable cause = expected.getCause();
-              assertThat(cause.getMessage())
-                  .isEqualTo(new WebDriverException(serverError.getMessage()).getMessage());
-              assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
-            });
+        .satisfies(expected -> {
+          Throwable cause = expected.getCause();
+          assertThat(cause.getMessage())
+              .isEqualTo(new WebDriverException(serverError.getMessage()).getMessage());
+          assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
+        });
   }
 
   @Test
@@ -278,28 +266,25 @@ class ErrorHandlerTest {
                     "fileName", "Resource.m")));
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessage(
             new WebDriverException(
                     "some error message\nCommand duration or timeout: 123 milliseconds",
                     new WebDriverException())
                 .getMessage())
         .withCauseInstanceOf(WebDriverException.class)
-        .satisfies(
-            expected -> {
-              StackTraceElement[] expectedTrace = {
-                new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
-              };
-              WebDriverException helper = new WebDriverException("some error message");
-              helper.setStackTrace(expectedTrace);
+        .satisfies(expected -> {
+          StackTraceElement[] expectedTrace = {
+            new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
+          };
+          WebDriverException helper = new WebDriverException("some error message");
+          helper.setStackTrace(expectedTrace);
 
-              Throwable cause = expected.getCause();
-              assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
-              assertStackTracesEqual(expectedTrace, cause.getStackTrace());
-            });
+          Throwable cause = expected.getCause();
+          assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
+          assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+        });
   }
 
   @Test
@@ -310,10 +295,8 @@ class ErrorHandlerTest {
     data.put("stackTrace", null);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessageStartingWith(
             new WebDriverException(
                     "some error message (WARNING: The server did not provide any stacktrace"
@@ -338,10 +321,8 @@ class ErrorHandlerTest {
                 "fileName", "Resource.m")));
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessageStartingWith(
             new WebDriverException(
                     "some error message\nCommand duration or timeout: 123 milliseconds",
@@ -357,10 +338,8 @@ class ErrorHandlerTest {
     data.put("stackTrace", null);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessageStartingWith(
             new WebDriverException(
                     "some error message (WARNING: The server did not provide any stacktrace"
@@ -385,28 +364,25 @@ class ErrorHandlerTest {
                     "fileName", "Resource.m")));
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessage(
             new WebDriverException(
                     "some error message\nCommand duration or timeout: 123 milliseconds",
                     new WebDriverException())
                 .getMessage())
         .withCauseInstanceOf(WebDriverException.class)
-        .satisfies(
-            expected -> {
-              StackTraceElement[] expectedTrace = {
-                new StackTraceElement("MyClass", "someMethod", "Resource.m", -1)
-              };
-              WebDriverException helper = new WebDriverException("some error message");
-              helper.setStackTrace(expectedTrace);
+        .satisfies(expected -> {
+          StackTraceElement[] expectedTrace = {
+            new StackTraceElement("MyClass", "someMethod", "Resource.m", -1)
+          };
+          WebDriverException helper = new WebDriverException("some error message");
+          helper.setStackTrace(expectedTrace);
 
-              Throwable cause = expected.getCause();
-              assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
-              assertStackTracesEqual(expectedTrace, cause.getStackTrace());
-            });
+          Throwable cause = expected.getCause();
+          assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
+          assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+        });
   }
 
   @Test
@@ -424,29 +400,26 @@ class ErrorHandlerTest {
                     "fileName", "Resource.m")));
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
         .withMessage(
             new WebDriverException(
                     "some error message\nCommand duration or timeout: 123 milliseconds",
                     new WebDriverException())
                 .getMessage())
         .withCauseInstanceOf(WebDriverException.class)
-        .satisfies(
-            expected -> {
-              StackTraceElement[] expectedTrace = {
-                new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
-              };
-              WebDriverException helper = new WebDriverException("some error message");
-              helper.setStackTrace(expectedTrace);
+        .satisfies(expected -> {
+          StackTraceElement[] expectedTrace = {
+            new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
+          };
+          WebDriverException helper = new WebDriverException("some error message");
+          helper.setStackTrace(expectedTrace);
 
-              Throwable cause = expected.getCause();
-              assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
+          Throwable cause = expected.getCause();
+          assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
 
-              assertStackTracesEqual(expectedTrace, cause.getStackTrace());
-            });
+          assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+        });
   }
 
   @Test
@@ -456,10 +429,9 @@ class ErrorHandlerTest {
     handler.setIncludeServerErrors(false);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                handler.throwIfResponseFailed(
-                    createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123))
+        .isThrownBy(() ->
+            handler.throwIfResponseFailed(
+                createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123))
         .withNoCause()
         .withMessageContaining(serverError.getMessage())
         .withMessageContaining(new WebDriverException().getMessage());
@@ -491,19 +463,18 @@ class ErrorHandlerTest {
     for (Map.Entry<Integer, Class<?>> exception : exceptions.entrySet()) {
       assertThatExceptionOfType(WebDriverException.class)
           .isThrownBy(() -> handler.throwIfResponseFailed(createResponse(exception.getKey()), 123))
-          .satisfies(
-              e -> {
-                assertThat(e.getClass().getSimpleName())
-                    .isEqualTo(exception.getValue().getSimpleName());
+          .satisfies(e -> {
+            assertThat(e.getClass().getSimpleName())
+                .isEqualTo(exception.getValue().getSimpleName());
 
-                // all of the special invalid selector exceptions are just mapped to the generic
-                // invalid selector
-                int expected =
-                    e instanceof InvalidSelectorException
-                        ? ErrorCodes.INVALID_SELECTOR_ERROR
-                        : exception.getKey();
-                assertThat(new ErrorCodes().toStatusCode(e)).isEqualTo(expected);
-              });
+            // all of the special invalid selector exceptions are just mapped to the generic
+            // invalid selector
+            int expected =
+                e instanceof InvalidSelectorException
+                    ? ErrorCodes.INVALID_SELECTOR_ERROR
+                    : exception.getKey();
+            assertThat(new ErrorCodes().toStatusCode(e)).isEqualTo(expected);
+          });
     }
   }
 

@@ -3,7 +3,7 @@
 JavaScript language bindings for [Selenium WebDriver](https://www.selenium.dev).
 Selenium automates browsers for testing and web-based task automation.
 
-Requires Node.js >= 22.
+Requires Node.js 22.23.4, 24.22.1 or 26.12.1 or newer.
 
 ## Installation
 

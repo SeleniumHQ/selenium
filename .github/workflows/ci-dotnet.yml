@@ -28,6 +28,14 @@ jobs:
       os: windows
       run: ./go dotnet:lint
 
+  unit-tests:
+    name: Unit Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Unit Tests
+      os: ubuntu
+      run: bazel test //dotnet/test/unit/... --flaky_test_attempts=1
+
   integration-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
@@ -37,7 +45,7 @@ jobs:
       needs-display: true
       rerun-with-debug: true
       run: |
-        bazel test ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
+        bazel test --local_resources=browser=1 ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/webdriver:ElementFindingTests-firefox //dotnet/test/webdriver:ElementFindingTests-chrome
 
   remote-tests:
     name: Remote Tests
@@ -48,4 +56,4 @@ jobs:
       needs-display: true
       rerun-with-debug: true
       run: |
-        bazel test ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/remote --flaky_test_attempts=3
+        bazel test --local_resources=browser=1 ${{ inputs.compile-manager && '--manager=host' || '' }} //dotnet/test/remote --flaky_test_attempts=3

@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Refresh pinned browsers/drivers; when a new stable Chrome major has no checked-in DevTools
-# version, regenerate CDP so the two never drift. Writes the job "output" as space-separated tags
-# the PR reports: "major" on a Chrome/Firefox major bump (CI then runs the full Ruby matrix) and
-# "cdp" when DevTools was regenerated.
+# version, regenerate CDP so the two never drift. Writes the job "output" as the PR title suffix:
+# "(major)" on a Chrome/Firefox major bump (CI then runs the full Ruby matrix) and "with CDP" when
+# DevTools was regenerated. Both compare against trunk, not HEAD, so an update stacked on the open
+# PR branch keeps the suffix an earlier run set.
 #
-# set -e is load-bearing: if update_cdp fails the job fails before "output" is written, so
-# create-pr is skipped and a Chrome bump can never land ahead of its CDP.
+# set -e is load-bearing: if update_cdp fails the job fails before "output" is written, so the
+# PR is not published and a Chrome bump can never land ahead of its CDP.
 set -euo pipefail
 
+git fetch --no-tags --depth=1 origin trunk:refs/remotes/origin/trunk
 old="$RUNNER_TEMP/repositories-old.bzl"
-git show HEAD:common/repositories.bzl > "$old"
+git show origin/trunk:common/repositories.bzl > "$old"
 
 bazel run //scripts:pinned_browsers
 
@@ -36,7 +38,6 @@ fi
 echo "Stable Chrome major: v${chrome}"
 
 # Regenerate CDP when the stable Chrome major has no checked-in devtools dir.
-regen_cdp=false
 if [ -d "common/devtools/chromium/v${chrome}" ]; then
   echo "DevTools for Chrome v${chrome} already present; skipping CDP regeneration"
 else
@@ -50,7 +51,6 @@ else
   fi
   # the selenium-devtools version has updated, need to re-resolve the lockfile
   bazel run //rb:bundle-lock
-  regen_cdp=true
 fi
 
 major=false
@@ -62,7 +62,7 @@ for pattern in "${families[@]}"; do
 done
 
 output=""
-[ "$major" = true ] && output="major"
-[ "$regen_cdp" = true ] && output="${output:+$output }cdp"
-echo "Update tags: ${output:-none}"
+[ "$major" = true ] && output="(major)"
+git cat-file -e "origin/trunk:common/devtools/chromium/v${chrome}" 2>/dev/null || output="${output:+$output }with CDP"
+echo "Title suffix: ${output:-none}"
 echo "output=$output" >> "$GITHUB_OUTPUT"

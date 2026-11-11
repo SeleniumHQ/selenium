@@ -45,21 +45,20 @@ class TcpTunnelHandler extends ChannelInboundHandlerAdapter {
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
     target
         .writeAndFlush(msg)
-        .addListener(
-            future -> {
-              if (!future.isSuccess()) {
-                LOG.log(
-                    Level.WARNING,
-                    "TCP tunnel write failed on "
-                        + ctx.channel()
-                        + " -> "
-                        + target
-                        + ", closing both channels",
-                    future.cause());
-                ctx.close();
-                target.close();
-              }
-            });
+        .addListener(future -> {
+          if (!future.isSuccess()) {
+            LOG.log(
+                Level.WARNING,
+                "TCP tunnel write failed on "
+                    + ctx.channel()
+                    + " -> "
+                    + target
+                    + ", closing both channels",
+                future.cause());
+            ctx.close();
+            target.close();
+          }
+        });
   }
 
   @Override

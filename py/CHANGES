@@ -1,3 +1,21 @@
+Selenium 4.52.0
+* Support CDP versions: v154, v155, v156
+* Install web extensions from the driver (#17970)
+* Adopt all Ruff FURB rules (#18168)
+* Adopt ruff PYI041 and G201 from the new default rule set (#18154)
+* cleanup for ruff rule sim102 . part of the tranche 3 stage (#18034)
+* bound Service.start() by time so Windows fails fast (#18213)
+* hold generated BiDi numbers to their declared ranges (#18230)
+* Prevent TypeError and KeyError in ErrorHandler when value is None or missing (#18239)
+* Align _cookie_matches domain and path matching with RFC 6265 (#18238)
+* generate the Python version from version.bzl so tests do not read it (#18158)
+* Add explicit stacklevel=2 to remaining warnings.warn calls (#18244)
+* Use ssl_proxy descriptor when initializing Proxy from raw dict (#18237)
+* [bidi] Eliminate sleep-based polling for websocket command response (#18231)
+* Implement __hash__ and explicit ScriptKey equality comparison (#18243)
+* deprecate websocket_interval now that websocket responses are not polled (#18252)
+* Reject null list elements in BiDi serialization inbound and outbound (#18240)
+
 Selenium 4.51.0
 * Support CDP versions: v153, v154, v155
 * Validate WebSocket response interval correctly (#17984)

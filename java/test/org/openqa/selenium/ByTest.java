@@ -124,6 +124,16 @@ class ByTest {
   }
 
   @Test
+  void ensureNewlineInIdIsHexEscaped() {
+    By by = By.id("a\nb");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob).containsEntry("using", "css selector").containsEntry("value", "#a\\a b");
+  }
+
+  @Test
   void ensureLeadingAsciiDigitIsEscapedAsCodePoint() {
     By by = By.className("5foo");
 

@@ -1,3 +1,6 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_test")
+load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
+
 package(default_visibility = ["//rb/spec/integration:__subpackages__"])
 
 filegroup(
@@ -5,4 +8,28 @@ filegroup(
     testonly = True,
     srcs = glob(["**/*.rb"]),
     visibility = ["//rb/spec:__pkg__"],
+)
+
+rb_test(
+    name = "server",
+    size = "large",
+    srcs = ["selenium/server_spec.rb"],
+    args = ["rb/spec/integration/selenium/server_spec.rb"],
+    data = SE_MANAGER_TEST_DATA + [
+        "//rb/spec:java-location",
+        "@bazel_tools//tools/jdk:current_java_runtime",
+    ],
+    env = {"WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)"} | SE_MANAGER_TEST_ENV,
+    exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES,
+    main = "@bundle//bin:rspec",
+    tags = [
+        "requires-network",
+        "se-manager",
+    ],
+    deps = [
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/spec/integration/selenium/webdriver:spec_helper",
+    ],
 )

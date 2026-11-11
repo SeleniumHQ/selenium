@@ -26,12 +26,13 @@ use crate::metadata::{
 };
 use crate::{
     BETA, CANARY, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, STABLE,
-    SeleniumManager, WINDOWS, create_http_client,
+    SeleniumManager, WINDOWS,
 };
 use anyhow::Error;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::OnceLock;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -82,7 +83,7 @@ pub struct ElectronManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
-    pub http_client: Client,
+    pub http_client: OnceLock<Client>,
     pub log: Logger,
     pub tx: Sender<String>,
     pub rx: Receiver<String>,
@@ -95,13 +96,11 @@ impl ElectronManager {
         let browser_name = ELECTRON_NAME;
         let driver_name = CHROMEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
-        let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
         let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
         Ok(Box::new(ElectronManager {
             browser_name,
             driver_name,
-            http_client: create_http_client(default_timeout, default_proxy)?,
+            http_client: OnceLock::new(),
             config,
             log: Logger::new(),
             tx,
@@ -121,12 +120,12 @@ impl SeleniumManager for ElectronManager {
         vec![self.get_browser_name()]
     }
 
-    fn get_http_client(&self) -> &Client {
+    fn get_http_client_cell(&self) -> &OnceLock<Client> {
         &self.http_client
     }
 
-    fn set_http_client(&mut self, http_client: Client) {
-        self.http_client = http_client;
+    fn get_http_client_cell_mut(&mut self) -> &mut OnceLock<Client> {
+        &mut self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -187,8 +186,11 @@ impl SeleniumManager for ElectronManager {
                     self.get_driver_mirror_url_or_default(DRIVER_URL),
                     LATEST_RELEASE
                 );
-                let driver_version =
-                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
+                let driver_version = read_redirect_from_link(
+                    self.get_http_client()?,
+                    latest_url,
+                    self.get_logger(),
+                )?;
                 let driver_ttl = self.get_ttl();
                 if driver_ttl > 0 && !major_browser_version.is_empty() && !driver_version.is_empty()
                 {
@@ -269,7 +271,7 @@ impl SeleniumManager for ElectronManager {
             if X32.is(arch) {
                 "win32-ia32"
             } else if ARM64.is(arch) {
-                "win32-arm64-x64"
+                "win32-arm64"
             } else {
                 "win32-x64"
             }
@@ -338,7 +340,50 @@ impl SeleniumManager for ElectronManager {
 
 #[cfg(test)]
 mod tests {
+    use super::ElectronManager;
     use super::normalize_pinned_version;
+    use crate::SeleniumManager;
+
+    #[test]
+    fn test_driver_url() {
+        let mut electron_manager = ElectronManager::new().unwrap();
+
+        let data = vec![
+            vec![
+                "windows",
+                "x86",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-ia32.zip",
+            ],
+            vec![
+                "windows",
+                "x86_64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-x64.zip",
+            ],
+            vec![
+                "windows",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-arm64.zip",
+            ],
+            vec![
+                "macos",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-mas-arm64.zip",
+            ],
+            vec![
+                "linux",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-linux-arm64.zip",
+            ],
+        ];
+
+        electron_manager.set_driver_version("36.2.1".to_string());
+        data.iter().for_each(|d| {
+            electron_manager.set_os(d.first().unwrap().to_string());
+            electron_manager.set_arch(d.get(1).unwrap().to_string());
+            let driver_url = electron_manager.get_driver_url().unwrap();
+            assert_eq!(d.get(2).unwrap().to_string(), driver_url);
+        });
+    }
 
     #[test]
     fn specific_version_is_returned_verbatim() {

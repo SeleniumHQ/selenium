@@ -49,12 +49,22 @@ java_library(
     ],
 )
 
-java_binary(
-    name = "bidi-client-generator",
+java_library(
+    name = "generator",
     srcs = GENERATOR_SRCS,
-    main_class = "org.openqa.selenium.bidi.BiDiGenerator",
+    visibility = [
+        "//java/test/org/openqa/selenium/bidi/generator:__pkg__",
+    ],
     deps = [
         "//java/src/org/openqa/selenium/json",
+    ],
+)
+
+java_binary(
+    name = "bidi-client-generator",
+    main_class = "org.openqa.selenium.bidi.BiDiGenerator",
+    runtime_deps = [
+        ":generator",
     ],
 )
 

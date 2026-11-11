@@ -49,6 +49,7 @@ module Selenium
 
           describe '#set_forced_colors_mode_theme_override',
                    pending_if: [{browser_family: :chromium,
+                                 version: 'stable',
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
                                  reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
@@ -202,14 +203,7 @@ module Selenium
           end
 
           describe '#set_text_layout_mode_override',
-                   pending_if: [{browser: :chrome,
-                                 version: 'beta',
-                                 exception: {class: Error::UnsupportedOperationError},
-                                 reason: 'Chrome beta unsupported operation: emulation.setTextLayoutModeOverride'},
-                                {browser_family: :chromium,
-                                 exception: {class: Error::UnknownCommandError},
-                                 reason: 'Chromium returns unknown command for setTextLayoutModeOverride'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for setTextLayoutModeOverride'}] do
             it 'sets and clears text layout mode override' do

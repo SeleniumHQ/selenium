@@ -40,6 +40,11 @@ export interface TypeNode {
   // input.Origin's "viewport"/"pointer") — see unionNode(). Same status as
   // `scalar`: not yet consumed by validateValue, declared for the embed.
   scalarValues?: unknown[]
+  // A numeric node's declared bounds (see projectEntry()). Same status as `scalar`.
+  min?: number
+  max?: number
+  exclusiveMin?: boolean
+  exclusiveMax?: boolean
 }
 
 export interface FieldSpec {

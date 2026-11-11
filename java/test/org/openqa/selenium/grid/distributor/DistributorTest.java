@@ -179,15 +179,14 @@ class DistributorTest extends DistributorTestBase {
 
     node.stop(session.getId());
     // Now wait for the session map to say the session is gone.
-    wait.until(
-        obj -> {
-          try {
-            sessions.get(session.getId());
-            return false;
-          } catch (NoSuchSessionException e) {
-            return true;
-          }
-        });
+    wait.until(obj -> {
+      try {
+        sessions.get(session.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
 
     waitToHaveCapacity(local);
 
@@ -257,10 +256,9 @@ class DistributorTest extends DistributorTestBase {
         LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
             .add(
                 caps,
-                new TestSessionFactory(
-                    (id, caps) -> {
-                      throw new SessionNotCreatedException("OMG");
-                    }))
+                new TestSessionFactory((id, caps) -> {
+                  throw new SessionNotCreatedException("OMG");
+                }))
             .build();
 
     local =

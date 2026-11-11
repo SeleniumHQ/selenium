@@ -123,47 +123,43 @@ public class NewSessionPayload implements Closeable {
     }
 
     firsts.stream()
-        .peek(
-            map -> {
-              Set<String> overlap = new HashSet<>(always.keySet());
-              overlap.removeIf((e) -> !map.keySet().contains(e));
-              if (!overlap.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "Overlapping keys between w3c always and first match capabilities: " + overlap);
-              }
-            })
-        .map(
-            first -> {
-              Map<String, Object> toReturn = new HashMap<>();
-              toReturn.putAll(always);
-              toReturn.putAll(first);
-              return toReturn;
-            })
-        .peek(
-            map -> {
-              List<String> nullKeys =
-                  map.entrySet().stream()
-                      .filter(entry -> entry.getValue() == null)
-                      .map(Map.Entry::getKey)
-                      .sorted()
-                      .collect(Collectors.toList());
-              if (!nullKeys.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "Null values found in w3c capabilities. Keys are: " + nullKeys);
-              }
-            })
-        .peek(
-            map -> {
-              List<String> illegalKeys =
-                  map.keySet().stream()
-                      .filter(ACCEPTED_W3C_PATTERNS.negate())
-                      .sorted()
-                      .collect(Collectors.toList());
-              if (!illegalKeys.isEmpty()) {
-                throw new IllegalArgumentException(
-                    "Illegal key values seen in w3c capabilities: " + illegalKeys);
-              }
-            })
+        .peek(map -> {
+          Set<String> overlap = new HashSet<>(always.keySet());
+          overlap.removeIf(e -> !map.keySet().contains(e));
+          if (!overlap.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Overlapping keys between w3c always and first match capabilities: " + overlap);
+          }
+        })
+        .map(first -> {
+          Map<String, Object> toReturn = new HashMap<>();
+          toReturn.putAll(always);
+          toReturn.putAll(first);
+          return toReturn;
+        })
+        .peek(map -> {
+          List<String> nullKeys =
+              map.entrySet().stream()
+                  .filter(entry -> entry.getValue() == null)
+                  .map(Map.Entry::getKey)
+                  .sorted()
+                  .collect(Collectors.toList());
+          if (!nullKeys.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Null values found in w3c capabilities. Keys are: " + nullKeys);
+          }
+        })
+        .peek(map -> {
+          List<String> illegalKeys =
+              map.keySet().stream()
+                  .filter(ACCEPTED_W3C_PATTERNS.negate())
+                  .sorted()
+                  .collect(Collectors.toList());
+          if (!illegalKeys.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Illegal key values seen in w3c capabilities: " + illegalKeys);
+          }
+        })
         .forEach(map -> {});
   }
 
@@ -289,12 +285,11 @@ public class NewSessionPayload implements Closeable {
 
       fromW3c =
           firsts.stream()
-              .map(
-                  first -> {
-                    Map<String, Object> merged = new LinkedHashMap<>(always);
-                    merged.putAll(first);
-                    return Map.copyOf(merged);
-                  });
+              .map(first -> {
+                Map<String, Object> merged = new LinkedHashMap<>(always);
+                merged.putAll(first);
+                return Map.copyOf(merged);
+              });
     }
 
     return fromW3c.distinct();

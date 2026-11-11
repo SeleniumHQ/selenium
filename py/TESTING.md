@@ -83,13 +83,7 @@ You can run tests directly with pytest after setting up the development environm
 
 ### Setup
 
-First, install the required dependencies:
-
-```shell
-pip install -r py/requirements_lock.txt
-```
-
-Then build the generated files and copy them into your local source tree:
+Install the required dependencies and copy the generated files into your local source tree:
 
 ```shell
 ./go py:local_dev
