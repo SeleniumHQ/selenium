@@ -134,20 +134,6 @@ class RemoteNodeTest {
       public WebSocket openSocket(HttpRequest req, WebSocket.Listener listener) {
         throw new UnsupportedOperationException();
       }
-
-      @Override
-      public <T>
-          java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
-              java.net.http.HttpRequest request,
-              java.net.http.HttpResponse.BodyHandler<T> handler) {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public <T> java.net.http.HttpResponse<T> sendNative(
-          java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
-        throw new UnsupportedOperationException();
-      }
     };
   }
 }

@@ -33,7 +33,7 @@ java_library(
         "//javascript/atoms",
         "//javascript/atoms:deps",
         "//third_party/closure/goog",
-        "//third_party/js/sizzle",
+        "//third_party/js/qunit",
     ],
     javacopts = [
         "--release",
@@ -109,7 +109,7 @@ java_test_suite(
     size = "large",
     srcs = glob(["**/*Test.java"]),
     data = firefox["data"],
-    jvm_flags = firefox["jvm_flags"],
+    jvm_flags = firefox["jvm_flags"] + firefox["pinned_jvm_flags"],
     tags = [
         "firefox",
     ] + firefox["tags"],

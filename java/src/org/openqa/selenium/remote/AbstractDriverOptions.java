@@ -150,12 +150,11 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>
     Object raw = getCapability(TIMEOUTS);
     if (raw != null) {
       ((Map<?, ?>) raw)
-          .forEach(
-              (key, value) -> {
-                if (key instanceof String && value instanceof Number) {
-                  newTimeouts.put((String) key, (Number) value);
-                }
-              });
+          .forEach((key, value) -> {
+            if (key instanceof String && value instanceof Number) {
+              newTimeouts.put((String) key, (Number) value);
+            }
+          });
     }
     return newTimeouts;
   }

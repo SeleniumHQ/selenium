@@ -186,7 +186,7 @@ public class DragAndDropTests : DriverTestFixture
         IWebElement dropInto = Driver.FindElement(By.Id("droppable"));
 
         // Wait until all event handlers are installed.
-        System.Threading.Thread.Sleep(500);
+        Thread.Sleep(500);
 
         Actions actionProvider = new Actions(Driver);
         actionProvider.DragAndDrop(toDrag, dropInto).Perform();
@@ -197,7 +197,7 @@ public class DragAndDropTests : DriverTestFixture
 
         while (text != "Dropped!" && (DateTime.Now < endTime))
         {
-            System.Threading.Thread.Sleep(200);
+            Thread.Sleep(200);
             text = dropInto.FindElement(By.TagName("p")).Text;
         }
 

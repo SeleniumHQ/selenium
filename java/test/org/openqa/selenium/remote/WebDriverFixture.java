@@ -30,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -94,11 +93,10 @@ class WebDriverFixture {
         inOrder
             .verify(executor, times(x))
             .execute(
-                argThat(
-                    cmd ->
-                        cmd.getSessionId().equals(sessionId)
-                            && cmd.getName().equals(target.getName())
-                            && areEqual(cmd.getParameters(), target.getParameters())));
+                argThat(cmd ->
+                    cmd.getSessionId().equals(sessionId)
+                        && cmd.getName().equals(target.getName())
+                        && areEqual(cmd.getParameters(), target.getParameters())));
       }
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
@@ -167,7 +165,6 @@ class WebDriverFixture {
     return cmd -> {
       Response response = new Response();
       response.setState(state);
-      response.setStatus(new ErrorCodes().toStatus(state, Optional.of(400)));
       response.setValue(value);
       response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
       return response;

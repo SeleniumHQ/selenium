@@ -1,10 +1,11 @@
-name: Prune CodeQL caches
+name: Webhook - Prune CodeQL Caches
 
 on:
   workflow_run:
+    # No branch filter: CodeQL runs mostly from pull requests, and those caches
+    # count against the same 10 GiB repo budget as the trunk ones.
     workflows: ["CodeQL"]
     types: [completed]
-    branches: [trunk]
   workflow_dispatch:
 
 concurrency:

@@ -140,3 +140,46 @@ def test_first_match_when_2_different_option_types():
     firefox_options.add_argument("foo")
     result = webdriver.create_matches([ChromeOptions(), firefox_options])
     assert expected == result
+
+
+def test_first_match_with_three_options_including_a_different_browser():
+    from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+    # Regression: this used to raise ``KeyError: 'goog:chromeOptions'`` because a key
+    # shared by only an adjacent pair was deleted from every option set.
+    result = webdriver.create_matches([ChromeOptions(), ChromeOptions(), FirefoxOptions()])
+    caps = result["capabilities"]
+
+    # Only capabilities present with an identical value in *all three* sets belong in
+    # alwaysMatch. browserName differs (firefox), goog:chromeOptions is absent for firefox.
+    assert caps["alwaysMatch"] == {"pageLoadStrategy": PageLoadStrategy.normal}
+    assert [fm.get("browserName") for fm in caps["firstMatch"]] == ["chrome", "chrome", "firefox"]
+
+
+def test_first_match_keeps_capabilities_unique_to_one_option():
+    a = ChromeOptions()
+    a.add_argument("--foo")
+    b = ChromeOptions()
+    b.add_argument("--foo")
+    c = ChromeOptions()
+    c.add_argument("--DIFFERENT")
+
+    caps = webdriver.create_matches([a, b, c])["capabilities"]
+
+    assert "goog:chromeOptions" not in caps["alwaysMatch"]
+    assert caps["firstMatch"][0]["goog:chromeOptions"]["args"] == ["--foo"]
+    assert caps["firstMatch"][2]["goog:chromeOptions"]["args"] == ["--DIFFERENT"]
+
+
+def test_list_of_options_is_not_double_wrapped_in_new_session(mocker):
+    from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+    WebDriver(options=[ChromeOptions(), ChromeOptions(), FirefoxOptions()])
+
+    command, params = mock.call_args[0]
+    assert command == Command.NEW_SESSION
+    caps = params["capabilities"]
+    assert "capabilities" not in caps["alwaysMatch"]
+    assert len(caps["firstMatch"]) == 3
+    assert [fm.get("browserName") for fm in caps["firstMatch"]] == ["chrome", "chrome", "firefox"]

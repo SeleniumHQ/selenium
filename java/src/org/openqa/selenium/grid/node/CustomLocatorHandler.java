@@ -39,8 +39,10 @@ import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpSessionId;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
@@ -67,6 +69,10 @@ class CustomLocatorHandler implements Routable {
       new UrlTemplate("/session/{sessionId}/element/{elementId}/element");
   private static final UrlTemplate FIND_CHILD_ELEMENTS =
       new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
+  private static final UrlTemplate FIND_ELEMENT_FROM_SHADOW_ROOT =
+      new UrlTemplate("/session/{sessionId}/shadow/{shadowId}/element");
+  private static final UrlTemplate FIND_ELEMENTS_FROM_SHADOW_ROOT =
+      new UrlTemplate("/session/{sessionId}/shadow/{shadowId}/elements");
   // These are derived from the w3c webdriver spec
   private static final Set<String> W3C_STRATEGIES =
       Set.of("css selector", "link text", "partial link text", "tag name", "xpath");
@@ -100,7 +106,9 @@ class CustomLocatorHandler implements Routable {
     return FIND_ELEMENT.match(req.getUri()) != null
         || FIND_ELEMENTS.match(req.getUri()) != null
         || FIND_CHILD_ELEMENT.match(req.getUri()) != null
-        || FIND_CHILD_ELEMENTS.match(req.getUri()) != null;
+        || FIND_CHILD_ELEMENTS.match(req.getUri()) != null
+        || FIND_ELEMENT_FROM_SHADOW_ROOT.match(req.getUri()) != null
+        || FIND_ELEMENTS_FROM_SHADOW_ROOT.match(req.getUri()) != null;
   }
 
   @Override
@@ -145,24 +153,22 @@ class CustomLocatorHandler implements Routable {
 
     Function<Object, By> customLocator = extraLocators.get(using);
     if (customLocator == null) {
-      LOG.warning(
-          () ->
-              String.format(
-                  "No custom locator found for '%s', the remote end will determine if the locator"
-                      + " is valid.",
-                  using));
+      LOG.warning(() ->
+          String.format(
+              "No custom locator found for '%s', the remote end will determine if the locator"
+                  + " is valid.",
+              using));
       return toNode.execute(req);
     }
 
     String usingLocator = String.valueOf(using);
     if ("id".equalsIgnoreCase(usingLocator) || "name".equalsIgnoreCase(usingLocator)) {
-      LOG.warning(
-          () ->
-              String.format(
-                  "Custom conversion to a CSS locator from '%s' will be removed soon. Please switch"
-                      + " to a valid W3C WebDriver locator strategy"
-                      + " https://www.w3.org/TR/webdriver1/#locator-strategies",
-                  using));
+      LOG.warning(() ->
+          String.format(
+              "Custom conversion to a CSS locator from '%s' will be removed soon. Please switch"
+                  + " to a valid W3C WebDriver locator strategy"
+                  + " https://www.w3.org/TR/webdriver1/#locator-strategies",
+              using));
     }
 
     CommandExecutor executor = new NodeWrappingExecutor(toNode);
@@ -170,10 +176,8 @@ class CustomLocatorHandler implements Routable {
         new CustomWebDriver(
             executor,
             HttpSessionId.getSessionId(req.getUri())
-                .orElseThrow(
-                    () ->
-                        new IllegalArgumentException(
-                            "Cannot locate session ID from " + req.getUri())));
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
 
     SearchContext context = null;
     RemoteWebElement element;
@@ -208,6 +212,15 @@ class CustomLocatorHandler implements Routable {
       context = element;
       findMultiple = true;
     }
+    match = FIND_ELEMENT_FROM_SHADOW_ROOT.match(req.getUri());
+    if (match != null) {
+      context = shadowRoot(driver, match.getParameters().get("shadowId"));
+    }
+    match = FIND_ELEMENTS_FROM_SHADOW_ROOT.match(req.getUri());
+    if (match != null) {
+      context = shadowRoot(driver, match.getParameters().get("shadowId"));
+      findMultiple = true;
+    }
 
     if (context == null) {
       throw new IllegalStateException("Unable to determine locator context: " + req);
@@ -222,6 +235,13 @@ class CustomLocatorHandler implements Routable {
     }
 
     return new HttpResponse().setContent(Contents.asJson(Map.of("value", toReturn)));
+  }
+
+  // ShadowRoot is package-private, so decode it the same way a driver response would be.
+  private static SearchContext shadowRoot(RemoteWebDriver driver, String shadowId) {
+    return (SearchContext)
+        new JsonToWebElementConverter(driver)
+            .apply(Map.of(Dialect.W3C.getShadowRootElementKey(), shadowId));
   }
 
   private static class NodeWrappingExecutor implements CommandExecutor {

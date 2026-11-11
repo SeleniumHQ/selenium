@@ -1,0 +1,25 @@
+name: Webhook - Delete Closed PR Branch
+
+on:
+  # pull_request skips PRs with merge conflicts, which most abandoned PRs have
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    name: Delete Branch
+    if: >-
+      github.event.repository.fork == false &&
+      github.event.pull_request.merged == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete head branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: gh api --method DELETE "repos/$REPO/git/refs/heads/$BRANCH"

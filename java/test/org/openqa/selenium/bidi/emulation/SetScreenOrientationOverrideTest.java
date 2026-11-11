@@ -27,6 +27,7 @@ import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
 import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Browser;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
@@ -92,6 +93,7 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
+  @CloseExtraWindowsAfterTest
   void canSetScreenOrientationOverrideInUserContext() {
     Browser browser = new Browser(driver);
     String userContext = browser.createUserContext();

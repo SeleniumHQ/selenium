@@ -115,12 +115,11 @@ public class Proxy {
     setters.put(SOCKS_PASSWORD, value -> setSocksPassword((String) value));
     setters.put(PROXY_AUTOCONFIG_URL, value -> setProxyAutoconfigUrl((String) value));
     setters.put(AUTODETECT, value -> setAutodetect((Boolean) value));
-    raw.forEach(
-        (key, value) -> {
-          if (key != null && value != null && setters.containsKey(key)) {
-            setters.get(key).accept(value);
-          }
-        });
+    raw.forEach((key, value) -> {
+      if (key != null && value != null && setters.containsKey(key)) {
+        setters.get(key).accept(value);
+      }
+    });
   }
 
   public Map<String, Object> toJson() {

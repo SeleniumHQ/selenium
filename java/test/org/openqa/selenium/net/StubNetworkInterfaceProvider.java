@@ -94,7 +94,7 @@ class StubNetworkInterfaceProvider {
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return List.of(
             newInterface("lo", inetAddress("localXhost", "127.0.0.4")),
-            newInterface("eth0", inetAddress("myip4.mydomain.com", "169.254.8.182")));
+            newInterface("eth0", inetAddress("myip4.mydomain.test", "169.254.8.182")));
       }
 
       @Override
@@ -180,12 +180,12 @@ class StubNetworkInterfaceProvider {
             newInterface("vmnet1", inetAddress("192.168.166.1")),
             newInterface(
                 "en1",
-                inetAddress("somehost.subd.test.com", "172.12.8.7"),
+                inetAddress("somehost.subd.example.test", "172.12.8.7"),
                 inetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c"),
                 inetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6")),
             newInterface(
                 "en0",
-                inetAddress("someotherhost.subd.test.com", "172.12.8.9"),
+                inetAddress("someotherhost.subd.example.test", "172.12.8.9"),
                 inetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4")),
             newInterface(
                 "lo0",

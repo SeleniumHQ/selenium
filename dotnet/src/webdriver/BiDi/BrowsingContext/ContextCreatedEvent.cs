@@ -26,4 +26,5 @@ public sealed record ContextCreatedEventArgs(
     BrowsingContext? OriginalOpener,
     string Url,
     Browser.UserContext UserContext,
-    BrowsingContext? Parent) : EventArgs;
+    BrowsingContext? Parent,
+    bool HasPlannedNavigation) : EventArgs;

@@ -214,6 +214,77 @@ describe('logging', function () {
         assert(!root.removeHandler(cb))
       })
     })
+
+    describe('deprecate()', function () {
+      it('logs a WARNING entry carrying the given id', function () {
+        const log = mgr.getLogger('foo')
+        log.setLevel(logging.Level.WARNING)
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'use somethingElse() instead')
+
+        assert.strictEqual(cb.callCount, 1)
+        const entry = cb.getCall(0).args[0]
+        assert.strictEqual(entry.level, logging.Level.WARNING)
+        assert.strictEqual(entry.message, '[foo] [some-thing] use somethingElse() instead')
+      })
+
+      it('only reports a given id once', function () {
+        const log = mgr.getLogger('foo')
+        log.setLevel(logging.Level.WARNING)
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'first message')
+        log.deprecate('some-thing', 'second message — never seen, first call already claimed this id')
+
+        assert.strictEqual(cb.callCount, 1)
+        assert.strictEqual(cb.getCall(0).args[0].message, '[foo] [some-thing] first message')
+      })
+
+      it('tracks each id independently', function () {
+        const log = mgr.getLogger('foo')
+        log.setLevel(logging.Level.WARNING)
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('id-one', 'message one')
+        log.deprecate('id-two', 'message two')
+
+        assert.strictEqual(cb.callCount, 2)
+      })
+
+      it('rejects an empty id', function () {
+        const log = mgr.getLogger('foo')
+        assert.throws(() => log.deprecate('', 'message'), TypeError)
+      })
+
+      it('does not claim the id under the default OFF level — nothing was actually reported', function () {
+        const log = mgr.getLogger('foo') // level unset — inherits root's default OFF
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'first message')
+
+        assert.strictEqual(cb.callCount, 0)
+      })
+
+      it('still reports a call made once logging is enabled after an earlier suppressed call', function () {
+        const log = mgr.getLogger('foo') // starts OFF
+        const cb = sinon.spy()
+        log.addHandler(cb)
+
+        log.deprecate('some-thing', 'suppressed — logging is still off')
+        assert.strictEqual(cb.callCount, 0)
+
+        log.setLevel(logging.Level.WARNING)
+        log.deprecate('some-thing', 'now visible')
+
+        assert.strictEqual(cb.callCount, 1)
+        assert.strictEqual(cb.getCall(0).args[0].message, '[foo] [some-thing] now visible')
+      })
+    })
   })
 
   describe('getLevel()', function () {

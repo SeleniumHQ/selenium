@@ -25,12 +25,17 @@ from abc import ABCMeta
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
+from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import JavascriptException, WebDriverException
+from selenium.common.exceptions import JavascriptException, NoSuchElementException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
+from selenium.webdriver.remote.accessibility_snapshot import AccessibilityNode
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.support.relative_locator import RelativeBy
 
 # TODO: Use built in importlib_resources.files.
 getAttribute_js = None
@@ -51,8 +56,6 @@ class BaseWebElement(metaclass=ABCMeta):
     ABC's will allow custom types to be registered as a WebElement to
     pass type checks.
     """
-
-    pass
 
 
 class WebElement(BaseWebElement):
@@ -146,7 +149,7 @@ class WebElement(BaseWebElement):
         """
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str | bool | WebElement | dict:
+    def get_property(self, name: str) -> str | bool | WebElement | dict:
         """Gets the given property of the element.
 
         Args:
@@ -164,7 +167,7 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesn't understand getElementProperty lets fake it
             return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
-    def get_dom_attribute(self, name) -> str:
+    def get_dom_attribute(self, name: str) -> str:
         """Get the HTML attribute value (not reflected properties) of the element.
 
         Returns only attributes declared in the element's HTML markup, unlike
@@ -181,7 +184,7 @@ class WebElement(BaseWebElement):
         """
         return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
 
-    def get_attribute(self, name) -> str | None:
+    def get_attribute(self, name: str) -> str | None:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -261,12 +264,10 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(
-                map(
-                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
-                    "".join(map(str, value)).split("\n"),
-                )
-            )
+            local_files = [
+                self.parent.file_detector.is_local_file(str(keys_to_send))
+                for keys_to_send in "".join(map(str, value)).split("\n")
+            ]
             if None not in local_files:
                 remote_files = []
                 for file in local_files:
@@ -432,6 +433,28 @@ class WebElement(BaseWebElement):
         """
         return b64decode(self.screenshot_as_base64.encode("ascii"))
 
+    def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
+        """Snapshot the accessibility tree of this element's subtree.
+
+        The root node is always this element, whatever its role; if the element
+        is hidden, by itself or by an ancestor, that node has no children. Child
+        frames are attached under their ``iframe`` nodes. See
+        :meth:`WebDriver.accessibility_snapshot`.
+
+        Args:
+            interesting_only: With the default ``True`` unnamed generic and
+                presentational elements below this one are pruned; with
+                ``False`` every rendered element produces a node.
+
+        Returns:
+            The node for this element, with its subtree.
+
+        Raises:
+            WebDriverException: When the session has no WebDriver BiDi connection.
+            StaleElementReferenceException: When the element is no longer attached.
+        """
+        return self._parent._accessibility().snapshot(self, interesting_only)
+
     def screenshot(self, filename) -> bool:
         """Save a PNG screenshot of the current element to a file.
 
@@ -451,6 +474,7 @@ class WebElement(BaseWebElement):
             warnings.warn(
                 "name used for saved screenshot does not match file type. It should end with a `.png` extension",
                 UserWarning,
+                stacklevel=2,
             )
         png = self.screenshot_as_png
         try:
@@ -507,7 +531,7 @@ class WebElement(BaseWebElement):
         params["id"] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by: str | By = By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -528,10 +552,20 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_element(By.ID, "foo")
         """
+        # imported here because relative_locator imports this module
+        from selenium.webdriver.support.relative_locator import RelativeBy
+
         by, value = self._parent.locator_converter.convert(by, value)
+
+        if isinstance(by, RelativeBy):
+            elements = self.find_elements(by=by, value=value)
+            if not elements:
+                raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
+            return elements[0]
+
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str | By = By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: str | By | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -552,7 +586,13 @@ class WebElement(BaseWebElement):
         Example:
             element = driver.find_elements(By.ID, "foo")
         """
+        from selenium.webdriver.support.relative_locator import RelativeBy
+
         by, value = self._parent.locator_converter.convert(by, value)
+
+        if isinstance(by, RelativeBy):
+            return self._parent._find_elements_relative(by, root=self)
+
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
     def __hash__(self) -> int:

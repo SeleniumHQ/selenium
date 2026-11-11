@@ -56,7 +56,7 @@ def test_should_fire_navigation_events(driver, log, pages):
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("formPage.html"))
-    ef_driver.find_element(by=By.ID, value="imageButton").submit()
+    ef_driver.find_element(by=By.ID, value="imageButton").click()
     WebDriverWait(ef_driver, 5).until(lambda d: d.title == "We Arrive Here")
     assert ef_driver.title == "We Arrive Here"
 

@@ -70,40 +70,39 @@ public class Grid {
 
   public List<Node> getNodes() {
     return distributorStatus.getNodes().stream()
-        .map(
-            (NodeStatus status) -> {
-              Map<Capabilities, Integer> stereotypes = new HashMap<>();
-              Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
+        .map((NodeStatus status) -> {
+          Map<Capabilities, Integer> stereotypes = new HashMap<>();
+          Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
-              for (Slot slot : status.getSlots()) {
-                org.openqa.selenium.grid.data.Session session = slot.getSession();
-                if (session != null) {
-                  sessions.put(session, slot);
-                }
+          for (Slot slot : status.getSlots()) {
+            org.openqa.selenium.grid.data.Session session = slot.getSession();
+            if (session != null) {
+              sessions.put(session, slot);
+            }
 
-                int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
-                count++;
-                stereotypes.put(slot.getStereotype(), count);
-              }
+            int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
+            count++;
+            stereotypes.put(slot.getStereotype(), count);
+          }
 
-              OsInfo osInfo =
-                  new OsInfo(
-                      status.getOsInfo().get("arch"),
-                      status.getOsInfo().get("name"),
-                      status.getOsInfo().get("version"));
+          OsInfo osInfo =
+              new OsInfo(
+                  status.getOsInfo().get("arch"),
+                  status.getOsInfo().get("name"),
+                  status.getOsInfo().get("version"));
 
-              return new Node(
-                  status.getNodeId(),
-                  status.getExternalUri(),
-                  status.getAvailability(),
-                  status.getMaxSessionCount(),
-                  status.getSessionTimeout(),
-                  status.getSlots().size(),
-                  stereotypes,
-                  sessions,
-                  status.getVersion(),
-                  osInfo);
-            })
+          return new Node(
+              status.getNodeId(),
+              status.getExternalUri(),
+              status.getAvailability(),
+              status.getMaxSessionCount(),
+              status.getSessionTimeout(),
+              status.getSlots().size(),
+              stereotypes,
+              sessions,
+              status.getVersion(),
+              osInfo);
+        })
         .collect(toUnmodifiableList());
   }
 

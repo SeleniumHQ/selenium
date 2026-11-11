@@ -85,15 +85,14 @@ public class LocalNodeFactory {
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     nodeOptions
-        .getSessionFactories(
-            caps ->
-                createSessionFactory(
-                    tracer,
-                    clientFactory,
-                    sessionTimeout,
-                    builders,
-                    caps,
-                    nodeOptions.getSlotMatcher()))
+        .getSessionFactories(caps ->
+            createSessionFactory(
+                tracer,
+                clientFactory,
+                sessionTimeout,
+                builders,
+                caps,
+                nodeOptions.getSlotMatcher()))
         .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
@@ -103,39 +102,36 @@ public class LocalNodeFactory {
     }
 
     ServiceLoader.load(NodeSessionFactoryProvider.class)
-        .forEach(
-            provider -> {
-              String providerName = provider.getClass().getName();
-              if (provider.isEnabled(config)) {
-                LOG.info(String.format("Loading session factories from %s", providerName));
-                provider
-                    .loadFactories(config, tracer, clientFactory)
-                    .forEach(
-                        (caps, factories) ->
-                            factories.forEach(factory -> builder.add(caps, factory)));
-              } else {
-                LOG.fine(
-                    String.format(
-                        "Extension %s is on the classpath but not enabled by configuration",
-                        providerName));
-              }
-            });
+        .forEach(provider -> {
+          String providerName = provider.getClass().getName();
+          if (provider.isEnabled(config)) {
+            LOG.info(String.format("Loading session factories from %s", providerName));
+            provider
+                .loadFactories(config, tracer, clientFactory)
+                .forEach(
+                    (caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+          } else {
+            LOG.fine(
+                String.format(
+                    "Extension %s is on the classpath but not enabled by configuration",
+                    providerName));
+          }
+        });
 
     ServiceLoader.load(NodeCommandInterceptor.class)
-        .forEach(
-            interceptor -> {
-              String interceptorName = interceptor.getClass().getName();
-              if (interceptor.isEnabled(config)) {
-                LOG.info(String.format("Loading command interceptor from %s", interceptorName));
-                interceptor.initialize(config, eventOptions.getEventBus());
-                builder.addInterceptor(interceptor);
-              } else {
-                LOG.fine(
-                    String.format(
-                        "Interceptor %s is on the classpath but not enabled by configuration",
-                        interceptorName));
-              }
-            });
+        .forEach(interceptor -> {
+          String interceptorName = interceptor.getClass().getName();
+          if (interceptor.isEnabled(config)) {
+            LOG.info(String.format("Loading command interceptor from %s", interceptorName));
+            interceptor.initialize(config, eventOptions.getEventBus());
+            builder.addInterceptor(interceptor);
+          } else {
+            LOG.fine(
+                String.format(
+                    "Interceptor %s is on the classpath but not enabled by configuration",
+                    interceptorName));
+          }
+        });
 
     if (config.getAll("relay", "configs").isPresent()) {
       new RelayOptions(config)
@@ -160,34 +156,32 @@ public class LocalNodeFactory {
     builders.stream()
         .filter(builder -> builder.score(stereotype) > 0)
         .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
-        .ifPresent(
-            builder -> {
-              DriverService.Builder<?, ?> driverServiceBuilder;
-              Class<?> clazz = builder.getClass();
-              try {
-                // We do this to give each Node slot its own instance of the DriverService.Builder.
-                // This is important because the Node processes many new session requests
-                // and the DriverService creation needs to be thread safe.
-                Object driverBuilder = clazz.newInstance();
-                driverServiceBuilder =
-                    ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
-                if (!webDriverExecutablePath.isEmpty()) {
-                  driverServiceBuilder =
-                      driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
-                }
-              } catch (InstantiationException | IllegalAccessException e) {
-                throw new IllegalArgumentException(
-                    String.format("Class %s could not be found or instantiated", clazz));
-              }
-              toReturn.add(
-                  new DriverServiceSessionFactory(
-                      tracer,
-                      clientFactory,
-                      sessionTimeout,
-                      stereotype,
-                      capabilities -> slotMatcher.matches(stereotype, capabilities),
-                      driverServiceBuilder));
-            });
+        .ifPresent(builder -> {
+          DriverService.Builder<?, ?> driverServiceBuilder;
+          Class<?> clazz = builder.getClass();
+          try {
+            // We do this to give each Node slot its own instance of the DriverService.Builder.
+            // This is important because the Node processes many new session requests
+            // and the DriverService creation needs to be thread safe.
+            Object driverBuilder = clazz.newInstance();
+            driverServiceBuilder = ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
+            if (!webDriverExecutablePath.isEmpty()) {
+              driverServiceBuilder =
+                  driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
+            }
+          } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException(
+                String.format("Class %s could not be found or instantiated", clazz));
+          }
+          toReturn.add(
+              new DriverServiceSessionFactory(
+                  tracer,
+                  clientFactory,
+                  sessionTimeout,
+                  stereotype,
+                  capabilities -> slotMatcher.matches(stereotype, capabilities),
+                  driverServiceBuilder));
+        });
 
     return unmodifiableList(toReturn);
   }

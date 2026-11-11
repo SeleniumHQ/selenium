@@ -1,5 +1,5 @@
 # Our images must be for Linux x86_64
-FROM --platform=linux/amd64 ubuntu:focal@sha256:8e5c4f0285ecbb4ead070431d29b576a530d3166df73ec44affc1cd27555141b
+FROM --platform=linux/amd64 ubuntu:jammy@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -9,6 +9,7 @@ RUN apt-get -qqy update && \
       build-essential \
       libcrypt-dev \
       libnet1 \
+      libyaml-dev \
       libzip-dev \
       linux-libc-dev \
       python3.10 \
@@ -48,7 +49,7 @@ RUN apt-get update -qqy && \
       fonts-tlwg-loma-otf \
       fonts-noto-color-emoji \
       pulseaudio \
-      ttf-ubuntu-font-family \
+      fonts-ubuntu \
       xfonts-cyrillic \
       xfonts-scalable \
       xvfb && \

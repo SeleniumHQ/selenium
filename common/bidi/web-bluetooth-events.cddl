@@ -1,0 +1,10 @@
+; The Web Bluetooth spec defines all four bluetooth events but lists only two in its
+; BluetoothEvent aggregate, which is the only way generation discovers an event.
+; Delete once the spec lists all four and the pinned webref carries it.
+; https://github.com/WebBluetoothCG/web-bluetooth
+BluetoothEvent = (
+  bluetooth.RequestDevicePromptUpdated //
+  bluetooth.GattConnectionAttempted //
+  bluetooth.CharacteristicEventGenerated //
+  bluetooth.DescriptorEventGenerated
+)

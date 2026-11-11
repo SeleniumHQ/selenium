@@ -35,9 +35,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.script.Source;
+import org.openqa.selenium.testing.CloseExtraWindowsAfterTest;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
+@CloseExtraWindowsAfterTest
 class LogInspectorTest extends JupiterTestBase {
 
   String page;
@@ -472,11 +474,10 @@ class LogInspectorTest extends JupiterTestBase {
     try (LogInspector logInspector = new LogInspector(driver)) {
       List<ConsoleLogEntry> receivedEntries = new ArrayList<>();
       CountDownLatch latch = new CountDownLatch(1);
-      logInspector.onConsoleEntry(
-          entry -> {
-            receivedEntries.add(entry);
-            latch.countDown();
-          });
+      logInspector.onConsoleEntry(entry -> {
+        receivedEntries.add(entry);
+        latch.countDown();
+      });
 
       page = appServer.whereIs("/bidi/logEntryAdded.html");
       driver.get(page);

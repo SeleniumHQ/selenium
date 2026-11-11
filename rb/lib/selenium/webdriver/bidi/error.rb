@@ -23,6 +23,10 @@ require 'selenium/webdriver/bidi/protocol/error_code'
 module Selenium
   module WebDriver
     module Error
+      # Raised locally when a BiDi wire payload does not match this Selenium's generated
+      # schema. It is not a protocol error code; the (de)serialization layer raises it directly.
+      class SerializationError < WebDriverError; end
+
       # Register each BiDi-only code as a WebDriverError subclass; shared codes keep their classic class.
       BiDi::Protocol::ErrorCode::CLASS_NAMES.each_value do |name|
         const_set(name, Class.new(WebDriverError)) unless const_defined?(name, false)

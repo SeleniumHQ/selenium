@@ -37,12 +37,12 @@ suite(
       return driver.quit()
     })
 
-    describe('onConsoleEntry', function () {
+    describe('console log entries', function () {
       it('can listen to console.log', async function () {
         let entry = null
 
-        await log.onConsoleEntry((params) => {
-          if (params.text === 'Hello, world!') {
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console' && params.text === 'Hello, world!') {
             entry = params
           }
         })
@@ -65,8 +65,8 @@ suite(
       it('can listen to console.error', async function () {
         let entry = null
 
-        await log.onConsoleEntry((params) => {
-          if (params.level === 'error' && params.text) {
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console' && params.level === 'error' && params.text) {
             entry = params
           }
         })
@@ -83,8 +83,8 @@ suite(
       it('can listen to console.warn', async function () {
         let entry = null
 
-        await log.onConsoleEntry((params) => {
-          if (params.level === 'warn' && params.text) {
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console' && params.level === 'warn' && params.text) {
             entry = params
           }
         })
@@ -101,8 +101,8 @@ suite(
       it('captures args in console log entries', async function () {
         let entry = null
 
-        await log.onConsoleEntry((params) => {
-          if (params.text === 'Hello, world!') {
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console' && params.text === 'Hello, world!') {
             entry = params
           }
         })
@@ -117,12 +117,14 @@ suite(
       })
     })
 
-    describe('onJavascriptException', function () {
+    describe('javascript exception entries', function () {
       it('can listen to javascript exceptions', async function () {
         let entry = null
 
-        await log.onJavascriptException((params) => {
-          entry = params
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'javascript' && params.level === 'error') {
+            entry = params
+          }
         })
 
         await driver.get(Pages.logEntryAdded)
@@ -136,11 +138,11 @@ suite(
       })
     })
 
-    describe('onEntryAdded', function () {
+    describe('log.entryAdded', function () {
       it('receives all log entries including console', async function () {
         const entries = []
 
-        await log.onEntryAdded((params) => {
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
           entries.push(params)
         })
 
@@ -155,11 +157,11 @@ suite(
         let count1 = 0
         let count2 = 0
 
-        await log.onConsoleEntry(() => {
-          count1++
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console') count1++
         })
-        await log.onConsoleEntry(() => {
-          count2++
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'console') count2++
         })
 
         await driver.get(Pages.logEntryAdded)
@@ -171,12 +173,12 @@ suite(
       })
     })
 
-    describe('onJavascriptLog', function () {
+    describe('javascript log entries', function () {
       it('can listen to javascript log entries', async function () {
         const entries = []
 
-        await log.onJavascriptLog((params) => {
-          entries.push(params)
+        await log.addCallback(Log.ENTRY_ADDED, (params) => {
+          if (params.type === 'javascript') entries.push(params)
         })
 
         await driver.get(Pages.logEntryAdded)
@@ -185,7 +187,7 @@ suite(
         await driver.findElement({ id: 'jsException' }).click()
         await driver.wait(() => entries.length > 0, 5000)
 
-        assert.ok(entries.length > 0, 'onJavascriptLog should have received at least one entry')
+        assert.ok(entries.length > 0, 'should have received at least one javascript log entry')
         assert.strictEqual(entries[0].type, 'javascript')
       })
     })

@@ -58,7 +58,10 @@ suite(
       it('can request cookies', async function () {
         let beforeRequestEvent = null
         await network.beforeRequestSent(function (event) {
-          beforeRequestEvent = event
+          // Ignore unrelated requests such as favicon.ico, which can arrive after the page request
+          if (event.request.url.includes('emptyText')) {
+            beforeRequestEvent = event
+          }
         })
 
         await driver.get(Pages.emptyText)
@@ -145,6 +148,7 @@ suite(
         })
 
         await driver.get(Pages.emptyPage)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
 
         assert.equal(onResponseCompleted[0].request.method, 'GET')
         assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
@@ -203,6 +207,7 @@ suite(
 
         // Checking mime type for 'html' text
         await driver.get(Pages.emptyPage)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
         assert.equal(onResponseCompleted[0].request.method, 'GET')
         assert.equal(onResponseCompleted[0].request.url, await driver.getCurrentUrl())
         assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
@@ -211,6 +216,7 @@ suite(
         // Checking mime type for 'plain' text
         onResponseCompleted = []
         await driver.get(Pages.emptyText)
+        await driver.wait(() => onResponseCompleted.length > 0, 5000)
         assert.equal(onResponseCompleted[0].response.url, await driver.getCurrentUrl())
         assert(onResponseCompleted[0].response.mimeType.includes('text/plain'))
       })

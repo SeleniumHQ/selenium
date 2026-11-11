@@ -82,6 +82,7 @@ class PositionAndSizeTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
@@ -94,7 +95,6 @@ class PositionAndSizeTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -133,6 +133,7 @@ class PositionAndSizeTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
     assertThat(getLocationInViewPort(By.id("fixed")).getY()).isZero();

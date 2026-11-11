@@ -20,10 +20,12 @@
 using System.IO;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Internal.Logging;
+using OpenQA.Selenium.Testing.NUnit.Environment;
 
 namespace OpenQA.Selenium.Tests.Firefox;
 
 [TestFixture]
+[NonParallelizable]
 [IgnoreBrowser(Browser.Chrome)]
 [IgnoreBrowser(Browser.Edge)]
 [IgnoreBrowser(Browser.Safari)]
@@ -55,6 +57,7 @@ public class FirefoxDriverServiceTests
     public void ShouldRedirectGeckoDriverLogsToFile()
     {
         FirefoxOptions options = new FirefoxOptions();
+        options.BinaryLocation = EnvironmentManager.Instance.BrowserLocation;
         string logPath = Path.GetTempFileName();
         options.LogLevel = FirefoxDriverLogLevel.Info;
 
@@ -81,6 +84,7 @@ public class FirefoxDriverServiceTests
     {
         Log.SetLevel(LogEventLevel.Trace).Handlers.Add(testLogHandler);
         FirefoxOptions options = new FirefoxOptions();
+        options.BinaryLocation = EnvironmentManager.Instance.BrowserLocation;
         options.LogLevel = FirefoxDriverLogLevel.Info;
 
         FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();

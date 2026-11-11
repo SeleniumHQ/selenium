@@ -5,6 +5,9 @@ def _merge_jars_impl(ctx):
     args.add("--output", out)
     args.add_all(ctx.files.inputs, before_each = "--sources")
 
+    # ensure we include all files the license of the different project we merge might require
+    args.add("--allow-duplicate", ".*(COPYRIGHT|LEGAL|LICENSE|PRIVACY|NOTICE).*")
+
     ctx.actions.run(
         mnemonic = "MergeJars",
         executable = ctx.executable._merge_jars,

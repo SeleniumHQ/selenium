@@ -73,7 +73,7 @@ public class UrlTemplate {
     switch (groupsCount) {
       case 0: // no groups, just .equals
         this.compiled =
-            (matchAgainst) -> {
+            matchAgainst -> {
               if (!template.equals(matchAgainst)) {
                 return null;
               }
@@ -87,7 +87,7 @@ public class UrlTemplate {
         String suffix = template.substring(lastGroup);
 
         this.compiled =
-            (matchAgainst) -> {
+            matchAgainst -> {
               if (matchAgainst.length() <= prefix.length() + suffix.length()) {
                 // the url is too short to match
                 return null;
@@ -113,7 +113,7 @@ public class UrlTemplate {
         Pattern pattern = Pattern.compile(regex.toString());
 
         this.compiled =
-            (matchAgainst) -> {
+            matchAgainst -> {
               Matcher matcher = pattern.matcher(matchAgainst);
               if (!matcher.matches()) {
                 return null;

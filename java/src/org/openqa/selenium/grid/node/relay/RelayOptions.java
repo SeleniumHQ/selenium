@@ -165,29 +165,28 @@ public class RelayOptions {
         throw new ConfigException("Unable to find stereotype config. " + allConfigs);
       }
       Capabilities stereotype =
-          JSON.toType(extractConfiguredValue(allConfigs.get(i)), Capabilities.class);
+          parseStereotype(extractConfiguredValue(allConfigs.get(i)), "relay config " + (i / 2 + 1));
       parsedConfigs.put(maxSessions, stereotype);
     }
 
     Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
-    parsedConfigs.forEach(
-        (maxSessions, stereotype) -> {
-          ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
-          for (int i = 0; i < maxSessions; i++) {
-            factories.put(
-                immutable,
-                new RelaySessionFactory(
-                    tracer,
-                    clientFactory,
-                    sessionTimeout,
-                    getServiceUri(),
-                    getServiceStatusUri(),
-                    getServiceProtocolVersion(),
-                    immutable));
-          }
-          LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
-        });
+    parsedConfigs.forEach((maxSessions, stereotype) -> {
+      ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
+      for (int i = 0; i < maxSessions; i++) {
+        factories.put(
+            immutable,
+            new RelaySessionFactory(
+                tracer,
+                clientFactory,
+                sessionTimeout,
+                getServiceUri(),
+                getServiceStatusUri(),
+                getServiceProtocolVersion(),
+                immutable));
+      }
+      LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
+    });
     return factories.asMap();
   }
 
@@ -196,5 +195,14 @@ public class RelayOptions {
       return keyValue.substring(keyValue.indexOf("=") + 1);
     }
     return keyValue;
+  }
+
+  static Capabilities parseStereotype(String json, String source) {
+    Capabilities stereotype = JSON.toType(json, Capabilities.class);
+    if (stereotype == null) {
+      throw new ConfigException(
+          "Stereotype for %s must be a JSON object, but was: %s", source, json);
+    }
+    return stereotype;
   }
 }

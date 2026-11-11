@@ -13,13 +13,14 @@ module Bazel
 
   def self.execute(kind, args, target, &block)
     verbose = Rake::FileUtilsExt.verbose_flag
+    targets = Array(target)
 
-    if target.end_with?(':run')
+    if targets.one? && targets.first.end_with?(':run')
       kind = 'run'
-      target = target[0, target.length - 4]
+      targets = [targets.first.delete_suffix(':run')]
     end
 
-    cmd = %w[bazel] + [kind, target] + (args || [])
+    cmd = ['bazel', kind, *targets, *args]
     cmd_out = ''
     cmd_exit_code = 0
 
@@ -54,7 +55,7 @@ module Bazel
     return unless cmd_out =~ %r{\s+(bazel-bin/\S+)}
 
     out_artifact = Regexp.last_match(1)
-    puts "#{target} -> #{out_artifact}" if out_artifact
+    puts "#{targets.join(' ')} -> #{out_artifact}" if out_artifact
     out_artifact
   end
 end

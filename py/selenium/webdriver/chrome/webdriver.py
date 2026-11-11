@@ -39,8 +39,8 @@ class WebDriver(ChromiumDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
-        service = service if service else Service()
-        options = options if options else Options()
+        service = service or Service()
+        options = options or Options()
 
         super().__init__(
             browser_name=DesiredCapabilities.CHROME["browserName"],

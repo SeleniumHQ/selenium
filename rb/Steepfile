@@ -16,6 +16,8 @@ target :lib do
     'lib/selenium/webdriver/bidi/struct.rb',
     # The generator + its up-to-date checker are build tooling, not typed runtime code
     'lib/selenium/webdriver/bidi/support/**/*.rb',
+    # Local development tooling; the Gem::BasicSpecification RBS lacks version and full_gem_path
+    'lib/selenium/webdriver/local_dev.rb',
     # Ignore all spec files
     'spec/**/*.rb',
     # Ignore line 166 due to UDP RBS issue

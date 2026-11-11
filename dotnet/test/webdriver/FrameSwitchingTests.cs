@@ -505,7 +505,7 @@ public class FrameSwitchingTests : DriverTestFixture
             }
             finally
             {
-                System.Threading.Thread.Sleep(100);
+                Thread.Sleep(100);
                 string url = (string)((IJavaScriptExecutor)Driver).ExecuteScript("return window.location.href");
                 // IE6 and Chrome add "?"-symbol to the end of the URL
                 if (url.EndsWith("?"))

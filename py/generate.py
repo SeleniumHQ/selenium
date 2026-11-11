@@ -26,6 +26,7 @@
 import builtins
 import itertools
 import json
+import keyword
 import logging
 import operator
 import os
@@ -149,10 +150,10 @@ def is_builtin(name):
 def snake_case(name):
     """Convert a camel case name to snake case.
 
-    If the name would shadow a Python builtin, then append an underscore.
+    If the name would shadow a Python builtin or keyword, then append an underscore.
     """
     name = inflection.underscore(name)
-    if is_builtin(name):
+    if is_builtin(name) or keyword.iskeyword(name):
         name += "_"
     return name
 
@@ -945,8 +946,7 @@ def generate_init(init_path, domains):
     """
     with open(init_path, "w", encoding="utf-8") as init_file:
         init_file.write(INIT_HEADER)
-        for domain in domains:
-            init_file.write(f"from . import {domain.module}\n")
+        init_file.writelines(f"from . import {domain.module}\n" for domain in domains)
         init_file.write("from . import util\n\n")
 
 

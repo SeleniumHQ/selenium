@@ -41,6 +41,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -95,12 +99,11 @@ class RemoteWebDriverBuilderTest {
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  caps.add(listCapabilities(req));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              caps.add(listCapabilities(req));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(caps).hasSize(1);
@@ -115,15 +118,14 @@ class RemoteWebDriverBuilderTest {
     RemoteWebDriver.builder()
         .setCapability("se:cheese", "anari")
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  listCapabilities(req).stream()
-                      .map(caps -> "anari".equals(caps.getCapability("se:cheese")))
-                      .reduce(Boolean::logicalOr)
-                      .ifPresent(match::set);
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              listCapabilities(req).stream()
+                  .map(caps -> "anari".equals(caps.getCapability("se:cheese")))
+                  .reduce(Boolean::logicalOr)
+                  .ifPresent(match::set);
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(match).isTrue();
@@ -168,13 +170,12 @@ class RemoteWebDriverBuilderTest {
         .oneOf(new FirefoxOptions())
         .addMetadata("cloud:options", "merhaba")
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  Map<String, Object> payload = new Json().toType(req.contentAsString(), MAP_TYPE);
-                  seen.set("merhaba".equals(payload.getOrDefault("cloud:options", "")));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              Map<String, Object> payload = new Json().toType(req.contentAsString(), MAP_TYPE);
+              seen.set("merhaba".equals(payload.getOrDefault("cloud:options", "")));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(seen).isTrue();
@@ -187,12 +188,11 @@ class RemoteWebDriverBuilderTest {
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(seen.get()).isEqualTo("http://localhost:34576");
@@ -227,15 +227,14 @@ class RemoteWebDriverBuilderTest {
         .oneOf(new FirefoxOptions())
         .setCapability("se:option", "cheese")
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  listCapabilities(req).stream()
-                      .map(caps -> "cheese".equals(caps.getCapability("se:option")))
-                      .reduce(Boolean::logicalAnd)
-                      .ifPresent(seen::set);
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              listCapabilities(req).stream()
+                  .map(caps -> "cheese".equals(caps.getCapability("se:option")))
+                  .reduce(Boolean::logicalAnd)
+                  .ifPresent(seen::set);
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(seen).isTrue();
@@ -301,12 +300,11 @@ class RemoteWebDriverBuilderTest {
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .withDriverService(service)
-        .connectingWith(
-            config ->
-                req -> {
-                  seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              seen.set(listCapabilities(req).get(0).getCapability("se:remoteUrl"));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(seen.get()).isNull();
@@ -330,15 +328,13 @@ class RemoteWebDriverBuilderTest {
         .addAlternative(new InternetExplorerOptions())
         .oneOf(new ChromeOptions())
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  List<Capabilities> caps = listCapabilities(req);
-                  allOk.set(
-                      caps.size() == 1
-                          && caps.get(0).getBrowserName().equals(CHROME.browserName()));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              List<Capabilities> caps = listCapabilities(req);
+              allOk.set(
+                  caps.size() == 1 && caps.get(0).getBrowserName().equals(CHROME.browserName()));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(allOk).isTrue();
@@ -463,9 +459,8 @@ class RemoteWebDriverBuilderTest {
           .isEqualTo("http://granted-by-server.example/session");
       assertThat(records)
           .extracting(java.util.logging.LogRecord::getMessage)
-          .anyMatch(
-              message ->
-                  message != null && message.contains("did not return a valid webSocketUrl"));
+          .anyMatch(message ->
+              message != null && message.contains("did not return a valid webSocketUrl"));
     } finally {
       logger.removeHandler(handler);
     }
@@ -509,14 +504,13 @@ class RemoteWebDriverBuilderTest {
     RemoteWebDriver.builder()
         .oneOf(new FirefoxOptions())
         .address("http://localhost:34576")
-        .connectingWith(
-            config ->
-                req -> {
-                  allOk.set(
-                      "no-cache".equals(req.getHeader("Cache-Control"))
-                          && JSON_UTF_8.equals(req.getHeader("Content-Type")));
-                  return CANNED_SESSION_RESPONSE;
-                })
+        .connectingWith(config ->
+            req -> {
+              allOk.set(
+                  "no-cache".equals(req.getHeader("Cache-Control"))
+                      && JSON_UTF_8.equals(req.getHeader("Content-Type")));
+              return CANNED_SESSION_RESPONSE;
+            })
         .build();
 
     assertThat(allOk).isTrue();
@@ -648,6 +642,54 @@ class RemoteWebDriverBuilderTest {
             .build();
 
     assertThat(driver).isInstanceOf(HasDevTools.class);
+  }
+
+  @Test
+  void oneOfMetadataAndCapabilityOverwritesLogAtFine() {
+    Logger logger = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
+    Level previousLoggerLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    try {
+      RemoteWebDriver.builder()
+          .oneOf(new ImmutableCapabilities("browserName", "firefox"))
+          .oneOf(new ImmutableCapabilities("browserName", "chrome"))
+          .addMetadata("cloud:key", "one")
+          .addMetadata("cloud:key", "two")
+          .setCapability("se:cheese", "brie")
+          .setCapability("se:cheese", "cheddar");
+
+      assertThat(records)
+          .filteredOn(
+              record -> record.getMessage().contains("Removing existing requested capabilities"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting metadata"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("Overwriting capability"))
+          .singleElement()
+          .satisfies(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLoggerLevel);
+    }
   }
 
   @SuppressWarnings("unchecked")

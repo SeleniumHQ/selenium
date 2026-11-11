@@ -24,9 +24,9 @@ module Selenium
     module Edge
       describe Options, skip_unless: {browser: :edge} do
         it 'passes emulated device correctly' do
-          reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
+          reset_driver!(emulation: {device_name: 'Pixel 10'}) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to include('Nexus 5')
+            expect(ua).to include('Pixel 10')
           end
         end
 

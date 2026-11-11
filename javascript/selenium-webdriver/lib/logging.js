@@ -271,6 +271,9 @@ class Logger {
 
     /** @private {Set<function(!Entry)>} */
     this.handlers_ = null
+
+    /** @private {Set<string>} ids already reported via {@link #deprecate}. */
+    this.deprecated_ = new Set()
   }
 
   /** @return {string} the name of this logger. */
@@ -390,6 +393,38 @@ class Logger {
    */
   info(loggable) {
     this.log(Level.INFO, loggable)
+  }
+
+  /**
+   * Logs a deprecation notice at the {@link Level.WARNING} log level, once per
+   * `id` for this logger's lifetime — a repeat call with the same `id` is a
+   * no-op, matching the once-only behavior `util.deprecate` gives by call-site
+   * identity, but keyed on a stable id instead so it survives being wrapped,
+   * rebound, or called through multiple paths.
+   *
+   * `id` is only claimed once the notice is actually loggable at this
+   * logger's effective level — under the default `Level.OFF` root level, a
+   * call here logs nothing and leaves `id` unclaimed, so a later call (once
+   * logging is enabled) still gets to report it instead of finding it already
+   * silently used up.
+   * @param {string} id a stable, non-empty identifier for this deprecation
+   *     (e.g. `'webdriver-getBidi'`), distinct from the message text so
+   *     tooling can key off it even if the wording changes later.
+   * @param {string} message the deprecation notice to log.
+   * @throws {TypeError} if `id` is empty.
+   */
+  deprecate(id, message) {
+    if (!id) {
+      throw new TypeError('Logger#deprecate() requires a non-empty id')
+    }
+    if (this.deprecated_.has(id)) {
+      return
+    }
+    if (!this.isLoggable(Level.WARNING)) {
+      return
+    }
+    this.deprecated_.add(id)
+    this.warning(`[${id}] ${message}`)
   }
 
   /**

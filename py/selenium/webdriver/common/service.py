@@ -22,9 +22,8 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
-from io import IOBase
 from subprocess import PIPE
-from time import sleep
+from time import monotonic, sleep
 from typing import IO, Any
 from urllib import request
 from urllib.error import URLError
@@ -48,6 +47,8 @@ class Service(ABC):
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
         driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
+
+    _start_timeout: float = 30
 
     def __init__(
         self,
@@ -107,28 +108,29 @@ class Service(ABC):
             raise WebDriverException("Service path cannot be None.")
         self._start_process(self._path)
 
+        deadline = monotonic() + self._start_timeout
         count = 0
         try:
             while True:
                 self.assert_process_still_running()
                 if self.is_connectable():
                     break
+                if monotonic() >= deadline:
+                    raise WebDriverException(f"Can not connect to the Service {self._path}")
                 # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
                 sleep(min(0.01 + 0.05 * count, 0.5))
                 count += 1
-                if count == 70:
-                    raise WebDriverException(f"Can not connect to the Service {self._path}")
         except BaseException:
             try:
                 self.stop()
             except Exception:
-                logger.error("Error stopping service after a failed start.", exc_info=True)
+                logger.exception("Error stopping service after a failed start.")
             raise
 
     def assert_process_still_running(self) -> None:
         """Check if the underlying process is still running."""
         return_code = self.process.poll()
-        if return_code:
+        if return_code is not None:
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
@@ -156,16 +158,17 @@ class Service(ABC):
     def stop(self) -> None:
         """Stops the service."""
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
-            if isinstance(self.log_output, IOBase) and self._owns_log_output:
-                self.log_output.close()
-            elif isinstance(self.log_output, int):
+            if isinstance(self.log_output, int):
                 os.close(self.log_output)
-
-        if self.process is not None and self.process.poll() is None:
+            elif self.log_output is not None and self._owns_log_output:
+                self.log_output.close()
+        if self.process is not None:
             try:
-                self.send_remote_shutdown_command()
-            except TypeError:
-                pass
+                if self.process.poll() is None:
+                    try:
+                        self.send_remote_shutdown_command()
+                    except TypeError:
+                        pass
             finally:
                 self._terminate_process()
 
@@ -173,32 +176,30 @@ class Service(ABC):
         """Terminate the child process.
 
         On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,
-        on a Windows OS kill is an alias to terminate.  Terminating does
-        not raise itself if something has gone wrong but (currently)
-        silently ignores errors here.
+        on a Windows OS kill is an alias to terminate. Terminating does
+        not raise itself if something has gone wrong but ignores errors here.
         """
         try:
-            stdin, stdout, stderr = (
+            if self.process.poll() is None:
+                self.process.terminate()
+                try:
+                    self.process.wait(60)
+                except subprocess.TimeoutExpired:
+                    logger.exception(
+                        "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL."
+                    )
+                    self.process.kill()
+            for stream in (
                 self.process.stdin,
                 self.process.stdout,
                 self.process.stderr,
-            )
-            for stream in stdin, stdout, stderr:
+            ):
                 try:
                     stream.close()  # type: ignore
                 except AttributeError:
                     pass
-            self.process.terminate()
-            try:
-                self.process.wait(60)
-            except subprocess.TimeoutExpired:
-                logger.error(
-                    "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
-                    exc_info=True,
-                )
-                self.process.kill()
         except OSError:
-            logger.error("Error terminating service process.", exc_info=True)
+            logger.exception("Error terminating service process.")
 
     def __del__(self) -> None:
         # `subprocess.Popen` doesn't send signal on `__del__`;
@@ -250,7 +251,7 @@ class Service(ABC):
         except OSError as err:
             if err.errno == errno.EACCES:
                 if self._path is None:
-                    raise WebDriverException("Service path cannot be None.")
+                    raise WebDriverException("Service path cannot be None.") from err
                 raise WebDriverException(
                     f"'{os.path.basename(self._path)}' executable may have wrong permissions."
                 ) from err

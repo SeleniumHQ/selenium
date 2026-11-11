@@ -104,13 +104,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private final Deque<SessionRequest> queue;
   private final ReadWriteLock lock = new ReentrantReadWriteLock();
   private final ScheduledExecutorService service =
-      Executors.newSingleThreadScheduledExecutor(
-          r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            thread.setName(NAME);
-            return thread;
-          });
+      Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName(NAME);
+        return thread;
+      });
 
   @Nullable private final MBean jmxBean;
 
@@ -176,12 +175,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     try {
       ids =
           requests.entrySet().stream()
-              .filter(
-                  entry ->
-                      queue.stream()
-                          .anyMatch(
-                              sessionRequest ->
-                                  sessionRequest.getRequestId().equals(entry.getKey())))
+              .filter(entry ->
+                  queue.stream()
+                      .anyMatch(
+                          sessionRequest -> sessionRequest.getRequestId().equals(entry.getKey())))
               .filter(entry -> isTimedOut(now, entry.getValue()))
               .map(Map.Entry::getKey)
               .collect(toUnmodifiableSet());
@@ -391,15 +388,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         caps ->
             stereotypes.entrySet().stream()
                 .filter(entry -> entry.getValue() > 0)
-                .anyMatch(
-                    entry -> {
-                      boolean matches = slotMatcher.matches(entry.getKey(), caps);
-                      if (matches) {
-                        Long value = entry.getValue();
-                        entry.setValue(value - 1);
-                      }
-                      return matches;
-                    });
+                .anyMatch(entry -> {
+                  boolean matches = slotMatcher.matches(entry.getKey(), caps);
+                  if (matches) {
+                    Long value = entry.getValue();
+                    entry.setValue(value - 1);
+                  }
+                  return matches;
+                });
 
     Lock writeLock = lock.writeLock();
     if (!writeLock.tryLock()) {
@@ -412,18 +408,17 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
               .limit(batchSize)
               .collect(Collectors.toList());
 
-      availableRequests.removeIf(
-          (req) -> {
-            Data data = this.requests.get(req.getRequestId());
+      availableRequests.removeIf(req -> {
+        Data data = this.requests.get(req.getRequestId());
 
-            if (data.isCanceled()) {
-              failDueToCanceled(req.getRequestId());
-              return true;
-            }
+        if (data.isCanceled()) {
+          failDueToCanceled(req.getRequestId());
+          return true;
+        }
 
-            this.remove(req.getRequestId());
-            return false;
-          });
+        this.remove(req.getRequestId());
+        return false;
+      });
 
       return availableRequests;
     } finally {
@@ -470,10 +465,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     try {
       int size = queue.size();
       queue.clear();
-      requests.forEach(
-          (reqId, data) ->
-              data.setResult(
-                  Either.left(new SessionNotCreatedException("Request queue was cleared"))));
+      requests.forEach((reqId, data) ->
+          data.setResult(Either.left(new SessionNotCreatedException("Request queue was cleared"))));
       requests.clear();
       return size;
     } finally {

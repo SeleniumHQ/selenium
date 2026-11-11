@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.network;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -35,6 +36,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
@@ -72,17 +74,16 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       // String alternatePage = appServer.whereIs("printPage.html");
       // TODO: Test sending request to alternate page once it is supported by browsers
-      network.onBeforeRequestSent(
-          beforeRequestSent -> {
-            network.continueRequest(
-                new ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()));
+      network.onBeforeRequestSent(beforeRequestSent -> {
+        network.continueRequest(
+            new ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()));
 
-            // network.continueRequest(
-            // new
-            // ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()).method("get").url(alternatePage));
+        // network.continueRequest(
+        // new
+        // ContinueRequestParameters(beforeRequestSent.getRequest().getRequestId()).method("get").url(alternatePage));
 
-            latch.countDown();
-          });
+        latch.countDown();
+      });
 
       assertThat(intercept).isNotNull();
 
@@ -105,12 +106,11 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       // TODO: Test sending response with a different status code once it is supported by the
       // browsers
-      network.onResponseStarted(
-          responseDetails -> {
-            network.continueResponse(
-                new ContinueResponseParameters(responseDetails.getRequest().getRequestId()));
-            latch.countDown();
-          });
+      network.onResponseStarted(responseDetails -> {
+        network.continueResponse(
+            new ContinueResponseParameters(responseDetails.getRequest().getRequestId()));
+        latch.countDown();
+      });
 
       assertThat(intercept).isNotNull();
 
@@ -132,13 +132,12 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       CountDownLatch latch = new CountDownLatch(1);
 
-      network.onBeforeRequestSent(
-          beforeRequestSent -> {
-            network.provideResponse(
-                new ProvideResponseParameters(beforeRequestSent.getRequest().getRequestId()));
+      network.onBeforeRequestSent(beforeRequestSent -> {
+        network.provideResponse(
+            new ProvideResponseParameters(beforeRequestSent.getRequest().getRequestId()));
 
-            latch.countDown();
-          });
+        latch.countDown();
+      });
 
       assertThat(intercept).isNotNull();
 
@@ -163,17 +162,16 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       CountDownLatch latch = new CountDownLatch(1);
 
-      network.onResponseStarted(
-          responseDetails -> {
-            network.provideResponse(
-                new ProvideResponseParameters(responseDetails.getRequest().getRequestId())
-                    .body(
-                        new BytesValue(
-                            BytesValue.Type.STRING,
-                            "<html><head><title>Hello," + " World!</title></head><body/></html>")));
+      network.onResponseStarted(responseDetails -> {
+        network.provideResponse(
+            new ProvideResponseParameters(responseDetails.getRequest().getRequestId())
+                .body(
+                    new BytesValue(
+                        BytesValue.Type.STRING,
+                        "<html><head><title>Hello," + " World!</title></head><body/></html>")));
 
-            latch.countDown();
-          });
+        latch.countDown();
+      });
 
       assertThat(intercept).isNotNull();
 
@@ -207,11 +205,10 @@ class NetworkCommandsTest extends JupiterTestBase {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
 
       String callbackId =
-          network.onAuthRequired(
-              responseDetails ->
-                  network.continueWithAuth(
-                      responseDetails.getRequest().getRequestId(),
-                      new UsernameAndPassword("test", "test")));
+          network.onAuthRequired(responseDetails ->
+              network.continueWithAuth(
+                  responseDetails.getRequest().getRequestId(),
+                  new UsernameAndPassword("test", "test")));
 
       assertThat(callbackId).isNotBlank();
 
@@ -228,20 +225,34 @@ class NetworkCommandsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canContinueWithoutAuthCredentials() {
+  void canContinueWithoutAuthCredentials() throws InterruptedException {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
-      network.onAuthRequired(
-          responseDetails -> {
-            if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
-              network.continueWithAuthNoCredentials(responseDetails.getRequest().getRequestId());
-            }
-          });
+      CountDownLatch continued = new CountDownLatch(1);
+      network.onAuthRequired(responseDetails -> {
+        if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
+          network.continueWithAuthNoCredentials(responseDetails.getRequest().getRequestId());
+          continued.countDown();
+        }
+      });
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
       assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE, Duration.ofMillis(200)))
           .isInstanceOf(WebDriverException.class);
+
+      // chromedriver holds classic commands behind the pending navigation, so the next command
+      // must not race the continuation that releases it.
+      assertThat(continued.await(10, TimeUnit.SECONDS)).isTrue();
+
+      // "default" hands authentication back to the browser: Firefox raises its own credential
+      // prompt, Chrome and Edge block the navigation without exposing one. Dismiss it so the
+      // session is still usable once the test ends.
+      try {
+        shortWait.until(alertIsPresent()).dismiss();
+      } catch (TimeoutException ignored) {
+        // Chromium-based browsers do not surface a prompt here
+      }
     }
   }
 
@@ -250,24 +261,22 @@ class NetworkCommandsTest extends JupiterTestBase {
   void canCancelAuth() throws InterruptedException {
     try (Network network = new Network(driver)) {
       network.addIntercept(new AddInterceptParameters(InterceptPhase.AUTH_REQUIRED));
-      network.onAuthRequired(
-          responseDetails -> {
-            if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
-              // Does not handle the alert
-              network.cancelAuth(responseDetails.getRequest().getRequestId());
-            }
-          });
+      network.onAuthRequired(responseDetails -> {
+        if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
+          // Does not handle the alert
+          network.cancelAuth(responseDetails.getRequest().getRequestId());
+        }
+      });
 
       AtomicInteger status = new AtomicInteger();
       CountDownLatch latch = new CountDownLatch(1);
 
-      network.onResponseCompleted(
-          responseDetails -> {
-            if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
-              status.set(responseDetails.getResponseData().getStatus());
-              latch.countDown();
-            }
-          });
+      network.onResponseCompleted(responseDetails -> {
+        if (responseDetails.getRequest().getUrl().contains("basicAuth")) {
+          status.set(responseDetails.getResponseData().getStatus());
+          latch.countDown();
+        }
+      });
 
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
@@ -350,10 +359,9 @@ class NetworkCommandsTest extends JupiterTestBase {
     try (Network network = new Network(driver)) {
       page = appServer.whereIs("basicAuth");
 
-      assertThatThrownBy(
-              () ->
-                  network.setCacheBehavior(
-                      CacheBehavior.DEFAULT, Collections.singletonList("invalid-context")))
+      assertThatThrownBy(() ->
+              network.setCacheBehavior(
+                  CacheBehavior.DEFAULT, Collections.singletonList("invalid-context")))
           .isInstanceOf(BiDiException.class)
           .hasMessageContaining("no such frame");
     }

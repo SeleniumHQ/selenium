@@ -34,11 +34,10 @@ class ThreadGuardTest {
     final WebDriver protect = ThreadGuard.protect(actual);
     final AtomicInteger successes = new AtomicInteger();
     Thread foo =
-        new Thread(
-            () -> {
-              protect.findElement(By.id("foo"));
-              successes.incrementAndGet();
-            });
+        new Thread(() -> {
+          protect.findElement(By.id("foo"));
+          successes.incrementAndGet();
+        });
     foo.start();
     foo.join();
     assertThat(successes.get()).isZero();

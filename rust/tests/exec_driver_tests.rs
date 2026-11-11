@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::common::is_linux_arm64;
 use crate::common::{assert_browser, assert_driver, exec_driver, get_selenium_manager};
 
 use rstest::rstest;
@@ -28,6 +29,10 @@ mod common;
 #[case("firefox", "geckodriver")]
 #[case("iexplorer", "IEDriverServer")]
 fn exec_driver_test(#[case] browser_name: String, #[case] driver_name: String) {
+    if is_linux_arm64() && browser_name.eq("edge") {
+        return;
+    }
+
     let mut cmd = get_selenium_manager();
     cmd.args(["--browser", &browser_name, "--output", "json"])
         .assert()

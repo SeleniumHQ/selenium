@@ -21,6 +21,7 @@ require 'websocket'
 
 module Selenium
   module WebDriver
+    # @api private
     class WebSocketConnection
       CONNECTION_ERRORS = [
         Errno::ECONNRESET, # connection is aborted (browser process was killed)
@@ -35,6 +36,15 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE = 9999
 
+      # websocket-ruby defaults to a 20MB limit and silently drops larger
+      # frames, which can stall the listener. CDP payloads (e.g. large data:
+      # URLs) can exceed that, so raise the ceiling for our connections.
+      # The gem only exposes the limit as process-global state, so it is
+      # raised (never lowered) and not restored on close - concurrent
+      # connections share the value. Other bindings rely on their own
+      # websocket clients' limits; this constant only affects websocket-ruby.
+      MAX_FRAME_SIZE = 100 * 1024 * 1024 # 100MB
+
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
@@ -46,26 +56,19 @@ module Selenium
         @session_id = nil
         @url = url
 
+        apply_frame_size_limit
         process_handshake
         @socket_thread = attach_socket_listener
       end
 
+      # Idempotent: the listener may already have initiated shutdown (see
+      # #frame_dropped?), so always close the socket and join threads rather
+      # than short-circuiting on @closing.
       def close
-        @closing_mtx.synchronize do
-          return if @closing
-
-          @closing = true
-        end
-
-        begin
-          socket.close
-        rescue *CONNECTION_ERRORS => e
-          WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
-          # already closed
-        end
+        close_socket
 
         # Let threads unwind instead of calling exit
-        @socket_thread&.join(0.5)
+        @socket_thread&.join(0.5) unless @socket_thread == Thread.current
         @callback_threads.list.each do |thread|
           thread.join(0.5)
         rescue StandardError => e
@@ -97,25 +100,64 @@ module Selenium
       end
 
       def send_cmd(**payload)
-        id = next_id
-        data = payload.merge(id: id)
-        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
-        data = JSON.generate(data)
-        out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
+        # IOError to match what writing to an already-closed socket raises
+        raise IOError, 'WebSocket connection is closed' if @closing
 
-        begin
-          socket.write(out_frame.to_s)
-        rescue *CONNECTION_ERRORS => e
-          raise e, "WebSocket is closed (#{e.class}: #{e.message})"
+        # Callbacks send commands from their own threads, so the id must be
+        # allocated and registered atomically or two commands can share one
+        id = @messages_mtx.synchronize do
+          next_id.tap { |new_id| pending_responses[new_id] = ConditionVariable.new }
         end
 
-        wait.until { @messages_mtx.synchronize { messages.delete(id) } }
+        begin
+          data = payload.merge(id: id)
+          WebDriver.logger.debug('WebSocket ->', id: :ws) { data.to_s[...MAX_LOG_MESSAGE_SIZE] }
+          data = JSON.generate(data)
+          out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
+
+          begin
+            socket.write(out_frame.to_s)
+          rescue *CONNECTION_ERRORS => e
+            raise e, "WebSocket is closed (#{e.class}: #{e.message})"
+          end
+
+          await_response(id)
+        ensure
+          @messages_mtx.synchronize do
+            pending_responses.delete(id)
+            messages.delete(id)
+          end
+        end
       end
 
       private
 
       def messages
         @messages ||= {}
+      end
+
+      def pending_responses
+        @pending_responses ||= {}
+      end
+
+      def await_response(id)
+        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + RESPONSE_WAIT_TIMEOUT
+        @messages_mtx.synchronize do
+          until messages.key?(id)
+            raise IOError, 'WebSocket connection closed while waiting for a response' if @closing
+
+            remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            raise Error::TimeoutError, "timed out after #{RESPONSE_WAIT_TIMEOUT} seconds" if remaining <= 0
+
+            pending_responses[id].wait(@messages_mtx, remaining)
+          end
+          messages.delete(id)
+        end
+      end
+
+      # Once the socket is closed no reply can arrive, so wake waiters instead of letting them run out the timeout
+      def release_pending_responses
+        @messages_mtx.synchronize { pending_responses.each_value(&:broadcast) }
       end
 
       def process_handshake
@@ -132,20 +174,54 @@ module Selenium
 
             incoming_frame << socket.readpartial(1024)
 
-            while (frame = incoming_frame.next)
-              break if @closing
-
-              message = process_frame(frame)
-              next unless message['method']
-
-              @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
-                @callback_threads.add(callback_thread(message['params'], &callback))
-              end
-            end
+            process_incoming_frames
+            break if frame_dropped?
           end
         rescue *CONNECTION_ERRORS, WebSocket::Error => e
           WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+        ensure
+          # Nothing reads replies once the listener stops, however it stopped
+          close_socket
         end
+      end
+
+      def close_socket
+        @closing_mtx.synchronize { @closing = true }
+        socket.close
+      rescue *CONNECTION_ERRORS => e
+        WebDriver.logger.debug "WebSocket socket closed: #{e.class}: #{e.message}", id: :ws
+      ensure
+        release_pending_responses
+      end
+
+      def process_incoming_frames
+        while (frame = incoming_frame.next)
+          break if @closing
+
+          message = process_frame(frame)
+          next unless message['method']
+
+          @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
+            @callback_threads.add(callback_thread(message['params'], &callback))
+          end
+        end
+      end
+
+      # True when the buffered frame could not be decoded (e.g. exceeds MAX_FRAME_SIZE).
+      # websocket-ruby swallows the error and keeps returning nil, so surface it and close
+      # the connection here instead of leaving a dead listener on an open socket.
+      def frame_dropped?
+        return false unless incoming_frame.error?
+
+        WebDriver.logger.error("WebSocket frame dropped (#{incoming_frame.error}); if payloads can legitimately " \
+                               "exceed #{WebSocket.max_frame_size} bytes, set WebSocket.max_frame_size " \
+                               'to a higher value', id: :ws)
+        close_socket
+        true
+      end
+
+      def apply_frame_size_limit
+        WebSocket.max_frame_size = MAX_FRAME_SIZE if WebSocket.max_frame_size < MAX_FRAME_SIZE
       end
 
       def incoming_frame
@@ -159,9 +235,17 @@ module Selenium
         return {} if message.empty?
 
         msg = JSON.parse(message)
-        @messages_mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
+        if msg.key?('id')
+          @messages_mtx.synchronize do
+            # Replies to commands that already timed out are dropped so they don't accumulate
+            if (waiter = pending_responses[msg['id']])
+              messages[msg['id']] = msg
+              waiter.signal
+            end
+          end
+        end
 
-        WebDriver.logger.debug "WebSocket <- #{msg}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
+        WebDriver.logger.debug('WebSocket <-', id: :ws) { msg.to_s[...MAX_LOG_MESSAGE_SIZE] }
         msg
       end
 
@@ -182,10 +266,6 @@ module Selenium
         end
       end
 
-      def wait
-        @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
-      end
-
       def socket
         @socket ||= if URI(@url).scheme == 'wss'
                       socket = TCPSocket.new(ws.host, ws.port)
@@ -204,8 +284,7 @@ module Selenium
       end
 
       def next_id
-        @id ||= 0
-        @id += 1
+        @id = (@id || 0) + 1
       end
     end # BiDi
   end # WebDriver

@@ -72,7 +72,11 @@ module Selenium
               http = new_http_client
               if server_url.scheme == 'https'
                 http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+                http.verify_mode = if client_config.ignore_certificates
+                                     OpenSSL::SSL::VERIFY_NONE
+                                   else
+                                     OpenSSL::SSL::VERIFY_PEER
+                                   end
               end
 
               http.open_timeout = open_timeout if open_timeout
@@ -85,6 +89,18 @@ module Selenium
 
           def start(http)
             http.start
+          rescue OpenSSL::SSL::SSLError => e
+            failure = e.message.match(/certificate verify failed(?: \((.+?)\))?/)
+            raise unless failure
+
+            raise e.class, unverified_certificate_message(failure[1] || failure[0]), e.backtrace
+          end
+
+          def unverified_certificate_message(reason)
+            location = server_url.dup.tap { |url| url.user = nil }
+            "Cannot verify the certificate for #{location} (#{reason}). " \
+              'Trust its issuer if it is self-signed or from a private CA, ' \
+              'or skip verification with ignore_certificates: true on a ClientConfig passed to the driver constructor'
           end
 
           MAX_RETRIES = 3

@@ -57,16 +57,19 @@ module Selenium
         end
       end
 
-      attr_accessor :host, :executable_path, :port, :log, :args
+      attr_accessor :host, :executable_path, :port, :log, :args, :env
       alias extra_args args
 
       #
       # End users should use a class method for the desired driver, rather than using this directly.
       #
+      # @param env [Hash<String, String, nil>] environment variables for the driver process.
+      #   These are merged into the inherited environment; set a value to nil to remove an inherited variable.
+      #
       # @api private
       #
 
-      def initialize(path: nil, port: nil, log: nil, args: nil)
+      def initialize(path: nil, port: nil, log: nil, args: nil, env: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
 
@@ -82,6 +85,7 @@ module Selenium
                  log
                end
         @args = args
+        @env = env || {}
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
