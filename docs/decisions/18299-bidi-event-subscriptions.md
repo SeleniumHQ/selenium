@@ -1,7 +1,7 @@
-# NNNN. Behavioral contract for low-level event subscriptions
+# 18299. Behavioral contract for low-level event subscriptions
 
 - Status: Proposed
-- Discussion: <!-- link to this record's PR -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/18299
 
 ## Context
 
