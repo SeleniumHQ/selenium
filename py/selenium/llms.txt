@@ -40,9 +40,11 @@ sources. Each names the release in which the old form stopped being correct.
   Do not combine `driver.implicitly_wait(...)` with `WebDriverWait`; the two wait
   strategies compound unpredictably.
 - Prefer WebDriver BiDi over CDP. `driver.script`, `driver.network` and
-  `driver.browsing_context` are cross-browser and stable; install extensions with
-  `driver.install_web_extension()`. CDP is Chromium-only and pinned to a browser
-  version.
+  `driver.browsing_context` are cross-browser and stable. CDP is Chromium-only and
+  pinned to a browser version.
+- Install extensions with `driver.install_web_extension(path)`. Chrome and Edge
+  need `options.enable_bidi = True` and `options.enable_webextensions = True` set
+  before the driver starts; Firefox needs neither.
 - Headless mode is an argument, not a property: `options.add_argument("--headless=new")`
   for Chrome and Edge, `options.add_argument("-headless")` for Firefox. The
   `options.headless` property was deprecated in 4.8 and removed in 4.13.
