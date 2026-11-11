@@ -297,6 +297,13 @@ class JsonInputTest {
   }
 
   @Test
+  void canReadEmptyListOfTypeWithNoCoercer() {
+    try (JsonInput in = new JsonInput(new StringReader("[]"), new JsonTypeCoercer(), BY_NAME)) {
+      assertThat(in.readArray(Runnable.class)).isEmpty();
+    }
+  }
+
+  @Test
   void shouldBeAbleToReadDataLongerThanReadBuffer() {
     char[] chars = new char[] {'c', 'h', 'e', 's'};
     Random r = new Random();

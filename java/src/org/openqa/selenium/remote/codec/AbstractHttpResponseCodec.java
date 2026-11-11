@@ -26,6 +26,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 import java.util.function.Supplier;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.http.HttpHeader;
@@ -51,7 +52,11 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     String state = response.getState();
     int status = state == null || "success".equals(state) ? HTTP_OK : HTTP_INTERNAL_ERROR;
 
-    byte[] data = json.toJson(getValueToEncode(response)).getBytes(UTF_8);
+    StringBuilder content = new StringBuilder();
+    try (JsonOutput out = json.newOutput(content)) {
+      out.setPrettyPrint(false).write(getValueToEncode(response));
+    }
+    byte[] data = content.toString().getBytes(UTF_8);
 
     HttpResponse httpResponse = factory.get();
     httpResponse.setStatus(status);
