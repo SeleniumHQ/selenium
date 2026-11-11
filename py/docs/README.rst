@@ -58,14 +58,19 @@ the build publishes four files at stable URLs under
     Every deprecated API in the release with the replacement to use instead,
     extracted from the deprecation warnings in the source by
     ``py/generate_deprecations.py``. It is committed under ``source/_extra/``
-    and published verbatim through ``html_extra_path``; a unit test fails if it
-    no longer matches the source.
+    and published through ``html_extra_path``; a unit test fails if its entries
+    no longer match the source. The build stamps the published copy with the
+    release it documents, so the committed version field is never what ships.
 
 ``sitemap.xml``
     Every page in the build, so the reference is crawlable without following
     client-side navigation. Crawlers only honour ``robots.txt`` at a domain
     root, so referencing this sitemap is a change to the
     ``seleniumhq.github.io`` repository rather than to this build.
+
+``llms.txt`` and ``sitemap.xml`` present the build as the canonical
+reference, so the Read the Docs preview does not write them; ``conf.py`` turns
+them off through ``llm_assets_enabled`` when ``READTHEDOCS`` is set.
 
 Regenerate the deprecation dataset on its own with:
 

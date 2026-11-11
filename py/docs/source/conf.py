@@ -22,6 +22,8 @@ import os
 import os.path
 import sys
 
+from sphinx.util import logging as sphinx_logging
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -103,6 +105,26 @@ def source_ref(release):
 git_ref = "trunk"
 
 
+logger = sphinx_logging.getLogger(__name__)
+
+# Objects rendered without a source link. Each is logged at debug level, and the
+# total is reported once the build finishes, so that a regression dropping links
+# wholesale shows up in the build output rather than only on the published pages.
+unlinked = []
+
+
+def _unlinked(info, reason):
+    name = f"{info['module']}.{info['fullname']}"
+    unlinked.append(name)
+    logger.debug("linkcode: no source link for %s (%s)", name, reason)
+    return None
+
+
+def _report_unlinked(app, exception):
+    if exception is None and unlinked:
+        logger.info("linkcode: %d documented objects have no source link; run with -vv to list them", len(unlinked))
+
+
 def linkcode_resolve(domain, info):
     """Point each documented object at its source on GitHub.
 
@@ -117,6 +139,13 @@ def linkcode_resolve(domain, info):
 
     try:
         obj = importlib.import_module(info["module"])
+    except ImportError as error:
+        # A documented module that cannot be imported is a broken reference, not
+        # an expected miss, so it is worth a warning in the build output.
+        logger.warning("linkcode: cannot import %s: %s", info["module"], error)
+        return _unlinked(info, error)
+
+    try:
         for part in info["fullname"].split("."):
             obj = getattr(obj, part)
         # Much of the driver surface is exposed as properties, whose source lives
@@ -126,17 +155,19 @@ def linkcode_resolve(domain, info):
         obj = inspect.unwrap(obj)
         source_file = inspect.getsourcefile(obj)
         _, lineno = inspect.getsourcelines(obj)
-    except (ImportError, AttributeError, OSError, TypeError):
-        return None
+    except (AttributeError, OSError, TypeError) as error:
+        # Expected for constants, instance attributes and C-implemented objects,
+        # which have no source of their own to link to.
+        return _unlinked(info, error)
 
     if not source_file:
-        return None
+        return _unlinked(info, "no source file")
 
     # `selenium` is the top of the published package, and also the top of the
     # `py` directory in the repository.
     path = source_file.replace(os.sep, "/")
     if "/selenium/" not in path:
-        return None
+        return _unlinked(info, f"source is outside the package: {path}")
     relative = "selenium/" + path.rsplit("/selenium/", 1)[1]
 
     return f"https://github.com/SeleniumHQ/selenium/blob/{git_ref}/py/{relative}#L{lineno}"
@@ -181,9 +212,15 @@ add_module_names = False
 # and unofficial mirrors that outrank both — and until now none of them said
 # which was authoritative. Setting this emits `rel="canonical"` on every page,
 # pointing search engines and retrieval pipelines at the released reference no
-# matter which copy they reached. Preview builds that are not served from this
-# base should override it with `-D html_baseurl=` (see `py/docs/README.rst`).
+# matter which copy they reached. The Read the Docs preview deliberately keeps
+# it; a local build served from elsewhere can clear it with `-D html_baseurl=`
+# (see `py/docs/README.rst`).
 html_baseurl = "https://www.selenium.dev/selenium/docs/api/py/"
+
+# The Read the Docs preview documents unreleased code, so it must not publish an
+# llms.txt that calls itself the canonical reference (see `_ext/llm_assets.py`).
+# Read the Docs sets READTHEDOCS=True in every build it runs.
+llm_assets_enabled = os.environ.get("READTHEDOCS") != "True"
 
 # The theme to use for HTML and HTML Help pages
 html_theme = "pydata_sphinx_theme"
@@ -299,3 +336,4 @@ def _pin_source_ref(app, config):
 
 def setup(app):
     app.connect("config-inited", _pin_source_ref)
+    app.connect("build-finished", _report_unlinked)

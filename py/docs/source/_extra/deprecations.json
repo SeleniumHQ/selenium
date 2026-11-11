@@ -132,6 +132,34 @@
     },
     {
       "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.Script.evaluate",
+      "deprecated": "driver.script.evaluate",
+      "replacement": "use driver.script.execute() or driver.execute_script() instead",
+      "message": "driver.script.evaluate is deprecated and will be removed; use driver.script.execute() or driver.execute_script() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.Script.call_function",
+      "deprecated": "driver.script.call_function",
+      "replacement": "use driver.script.execute() or driver.execute_script() instead",
+      "message": "driver.script.call_function is deprecated and will be removed; use driver.script.execute() or driver.execute_script() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.Script.add_preload_script",
+      "deprecated": "driver.script.add_preload_script",
+      "replacement": "use driver.script.pin() instead",
+      "message": "driver.script.add_preload_script is deprecated and will be removed; use driver.script.pin() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.script",
+      "api": "selenium.webdriver.remote.script.Script.remove_preload_script",
+      "deprecated": "driver.script.remove_preload_script",
+      "replacement": "use driver.script.unpin() instead",
+      "message": "driver.script.remove_preload_script is deprecated and will be removed; use driver.script.unpin() instead"
+    },
+    {
+      "module": "selenium.webdriver.remote.script",
       "api": "selenium.webdriver.remote.script.Script.__getattr__",
       "deprecated": null,
       "replacement": null,
@@ -175,8 +203,8 @@
     {
       "module": "selenium.webdriver.support.relative_locator",
       "api": "selenium.webdriver.support.relative_locator.with_tag_name",
-      "deprecated": null,
-      "replacement": null,
+      "deprecated": "This method",
+      "replacement": "use `locate_with` instead",
       "message": "This method is deprecated and may be removed in future versions. Please use `locate_with` instead."
     }
   ]

@@ -19,6 +19,7 @@
 
 import json
 import pathlib
+import re
 
 import generate_deprecations as gd
 import pytest
@@ -72,6 +73,76 @@ def f():
 
     assert entry["deprecated"] == "using ignore_local_proxy_environment_variables in Options"
     assert entry["replacement"] == "instead, create a Proxy instance with ProxyType.DIRECT"
+
+
+def test_reads_a_replacement_offered_after_the_removal_notice():
+    source = """
+import warnings
+
+
+def with_tag_name(tag_name):
+    warnings.warn(
+        "This method is deprecated and may be removed in future versions. Please use `locate_with` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+"""
+    (entry,) = gd.find_deprecations(source, "selenium.webdriver.support.relative_locator")
+
+    assert entry["replacement"] == "use `locate_with` instead"
+
+
+def test_reads_a_replacement_after_a_will_be_removed_clause():
+    source = """
+import warnings
+
+
+def f():
+    warnings.warn("f is deprecated and will be removed; use g instead", DeprecationWarning)
+"""
+    (entry,) = gd.find_deprecations(source, "selenium.foo")
+
+    assert entry["deprecated"] == "f"
+    assert entry["replacement"] == "use g instead"
+
+
+def test_does_not_invent_a_replacement_for_a_removal_notice_that_names_none():
+    source = """
+import warnings
+
+
+def realm():
+    warnings.warn("realm is deprecated and will be removed; it is an implementation detail", DeprecationWarning)
+"""
+    (entry,) = gd.find_deprecations(source, "selenium.foo")
+
+    assert entry["replacement"] is None
+
+
+def test_publishes_each_command_a_replacement_table_forwards():
+    """`driver.script` deprecates commands through `__getattr__`; the table is the real mapping."""
+    source = """
+import warnings
+
+_REPLACEMENTS = {
+    "evaluate": "driver.script.execute()",
+}
+
+
+class Script:
+    def __getattr__(self, name):
+        replacement = _REPLACEMENTS.get(name)
+        advice = f"use {replacement} instead"
+        warnings.warn(f"driver.script.{name} is deprecated and will be removed; {advice}", DeprecationWarning)
+"""
+    entries = gd.find_deprecations(source, "selenium.webdriver.remote.script")
+    by_api = {entry["api"]: entry for entry in entries}
+
+    evaluate = by_api["selenium.webdriver.remote.script.Script.evaluate"]
+    assert evaluate["deprecated"] == "driver.script.evaluate"
+    assert evaluate["replacement"] == "use driver.script.execute() instead"
+    # Commands outside the table are still deprecated, with no replacement to name.
+    assert "selenium.webdriver.remote.script.Script.__getattr__" in by_api
 
 
 def test_keeps_an_entry_whose_message_has_no_recognisable_replacement():
@@ -174,3 +245,19 @@ def test_the_published_dataset_matches_the_source():
     assert json.loads(published.read_text())["deprecations"] == expected, (
         "deprecations.json is out of date; regenerate it with `./go py:docs_generate`"
     )
+
+
+def test_the_shipped_guidance_recommends_no_deprecated_driver_api():
+    """`llms.txt` tells code generators what to use; naming a deprecated API there undoes its purpose."""
+    py_dir = pathlib.Path(gd.__file__).resolve().parent
+    guidance = (py_dir / "selenium" / "llms.txt").read_text()
+
+    deprecated = set()
+    for entry in gd.collect(str(py_dir / "selenium")):
+        if entry["deprecated"] and entry["deprecated"].startswith("driver."):
+            deprecated.add(entry["deprecated"])
+        if entry["api"].startswith("selenium.webdriver.remote.webdriver.WebDriver."):
+            deprecated.add("driver." + entry["api"].rsplit(".", 1)[1])
+
+    named = sorted(name for name in deprecated if re.search(rf"(?<![\w.]){re.escape(name)}(?!\w)", guidance))
+    assert not named, f"py/selenium/llms.txt recommends deprecated APIs: {named}"

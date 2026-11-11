@@ -50,6 +50,12 @@ _REPLACEMENT_PATTERNS = (
     re.compile(r"\bis deprecated[,;:]\s*(?P<replacement>.+)", re.IGNORECASE | re.DOTALL),
     re.compile(r"\bhas been deprecated[,;:]\s*(?P<replacement>.+)", re.IGNORECASE | re.DOTALL),
     re.compile(r"\bdeprecated[,;:]\s*(?P<replacement>use .+)", re.IGNORECASE | re.DOTALL),
+    # "X is deprecated and may be removed in future versions. Please use Y instead."
+    # Anchored on "use" so that a warning naming no replacement records none.
+    re.compile(
+        r"\b(?:is |has been )?deprecated and (?:will|may) be removed[^.;]*[.;]\s*(?:please\s+)?(?P<replacement>use .+)",
+        re.IGNORECASE | re.DOTALL,
+    ),
 )
 
 
@@ -116,7 +122,7 @@ def split_message(message):
         match = pattern.search(collapsed)
         if match:
             deprecated = collapsed[: match.start()].strip().rstrip(",;:")
-            replacement = match.group("replacement").strip()
+            replacement = match.group("replacement").strip().rstrip(".")
             return deprecated or None, replacement
     return None, None
 
@@ -161,7 +167,59 @@ def find_deprecations(source, module):
                     )
             stack.append((child, child_scope))
 
-    return [entry for _, entry in sorted(deprecations, key=lambda pair: pair[0])]
+    entries = [entry for _, entry in sorted(deprecations, key=lambda pair: pair[0])]
+    return _expand_replacement_tables(tree, module, entries)
+
+
+def _replacement_table(tree):
+    """Return a module-level `_REPLACEMENTS = {"name": "replacement"}` literal, if any."""
+    for node in tree.body:
+        if (
+            isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "_REPLACEMENTS" for target in node.targets)
+            and isinstance(node.value, ast.Dict)
+        ):
+            try:
+                table = ast.literal_eval(node.value)
+            except ValueError:
+                return None
+            if all(isinstance(k, str) and isinstance(v, str) for k, v in table.items()):
+                return table
+    return None
+
+
+def _expand_replacement_tables(tree, module, entries):
+    """Give each command a dynamic `__getattr__` deprecates its own entry.
+
+    `driver.script` forwards removed protocol commands through `__getattr__` and
+    looks the replacement up in a `_REPLACEMENTS` table, so the warning's text is
+    only known at runtime and reads as a placeholder here. The table is the real
+    record of what replaces what; publishing one entry per command makes each one
+    addressable. The placeholder stays for the commands the table does not cover.
+    """
+    table = _replacement_table(tree)
+    if not table:
+        return entries
+
+    expanded = []
+    for entry in entries:
+        if entry["api"].endswith(".__getattr__"):
+            owner = entry["api"].removesuffix(".__getattr__")
+            # The warning names the command as the user wrote it, e.g. `driver.script.evaluate`.
+            prefix = entry["message"].split(" ", 1)[0].removesuffix("...")
+            for name, replacement in table.items():
+                deprecated = f"{prefix}{name}"
+                expanded.append(
+                    {
+                        "module": module,
+                        "api": f"{owner}.{name}",
+                        "deprecated": deprecated,
+                        "replacement": f"use {replacement} instead",
+                        "message": f"{deprecated} is deprecated and will be removed; use {replacement} instead",
+                    }
+                )
+        expanded.append(entry)
+    return expanded
 
 
 def collect(package_root):

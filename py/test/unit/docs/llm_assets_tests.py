@@ -17,6 +17,8 @@
 
 """Tests for the machine-readable files published with the API documentation."""
 
+import json
+
 import llm_assets
 import pytest
 
@@ -84,3 +86,19 @@ def test_llms_txt_carries_the_guidance_that_ships_with_the_package():
 def test_reports_a_missing_section_rather_than_publishing_without_it():
     with pytest.raises(ValueError, match="Not A Section"):
         llm_assets.package_section("Not A Section")
+
+
+def test_stamps_the_published_dataset_with_the_release_being_built(tmp_path):
+    """The committed dataset is only regenerated when a deprecation changes, so its version can lag."""
+    published = tmp_path / "deprecations.json"
+    published.write_text(json.dumps({"version": "4.48.0", "deprecations": [{"api": "selenium.foo"}]}))
+
+    assert llm_assets.stamp_deprecations(str(tmp_path), "4.53.0")
+
+    dataset = json.loads(published.read_text())
+    assert dataset["version"] == "4.53.0"
+    assert dataset["deprecations"] == [{"api": "selenium.foo"}]
+
+
+def test_stamping_is_a_no_op_when_no_dataset_was_published(tmp_path):
+    assert not llm_assets.stamp_deprecations(str(tmp_path), "4.53.0")

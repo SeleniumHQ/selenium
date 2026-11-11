@@ -35,13 +35,22 @@ once the build finishes:
     domain root, so pointing them at this sitemap is a change to the site
     repository, not to this build.
 
-Both describe absolute URLs, so they are only written when ``html_baseurl`` is
-set. Preview builds leave it unset and are skipped rather than advertising URLs
-they are not served from.
+Both describe absolute URLs and present this build as the canonical reference,
+so they are only written for the release build. Preview builds keep
+``html_baseurl`` — their pages should still point ``rel=canonical`` at the
+release — but set ``llm_assets_enabled = False`` so they do not publish an entry
+point claiming to be the canonical copy, or a sitemap of URLs they are not
+served from.
+
+The build also stamps the published ``deprecations.json`` with the release it
+documents. The committed copy is only regenerated when a deprecation changes,
+so its own version field can lag a version bump; the build is the one place
+that always knows which release it is publishing.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import posixpath
 from xml.sax.saxutils import escape
@@ -270,6 +279,23 @@ def render_llms_txt(baseurl, release, extras):
     return "\n".join(sections)
 
 
+def stamp_deprecations(outdir, release):
+    """Set the published dataset's version to the release this build documents."""
+    path = os.path.join(outdir, "deprecations.json")
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding="utf-8") as f:
+        dataset = json.load(f)
+    dataset["version"] = release
+    # Replaced rather than overwritten: under Bazel the copied file keeps the
+    # read-only mode of its input, though the output directory is writable.
+    os.remove(path)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(dataset, f, indent=2)
+        f.write("\n")
+    return True
+
+
 def _on_build_finished(app, exception):
     from sphinx.util import logging
 
@@ -278,13 +304,20 @@ def _on_build_finished(app, exception):
     if exception is not None or app.builder.format != "html":
         return
 
+    outdir = app.outdir
+    if stamp_deprecations(outdir, app.config.release):
+        logger.info("[llm_assets] stamped deprecations.json with version %s", app.config.release)
+
+    if not app.config.llm_assets_enabled:
+        logger.info("[llm_assets] disabled for this build; skipping llms.txt and sitemap.xml")
+        return
+
     baseurl = app.config.html_baseurl
     if not baseurl:
         logger.info("[llm_assets] html_baseurl is unset; skipping llms.txt and sitemap.xml")
         return
     baseurl = baseurl if baseurl.endswith("/") else baseurl + "/"
 
-    outdir = app.outdir
     page_count = write_sitemap(outdir, baseurl)
 
     candidates = ("objects.inv", "deprecations.json", "sitemap.xml")
@@ -295,5 +328,6 @@ def _on_build_finished(app, exception):
 
 
 def setup(app):
+    app.add_config_value("llm_assets_enabled", True, "html")
     app.connect("build-finished", _on_build_finished)
     return {"version": "1.0", "parallel_read_safe": True, "parallel_write_safe": True}

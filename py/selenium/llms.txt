@@ -39,12 +39,13 @@ sources. Each names the release in which the old form stopped being correct.
   `WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "submit")))`.
   Do not combine `driver.implicitly_wait(...)` with `WebDriverWait`; the two wait
   strategies compound unpredictably.
-- Prefer WebDriver BiDi over CDP. `driver.script`, `driver.network`,
-  `driver.browsing_context` and `driver.webextension` are cross-browser and stable.
-  CDP is Chromium-only and pinned to a browser version.
+- Prefer WebDriver BiDi over CDP. `driver.script`, `driver.network` and
+  `driver.browsing_context` are cross-browser and stable; install extensions with
+  `driver.install_web_extension()`. CDP is Chromium-only and pinned to a browser
+  version.
 - Headless mode is an argument, not a property: `options.add_argument("--headless=new")`
   for Chrome and Edge, `options.add_argument("-headless")` for Firefox. The
-  `options.headless` property was removed in 4.9.
+  `options.headless` property was deprecated in 4.8 and removed in 4.13.
 - End a session with `driver.quit()`, which closes every window and stops the driver
   process. `driver.close()` only closes the current window.
 
