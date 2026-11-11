@@ -150,6 +150,24 @@ class JsonTest {
   }
 
   @Test
+  void shouldParseStringsLargerThanTheDirectParseLimit() {
+    String value = "a".repeat(2 * 1024 * 1024);
+
+    Map<String, Object> map = new Json().toType("{\"value\": \"" + value + "\"}", MAP_TYPE);
+
+    assertThat(map).containsEntry("value", value);
+  }
+
+  @Test
+  void shouldAbbreviateLongSourcesInParseErrors() {
+    String raw = "[\"" + "a".repeat(1000) + "\"";
+
+    assertThatThrownBy(() -> new Json().toType(raw, MAP_TYPE))
+        .isInstanceOf(JsonException.class)
+        .hasMessage("Unable to parse: " + raw.substring(0, 512) + "...");
+  }
+
+  @Test
   void settingFinalFieldsShouldWork() {
     Map<String, String> map = Map.of("theName", "fishy");
 

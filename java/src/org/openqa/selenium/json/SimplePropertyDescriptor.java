@@ -169,6 +169,8 @@ public class SimplePropertyDescriptor {
           throw new JsonException(e);
         }
       };
+    } catch (VirtualMachineError e) {
+      throw e;
     } catch (Throwable t) {
       return obj -> {
         try {

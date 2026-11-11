@@ -280,6 +280,8 @@ class InstanceCoercer extends TypeCoercer<Object> {
         BiConsumer<Object, Object> setter =
             (BiConsumer<Object, Object>) site.getTarget().invokeExact();
         return setter;
+      } catch (VirtualMachineError e) {
+        throw e;
       } catch (Throwable t) {
         return null;
       }

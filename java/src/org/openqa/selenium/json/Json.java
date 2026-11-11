@@ -18,6 +18,7 @@
 package org.openqa.selenium.json;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -117,6 +118,9 @@ public class Json {
    */
   private static final JsonTypeCoercer DEFAULT_COERCER = new JsonTypeCoercer();
 
+  /** Strings longer than this are parsed through a {@link StringReader} instead of copied. */
+  private static final int MAX_DIRECT_PARSE_LENGTH = 1024 * 1024;
+
   private final JsonTypeCoercer fromJson;
 
   public Json() {
@@ -190,10 +194,14 @@ public class Json {
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
     Require.nonNull("Mechanism for setting properties", setter);
 
-    // Read the string directly rather than through a StringReader: string-backed input skips the
-    // Reader indirection and the large read buffer, which dominate the cost of parsing the small
-    // payloads typical of WebDriver commands and responses.
-    try (JsonInput json = new JsonInput(source, fromJson, PropertySetting.BY_NAME)) {
+    // Read small strings directly rather than through a StringReader: string-backed input skips
+    // the Reader indirection and the large read buffer, which dominate the cost of parsing the
+    // small payloads typical of WebDriver commands and responses. Large strings are streamed, as
+    // the string-backed input copies the whole source and would double its memory footprint.
+    try (JsonInput json =
+        source.length() <= MAX_DIRECT_PARSE_LENGTH
+            ? new JsonInput(source, fromJson, PropertySetting.BY_NAME)
+            : new JsonInput(new StringReader(source), fromJson, PropertySetting.BY_NAME)) {
       return fromJson.coerce(json, typeOfT, setter);
     } catch (JsonException e) {
       throw new JsonException("Unable to parse: " + abbreviate(source), e);
