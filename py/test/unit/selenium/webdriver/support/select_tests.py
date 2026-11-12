@@ -17,6 +17,8 @@
 
 import pytest
 
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 
@@ -50,3 +52,44 @@ def test_escape_string_quotes_values_with_one_kind_of_quote(escape, value, expec
 )
 def test_escape_string_uses_concat_for_values_with_both_kinds_of_quote(escape, value, expected):
     assert escape(value) == expected
+
+
+class FakeSelect:
+    """A <select> that records the locators it is asked for and finds nothing."""
+
+    tag_name = "select"
+
+    def __init__(self, multiple=None):
+        self.multiple = multiple
+        self.locators = []
+
+    def get_dom_attribute(self, name):
+        return self.multiple if name == "multiple" else None
+
+    def find_elements(self, by, value):
+        self.locators.append((by, value))
+        return []
+
+
+VALUES = [
+    ("plain", './/option[@value = "plain"]'),
+    ('say "hi', ".//option[@value = 'say \"hi']"),
+    ("a'b\"c", './/option[@value = concat("a\'b", \'"\', "c")]'),
+    ("a\b", './/option[@value = "a\b"]'),
+]
+
+
+@pytest.mark.parametrize(("value", "expected"), VALUES)
+def test_select_by_value_finds_options_by_xpath(value, expected):
+    element = FakeSelect()
+    with pytest.raises(NoSuchElementException):
+        Select(element).select_by_value(value)
+    assert element.locators == [(By.XPATH, expected)]
+
+
+@pytest.mark.parametrize(("value", "expected"), VALUES)
+def test_deselect_by_value_finds_options_by_xpath(value, expected):
+    element = FakeSelect(multiple="true")
+    with pytest.raises(NoSuchElementException):
+        Select(element).deselect_by_value(value)
+    assert element.locators == [(By.XPATH, expected)]
