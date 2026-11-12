@@ -9,8 +9,10 @@ this PR adds; read it there. The sections below are proposal notes and review lo
 
 <!-- Link any ADRs this builds on, competes with, or supersedes, and prior issues, PRs,
      discussions or design docs (the record itself links none of these except accepted ADRs).
-     Specify if this proposal depends on another ADR that has not been accepted. Link a demo
-     implementation PR if you have one (it must stay in draft until this ADR is accepted). -->
+     List anything this proposal depends on that has not landed (another ADR, a spec or browser
+     change) and how it affects the proposal if it is not. If the behaviors cannot be implemented
+     until it lands, this PR stays in draft. Link a demo implementation PR if you have one (it
+     must stay in draft until this ADR is accepted). -->
 
 ### 📝 Proposal notes
 

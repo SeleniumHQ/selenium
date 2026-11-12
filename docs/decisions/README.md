@@ -91,15 +91,25 @@ AI agents drafting or revising a record also follow [AGENTS.md](AGENTS.md).
   alternatives without following any links; linked material is background, not required reading.
 - **A record links to no issue, PR, or open proposal other than its own Discussion PR.** Those
   can change after the record is accepted, so they are linked from the PR's Related section
-  instead. Accepted records and published specifications can be linked. A proposal that depends
-  on one still open waits until that one is accepted.
+  instead. Accepted records and published specifications can be linked.
+- **A record is not conditional on anything outside it.** A prerequisite (another record, a spec
+  change, a browser release) without which the decisions would differ or could not be implemented
+  is listed in the PR's Related section, and the record is written as if it is met. The PR stays
+  in draft until it is. A change that only affects the proposal's cost or timing is listed the
+  same way, with how it affects the proposal, and the record does not assume it. Intentions
+  involving other parties, such as a spec contribution, are not decisions: a prerequisite is
+  listed as above, anything else is left out.
 - **A record fixes the decision and its rationale, not the implementation.** It decides what is
   observable at the boundary it governs: the public API, a layer's surface, or the wire. Anything
   a binding could change without a difference at that boundary is implementation, and lives in
-  the adopting PRs and code. Consequences may describe the work a decision implies for bindings,
-  without requiring how it is done. For how much detail to give, ask whether two bindings could both
-  follow the record and still behave differently in a way a user would notice: if so, the record
-  needs that detail; a detail that cannot make bindings diverge is left out.
+  the adopting PRs and code: export paths, packaging, where tests and fixtures live, which
+  browsers run them, internal mechanics. Consequences may describe the work a decision implies
+  for bindings, without requiring how it is done. For how much detail to give, ask whether two
+  bindings could both follow the record and still behave differently in a way a user would
+  notice: if so, the record needs that detail; a detail that cannot make bindings diverge is left
+  out. For a method, that is its name, its output, its default behavior, and any other behavior
+  every binding must support; how a user configures it is left to each language, and optional
+  behavior is left out.
 - **Accepted decisions are immutable**, except for the status line. Changing a decision means a
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
 - **The number is the proposal's PR number.** It gets cited in reviews and issues and links
