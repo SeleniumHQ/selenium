@@ -22,6 +22,7 @@ is snapshotted whole and compared with its recorded tree and text.
 """
 
 import json
+import warnings
 from pathlib import Path
 
 import pytest
@@ -127,6 +128,17 @@ def test_whole_page_snapshot_is_rooted_at_the_document(driver, pages):
     assert tree.role == "document"
     assert isinstance(tree.element, WebElement)
     assert tree.element.tag_name == "html"
+
+
+def test_a_snapshot_raises_no_deprecation_warning(driver, pages):
+    """The snapshot talks to BiDi itself, not through driver.script's deprecated protocol commands."""
+    pages.load("accessibility/014-iframe.html")
+    frame = driver.find_element(By.ID, "frame")
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        driver.accessibility_snapshot()
+        frame.accessibility_snapshot()
 
 
 def test_element_references_are_usable(driver, pages):

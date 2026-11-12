@@ -248,29 +248,49 @@ class AccessibilitySnapshotter:
             lambda index: self._stitch(windows[index], interesting_only),
         )
 
+    def _send(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
+        """Send one BiDi command over the session's connection and return its result.
+
+        The snapshot is the binding's own feature, so it talks to the protocol
+        directly rather than through the public ``driver.script`` and
+        ``driver.browsing_context`` objects, whose protocol commands are being
+        deprecated (ADR 17670) and would warn about calls the user never made.
+
+        Raises:
+            _NoSuchNode: For the BiDi ``no such node`` error.
+            WebDriverException: For any other BiDi error, as ``"<error>: <message>"``.
+        """
+        driver = self._driver
+        if not driver._websocket_connection:
+            driver._start_bidi()
+        connection = driver._websocket_connection
+        assert connection is not None
+        reply = connection.send_cmd(method, params)
+        if "error" in reply:
+            message = f"{reply['error']}: {reply.get('message', '')}"
+            # The document of the targeted context does not own the shared id: the
+            # root lives in another frame, or its document is gone.
+            if reply["error"] == "no such node":
+                raise _NoSuchNode(message)
+            raise WebDriverException(message)
+        return reply.get("result") or {}
+
     def _call(self, context: str, arguments: list[Any]) -> dict[str, Any]:
         """Run the atom's wire entry in the sandbox of ``context`` and return the remote value of its result.
 
         The first argument is the ``interestingOnly`` flag, the optional second the root.
         """
-        try:
-            raw = self._driver.script.call_function(
-                function_declaration=f"(interestingOnly, root) => ({_atom()})(root, {{interestingOnly}})",
-                await_promise=False,
-                target={"context": context, "sandbox": _SANDBOX},
-                arguments=arguments,
-                result_ownership="none",
-                serialization_options=_SERIALIZATION_OPTIONS,
-            )
-        except WebDriverException as e:
-            # The BiDi "no such node" error: the document of this context does not own
-            # the root's shared id, either because the root lives in another frame or
-            # because its document is gone.
-            if "no such node" in str(e):
-                raise _NoSuchNode() from e
-            raise
-        if not isinstance(raw, dict):
-            raise WebDriverException(f"accessibility snapshot: unexpected script result {raw!r}")
+        raw = self._send(
+            "script.callFunction",
+            {
+                "functionDeclaration": f"(interestingOnly, root) => ({_atom()})(root, {{interestingOnly}})",
+                "awaitPromise": False,
+                "target": {"context": context, "sandbox": _SANDBOX},
+                "arguments": arguments,
+                "resultOwnership": "none",
+                "serializationOptions": _SERIALIZATION_OPTIONS,
+            },
+        )
         if raw.get("type") == "exception":
             details = raw.get("exceptionDetails") or {}
             raise WebDriverException(f"accessibility snapshot failed in the page: {details.get('text', details)}")
@@ -294,12 +314,12 @@ class AccessibilitySnapshotter:
     def _contexts(self, top: str) -> Iterator[str]:
         """The window's browsing contexts, top-level first, then each frame depth-first."""
         yield top
-        stack = list(self._driver.browsing_context.get_tree(root=top) or [])
+        stack = list(self._send("browsingContext.getTree", {"root": top}).get("contexts") or [])
         while stack:
             info = stack.pop(0)
-            if info.context != top:
-                yield info.context
-            stack = list(info.children or []) + stack
+            if info["context"] != top:
+                yield info["context"]
+            stack = list(info.get("children") or []) + stack
 
     def _element(self, shared_id: str) -> WebElement:
         from selenium.webdriver.remote.webelement import WebElement
