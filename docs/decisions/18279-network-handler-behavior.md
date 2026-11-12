@@ -273,11 +273,13 @@ network.add_request_handler(collect_body: true) { |r| log(r.body) }
 network.addRequestHandler(new BodyCollection(), r -> log(r.body()));
 ```
 
-11. **Handlers apply to every window by default and can be scoped to one.** A window handle is a
-    top-level browsing context. A handler registered without a scope applies to every window handle in
-    the session, in every user context, including ones opened after it was registered. Being switched
-    into a frame does not narrow that; a frame is not a scope this API expresses, so narrowing to one
-    belongs in the callable. A user who wants only the current window passes its handle as the scope.
+11. **Handlers apply to every event in the session by default and can be scoped.** A window handle is a
+    top-level browsing context. A handler registered without a scope applies to every event in the
+    session: every window handle, in every user context, including ones opened after it was registered,
+    and requests that belong to no window, such as a service worker's, which arrive with no window
+    handle or user context. Being switched into a frame does not narrow that; a frame is not a scope
+    this API expresses, so narrowing to one belongs in the callable. A user who wants only the current
+    window passes its handle as the scope.
 
     To narrow a handler, the user passes either a window handle or a user context, never both.
     A window handle targets that one window or tab, including one in the background without focus. A user
@@ -404,7 +406,7 @@ network.addRequestHandler(isolated, r -> { if (blocked(r.url())) r.fail(); });  
 - Authentication handlers gain a callable form in addition to static credentials, so credentials can
   be produced — or the challenge cancelled — per challenge.
 - An unscoped handler intercepts matching requests in every tab, including popups, tabs opened later
-  and tabs other workers drive. Each intercepted request waits for the handler, so a slow or hung
+  and tabs other workers drive, and requests with no window, such as a service worker's. Each intercepted request waits for the handler, so a slow or hung
   handler now holds matching requests everywhere, not only in the tab it was registered from. An
   unscoped override, or `submit`, from one worker likewise applies to every other worker's tabs, and
   static credentials registered without URL patterns answer authentication challenges from any host
