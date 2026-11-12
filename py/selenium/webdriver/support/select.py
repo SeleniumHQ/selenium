@@ -234,15 +234,13 @@ class Select:
 
     def _escape_string(self, value: str) -> str:
         if '"' in value and "'" in value:
-            substrings = value.split('"')
-            result = ["concat("]
-            for substring in substrings:
-                result.append(f'"{substring}"')
-                result.append(", '\"', ")
-            result = result[0:-1]
-            if value.endswith('"'):
-                result.append(", '\"'")
-            return "".join(result) + ")"
+            parts = []
+            for index, substring in enumerate(value.split('"')):
+                if index:
+                    parts.append("'\"'")
+                if substring:
+                    parts.append(f'"{substring}"')
+            return f"concat({', '.join(parts)})"
 
         if '"' in value:
             return f"'{value}'"

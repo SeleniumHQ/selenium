@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.json;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -114,10 +111,20 @@ public class Json {
   /** Specifier for {@code Object} input/output type */
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
+  /**
+   * The default coercer is stateless apart from its cache of resolved coercion functions, so a
+   * single shared instance lets that cache accumulate across the many short-lived {@code Json}
+   * instances created throughout the codebase.
+   */
+  private static final JsonTypeCoercer DEFAULT_COERCER = JsonTypeCoercer.createShared();
+
+  /** Strings longer than this are parsed through a {@link StringReader} instead of copied. */
+  private static final int MAX_DIRECT_PARSE_LENGTH = 1024 * 1024;
+
   private final JsonTypeCoercer fromJson;
 
   public Json() {
-    this(List.of());
+    this.fromJson = DEFAULT_COERCER;
   }
 
   /**
@@ -127,7 +134,7 @@ public class Json {
    *     coercers don't handle, etc.) for just this {@code Json} instance.
    */
   public Json(Iterable<TypeCoercer<?>> extraCoercers) {
-    this.fromJson = new JsonTypeCoercer(new JsonTypeCoercer(), extraCoercers);
+    this.fromJson = new JsonTypeCoercer(DEFAULT_COERCER, extraCoercers);
   }
 
   /**
@@ -151,13 +158,12 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public String toJson(@Nullable Object toConvert, int maxDepth) {
-    try (Writer writer = new StringWriter();
-        JsonOutput jsonOutput = newOutput(writer)) {
+    // A StringBuilder rather than a StringWriter: the latter synchronizes every append.
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput jsonOutput = newOutput(builder)) {
       jsonOutput.write(toConvert, maxDepth);
-      return writer.toString();
-    } catch (IOException e) {
-      throw new JsonException("Cannot convert " + toConvert + " to json", e);
     }
+    return builder.toString();
   }
 
   /**
@@ -186,11 +192,28 @@ public class Json {
    * @throws JsonException if an I/O exception is encountered
    */
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
-    try (StringReader reader = new StringReader(source)) {
-      return toType(reader, typeOfT, setter);
+    Require.nonNull("Mechanism for setting properties", setter);
+
+    // Read small strings directly rather than through a StringReader: string-backed input skips
+    // the Reader indirection and the large read buffer, which dominate the cost of parsing the
+    // small payloads typical of WebDriver commands and responses. Large strings are streamed, as
+    // the string-backed input copies the whole source and would double its memory footprint.
+    try (JsonInput json =
+        source.length() <= MAX_DIRECT_PARSE_LENGTH
+            ? new JsonInput(source, fromJson, PropertySetting.BY_NAME)
+            : new JsonInput(new StringReader(source), fromJson, PropertySetting.BY_NAME)) {
+      return fromJson.coerce(json, typeOfT, setter);
     } catch (JsonException e) {
-      throw new JsonException("Unable to parse: " + source, e);
+      throw new JsonException("Unable to parse: " + abbreviate(source), e);
     }
+  }
+
+  /**
+   * Limit how much of the source is echoed into an exception message; sources can be many
+   * megabytes, and the parse position is already reported by the underlying cause.
+   */
+  private static String abbreviate(String text) {
+    return text.length() <= 512 ? text : text.substring(0, 512) + "...";
   }
 
   /**
