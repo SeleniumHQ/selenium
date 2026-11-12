@@ -19,9 +19,8 @@
 
 The tree is computed by the ``accessibility-snapshot`` atom of ``@selenium/atoms``.
 In a BiDi session it runs in a sandbox realm so page scripts cannot interfere
-with it; in a WebDriver Classic session, or while a BiDi session is switched
-into a frame, it runs through Execute Script and child frames are reached by
-switching into them and back. The atom's wire entry hands the tree back as one
+with it; in a WebDriver Classic session it runs through Execute Script and child
+frames are reached by switching into them and back. The atom's wire entry hands the tree back as one
 JSON string beside the element and frame references, so this module holds only
 what is the binding's: the public node type and its text form, the mapping of
 references to :class:`WebElement`, and frame stitching.
@@ -41,7 +40,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from selenium.common.exceptions import (
-    JavascriptException,
     NoSuchElementException,
     NoSuchFrameException,
     StaleElementReferenceException,
@@ -222,12 +220,10 @@ class AccessibilitySnapshotter:
         if not self._driver.caps.get("webSocketUrl"):
             return self._classic_snapshot(root, interesting_only)
         if root is None:
-            # BiDi addresses browsing contexts by id, and Classic gives no way to
-            # learn the id of the frame the driver has switched into, so a snapshot
-            # rooted in a frame is taken the Classic way.
-            if not self._driver.execute_script("return window === window.top"):
+            context = self._current_context()
+            if context is None:
                 return self._classic_snapshot(None, interesting_only)
-            node = self._snapshot_context(self._driver.current_window_handle, None, interesting_only)
+            node = self._snapshot_context(context, None, interesting_only)
             if node is None:
                 raise WebDriverException("accessibility snapshot: the script returned nothing")
             return node
@@ -243,6 +239,20 @@ class AccessibilitySnapshotter:
             if node is not None:
                 return node
         raise StaleElementReferenceException(_STALE_MESSAGE)
+
+    def _current_context(self) -> str | None:
+        """The BiDi browsing context id of the driver's current browsing context.
+
+        Classic serializes a window as a window or frame reference whose id is the
+        browsing context's id, the same id BiDi uses. None when the remote end
+        answers in another shape, so the caller falls back to Execute Script.
+        """
+        reference = self._driver.execute_script("return window")
+        if isinstance(reference, dict) and len(reference) == 1:
+            (context,) = reference.values()
+            if isinstance(context, str) and context:
+                return context
+        return None
 
     def _classic_snapshot(self, root: WebElement | None, interesting_only: bool) -> AccessibilityNode:
         """The snapshot of the driver's current browsing context through Execute Script.
@@ -285,7 +295,7 @@ class AccessibilitySnapshotter:
             return []
         try:
             return [self._classic_snapshot(None, interesting_only)]
-        except (JavascriptException, StaleElementReferenceException, NoSuchFrameException) as e:
+        except (StaleElementReferenceException, NoSuchFrameException) as e:
             # Mid-navigation, or gone since the parent's snapshot: the frame stays a
             # leaf (ADR §1). Anything else is a real failure.
             logger.debug("accessibility snapshot: frame not reachable: %s", e)

@@ -215,8 +215,8 @@ class _Driver:
         self._websocket_connection = connection or _Connection()
 
     def execute_script(self, script, *args):
-        assert script == "return window === window.top"
-        return True
+        # How Classic serializes the top-level window: a window reference to its handle.
+        return {"window-fcc6-11e5-b4f8-330a88ab9d7f": self.current_window_handle}
 
 
 @pytest.mark.parametrize("interesting_only", [True, False])
