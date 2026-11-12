@@ -56,14 +56,14 @@ An alert must not be closed for the user after the callable is executed; a handl
 
 
 ```ruby
-handle = driver.alerts.add_handler { |alert| alert.type == 'confirm' ? alert.dismiss : alert.accept }
+handle = driver.alerts.add_handler { |alert| alert.type == 'beforeUnload' ? alert.accept : alert.dismiss }
 click_button_opening_alert
 driver.alerts.remove_handler(handle)
 ```
 
 ```java
 var handle = driver.alerts().addHandler(alert -> {
-  if (alert.getType() == AlertType.CONFIRM) alert.dismiss(); else alert.accept();
+  if (alert.getType() == AlertType.BEFORE_UNLOAD) alert.accept(); else alert.dismiss();
 });
 clickButtonOpeningAlert();
 driver.alerts().removeHandler(handle);
