@@ -22,9 +22,8 @@
  *
  * The tree is computed by the `accessibility-snapshot` atom of `@selenium/atoms`.
  * In a BiDi session it runs in a sandbox realm so page scripts cannot interfere
- * with it; in a WebDriver Classic session, or while a BiDi session is switched
- * into a frame, it runs through Execute Script and child frames are reached by
- * switching into them and back. The atom's wire entry hands the tree back as one
+ * with it; in a WebDriver Classic session it runs through Execute Script and
+ * child frames are reached by switching into them and back. The atom's wire entry hands the tree back as one
  * JSON string beside the element and frame references, so this module holds only
  * what is the binding's: the public node type and its text form, the mapping of
  * references to WebElement, and frame stitching.
@@ -315,15 +314,12 @@ class AccessibilitySnapshotter {
     if (!caps.get('webSocketUrl')) {
       return this.classicSnapshot_(root, interestingOnly)
     }
-    // BiDi addresses browsing contexts by id, and Classic gives no way to learn
-    // the id of the frame the driver has switched into, so a snapshot rooted in a
-    // frame is taken the Classic way.
-    if (!root && !(await this.driver_.executeScript('return window === window.top'))) {
-      return this.classicSnapshot_(null, interestingOnly)
-    }
-    const top = await this.driver_.getWindowHandle()
     if (!root) {
-      const node = await this.snapshotContext_(top, null, interestingOnly)
+      const context = await this.currentContext_()
+      if (context === null) {
+        return this.classicSnapshot_(null, interestingOnly)
+      }
+      const node = await this.snapshotContext_(context, null, interestingOnly)
       if (node === null) {
         throw new error.WebDriverError('accessibility snapshot: the script returned nothing')
       }
@@ -334,6 +330,7 @@ class AccessibilitySnapshotter {
     // the browsing context group, so the atom checks ownership itself and each
     // context is tried until the owner is found.
     const rootId = await root.getId()
+    const top = await this.driver_.getWindowHandle()
     for (const context of await this.contexts_(top)) {
       let node
       try {
@@ -416,6 +413,22 @@ class AccessibilitySnapshotter {
   }
 
   /**
+   * The BiDi browsing context id of the driver's current browsing context.
+   * Classic serializes a window as a window or frame reference whose id is the
+   * browsing context's id, the same id BiDi uses. Null when the remote end
+   * answers in another shape, so the caller falls back to Execute Script.
+   * @private
+   */
+  async currentContext_() {
+    const reference = await this.driver_.executeScript('return window')
+    if (reference && typeof reference === 'object') {
+      const ids = Object.values(reference)
+      if (ids.length === 1 && typeof ids[0] === 'string' && ids[0]) return ids[0]
+    }
+    return null
+  }
+
+  /**
    * The snapshot of the driver's current browsing context through Execute Script.
    * Classic resolves element arguments against the current browsing context, so
    * `root` must belong to it. Child frames are snapshotted by switching into each
@@ -461,7 +474,7 @@ class AccessibilitySnapshotter {
     } catch (e) {
       // Mid-navigation, or gone since the parent's snapshot: the frame stays a
       // leaf (ADR §1). Anything else is a real failure.
-      if (!classicFrameUnreachable(e) && !(e instanceof error.JavascriptError)) throw e
+      if (!classicFrameUnreachable(e)) throw e
       log_.finer(`accessibility snapshot: frame not reachable: ${e}`)
       return []
     } finally {

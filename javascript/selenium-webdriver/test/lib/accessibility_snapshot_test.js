@@ -195,10 +195,8 @@ describe('AccessibilitySnapshotter arguments', function () {
     const driver = {
       getCapabilities: async () => new Capabilities().set('webSocketUrl', 'ws://x'),
       getWindowHandle: async () => 'window-1',
-      executeScript: async (script) => {
-        assert.strictEqual(script, 'return window === window.top')
-        return true
-      },
+      // How Classic serializes the top-level window: a window reference to its handle.
+      executeScript: async () => ({ 'window-fcc6-11e5-b4f8-330a88ab9d7f': 'window-1' }),
     }
     const snapshotter = new AccessibilitySnapshotter(driver, (id) => `element:${id}`)
     snapshotter.send_ = async (method, params) => {
