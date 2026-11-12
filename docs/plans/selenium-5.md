@@ -67,7 +67,7 @@ network actions (`mock`, `block`, `redirect`) and one-shot event waiters (`expec
 ### Browser context API
 
 A high-level API for browsing contexts (windows and tabs): managing them without switching,
-exposing them as handle objects, window opened and closed handlers, client windows, and viewport.
+exposing them as handle objects, window opened and closed handlers, and client windows.
 
 ### User context API
 
@@ -86,5 +86,5 @@ defaults ([#12368](https://github.com/SeleniumHQ/selenium/issues/12368)).
 
 ### Capability mapping
 
-High-level APIs over individual BiDi capability modules — permissions, storage, emulation, user
-prompts.
+High-level APIs over individual BiDi capability modules — permissions, storage, emulation
+(including viewport), user prompts.
