@@ -383,8 +383,12 @@ class Environment {
         builder.setCapability('moz:debuggerAddress', true)
       }
 
-      // Enable BiDi for supporting browsers.
-      if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
+      // Enable BiDi for supporting browsers, unless the test asked for a Classic
+      // session by setting webSocketUrl to false.
+      if (
+        (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) &&
+        builder.getCapabilities().get('webSocketUrl') !== false
+      ) {
         builder.setCapability('webSocketUrl', true)
         builder.setCapability('unhandledPromptBehavior', 'ignore')
       }

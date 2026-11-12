@@ -18,8 +18,8 @@
 'use strict'
 
 // The pure parts of the accessibility snapshot (ADR 18205): the text renderer,
-// held to the shared corpus, the decoder from the BiDi wire shape, and the
-// guard for sessions without BiDi.
+// held to the shared corpus, the decoder from the wire shape, and the choice
+// between the BiDi and the Classic path.
 
 const assert = require('node:assert')
 const fs = require('node:fs')
@@ -195,6 +195,10 @@ describe('AccessibilitySnapshotter arguments', function () {
     const driver = {
       getCapabilities: async () => new Capabilities().set('webSocketUrl', 'ws://x'),
       getWindowHandle: async () => 'window-1',
+      executeScript: async (script) => {
+        assert.strictEqual(script, 'return window === window.top')
+        return true
+      },
     }
     const snapshotter = new AccessibilitySnapshotter(driver, (id) => `element:${id}`)
     snapshotter.send_ = async (method, params) => {
@@ -234,15 +238,36 @@ describe('AccessibilitySnapshotter arguments', function () {
 })
 
 describe('AccessibilitySnapshotter', function () {
-  it('raises UnsupportedOperationError, naming BiDi, for a session without it', async function () {
-    // Only the capability lookup is consulted before the guard fires.
-    const driver = { getCapabilities: async () => new Capabilities() }
+  it('runs the atom through Execute Script in a session without BiDi', async function () {
+    const scripts = []
+    const driver = {
+      getCapabilities: async () => new Capabilities(),
+      executeScript: async (script, ...args) => {
+        scripts.push({ script, args })
+        return {
+          json: '{"role":"document","name":"T","description":"","states":{},"element":0,"children":[]}',
+          elements: ['html'],
+          windows: 0,
+        }
+      },
+    }
+    const snapshotter = new AccessibilitySnapshotter(driver, () => assert.fail('Classic needs no element factory'))
+
+    const node = await snapshotter.snapshot(null, { interestingOnly: false })
+
+    assert.strictEqual(node.role, 'document')
+    assert.strictEqual(node.element, 'html')
+    assert.deepStrictEqual(scripts[0].args, [false])
+    assert.match(scripts[0].script, /interestingOnly: arguments\[0\]/)
+  })
+
+  it('reads a Classic result of null or an error as the stale element error', async function () {
+    const answers = [null, { error: 'detached' }]
+    const driver = { getCapabilities: async () => new Capabilities(), executeScript: async () => answers.shift() }
     const snapshotter = new AccessibilitySnapshotter(driver, () => null)
-    await assert.rejects(snapshotter.snapshot(null), (e) => {
-      assert.ok(e instanceof error.UnsupportedOperationError)
-      assert.match(e.message, /BiDi/)
-      return true
-    })
+
+    await assert.rejects(snapshotter.snapshot('root'), error.StaleElementReferenceError)
+    await assert.rejects(snapshotter.snapshot('root'), error.StaleElementReferenceError)
   })
 
   it('reads a root another document owns as null and a detached root as the stale error', async function () {
