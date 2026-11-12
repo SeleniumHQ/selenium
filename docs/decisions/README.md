@@ -85,6 +85,15 @@ force a reader to open several records to understand any one of them, they belon
   alternatives without following any links; linked material is background, not required reading.
 - **A record fixes the decision and its rationale, not the implementation.** It says what every
   binding must do and why; how each binding builds it lives in the adopting PRs and code.
+  Pin down what users depend on and what would be costly to change: public names and where they
+  live, the output or contract callers rely on, compatibility and deprecation commitments, and the
+  rejected options. Leave out anything that can change later without breaking a user: file and
+  export paths, packaging, test layout and fixtures, internal mechanics, and optional parameters
+  that can be added later. If changing a detail would not need a superseding record, it does not
+  belong in this one.
+- **Plans that depend on outside parties are context, not decisions.** Future spec contributions,
+  upstream browser changes, or alignment with another project can explain the decision, but the
+  record cannot commit to them.
 - **Accepted decisions are immutable**, except for the status line. Changing a decision means a
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
 - **The number is the proposal's PR number.** It gets cited in reviews and issues and links
