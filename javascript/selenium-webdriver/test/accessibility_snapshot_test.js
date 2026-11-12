@@ -84,6 +84,9 @@ suite(
           const builder = env.builder()
           if (protocol === 'Classic') builder.setCapability('webSocketUrl', false)
           driver = await builder.build()
+        // Guard against an options merge silently putting the Classic run back on BiDi.
+        const bidi = Boolean((await driver.getCapabilities()).get('webSocketUrl'))
+        assert.strictEqual(bidi, protocol === 'BiDi', `expected a ${protocol} session`)
         })
 
         after(function () {
