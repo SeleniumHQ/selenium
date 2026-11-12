@@ -1,10 +1,11 @@
 <!-- AI agents drafting or revising this record: follow docs/decisions/AGENTS.md. Remove this
      comment when the record is accepted. -->
 
-# NNNN. Title stating the decision as a fact
+# NNNN. Name of the behavior or surface this record governs
 
-<!-- NNNN is this proposal's PR number. Good title: "Clicks scroll elements into view before
-     interacting"; bad: "Click behavior" -->
+<!-- NNNN is this proposal's PR number. A record usually settles several decisions, so the title
+     names what they cover rather than stating one of them. Good: "The network async/event API",
+     "BiDi implementation boundaries"; bad: "Network stuff", "Decisions about BiDi" -->
 
 - Status: Proposed <!-- Proposed | Accepted | Rejected | Superseded by [NNNN](NNNN-title.md) -->
 - Discussion: <!-- link to this record's PR, the only issue or PR link in the record -->
