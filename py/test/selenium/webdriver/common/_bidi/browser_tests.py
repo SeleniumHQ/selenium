@@ -143,6 +143,7 @@ def test_create_user_context_with_unhandled_prompt_behavior(driver):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
+@pytest.mark.xfail_edge(reason="Edge auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
 def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
     create_proxy_server = proxy_server(response_content=b"proxied response")
     no_proxy_server = proxy_server(response_content=b"direct connection - not proxied")
@@ -173,6 +174,7 @@ def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
+@pytest.mark.xfail_edge(reason="Edge auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
 def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server, pages):
     create_proxy_server = proxy_server(response_content=b"proxied response")
     port = create_proxy_server["port"]

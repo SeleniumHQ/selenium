@@ -128,7 +128,7 @@ SE_VERSION = VERSIONS["python"]
 BROWSER_VERSIONS = [
     "v155",
     "v156",
-    "v154",
+    "v157",
 ]
 
 TEST_DEPS = [

@@ -41,6 +41,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -342,5 +346,52 @@ class RetryRequestTest {
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
     assertThat(count).hasValue(3);
+  }
+
+  @Test
+  void retryLogsAtFine() {
+    Logger logger = Logger.getLogger(RetryRequest.class.getName());
+    Level previousLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    try {
+      HttpHandler unavailable = request -> new HttpResponse().setStatus(HTTP_UNAVAILABLE);
+      new RetryRequest().andFinally(unavailable).execute(new HttpRequest(GET, "/"));
+
+      HttpHandler connectionFailure =
+          request -> {
+            throw new UncheckedIOException(new ConnectException());
+          };
+      HttpHandler retryingConnection = new RetryRequest().andFinally(connectionFailure);
+      assertThatThrownBy(() -> retryingConnection.execute(new HttpRequest(GET, "/")))
+          .isInstanceOf(UncheckedIOException.class)
+          .hasCauseInstanceOf(ConnectException.class);
+
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("ServerError"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().contains("ConnectException"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLevel);
+    }
   }
 }
