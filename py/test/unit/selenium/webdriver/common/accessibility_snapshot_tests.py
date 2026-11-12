@@ -209,9 +209,14 @@ class _Driver:
     """Has no public ``script`` or ``browsing_context``: the snapshot must not go through them."""
 
     current_window_handle = "window-1"
+    caps = {"webSocketUrl": "ws://localhost/session/1"}
 
     def __init__(self, connection=None):
         self._websocket_connection = connection or _Connection()
+
+    def execute_script(self, script, *args):
+        assert script == "return window === window.top"
+        return True
 
 
 @pytest.mark.parametrize("interesting_only", [True, False])

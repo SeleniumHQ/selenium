@@ -17,12 +17,14 @@
 
 """Accessibility snapshots computed in the page (ADR 18205).
 
-The tree is computed by the ``accessibility-snapshot`` atom of ``@selenium/atoms``,
-run over WebDriver BiDi in a sandbox realm so page scripts cannot interfere with
-it. The atom's wire entry hands the tree back as one JSON string beside the
-element and frame references, so this module holds only what is the binding's:
-the public node type and its text form, the mapping of references to
-:class:`WebElement`, and frame stitching across browsing contexts.
+The tree is computed by the ``accessibility-snapshot`` atom of ``@selenium/atoms``.
+In a BiDi session it runs in a sandbox realm so page scripts cannot interfere
+with it; in a WebDriver Classic session, or while a BiDi session is switched
+into a frame, it runs through Execute Script and child frames are reached by
+switching into them and back. The atom's wire entry hands the tree back as one
+JSON string beside the element and frame references, so this module holds only
+what is the binding's: the public node type and its text form, the mapping of
+references to :class:`WebElement`, and frame stitching.
 
 The output is *computed* from the DOM following WAI-ARIA, html-aam and accname;
 it is not the browser's own accessibility tree and can differ from it at the
@@ -38,7 +40,13 @@ from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from selenium.common.exceptions import StaleElementReferenceException, WebDriverException
+from selenium.common.exceptions import (
+    JavascriptException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    StaleElementReferenceException,
+    WebDriverException,
+)
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -193,25 +201,33 @@ class AccessibilitySnapshotter:
         self._driver = driver
 
     def snapshot(self, root: WebElement | None, interesting_only: bool = True) -> AccessibilityNode:
-        """Snapshot the whole page, or the subtree under ``root``.
+        """Snapshot the driver's current browsing context, or the subtree under ``root``.
 
         Args:
-            root: The element whose subtree to snapshot, or ``None`` for the page
-                of the current window's top-level browsing context.
+            root: The element whose subtree to snapshot, or ``None`` for the
+                document of the driver's current browsing context: the top-level
+                document, or the frame the driver has switched into.
             interesting_only: With ``True`` unnamed generic and presentational
                 elements produce no node and their children take their place;
                 with ``False`` every rendered element produces a node.
 
         Returns:
             The snapshot, with every reachable child frame's tree attached under
-            its ``iframe`` node.
+            its ``iframe`` node. The driver's current browsing context is left
+            as it was.
 
         Raises:
             StaleElementReferenceException: When ``root`` no longer belongs to a document.
         """
-        top = self._driver.current_window_handle
+        if not self._driver.caps.get("webSocketUrl"):
+            return self._classic_snapshot(root, interesting_only)
         if root is None:
-            node = self._snapshot_context(top, None, interesting_only)
+            # BiDi addresses browsing contexts by id, and Classic gives no way to
+            # learn the id of the frame the driver has switched into, so a snapshot
+            # rooted in a frame is taken the Classic way.
+            if not self._driver.execute_script("return window === window.top"):
+                return self._classic_snapshot(None, interesting_only)
+            node = self._snapshot_context(self._driver.current_window_handle, None, interesting_only)
             if node is None:
                 raise WebDriverException("accessibility snapshot: the script returned nothing")
             return node
@@ -219,7 +235,7 @@ class AccessibilitySnapshotter:
         # id only in the document that owns it; Firefox resolves it in any document of
         # the browsing context group, so the atom checks ownership itself and each
         # context is tried until the owner is found.
-        for context in self._contexts(top):
+        for context in self._contexts(self._driver.current_window_handle):
             try:
                 node = self._snapshot_context(context, root.id, interesting_only)
             except _NoSuchNode:
@@ -227,6 +243,55 @@ class AccessibilitySnapshotter:
             if node is not None:
                 return node
         raise StaleElementReferenceException(_STALE_MESSAGE)
+
+    def _classic_snapshot(self, root: WebElement | None, interesting_only: bool) -> AccessibilityNode:
+        """The snapshot of the driver's current browsing context through Execute Script.
+
+        Classic resolves element arguments against the current browsing context, so
+        ``root`` must belong to it. Child frames are snapshotted by switching into
+        each ``iframe`` element and back to the parent.
+        """
+        arguments: list[Any] = [interesting_only]
+        if root is not None:
+            arguments.append(root)
+        # The frame windows the wire form carries are BiDi references; Classic
+        # reaches a frame through its iframe element, so only their count is kept.
+        result = self._driver.execute_script(
+            f"var r = ({_atom()})(arguments[1], {{interestingOnly: arguments[0]}});"
+            " if (r && r.windows) { r.windows = r.windows.length; }"
+            " return r;",
+            *arguments,
+        )
+        if not isinstance(result, dict) or "error" in result:
+            # null: the root is not in this document; error: it left its document.
+            raise StaleElementReferenceException(_STALE_MESSAGE)
+        data = json.loads(result["json"])
+        elements = list(result.get("elements") or [])
+        frame_elements = _frame_elements(data, elements)
+        return node_from_wire(
+            data,
+            elements,
+            lambda index: self._classic_frame(frame_elements.get(index), interesting_only),
+        )
+
+    def _classic_frame(self, frame: WebElement | None, interesting_only: bool) -> list[AccessibilityNode]:
+        """The document of a frame, reached by switching into it, as the frame node's one child."""
+        if frame is None:
+            return []
+        try:
+            self._driver.switch_to.frame(frame)
+        except (NoSuchFrameException, NoSuchElementException, StaleElementReferenceException) as e:
+            logger.debug("accessibility snapshot: frame not reachable: %s", e)
+            return []
+        try:
+            return [self._classic_snapshot(None, interesting_only)]
+        except (JavascriptException, StaleElementReferenceException, NoSuchFrameException) as e:
+            # Mid-navigation, or gone since the parent's snapshot: the frame stays a
+            # leaf (ADR §1). Anything else is a real failure.
+            logger.debug("accessibility snapshot: frame not reachable: %s", e)
+            return []
+        finally:
+            self._driver.switch_to.parent_frame()
 
     def _snapshot_context(self, context: str, root_id: str | None, interesting_only: bool) -> AccessibilityNode | None:
         """The snapshot of ``context``, or None when another document owns the root."""
@@ -325,6 +390,18 @@ class AccessibilitySnapshotter:
         from selenium.webdriver.remote.webelement import WebElement
 
         return WebElement(self._driver, shared_id)
+
+
+def _frame_elements(data: dict[str, Any], elements: list[Any]) -> dict[int, Any]:
+    """The iframe element of each frame index in the wire tree."""
+    found: dict[int, Any] = {}
+    stack = [data]
+    while stack:
+        node = stack.pop()
+        if "frame" in node and node.get("element") is not None:
+            found[node["frame"]] = elements[node["element"]]
+        stack.extend(node.get("children") or [])
+    return found
 
 
 class _NoSuchNode(Exception):
