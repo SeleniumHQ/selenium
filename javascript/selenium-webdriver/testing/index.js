@@ -384,11 +384,14 @@ class Environment {
       }
 
       // Enable BiDi for supporting browsers, unless the test asked for a Classic
-      // session by setting webSocketUrl to false.
-      if (
-        (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) &&
-        builder.getCapabilities().get('webSocketUrl') !== false
-      ) {
+      // session by setting webSocketUrl to false. Browser options are merged over
+      // the base capabilities at build time, and SE_FIREFOX turns BiDi on in the
+      // Firefox options, so a Classic request has to be written there too.
+      if (builder.getCapabilities().get('webSocketUrl') === false) {
+        for (const options of [builder.getChromeOptions(), builder.getEdgeOptions(), builder.getFirefoxOptions()]) {
+          options?.set('webSocketUrl', false)
+        }
+      } else if (browser.name === Browser.FIREFOX || browser.name === Browser.CHROME || browser.name === Browser.EDGE) {
         builder.setCapability('webSocketUrl', true)
         builder.setCapability('unhandledPromptBehavior', 'ignore')
       }
