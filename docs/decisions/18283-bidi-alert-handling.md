@@ -1,4 +1,4 @@
-# 18283. Allow alert handling with async handlers and the synchronous Alert API
+# 18283. Alert handling behavior for BiDi sessions
 
 - Status: Proposed
 - Discussion: [#18283](https://github.com/SeleniumHQ/selenium/pull/18283)
@@ -32,7 +32,8 @@ the handlers live on a domain off the driver, and a registered handler applies t
 There is no clear alert handlers equivalent. A binding may implement a way to add and remove a handler on behalf of a user so it applies for a specific block of code.
 
 2. **A handler is a callable that acts on the alert object.** Inside the async handler the user has access to an alert object
-that describes its type and can read text, send keys, accept or dismiss just like in the current Alert API.
+that describes its type and the default value of a prompt, and can read text, send keys, accept or dismiss just like in the current Alert API.
+The alert object acts on the alert that triggered the handler, regardless of which window the driver is on.
 
 3. **Support existing synchronous Alert API.** By default, a user must be able to wait for alerts and access open alerts regardless
 of how they were opened. This is required for backwards compatibility with existing code.
@@ -43,10 +44,11 @@ and apply to `alert`, `confirm`, and `prompt` dialogs. The default for those dia
 must be deprecated and removed.
 
 5. **Registering an async handler removes backwards compatibility.** When a user adds an alert handler (until it is removed), they are opting out of
-all support for `unhandledPromptBehavior` values. Users need to manage alerts through their handler, and Alert API commands must error.
+all support for `unhandledPromptBehavior` values. Users need to manage alerts through their handler, including `beforeUnload` prompts, and Alert API commands must error.
 
 6. **Only the most recently added handler is called.** Unlike Network handlers, events are not passed along a chain, 
 any previously registered handlers are ignored so users can scope handlers to specific alert instances.
+Removing that handler makes the one added before it the handler that is called; removing the only handler restores decisions 3 and 4.
 
 7. **Handlers must manage disposition and errors.** 
 An exception in the callable is not caught on behalf of the user, it is always surfaced.
@@ -54,14 +56,14 @@ An alert must not be closed for the user after the callable is executed; a handl
 
 
 ```ruby
-handle = driver.alerts.add_handler { |alert| alert.type == 'prompt' ? alert.accept : alert.dismiss }
+handle = driver.alerts.add_handler { |alert| alert.type == 'confirm' ? alert.dismiss : alert.accept }
 click_button_opening_alert
 driver.alerts.remove_handler(handle)
 ```
 
 ```java
 var handle = driver.alerts().addHandler(alert -> {
-  if (alert.getType() == AlertType.PROMPT) alert.accept(); else alert.dismiss();
+  if (alert.getType() == AlertType.CONFIRM) alert.dismiss(); else alert.accept();
 });
 clickButtonOpeningAlert();
 driver.alerts().removeHandler(handle);
@@ -85,6 +87,9 @@ driver.alerts().removeHandler(handle);
 - **The alert object (decision 2).**
   - Filter handlers by prompt type at registration. Rejected: the callable can branch on the
     alert's type rather than requiring Selenium to map everything.
+  - Have the alert object act on the driver's current window, as the Alert API does. Rejected: the
+    callable cannot know which window to switch to, so the test would have to keep the driver on
+    the window where the alert opens.
 - **Classic behavior (decisions 3 and 4).**
   - Handlers only: deprecate `unhandledPromptBehavior` and the Alert API in BiDi sessions, and
     dismiss alerts as they open unless a handler takes them. Rejected: every test that handles an
