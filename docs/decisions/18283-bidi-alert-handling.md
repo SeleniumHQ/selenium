@@ -26,8 +26,8 @@ BiDi also supports interacting with `beforeUnload` prompts (the alert that asks 
 
 ## Decision
 
-1. **Alert handlers may be added or removed through `driver.alerts`.** Like `driver.network` ([17685](17685-network-handler-behavior.md))
-and `driver.script`, the handlers live on a domain off the driver, and a registered handler applies to every window.
+1. **Alert handlers may be added or removed through `driver.alerts`.** Like `driver.network` ([17685](17685-network-handler-behavior.md)),
+the handlers live on a domain off the driver, and a registered handler applies to every window.
 `addHandler` returns a handle object; `removeHandler` takes that handle and unregisters exactly that handler.
 There is no clear alert handlers equivalent. A binding may implement a way to add and remove a handler on behalf of a user so it applies for a specific block of code.
 
@@ -46,10 +46,10 @@ must be deprecated and removed.
 all support for `unhandledPromptBehavior` values. Users need to manage alerts through their handler, and Alert API commands must error.
 
 6. **Only the most recently added handler is called.** Unlike Network handlers, events are not passed along a chain, 
-any previously registered handlers are ignored (including the default handler) so users can scope handlers to specific alert instances.
+any previously registered handlers are ignored so users can scope handlers to specific alert instances.
 
-7. **Non-default handlers must manage disposition and errors.** 
-An exception in the callable is not caught or logged on behalf of the user, it is always surfaced.
+7. **Handlers must manage disposition and errors.** 
+An exception in the callable is not caught on behalf of the user, it is always surfaced.
 An alert must not be closed for the user after the callable is executed; a handler may pass the alert object to the main thread to act on later.
 
 
@@ -71,11 +71,11 @@ driver.alerts().removeHandler(handle);
 
 - **Registration (decision 1).**
   - Methods directly on the driver. Rejected: [17685](17685-network-handler-behavior.md) already rejected top-level
-    driver methods for network handlers, and `driver.script` follows the same shape, so a third shape for alerts would
+    driver methods for network handlers, so a different shape for alerts would
     leave users guessing where each family lives.
   - Under `switchTo` next to the Alert API. Rejected: `switchTo` changes the focus of the current context, while a
     handler is a policy for every window; and the Java and .NET target locators are interfaces that third parties implement.
-  - On a browsing context accessor, as [#17672](https://github.com/SeleniumHQ/selenium/pull/17672) proposes.
+  - On a browsing context accessor.
     Rejected: that is the BiDi module name, which [17670](17670-bidi-implementation-boundaries.md) keeps internal.
   - Name the methods `addAlertHandler` and so on. Rejected: the `alerts` domain already says it.
   - Include `clearHandlers` like network handlers. Rejected: only the newest handler is called (decision 6),
