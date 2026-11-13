@@ -27,6 +27,12 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -62,5 +68,51 @@ class RequestConverterTest {
     FullHttpResponse res = channel.readOutbound();
 
     assertThat(res.status()).isEqualTo(HttpResponseStatus.METHOD_NOT_ALLOWED);
+  }
+
+  @Test
+  void requestLogsAtFine() {
+    Logger logger = Logger.getLogger(RequestConverter.class.getName());
+    Level previousLevel = logger.getLevel();
+    List<LogRecord> records = new ArrayList<>();
+    Handler handler =
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            records.add(record);
+          }
+
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        };
+    logger.setLevel(Level.ALL);
+    logger.addHandler(handler);
+    try {
+      RequestConverter converter = new RequestConverter();
+      EmbeddedChannel channel = new EmbeddedChannel(converter);
+      FullHttpRequest httpRequest =
+          new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/cheese");
+
+      assertThat(channel.writeInbound(httpRequest)).isTrue();
+
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().startsWith("Incoming message"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().startsWith("Start of http request"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+      assertThat(records)
+          .filteredOn(record -> record.getMessage().startsWith("End of http request"))
+          .isNotEmpty()
+          .allSatisfy(record -> assertThat(record.getLevel()).isEqualTo(Level.FINE));
+    } finally {
+      logger.removeHandler(handler);
+      logger.setLevel(previousLevel);
+    }
   }
 }
