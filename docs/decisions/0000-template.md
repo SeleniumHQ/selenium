@@ -11,7 +11,8 @@
 What problem are we solving, and what forces are in tension? W3C spec language, user
 expectations, existing behavior that differs between bindings, implementation constraints.
 Link prior discussions (issues, TLC notes) here as background — but summarize them, since
-this section must make sense without following any links.
+this section must make sense without following any links. Plans that depend on others (spec
+proposals, browser changes, other projects) belong here as context, not in the Decision.
 
 <!-- Optional: when bindings currently differ, a table makes the divergence concrete. This is
      the as-is state as of this decision (durable rationale) — NOT convergence tracking, which
@@ -30,8 +31,11 @@ this section must make sense without following any links.
 
 The decision, stated in language-neutral terms. This is the normative part: what every
 binding MUST do, and what is explicitly left to per-language idiom. Record *what* and *why*,
-not *how* — implementation lives in the adopting PRs. Use code sketches only to pin down the
-API shape being decided, not to specify implementation.
+not *how* — implementation lives in the adopting PRs. Pin down public names, the output or
+contract users depend on, and compatibility commitments. Leave out file and export paths,
+packaging, test layout, internal mechanics, and optional parameters that can be added later
+without breaking anyone. Use code sketches only to pin down the API shape being decided, not to
+specify implementation.
 
 ## Considered options
 
@@ -39,16 +43,17 @@ API shape being decided, not to specify implementation.
 - **Option B** — what it is; why it was rejected or accepted
 
 <!-- List the alternatives to the decision above and why each was rejected. These are mutually
-     exclusive answers to the same question, not a menu of separable features — a record may
-     bundle related sub-choices (give each its own options); independent adoptability alone is
-     not grounds to split it (see the README's scoping guidance). Revise this section during
-     review as alternatives are contested or added — the merged record, not the PR thread, is
-     the authoritative account of why each rejected option was not chosen. -->
+     exclusive answers to the same question, not a menu of separable features or possible future
+     additions — a record may bundle related sub-choices (give each its own options); independent
+     adoptability alone is not grounds to split it (see the README's scoping guidance). Revise
+     this section during review as alternatives are contested or added — the merged record, not
+     the PR thread, is the authoritative account of why each rejected option was not chosen. -->
 
 ## Consequences
 
 What gets easier, what gets harder, what users will notice. Deprecations triggered by this
-decision and their timelines. Follow-up decisions this one makes necessary.
+decision and their timelines. Follow-up decisions this one makes necessary — not
+implementation tasks, which belong in the tracking issue.
 
 <!-- Per-binding convergence is NOT tracked here. When this record is accepted, open an ADR
      tracking issue (the "ADR Implementation Tracking" issue template) with one checkbox per
