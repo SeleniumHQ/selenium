@@ -41,17 +41,22 @@ from generate_bidi_protocol import (
     _NO_FIXED,
     CommandIR,
     EnumIR,
+    EventIR,
     FieldIR,
+    ModuleIR,
     ParamIR,
     RecordIR,
     Schema,
     UnionIR,
     VariantIR,
     _emit_command,
+    _emit_domain_class,
     _emit_enum,
+    _emit_event_listener,
     _emit_field,
     _emit_record,
     _emit_union,
+    build_module,
     camel_to_snake,
     enum_member,
     frozenset_lit,
@@ -629,6 +634,75 @@ def test_a_command_with_union_parameters_dispatches_through_build():
     )
 
     assert "        params = DoThingParameters.build(value=value)" in _emit_command(command)
+
+
+# --------------------------------------------------------------------------- #
+# Event emission
+# --------------------------------------------------------------------------- #
+
+
+def test_an_event_emits_a_subscribing_listener_method_typed_by_its_payload():
+    event = EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters")
+
+    lines = _emit_event_listener(event)
+
+    assert lines[0].splitlines() == [
+        "    def add_thing_happened_listener(",
+        "        self,",
+        "        listener: Callable[[ThingHappenedParameters], Any],",
+        "        browsing_context: str | None = None,",
+        "        user_context: str | None = None,",
+        "    ) -> SubscribeResult:",
+    ]
+    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener, browsing_context, user_context)'
+
+
+def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
+    module = ModuleIR(
+        domain="x",
+        class_name="X",
+        filename="x",
+        enums=[],
+        records=[],
+        unions=[],
+        commands=[],
+        events=[
+            EventIR(wire="x.thingHappened", name="thing_happened", payload_class="ThingHappenedParameters"),
+            EventIR(wire="x.bare", name="bare", payload_class=None),
+        ],
+        imports={},
+    )
+
+    emitted = _emit_domain_class(module)
+
+    assert '        "thing_happened": "x.thingHappened",' in emitted
+    assert '        "x.thingHappened": ThingHappenedParameters,' in emitted
+    assert '        "x.bare": None,' in emitted
+    assert "    def add_thing_happened_listener(" in emitted
+    assert "    def add_bare_listener(" in emitted
+
+
+@pytest.mark.parametrize(
+    ("command", "owner"),
+    [("addThingListener", r"event x\.thing"), ("removeListener", r"Domain\.remove_listener")],
+)
+def test_a_command_that_would_shadow_a_listener_method_is_rejected(command, owner):
+    schema = Schema(
+        {
+            "types": {},
+            "commands": [{"domain": "x", "method": f"x.{command}", "name": command}],
+            "events": [{"domain": "x", "method": "x.thing", "name": "thing"}],
+        }
+    )
+
+    with pytest.raises(ValueError, match=rf"x: command method {camel_to_snake(command)} collides with .*{owner}"):
+        build_module(schema, "x")
+
+
+def test_a_module_with_events_imports_the_subscribe_result_it_returns():
+    schema = Schema({"types": {}, "commands": [], "events": [{"domain": "x", "method": "x.thing", "name": "thing"}]})
+
+    assert build_module(schema, "x").imports == {"session": {"SubscribeResult"}}
 
 
 # --- vendor overlays ------------------------------------------------------------------------

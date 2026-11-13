@@ -23,10 +23,14 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.transport import Transport
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common._bidi.session import SubscribeResult
 
 
 class Domain:
@@ -52,3 +56,21 @@ class Domain:
 
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
+
+    def remove_listener(self, subscription: SubscribeResult) -> None:
+        """Unsubscribe and drop the listener an ``add_<event>_listener`` method registered (internal, unsupported).
+
+        ``subscription`` is that method's result. The listener gets no further payload once this is
+        called, even if the remote end refuses the unsubscribe, which raises. Removing it twice raises
+        because the remote end rejects an unknown subscription id.
+        """
+        self._transport.remove_listener(subscription)
+
+    def _add_listener(
+        self,
+        event: str,
+        listener: Callable[[Any], Any],
+        browsing_context: str | None,
+        user_context: str | None,
+    ) -> SubscribeResult:
+        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener, browsing_context, user_context)
