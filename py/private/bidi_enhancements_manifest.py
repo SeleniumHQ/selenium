@@ -1246,9 +1246,8 @@ disownDataParameters = DisownDataParameters''',
         """
         self._request_handlers.clear()
         self.clear_event_handlers()
-        # After clear() the request registry's intercept_ids() only contains
-        # the extra-headers intercept, which survives like the other
-        # registries' intercepts.
+        # After clear() the request registry owns no intercepts; the other
+        # registries' intercepts survive.
         preserved_intercepts = (
             self._request_handlers.intercept_ids()
             | self._response_handlers.intercept_ids()
@@ -1339,18 +1338,16 @@ disownDataParameters = DisownDataParameters''',
         """Clear all authentication handlers and their intercepts."""
         self._auth_handlers.clear()''',
             '''    def add_extra_header(self, name, value):
-        """Add a header that is merged into every subsequent request.
+        """Add a header the browser sends with every subsequent request.
 
         Usage::
 
             driver.network.add_extra_header("x-test", "value")
 
-        BiDi has no dedicated command for extra headers, so while any extra
-        header is set every request is paused at the ``beforeRequestSent``
-        phase and continued with the merged headers — this adds a round trip
-        per request, so remove the headers when no longer needed.  Header
-        names are case-insensitive; adding a header replaces any existing
-        request header of the same name.
+        The headers are pushed to the browser with
+        ``network.setExtraHeaders``, so the browser sends them itself and no
+        request is paused.  Header names are case-insensitive; adding a header
+        replaces any existing request header of the same name.
 
         Args:
             name: The header name.
