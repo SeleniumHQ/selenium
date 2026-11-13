@@ -288,8 +288,7 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
         writeLock.unlock();
       }
     } catch (Exception e) {
-      LOG.log(
-          Level.FINE, String.format("Exception while adding Node %s", node.getUri()), e);
+      LOG.log(Level.FINE, String.format("Exception while adding Node %s", node.getUri()), e);
       return;
     }
 
@@ -358,8 +357,7 @@ public class RedisBackedNodeRegistry implements NodeRegistry {
     writeLock.lock();
     try {
       LOG.log(
-          Level.FINE,
-          String.format("Health check result for %s was %s", nodeUri, availability));
+          Level.FINE, String.format("Health check result for %s was %s", nodeUri, availability));
       model.setAvailability(id, availability);
       model.updateHealthCheckCount(id, availability);
     } finally {

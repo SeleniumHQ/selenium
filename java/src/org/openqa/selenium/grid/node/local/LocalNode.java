@@ -1414,10 +1414,7 @@ public class LocalNode extends Node implements Closeable {
   private boolean decrementSessionCount() {
     if (this.drainAfterSessions) {
       int remainingSessions = this.sessionCount.decrementAndGet();
-      LOG.log(
-          Level.FINE,
-          "{0} remaining sessions before draining Node",
-          remainingSessions);
+      LOG.log(Level.FINE, "{0} remaining sessions before draining Node", remainingSessions);
       return remainingSessions >= 0;
     }
     return true;

@@ -622,9 +622,7 @@ public class RedisBackedDistributor extends Distributor implements Closeable {
               sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req));
             } catch (RejectedExecutionException e) {
               LOG.log(
-                  Level.FINE,
-                  "Dropping session creation task while shutting down distributor",
-                  e);
+                  Level.FINE, "Dropping session creation task while shutting down distributor", e);
             }
           });
         }

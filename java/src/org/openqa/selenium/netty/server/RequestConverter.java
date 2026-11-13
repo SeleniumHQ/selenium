@@ -172,8 +172,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     } catch (Exception ignore) {
       ctx.writeAndFlush(
           new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
-      LOG.log(
-          Level.FINE, "Not possible to decode parameters. {0}", nettyRequest.uri());
+      LOG.log(Level.FINE, "Not possible to decode parameters. {0}", nettyRequest.uri());
       return null;
     }
   }
