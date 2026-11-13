@@ -27,6 +27,7 @@ from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.remote.client_config import ClientConfig
 
 
 class WebDriver(LocalWebDriver):
@@ -39,15 +40,19 @@ class WebDriver(LocalWebDriver):
         self,
         options: Options | None = None,
         service: Service | None = None,
-        keep_alive: bool = True,
+        keep_alive: bool | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Create a new instance of the Firefox driver, start the service, and create new instance.
 
         Args:
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
-            keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
+            keep_alive: (Deprecated) Set keep_alive on a ClientConfig passed as client_config instead.
+            client_config: Custom client configuration to use. Defaults to None.
         """
+        if keep_alive is not None:
+            self._warn_keep_alive_deprecated()
         self.service = service or Service()
         self.options = options or Options()
 
@@ -63,6 +68,7 @@ class WebDriver(LocalWebDriver):
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
             ignore_proxy=self.options._ignore_local_proxy,
+            client_config=client_config,
         )
 
         try:

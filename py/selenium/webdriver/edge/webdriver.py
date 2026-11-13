@@ -19,6 +19,7 @@ from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.edge.service import Service
+from selenium.webdriver.remote.client_config import ClientConfig
 
 
 class WebDriver(ChromiumDriver):
@@ -28,7 +29,8 @@ class WebDriver(ChromiumDriver):
         self,
         options: Options | None = None,
         service: Service | None = None,
-        keep_alive: bool = True,
+        keep_alive: bool | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Creates a new instance of the edge driver.
 
@@ -37,7 +39,8 @@ class WebDriver(ChromiumDriver):
         Args:
             options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
-            keep_alive: Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+            keep_alive: (Deprecated) Set keep_alive on a ClientConfig passed as client_config instead.
+            client_config: Custom client configuration to use. Defaults to None.
         """
         self.service = service or Service()
         self.options = options or Options()
@@ -48,4 +51,5 @@ class WebDriver(ChromiumDriver):
             options=self.options,
             service=self.service,
             keep_alive=keep_alive,
+            client_config=client_config,
         )
