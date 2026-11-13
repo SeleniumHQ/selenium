@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Pre-push hook: run formatters over committed branch changes.
+# If formatters modify files, a fixup commit is created and the push is
+# aborted so the caller can re-push with the clean state included.
+#
+# One-time setup:  git config core.hooksPath .githooks
+# Emergency bypass: git push --no-verify  (discouraged)
+set -euo pipefail
+
+# Avoid infinite recursion when the hook itself creates the fixup commit.
+[[ "${SKIP_FORMAT_HOOK:-}" == "1" ]] && exit 0
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Abort early if there is uncommitted work in the tree; the formatter
+# would mix those changes with committed ones and produce a misleading diff.
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "pre-push: working tree is dirty — stash or commit your changes first." >&2
+    exit 1
+fi
+
+echo "pre-push: running formatters (./scripts/format.sh --pre-push)..." >&2
+if ./scripts/format.sh --pre-push; then
+    # Formatters exited cleanly — no files were changed.
+    exit 0
+fi
+
+# format.sh exits 1 when it modifies files.  Collect what changed.
+changed_files="$(git diff --name-only)"
+if [[ -z "$changed_files" ]]; then
+    # Formatter failed for a reason other than file modifications (e.g. lint error).
+    echo "pre-push: formatters failed without modifying files — fix the errors above." >&2
+    exit 1
+fi
+
+# Stage only the files the formatters touched and create a fixup commit.
+echo "$changed_files" | xargs git add --
+SKIP_FORMAT_HOOK=1 git commit -m "chore: apply formatters before push"
+
+echo "" >&2
+echo "pre-push: formatters modified the following files and a commit was created:" >&2
+echo "$changed_files" | sed 's/^/  /' >&2
+echo "" >&2
+
+# Verify the tree is now clean to catch non-idempotent formatters.
+if ! ./scripts/format.sh --pre-push; then
+    echo "pre-push: formatters are not idempotent — fix the remaining issues above." >&2
+    exit 1
+fi
+
+echo "pre-push: re-run 'git push' to include the formatter commit." >&2
+exit 1

@@ -323,6 +323,32 @@ tests.
 
 ### Step 6: Push
 
+#### One-time setup: pre-push formatter hook
+
+The repository ships a pre-push hook at `.githooks/pre-push` that runs
+`./scripts/format.sh --pre-push` before every push.  Enable it once per
+clone:
+
+```shell
+% git config core.hooksPath .githooks
+```
+
+**Expected behavior**
+
+* If your branch is already formatted the push proceeds immediately.
+* If the formatters need to make changes, the hook commits them automatically
+  with the message `chore: apply formatters before push` and then aborts the
+  push.  Run `git push` a second time to include that commit — the second push
+  will succeed.
+* If your working tree is dirty (unstaged or staged changes) the hook aborts
+  immediately.  Stash or commit your work-in-progress first.
+
+**Emergency bypass** (discouraged — CI will still fail if formatting is wrong):
+
+```shell
+% git push --no-verify
+```
+
 ```shell
 % git push origin my-feature-branch
 ```
