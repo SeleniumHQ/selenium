@@ -38,10 +38,12 @@ java_library(
     exported_plugins = [
         ":auto-service-plugin",
     ],
-    tags = ["maven:compile_only"],
     visibility = [
         "//java:__subpackages__",
     ],
+    # Keep the annotations in the published POMs. @AutoService has CLASS retention,
+    # so javac in user projects reads it from our classes and warns under -Xlint:classfile
+    # when the type is missing, which breaks builds that use -Werror.
     exports = [
         artifact("com.google.auto.service:auto-service-annotations"),
     ],
