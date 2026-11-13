@@ -179,7 +179,7 @@ Selenium is built using a common build tool called [Bazel](https://bazel.build/)
 allow us to easily manage dependency downloads, generate required binaries, build and release packages, and execute tests;
 all in a fast, efficient manner. For a more detailed discussion, read Simon Stewart's article on [Building Selenium](https://www.selenium.dev/blog/2023/building-selenium/)
 
-Often we wrap Bazel commands with our custom [Rake](http://rake.rubyforge.org/) wrapper. These are run with the `./go` command.
+Often we wrap Bazel commands with our custom [Rake](https://ruby.github.io/rake/) wrapper. These are run with the `./go` command.
 
 The common Bazel commands are:
 * `bazel build` — evaluates dependencies, compiles source files and generates output files for the specified target.
