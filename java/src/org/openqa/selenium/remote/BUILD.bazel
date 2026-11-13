@@ -50,7 +50,6 @@ java_library(
     name = "api",
     srcs = glob(["**/*.java"]),
     resources = [
-        ":accessibility-snapshot",
         ":bidi-mutation-listener",
         ":get-attribute",
         ":is-displayed",
@@ -82,12 +81,6 @@ java_library(
         artifact("net.bytebuddy:byte-buddy"),
         artifact("org.jspecify:jspecify"),
     ],
-)
-
-copy_file(
-    name = "accessibility-snapshot",
-    src = "//javascript/atoms/fragments:accessibility-snapshot-wire-typescript.js",
-    out = "accessibilitySnapshot.js",
 )
 
 copy_file(

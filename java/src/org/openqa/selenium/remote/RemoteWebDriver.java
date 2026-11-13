@@ -52,8 +52,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
-import org.openqa.selenium.AccessibilityNode;
-import org.openqa.selenium.AccessibilitySnapshotOptions;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -76,7 +74,6 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -150,7 +147,6 @@ public class RemoteWebDriver
   private final Logs remoteLogs = new RemoteLogs(executeMethod);
 
   @Nullable private Script remoteScript;
-  @Nullable private AccessibilitySnapshotter accessibilitySnapshotter;
 
   @Nullable private Network remoteNetwork;
 
@@ -667,30 +663,6 @@ public class RemoteWebDriver
       this.remoteScript = new RemoteScript(this);
     }
     return this.remoteScript;
-  }
-
-  @Override
-  public AccessibilityNode getAccessibilitySnapshot() {
-    return getAccessibilitySnapshot(AccessibilitySnapshotOptions.defaults());
-  }
-
-  @Override
-  public AccessibilityNode getAccessibilitySnapshot(AccessibilitySnapshotOptions options) {
-    return accessibility().snapshot(null, Require.nonNull("Options", options));
-  }
-
-  // The snapshot runs in a BiDi sandbox realm; a classic-only session cannot take one.
-  @SuppressWarnings("deprecation")
-  AccessibilitySnapshotter accessibility() {
-    if (maybeGetBiDi().isEmpty()) {
-      throw new UnsupportedCommandException(
-          "getAccessibilitySnapshot() requires a WebDriver BiDi session; enable it with"
-              + " options.enableBiDi() before starting the driver");
-    }
-    if (this.accessibilitySnapshotter == null) {
-      this.accessibilitySnapshotter = new AccessibilitySnapshotter(this);
-    }
-    return this.accessibilitySnapshotter;
   }
 
   public Network network() {
