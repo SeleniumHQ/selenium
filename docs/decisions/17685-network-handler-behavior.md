@@ -1,6 +1,6 @@
 # 17685. The network async/event API
 
-- Status: Accepted
+- Status: Superseded by [18279](18279-network-handler-behavior.md)
 - Discussion: [#17685](https://github.com/SeleniumHQ/selenium/pull/17685)
 - Tracking: https://github.com/SeleniumHQ/selenium/issues/18019
 
