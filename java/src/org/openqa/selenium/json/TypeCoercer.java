@@ -30,4 +30,12 @@ public abstract class TypeCoercer<T>
 
   @Override
   public abstract BiFunction<JsonInput, PropertySetting, T> apply(Type type);
+
+  /**
+   * Whether the functions produced by {@link #apply} handle a pending JSON null themselves. When
+   * {@code false}, {@link JsonTypeCoercer} consumes the null before the function is invoked.
+   */
+  boolean handlesNull() {
+    return false;
+  }
 }

@@ -13,6 +13,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "funding": [

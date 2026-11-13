@@ -18,6 +18,13 @@ def atoms_publish_target
   '//javascript/atoms:selenium-atoms-package.publish'
 end
 
+# npm names under @selenium/, each built from //javascript/selenium-<name>.
+# The platform packages come first because @selenium/manager pins them as
+# optionalDependencies, so they must be on the registry before it is.
+def manager_packages
+  %w[manager-linux-x64 manager-linux-arm64 manager-darwin manager-win32-ia32 manager]
+end
+
 def node_version
   SeleniumRake.version('javascript')
 end
@@ -145,15 +152,8 @@ task :release_manager do |_task, arguments|
 
   Rake::Task['node:check_credentials'].invoke unless dry_run
 
-  targets = [
-    '//javascript/selenium-manager-linux-x64:selenium-manager-linux-x64.publish',
-    '//javascript/selenium-manager-linux-arm64:selenium-manager-linux-arm64.publish',
-    '//javascript/selenium-manager-darwin:selenium-manager-darwin.publish',
-    '//javascript/selenium-manager-win32-ia32:selenium-manager-win32-ia32.publish',
-    '//javascript/selenium-manager:selenium-manager.publish'
-  ]
-
-  targets.each do |target|
+  manager_packages.each do |pkg|
+    target = "//javascript/selenium-#{pkg}:selenium-#{pkg}.publish"
     puts dry_run ? "Dry-run: #{target}" : "Publishing: #{target}"
     publish_npm_package(target, config, dry_run)
   end
@@ -163,6 +163,9 @@ desc 'Verify Node packages are published on npm'
 task :verify do
   SeleniumRake.verify_package_published("https://registry.npmjs.org/selenium-webdriver/#{node_version}")
   SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2Fatoms/#{node_version}")
+  manager_packages.each do |pkg|
+    SeleniumRake.verify_package_published("https://registry.npmjs.org/@selenium%2F#{pkg}/#{node_version}")
+  end
 end
 
 desc 'Alias for node:release'

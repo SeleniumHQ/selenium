@@ -19,7 +19,7 @@ import os
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.bidi.browser import (
     ClientWindowInfo,
     ClientWindowNamedState,
@@ -99,7 +99,7 @@ def test_get_client_windows(driver):
 
 
 def test_raises_exception_when_removing_default_user_context(driver):
-    with pytest.raises(Exception):
+    with pytest.raises(WebDriverException):
         driver.browser.remove_user_context("default")
 
 
@@ -182,6 +182,7 @@ def test_create_user_context_with_direct_proxy(driver, pages):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
+@pytest.mark.xfail_edge(reason="Edge auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
 def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
     """Test creating a user context with manual proxy configuration."""
     create_proxy_server = proxy_server(response_content=b"proxied response")
@@ -221,6 +222,7 @@ def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
+@pytest.mark.xfail_edge(reason="Edge auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
 def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server, pages):
     """Test creating a user context with both acceptInsecureCerts and proxy parameters."""
     create_proxy_server = proxy_server(response_content=b"proxied response")
