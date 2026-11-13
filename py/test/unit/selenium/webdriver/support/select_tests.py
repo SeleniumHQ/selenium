@@ -75,7 +75,7 @@ VALUES = [
     ("plain", './/option[@value = "plain"]'),
     ('say "hi', ".//option[@value = 'say \"hi']"),
     ("a'b\"c", './/option[@value = concat("a\'b", \'"\', "c")]'),
-    ("a\b", './/option[@value = "a\b"]'),
+    (r"a\b", r'.//option[@value = "a\b"]'),
 ]
 
 
