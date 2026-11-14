@@ -22,6 +22,8 @@ question comes up in review, the answer should be a link to a file here.
 - Single-binding internals (a Java maintainer picking a data structure)
 - Build tooling and infrastructure choices
 - Anything cheaply reversible
+- Optional behavior added to one binding, as long as existing inputs, outputs and defaults keep
+  their type and meaning
 
 When in doubt, ask whether the question is likely to be raised again. If it is, record the decision.
 

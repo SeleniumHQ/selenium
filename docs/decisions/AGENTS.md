@@ -11,8 +11,7 @@ what agents tend to get wrong on top of that.
 - Use bullets where they make parallel items easier to read
 - Don't give general explanations of the spec or the protocol. Include only the existing
   behavior and project policy needed to understand the decision
-- Don't list parameters or toggles a method might take. Its name, output, default behavior, and
-  any other behavior every binding must support are the decision
+- Don't list parameters or toggles a method might take
 - Finish with a pass that cuts anything a reviewer would neither contest nor need
 
 ## Revising a record
