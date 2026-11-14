@@ -61,8 +61,13 @@ Deprecating or removing DevTools (CDP) support.
 
 ### Convenience layers on the core APIs
 
-Higher-level helpers built on the network and script/event primitives — for example task-oriented
-network actions (`mock`, `block`, `redirect`) and one-shot event waiters (`expect_*`).
+Higher-level helpers built on the network, observation, and script/event primitives — for example
+task-oriented network actions (`mock`, `block`, `redirect`) and one-shot event waiters (`expect_*`).
+
+### Further network API
+
+Observe-only network handlers, which hold no request, including `responseCompleted` and
+`fetchError`; extra headers; offline mode; and cache behavior.
 
 ### Browser context API
 
