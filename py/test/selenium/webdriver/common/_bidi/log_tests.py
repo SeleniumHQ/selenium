@@ -18,6 +18,7 @@
 """Browser tests for the generated ``_bidi`` log domain, which has events but no commands."""
 
 from selenium.webdriver.common._bidi.log import ConsoleLogEntry, JavascriptLogEntry, Log
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -25,11 +26,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 def test_entry_added_event_for_a_console_message(driver, pages):
     driver.get(pages.url("bidi/logEntryAdded.html"))
     events = []
-    subscription = Log(driver).add_entry_added_listener(events.append)
+    listener = Log(driver).add_entry_added_listener(events.append)
+    subscription = Session(driver).subscribe(events=["log.entryAdded"]).subscription
 
     driver.find_element(By.ID, "consoleLog").click()
     entry = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e.text == "Hello, world!"), None))
-    Log(driver).remove_listener(subscription)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Log(driver).remove_listener(listener)
 
     assert isinstance(entry, ConsoleLogEntry)
 
@@ -37,10 +40,12 @@ def test_entry_added_event_for_a_console_message(driver, pages):
 def test_entry_added_event_for_a_javascript_error(driver, pages):
     driver.get(pages.url("bidi/logEntryAdded.html"))
     events = []
-    subscription = Log(driver).add_entry_added_listener(events.append)
+    listener = Log(driver).add_entry_added_listener(events.append)
+    subscription = Session(driver).subscribe(events=["log.entryAdded"]).subscription
 
     driver.find_element(By.ID, "jsException").click()
     entry = WebDriverWait(driver, 10).until(lambda _: next((e for e in events if e.text == "Error: Not working"), None))
-    Log(driver).remove_listener(subscription)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Log(driver).remove_listener(listener)
 
     assert isinstance(entry, JavascriptLogEntry)

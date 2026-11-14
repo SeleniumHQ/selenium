@@ -40,6 +40,7 @@ from selenium.webdriver.common._bidi.input import (
     WheelSourceActions,
 )
 from selenium.webdriver.common._bidi.script import ContextTarget, Script, SharedReference
+from selenium.webdriver.common._bidi.session import Session
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -668,7 +669,8 @@ def test_type_and_set_files_in_same_form(driver, pages):
 def test_file_dialog_opened_event(driver):
     driver.get("data:text/html,<input id=upload type=file multiple />")
     events = []
-    subscription = Input(driver).add_file_dialog_opened_listener(events.append)
+    listener = Input(driver).add_file_dialog_opened_listener(events.append)
+    subscription = Session(driver).subscribe(events=["input.fileDialogOpened"]).subscription
 
     Script(driver).evaluate(
         expression="document.getElementById('upload').click()",
@@ -677,7 +679,8 @@ def test_file_dialog_opened_event(driver):
         user_activation=True,
     )
     WebDriverWait(driver, 10).until(lambda _: events)
-    Input(driver).remove_listener(subscription)
+    Session(driver).unsubscribe(subscriptions=[subscription])
+    Input(driver).remove_listener(listener)
 
     dialog = events[0]
     assert (dialog.context, dialog.multiple) == (driver.current_window_handle, True)

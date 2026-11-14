@@ -858,8 +858,6 @@ def build_module(schema: Schema, domain: str) -> ModuleIR:
     events = [build_event(schema, e) for e in schema.events_for(domain)]
     _guard_listener_names(domain, commands, events)
     imports = _cross_domain_imports(schema, domain)
-    if events:
-        imports.setdefault("session", set()).add("SubscribeResult")
     return ModuleIR(
         domain=domain,
         class_name=snake_to_class(camel_to_snake(domain)),
@@ -1064,26 +1062,19 @@ def _emit_command(c: CommandIR) -> list[str]:
 
 def _emit_event_listener(e: EventIR) -> list[str]:
     payload = e.payload_class or "dict[str, Any]"
-    args = [
-        "self",
-        f"listener: Callable[[{payload}], Any]",
-        "browsing_context: str | None = None",
-        "user_context: str | None = None",
-    ]
-    lines = [wrap_call(f"    def {_listener_method(e)}(", args, ") -> SubscribeResult:", 4)]
-    lines.append(f'        """Subscribe ``listener`` to {e.wire} (internal, unsupported).')
+    args = ["self", f"listener: Callable[[{payload}], Any]"]
+    lines = [wrap_call(f"    def {_listener_method(e)}(", args, ") -> str:", 4)]
+    lines.append(f'        """Apply ``listener`` to each {e.wire} payload (internal, unsupported).')
     lines.append("")
-    lines.append(f"        The listener is called with a ``{payload}`` for each payload in its scope; one")
-    lines.append("        that fails validation is logged and not delivered. Pass the result to ``remove_listener``")
-    lines.append("        to stop it.")
-    lines.append("")
-    lines.append("        ``browsing_context`` scopes the listener to that context's page, frames included;")
-    lines.append("        ``user_context`` to every page of that user context. Without either it gets every payload.")
+    lines.append(f"        The listener is called with a ``{payload}``, one payload at a time in arrival order;")
+    lines.append("        one that fails validation is logged and not delivered. This sends nothing: payloads")
+    lines.append("        arrive once the caller subscribes with ``Session.subscribe``. Returns the id to pass to")
+    lines.append("        ``remove_listener``.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")
     lines.append('        """')
-    lines.append(f"        return self._add_listener({lit(e.wire)}, listener, browsing_context, user_context)")
+    lines.append(f"        return self._add_listener({lit(e.wire)}, listener)")
     return lines
 
 

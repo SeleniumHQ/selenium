@@ -35,7 +35,6 @@ from selenium.webdriver.common._bidi.errors import exception_for
 
 if TYPE_CHECKING:
     from selenium.webdriver.common._bidi.dispatcher import EventDispatcher
-    from selenium.webdriver.common._bidi.session import SubscribeResult
 
 
 class Transport:
@@ -63,19 +62,12 @@ class Transport:
         value = reply["result"]
         return result.from_json(value) if result is not None else value
 
-    def add_listener(
-        self,
-        event: str,
-        payload_type: type | None,
-        listener: Callable[[Any], Any],
-        browsing_context: str | None = None,
-        user_context: str | None = None,
-    ) -> SubscribeResult:
-        """Subscribe ``listener`` to the ``payload_type`` payloads of ``event`` through the connection's dispatcher."""
-        return self._dispatcher().add_listener(event, payload_type, listener, browsing_context, user_context)
+    def add_listener(self, event: str, payload_type: type | None, listener: Callable[[Any], Any]) -> str:
+        """Register ``listener`` for the ``payload_type`` payloads of ``event`` with the connection's dispatcher."""
+        return self._dispatcher().add_listener(event, payload_type, listener)
 
-    def remove_listener(self, subscription: SubscribeResult) -> None:
-        self._dispatcher().remove_listener(subscription)
+    def remove_listener(self, listener_id: str) -> None:
+        self._dispatcher().remove_listener(listener_id)
 
     def _dispatcher(self) -> EventDispatcher:
         dispatcher = getattr(self._connection, "event_receiver", None)
