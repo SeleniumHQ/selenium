@@ -24,13 +24,10 @@ https://www.selenium.dev/documentation/warnings/bidi-implementation/
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common._bidi.transport import Transport
-
-if TYPE_CHECKING:
-    from selenium.webdriver.common._bidi.session import SubscribeResult
 
 
 class Domain:
@@ -57,20 +54,13 @@ class Domain:
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
 
-    def remove_listener(self, subscription: SubscribeResult) -> None:
-        """Unsubscribe and drop the listener an ``add_<event>_listener`` method registered (internal, unsupported).
+    def remove_listener(self, listener_id: str) -> None:
+        """Stop applying payloads to the listener an ``add_<event>_listener`` method returned ``listener_id`` for.
 
-        ``subscription`` is that method's result. The listener gets no further payload once this is
-        called, even if the remote end refuses the unsubscribe, which raises. Removing it twice raises
-        because the remote end rejects an unknown subscription id.
+        Internal, unsupported. Local only: the subscription feeding it is left to the caller. A run already
+        in progress finishes and queued payloads are dropped. Removing an unknown or removed id does nothing.
         """
-        self._transport.remove_listener(subscription)
+        self._transport.remove_listener(listener_id)
 
-    def _add_listener(
-        self,
-        event: str,
-        listener: Callable[[Any], Any],
-        browsing_context: str | None,
-        user_context: str | None,
-    ) -> SubscribeResult:
-        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener, browsing_context, user_context)
+    def _add_listener(self, event: str, listener: Callable[[Any], Any]) -> str:
+        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener)
