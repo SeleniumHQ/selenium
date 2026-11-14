@@ -193,17 +193,8 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     /// </example>
     public IWebElement FindElementByClassName(string className)
     {
-        string selector = By.EscapeCssSelector(className);
-        if (selector.Contains(" "))
-        {
-            // Finding elements by class name with whitespace is not allowed.
-            // However, converting the single class name to a valid CSS selector
-            // by prepending a '.' may result in a still-valid, but incorrect
-            // selector. Thus, we short-circuit that behavior here.
-            throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
-        }
-
-        return this.FindElement("css selector", "." + selector);
+        By.ThrowIfClassNameHasWhitespace(className);
+        return this.FindElement("css selector", "." + By.EscapeCssSelector(className));
     }
 
     /// <summary>
@@ -219,17 +210,8 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     /// </example>
     public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
     {
-        string selector = By.EscapeCssSelector(className);
-        if (selector.Contains(" "))
-        {
-            // Finding elements by class name with whitespace is not allowed.
-            // However, converting the single class name to a valid CSS selector
-            // by prepending a '.' may result in a still-valid, but incorrect
-            // selector. Thus, we short-circuit that behavior here.
-            throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
-        }
-
-        return this.FindElements("css selector", "." + selector);
+        By.ThrowIfClassNameHasWhitespace(className);
+        return this.FindElements("css selector", "." + By.EscapeCssSelector(className));
     }
 
     /// <summary>
