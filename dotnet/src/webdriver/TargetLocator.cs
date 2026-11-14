@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
@@ -67,7 +66,7 @@ internal sealed class TargetLocator : ITargetLocator
             throw new ArgumentNullException(nameof(frameName), "Frame name cannot be null");
         }
 
-        string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+        string name = By.EscapeCssSelector(frameName);
         ReadOnlyCollection<IWebElement> frameElements = this.driver.FindElements(By.CssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
         if (frameElements.Count == 0)
         {
