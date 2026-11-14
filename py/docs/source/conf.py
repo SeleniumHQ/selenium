@@ -17,15 +17,19 @@
 
 
 import importlib
+import inspect
 import os
 import os.path
 import sys
+
+from sphinx.util import logging as sphinx_logging
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.join(os.getcwd(), "..", ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ext"))
 
 # -- General configuration -----------------------------------------------------
 
@@ -37,8 +41,10 @@ sys.path.insert(0, os.path.join(os.getcwd(), "..", ".."))
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
+    "llm_assets",
 ]
 
 # Extension configuration.
@@ -54,6 +60,18 @@ autodoc_default_options = {
 }
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
+
+# Resolve types borrowed from the standard library and from our dependencies to
+# their own documentation, so a reader landing on a signature can follow every
+# name in it instead of guessing.
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "trio": ("https://trio.readthedocs.io/en/stable", None),
+    "urllib3": ("https://urllib3.readthedocs.io/en/stable", None),
+}
+# Inventories are fetched over the network. A build without one degrades to
+# plain literals rather than failing, and the timeout keeps it from stalling.
+intersphinx_timeout = 5
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -74,6 +92,86 @@ copyright = "Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom
 # The Bazel docs target overrides these with -D; elsewhere generate_version_module.py writes the module first.
 release = importlib.import_module("selenium").__version__
 version = ".".join(release.split(".")[:2])
+
+
+def source_ref(release):
+    """A released version corresponds to a tag; a nightly does not, so its links point at trunk."""
+    return f"selenium-{release}" if release.count(".") == 2 else "trunk"
+
+
+# Resolved in `setup` rather than here: the Bazel docs target supplies the real
+# release with -D, which Sphinx applies only after this file has run, while the
+# imported `selenium` carries the test placeholder version.
+git_ref = "trunk"
+
+
+logger = sphinx_logging.getLogger(__name__)
+
+# Objects rendered without a source link. Each is logged at debug level, and the
+# total is reported once the build finishes, so that a regression dropping links
+# wholesale shows up in the build output rather than only on the published pages.
+unlinked = []
+
+
+def _unlinked(info, reason):
+    name = f"{info['module']}.{info['fullname']}"
+    unlinked.append(name)
+    logger.debug("linkcode: no source link for %s (%s)", name, reason)
+    return None
+
+
+def _report_unlinked(app, exception):
+    if exception is None and unlinked:
+        logger.info("linkcode: %d documented objects have no source link; run with -vv to list them", len(unlinked))
+
+
+def linkcode_resolve(domain, info):
+    """Point each documented object at its source on GitHub.
+
+    Source links used to be served from copies of the source rendered into this
+    site, which meant every module existed twice on the web with no indication of
+    which was canonical. Linking to the repository at the ref this build came
+    from keeps one copy authoritative and gives the reader somewhere to go with
+    history, blame and issues attached.
+    """
+    if domain != "py" or not info.get("module"):
+        return None
+
+    try:
+        obj = importlib.import_module(info["module"])
+    except ImportError as error:
+        # A documented module that cannot be imported is a broken reference, not
+        # an expected miss, so it is worth a warning in the build output.
+        logger.warning("linkcode: cannot import %s: %s", info["module"], error)
+        return _unlinked(info, error)
+
+    try:
+        for part in info["fullname"].split("."):
+            obj = getattr(obj, part)
+        # Much of the driver surface is exposed as properties, whose source lives
+        # on the getter rather than on the descriptor.
+        if isinstance(obj, property):
+            obj = obj.fget
+        obj = inspect.unwrap(obj)
+        source_file = inspect.getsourcefile(obj)
+        _, lineno = inspect.getsourcelines(obj)
+    except (AttributeError, OSError, TypeError) as error:
+        # Expected for constants, instance attributes and C-implemented objects,
+        # which have no source of their own to link to.
+        return _unlinked(info, error)
+
+    if not source_file:
+        return _unlinked(info, "no source file")
+
+    # `selenium` is the top of the published package, and also the top of the
+    # `py` directory in the repository.
+    path = source_file.replace(os.sep, "/")
+    if "/selenium/" not in path:
+        return _unlinked(info, f"source is outside the package: {path}")
+    relative = "selenium/" + path.rsplit("/selenium/", 1)[1]
+
+    return f"https://github.com/SeleniumHQ/selenium/blob/{git_ref}/py/{relative}#L{lineno}"
+
 
 # The language for content autogenerated by Sphinx. Refer to documentation
 # for a list of supported languages.
@@ -108,6 +206,21 @@ add_module_names = False
 
 
 # -- Options for HTML output ---------------------------------------------------
+
+# The canonical home of this reference. Several copies of the Python API docs
+# are published — the release build here, a per-commit preview on Read the Docs,
+# and unofficial mirrors that outrank both — and until now none of them said
+# which was authoritative. Setting this emits `rel="canonical"` on every page,
+# pointing search engines and retrieval pipelines at the released reference no
+# matter which copy they reached. The Read the Docs preview deliberately keeps
+# it; a local build served from elsewhere can clear it with `-D html_baseurl=`
+# (see `py/docs/README.rst`).
+html_baseurl = "https://www.selenium.dev/selenium/docs/api/py/"
+
+# The Read the Docs preview documents unreleased code, so it must not publish an
+# llms.txt that calls itself the canonical reference (see `_ext/llm_assets.py`).
+# Read the Docs sets READTHEDOCS=True in every build it runs.
+llm_assets_enabled = os.environ.get("READTHEDOCS") != "True"
 
 # The theme to use for HTML and HTML Help pages
 html_theme = "pydata_sphinx_theme"
@@ -162,6 +275,11 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
 
+# Files copied verbatim into the output root. `_extra/deprecations.json` is
+# generated by `generate_deprecations.py`; publishing it beside the HTML gives
+# tooling one stable URL for "this API is gone, use that instead".
+html_extra_path = ["_extra"]
+
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 # html_last_updated_fmt = '%b %d, %Y'
@@ -188,8 +306,10 @@ html_use_index = True
 # If true, the index is split into individual pages for each letter.
 html_split_index = True
 
-# If true, links to the reST sources are added to the pages.
-html_show_sourcelink = True
+# The reST sources are generated autosummary stubs — a link to them shows a
+# reader an `automodule` directive, not the source they were looking for.
+# `linkcode_resolve` above puts a source link on the objects themselves instead.
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False
@@ -207,3 +327,13 @@ html_show_sphinx = False
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "Seleniumdoc"
+
+
+def _pin_source_ref(app, config):
+    global git_ref
+    git_ref = source_ref(config.release)
+
+
+def setup(app):
+    app.connect("config-inited", _pin_source_ref)
+    app.connect("build-finished", _report_unlinked)
