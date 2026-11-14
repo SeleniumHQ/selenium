@@ -22,6 +22,8 @@ question comes up in review, the answer should be a link to a file here.
 - Single-binding internals (a Java maintainer picking a data structure)
 - Build tooling and infrastructure choices
 - Anything cheaply reversible
+- Optional behavior added to one binding, as long as existing inputs, outputs and defaults keep
+  their type and meaning
 
 When in doubt, ask whether the question is likely to be raised again. If it is, record the decision.
 
@@ -42,14 +44,18 @@ force a reader to open several records to understand any one of them, they belon
 1. **Propose.** Anyone may propose: copy [0000-template.md](0000-template.md) to `short-title.md`,
    fill it in with `Status: Proposed`, and open a PR. Once GitHub assigns the PR number, rename the
    file to `NNNN-short-title.md` using that number, before merge. Keep it to about a page — if the
-   debate already happened in an issue, the record can be short and link to it.
+   debate already happened in an issue, the record can be short and summarize it, with the issue
+   linked from the PR.
 
    Open the PR with the ADR pull-request template by appending `?expand=1&template=adr.md` to the
    compare URL — GitHub has no picker for PR templates, so this query parameter is the only way to
    select it (e.g. `https://github.com/SeleniumHQ/selenium/compare/trunk...your-branch?expand=1&template=adr.md`).
    Keep the PR body to review logistics; the decision and rationale belong in the record, not the PR.
+   A demo implementation PR is optional. Any PR that implements a proposed record stays in draft
+   until the record is accepted; link it from the record's PR.
 2. **Discuss.** The PR thread is the discussion record. Decisions that need synchronous
-   discussion are raised at a TLC meeting; the outcome goes back into the PR. Disagreement
+   discussion are raised at a TLC meeting; outcomes of TLC meetings and other off-GitHub
+   discussion (e.g. Slack) are recorded in the PR body's Discussion section. Disagreement
    about the considered options is resolved by revising the document during review, so the
    merged record reflects the debate accurately. The TLC sets its meeting agenda; proposals
    advance as agenda time allows.
@@ -81,13 +87,34 @@ force a reader to open several records to understand any one of them, they belon
 
 ## Rules
 
+AI agents drafting or revising a record also follow [AGENTS.md](AGENTS.md).
+
 - **A decision must stand alone.** A reader gets the decision, the rationale, and the rejected
   alternatives without following any links; linked material is background, not required reading.
-- **A record fixes the decision and its rationale, not the implementation.** It says what every
-  binding must do and why; how each binding builds it lives in the adopting PRs and code.
+- **A record links to no issue, PR, or open proposal other than its own Discussion PR.** Those
+  can change after the record is accepted, so they are linked from the PR's Related section
+  instead. Accepted records and published specifications can be linked.
+- **A record is not conditional on anything outside it.** A prerequisite (another record, a spec
+  change, a browser release) without which the decisions would differ or could not be implemented
+  is listed in the PR's Related section, and the record is written as if it is met. The PR stays
+  in draft until it is. A change that only affects the proposal's cost or timing is listed the
+  same way, with how it affects the proposal, and the record does not assume it. Intentions
+  involving other parties, such as a spec contribution, are not decisions: a prerequisite is
+  listed as above, anything else is left out.
+- **A record fixes the decision and its rationale, not the implementation.** It decides what is
+  observable at the boundary it governs: the public API, a layer's surface, or the wire. Anything
+  a binding could change without a difference at that boundary is implementation, and lives in
+  the adopting PRs and code: export paths, packaging, where tests and fixtures live, which
+  browsers run them, internal mechanics. Consequences may describe the work a decision implies
+  for bindings, without requiring how it is done. For how much detail to give, ask whether two
+  bindings could both follow the record and still behave differently in a way a user would
+  notice: if so, the record needs that detail; a detail that cannot make bindings diverge is left
+  out. For a method, that is its name, its output, its default behavior, and any other behavior
+  every binding must support; how a user configures it is left to each language, and optional
+  behavior is left out.
 - **Accepted decisions are immutable**, except for the status line. Changing a decision means a
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
 - **The number is the proposal's PR number.** It gets cited in reviews and issues and links
   straight to the discussion. Gaps in numbering are expected.
-- **Durable supporting material goes in the record itself** (an Appendix section at the end).
-  Ephemeral evidence and debate stay in the PR thread.
+- **Durable supporting material goes in the record itself.** Ephemeral evidence and debate
+  stay in the PR thread.
