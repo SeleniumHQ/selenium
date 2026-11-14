@@ -46,7 +46,8 @@ These are deferred, not rejected: none blocks Selenium 5.
 
 ### Full classic-over-BiDi migration
 
-Routing every classic command through BiDi.
+Routing every classic command through BiDi, with the binding enforcing what the classic behavior BiDi
+lacks: page load and implicit timeouts, `strictFileInteractability`, and stale element errors.
 
 ### Partial BiDi implementation support
 
@@ -60,14 +61,35 @@ Deprecating or removing DevTools (CDP) support.
 
 ### Convenience layers on the core APIs
 
-Higher-level helpers built on the network and script/event primitives — for example task-oriented
-network actions (`mock`, `block`, `redirect`) and one-shot event waiters (`expect_*`).
+Higher-level helpers built on the network, observation, and script/event primitives — for example
+task-oriented network actions (`mock`, `block`, `redirect`) and one-shot event waiters (`expect_*`).
+
+### Further network API
+
+Observe-only network handlers, which hold no request, including `responseCompleted` and
+`fetchError`; extra headers; offline mode; and cache behavior.
 
 ### Browser context API
 
-A high-level API for managing browsing contexts — for example exposing them as handle objects.
+A high-level API for browsing contexts (windows and tabs): managing them without switching,
+exposing them as handle objects, window opened and closed handlers, and client windows.
+
+### User context API
+
+A high-level API for user contexts (isolated profiles, each holding its own windows): creating,
+listing, and removing them, with per-context capabilities.
+
+### File handling API
+
+An explicit upload operation, download configuration and retrieval, a download handler, and a
+pre-set response for file dialogs.
+
+### Navigation events and waits
+
+A navigated handler, a per-call readiness override, and new page load and HTTP read timeout
+defaults ([#12368](https://github.com/SeleniumHQ/selenium/issues/12368)).
 
 ### Capability mapping
 
-High-level APIs over individual BiDi capability modules — permissions, storage, emulation, user
-prompts.
+High-level APIs over individual BiDi capability modules — permissions, storage, emulation
+(including viewport), user prompts.
