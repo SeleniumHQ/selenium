@@ -73,8 +73,8 @@ class Select:
         Raises:
             NoSuchElementException: If there is no option with specified value in SELECT
         """
-        css = f"option[value ={self._escape_string(value)}]"
-        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        xpath = f".//option[@value = {self._escape_string(value)}]"
+        opts = self._el.find_elements(By.XPATH, xpath)
         matched = False
         for opt in opts:
             self._set_selected(opt)
@@ -173,8 +173,8 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         matched = False
-        css = f"option[value = {self._escape_string(value)}]"
-        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        xpath = f".//option[@value = {self._escape_string(value)}]"
+        opts = self._el.find_elements(By.XPATH, xpath)
         for opt in opts:
             self._unset_selected(opt)
             matched = True
