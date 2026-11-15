@@ -1311,7 +1311,14 @@ public class LocalNode extends Node implements Closeable {
               Instant lastStarted = Instant.EPOCH;
               Session session = null;
               if (!slot.isAvailable()) {
-                ActiveSession activeSession = slot.getSession();
+                ActiveSession activeSession;
+                try {
+                  activeSession = slot.getSession();
+                } catch (NoSuchSessionException e) {
+                  // The session stopped on another thread after isAvailable() was checked, so
+                  // the slot is free again.
+                  activeSession = null;
+                }
                 if (activeSession != null) {
                   lastStarted = activeSession.getStartTime();
                   session =
