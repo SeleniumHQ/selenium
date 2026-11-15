@@ -130,7 +130,7 @@ def test_whole_page_snapshot_is_rooted_at_the_document(driver, pages):
     assert isinstance(tree, AccessibilityNode)
     assert tree.role == "document"
     assert isinstance(tree.element, WebElement)
-    assert tree.element.tag_name == "html"
+    assert tree.element.tag_name.lower() == "html"
 
 
 def test_a_snapshot_raises_no_deprecation_warning(driver, pages):
@@ -151,7 +151,7 @@ def test_element_references_are_usable(driver, pages):
 
     buttons = [node for node in _walk(tree) if node.role == "button"]
     assert buttons, "the page has buttons"
-    assert buttons[0].element.tag_name in ("button", "input", "a")
+    assert buttons[0].element.tag_name.lower() in ("button", "input", "a")
     assert buttons[0].element.get_attribute("id") == _first_button_id(tree)
 
 
@@ -162,7 +162,7 @@ def test_subtree_snapshot_always_produces_a_node_for_its_root(driver, pages):
     tree = root.accessibility_snapshot()
 
     assert tree.role == "generic"
-    assert tree.element.tag_name == "body"
+    assert tree.element.tag_name.lower() == "body"
     assert any(node.role == "list" for node in _walk(tree))
 
 
@@ -192,7 +192,7 @@ def test_frames_are_stitched_in(driver, pages):
     # A reference inside a frame works through classic commands once that frame is current.
     driver.switch_to.frame(frames[0].element)
     try:
-        assert frames[0].children[0].element.tag_name == "html"
+        assert frames[0].children[0].element.tag_name.lower() == "html"
     finally:
         driver.switch_to.default_content()
 
@@ -217,7 +217,7 @@ def test_subtree_snapshot_inside_a_frame(driver, pages):
         # The root is the frame's body, not the top document that owns the window.
         assert tree.role == "generic"
         assert tree.name == ""
-        assert tree.element.tag_name == "body"
+        assert tree.element.tag_name.lower() == "body"
     finally:
         driver.switch_to.default_content()
 
@@ -228,7 +228,7 @@ def test_driver_snapshot_is_rooted_at_the_frame_the_driver_switched_to(driver, p
     try:
         tree = driver.accessibility_snapshot()
         assert tree.role == "document"
-        assert tree.element.tag_name == "html"
+        assert tree.element.tag_name.lower() == "html"
         # Still in the frame: taking a snapshot leaves the current browsing context alone.
         assert driver.execute_script("return window !== window.top")
     finally:
