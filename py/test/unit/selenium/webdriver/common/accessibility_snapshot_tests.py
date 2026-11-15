@@ -57,6 +57,22 @@ def test_to_text_matches_the_corpus(page, form):
     assert tree.to_text() + "\n" == expected
 
 
+def _engine_specific_expectations():
+    return sorted(
+        path.name.removesuffix(".json")
+        for path in CORPUS.glob("*.expected*.json")
+        if path.name.split(".")[-2] in ("chromium", "firefox", "webkit")
+    )
+
+
+@pytest.mark.parametrize("expectation", _engine_specific_expectations())
+def test_engine_specific_to_text_matches_the_corpus(expectation):
+    """An engine-specific expectation pair must agree too, since only that engine's browser job reads it."""
+    tree = _node_from_json(json.loads((CORPUS / f"{expectation}.json").read_text(encoding="utf-8")))
+    expected = (CORPUS / f"{expectation}.txt").read_text(encoding="utf-8")
+    assert tree.to_text() + "\n" == expected
+
+
 def test_to_text_does_not_render_the_url():
     node = AccessibilityNode(role="link", name="Docs", url="https://example.com/docs")
 
