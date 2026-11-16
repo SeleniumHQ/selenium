@@ -68,6 +68,11 @@ B-build:
       - '**/*.bzl'
       - '.bazel*'
 
+B-docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docs/**'
+
 B-support:
   - changed-files:
     - any-glob-to-any-file:

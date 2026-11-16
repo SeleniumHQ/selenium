@@ -1158,14 +1158,15 @@ class WebDriver {
   }
 
   /**
-   * Snapshots the accessibility tree of the page.
+   * Snapshots the accessibility tree of the current browsing context.
    *
    * The tree is computed in the page from the DOM, following WAI-ARIA, html-aam
    * and accname; it is not the browser's own accessibility tree. It is rooted
-   * at the top-level browsing context of the current window, whatever frame the
-   * driver has switched to, and every child frame's tree is attached under its
-   * `iframe` node. To scope to a frame, take `getAccessibilitySnapshot()` of
-   * its `iframe` element. The snapshot is a copy taken at one point in time.
+   * at the driver's current browsing context: the top-level document, or the
+   * frame the driver has switched into. Every child frame's tree is attached
+   * under its `iframe` node, and the driver's current browsing context is left
+   * as it was. Works in both WebDriver Classic and BiDi sessions. The snapshot
+   * is a copy taken at one point in time.
    *
    *     const tree = await driver.getAccessibilitySnapshot()
    *     console.log(tree.toText())
@@ -1178,8 +1179,6 @@ class WebDriver {
    *     `accessibility.snapshot({ interestingOnly: false })` does.
    * @return {!Promise<!AccessibilityNode>} The root node, of role `document`,
    *     named from the title.
-   * @throws {error.UnsupportedOperationError} When the session has no WebDriver
-   *     BiDi connection.
    */
   getAccessibilitySnapshot(options = {}) {
     return this.accessibility_().snapshot(null, options)
@@ -3041,15 +3040,14 @@ class WebElement {
    *
    * The root node is always this element, whatever its role; if the element is
    * hidden, by itself or by an ancestor, that node has no children. Child frames
-   * are attached under their `iframe` nodes. See
+   * are attached under their `iframe` nodes. In a WebDriver Classic session the
+   * element must belong to the driver's current browsing context. See
    * {@link WebDriver#getAccessibilitySnapshot}.
    *
    * @param {{interestingOnly: (boolean|undefined)}=} options With `interestingOnly`
    *     true, the default, unnamed generic and presentational elements below this
    *     one are pruned; with false every rendered element produces a node.
    * @return {!Promise<!AccessibilityNode>} The node for this element, with its subtree.
-   * @throws {error.UnsupportedOperationError} When the session has no WebDriver
-   *     BiDi connection.
    * @throws {error.StaleElementReferenceError} When the element is no longer attached.
    */
   getAccessibilitySnapshot(options = {}) {

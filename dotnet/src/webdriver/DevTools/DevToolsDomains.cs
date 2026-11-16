@@ -33,14 +33,14 @@ public abstract class DevToolsDomains
     // added to this array and to the method below.
     private static int[] SupportedDevToolsVersions =>
     [
-        154,
+        157,
         156,
         155,
     ];
 
     private static DevToolsDomains? CreateDevToolsDomain(int protocolVersion, DevToolsSession session) => protocolVersion switch
     {
-        154 => new V154.V154Domains(session),
+        157 => new V157.V157Domains(session),
         156 => new V156.V156Domains(session),
         155 => new V155.V155Domains(session),
         _ => null

@@ -203,17 +203,7 @@ module Selenium
           end
 
           describe '#set_text_layout_mode_override',
-                   pending_if: [{browser: :chrome,
-                                 version: 'stable',
-                                 exception: {class: Error::UnsupportedOperationError},
-                                 reason: 'Chrome unsupported operation: emulation.setTextLayoutModeOverride'},
-                                # Windows runs the Edge installed on the machine, which is newer than the pinned one.
-                                {browser: :edge,
-                                 platform: %i[linux macosx],
-                                 version: 'stable',
-                                 exception: {class: Error::UnsupportedOperationError},
-                                 reason: 'Edge unsupported operation: emulation.setTextLayoutModeOverride'},
-                                {browser: :firefox,
+                   pending_if: [{browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox returns unknown command for setTextLayoutModeOverride'}] do
             it 'sets and clears text layout mode override' do

@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel test //javascript/selenium-webdriver:eslint-test //javascript/selenium-mcp:eslint-test
+      run: bazel test //javascript/selenium-webdriver:eslint-test
 
   # Tests on 22.23.4 (earliest supported version) are run in smoke and RBE.
   # This job covers the latest supported version.
@@ -54,7 +54,7 @@ jobs:
       name: Unit Tests (${{ matrix.node-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       node-version: ${{ matrix.node-version }}
-      run: bazel test //javascript/selenium-webdriver:small-tests //javascript/selenium-mcp:small-tests
+      run: bazel test //javascript/selenium-webdriver:small-tests
 
   smoke:
     name: ${{ matrix.os }}-smoke
@@ -74,7 +74,7 @@ jobs:
       rerun-with-debug: true
       download-artifact-name: targets
       run: >
-        [ -s bazel-targets-js.txt ] || printf '%s\n' //javascript/selenium-webdriver/... //javascript/selenium-mcp/... > bazel-targets-js.txt;
+        [ -s bazel-targets-js.txt ] || echo //javascript/selenium-webdriver/... > bazel-targets-js.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
         ${{ inputs.compile-manager && '--manager=host' || '' }}
@@ -100,4 +100,3 @@ jobs:
         --config=gh-browser
         --test_tag_filters=${{ matrix.tag_filters }},-os-sensitive,-se-manager
         //javascript/selenium-webdriver/...
-        //javascript/selenium-mcp/...

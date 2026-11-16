@@ -92,6 +92,25 @@ module Selenium
               ref: 'Session::UserPromptHandler'
             },
             web_socket_url: {wire_key: 'webSocketUrl', required: false, primitive: 'string'},
+            moz_build_id: {wire_key: 'moz:buildID', required: false, primitive: 'string'},
+            moz_headless: {wire_key: 'moz:headless', required: false, primitive: 'boolean'},
+            moz_platform_version: {wire_key: 'moz:platformVersion', required: false, primitive: 'string'},
+            moz_process_id: {
+              wire_key: 'moz:processID',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            moz_profile: {wire_key: 'moz:profile', required: false, primitive: 'string'},
+            moz_shutdown_timeout: {
+              wire_key: 'moz:shutdownTimeout',
+              required: false,
+              primitive: 'integer',
+              min: 0,
+              max: 9_007_199_254_740_991
+            },
+            moz_user_context: {wire_key: 'moz:userContext', required: false, primitive: 'string'},
             extensible: true
           )
 
