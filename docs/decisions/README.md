@@ -116,5 +116,5 @@ AI agents drafting or revising a record also follow [AGENTS.md](AGENTS.md).
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
 - **The number is the proposal's PR number.** It gets cited in reviews and issues and links
   straight to the discussion. Gaps in numbering are expected.
-- **Durable supporting material goes in the record itself.** Ephemeral evidence and debate
-  stay in the PR thread.
+- **Durable supporting material goes in the record itself, in Context.** Ephemeral evidence and
+  debate stay in the PR thread.
