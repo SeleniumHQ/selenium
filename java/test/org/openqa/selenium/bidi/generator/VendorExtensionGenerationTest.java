@@ -18,7 +18,9 @@
 package org.openqa.selenium.bidi.generator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Locale;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -133,5 +135,104 @@ class VendorExtensionGenerationTest {
     assertThat(out.type("session.CapabilityRequest"))
         .doesNotContain("moz")
         .contains("private final Map<String, Object> extensions;");
+  }
+
+  private static Schema webExtension() {
+    return new Schema()
+        .command(
+            "{'domain': 'webExtension', 'method': 'webExtension.install', 'name': 'install',"
+                + " 'params': {'ref': 'webExtension.InstallParameters'}, 'result': null}")
+        .type("webExtension.InstallParameters", CONTEXT_RECORD);
+  }
+
+  @Test
+  void vendorCommandInASpecDomainGoesOnTheVariantWithTheTypesItReaches() {
+    Generated out =
+        webExtension()
+            .vendor(
+                "{'moz': {'commands': [{'domain': 'webExtension', 'method':"
+                    + " 'webExtension.moz:listExtensions', 'name': 'moz:listExtensions', 'params':"
+                    + " null, 'result': {'ref': 'webExtension.MozListExtensionsResult'}}], 'types':"
+                    + " {'webExtension.MozListExtensionsResult': {'kind': 'record', 'fields':"
+                    + " [{'name': 'extensions', 'wire': 'extensions', 'required': true, 'type':"
+                    + " {'list': {'ref': 'webExtension.MozExtensionInfo'}}}]},"
+                    + " 'webExtension.MozExtensionInfo': {'kind': 'record', 'fields': [{'name':"
+                    + " 'id', 'wire': 'id', 'required': true, 'type': {'primitive': 'string'}}]},"
+                    + " 'webExtension.MozUnreached': {'kind': 'record', 'fields': []}}}}")
+            .generate();
+
+    assertThat(out.module("webExtension"))
+        .contains(
+            "  @Beta\n  @ApiStatus.Internal\n  public static class Moz extends WebExtension {")
+        .contains(
+            "public org.openqa.selenium.bidi.protocol.webextension.MozListExtensionsResult"
+                + " listExtensions() {")
+        .contains("send(new Command<>(\"webExtension.moz:listExtensions\",");
+    assertThat(out.has("webExtension.MozExtensionInfo")).isTrue();
+    assertThat(out.has("webExtension.MozUnreached")).isFalse();
+  }
+
+  @Test
+  void wholeVendorDomainsAreNotEmitted() {
+    Generated out =
+        webExtension()
+            .vendor(
+                "{'moz': {'commands': [{'domain': 'moz:debugging', 'method':"
+                    + " 'moz:debugging.resume', 'name': 'resume', 'params': null, 'result': null}],"
+                    + " 'events': [{'domain': 'moz:debugging', 'method': 'moz:debugging.paused',"
+                    + " 'name': 'paused', 'params': null}]}}")
+            .generate();
+
+    assertThat(out.paths()).noneMatch(p -> p.toLowerCase(Locale.ROOT).contains("debug"));
+    assertThat(out.module("webExtension")).doesNotContain("class Moz");
+  }
+
+  @Test
+  void vendorRedeclaringASpecFieldIsRejected() {
+    Schema schema =
+        webExtension()
+            .vendor(
+                extending(
+                    "webExtension.InstallParameters",
+                    "{'name': 'context', 'wire': 'context', 'required': false,"
+                        + " 'type': {'primitive': 'string'}}"));
+
+    assertThatThrownBy(schema::generate)
+        .hasMessageContaining("vendor moz redeclares context on webExtension.InstallParameters");
+  }
+
+  @Test
+  void vendorEventInASpecDomainIsRejected() {
+    Schema schema =
+        webExtension()
+            .vendor(
+                "{'moz': {'events': [{'domain': 'webExtension', 'method':"
+                    + " 'webExtension.moz:installed', 'name': 'moz:installed', 'params': null}]}}");
+
+    assertThatThrownBy(schema::generate)
+        .hasMessageContaining("vendor event webExtension.moz:installed in a spec domain");
+  }
+
+  @Test
+  void vendorCommandShadowingASpecCommandIsRejected() {
+    Schema schema =
+        webExtension()
+            .vendor(
+                "{'moz': {'commands': [{'domain': 'webExtension', 'method':"
+                    + " 'webExtension.moz:install', 'name': 'moz:install', 'params': null,"
+                    + " 'result': null}]}}");
+
+    assertThatThrownBy(schema::generate).hasMessageContaining("would shadow spec command install");
+  }
+
+  @Test
+  void vendorExtensionWithoutFieldsIsRejected() {
+    Schema schema =
+        webExtension()
+            .vendor("{'moz': {'extends': {'webExtension.InstallParameters': {'via': 'x'}}}}");
+
+    assertThatThrownBy(schema::generate)
+        .hasMessageContaining(
+            "vendor moz extends webExtension.InstallParameters without declaring any fields");
   }
 }

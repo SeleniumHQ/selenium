@@ -53,6 +53,39 @@ class InfoTest {
   }
 
   @Test
+  void firefoxFieldsDecodeToTheirDeclaredTypes() {
+    String raw =
+        "{"
+            + BASE
+            + ", \"children\": null, \"originalOpener\": null,"
+            + " \"moz:name\": \"sidebar\", \"moz:scope\": \"chrome\"}";
+
+    Info info = new Json().toType(raw, Info.class);
+
+    assertThat(info.getMozName()).contains("sidebar");
+    assertThat(info.getMozScope()).contains(MozScope.CHROME);
+  }
+
+  @Test
+  void firefoxFieldsAreEmptyWhenAnotherBrowserOmitsThem() {
+    String raw = "{" + BASE + ", \"children\": null, \"originalOpener\": null}";
+
+    Info info = new Json().toType(raw, Info.class);
+
+    assertThat(info.getMozName()).isEmpty();
+    assertThat(info.getMozScope()).isEmpty();
+  }
+
+  @Test
+  void undeclaredMozScopeIsRejected() {
+    String raw =
+        "{" + BASE + ", \"children\": null, \"originalOpener\": null, \"moz:scope\": \"nope\"}";
+
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> new Json().toType(raw, Info.class));
+  }
+
+  @Test
   void optionalNullableFieldDefaultsToEmptyWhenNeverSent() {
     String raw = "{" + BASE + ", \"children\": null, \"originalOpener\": null}";
 

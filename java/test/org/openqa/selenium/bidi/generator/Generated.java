@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The sources one generator run emitted, keyed by srcjar path. Paths are derived here rather than
@@ -32,6 +33,10 @@ final class Generated {
 
   Generated(Map<String, String> sources) {
     this.sources = sources;
+  }
+
+  Set<String> paths() {
+    return sources.keySet();
   }
 
   boolean has(String typeName) {
