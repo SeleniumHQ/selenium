@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi.protocol.browsingcontext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.lang.reflect.Field;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
@@ -53,25 +54,23 @@ class InfoTest {
   }
 
   @Test
-  void optionalNullableFieldDefaultsToEmptyWhenNeverSent() {
+  void optionalNullableFieldDefaultsToEmptyWhenNeverSent() throws Exception {
     String raw = "{" + BASE + ", \"children\": null, \"originalOpener\": null}";
 
     Info info = new Json().toType(raw, Info.class);
 
     assertThat(info.getParent()).isEmpty();
+    assertThat(parentWasSent(info)).isFalse();
   }
 
   @Test
-  void optionalNullableFieldAcceptsAnExplicitNullTheSameAsAbsence() {
-    // Unlike the outbound xSet tracking used for toMap(), inbound deserialization has no way (and
-    // no need) to distinguish "the browser sent an explicit null" from "the key was absent" for
-    // an optional field — both collapse to Optional.empty(). Info is receiver-only (no toMap()),
-    // so this asymmetry never needs to round-trip.
+  void optionalNullableFieldPreservesExplicitNullPresence() throws Exception {
     String raw = "{" + BASE + ", \"children\": null, \"originalOpener\": null, \"parent\": null}";
 
     Info info = new Json().toType(raw, Info.class);
 
     assertThat(info.getParent()).isEmpty();
+    assertThat(parentWasSent(info)).isTrue();
   }
 
   @Test
@@ -90,5 +89,11 @@ class InfoTest {
     assertThat(info.getContext()).isEqualTo("ctx1");
     assertThat(info.getUrl()).isEqualTo("https://example.com");
     assertThat(info.getUserContext()).isEqualTo("default");
+  }
+
+  private static boolean parentWasSent(Info info) throws Exception {
+    Field field = Info.class.getDeclaredField("parentSet");
+    field.setAccessible(true);
+    return field.getBoolean(info);
   }
 }

@@ -83,4 +83,13 @@ class SharedReferenceTest {
 
     assertThat(ref.getExtensions()).isEmpty();
   }
+
+  @Test
+  void presentNullNonNullableHandleIsRejected() {
+    assertThatThrownBy(
+            () ->
+                new Json().toType("{\"sharedId\":\"node\",\"handle\":null}", SharedReference.class))
+        .isInstanceOf(RuntimeException.class)
+        .hasStackTraceContaining("handle must not be null");
+  }
 }
