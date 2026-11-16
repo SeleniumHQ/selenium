@@ -162,7 +162,8 @@ class VendorExtensionGenerationTest {
             .generate();
 
     assertThat(out.module("webExtension"))
-        .contains("  @Beta\n  @ApiStatus.Internal\n  public static class Moz extends WebExtension {")
+        .contains(
+            "  @Beta\n  @ApiStatus.Internal\n  public static class Moz extends WebExtension {")
         .contains(
             "public org.openqa.selenium.bidi.protocol.webextension.MozListExtensionsResult"
                 + " listExtensions() {")
