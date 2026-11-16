@@ -613,6 +613,8 @@ public class BiDiGenerator {
             .append(": vendor variant of ")
             .append(cls)
             .append(", for a session on that vendor's browser. */\n");
+        sb.append("  @Beta\n");
+        sb.append("  @ApiStatus.Internal\n");
         sb.append("  public static class ")
             .append(variant)
             .append(" extends ")
@@ -2422,9 +2424,11 @@ public class BiDiGenerator {
       List<Map<String, Object>> vendorCommands = new ArrayList<>();
       for (Map.Entry<String, Object> ns : ((Map<String, Object>) vendor).entrySet()) {
         String namespace = ns.getKey();
-        Object extendsNode = ((Map<String, Object>) ns.getValue()).get("extends");
-        if (!(extendsNode instanceof Map)) continue;
-        for (Map.Entry<String, Object> ext : ((Map<String, Object>) extendsNode).entrySet()) {
+        Map<String, Object> section = (Map<String, Object>) ns.getValue();
+        Map<String, Object> extendsNode =
+            Optional.ofNullable((Map<String, Object>) section.get("extends"))
+                .orElse(Collections.emptyMap());
+        for (Map.Entry<String, Object> ext : extendsNode.entrySet()) {
           String typeName = ext.getKey();
           Map<String, Object> type = (Map<String, Object>) types.get(typeName);
           if (type == null) {
@@ -2445,12 +2449,26 @@ public class BiDiGenerator {
                   Optional.ofNullable((List<Object>) type.get("fields"))
                       .orElse(Collections.emptyList()));
           Set<String> taken = new LinkedHashSet<>();
-          for (Object f : fields) taken.add(str((Map<String, Object>) f, "name"));
+          Set<String> declaredWires = new LinkedHashSet<>();
+          for (Object f : fields) {
+            taken.add(str((Map<String, Object>) f, "name"));
+            declaredWires.add(str((Map<String, Object>) f, "wire"));
+          }
 
-          for (Object f : (List<Object>) ((Map<String, Object>) ext.getValue()).get("fields")) {
+          Object vendorFields = ((Map<String, Object>) ext.getValue()).get("fields");
+          if (!(vendorFields instanceof List)) {
+            throw new IllegalStateException(
+                "vendor " + namespace + " extends " + typeName + " without declaring any fields");
+          }
+          for (Object f : (List<Object>) vendorFields) {
             Map<String, Object> field = new LinkedHashMap<>((Map<String, Object>) f);
             String rawName = str(field, "name");
             String wire = str(field, "wire") != null ? str(field, "wire") : rawName;
+            // A vendor may only add to a type; winning a clash would change the neutral protocol.
+            if (declaredWires.contains(wire)) {
+              throw new IllegalStateException(
+                  "vendor " + namespace + " redeclares " + wire + " on " + typeName);
+            }
             String prefixed = vendorFieldName(rawName);
             // A variant record is Firefox-only, so its fields drop the prefix (scope ->
             // "moz:scope") unless that clashes with a spec field; a shared type keeps it.
@@ -2493,11 +2511,87 @@ public class BiDiGenerator {
           variantCommand.put("vendor", namespace);
           vendorCommands.add(variantCommand);
         }
+        foldVendorCommands(schema, namespace, section, types, vendorCommands);
       }
       Map<String, Object> result = new LinkedHashMap<>(schema);
       result.put("types", types);
       result.put("vendorCommands", vendorCommands);
       return result;
+    }
+
+    // A vendor command in a spec domain (webExtension.moz:listExtensions) goes on that domain's
+    // vendor variant, with the vendor types it reaches. A whole vendor domain (moz:debugging) has
+    // no spec module to vary, so it isn't emitted; a vendor event in a spec domain is rejected
+    // because a variant has no way to subscribe to it.
+    private static void foldVendorCommands(
+        Map<String, Object> schema,
+        String namespace,
+        Map<String, Object> section,
+        Map<String, Object> types,
+        List<Map<String, Object>> vendorCommands) {
+      List<Map<String, Object>> specCommands = listOfMaps(schema, "commands");
+      Set<String> specDomains = new LinkedHashSet<>();
+      for (Map<String, Object> cmd : specCommands) specDomains.add(str(cmd, "domain"));
+      for (Map<String, Object> evt : listOfMaps(schema, "events")) {
+        specDomains.add(str(evt, "domain"));
+      }
+
+      for (Map<String, Object> evt : listOfMaps(section, "events")) {
+        if (specDomains.contains(str(evt, "domain"))) {
+          throw new IllegalStateException(
+              "vendor event " + str(evt, "method") + " in a spec domain is unsupported");
+        }
+      }
+
+      Map<String, Object> vendorTypes =
+          Optional.ofNullable(mapField(section, "types")).orElse(Collections.emptyMap());
+      for (Map<String, Object> cmd : listOfMaps(section, "commands")) {
+        String domain = str(cmd, "domain");
+        if (!specDomains.contains(domain)) continue;
+        String name = stripNamespace(str(cmd, "name"), namespace);
+        boolean shadowsSpec =
+            specCommands.stream()
+                .anyMatch(c -> domain.equals(str(c, "domain")) && name.equals(str(c, "name")));
+        if (shadowsSpec) {
+          throw new IllegalStateException(
+              "vendor command " + str(cmd, "method") + " would shadow spec command " + name);
+        }
+        Map<String, Object> variantCommand = new LinkedHashMap<>(cmd);
+        variantCommand.put("name", name);
+        variantCommand.put("vendor", namespace);
+        vendorCommands.add(variantCommand);
+        collectVendorTypes(cmd.get("params"), vendorTypes, types);
+        collectVendorTypes(cmd.get("result"), vendorTypes, types);
+      }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void collectVendorTypes(
+        Object node, Map<String, Object> vendorTypes, Map<String, Object> into) {
+      if (node instanceof List) {
+        for (Object item : (List<Object>) node) collectVendorTypes(item, vendorTypes, into);
+        return;
+      }
+      if (!(node instanceof Map)) return;
+      Map<String, Object> map = (Map<String, Object>) node;
+      String ref = str(map, "ref");
+      if (ref != null && vendorTypes.containsKey(ref)) {
+        Object vendorNode = vendorTypes.get(ref);
+        Object existing = into.get(ref);
+        if (existing == null) {
+          into.put(ref, vendorNode);
+          collectVendorTypes(vendorNode, vendorTypes, into);
+        } else if (existing != vendorNode) {
+          throw new IllegalStateException("vendor type " + ref + " collides with a spec type");
+        }
+      }
+      for (Object value : map.values()) collectVendorTypes(value, vendorTypes, into);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Map<String, Object>> listOfMaps(Map<String, Object> parent, String key) {
+      Object list = parent.get(key);
+      return list instanceof List ? (List<Map<String, Object>>) list : Collections.emptyList();
     }
 
     @SuppressWarnings("unchecked")
@@ -2576,7 +2670,8 @@ public class BiDiGenerator {
     // one. Only primitive-valued maps are inlined for now, per the scope agreed in #18106. A ref-
     // or union-valued map is not: it still becomes an empty nested class that drops every entry
     // on receipt, a known gap until its value typing is decided. (The only such maps in the schema
-    // today are Mozilla vendor types, which this generator does not read.)
+    // today are Mozilla vendor types that nothing generated reaches: moz:firefoxOptions stays an
+    // extension, and the moz:debugging domain isn't emitted.)
     @SuppressWarnings("unchecked")
     private static Map<String, Object> syntheticMapValue(Map<String, Object> node) {
       if (node == null) return null;
