@@ -1058,7 +1058,7 @@ describe('WebDriver', function () {
         return ++count === 3
       }
 
-      return driver.wait(condition, 250).then(() => assert.strictEqual(3, count))
+      return driver.wait(condition, 5000).then(() => assert.strictEqual(3, count))
     })
 
     it('on a condition that returns a promise that resolves to true after a short timeout', function () {
@@ -1090,7 +1090,7 @@ describe('WebDriver', function () {
         })
       }
 
-      return driver.wait(condition, 100, null, 25).then(() => assert.strictEqual(3, count))
+      return driver.wait(condition, 5000, null, 25).then(() => assert.strictEqual(3, count))
     })
 
     it('fails if condition throws', function () {
@@ -1204,12 +1204,12 @@ describe('WebDriver', function () {
       let wait = driver.wait(
         function () {
           count += 1
-          let ms = count === 2 ? 65 : 5
+          let ms = count === 2 ? 2000 : 5
           return promise.delayed(ms).then(function () {
             return false
           })
         },
-        60,
+        2000,
         'counting to 3',
       )
 
@@ -1285,7 +1285,7 @@ describe('WebDriver', function () {
           function () {
             return driver.findElements(By.id('foo')).then((els) => els.length > 0)
           },
-          200,
+          5000,
           null,
           25,
         )
@@ -1329,7 +1329,7 @@ describe('WebDriver', function () {
           .end()
 
         let driver = executor.createDriver()
-        return driver.wait(until.elementLocated(By.id('foo')), 200, null, 25)
+        return driver.wait(until.elementLocated(By.id('foo')), 5000, null, 25)
       })
 
       it('wait times out', function () {

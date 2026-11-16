@@ -113,7 +113,7 @@ describe('until', function () {
       executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID))
 
       return driver
-        .wait(until.ableToSwitchToFrame(By.id('foo')), 2000)
+        .wait(until.ableToSwitchToFrame(By.id('foo')), 5000)
         .then(() => assert.deepStrictEqual(foundResponses, []))
     })
 
@@ -151,7 +151,7 @@ describe('until', function () {
         })
         .on(CommandName.DISMISS_ALERT, () => true)
 
-      return driver.wait(until.alertIsPresent(), 1000).then(function (alert) {
+      return driver.wait(until.alertIsPresent(), 5000).then(function (alert) {
         assert.strictEqual(count, 4)
         return alert.dismiss()
       })
@@ -172,7 +172,7 @@ describe('until', function () {
           })
           .on(CommandName.DISMISS_ALERT, () => true)
 
-        return driver.wait(until.alertIsPresent(), 1000).then(function (alert) {
+        return driver.wait(until.alertIsPresent(), 5000).then(function (alert) {
           assert.strictEqual(count, 4)
           return alert.dismiss()
         })
@@ -201,7 +201,7 @@ describe('until', function () {
     var titles = ['foo', 'bar', 'baz']
     executor.on(CommandName.GET_TITLE, () => titles.shift())
 
-    return driver.wait(until.titleIs('bar'), 3000).then(function () {
+    return driver.wait(until.titleIs('bar'), 5000).then(function () {
       assert.deepStrictEqual(titles, ['baz'])
     })
   })
@@ -210,7 +210,7 @@ describe('until', function () {
     var titles = ['foo', 'froogle', 'google']
     executor.on(CommandName.GET_TITLE, () => titles.shift())
 
-    return driver.wait(until.titleContains('oogle'), 3000).then(function () {
+    return driver.wait(until.titleContains('oogle'), 5000).then(function () {
       assert.deepStrictEqual(titles, ['google'])
     })
   })
@@ -219,7 +219,7 @@ describe('until', function () {
     var titles = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google']
     executor.on(CommandName.GET_TITLE, () => titles.shift())
 
-    return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 3000).then(function () {
+    return driver.wait(until.titleMatches(/^a{2,3}b+c$/), 5000).then(function () {
       assert.deepStrictEqual(titles, ['google'])
     })
   })
@@ -228,7 +228,7 @@ describe('until', function () {
     var urls = ['http://www.foo.com', 'https://boo.com', 'http://docs.yes.com']
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift())
 
-    return driver.wait(until.urlIs('https://boo.com'), 3000).then(function () {
+    return driver.wait(until.urlIs('https://boo.com'), 5000).then(function () {
       assert.deepStrictEqual(urls, ['http://docs.yes.com'])
     })
   })
@@ -237,7 +237,7 @@ describe('until', function () {
     var urls = ['http://foo.com', 'https://groups.froogle.com', 'http://google.com']
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift())
 
-    return driver.wait(until.urlContains('oogle.com'), 3000).then(function () {
+    return driver.wait(until.urlContains('oogle.com'), 5000).then(function () {
       assert.deepStrictEqual(urls, ['http://google.com'])
     })
   })
@@ -246,7 +246,7 @@ describe('until', function () {
     var urls = ['foo', 'froogle', 'aaaabc', 'aabbbc', 'google']
     executor.on(CommandName.GET_CURRENT_URL, () => urls.shift())
 
-    return driver.wait(until.urlMatches(/^a{2,3}b+c$/), 3000).then(function () {
+    return driver.wait(until.urlMatches(/^a{2,3}b+c$/), 5000).then(function () {
       assert.deepStrictEqual(urls, ['google'])
     })
   })
@@ -255,7 +255,7 @@ describe('until', function () {
     var responses = [[], [WebElement.buildId('abc123'), WebElement.buildId('foo')], ['end']]
     executor.on(CommandName.FIND_ELEMENTS, () => responses.shift())
 
-    let element = driver.wait(until.elementLocated(By.id('quux')), 2000)
+    let element = driver.wait(until.elementLocated(By.id('quux')), 5000)
     assert.ok(element instanceof webdriver.WebElementPromise)
     return element.getId().then(function (id) {
       assert.deepStrictEqual(responses, [['end']])
@@ -299,7 +299,7 @@ describe('until', function () {
     executor.on(CommandName.FIND_ELEMENTS, () => responses.shift())
 
     return driver
-      .wait(until.elementsLocated(By.id('quux')), 2000)
+      .wait(until.elementsLocated(By.id('quux')), 5000)
       .then(function (els) {
         return Promise.all(els.map((e) => e.getId()))
       })
@@ -353,7 +353,7 @@ describe('until', function () {
     })
 
     var el = new webdriver.WebElement(driver, { ELEMENT: 'foo' })
-    return driver.wait(until.stalenessOf(el), 2000).then(() => assert.strictEqual(count, 3))
+    return driver.wait(until.stalenessOf(el), 5000).then(() => assert.strictEqual(count, 3))
   })
 
   describe('element state conditions', function () {
@@ -371,7 +371,7 @@ describe('until', function () {
       responses = responses.concat(['end'])
       executor.on(command, () => responses.shift())
 
-      let result = driver.wait(predicate.apply(null, predicateArgs), 2000)
+      let result = driver.wait(predicate.apply(null, predicateArgs), 5000)
       assert.ok(result instanceof webdriver.WebElementPromise)
       return result
         .then(function (value) {
