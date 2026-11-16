@@ -31,6 +31,7 @@ HISTORY_DAYS=14
 FAILING_RUNS=2
 BROWSER_SUFFIX='-(chrome|firefox|edge|safari)(-beta|-preview)?(-remote|-bidi)?(-alerts)?$'
 REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY must be set}"
+RUNS_URL="${GITHUB_SERVER_URL:-https://github.com}/$REPO/actions/runs"
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
@@ -94,12 +95,13 @@ jq -s --arg lastDay "$last_day_start" --arg history "$history_start" --arg suffi
            targets: (map(.target) | unique)})
 ' "$WORK/all.jsonl" > "$WORK/flagged.json"
 
-jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flagged "$WORK/flagged.json" '
+jq -s --arg recent "$recent_start" --arg window "$window_start" --arg runs "$RUNS_URL" --slurpfile flagged "$WORK/flagged.json" '
   [$flagged[0][] | .os as $os | .targets[] | "\(.)|\($os)"] as $flaggedTargets
   | map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
-      [.[] | select(.status | endswith("-recovered")) | .timestamp] as $flakes
+      [.[] | select(.status | endswith("-recovered"))] as $flakes
+      | ($flakes | max_by(.timestamp)) as $lastFlake
       | {
           target: .[0].target,
           os: .[0].os,
@@ -107,9 +109,10 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flag
           flaked: ($flakes | length),
           reruns: ([.[] | select(.status == "rerun-recovered")] | length),
           failed: ([.[] | select(.status == "failed")] | length),
-          last: ($flakes | max),
+          last: $lastFlake.timestamp,
+          lastJob: "\($runs)/\($lastFlake.run)/job/\($lastFlake.job)",
           # Every flake it has is recent, so it started this week.
-          new: (($flakes | min // "9999") >= $recent)
+          new: (($flakes | map(.timestamp) | min // "9999") >= $recent)
         }
       | . + {rate: (.flaked * 100 / .ran), flagged: ("\(.target)|\(.os)" | IN($flaggedTargets[]))})
   | map(select(.flaked > 0))
@@ -118,16 +121,19 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --slurpfile flag
 
 # The latest run must be recent so a target dropped from the schedule while
 # failing is not reported for the rest of the window.
-jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failingRuns "$FAILING_RUNS" '
+jq -s --arg recent "$recent_start" --arg window "$window_start" --arg runs "$RUNS_URL" --argjson failingRuns "$FAILING_RUNS" '
   map(select(.timestamp >= $window))
   | group_by([.target, .os])
   | map(
       sort_by(.timestamp)
+      | [.[] | select(.status == "failed")][-1] as $lastFailure
       | {
           target: .[0].target,
           os: .[0].os,
           streak: ([.[].status == "failed"] | reverse | index(false) // length),
           lastRan: .[-1].timestamp,
+          lastFailed: $lastFailure.timestamp,
+          lastFailedJob: "\($runs)/\($lastFailure.run)/job/\($lastFailure.job)",
           lastPassed: ([.[] | select(.status != "failed") | .timestamp] | max)
         })
   | map(select(.streak >= $failingRuns and .lastRan >= $recent))
@@ -140,9 +146,9 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failin
   echo "Failed every attempt, including the debug rerun, in at least their last $FAILING_RUNS runs."
   echo
   if jq -e 'length > 0' "$WORK/failing.json" > /dev/null; then
-    echo "| target | os | failed in a row | last passed |"
-    echo "|---|---|---|---|"
-    jq -r '.[] | "| `\(.target)` | \(.os) | \(.streak) | \(.lastPassed // "not in window") |"' "$WORK/failing.json"
+    echo "| target | os | failed in a row | last failed | last passed |"
+    echo "|---|---|---|---|---|"
+    jq -r '.[] | "| `\(.target)` | \(.os) | \(.streak) | [\(.lastFailed)](\(.lastFailedJob)) | \(.lastPassed // "not in window") |"' "$WORK/failing.json"
   else
     echo "None."
   fi
@@ -155,7 +161,7 @@ jq -s --arg recent "$recent_start" --arg window "$window_start" --argjson failin
   echo
   echo "| target | os | flaked | needed rerun | failed | of runs | rate | flagged | new | last flaked |"
   echo "|---|---|---|---|---|---|---|---|---|---|"
-  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.reruns) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .flagged then "yes" else "" end) | \(if .new then "yes" else "" end) | \(.last) |"' "$WORK/report.json"
+  jq -r '.[] | "| `\(.target)` | \(.os) | \(.flaked) | \(.reruns) | \(.failed) | \(.ran) | \(.rate | round)% | \(if .flagged then "yes" else "" end) | \(if .new then "yes" else "" end) | [\(.last)](\(.lastJob)) |"' "$WORK/report.json"
 } > "$WORK/report.md"
 
 # Every flaky target, whatever the thresholds say. The thresholds only decide
