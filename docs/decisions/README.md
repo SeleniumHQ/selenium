@@ -114,6 +114,10 @@ AI agents drafting or revising a record also follow [AGENTS.md](AGENTS.md).
   behavior is left out.
 - **Accepted decisions are immutable**, except for the status line. Changing a decision means a
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
+- **Write a record so later records can add to it without changing it.** State each decision as a
+  rule over a kind of thing ("every handler family") rather than over the ones that exist today,
+  and say when a list is complete. Number an exclusion as a decision; anything only deferred stays
+  open for a later record, which cites this one in Context.
 - **The number is the proposal's PR number.** It gets cited in reviews and issues and links
   straight to the discussion. Gaps in numbering are expected.
 - **Durable supporting material goes in the record itself, in Context.** Ephemeral evidence and
