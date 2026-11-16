@@ -109,9 +109,9 @@ AI agents drafting or revising a record also follow [AGENTS.md](AGENTS.md).
   for bindings, without requiring how it is done. For how much detail to give, ask whether two
   bindings could both follow the record and still behave differently in a way a user would
   notice: if so, the record needs that detail; a detail that cannot make bindings diverge is left
-  out. For a method, that is its name, its output, its default behavior, and any other behavior
-  every binding must support; how a user configures it is left to each language, and optional
-  behavior is left out.
+  out. For a method, that is its name, the object users call it on, its output, its default
+  behavior, and any other behavior every binding must support; how a user configures it is left to
+  each language, and optional behavior is left out.
 - **Accepted decisions are immutable**, except for the status line. Changing a decision means a
   new record that supersedes the old one — update the old record's status to `Superseded by [NNNN](...)`.
 - **Write a record so later records can add to it without changing it.** State each decision as a

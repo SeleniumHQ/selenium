@@ -26,13 +26,13 @@ language-neutral terms. This is the normative part: what every binding must do, 
 to each language.
 
 <!-- Give each choice a reviewer could accept or reject on its own a number of its own; choices
-     that stand or fall together share one. For an API, name the methods users will call and fix
-     their output, default behavior, and other behavior every binding must support; leave casing,
-     how a user configures it, and optional behavior out. State required behavior with must or
-     must not. Use may only for a variation a binding is allowed, never for what users can do, and
-     don't use should. Code sketches only describe the API shape being decided; show each in at
-     least one statically typed binding (Java, .NET) and one dynamic binding (Python, Ruby,
-     JavaScript). -->
+     that stand or fall together share one. For an API, name the methods users will call and the
+     object they call them on, and fix their output, default behavior, and other behavior every
+     binding must support; leave casing, how a user configures it, and optional behavior out.
+     State required behavior with must or must not. Use may only for a variation a binding is
+     allowed, never for what users can do, and don't use should. Code sketches only describe the
+     API shape being decided; show each in at least one statically typed binding (Java, .NET) and
+     one dynamic binding (Python, Ruby, JavaScript). -->
 
 ## Considered options
 
