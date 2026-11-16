@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Aggregate the results.jsonl artifacts written by parse-flaky-results.sh.
+# Aggregate the results.jsonl artifacts written by record-test-health.sh.
 #
 # Flaky means a target failed and then passed within the same run, either on a
 # retry or in the debug rerun. Every job feeding this report has the rerun, so a
@@ -48,23 +48,25 @@ history_start=$(days_ago "$((HISTORY_DAYS + 1))" %Y-%m-%dT%H:%M:%SZ)
 # other run falls back to the artifacts its jobs uploaded. That covers a workflow
 # with a single test job, which has nothing to merge, and a run whose merge job
 # failed. Fetch a day of slack and let the record timestamps do the windowing.
+# The flaky-* names predate the rename to test-health-*; drop them once those
+# artifacts are older than the window.
 fetch_from=$(days_ago "$((WINDOW_DAYS + 1))" %Y-%m-%dT%H:%M:%SZ)
 echo "Collecting results created since $fetch_from"
 gh api "repos/$REPO/actions/artifacts" --paginate \
   --jq '.artifacts[] | select(.expired == false)
-        | select((.name | startswith("flaky-")) or (.name | startswith("merged-flaky-results-")))
+        | select(.name | test("^(merged-)?(test-health|flaky)-"))
         | [.id, .created_at, .workflow_run.id, .name] | @tsv' \
   > "$WORK/artifacts.tsv"
 
 awk -F'\t' -v from="$fetch_from" '
   $2 > from {
     row[++n] = $0
-    if ($4 ~ /^merged-flaky-results-/) merged[$3] = 1
+    if ($4 ~ /^merged-(test-health|flaky)-/) merged[$3] = 1
   }
   END {
     for (i = 1; i <= n; i++) {
       split(row[i], f, "\t")
-      if (f[4] ~ /^merged-flaky-results-/ || !(f[3] in merged)) print f[1]
+      if (f[4] ~ /^merged-(test-health|flaky)-/ || !(f[3] in merged)) print f[1]
     }
   }' "$WORK/artifacts.tsv" > "$WORK/wanted.txt"
 
