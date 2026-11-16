@@ -18,6 +18,9 @@ from scripts.generated_note import generated_note
 http = urllib3.PoolManager(
     retries=urllib3.Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504], raise_on_status=False)
 )
+API_HEADERS = {}
+if os.environ.get("GITHUB_TOKEN"):
+    API_HEADERS["Authorization"] = f"Bearer {os.environ['GITHUB_TOKEN']}"
 
 
 def calculate_hash(url):
@@ -395,7 +398,7 @@ js_library(
 def geckodriver():
     content = ""
 
-    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest")
+    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest", headers=API_HEADERS)
     for a in json.loads(r.data)["assets"]:
         if a["name"].endswith("-linux64.tar.gz"):
             url = a["browser_download_url"]
