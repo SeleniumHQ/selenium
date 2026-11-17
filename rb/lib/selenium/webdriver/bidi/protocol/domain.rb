@@ -30,6 +30,12 @@ module Selenium
             @transport = Transport.new(connection)
           end
 
+          # Stops invoking the listener an `add_<event>_listener` method returned the id for, without
+          # waiting for a running invocation to finish. Local only, and a no-op for an unknown id.
+          def remove_listener(id)
+            @transport.remove_listener(id)
+          end
+
           private
 
           # The connection this domain runs over, so a generated vendor accessor can build its
@@ -38,6 +44,10 @@ module Selenium
 
           def execute(cmd:, params: nil, result: nil)
             @transport.execute(cmd: cmd, params: params, result: result)
+          end
+
+          def add_listener(event, &block)
+            @transport.add_listener(event, self.class.const_get(:EVENT_TYPES).fetch(event), &block)
           end
         end
       end

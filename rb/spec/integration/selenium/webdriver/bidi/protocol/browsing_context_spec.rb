@@ -161,22 +161,23 @@ module Selenium
                pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari session.subscribe result fails strict deserialization'} do
               event_name = 'browsingContext.contextCreated'
-              connection = driver.send(:bridge).connection
               session = Session.new(driver)
-              events = []
-              callback = connection.add_callback(event_name) { |params| events << params }
+              events = Queue.new
+              listener = browsing_context.add_context_created_listener { |payload| events << payload }
               session.subscribe(events: [event_name])
 
               context = browsing_context.create(type: :tab).context
-              event = wait.until { events.find { |params| params['context'] == context } }
-              created = BrowsingContext::EVENT_TYPES[event_name].from_json(event)
+              created = wait.until do
+                payload = events.pop(timeout: 0)
+                payload if payload&.context == context
+              end
 
               expect(created).to be_a(BrowsingContext::ContextCreatedParameters)
               expect(created.user_context).to eq('default')
               expect(created.parent).to be_nil
             ensure
               session&.unsubscribe(events: [event_name])
-              connection.remove_callback(event_name, callback) if callback
+              browsing_context.remove_listener(listener) if listener
             end
 
             it 'accepts reference, background, and user context parameters',

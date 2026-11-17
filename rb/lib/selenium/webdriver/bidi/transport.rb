@@ -21,7 +21,8 @@ module Selenium
   module WebDriver
     class BiDi
       # The seam between the generated Protocol layer and the websocket: serializes a
-      # command's params, sends it, and parses the reply into its declared type.
+      # command's params, sends it, and parses the reply into its declared type, and relays
+      # event listeners to the connection's dispatcher.
       #
       # @api private
       class Transport
@@ -42,7 +43,19 @@ module Selenium
           result ? result.from_json(value) : value
         end
 
+        def add_listener(event, payload_type, &block)
+          dispatcher.add_listener(event, payload_type, &block)
+        end
+
+        def remove_listener(id)
+          dispatcher.remove_listener(id)
+        end
+
         private
+
+        def dispatcher
+          @connection.event_receiver { Dispatcher.new }
+        end
 
         def serialize(params)
           params&.as_json || {}

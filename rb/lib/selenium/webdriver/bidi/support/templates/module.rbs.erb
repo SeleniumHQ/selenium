@@ -87,6 +87,9 @@ module Selenium
 <%- mod.commands.each do |cmd| -%>
           def <%= cmd.method_name %>: <%= cmd.rbs_signature %>
 <%- end -%>
+<%- mod.events.each do |event| -%>
+          def <%= event.listener_method %>: <%= event.rbs_signature %>
+<%- end -%>
 <%- mod.vendor_modules.each do |vendor_module| -%>
 
           class <%= vendor_module.name %> < ::Selenium::WebDriver::BiDi::Protocol::<%= mod.ruby_class %>

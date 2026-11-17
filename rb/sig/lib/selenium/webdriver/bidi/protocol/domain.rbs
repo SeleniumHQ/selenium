@@ -25,11 +25,15 @@ module Selenium
 
           def initialize: (untyped source) -> void
 
+          def remove_listener: (String id) -> void
+
           private
 
           def connection: () -> untyped
 
           def execute: (cmd: String, ?params: untyped, ?result: untyped) -> untyped
+
+          def add_listener: (String event) { (untyped) -> void } -> String
         end
       end
     end

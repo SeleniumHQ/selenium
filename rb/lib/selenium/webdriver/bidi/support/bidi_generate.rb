@@ -296,9 +296,24 @@ module BiDiGenerate
 
   # payload_ref is the Protocol-relative class the event's params parse into (nil when
   # non-structured, dispatched raw) — the inbound counterpart to a command's result_ref.
-  Event = Struct.new(:wire_name, :event_name, :payload_ref, keyword_init: true) do
+  Event = Struct.new(:wire_name, :event_name, :payload_ref, :spec_href, keyword_init: true) do
     # An EVENT_TYPES entry mapping the wire method to the type its params parse into.
     def type_entry = "'#{wire_name}' => #{payload_ref || 'nil'}"
+
+    def listener_method = "add_#{event_name}_listener"
+
+    def render_lines(indent)
+      pad = ' ' * indent
+      lines = ["#{pad}# @api private", "#{pad}# @see #{BiDiGenerate::BIDI_DOC_URL}"]
+      lines << "#{pad}# @see #{spec_href}" if spec_href
+      lines + ["#{pad}def #{listener_method}(&block)",
+               "#{pad}  add_listener('#{wire_name}', &block)",
+               "#{pad}end"]
+    end
+
+    def rbs_signature
+      "() { (#{payload_ref || 'Hash[String, untyped]'}) -> void } -> String"
+    end
   end
 
   # The RBS type a schema value primitive maps to; an unrecognized one is untyped.
@@ -1441,6 +1456,7 @@ module BiDiGenerate
         spec_href: schema.domain_href(domain)
       )
       check_accessor_collisions!(mod)
+      check_listener_collisions!(mod)
       mod
     end
   end
@@ -1495,9 +1511,10 @@ module BiDiGenerate
   end
 
   # Public instance methods every accessor would shadow if it reused their name:
-  # Domain's own (`execute`/`initialize`) plus everything Object/Kernel expose. The
-  # collision guard fails generation before a schema-driven shadow can ship.
-  INHERITED_INSTANCE_METHODS = (%w[execute initialize].to_set + Object.instance_methods.to_set(&:to_s)).freeze
+  # Domain's own plus everything Object/Kernel expose. The collision guard fails generation
+  # before a schema-driven shadow can ship.
+  INHERITED_INSTANCE_METHODS = (%w[execute initialize add_listener remove_listener].to_set +
+                                Object.instance_methods.to_set(&:to_s)).freeze
 
   # Fail generation if an accessor name would collide with a command method, an
   # inherited method, or another accessor — turning a future shadow into a build error
@@ -1515,6 +1532,14 @@ module BiDiGenerate
 
       seen[name] = accessor.type_name
     end
+  end
+
+  # A listener method is named after its event, so fail generation if that name is already a
+  # command, an accessor or an inherited method.
+  def self.check_listener_collisions!(mod)
+    taken = (mod.commands + mod.accessors).to_set(&:method_name) + INHERITED_INSTANCE_METHODS
+    clash = mod.events.map(&:listener_method).find { |name| taken.include?(name) }
+    raise "listener #{mod.ruby_class}##{clash} collides with an existing method" if clash
   end
 
   def self.build_command(schema, cmd)
@@ -1542,7 +1567,8 @@ module BiDiGenerate
   def self.build_event(schema, event)
     params = event['params']
     payload_ref = params && params['ref'] && schema.structured_ref(params['ref'])
-    Event.new(wire_name: event['method'], event_name: camel_to_snake(event['name']), payload_ref: payload_ref)
+    Event.new(wire_name: event['method'], event_name: camel_to_snake(event['name']), payload_ref: payload_ref,
+              spec_href: event['specHref'])
   end
 
   # The projector tags lifted-out types with {synthetic, owner, label}. Emit each
