@@ -57,6 +57,22 @@ def test_to_text_matches_the_corpus(page, form):
     assert tree.to_text() + "\n" == expected
 
 
+def _engine_specific_expectations():
+    return sorted(
+        path.name.removesuffix(".json")
+        for path in CORPUS.glob("*.expected*.json")
+        if path.name.split(".")[-2] in ("chromium", "firefox", "webkit")
+    )
+
+
+@pytest.mark.parametrize("expectation", _engine_specific_expectations())
+def test_engine_specific_to_text_matches_the_corpus(expectation):
+    """An engine-specific expectation pair must agree too, since only that engine's browser job reads it."""
+    tree = _node_from_json(json.loads((CORPUS / f"{expectation}.json").read_text(encoding="utf-8")))
+    expected = (CORPUS / f"{expectation}.txt").read_text(encoding="utf-8")
+    assert tree.to_text() + "\n" == expected
+
+
 def test_to_text_does_not_render_the_url():
     node = AccessibilityNode(role="link", name="Docs", url="https://example.com/docs")
 
@@ -170,33 +186,53 @@ def test_node_from_wire_keeps_absent_fields_absent():
     assert node.children == []
 
 
-class _Script:
-    """A stand-in for the BiDi script module: records each call and answers a one-node wire result."""
+_ONE_NODE = '{"role":"document","name":"T","description":"","states":{},"element":0,"children":[]}'
 
-    def __init__(self):
-        self.calls = []
 
-    def call_function(self, **params):
-        self.calls.append(params)
-        json_text = '{"role":"document","name":"T","description":"","states":{},"element":0,"children":[]}'
-        return {
-            "type": "success",
-            "result": {
-                "type": "object",
-                "value": [
-                    ["json", {"type": "string", "value": json_text}],
-                    ["elements", {"type": "array", "value": [{"type": "node", "sharedId": "shared-1"}]}],
-                    ["windows", {"type": "array", "value": []}],
-                ],
-            },
-        }
+def _wire_result(shared_id="shared-1"):
+    return {
+        "type": "success",
+        "result": {
+            "type": "object",
+            "value": [
+                ["json", {"type": "string", "value": _ONE_NODE}],
+                ["elements", {"type": "array", "value": [{"type": "node", "sharedId": shared_id}]}],
+                ["windows", {"type": "array", "value": []}],
+            ],
+        },
+    }
+
+
+class _Connection:
+    """A stand-in for the session websocket: records each BiDi command and answers from ``replies``."""
+
+    def __init__(self, replies=None):
+        self.commands = []
+        self.replies = replies or {}
+
+    def send_cmd(self, method, params):
+        self.commands.append((method, params))
+        if method == "browsingContext.getTree":
+            return self.replies.get(method, {"result": {"contexts": [{"context": "window-1", "children": []}]}})
+        answer = self.replies.get((method, params["target"]["context"]))
+        return answer if answer is not None else {"result": _wire_result()}
+
+    def calls(self):
+        return [params for method, params in self.commands if method == "script.callFunction"]
 
 
 class _Driver:
-    current_window_handle = "window-1"
+    """Has no public ``script`` or ``browsing_context``: the snapshot must not go through them."""
 
-    def __init__(self):
-        self.script = _Script()
+    current_window_handle = "window-1"
+    caps = {"webSocketUrl": "ws://localhost/session/1"}
+
+    def __init__(self, connection=None):
+        self._websocket_connection = connection or _Connection()
+
+    def execute_script(self, script, *args):
+        # How Classic serializes the top-level window: a window reference to its handle.
+        return {"window-fcc6-11e5-b4f8-330a88ab9d7f": self.current_window_handle}
 
 
 @pytest.mark.parametrize("interesting_only", [True, False])
@@ -208,10 +244,12 @@ def test_snapshotter_passes_interesting_only_to_the_atom_first(interesting_only)
     node = AccessibilitySnapshotter(driver).snapshot(None, interesting_only)
 
     assert node.role == "document"
-    (call,) = driver.script.calls
+    (call,) = driver._websocket_connection.calls()
     assert call["arguments"][0] == {"type": "boolean", "value": interesting_only}
-    assert call["function_declaration"].startswith("(interestingOnly, root) =>")
+    assert call["functionDeclaration"].startswith("(interestingOnly, root) =>")
     assert call["target"] == {"context": "window-1", "sandbox": "selenium"}
+    assert call["serializationOptions"] == {"maxDomDepth": 0}
+    assert call["resultOwnership"] == "none"
 
 
 def test_snapshotter_defaults_to_the_pruned_tree():
@@ -221,4 +259,45 @@ def test_snapshotter_defaults_to_the_pruned_tree():
 
     AccessibilitySnapshotter(driver).snapshot(None)
 
-    assert driver.script.calls[0]["arguments"] == [{"type": "boolean", "value": True}]
+    assert driver._websocket_connection.calls()[0]["arguments"] == [{"type": "boolean", "value": True}]
+
+
+def test_snapshotter_finds_the_frame_that_owns_a_subtree_root():
+    from selenium.webdriver.remote.accessibility_snapshot import AccessibilitySnapshotter
+
+    tree = {"contexts": [{"context": "window-1", "children": [{"context": "frame-1", "children": []}]}]}
+    connection = _Connection(
+        {
+            "browsingContext.getTree": {"result": tree},
+            ("script.callFunction", "window-1"): {"error": "no such node", "message": "not in this document"},
+        }
+    )
+    driver = _Driver(connection)
+    root = type("Root", (), {"id": "shared-root"})()
+
+    node = AccessibilitySnapshotter(driver).snapshot(root)
+
+    assert node.role == "document"
+    assert [call["target"]["context"] for call in connection.calls()] == ["window-1", "frame-1"]
+    assert connection.calls()[1]["arguments"][1] == {"sharedId": "shared-root"}
+
+
+def test_snapshotter_raises_the_stale_error_when_no_frame_owns_the_root():
+    from selenium.common.exceptions import StaleElementReferenceException
+    from selenium.webdriver.remote.accessibility_snapshot import AccessibilitySnapshotter
+
+    connection = _Connection({("script.callFunction", "window-1"): {"error": "no such node", "message": "gone"}})
+    root = type("Root", (), {"id": "shared-root"})()
+
+    with pytest.raises(StaleElementReferenceException):
+        AccessibilitySnapshotter(_Driver(connection)).snapshot(root)
+
+
+def test_snapshotter_reports_other_bidi_errors():
+    from selenium.common.exceptions import WebDriverException
+    from selenium.webdriver.remote.accessibility_snapshot import AccessibilitySnapshotter
+
+    connection = _Connection({("script.callFunction", "window-1"): {"error": "no such frame", "message": "closed"}})
+
+    with pytest.raises(WebDriverException, match="no such frame: closed"):
+        AccessibilitySnapshotter(_Driver(connection)).snapshot(None)

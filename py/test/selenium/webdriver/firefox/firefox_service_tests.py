@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
 import subprocess
 import sys
 from unittest.mock import patch
@@ -33,8 +32,8 @@ def _skip_on_grid(request):
         pytest.skip("driver-service behaviour is only exercised with a local driver")
 
 
-def test_log_output_as_filename(recwarn, clean_options) -> None:
-    log_file = "geckodriver.log"
+def test_log_output_as_filename(recwarn, clean_options, tmp_path) -> None:
+    log_file = str(tmp_path / "geckodriver.log")
     service = Service(log_output=log_file)
     try:
         driver = Firefox(service=service, options=clean_options)
@@ -43,11 +42,10 @@ def test_log_output_as_filename(recwarn, clean_options) -> None:
             assert "geckodriver\tINFO\tListening" in fp.readline()
     finally:
         driver.quit()
-        os.remove(log_file)
 
 
-def test_log_output_as_file(clean_options) -> None:
-    log_name = "geckodriver.log"
+def test_log_output_as_file(clean_options, tmp_path) -> None:
+    log_name = tmp_path / "geckodriver.log"
     log_file = open(log_name, "w", encoding="utf-8")
     service = Service(log_output=log_file)
     try:
@@ -57,7 +55,6 @@ def test_log_output_as_file(clean_options) -> None:
     finally:
         driver.quit()
         log_file.close()
-        os.remove(log_name)
 
 
 def test_log_output_as_stdout(capfd, clean_options) -> None:

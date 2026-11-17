@@ -23,7 +23,7 @@
     "com.google.jimfs:jimfs": 803072898,
     "com.google.protobuf.nano:protobuf-javanano": 1507249733,
     "com.google.protobuf:protobuf-java": 130636446,
-    "com.graphql-java:graphql-java": -795537954,
+    "com.graphql-java:graphql-java": 1691974879,
     "com.uber.nullaway:nullaway": -1216571949,
     "dev.failsafe:failsafe": -1314791755,
     "io.fabric8:kubernetes-client": -1899964461,
@@ -51,7 +51,7 @@
     "net.bytebuddy:byte-buddy": 164807332,
     "net.java.dev.javacc:javacc": 520686333,
     "org.assertj:assertj-core": -1145412507,
-    "org.bouncycastle:bcpkix-jdk18on": 826697430,
+    "org.bouncycastle:bcpkix-jdk18on": -980757033,
     "org.eclipse.mylyn.github:org.eclipse.egit.github.core": 801759887,
     "org.hamcrest:hamcrest-all": -1673756380,
     "org.hamcrest:hamcrest-core": 168210752,
@@ -159,8 +159,8 @@
     "com.google.protobuf.nano:protobuf-javanano:jar:sources": -1736685757,
     "com.google.protobuf:protobuf-java": -1812001120,
     "com.google.protobuf:protobuf-java:jar:sources": -322237137,
-    "com.graphql-java:graphql-java": 1178948131,
-    "com.graphql-java:graphql-java:jar:sources": 250541727,
+    "com.graphql-java:graphql-java": 970111503,
+    "com.graphql-java:graphql-java:jar:sources": -452054112,
     "com.graphql-java:java-dataloader": -1517887665,
     "com.graphql-java:java-dataloader:jar:sources": -1676833358,
     "com.uber.nullaway:nullaway": 749868116,
@@ -335,12 +335,12 @@
     "org.apiguardian:apiguardian-api:jar:sources": 729595858,
     "org.assertj:assertj-core": -1056735155,
     "org.assertj:assertj-core:jar:sources": -697161745,
-    "org.bouncycastle:bcpkix-jdk18on": -287047843,
-    "org.bouncycastle:bcpkix-jdk18on:jar:sources": -1855368494,
-    "org.bouncycastle:bcprov-jdk18on": -751439126,
-    "org.bouncycastle:bcprov-jdk18on:jar:sources": 485448997,
-    "org.bouncycastle:bcutil-jdk18on": -1269559261,
-    "org.bouncycastle:bcutil-jdk18on:jar:sources": 1897597974,
+    "org.bouncycastle:bcpkix-jdk18on": 1203985943,
+    "org.bouncycastle:bcpkix-jdk18on:jar:sources": -1109218937,
+    "org.bouncycastle:bcprov-jdk18on": -1966760047,
+    "org.bouncycastle:bcprov-jdk18on:jar:sources": -1692074452,
+    "org.bouncycastle:bcutil-jdk18on": -1837331697,
+    "org.bouncycastle:bcutil-jdk18on:jar:sources": -1207626996,
     "org.checkerframework:checker-compat-qual": -1467856161,
     "org.checkerframework:checker-compat-qual:jar:sources": 896082574,
     "org.checkerframework:checker-qual": -1543380368,
@@ -721,10 +721,10 @@
     },
     "com.graphql-java:graphql-java": {
       "shasums": {
-        "jar": "2a87c9b6e64414806696a87a8aab006d32940568299bd6a1fe81c50f9e40f967",
+        "jar": "b605a794ef2fb160f258d4069580960904451887a61213898d1a9764c65a9553",
         "sources": "58c1e5a76a0bc3fea276cb861be2c5fe04a6a62e048f33d9329b3d79767f9c92"
       },
-      "version": "26.1"
+      "version": "26.2"
     },
     "com.graphql-java:java-dataloader": {
       "shasums": {
@@ -1337,24 +1337,24 @@
     },
     "org.bouncycastle:bcpkix-jdk18on": {
       "shasums": {
-        "jar": "8d8b41a4b149bdae8d331f059a578870954d1e3ff29f8269a9eb3ee19a7e4ef7",
-        "sources": "0bb00b50a80404e40c6465cb8012d3835d2a9100d94d16eaa9efed4587d7e34d"
+        "jar": "a44be2660d72ed88673372b8cc2d53a25a5aaf27122fb803ed93f07147536aa1",
+        "sources": "7fc110673a24b6b43565d723bc42f5b03a31049555493158e8a308b632a69477"
       },
-      "version": "1.86"
+      "version": "1.87"
     },
     "org.bouncycastle:bcprov-jdk18on": {
       "shasums": {
-        "jar": "2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f",
-        "sources": "34a8b7dcb030a08ddd5356d3d5be962f9299ca5275e1460273186f8fdbe44c34"
+        "jar": "12d2d3dd82a9ec15e92ec7c7943ee64f6097c6dc12c07e984f1693b77565b9aa",
+        "sources": "80f01e81d834fef90f50d1c63d5f5cb9b0fc9d5a71b6e8b105e47c88349a15db"
       },
-      "version": "1.86"
+      "version": "1.87"
     },
     "org.bouncycastle:bcutil-jdk18on": {
       "shasums": {
-        "jar": "1c268e15f785aafb1e4670d8d6e5f856f69475e96c162dadcd1ff9b350e9139f",
-        "sources": "a79e8cdbc04a24aecf64503eda9a4aa61019132484c64f7ce32a68ac30ef6df7"
+        "jar": "af46dd381553fdc466cd0c18f8bf2144c7dbcb7337eee3e16cab15e96613ddf0",
+        "sources": "764043f9d808b5504abef712b252cd0edb27439a84a1372ffbca5cea6adfb563"
       },
-      "version": "1.86"
+      "version": "1.87"
     },
     "org.checkerframework:checker-compat-qual": {
       "shasums": {
@@ -4142,6 +4142,7 @@
       "org.bouncycastle.jcajce.provider.asymmetric.frodokem",
       "org.bouncycastle.jcajce.provider.asymmetric.gost",
       "org.bouncycastle.jcajce.provider.asymmetric.ies",
+      "org.bouncycastle.jcajce.provider.asymmetric.lms",
       "org.bouncycastle.jcajce.provider.asymmetric.mldsa",
       "org.bouncycastle.jcajce.provider.asymmetric.mlkem",
       "org.bouncycastle.jcajce.provider.asymmetric.rsa",
@@ -4149,11 +4150,16 @@
       "org.bouncycastle.jcajce.provider.asymmetric.sm9",
       "org.bouncycastle.jcajce.provider.asymmetric.util",
       "org.bouncycastle.jcajce.provider.asymmetric.x509",
+      "org.bouncycastle.jcajce.provider.asymmetric.xmss",
+      "org.bouncycastle.jcajce.provider.asymmetric.xwing",
       "org.bouncycastle.jcajce.provider.config",
       "org.bouncycastle.jcajce.provider.digest",
       "org.bouncycastle.jcajce.provider.drbg",
       "org.bouncycastle.jcajce.provider.kdf",
       "org.bouncycastle.jcajce.provider.kdf.hkdf",
+      "org.bouncycastle.jcajce.provider.kdf.kbkdf",
+      "org.bouncycastle.jcajce.provider.kdf.kmac",
+      "org.bouncycastle.jcajce.provider.kdf.onestep",
       "org.bouncycastle.jcajce.provider.kdf.pbkdf2",
       "org.bouncycastle.jcajce.provider.kdf.scrypt",
       "org.bouncycastle.jcajce.provider.keystore",
@@ -4192,7 +4198,6 @@
       "org.bouncycastle.pqc.crypto.falcon",
       "org.bouncycastle.pqc.crypto.haetae",
       "org.bouncycastle.pqc.crypto.hqc",
-      "org.bouncycastle.pqc.crypto.lms",
       "org.bouncycastle.pqc.crypto.mayo",
       "org.bouncycastle.pqc.crypto.mqom",
       "org.bouncycastle.pqc.crypto.newhope",
@@ -4208,7 +4213,6 @@
       "org.bouncycastle.pqc.crypto.sqisign",
       "org.bouncycastle.pqc.crypto.uov",
       "org.bouncycastle.pqc.crypto.util",
-      "org.bouncycastle.pqc.crypto.xmss",
       "org.bouncycastle.pqc.crypto.xwing",
       "org.bouncycastle.pqc.jcajce.interfaces",
       "org.bouncycastle.pqc.jcajce.provider",
