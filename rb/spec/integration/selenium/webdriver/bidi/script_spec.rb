@@ -157,6 +157,22 @@ module Selenium
           driver.script.remove_console_message_handler(12345)
         }.to raise_error(Error::WebDriverError, /Callback with ID 12345 does not exist/)
       end
+
+      it 'pins a script that runs on every new document' do
+        script_id = driver.script.pin('() => { window.pinnedValue = "pinned!"; }')
+        expect(script_id).to be_a(String)
+
+        driver.navigate.to url_for('formPage.html')
+        expect(driver.execute_script('return window.pinnedValue')).to eq('pinned!')
+      end
+
+      it 'unpins a script so it no longer runs' do
+        script_id = driver.script.pin('() => { window.pinnedValue = "pinned!"; }')
+        driver.script.unpin(script_id)
+
+        driver.navigate.to url_for('formPage.html')
+        expect(driver.execute_script('return window.pinnedValue')).to be_nil
+      end
     end
   end
 end
