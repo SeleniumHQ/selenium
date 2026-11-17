@@ -15,11 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-/**
- * The supported, protocol-neutral API for installing and uninstalling browser extensions
- * mid-session. Types here never reference WebDriver BiDi; the transport a driver uses to honour a
- * request is an implementation detail.
- */
 @NullMarked
 package org.openqa.selenium.webextension;
 
