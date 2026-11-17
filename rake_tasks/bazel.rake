@@ -1,38 +1,26 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'set'
+HIGH_IMPACT_PATHS = %w[common rust/src MODULE.bazel .bazelrc .bazelversion].freeze
 
-# Paths that affect every binding - changes here trigger "run all tests"
-HIGH_IMPACT_PATHS = %w[common rust/src javascript/atoms javascript/webdriver/atoms MODULE.bazel].freeze
-HIGH_IMPACT_PATTERN = %r{\A(?:#{HIGH_IMPACT_PATHS.map { |p| Regexp.escape(p) }.join('|')})(?:/|$)}
-
-# Binding overrides for files the index can't reach (workspace dep files, root configs)
+# Files outside a target's own directory that only its jobs use
 TARGET_OVERRIDES = {
-  'dotnet/paket.lock' => 'dotnet',
-  'java/maven_install.json' => 'java',
-  'py/requirements_lock.txt' => 'py',
-  'rb/Gemfile.lock' => 'rb',
-  'javascript/selenium-webdriver/package.json' => 'javascript',
   '.github/workflows/ci-dotnet.yml' => 'dotnet',
   '.github/workflows/ci-java.yml' => 'java',
   '.github/workflows/ci-javascript.yml' => 'javascript',
   '.github/workflows/ci-python.yml' => 'py',
   '.github/workflows/ci-ruby.yml' => 'rb',
-  '.github/workflows/ci-rust.yml' => 'rust'
+  '.github/workflows/ci-rust.yml' => 'rust',
+  'package.json' => 'javascript',
+  'pnpm-lock.yaml' => 'javascript',
+  'pnpm-workspace.yaml' => 'javascript',
+  'third_party/dotnet' => 'dotnet'
 }.freeze
 
-# ./go bazel:affected_targets                              --> HEAD^..HEAD with default index
-# ./go bazel:affected_targets abc123..def456               --> explicit range
-# ./go bazel:affected_targets abc123..def456 my-index      --> explicit range with custom index
-# ./go bazel:affected_targets my-index                     --> HEAD^..HEAD with custom index
+# ./go bazel:affected_targets                  --> HEAD^..HEAD
+# ./go bazel:affected_targets abc123..def456   --> explicit range
 desc 'Find test targets affected by changes between revisions'
 task :affected_targets do |_task, args|
-  values = args.to_a
-  index_file = values.find { |value| File.exist?(value) }
-  range = (values - [index_file]).first || 'HEAD'
-  index_file ||= 'build/bazel-test-file-index'
-
+  range = args.to_a.first || 'HEAD'
   base_rev, head_rev = if range.include?('..')
                          range.split('..', 2)
                        else
@@ -46,243 +34,36 @@ task :affected_targets do |_task, args|
 
   puts "Changed files: #{changed_files.size}"
 
-  override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
-  targets = if changed_files.any? { |f| f.match?(HIGH_IMPACT_PATTERN) }
-              BINDING_TARGETS.values
-            elsif File.exist?(index_file)
-              covered_pattern = Regexp.union(
-                override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} }
-              )
-              index_targets = affected_targets_with_index(changed_files, index_file).grep_v(covered_pattern)
-              (override_targets + index_targets).uniq
-            else
-              puts 'No index found, using directory-based fallback'
-              (override_targets + affected_targets_by_directory(changed_files)).uniq
-            end
+  targets = affected_targets_for(changed_files).sort
 
   FileUtils.mkdir_p('build')
   if targets.empty?
     puts 'No test targets affected'
-    File.write('build/bazel-targets.txt', '')
   else
-    puts "Found #{targets.size} affected test targets"
-    File.write('build/bazel-targets.txt', targets.sort.join(' '))
-    targets.sort.each { |t| puts t }
+    puts "Affected: #{targets.join(' ')}"
   end
+  File.write('build/bazel-targets.txt', targets.join(' '))
 
   manager_changed = changed_files.any? { |f| f.start_with?('rust/') }
   puts 'Selenium Manager sources changed' if manager_changed
   File.write('build/selenium-manager-changed.txt', manager_changed.to_s)
 end
 
-# ./go bazel:build_test_index                    --> 'build/bazel-test-file-index'
-# ./go bazel:build_test_index my-index           --> 'my-index'
-desc 'Build test target index for faster affected target lookup'
-task :build_test_index, [:index_file] do |_task, args|
-  output = args[:index_file] || 'build/bazel-test-file-index'
-
-  # Flat index: file path → [test targets]
-  index = Hash.new { |h, k| h[k] = [] }
-  tests = []
-
-  exclude_tags = %w[manual spotbugs ie]
-  all_bindings = BINDING_TARGETS.values.join(' + ')
-  tag_exclusions = exclude_tags.map { |tag| "except attr('tags', '#{tag}', #{all_bindings})" }.join(' ')
-  kind = '_test' # do not match test_suite or pytest_runner
-
-  puts "Finding all test targets for #{all_bindings}, excluding: #{exclude_tags}"
-  Bazel.execute('query', ['--output=label'], "kind(#{kind}, #{all_bindings}) #{tag_exclusions}") do |out|
-    tests = out.lines.map(&:strip).select { |l| l.start_with?('//') }
-  end
-  puts "Found #{tests.size} test targets"
-
-  puts 'Building file → tests mapping...'
-  srcs_cache = {}
-  tests.each_with_index do |test, i|
-    puts "Processing #{i + 1}/#{tests.size}: #{test}" if (i % 100).zero?
-
-    query_test_deps(test).each do |dep|
-      srcs_cache[dep] ||= query_dep_srcs(dep)
-      add_test_to_index(index, test, srcs_cache[dep])
-    end
-  end
-  puts "Cached #{srcs_cache.size} dep → srcs lookups"
-
-  sorted_index = index.keys.sort.to_h do |filepath|
-    [filepath, index[filepath].uniq.sort]
+def affected_targets_for(changed_files)
+  high_impact = changed_files.find { |f| HIGH_IMPACT_PATHS.any? { |path| path_under?(f, path) } }
+  if high_impact
+    puts "#{high_impact} affects every target"
+    return BINDING_TARGETS.values
   end
 
-  FileUtils.mkdir_p(File.dirname(output))
-  File.write(output, JSON.pretty_generate(sorted_index))
-  puts "Wrote index with #{sorted_index.size} files to #{output}"
+  keys = changed_files.flat_map { |f|
+    overrides = TARGET_OVERRIDES.select { |path, _| path_under?(f, path) }.values
+    top_level_dir = f.split('/').first
+    BINDING_TARGETS.key?(top_level_dir) ? overrides + [top_level_dir] : overrides
+  }
+  BINDING_TARGETS.values_at(*keys.uniq)
 end
 
-def query_test_deps(test)
-  deps = []
-  Bazel.execute('query', ['--output=label'], "deps(#{test}) intersect //... except attr(testonly, 1, //...)") do |out|
-    deps = out.lines.map(&:strip).select { |l| l.start_with?('//') }
-  end
-  deps.reject do |d|
-    # Skip high-impact paths and root package targets (generated files, LICENSE, etc)
-    HIGH_IMPACT_PATHS.any? { |path| d.start_with?("//#{path}") } || d.start_with?('//:')
-  end
-rescue StandardError => e
-  puts "  Warning: Failed to query deps for #{test}: #{e.message}"
-  []
-end
-
-def add_test_to_index(index, test, srcs)
-  srcs.each do |src|
-    # Convert //pkg:file to pkg/file
-    filepath = src.sub(%r{^//}, '').tr(':', '/')
-    # Not currently running grid tests in other bindings on GitHub Runners
-    next if filepath.start_with?('java/') && !test.start_with?('//java/')
-
-    index[filepath] << test
-  end
-end
-
-def query_dep_srcs(dep)
-  srcs = []
-  Bazel.execute('query', ['--output=label'], "labels(srcs, #{dep})") do |out|
-    srcs = out.lines.map(&:strip).select { |l| l.start_with?('//') && !l.start_with?('//:') }
-  end
-  srcs
-rescue StandardError => e
-  puts "  Warning: Failed to query srcs for #{dep}: #{e.message}"
-  []
-end
-
-def find_bazel_package(filepath)
-  path = File.dirname(filepath)
-  until path.empty?
-    return path if File.exist?(File.join(path, 'BUILD.bazel')) || File.exist?(File.join(path, 'BUILD'))
-    return nil if path == '.'
-
-    path = File.dirname(path)
-  end
-  nil
-end
-
-def affected_targets_with_index(changed_files, index_file)
-  puts "Using index: #{index_file}"
-
-  begin
-    index = JSON.parse(File.read(index_file))
-  rescue JSON::ParserError => e
-    puts "Invalid JSON in index file: #{e.message}"
-    puts 'Using directory-based fallback'
-    return affected_targets_by_directory(changed_files)
-  end
-
-  test_pattern = %r{[_-]test\.rb$|_tests?\.py$|Test\.java$|\.test\.[jt]s$|_spec\.rb$|^dotnet/test/}
-  test_files, lib_files = changed_files.partition { |f| f.match?(test_pattern) }
-
-  affected = Set.new
-  # Just test the tests
-  affected.merge(targets_from_tests(test_files))
-
-  lib_files.each do |filepath|
-    tests = index[filepath]
-    if tests
-      puts "  #{filepath} → #{tests.size} tests"
-      affected.merge(tests)
-    else
-      puts "  #{filepath} not in index, querying for affected tests"
-      affected.merge(query_unindexed_file(filepath))
-    end
-  end
-
-  prune_stale_targets(affected.to_a)
-end
-
-# The index is a trunk snapshot, so renamed/removed targets leave stale labels that break
-# `bazel test`. Drop any label whose test is gone; keep all if the check can't run.
-def prune_stale_targets(labels)
-  live = live_test_labels(labels)
-  return labels if live.nil?
-
-  kept = labels.select { |l| live.include?(l) }
-  (labels - kept).each { |l| puts "  Dropping stale target not in graph: #{l}" }
-  kept
-end
-
-# Test labels that still exist in `labels`' packages. Only on-disk packages are queried, so
-# `//pkg:*` can't error on a deleted package. Returns nil if the query itself fails.
-def live_test_labels(labels)
-  packages = labels.filter_map { |l| l[%r{\A//([^:]*)}, 1] }.uniq
-  packages.select! { |pkg| File.exist?(File.join(pkg, 'BUILD.bazel')) || File.exist?(File.join(pkg, 'BUILD')) }
-  return Set.new if packages.empty?
-
-  live = Set.new
-  query = packages.map { |pkg| "//#{pkg}:*" }.join(' + ')
-  Bazel.execute('query', ['--output=label'], "kind(_test, #{query})") do |out|
-    live = out.lines.map(&:strip).select { |l| l.start_with?('//') }.to_set
-  end
-  live
-rescue StandardError => e
-  puts "  Warning: keeping all targets; stale-target check failed: #{e.message}"
-  nil
-end
-
-def query_unindexed_file(filepath)
-  pkg = find_bazel_package(filepath)
-  return [] unless pkg
-
-  rel = pkg == '.' ? filepath : filepath.sub(%r{^#{Regexp.escape(pkg)}/}, '')
-  pkg = '' if pkg == '.'
-
-  # BUILD files are never in a target's srcs, so match the whole package to catch added/renamed targets.
-  scope = File.basename(filepath).start_with?('BUILD') ? "//#{pkg}:*" : "attr(srcs, '#{rel}', //#{pkg}:*)"
-  containing = []
-  Bazel.execute('query', ['--output=label'], scope) do |out|
-    containing = out.lines.map(&:strip).select { |l| l.start_with?('//') }
-  end
-  return [] if containing.empty?
-
-  # Find tests that depend on those targets
-  targets = []
-  Bazel.execute('query', ['--output=label'], "kind(_test, rdeps(//..., #{containing.join(' + ')}))") do |out|
-    targets = out.lines.map(&:strip).select { |l| l.start_with?('//') }
-  end
-
-  filepath.start_with?('java/') ? targets.select { |t| t.start_with?('//java/') } : targets
-rescue StandardError => e
-  puts "  Warning: Failed to query unindexed file #{filepath}: #{e.message}"
-  []
-end
-
-def targets_from_tests(test_files)
-  test_files.select! { |f| File.exist?(f) }
-  return [] if test_files.empty?
-
-  query = test_files.filter_map { |f|
-    pkg = find_bazel_package(f)
-    next unless pkg
-
-    # Bazel srcs often use paths relative to the package, not basenames.
-    rel = f.sub(%r{^#{Regexp.escape(pkg)}/}, '')
-    "attr(srcs, '#{rel}', //#{pkg}:*)"
-  }.join(' + ')
-
-  return [] if query.empty?
-
-  targets = []
-  Bazel.execute('query', ['--output=label'], "kind(_test, #{query})") do |out|
-    targets = out.lines.map(&:strip).select { |l| l.start_with?('//') }
-  end
-  targets
-end
-
-def affected_targets_by_directory(changed_files)
-  targets = Set.new
-  top_level_dirs = changed_files.map { |f| f.split('/').first }.uniq
-
-  return BINDING_TARGETS.values if top_level_dirs.intersect?(%w[common rust])
-
-  top_level_dirs.each do |dir|
-    targets << BINDING_TARGETS[dir] if BINDING_TARGETS[dir]
-  end
-
-  targets.to_a
+def path_under?(file, path)
+  file == path || file.start_with?("#{path}/")
 end

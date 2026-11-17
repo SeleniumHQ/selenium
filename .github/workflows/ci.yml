@@ -21,11 +21,6 @@ permissions:
   packages: read
 
 jobs:
-  build-index:
-    name: Build Index
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
-    uses: ./.github/workflows/ci-build-index.yml
-
   lint:
     name: Lint
     uses: ./.github/workflows/bazel.yml
@@ -82,16 +77,11 @@ jobs:
     name: Check Targets
     needs: targets-mode
     if: needs.targets-mode.outputs.mode == 'check'
-    permissions:
-      contents: read
-      actions: read
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Targets
+      use-cache: false
       run: |
-        index_run=$(gh run list -R "$GITHUB_REPOSITORY" -w ci.yml -e schedule -s completed -L 1 --json databaseId -q ".[].databaseId") || true
-        [ -n "$index_run" ] && gh run download "$index_run" -R "$GITHUB_REPOSITORY" -n bazel-test-file-index ||
-          echo "::warning::No nightly test index; selecting targets by directory"
         if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
           BASE_SHA="HEAD^1"
         elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then
@@ -102,9 +92,9 @@ jobs:
           BASE_SHA="HEAD~$ahead"
         fi
         if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
-          ./go bazel:affected_targets "${BASE_SHA}..HEAD" bazel-test-file-index
+          ./go bazel:affected_targets "${BASE_SHA}..HEAD"
         else
-          ./go bazel:affected_targets bazel-test-file-index
+          ./go bazel:affected_targets
         fi
       artifact-name: check-targets
       artifact-path: |
