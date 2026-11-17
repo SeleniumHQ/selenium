@@ -230,7 +230,7 @@ module Selenium
 
         def create_driver!(listener: nil, http_client: nil, service: nil, **, &block)
           check_for_previous_error
-          http_client ||= Remote::Http::Default.new(read_timeout: 30)
+          http_client ||= Remote::Http::Default.new(read_timeout: 60)
           @safari_pairing_attempts ||= 0
 
           opts = {options: build_options(**), listener: listener, http_client: http_client, service: service}.compact
