@@ -31,7 +31,7 @@ internal sealed class SessionModule : Module, ISessionModule
 
     public async Task<SubscribeResult> SubscribeAsync(ImmutableArray<string> events, SubscribeOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var @params = new SubscribeParameters(events, options?.Contexts);
+        var @params = new SubscribeParameters(events, options?.Contexts, options?.UserContexts);
 
         return await ExecuteAsync("session.subscribe", @params, Default.SubscribeParameters, Default.SubscribeResult, options, cancellationToken).ConfigureAwait(false);
     }
