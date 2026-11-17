@@ -197,7 +197,7 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
-    // If we get this far, then we're all good.
+    wait.until(d -> d.findElements(By.id("upload")).isEmpty());
   }
 
   @Test
