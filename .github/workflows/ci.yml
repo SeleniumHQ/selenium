@@ -82,11 +82,16 @@ jobs:
     name: Check Targets
     needs: targets-mode
     if: needs.targets-mode.outputs.mode == 'check'
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check Targets
-      cache-name: bazel-test-file-index
       run: |
+        index_run=$(gh run list -R "$GITHUB_REPOSITORY" -w ci.yml -e schedule -s completed -L 1 --json databaseId -q ".[].databaseId") || true
+        [ -n "$index_run" ] && gh run download "$index_run" -R "$GITHUB_REPOSITORY" -n bazel-test-file-index ||
+          echo "::warning::No nightly test index; selecting targets by directory"
         if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
           BASE_SHA="HEAD^1"
         elif [ "${{ github.ref }}" = "refs/heads/trunk" ]; then

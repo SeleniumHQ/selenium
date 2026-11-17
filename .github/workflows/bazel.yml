@@ -66,11 +66,6 @@ on:
         required: false
         type: boolean
         default: false
-      cache-name:
-        description: Name for cache restore (restores {name}.gz with key {name}-)
-        required: false
-        type: string
-        default: ''
       cache-save:
         description: Save the Bazel cache after the run (avoids multiple jobs clobbering it)
         required: false
@@ -149,13 +144,6 @@ jobs:
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
-      - name: Restore cache
-        if: inputs.cache-name != ''
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ inputs.cache-name }}
-          key: ${{ inputs.cache-name }}-
-          restore-keys: ${{ inputs.cache-name }}-
       - name: Download artifact
         if: inputs.download-artifact-name != ''
         uses: actions/download-artifact@v8
