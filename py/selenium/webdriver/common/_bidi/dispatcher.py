@@ -19,7 +19,7 @@
 """The event side of the generated BiDi protocol layer.
 
 Hand-written (not generated). An :class:`EventDispatcher` holds the listeners
-added through a domain's ``add_listener`` or ``add_<event>_listener`` methods and
+added through the generated ``add_<event>_listener`` methods and
 invokes each one with the typed payloads of its event, in order by default or
 concurrently on request. Listening is local: nothing here sends a
 command, so the caller subscribes with ``session.subscribe`` itself.
@@ -59,16 +59,16 @@ class _Listener:
         self._state = threading.Condition()
         self._pending = 0
         self._running: set[int] = set()
-        self._removed = False
+        self._active = True
         self._discarded = False
         if not concurrent:
             self._queue: queue.SimpleQueue[Any] = queue.SimpleQueue()
             threading.Thread(target=self._run_in_order, name=self._name, daemon=True).start()
 
-    def deliver(self, payload: Any) -> None:
+    def dispatch(self, payload: Any) -> None:
         # Enqueued under the lock so a payload accepted before a drain is never queued behind its stop marker.
         with self._state:
-            if self._removed:
+            if not self._active:
                 return
             self._pending += 1
             if self._concurrent:
@@ -76,23 +76,26 @@ class _Listener:
             else:
                 self._queue.put(payload)
 
+    def invoking_on_current_thread(self) -> bool:
+        with self._state:
+            return threading.get_ident() in self._running
+
     def discard(self) -> None:
         # Not joined: the caller may be this listener itself, removing itself or quitting the driver.
         with self._state:
-            self._removed = True
+            self._deactivate()
             self._discarded = True
             self._state.notify_all()
-            if not self._concurrent:
-                self._queue.put(_STOP)
 
     def drain(self) -> None:
         with self._state:
-            if threading.get_ident() in self._running:
-                raise RuntimeError("A listener cannot drain itself; remove it without drain from inside its own call")
-            self._removed = True
-            if not self._concurrent:
-                self._queue.put(_STOP)
+            self._deactivate()
             self._state.wait_for(lambda: self._pending == 0 or self._discarded)
+
+    def _deactivate(self) -> None:
+        if self._active and not self._concurrent:
+            self._queue.put(_STOP)
+        self._active = False
 
     def _run_in_order(self) -> None:
         while (payload := self._queue.get()) is not _STOP:
@@ -130,6 +133,8 @@ class EventDispatcher:
 
     def __init__(self) -> None:
         self._listeners: dict[str, _Listener] = {}
+        # Removed listeners still being drained, so a discard or close can release the wait.
+        self._draining: dict[str, _Listener] = {}
         self._ids = itertools.count(1)
         self._lock = threading.Lock()
         self._closed = False
@@ -145,17 +150,25 @@ class EventDispatcher:
         return listener_id
 
     def remove_listener(self, listener_id: str, *, drain: bool = False) -> None:
-        if drain:
-            # Kept registered while draining, so a discard or close can still release the wait.
-            with self._lock:
-                draining = self._listeners.get(listener_id)
-            if draining is None:
-                return
-            draining.drain()
         with self._lock:
-            removed = self._listeners.pop(listener_id, None)
-        if removed is not None:
+            removed = self._listeners.pop(listener_id, None) or self._draining.get(listener_id)
+            if removed is None:
+                return
+            if not drain:
+                self._draining.pop(listener_id, None)
+            elif removed.invoking_on_current_thread():
+                self._listeners[listener_id] = removed
+                raise RuntimeError("A listener cannot drain itself; remove it without drain from inside its own call")
+            else:
+                self._draining[listener_id] = removed
+        if not drain:
             removed.discard()
+            return
+        try:
+            removed.drain()
+        finally:
+            with self._lock:
+                self._draining.pop(listener_id, None)
 
     def receive(self, method: str, params: dict[str, Any]) -> None:
         """Queue a payload for each listener of its event; runs on the socket's reader thread, so it never waits."""
@@ -170,11 +183,12 @@ class EventDispatcher:
             logger.exception("Dropped a %s payload that failed validation", method)
             return
         for listener in listeners:
-            listener.deliver(payload)
+            listener.dispatch(payload)
 
     def close(self) -> None:
         with self._lock:
             self._closed = True
-            listeners, self._listeners = list(self._listeners.values()), {}
+            listeners = [*self._listeners.values(), *self._draining.values()]
+            self._listeners, self._draining = {}, {}
         for listener in listeners:
             listener.discard()

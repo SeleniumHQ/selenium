@@ -844,7 +844,6 @@ def _listener_method(e: EventIR) -> str:
 
 def _guard_listener_names(domain: str, commands: list[CommandIR], events: list[EventIR]) -> None:
     taken = {_listener_method(e): f"the listener method for event {e.wire}" for e in events}
-    taken["add_listener"] = "Domain.add_listener"
     taken["remove_listener"] = "Domain.remove_listener"
     for c in commands:
         if c.method in taken:
@@ -1067,12 +1066,14 @@ def _emit_event_listener(e: EventIR) -> list[str]:
     lines.append(f'        """Invoke ``listener`` with each {e.wire} payload (internal, unsupported).')
     lines.append("")
     lines.append(f"        The listener gets a ``{payload}``; one that fails validation is logged and not delivered.")
-    lines.append("        See ``add_listener`` for ``concurrent``, the subscription and the returned id.")
+    lines.append("        By default it gets one payload at a time in arrival order; with ``concurrent=True`` each")
+    lines.append("        payload is invoked as it arrives. This sends nothing: payloads arrive once the caller")
+    lines.append("        subscribes with ``Session.subscribe``. Returns the id to pass to ``remove_listener``.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")
     lines.append('        """')
-    lines.append(f"        return self.add_listener({lit(e.wire)}, listener, concurrent=concurrent)")
+    lines.append(f"        return self._add_listener({lit(e.wire)}, listener, concurrent)")
     return lines
 
 
