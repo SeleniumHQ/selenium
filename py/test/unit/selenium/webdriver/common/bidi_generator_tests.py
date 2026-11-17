@@ -654,7 +654,7 @@ def test_an_event_emits_a_listener_method_typed_by_its_payload_that_returns_an_i
         "        concurrent: bool = False,",
         "    ) -> str:",
     ]
-    assert lines[-1] == '        return self.add_listener("x.thingHappened", listener, concurrent=concurrent)'
+    assert lines[-1] == '        return self._add_listener("x.thingHappened", listener, concurrent)'
 
 
 def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
@@ -686,7 +686,6 @@ def test_a_domain_maps_each_event_to_its_payload_class_rather_than_its_name():
     ("command", "owner"),
     [
         ("addThingListener", r"event x\.thing"),
-        ("addListener", r"Domain\.add_listener"),
         ("removeListener", r"Domain\.remove_listener"),
     ],
 )

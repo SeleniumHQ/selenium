@@ -28,6 +28,7 @@ import json
 import logging
 import queue
 import threading
+import time
 
 import pytest
 
@@ -172,20 +173,6 @@ def test_a_concurrent_listener_is_invoked_with_each_payload_without_waiting_for_
 
     assert {started.get(timeout=5), started.get(timeout=5)} == {"https://one", "https://two"}
     release.set()
-
-
-def test_a_listener_added_by_event_name_receives_typed_payloads(connection, browser):
-    received = queue.Queue()
-    contexts(connection).add_listener("browsingContext.load", received.put)
-
-    browser.emit("browsingContext.load", load())
-
-    assert received.get(timeout=5) == NavigationInfo.from_json(load())
-
-
-def test_adding_a_listener_for_an_event_the_module_does_not_define_is_refused(connection):
-    with pytest.raises(ValueError, match="BrowsingContext has no event 'network.beforeRequestSent'"):
-        contexts(connection).add_listener("network.beforeRequestSent", lambda payload: None)
 
 
 def test_a_listener_can_send_a_command(connection, browser):
@@ -347,6 +334,33 @@ def test_drain_waits_for_every_running_invocation_of_a_concurrent_listener(conne
     contexts(connection).remove_listener(listener, drain=True)
 
     assert sorted(finished) == ["https://one", "https://two"]
+
+
+def test_a_listener_being_drained_is_no_longer_active_for_new_payloads(connection, browser, logged):
+    started, release, received = threading.Event(), threading.Event(), queue.Queue()
+
+    def blocks(payload):
+        started.set()
+        release.wait(5)
+        received.put(payload.url)
+
+    listener = contexts(connection).add_load_listener(blocks)
+    browser.emit("browsingContext.load", load(url="https://running"))
+    assert started.wait(5)
+
+    drainer = threading.Thread(target=contexts(connection).remove_listener, args=(listener,), kwargs={"drain": True})
+    drainer.start()
+    deadline = time.monotonic() + 5
+    while listener in connection.event_receiver._listeners and time.monotonic() < deadline:
+        time.sleep(0.01)
+    browser.emit("browsingContext.load", {"context": "ctx-1"})
+    browser.emit("browsingContext.load", load(url="https://late"))
+    release.set()
+    drainer.join(5)
+
+    assert received.get(timeout=5) == "https://running"
+    assert received.empty()
+    assert logged.empty()
 
 
 def test_a_listener_that_drains_itself_is_refused_instead_of_waiting_on_itself(connection, browser):
