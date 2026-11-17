@@ -30,10 +30,12 @@ module Bazel
       cmd_line = "#{quoted.join(' ')} 2>&1"
       cmd_out = `#{cmd_line}`.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       puts cmd_out if verbose
+      print_invocation_link(cmd_out) unless verbose
       cmd_exit_code = $CHILD_STATUS
     else
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
         is_running = true
+        invocation_link = nil
         stdin.close
         while is_running
           begin
@@ -41,6 +43,7 @@ module Bazel
             line = stdouts.readpartial(512)
             cmd_out += line
             $stdout.print line if verbose
+            invocation_link ||= print_invocation_link(cmd_out[-1024..] || cmd_out) unless verbose
           rescue EOFError
             is_running = false
           end
@@ -57,5 +60,11 @@ module Bazel
     out_artifact = Regexp.last_match(1)
     puts "#{targets.join(' ')} -> #{out_artifact}" if out_artifact
     out_artifact
+  end
+
+  def self.print_invocation_link(output)
+    link = output.gsub(/\e\[[\d;]*m/, '')[/Streaming build results to: (\S+)\r?\n/, 1]
+    puts "EngFlow invocation: #{link}" if link
+    link
   end
 end
