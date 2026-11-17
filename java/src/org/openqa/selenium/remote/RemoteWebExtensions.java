@@ -29,11 +29,13 @@ import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.bidi.webextension.ExtensionBase64Encoded;
-import org.openqa.selenium.bidi.webextension.ExtensionData;
-import org.openqa.selenium.bidi.webextension.ExtensionPath;
-import org.openqa.selenium.bidi.webextension.InstallExtensionParameters;
-import org.openqa.selenium.bidi.webextension.UninstallExtensionParameters;
+import org.openqa.selenium.bidi.protocol.webextension.ExtensionBase64Encoded;
+import org.openqa.selenium.bidi.protocol.webextension.ExtensionData;
+import org.openqa.selenium.bidi.protocol.webextension.ExtensionPath;
+import org.openqa.selenium.bidi.protocol.webextension.InstallParameters;
+import org.openqa.selenium.bidi.protocol.webextension.InstallResult;
+import org.openqa.selenium.bidi.protocol.webextension.MozInstallParameters;
+import org.openqa.selenium.bidi.protocol.webextension.UninstallParameters;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -47,8 +49,6 @@ import org.openqa.selenium.webextension.WebExtensionOptions;
  * routes each call to WebDriver BiDi when the session negotiated it, to the classic Firefox {@code
  * /moz/addon} endpoint when it did not, or raises when neither can serve the request.
  */
-// maybeGetBiDi() is deprecated for external callers, but still the way to check BiDi from within
-// the remote package.
 @SuppressWarnings("deprecation")
 class RemoteWebExtensions implements HasWebExtensions {
 
@@ -86,8 +86,7 @@ class RemoteWebExtensions implements HasWebExtensions {
 
     if (driver.maybeGetBiDi().isPresent()) {
       LOG.fine("Uninstalling web extension over BiDi");
-      bidiModule()
-          .uninstall(new UninstallExtensionParameters(Map.of("extension", extension.getId())));
+      bidiModule().uninstall(new UninstallParameters(extension.getId()));
       return;
     }
     if (isFirefox()) {
@@ -136,35 +135,30 @@ class RemoteWebExtensions implements HasWebExtensions {
 
   private WebExtension installOverBiDi(
       Source source, @Nullable FirefoxWebExtensionOptions firefoxOptions) {
-    Map<String, Object> vendorOptions = Map.of();
-    if (firefoxOptions != null) {
-      Map<String, Object> moz = new HashMap<>();
-      firefoxOptions.isPermanent().ifPresent(permanent -> moz.put("moz:permanent", permanent));
-      firefoxOptions
-          .allowsPrivateBrowsing()
-          .ifPresent(allow -> moz.put("moz:allowPrivateBrowsing", allow));
-      vendorOptions = moz;
+    ExtensionData extensionData = extensionData(source);
+    InstallResult result;
+    if (firefoxOptions == null) {
+      result = bidiModule().install(new InstallParameters(extensionData));
+    } else {
+      // Only Firefox's variant can carry moz: options, so the shared params stay spec-only.
+      MozInstallParameters params = new MozInstallParameters(extensionData);
+      firefoxOptions.isPermanent().ifPresent(params::setPermanent);
+      firefoxOptions.allowsPrivateBrowsing().ifPresent(params::setAllowPrivateBrowsing);
+      result =
+          new org.openqa.selenium.bidi.protocol.module.WebExtension.Moz(driver).install(params);
     }
-
-    Map<String, Object> result =
-        bidiModule().install(new InstallExtensionParameters(extensionData(source), vendorOptions));
-
-    Object id = result.get("extension");
-    if (!(id instanceof String)) {
-      throw new WebDriverException("webExtension.install returned no extension id: " + result);
-    }
-    return new WebExtension((String) id);
+    return new WebExtension(result.getExtension());
   }
 
   private ExtensionData extensionData(Source source) {
     if (!source.isDirectory()) {
-      return new ExtensionBase64Encoded(source.toBase64());
+      return base64(source);
     }
     if (isFirefox()) {
       // Firefox's BiDi webExtension.install accepts {type: "path"} for a directory and returns
       // an id parsed from the manifest, but never actually activates the extension. Zipping the
       // directory (like the classic /moz/addon/install endpoint already does) works.
-      return new ExtensionBase64Encoded(source.toBase64());
+      return base64(source);
     }
     // Chromium's BiDi implementation is the opposite: it installs only unpacked directories,
     // never archives (SeleniumHQ/selenium#16541), so it needs a real path.
@@ -173,7 +167,11 @@ class RemoteWebExtensions implements HasWebExtensions {
         browserSharesFilesystem()
             ? directory.toAbsolutePath().toString()
             : uploadDirectory(directory);
-    return new ExtensionPath(resolved);
+    return new ExtensionPath("path", resolved);
+  }
+
+  private static ExtensionData base64(Source source) {
+    return new ExtensionBase64Encoded("base64", source.toBase64());
   }
 
   private WebExtension installOverClassic(
@@ -224,8 +222,8 @@ class RemoteWebExtensions implements HasWebExtensions {
     }
   }
 
-  private org.openqa.selenium.bidi.webextension.WebExtension bidiModule() {
-    return new org.openqa.selenium.bidi.webextension.WebExtension(driver);
+  private org.openqa.selenium.bidi.protocol.module.WebExtension bidiModule() {
+    return new org.openqa.selenium.bidi.protocol.module.WebExtension(driver);
   }
 
   private boolean isFirefox() {

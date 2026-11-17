@@ -1,21 +1,10 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
-
-java_test_suite(
-    name = "small-tests",
-    size = "small",
-    srcs = ["InstallExtensionParametersTest.java"],
-    deps = [
-        "//java/src/org/openqa/selenium/bidi/webextension",
-        artifact("org.junit.jupiter:junit-jupiter-api"),
-        artifact("org.assertj:assertj-core"),
-    ] + JUNIT5_DEPS,
-)
+load("//java:defs.bzl", "BIDI_BROWSERS", "JUNIT5_DEPS", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
-    srcs = ["WebExtensionTest.java"],
+    srcs = glob(["*Test.java"]),
     browsers = BIDI_BROWSERS,
     tags = [
         "selenium-remote",

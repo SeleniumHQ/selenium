@@ -108,10 +108,9 @@ class RemoteWebExtensionsTest {
   void rejectsFirefoxOptionsOnANonFirefoxSession() {
     WebDriverFixture fixture = new WebDriverFixture(CHROME, echoCapabilities, valueResponder(null));
 
-    assertThatThrownBy(
-            () ->
-                fixture.driver.installWebExtension(
-                    BASE64, new FirefoxWebExtensionOptions().permanent(true)))
+    assertThatThrownBy(() ->
+            fixture.driver.installWebExtension(
+                BASE64, new FirefoxWebExtensionOptions().permanent(true)))
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessageContaining("Firefox-only");
   }
