@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.52.0 documentation</title>
+    <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.53.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../_static/documentation_options.js?v=3a4d1932"></script>
+    <script src="../_static/documentation_options.js?v=4b98536b"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selenium_webdriver_ie/selenium.webdriver.ie.webdriver';</script>
@@ -47,7 +47,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.52" />
+  <meta name="docsearch:version" content="4.53" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -115,7 +115,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.52.0 documentation</p>
+    <p class="title logo__title">Selenium 4.53.0 documentation</p>
   
 </a></div>
     
@@ -362,6 +362,41 @@
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.accessibility_snapshot">
+<span class="sig-name descname"><span class="pre">accessibility_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interesting_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.accessibility_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.accessibility_snapshot" title="Link to this definition">#</a></dt>
+<dd><p>Snapshot the accessibility tree of the current browsing context.</p>
+<p>The tree is computed in the page from the DOM, following WAI-ARIA,
+html-aam and accname; it is not the browser’s own accessibility tree.
+It is rooted at the driver’s current browsing context: the top-level
+document, or the frame the driver has switched into. Every child
+frame’s tree is attached under its <code class="docutils literal notranslate"><span class="pre">iframe</span></code> node, and the driver’s
+current browsing context is left as it was. Works in both WebDriver
+Classic and BiDi sessions. The snapshot is a copy taken at one point
+in time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>interesting_only</strong> (<em>bool</em>) – With the default <code class="docutils literal notranslate"><span class="pre">True</span></code>, elements of role
+<code class="docutils literal notranslate"><span class="pre">generic</span></code>, <code class="docutils literal notranslate"><span class="pre">none</span></code> or <code class="docutils literal notranslate"><span class="pre">presentation</span></code> with no name produce
+no node and their children take their place. With <code class="docutils literal notranslate"><span class="pre">False</span></code>
+every rendered element produces a node, as Puppeteer’s
+<code class="docutils literal notranslate"><span class="pre">accessibility.snapshot({interestingOnly:</span> <span class="pre">false})</span></code> does.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The root node, of role <code class="docutils literal notranslate"><span class="pre">document</span></code>, named from the title.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.accessibility_snapshot.html#selenium.webdriver.remote.accessibility_snapshot.AccessibilityNode" title="selenium.webdriver.remote.accessibility_snapshot.AccessibilityNode"><em>AccessibilityNode</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tree</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">accessibility_snapshot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tree</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.add_cookie">
 <span class="sig-name descname"><span class="pre">add_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cookie_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_cookie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.add_cookie" title="Link to this definition">#</a></dt>
@@ -907,7 +942,7 @@ onload event has fired) in the current window or tab.</p>
 current session.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[dict]</p>
+<dd class="field-even"><p>list[dict[str, <em>Any</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -934,7 +969,7 @@ current session.</p>
 <span class="sig-name descname"><span class="pre">get_pinned_scripts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_pinned_scripts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.get_pinned_scripts" title="Link to this definition">#</a></dt>
 <dd><p>Return a list of all pinned scripts.</p>
 <div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.pin()</span></code> to manage preload scripts via the WebDriver BiDi protocol.</p>
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.pin()</span></code> instead.</p>
 </div>
 <p class="rubric">Example</p>
 <p><cite>pinned_scripts = driver.get_pinned_scripts()</cite></p>
@@ -1189,7 +1224,7 @@ driver.permissions.set_permission(descriptor, PermissionState.GRANTED, “<a cla
 <span class="sig-name descname"><span class="pre">pin_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.pin_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.pin_script" title="Link to this definition">#</a></dt>
 <dd><p>Store a JavaScript script by a unique hashable ID for later execution.</p>
 <div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.pin()</span></code> instead, which uses the WebDriver BiDi protocol.</p>
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.pin()</span></code> instead.</p>
 </div>
 <p class="rubric">Example</p>
 <p><cite>script = “return document.getElementById(‘foo’).value”</cite></p>
@@ -1321,8 +1356,18 @@ should end with a <cite>.png</cite> extension.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.script">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Script</span></em><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.script" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script" title="selenium.webdriver.remote.script.Script"><span class="pre">Script</span></a></em><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.script" title="Link to this definition">#</a></dt>
+<dd><p>Pinned scripts, script execution and console, error and DOM-mutation handlers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The session’s <code class="docutils literal notranslate"><span class="pre">Script</span></code> object.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><cite>total = driver.script.execute(“(a, b) =&gt; a + b”, 1, 2)</cite>
+<cite>pinned = driver.script.pin(“() =&gt; { window.helper = () =&gt; 42 }”)</cite>
+<cite>handler_id = driver.script.add_console_handler(messages.append)</cite></p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.set_page_load_timeout">
@@ -1590,7 +1635,7 @@ behavior.</p>
 <span class="sig-name descname"><span class="pre">unpin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.unpin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.unpin" title="Link to this definition">#</a></dt>
 <dd><p>Remove a pinned script from storage.</p>
 <div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.unpin()</span></code> instead, which uses the WebDriver BiDi protocol.</p>
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.script.unpin()</span></code> instead.</p>
 </div>
 <p class="rubric">Example</p>
 <p><cite>driver.unpin(script_key)</cite></p>
@@ -1614,15 +1659,15 @@ behavior.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.ie.webdriver.WebDriver.webextension">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">webextension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WebExtension</span></em><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.webextension" title="Link to this definition">#</a></dt>
 <dd><p>Get a webextension module object for BiDi webextension commands.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span><code class="docutils literal notranslate"><span class="pre">driver.install_web_extension()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">driver.uninstall_web_extension()</span></code> instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>An object containing access to BiDi webextension commands.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p><cite>extension_path = “/path/to/extension”</cite>
-<cite>extension_result = driver.webextension.install(path=extension_path)</cite>
-<cite>driver.webextension.uninstall(extension_result)</cite></p>
 </dd></dl>
 
 <dl class="py property">
@@ -1665,6 +1710,7 @@ behavior.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver"><code class="docutils literal notranslate"><span class="pre">WebDriver</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.accessibility_snapshot"><code class="docutils literal notranslate"><span class="pre">WebDriver.accessibility_snapshot()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.add_cookie"><code class="docutils literal notranslate"><span class="pre">WebDriver.add_cookie()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.add_credential"><code class="docutils literal notranslate"><span class="pre">WebDriver.add_credential()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selenium.webdriver.ie.webdriver.WebDriver.add_virtual_authenticator"><code class="docutils literal notranslate"><span class="pre">WebDriver.add_virtual_authenticator()</span></code></a></li>

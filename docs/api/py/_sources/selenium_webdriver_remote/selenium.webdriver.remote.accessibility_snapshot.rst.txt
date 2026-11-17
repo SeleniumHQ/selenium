@@ -1,0 +1,25 @@
+selenium.webdriver.remote.accessibility\_snapshot
+=================================================
+
+.. automodule:: selenium.webdriver.remote.accessibility_snapshot
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      StateValue
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      node_from_wire
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AccessibilityNode
+      AccessibilitySnapshotter
+   

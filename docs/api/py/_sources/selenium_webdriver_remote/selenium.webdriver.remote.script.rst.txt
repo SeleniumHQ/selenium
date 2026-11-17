@@ -1,0 +1,24 @@
+selenium.webdriver.remote.script
+================================
+
+.. automodule:: selenium.webdriver.remote.script
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      deserialize_result
+      serialize_argument
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ConsoleMessage
+      DomMutation
+      PinnedScript
+      Script
+      ScriptError
+      ScriptResult
+   

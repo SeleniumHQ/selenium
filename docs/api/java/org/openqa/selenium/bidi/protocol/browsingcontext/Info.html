@@ -65,6 +65,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#getUrl()" tabindex="0">getUrl()</a></li>
 <li><a href="#getUserContext()" tabindex="0">getUserContext()</a></li>
 <li><a href="#getParent()" tabindex="0">getParent()</a></li>
+<li><a href="#getMozName()" tabindex="0">getMozName()</a></li>
+<li><a href="#getMozScope()" tabindex="0">getMozScope()</a></li>
 </ol>
 </li>
 </ol>
@@ -82,7 +84,6 @@ loadScripts(document, 'script');</script>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="annotations"><a href="../../../Beta.html" title="annotation interface in org.openqa.selenium">@Beta</a>
 @Internal
-<a href="../../../json/WarnOnUnknownFields.html" title="annotation interface in org.openqa.selenium.json">@WarnOnUnknownFields</a>
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">Info</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">This is an unsupported API. No compatibility guarantees are provided.
@@ -111,6 +112,12 @@ evolves, this API will change or be removed without prior notice.</div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext()" class="member-name-link">getContext</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMozName()" class="member-name-link">getMozName</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="MozScope.html" title="enum class in org.openqa.selenium.bidi.protocol.browsingcontext">MozScope</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMozScope()" class="member-name-link">getMozScope</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getOriginalOpener()" class="member-name-link">getOriginalOpener</a>()</code></div>
@@ -194,6 +201,22 @@ evolves, this API will change or be removed without prior notice.</div>
 <h3>getParent</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getParent</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getMozName()">
+<h3>getMozName</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getMozName</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getMozScope()">
+<h3>getMozScope</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="MozScope.html" title="enum class in org.openqa.selenium.bidi.protocol.browsingcontext">MozScope</a>&gt;</span>&nbsp;<span class="element-name">getMozScope</span>()</div>
 </div>
 </section>
 </li>

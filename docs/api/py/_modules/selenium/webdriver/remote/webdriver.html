@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.52.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.53.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=3a4d1932"></script>
+    <script src="../../../../_static/documentation_options.js?v=4b98536b"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/webdriver';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.52" />
+  <meta name="docsearch:version" content="4.53" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.52.0 documentation</p>
+    <p class="title logo__title">Selenium 4.53.0 documentation</p>
   
 </a></div>
     
@@ -398,13 +398,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">Input</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.network</span><span class="w"> </span><span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.permissions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Permissions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">Script</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">Script</span> <span class="k">as</span> <span class="n">BidiScript</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.webextension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span> <span class="k">as</span> <span class="n">BidiWebExtension</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.by</span><span class="w"> </span><span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgOptions</span><span class="p">,</span> <span class="n">BaseOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.web_extension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.accessibility_snapshot</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccessibilityNode</span><span class="p">,</span> <span class="n">AccessibilitySnapshotter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.bidi_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BidiConnection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.client_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
@@ -414,6 +415,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.locator_converter</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocatorConverter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.mobile</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mobile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.remote_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteConnection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.script</span><span class="w"> </span><span class="kn">import</span> <span class="n">Script</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.script_key</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScriptKey</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.shadowroot</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShadowRoot</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.switch_to</span><span class="w"> </span><span class="kn">import</span> <span class="n">SwitchTo</span>
@@ -710,6 +712,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span> <span class="n">WebSocketConnection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="p">:</span> <span class="n">Script</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accessibility_snapshotter</span><span class="p">:</span> <span class="n">AccessibilitySnapshotter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span> <span class="n">Network</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_browser</span><span class="p">:</span> <span class="n">Browser</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -979,7 +982,7 @@
 <span class="w">        </span><span class="sd">"""Store a JavaScript script by a unique hashable ID for later execution.</span>
 
 <span class="sd">        .. deprecated::</span>
-<span class="sd">            Use ``driver.script.pin()`` instead, which uses the WebDriver BiDi protocol.</span>
+<span class="sd">            Use ``driver.script.pin()`` instead.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            `script = "return document.getElementById('foo').value"`</span>
@@ -1000,7 +1003,7 @@
 <span class="w">        </span><span class="sd">"""Remove a pinned script from storage.</span>
 
 <span class="sd">        .. deprecated::</span>
-<span class="sd">            Use ``driver.script.unpin()`` instead, which uses the WebDriver BiDi protocol.</span>
+<span class="sd">            Use ``driver.script.unpin()`` instead.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            `driver.unpin(script_key)`</span>
@@ -1022,13 +1025,13 @@
 <span class="w">        </span><span class="sd">"""Return a list of all pinned scripts.</span>
 
 <span class="sd">        .. deprecated::</span>
-<span class="sd">            Use ``driver.script.pin()`` to manage preload scripts via the WebDriver BiDi protocol.</span>
+<span class="sd">            Use ``driver.script.pin()`` instead.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            `pinned_scripts = driver.get_pinned_scripts()`</span>
 <span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">"get_pinned_scripts is deprecated, use driver.script.pin() to manage preload scripts instead"</span><span class="p">,</span>
+            <span class="s2">"get_pinned_scripts is deprecated, use driver.script.pin() instead"</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1155,6 +1158,43 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MINIMIZE_WINDOW</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="WebDriver.accessibility_snapshot">
+<a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.accessibility_snapshot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accessibility_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interesting_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AccessibilityNode</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Snapshot the accessibility tree of the current browsing context.</span>
+
+<span class="sd">        The tree is computed in the page from the DOM, following WAI-ARIA,</span>
+<span class="sd">        html-aam and accname; it is not the browser's own accessibility tree.</span>
+<span class="sd">        It is rooted at the driver's current browsing context: the top-level</span>
+<span class="sd">        document, or the frame the driver has switched into. Every child</span>
+<span class="sd">        frame's tree is attached under its ``iframe`` node, and the driver's</span>
+<span class="sd">        current browsing context is left as it was. Works in both WebDriver</span>
+<span class="sd">        Classic and BiDi sessions. The snapshot is a copy taken at one point</span>
+<span class="sd">        in time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interesting_only: With the default ``True``, elements of role</span>
+<span class="sd">                ``generic``, ``none`` or ``presentation`` with no name produce</span>
+<span class="sd">                no node and their children take their place. With ``False``</span>
+<span class="sd">                every rendered element produces a node, as Puppeteer's</span>
+<span class="sd">                ``accessibility.snapshot({interestingOnly: false})`` does.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The root node, of role ``document``, named from the title.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; tree = driver.accessibility_snapshot()</span>
+<span class="sd">            &gt;&gt;&gt; print(tree.to_text())</span>
+<span class="sd">            &gt;&gt;&gt; tree.children[0].element.click()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessibility</span><span class="p">()</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">interesting_only</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_accessibility</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AccessibilitySnapshotter</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessibility_snapshotter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_accessibility_snapshotter</span> <span class="o">=</span> <span class="n">AccessibilitySnapshotter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessibility_snapshotter</span>
+
 <div class="viewcode-block" id="WebDriver.print_page">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.print_page">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">print_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_options</span><span class="p">:</span> <span class="n">PrintOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1213,7 +1253,7 @@
 
 <div class="viewcode-block" id="WebDriver.get_cookies">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookies">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">"""Get all cookies visible to the current WebDriver instance.</span>
 
 <span class="sd">        Returns:</span>
@@ -1439,18 +1479,24 @@
         <span class="n">by</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">RelativeBy</span><span class="p">):</span>
-            <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">raw_data</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">"findElements.js"</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">raw_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not find findElements.js in package </span><span class="si">{</span><span class="n">_pkg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-            <span class="n">raw_function</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf8"</span><span class="p">)</span>
-            <span class="n">find_element_js</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/* findElements */return (</span><span class="si">{</span><span class="n">raw_function</span><span class="si">}</span><span class="s2">).apply(null, arguments);"</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">find_element_js</span><span class="p">,</span> <span class="n">by</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_elements_relative</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
 
         <span class="c1"># Return empty list if driver returns null</span>
         <span class="c1"># See https://github.com/SeleniumHQ/selenium/issues/4555</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"using"</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[]</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_elements_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="n">RelativeBy</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="n">ShadowRoot</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Find elements with a relative locator, searching from root, or the document when root is None."""</span>
+        <span class="n">_pkg</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s2">"findElements.js"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not find findElements.js in package </span><span class="si">{</span><span class="n">_pkg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">raw_function</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf8"</span><span class="p">)</span>
+        <span class="n">find_element_js</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/* findElements */return (</span><span class="si">{</span><span class="n">raw_function</span><span class="si">}</span><span class="s2">).apply(null, arguments);"</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">find_element_js</span><span class="p">,</span> <span class="n">by</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">find_element_js</span><span class="p">,</span> <span class="n">by</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">root</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -1754,11 +1800,21 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Script</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Pinned scripts, script execution and console, error and DOM-mutation handlers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The session's ``Script`` object.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            `total = driver.script.execute("(a, b) =&gt; a + b", 1, 2)`</span>
+<span class="sd">            `pinned = driver.script.pin("() =&gt; { window.helper = () =&gt; 42 }")`</span>
+<span class="sd">            `handler_id = driver.script.add_console_handler(messages.append)`</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_script</span> <span class="o">=</span> <span class="n">Script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_script</span> <span class="o">=</span> <span class="n">Script</span><span class="p">(</span><span class="n">BidiScript</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span>
 
@@ -1891,14 +1947,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">webextension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BidiWebExtension</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Get a webextension module object for BiDi webextension commands.</span>
 
+<span class="sd">        .. deprecated::</span>
+<span class="sd">            Use ``driver.install_web_extension()`` and</span>
+<span class="sd">            ``driver.uninstall_web_extension()`` instead.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            An object containing access to BiDi webextension commands.</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            `extension_path = "/path/to/extension"`</span>
-<span class="sd">            `extension_result = driver.webextension.install(path=extension_path)`</span>
-<span class="sd">            `driver.webextension.uninstall(extension_result)`</span>
 <span class="sd">        """</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"driver.webextension is deprecated, use driver.install_web_extension() "</span>
+            <span class="s2">"and driver.uninstall_web_extension() instead"</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 

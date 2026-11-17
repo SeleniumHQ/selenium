@@ -105,7 +105,10 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html" title="class or interface in java.io" class="external-link">Closeable</a></span></div>
 <div class="block">The <b>JsonInput</b> class defines the operations used to deserialize JSON strings into Java
-objects.</div>
+objects.
+
+<p>Instances of this class are not thread-safe: each instance wraps a single character stream and
+must be confined to one thread.</div>
 </div>
 </section>
 <section class="summary">

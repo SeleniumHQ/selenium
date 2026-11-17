@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.52.0 documentation</title>
+    <title>selenium.webdriver.common.api_request_context &#8212; Selenium 4.53.0 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../../_static/documentation_options.js?v=3a4d1932"></script>
+    <script src="../../../../_static/documentation_options.js?v=4b98536b"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/common/api_request_context';</script>
@@ -46,7 +46,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="4.52" />
+  <meta name="docsearch:version" content="4.53" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -114,7 +114,7 @@
   
   
   
-    <p class="title logo__title">Selenium 4.52.0 documentation</p>
+    <p class="title logo__title">Selenium 4.53.0 documentation</p>
   
 </a></div>
     
@@ -362,10 +362,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">urllib.parse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">email.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parsedate_to_datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">http.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">responses</span> <span class="k">as</span> <span class="n">http_status_phrases</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">urllib3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib3.util.retry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Retry</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.cookie</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cookie</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriver</span>
@@ -454,7 +456,7 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_cookie_matches</span><span class="p">(</span><span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cookie_matches</span><span class="p">(</span><span class="n">cookie</span><span class="p">:</span> <span class="n">Cookie</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Check if a browser cookie should be sent with a request to the given URL.</span>
 
 <span class="sd">    Evaluates expiry, domain, path, and secure attribute matching per RFC 6265.</span>
@@ -511,7 +513,7 @@
     <span class="k">return</span> <span class="kc">True</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_parse_set_cookie</span><span class="p">(</span><span class="n">header_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_set_cookie</span><span class="p">(</span><span class="n">header_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cookie</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Parse a single Set-Cookie header value into a cookie dict.</span>
 
 <span class="sd">    Uses manual parsing instead of http.cookies.SimpleCookie which is too</span>
@@ -521,17 +523,18 @@
 <span class="sd">        header_value: The Set-Cookie header string.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A dict with cookie attributes suitable for driver.add_cookie().</span>
+<span class="sd">        A dict with cookie attributes suitable for driver.add_cookie(), or None</span>
+<span class="sd">        if the header does not contain a name-value pair.</span>
 <span class="sd">    """</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="n">header_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">";"</span><span class="p">)</span>
     <span class="n">name_value</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="n">eq_idx</span> <span class="o">=</span> <span class="n">name_value</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"="</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">eq_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">name_value</span><span class="p">[:</span><span class="n">eq_idx</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">name_value</span><span class="p">[</span><span class="n">eq_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-    <span class="n">cookie</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="n">cookie</span><span class="p">:</span> <span class="n">Cookie</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
     <span class="n">has_max_age</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -815,7 +818,7 @@
             <span class="n">body</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Get cookies that should be sent with the request. Overridden by subclasses."""</span>
         <span class="k">return</span> <span class="p">[]</span>
 
@@ -922,7 +925,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            An _IsolatedAPIRequestContext instance.</span>
 <span class="sd">        """</span>
-        <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">storage_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage_state</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
                 <span class="n">file_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">storage_state</span><span class="p">)</span>
@@ -972,10 +975,10 @@
         <span class="k">return</span> <span class="n">state</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Get matching browser cookies for the request URL."""</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">browser_cookies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">()</span>
+            <span class="n">browser_cookies</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Could not retrieve browser cookies"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -994,7 +997,7 @@
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sc_header</span> <span class="ow">in</span> <span class="n">set_cookie_headers</span><span class="p">:</span>
             <span class="n">cookie</span> <span class="o">=</span> <span class="n">_parse_set_cookie</span><span class="p">(</span><span class="n">sc_header</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cookie</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">cookie</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]:</span>
                 <span class="k">continue</span>
             <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
             <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
@@ -1026,7 +1029,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">extra_headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span><span class="p">,</span>
         <span class="n">max_redirects</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">fail_on_status_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1038,13 +1041,13 @@
             <span class="n">max_redirects</span><span class="o">=</span><span class="n">max_redirects</span><span class="p">,</span>
             <span class="n">fail_on_status_code</span><span class="o">=</span><span class="n">fail_on_status_code</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">cookies</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">cookies</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_storage_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Return the current cookies as a storage state dict."""</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"cookies"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cookies</span><span class="p">)}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cookies_for_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cookie</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Get matching cookies from the internal jar."""</span>
         <span class="c1"># For isolated contexts, use the request hostname as default domain</span>
         <span class="n">default_domain</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span>
@@ -1056,7 +1059,7 @@
         <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">sc_header</span> <span class="ow">in</span> <span class="n">set_cookie_headers</span><span class="p">:</span>
             <span class="n">cookie</span> <span class="o">=</span> <span class="n">_parse_set_cookie</span><span class="p">(</span><span class="n">sc_header</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">cookie</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cookie</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">cookie</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]:</span>
                 <span class="k">continue</span>
             <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"domain"</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
             <span class="n">cookie</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>

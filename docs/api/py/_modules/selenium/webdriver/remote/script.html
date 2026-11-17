@@ -1,0 +1,942 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selenium.webdriver.remote.script &#8212; Selenium 4.53.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../../_static/documentation_options.js?v=4b98536b"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/selenium/webdriver/remote/script';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="4.53" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Selenium 4.53.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SeleniumHQ/selenium" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/selenium" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">selenium.webdriver.remote.script</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for selenium.webdriver.remote.script</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># "License"); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="sd">"""The supported script API, returned by ``driver.script``.</span>
+
+<span class="sd">Pinned scripts, script execution and console, JavaScript-error and DOM-mutation</span>
+<span class="sd">handlers. Nothing here hands back a protocol type: results are plain Python</span>
+<span class="sd">values and elements come back as ``WebElement``, as with ``execute_script``.</span>
+<span class="sd">See https://github.com/SeleniumHQ/selenium/blob/trunk/docs/decisions/17670-bidi-implementation-boundaries.md</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">JavascriptException</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriver</span>
+
+<span class="n">BIDI_IMPLEMENTATION_DOC_URL</span> <span class="o">=</span> <span class="s2">"https://www.selenium.dev/documentation/warnings/bidi-implementation/"</span>
+
+<span class="n">_MAX_SAFE_INTEGER</span> <span class="o">=</span> <span class="mi">9007199254740991</span>
+<span class="n">_SPECIAL_NUMBERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"NaN"</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">"-0"</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span> <span class="s2">"Infinity"</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="s2">"-Infinity"</span><span class="p">:</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">}</span>
+<span class="n">_LIST_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"array"</span><span class="p">,</span> <span class="s2">"set"</span><span class="p">,</span> <span class="s2">"nodelist"</span><span class="p">,</span> <span class="s2">"htmlcollection"</span><span class="p">)</span>
+<span class="n">_ELEMENT_NODE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">_DOCUMENT_FRAGMENT_NODE</span> <span class="o">=</span> <span class="mi">11</span>
+
+<span class="c1"># Replacements named in the warning when a removed protocol command is called</span>
+<span class="c1"># through driver.script; anything not listed has no supported replacement.</span>
+<span class="n">_REPLACEMENTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"evaluate"</span><span class="p">:</span> <span class="s2">"driver.script.execute() or driver.execute_script()"</span><span class="p">,</span>
+    <span class="s2">"call_function"</span><span class="p">:</span> <span class="s2">"driver.script.execute() or driver.execute_script()"</span><span class="p">,</span>
+    <span class="s2">"add_preload_script"</span><span class="p">:</span> <span class="s2">"driver.script.pin()"</span><span class="p">,</span>
+    <span class="s2">"remove_preload_script"</span><span class="p">:</span> <span class="s2">"driver.script.unpin()"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="ScriptError">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.ScriptError">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScriptError</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A JavaScript error observed in the browser.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        message: The error message.</span>
+<span class="sd">        source: Source file/URL where the error occurred (top stack frame).</span>
+<span class="sd">        line_number: Line number of the error.</span>
+<span class="sd">        column_number: Column number of the error.</span>
+<span class="sd">        stack_trace: Formatted stack trace, one ``at function (url:line:col)``</span>
+<span class="sd">            line per frame.</span>
+<span class="sd">        timestamp: Time the entry was generated, in milliseconds since epoch.</span>
+<span class="sd">    """</span>
+
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">line_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">column_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stack_trace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ConsoleMessage">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.ConsoleMessage">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConsoleMessage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A console message observed in the browser.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        level: Console level (``debug``, ``info``, ``warn`` or ``error``).</span>
+<span class="sd">        text: The console message text.</span>
+<span class="sd">        source: Source file/URL the message originated from (top stack frame).</span>
+<span class="sd">        line_number: Line number where the message originated.</span>
+<span class="sd">        column_number: Column number where the message originated.</span>
+<span class="sd">        stack_trace: Formatted stack trace where available.</span>
+<span class="sd">        timestamp: Time the entry was generated, in milliseconds since epoch.</span>
+<span class="sd">        method: The console method used (e.g. ``log``, ``warn``).</span>
+<span class="sd">        args: The raw arguments passed to the console call.</span>
+<span class="sd">    """</span>
+
+    <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">line_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">column_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stack_trace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ScriptResult">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.ScriptResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScriptResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Result of executing code with a pinned script in scope, without raising on failure.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        value: The value the code returned, converted as ``execute_script``</span>
+<span class="sd">            converts it, or ``None`` when the code raised.</span>
+<span class="sd">        error: A :class:`ScriptError` describing the failure, or ``None``</span>
+<span class="sd">            on success.</span>
+<span class="sd">        realm: Deprecated; an implementation detail that will be removed.</span>
+<span class="sd">    """</span>
+
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">ScriptError</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">realm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="DomMutation">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.DomMutation">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DomMutation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Represents a DOM mutation event from add_dom_mutation_handler.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        element_id: The ``data-__webdriver_id`` attribute value set on the</span>
+<span class="sd">            mutated element by the MutationObserver. Use this to locate the</span>
+<span class="sd">            element from the main thread if needed.  For ``characterData``</span>
+<span class="sd">            mutations this identifies the parent element of the text node.</span>
+<span class="sd">        attribute_name: The name of the changed attribute (``attributes``</span>
+<span class="sd">            mutations only).</span>
+<span class="sd">        current_value: The value after the mutation (attribute value or</span>
+<span class="sd">            character data; ``None`` if the attribute was removed).</span>
+<span class="sd">        old_value: The value before the mutation.</span>
+<span class="sd">        type: The mutation type: ``attributes``, ``childList`` or</span>
+<span class="sd">            ``characterData``.</span>
+<span class="sd">        target: Same identifier as ``element_id``; named per the</span>
+<span class="sd">            cross-binding API design.</span>
+<span class="sd">        added_nodes: Node descriptors added by a ``childList`` mutation.</span>
+<span class="sd">            Element descriptors carry ``nodeType``/``nodeName``/``id``</span>
+<span class="sd">            (a ``data-__webdriver_id`` value); other nodes carry</span>
+<span class="sd">            ``nodeType``/``nodeName``/``value``.</span>
+<span class="sd">        removed_nodes: Node descriptors removed by a ``childList`` mutation.</span>
+<span class="sd">    """</span>
+
+    <span class="n">element_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">current_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">old_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">added_nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">removed_nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PinnedScript">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.PinnedScript">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PinnedScript</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Identifier of a pinned script, as returned by ``driver.script.pin()``.</span>
+
+<span class="sd">    Subclasses ``str`` so existing code that treats the return value of</span>
+<span class="sd">    ``pin()`` as a plain script ID string keeps working. Pass it to</span>
+<span class="sd">    ``driver.script.execute()`` to run code with the pinned source in scope,</span>
+<span class="sd">    and to ``driver.script.unpin()`` to remove it.</span>
+<span class="sd">    """</span>
+
+    <span class="n">_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">_realm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">script_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">realm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">script_id</span><span class="p">)</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">_source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">_realm</span> <span class="o">=</span> <span class="n">realm</span>
+        <span class="k">return</span> <span class="n">instance</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The unique identifier of the pinned script."""</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The JavaScript source the script was pinned with."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">realm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Deprecated: an implementation detail that is never populated by ``pin()``."""</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"PinnedScript.realm is deprecated and will be removed; it is an implementation detail"</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realm</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"PinnedScript(id=</span><span class="si">{</span><span class="nb">str</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="serialize_argument">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.serialize_argument">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">serialize_argument</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Convert a Python value into a script argument.</span>
+
+<span class="sd">    Accepts what ``execute_script`` accepts: ``None``, ``bool``, ``int``,</span>
+<span class="sd">    ``float`` (including ``NaN`` and infinities), ``str``, lists and tuples,</span>
+<span class="sd">    dicts, ``datetime.datetime``, ``WebElement`` and ``ShadowRoot``.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.shadowroot</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShadowRoot</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webelement</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebElement</span>
+
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"null"</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"date"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"NaN"</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"Infinity"</span> <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">"-Infinity"</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_MAX_SAFE_INTEGER</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"bigint"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"array"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="p">[</span><span class="n">serialize_argument</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="p">[[</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">serialize_argument</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()]}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">WebElement</span><span class="p">,</span> <span class="n">ShadowRoot</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"sharedId"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="deserialize_result">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.deserialize_result">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deserialize_result</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Convert a script result into the Python value ``execute_script`` would return.</span>
+
+<span class="sd">    Primitives map to their Python types, arrays and sets to lists, objects</span>
+<span class="sd">    and maps to dicts, element nodes to ``WebElement`` and shadow roots to</span>
+<span class="sd">    ``ShadowRoot`` (when a driver is given) and windows to their window handle. Values with no JSON form, such</span>
+<span class="sd">    as functions, promises and symbols, become ``None``.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"type"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"string"</span><span class="p">,</span> <span class="s2">"boolean"</span><span class="p">,</span> <span class="s2">"date"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">inner</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"number"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_SPECIAL_NUMBERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">inner</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">inner</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"bigint"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span> <span class="k">if</span> <span class="n">inner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">_LIST_TYPES</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">deserialize_result</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">inner</span> <span class="ow">or</span> <span class="p">[]]</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"object"</span><span class="p">,</span> <span class="s2">"map"</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">inner</span> <span class="ow">or</span> <span class="p">[]:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">deserialize_result</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">driver</span><span class="p">))]</span> <span class="o">=</span> <span class="n">deserialize_result</span><span class="p">(</span>
+                <span class="n">item</span><span class="p">,</span> <span class="n">driver</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"regexp"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">inner</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"node"</span><span class="p">:</span>
+        <span class="n">shared_id</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sharedId"</span><span class="p">)</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">inner</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">shared_id</span> <span class="ow">or</span> <span class="n">driver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nodeType"</span><span class="p">)</span> <span class="o">==</span> <span class="n">_ELEMENT_NODE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">shared_id</span><span class="p">)</span>
+        <span class="c1"># Only shadow roots carry a mode; other document fragments have no classic equivalent.</span>
+        <span class="k">if</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nodeType"</span><span class="p">)</span> <span class="o">==</span> <span class="n">_DOCUMENT_FRAGMENT_NODE</span> <span class="ow">and</span> <span class="s2">"mode"</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">_shadowroot_cls</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">shared_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">"window"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">inner</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"context"</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="Script">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Script</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Pinned scripts, script execution and script event handlers.</span>
+
+<span class="sd">    Obtain it with ``driver.script``; do not construct it directly.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span> <span class="o">=</span> <span class="n">script</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">context_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">current_window_handle</span>
+        <span class="k">return</span> <span class="n">context_id</span>
+
+<div class="viewcode-block" id="Script.pin">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.pin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_declaration</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PinnedScript</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Pin a script so it runs in every new document and can be reused by ``execute()``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            function_declaration: The JavaScript function declaration to pin,</span>
+<span class="sd">                e.g. ``"() =&gt; { window.helper = () =&gt; 42 }"``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A ``PinnedScript`` to pass to ``execute()`` and ``unpin()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">pin</span><span class="p">(</span><span class="n">function_declaration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.unpin">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.unpin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script_id</span><span class="p">:</span> <span class="n">PinnedScript</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a pinned script.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            script_id: The ``PinnedScript`` returned by ``pin()``.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">unpin</span><span class="p">(</span><span class="n">script_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.execute">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function_declaration</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PinnedScript</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">context_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Execute JavaScript in the current window and return its result.</span>
+
+<span class="sd">        Arguments and return values are converted as by ``execute_script``:</span>
+<span class="sd">        ``WebElement`` arguments are passed to the page as elements, and</span>
+<span class="sd">        elements in the result come back as ``WebElement``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            function_declaration: The function to run, e.g. ``"(a, b) =&gt; a + b"``,</span>
+<span class="sd">                or a ``PinnedScript`` returned by ``pin()``.</span>
+<span class="sd">            *args: Arguments passed to the function. When ``function_declaration`` is a</span>
+<span class="sd">                ``PinnedScript``, the single argument is the code to run with</span>
+<span class="sd">                the pinned source in scope, e.g. ``"return helper();"``.</span>
+<span class="sd">            context_id: The window handle to run in. Defaults to the current</span>
+<span class="sd">                window.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The function's return value. When ``function_declaration`` is a ``PinnedScript``,</span>
+<span class="sd">            a ``ScriptResult`` instead, which reports failures through</span>
+<span class="sd">            ``ScriptResult.error`` rather than raising.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            JavascriptException: If the script throws.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            `total = driver.script.execute("(a, b) =&gt; a + b", 1, 2)`</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function_declaration</span><span class="p">,</span> <span class="n">PinnedScript</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">function_declaration</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">context_id</span><span class="o">=</span><span class="n">context_id</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">deserialize_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">(</span><span class="n">context_id</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">call_function</span><span class="p">(</span>
+            <span class="n">function_declaration</span><span class="o">=</span><span class="n">function_declaration</span><span class="p">,</span>
+            <span class="n">await_promise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">target</span><span class="o">=</span><span class="p">{</span><span class="s2">"context"</span><span class="p">:</span> <span class="n">context</span><span class="p">}</span> <span class="k">if</span> <span class="n">context</span> <span class="k">else</span> <span class="p">{},</span>
+            <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="n">serialize_argument</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"exception"</span><span class="p">:</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"exceptionDetails"</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">details</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">details</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">details</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">JavascriptException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"success"</span><span class="p">:</span>
+            <span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"result"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">deserialize_result</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.add_console_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.add_console_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_console_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">ConsoleMessage</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a handler called with a ``ConsoleMessage`` for each console message.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An id for ``remove_console_handler()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">add_console_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.remove_console_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.remove_console_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_console_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a handler added by ``add_console_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">remove_console_handler</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.clear_console_handlers">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.clear_console_handlers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_console_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove every console handler, including those added by ``add_console_message_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">clear_console_handlers</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Script.add_console_message_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.add_console_message_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_console_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a handler called with a console log entry for each console message.</span>
+
+<span class="sd">        For payloads carrying source URL and line/column numbers, see</span>
+<span class="sd">        ``add_console_handler()``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An id for ``remove_console_message_handler()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">add_console_message_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.remove_console_message_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.remove_console_message_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_console_message_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a handler added by ``add_console_message_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">remove_console_message_handler</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.add_error_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.add_error_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">ScriptError</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a handler called with a ``ScriptError`` for each uncaught JavaScript error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An id for ``remove_error_handler()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">add_error_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.remove_error_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.remove_error_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a handler added by ``add_error_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">remove_error_handler</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.clear_error_handlers">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.clear_error_handlers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_error_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove every JavaScript error handler, including those added by ``add_javascript_error_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">clear_error_handlers</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Script.add_javascript_error_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.add_javascript_error_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_javascript_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a handler called with a JavaScript log entry for each uncaught JavaScript error.</span>
+
+<span class="sd">        For payloads carrying source URL and line/column numbers, see</span>
+<span class="sd">        ``add_error_handler()``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An id for ``remove_javascript_error_handler()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">add_javascript_error_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.remove_javascript_error_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.remove_javascript_error_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_javascript_error_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a handler added by ``add_javascript_error_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">remove_javascript_error_handler</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.add_dom_mutation_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.add_dom_mutation_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_dom_mutation_handler</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">DomMutation</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="n">mutation_types</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a handler called with a ``DomMutation`` for each observed DOM mutation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: Function called with a ``DomMutation``.</span>
+<span class="sd">            mutation_types: Any of ``attributes``, ``childList`` and</span>
+<span class="sd">                ``characterData``, as a string or an iterable of strings.</span>
+<span class="sd">                Defaults to ``("attributes",)``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An id for ``remove_dom_mutation_handler()``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">add_dom_mutation_handler</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">mutation_types</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.remove_dom_mutation_handler">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.remove_dom_mutation_handler">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_dom_mutation_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a handler added by ``add_dom_mutation_handler()``."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">remove_dom_mutation_handler</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Script.clear_dom_mutation_handlers">
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.script.html#selenium.webdriver.remote.script.Script.clear_dom_mutation_handlers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_dom_mutation_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove every DOM mutation handler."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="o">.</span><span class="n">clear_dom_mutation_handlers</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="c1"># Only reached for names Script does not define: the protocol commands</span>
+        <span class="c1"># (and helpers) driver.script used to expose. Keep them working while deprecated.</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">replacement</span> <span class="o">=</span> <span class="n">_REPLACEMENTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">replacement</span><span class="p">:</span>
+            <span class="n">advice</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"use </span><span class="si">{</span><span class="n">replacement</span><span class="si">}</span><span class="s2"> instead"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">advice</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"there is no supported replacement; see </span><span class="si">{</span><span class="n">BIDI_IMPLEMENTATION_DOC_URL</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"driver.script.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is deprecated and will be removed; </span><span class="si">{</span><span class="n">advice</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">attribute</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

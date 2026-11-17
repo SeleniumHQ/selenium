@@ -1,0 +1,12 @@
+selenium.webdriver.common.cookie
+================================
+
+.. automodule:: selenium.webdriver.common.cookie
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Cookie
+   
