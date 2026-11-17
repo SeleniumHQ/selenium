@@ -46,10 +46,10 @@ task :affected_targets do |_task, args|
 
   puts "Changed files: #{changed_files.size}"
 
+  override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
   targets = if changed_files.any? { |f| f.match?(HIGH_IMPACT_PATTERN) }
               BINDING_TARGETS.values
             elsif File.exist?(index_file)
-              override_targets = changed_files.filter_map { |f| BINDING_TARGETS[TARGET_OVERRIDES[f]] }
               covered_pattern = Regexp.union(
                 override_targets.map { |t| %r{\A#{Regexp.escape(t.delete_suffix('/...'))}[:/]} }
               )
@@ -57,7 +57,7 @@ task :affected_targets do |_task, args|
               (override_targets + index_targets).uniq
             else
               puts 'No index found, using directory-based fallback'
-              affected_targets_by_directory(changed_files)
+              (override_targets + affected_targets_by_directory(changed_files)).uniq
             end
 
   FileUtils.mkdir_p('build')
