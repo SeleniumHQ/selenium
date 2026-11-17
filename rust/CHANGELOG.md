@@ -1,3 +1,9 @@
+0.4.53
+======
+* fix(#18263): keep Selenium Manager stderr empty in --output json (#18268)
+* Fix Firefox and Electron download URLs on Windows arm64 (#18285)
+* Restrict Selenium Manager stats to vetted values before sending to Plausible (#17892)
+
 0.4.52
 ======
 * stop resolving a Java runtime on --grid so the jar lookup no longer depends on a JRE download (#18157)
