@@ -258,7 +258,7 @@ jobs:
       always() && !cancelled() &&
       needs.generate-docs.result != 'skipped' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python')) &&
       needs.github-release-publish.result != 'failure' &&
       needs.create-tag.result != 'failure'
     permissions:
@@ -275,7 +275,7 @@ jobs:
       always() && !cancelled() &&
       needs.create-tag.result == 'success' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python'))
     permissions:
       contents: read
     strategy:
@@ -323,7 +323,7 @@ jobs:
       always() && !cancelled() &&
       needs.reset-version.result == 'success' &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped')
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python'))
     permissions:
       contents: write
       actions: read
@@ -371,7 +371,7 @@ jobs:
     if: >-
       always() && !cancelled() &&
       needs.publish.result == 'success' &&
-      (needs.publish-python.result == 'success' || needs.publish-python.result == 'skipped') &&
+      (needs.publish-python.result == 'success' || !contains(fromJSON(needs.parse-tag.outputs.languages), 'python')) &&
       needs.update-version.result == 'success' &&
       (needs.parse-tag.outputs.language != 'all' || needs.mirror.result == 'success')
     uses: ./.github/workflows/restrict-trunk.yml
