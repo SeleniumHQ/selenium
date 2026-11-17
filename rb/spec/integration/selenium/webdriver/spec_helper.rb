@@ -32,10 +32,10 @@ GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 class SeleniumTestListener
   def example_finished(notification)
     exception = notification.example.exception
-    assertion_failed = exception &&
-                       (exception.is_a?(RSpec::Expectations::ExpectationNotMetError) ||
-                        exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError))
-    pending_exception = exception.nil? && notification.example.pending && !notification.example.skip
+    assertion_failed = exception.is_a?(RSpec::Expectations::ExpectationNotMetError) ||
+                       exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
+    pending_exception = exception.nil? && notification.example.pending && !notification.example.skip &&
+                        !notification.example.metadata[:exception_guard_matched]
 
     return unless (exception && !assertion_failed) || pending_exception
 
@@ -74,6 +74,7 @@ def resolve_pending_exception(procsy, guard)
   elsif guard.matches_exception?(exception)
     RSpec::Core::Pending.mark_pending!(example, guard.message)
     example.display_exception = exception
+    example.metadata[:exception_guard_matched] = true
   else
     expected = guard.guarded[:exception]
     example.display_exception = exception.exception(
