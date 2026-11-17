@@ -41,6 +41,9 @@ public interface HasWebExtensions {
    * Installs an extension from a packed archive ({@code .xpi} / {@code .zip} / {@code .crx}) or an
    * unpacked extension directory. The kind is detected from the path.
    *
+   * <p>On Firefox, whether the install is temporary or permanent depends on the protocol; see
+   * {@link FirefoxWebExtensionOptions#permanent(boolean)}.
+   *
    * @param path local path to the extension archive or directory
    * @return a handle to the installed extension
    * @throws InvalidArgumentException if {@code path} does not exist or is not a readable
@@ -64,6 +67,9 @@ public interface HasWebExtensions {
 
   /**
    * Installs an extension from the Base64-encoded bytes of a packed extension.
+   *
+   * <p>On Firefox, whether the install is temporary or permanent depends on the protocol; see
+   * {@link FirefoxWebExtensionOptions#permanent(boolean)}.
    *
    * @param base64Encoded Base64-encoded bytes of the extension archive
    * @return a handle to the installed extension

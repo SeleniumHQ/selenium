@@ -55,6 +55,11 @@ public final class FirefoxWebExtensionOptions extends WebExtensionOptions {
   /**
    * Installs the extension permanently rather than for the lifetime of the session.
    *
+   * <p>When unset, the default depends on the protocol: BiDi installs temporarily, while the
+   * classic {@code /moz/addon/install} fallback installs permanently. Firefox installs only a
+   * packed, signed extension permanently; an unsigned extension or a directory is rejected. Set
+   * this explicitly to get the same result on both.
+   *
    * @param permanent whether the extension should survive the session
    * @return a new options object with the value set
    */
