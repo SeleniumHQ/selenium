@@ -18,12 +18,19 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
+import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -86,11 +93,22 @@ class WebExtensionsWithoutBiDiTest extends JupiterTestBase {
     assertThat(extension.getId()).isEqualTo(EXPECTED_ID);
 
     driver.get(pages.blankPage);
-    assertThat(driver.findElement(By.id("webextensions-selenium-example")).getText())
-        .isEqualTo(INJECTED);
+    // The content script injects asynchronously after the page loads.
+    WebElement injected =
+        wait.until(presenceOfElementLocated(By.id("webextensions-selenium-example")));
+    assertThat(injected.getText()).isEqualTo(INJECTED);
 
     ((HasWebExtensions) driver).uninstallWebExtension(extension);
     driver.navigate().refresh();
-    assertThat(driver.findElements(By.id("webextensions-selenium-example"))).isEmpty();
+    assertStaysAbsent(driver, By.id("webextensions-selenium-example"));
+  }
+
+  // The content script injects asynchronously after load, so an element missing right after a
+  // refresh proves nothing; it has to stay missing for longer than injection takes.
+  private static void assertStaysAbsent(WebDriver driver, By locator) {
+    assertThatThrownBy(() ->
+            new WebDriverWait(driver, Duration.ofSeconds(2))
+                .until(presenceOfElementLocated(locator)))
+        .isInstanceOf(TimeoutException.class);
   }
 }

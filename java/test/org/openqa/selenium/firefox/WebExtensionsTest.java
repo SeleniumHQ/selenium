@@ -18,15 +18,20 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.webextension.FirefoxWebExtensionOptions;
 import org.openqa.selenium.webextension.HasWebExtensions;
@@ -71,7 +76,7 @@ class WebExtensionsTest extends JupiterTestBase {
 
     extensions().uninstallWebExtension(extension);
     driver.navigate().refresh();
-    assertThat(driver.findElements(By.id("webextensions-selenium-example"))).isEmpty();
+    assertStaysAbsent(driver, By.id("webextensions-selenium-example"));
   }
 
   @Test
@@ -119,5 +124,14 @@ class WebExtensionsTest extends JupiterTestBase {
 
     WebExtension extension = extensions().installWebExtension(base64);
     assertInstallInjectsAndUninstallRemoves(extension);
+  }
+
+  // The content script injects asynchronously after load, so an element missing right after a
+  // refresh proves nothing; it has to stay missing for longer than injection takes.
+  private static void assertStaysAbsent(WebDriver driver, By locator) {
+    assertThatThrownBy(() ->
+            new WebDriverWait(driver, Duration.ofSeconds(2))
+                .until(presenceOfElementLocated(locator)))
+        .isInstanceOf(TimeoutException.class);
   }
 }
