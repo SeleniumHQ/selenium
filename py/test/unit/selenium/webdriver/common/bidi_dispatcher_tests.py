@@ -159,6 +159,35 @@ def test_a_running_listener_delays_neither_another_listener_nor_a_command_reply(
     release.set()
 
 
+def test_a_concurrent_listener_is_invoked_with_each_payload_without_waiting_for_earlier_ones(connection, browser):
+    started, release = queue.Queue(), threading.Event()
+
+    def blocks(payload):
+        started.put(payload.url)
+        release.wait(5)
+
+    contexts(connection).add_load_listener(blocks, concurrent=True)
+    browser.emit("browsingContext.load", load(url="https://one"))
+    browser.emit("browsingContext.load", load(url="https://two"))
+
+    assert {started.get(timeout=5), started.get(timeout=5)} == {"https://one", "https://two"}
+    release.set()
+
+
+def test_a_listener_added_by_event_name_receives_typed_payloads(connection, browser):
+    received = queue.Queue()
+    contexts(connection).add_listener("browsingContext.load", received.put)
+
+    browser.emit("browsingContext.load", load())
+
+    assert received.get(timeout=5) == NavigationInfo.from_json(load())
+
+
+def test_adding_a_listener_for_an_event_the_module_does_not_define_is_refused(connection):
+    with pytest.raises(ValueError, match="BrowsingContext has no event 'network.beforeRequestSent'"):
+        contexts(connection).add_listener("network.beforeRequestSent", lambda payload: None)
+
+
 def test_a_listener_can_send_a_command(connection, browser):
     received = queue.Queue()
     contexts(connection).add_load_listener(lambda payload: received.put(contexts(connection).get_tree().contexts))
@@ -278,6 +307,85 @@ def test_a_listener_can_remove_itself(connection, browser):
     assert received.get(timeout=5) == "https://one"
 
     assert received.empty()
+
+
+def test_drain_invokes_every_payload_received_before_it_and_waits_for_them(connection, browser):
+    started, release, finished = threading.Event(), threading.Event(), []
+
+    def blocks(payload):
+        started.set()
+        release.wait(5)
+        finished.append(payload.url)
+
+    listener = contexts(connection).add_load_listener(blocks)
+    browser.emit("browsingContext.load", load(url="https://running"))
+    assert started.wait(5)
+    browser.emit("browsingContext.load", load(url="https://queued"))
+
+    threading.Timer(0.2, release.set).start()
+    contexts(connection).remove_listener(listener, drain=True)
+
+    assert finished == ["https://running", "https://queued"]
+    browser.emit("browsingContext.load", load(url="https://late"))
+    assert finished == ["https://running", "https://queued"]
+
+
+def test_drain_waits_for_every_running_invocation_of_a_concurrent_listener(connection, browser):
+    started, release, finished = queue.Queue(), threading.Event(), []
+
+    def blocks(payload):
+        started.put(payload.url)
+        release.wait(5)
+        finished.append(payload.url)
+
+    listener = contexts(connection).add_load_listener(blocks, concurrent=True)
+    browser.emit("browsingContext.load", load(url="https://one"))
+    browser.emit("browsingContext.load", load(url="https://two"))
+    assert {started.get(timeout=5), started.get(timeout=5)} == {"https://one", "https://two"}
+
+    threading.Timer(0.2, release.set).start()
+    contexts(connection).remove_listener(listener, drain=True)
+
+    assert sorted(finished) == ["https://one", "https://two"]
+
+
+def test_a_listener_that_drains_itself_is_refused_instead_of_waiting_on_itself(connection, browser):
+    errors, listener = queue.Queue(), None
+
+    def drains(payload):
+        try:
+            contexts(connection).remove_listener(listener, drain=True)
+        except RuntimeError as e:
+            errors.put(e)
+
+    listener = contexts(connection).add_load_listener(drains)
+    browser.emit("browsingContext.load", load())
+
+    assert "cannot drain itself" in str(errors.get(timeout=5))
+
+
+def test_closing_the_connection_releases_a_drain_waiting_on_a_running_listener(connection, browser):
+    started, release, drained = threading.Event(), threading.Event(), threading.Event()
+
+    def blocks(payload):
+        started.set()
+        release.wait(5)
+
+    listener = contexts(connection).add_load_listener(blocks)
+    browser.emit("browsingContext.load", load())
+    assert started.wait(5)
+    browser.emit("browsingContext.load", load())
+
+    def drain():
+        contexts(connection).remove_listener(listener, drain=True)
+        drained.set()
+
+    threading.Thread(target=drain).start()
+    assert not drained.wait(0.2)
+    connection.close()
+
+    assert drained.wait(5)
+    release.set()
 
 
 def test_closing_the_connection_drops_every_listener(connection, browser):
