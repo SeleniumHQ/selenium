@@ -273,7 +273,9 @@ class RemoteWebExtensions implements HasWebExtensions {
       try {
         Base64.getDecoder().decode(base64Encoded);
       } catch (IllegalArgumentException e) {
-        throw new InvalidArgumentException("Not valid Base64: " + base64Encoded, e);
+        // The payload is a whole extension, so keep it out of the message.
+        throw new InvalidArgumentException(
+            "Not valid Base64 (length " + base64Encoded.length() + "): " + e.getMessage(), e);
       }
       return new Source(null, base64Encoded);
     }

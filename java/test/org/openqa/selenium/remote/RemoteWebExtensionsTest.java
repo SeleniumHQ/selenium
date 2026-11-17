@@ -130,7 +130,9 @@ class RemoteWebExtensionsTest {
         new WebDriverFixture(FIREFOX, echoCapabilities, valueResponder(null));
 
     assertThatThrownBy(() -> fixture.driver.installWebExtension("not valid base64 !!!"))
-        .isInstanceOf(InvalidArgumentException.class);
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("length 20")
+        .hasMessageNotContaining("not valid base64 !!!");
   }
 
   @Test
