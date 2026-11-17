@@ -42,10 +42,6 @@ module Selenium
 
         PORT: Integer
 
-        def self.element_class: () -> singleton(Element)
-
-        def self.element_class=: (singleton(Element)? klass) -> void
-
         attr_accessor http: untyped
 
         attr_accessor file_detector: untyped
@@ -215,8 +211,6 @@ module Selenium
         def element_aria_role: (untyped element) -> untyped
 
         def element_aria_label: (untyped element) -> untyped
-
-        def accessibility_snapshot: (?Element? root, ?interesting_only: bool) -> AccessibilityNode
 
         def element_value: (untyped element) -> untyped
 
