@@ -25,7 +25,7 @@ awk "$strip"'
 
 [ -f build/bazel-console.log ] || exit 0
 
-IFS=$'\t' read -r invocation breakdown hits executed elapsed tests cached < <(awk "$strip"'
+IFS=$'\t' read -r invocation breakdown hits executed elapsed tests cached binding < <(awk "$strip"'
   /Streaming build results to: / && !url { sub(/.*Streaming build results to: /, ""); url = $0 }
   /^INFO: [0-9]+ process(es)?: / {
     breakdown = $0; sub(/^INFO: /, "", breakdown); sub(/\.$/, "", breakdown)
@@ -37,9 +37,15 @@ IFS=$'\t' read -r invocation breakdown hits executed elapsed tests cached < <(aw
     }
   }
   /^INFO: Elapsed time: / { elapsed = $4; sub(/s,?$/, "", elapsed) }
-  $1 ~ /^\/\// && / PASSED in / { tests++; if ($2 == "(cached)") cached++ }
-  END { printf "%s\t%s\t%d\t%d\t%s\t%d\t%d\n", (url ? url : "-"), (breakdown ? breakdown : "-"), hits, executed, (elapsed ? elapsed : 0), tests, cached }
+  $1 ~ /^\/\// && / PASSED in / {
+    tests++; if ($2 == "(cached)") cached++
+    b = $1; sub(/^\/\//, "", b); sub(/[\/:].*/, "", b)
+    if (++count[b] > top) { top = count[b]; binding = b }
+  }
+  END { printf "%s\t%s\t%d\t%d\t%s\t%d\t%d\t%s\n", (url ? url : "-"), (breakdown ? breakdown : "-"), hits, executed, (elapsed ? elapsed : 0), tests, cached, (binding ? binding : "-") }
 ' build/bazel-console.log)
+
+[ "$tests" -gt 0 ] || exit 0
 
 mkdir -p build/remote-cache
 jq -cn \
@@ -48,6 +54,7 @@ jq -cn \
   --arg run_attempt "${GITHUB_RUN_ATTEMPT:-}" \
   --arg event "${GITHUB_EVENT_NAME:-}" \
   --arg job "${JOB_NAME:-}" \
+  --arg binding "$binding" \
   --arg os "${RUNNER_OS:-}-${RUNNER_ARCH:-}" \
   --arg pr "${PR_NUMBER:-}" \
   --arg sha "${GITHUB_SHA:-}" \

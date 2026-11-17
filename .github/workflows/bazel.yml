@@ -72,7 +72,7 @@ on:
         type: boolean
         default: false
       remote-cache:
-        description: Read the EngFlow remote cache (the nightly also writes it)
+        description: Read the EngFlow remote cache (trunk pushes also write it; the nightly does not use it)
         required: false
         type: boolean
         default: false
@@ -168,7 +168,7 @@ jobs:
           bazelisk-cache: true
           bazelrc: |
             common --color=yes
-            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'schedule' && 'build --config=remote-cache-write --noremote_accept_cached' || 'build --config=remote-cache') || '' }}
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && github.event_name != 'schedule' && (github.event_name == 'push' && 'build --config=remote-cache-write' || 'build --config=remote-cache') || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
@@ -248,7 +248,7 @@ jobs:
       # The following two steps can be removed after collecting data evaluating effectiveness of remote caching
       - name: Summarize remote cache use
         id: remote-cache-summary
-        if: always() && inputs.remote-cache && github.repository_owner == 'SeleniumHQ'
+        if: always() && inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && github.event_name != 'schedule'
         continue-on-error: true
         shell: bash
         env:

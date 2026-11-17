@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 # RBE runs the Linux x86_64 tests; these jobs cover macOS and Windows.
 jobs:
@@ -64,21 +65,19 @@ jobs:
       matrix:
         os: [macos, windows]
         tag_filters: ['unit,os-sensitive,se-manager']
-        # macOS runners are scarce, so only use for PRs and nightly runs
-        exclude:
-          - os: ${{ github.event_name == 'push' && 'macos' || '' }}
     with:
       name: ${{ matrix.os }}
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       download-artifact-name: targets
       run: >
         [ -s bazel-targets-js.txt ] || echo //javascript/selenium-webdriver/... > bazel-targets-js.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
         ${{ inputs.compile-manager && '--manager=host' || '' }}
-        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && github.event_name == 'pull_request' && ',-edge' || '' }}
+        --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
         --target_pattern_file=bazel-targets-js.txt
 
   os-tests-full:
