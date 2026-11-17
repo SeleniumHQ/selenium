@@ -239,12 +239,15 @@ jobs:
         shell: bash
         env:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-        run: ./scripts/github-actions/retry-transient-download.sh '${{ inputs.run }}'
+          RUN_CMD: ${{ inputs.run }}
+        run: ./scripts/github-actions/retry-transient-download.sh "$RUN_CMD"
       - name: Rerun failures with debug
         id: rerun-failures
         if: steps.run-bazel.outcome == 'failure' && (steps.retry-transient.outputs.retried != 'true' || steps.retry-transient.outcome == 'failure')
         shell: bash
-        run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
+        env:
+          RUN_CMD: ${{ inputs.run }}
+        run: ./scripts/github-actions/rerun-failures.sh "$RUN_CMD" '${{ inputs.rerun-with-debug }}'
       # The following two steps can be removed after collecting data evaluating effectiveness of remote caching
       - name: Summarize remote cache use
         id: remote-cache-summary
