@@ -29,6 +29,9 @@ module Selenium
       # The atom records frames as leaves; the binding fills them in, so this page has its own tests.
       let(:frames_page) { '014-iframe' }
 
+      safari_wire = {browser: :safari_preview,
+                     reason: 'Safari Technology Preview snapshot result fails deserialization'}
+
       def corpus(file)
         path = File.expand_path("../../../../../../common/src/web/accessibility/#{file}", __dir__)
         File.exist?(path) ? File.read(path, encoding: 'UTF-8') : nil
@@ -70,7 +73,7 @@ module Selenium
         driver.navigate.to url_for("accessibility/#{page}.html")
       end
 
-      describe 'Driver#accessibility_snapshot' do
+      describe 'Driver#accessibility_snapshot', pending_if: safari_wire do
         pages = File.expand_path('../../../../../../common/src/web/accessibility/index.json', __dir__)
         JSON.parse(File.read(pages, encoding: 'UTF-8')).reject { |page| page == '014-iframe' }.each do |page|
           it "matches the corpus for #{page}" do
@@ -170,19 +173,9 @@ module Selenium
           expect(before.to_text).not_to eq after.to_text
           expect(after.to_text).to include 'changed'
         end
-
-        it 'needs a BiDi session' do
-          reset_driver!(web_socket_url: false) do |driver|
-            driver.navigate.to url_for('accessibility/005-lists.html')
-            expect { driver.accessibility_snapshot }
-              .to raise_error(Error::UnsupportedOperationError, /BiDi.*web_socket_url/)
-            expect { driver.find_element(tag_name: 'body').accessibility_snapshot }
-              .to raise_error(Error::UnsupportedOperationError, /BiDi.*web_socket_url/)
-          end
-        end
       end
 
-      describe 'Element#accessibility_snapshot' do
+      describe 'Element#accessibility_snapshot', pending_if: safari_wire do
         it 'can be unpruned too' do
           load_page('010-generic-and-presentation')
           wrapper = driver.find_element(id: 'wrap-1')
@@ -256,6 +249,16 @@ module Selenium
           driver.execute_script('arguments[0].remove()', item)
 
           expect { item.accessibility_snapshot }.to raise_error(Error::StaleElementReferenceError)
+        end
+      end
+
+      it 'needs a BiDi session' do
+        reset_driver!(web_socket_url: false) do |driver|
+          driver.navigate.to url_for('accessibility/005-lists.html')
+          expect { driver.accessibility_snapshot }
+            .to raise_error(Error::UnsupportedOperationError, /BiDi.*web_socket_url/)
+          expect { driver.find_element(tag_name: 'body').accessibility_snapshot }
+            .to raise_error(Error::UnsupportedOperationError, /BiDi.*web_socket_url/)
         end
       end
     end

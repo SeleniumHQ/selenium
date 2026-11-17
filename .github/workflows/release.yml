@@ -153,6 +153,10 @@ jobs:
       run: |
         if [ "${{ needs.parse-tag.outputs.language == 'all' || needs.parse-tag.outputs.language == matrix.language }}" = "true" ]; then
           ./go ${{ matrix.language }}:release rbe
+          # @selenium/manager ships alongside selenium-webdriver at the same version
+          if [ "${{ matrix.language }}" = "javascript" ]; then
+            ./go javascript:release_manager rbe
+          fi
         else
           echo skipping
         fi

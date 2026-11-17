@@ -271,7 +271,7 @@ impl SeleniumManager for ElectronManager {
             if X32.is(arch) {
                 "win32-ia32"
             } else if ARM64.is(arch) {
-                "win32-arm64-x64"
+                "win32-arm64"
             } else {
                 "win32-x64"
             }
@@ -340,7 +340,50 @@ impl SeleniumManager for ElectronManager {
 
 #[cfg(test)]
 mod tests {
+    use super::ElectronManager;
     use super::normalize_pinned_version;
+    use crate::SeleniumManager;
+
+    #[test]
+    fn test_driver_url() {
+        let mut electron_manager = ElectronManager::new().unwrap();
+
+        let data = vec![
+            vec![
+                "windows",
+                "x86",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-ia32.zip",
+            ],
+            vec![
+                "windows",
+                "x86_64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-x64.zip",
+            ],
+            vec![
+                "windows",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-win32-arm64.zip",
+            ],
+            vec![
+                "macos",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-mas-arm64.zip",
+            ],
+            vec![
+                "linux",
+                "aarch64",
+                "https://github.com/electron/electron/releases/download/v36.2.1/chromedriver-v36.2.1-linux-arm64.zip",
+            ],
+        ];
+
+        electron_manager.set_driver_version("36.2.1".to_string());
+        data.iter().for_each(|d| {
+            electron_manager.set_os(d.first().unwrap().to_string());
+            electron_manager.set_arch(d.get(1).unwrap().to_string());
+            let driver_url = electron_manager.get_driver_url().unwrap();
+            assert_eq!(d.get(2).unwrap().to_string(), driver_url);
+        });
+    }
 
     #[test]
     fn specific_version_is_returned_verbatim() {

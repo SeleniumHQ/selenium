@@ -178,7 +178,6 @@ public class ProtocolHandshake {
     public Response createResponse() {
       Response response = new Response(sessionId);
       response.setValue(capabilities);
-      response.setStatus(ErrorCodes.SUCCESS);
       response.setState(ErrorCodes.SUCCESS_STRING);
       return response;
     }

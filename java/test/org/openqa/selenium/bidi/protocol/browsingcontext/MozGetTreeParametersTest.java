@@ -15,15 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v154;
+package org.openqa.selenium.bidi.protocol.browsingcontext;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@AutoService(CdpInfo.class)
-public class v154CdpInfo extends CdpInfo {
+import java.util.Map;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-  public v154CdpInfo() {
-    super(154, v154Domains::new);
+@Tag("UnitTests")
+class MozGetTreeParametersTest {
+
+  @Test
+  void sendsTheScopeUnderItsVendorWireKey() {
+    MozGetTreeParameters params = new MozGetTreeParameters().setRoot("ctx1");
+    params.setScope(MozScope.CHROME);
+
+    assertThat(params.toMap()).isEqualTo(Map.of("root", "ctx1", "moz:scope", "chrome"));
+  }
+
+  @Test
+  void omitsTheScopeWhenItIsNeverSet() {
+    assertThat(new MozGetTreeParameters().toMap()).doesNotContainKey("moz:scope");
   }
 }

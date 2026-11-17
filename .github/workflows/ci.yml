@@ -26,14 +26,12 @@ jobs:
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/trunk'
     uses: ./.github/workflows/ci-build-index.yml
 
-  actionlint:
-    name: Validate workflows
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Validate workflows
-        uses: raven-actions/actionlint@v2
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Check Workflows and Shell
+      run: ./go lint_workflows && ./go lint_shell
 
   format:
     name: Format
@@ -246,7 +244,7 @@ jobs:
   ci-success:
     name: CI Success
     if: always()
-    needs: [actionlint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
+    needs: [lint, format, targets-mode, check, read-targets, dotnet, java, python, ruby, rust, javascript]
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded

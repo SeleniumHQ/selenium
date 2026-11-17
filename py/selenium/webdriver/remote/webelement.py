@@ -438,8 +438,9 @@ class WebElement(BaseWebElement):
 
         The root node is always this element, whatever its role; if the element
         is hidden, by itself or by an ancestor, that node has no children. Child
-        frames are attached under their ``iframe`` nodes. See
-        :meth:`WebDriver.accessibility_snapshot`.
+        frames are attached under their ``iframe`` nodes. In a WebDriver
+        Classic session the element must belong to the driver's current
+        browsing context. See :meth:`WebDriver.accessibility_snapshot`.
 
         Args:
             interesting_only: With the default ``True`` unnamed generic and
@@ -450,7 +451,6 @@ class WebElement(BaseWebElement):
             The node for this element, with its subtree.
 
         Raises:
-            WebDriverException: When the session has no WebDriver BiDi connection.
             StaleElementReferenceException: When the element is no longer attached.
         """
         return self._parent._accessibility().snapshot(self, interesting_only)

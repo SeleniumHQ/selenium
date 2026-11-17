@@ -92,6 +92,7 @@ import org.openqa.selenium.federatedcredentialmanagement.FederatedCredentialMana
 import org.openqa.selenium.federatedcredentialmanagement.HasFederatedCredentialManagement;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Css;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
@@ -1364,8 +1365,7 @@ public class RemoteWebDriver
 
     @Override
     public WebDriver frame(String frameName) {
-      String name =
-          frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
+      String name = Css.escape(frameName);
       List<WebElement> frameElements =
           RemoteWebDriver.this.findElements(
               By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));

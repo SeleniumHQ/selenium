@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
@@ -50,8 +49,6 @@ class W3CHandshakeResponse implements HandshakeResponse {
 
       Response response = new Response();
       response.setState((String) rawError);
-      response.setStatus(
-          new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
 
       Class<? extends WebDriverException> type =
           new ErrorCodes().getExceptionType((String) rawError);

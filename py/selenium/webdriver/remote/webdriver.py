@@ -753,15 +753,16 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.MINIMIZE_WINDOW)
 
     def accessibility_snapshot(self, interesting_only: bool = True) -> AccessibilityNode:
-        """Snapshot the accessibility tree of the page.
+        """Snapshot the accessibility tree of the current browsing context.
 
         The tree is computed in the page from the DOM, following WAI-ARIA,
         html-aam and accname; it is not the browser's own accessibility tree.
-        It is rooted at the top-level browsing context of the current window,
-        whatever frame the driver has switched to, and every child frame's
-        tree is attached under its ``iframe`` node. To scope to a frame, take
-        ``element.accessibility_snapshot()`` of its ``iframe`` element. The
-        snapshot is a copy taken at one point in time.
+        It is rooted at the driver's current browsing context: the top-level
+        document, or the frame the driver has switched into. Every child
+        frame's tree is attached under its ``iframe`` node, and the driver's
+        current browsing context is left as it was. Works in both WebDriver
+        Classic and BiDi sessions. The snapshot is a copy taken at one point
+        in time.
 
         Args:
             interesting_only: With the default ``True``, elements of role
@@ -773,9 +774,6 @@ class WebDriver(BaseWebDriver):
         Returns:
             The root node, of role ``document``, named from the title.
 
-        Raises:
-            WebDriverException: When the session has no WebDriver BiDi connection.
-
         Example:
             >>> tree = driver.accessibility_snapshot()
             >>> print(tree.to_text())
@@ -784,11 +782,6 @@ class WebDriver(BaseWebDriver):
         return self._accessibility().snapshot(None, interesting_only)
 
     def _accessibility(self) -> AccessibilitySnapshotter:
-        if not self.caps.get("webSocketUrl"):
-            raise WebDriverException(
-                "accessibility_snapshot() requires a WebDriver BiDi session; "
-                "enable it with options.enable_bidi = True before starting the driver"
-            )
         if self._accessibility_snapshotter is None:
             self._accessibility_snapshotter = AccessibilitySnapshotter(self)
         return self._accessibility_snapshotter

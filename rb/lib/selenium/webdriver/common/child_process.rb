@@ -32,7 +32,7 @@ module Selenium
 
       POLL_INTERVAL = 0.1
 
-      attr_accessor :detach
+      attr_accessor :detach, :env
       attr_writer :io
 
       def self.build(*command)
@@ -44,6 +44,7 @@ module Selenium
         @detach = false
         @pid = nil
         @status = nil
+        @env = nil
       end
 
       def io
@@ -55,7 +56,7 @@ module Selenium
         options[:pgroup] = true unless Platform.windows? # NOTE: this is a bug only in Windows 7
 
         WebDriver.logger.debug("Starting process: #{@command} with #{options}", id: :process)
-        @pid = Process.spawn(*@command, options)
+        @pid = Process.spawn(@env || {}, *@command, options)
         WebDriver.logger.debug("  -> pid: #{@pid}", id: :process)
 
         Process.detach(@pid) if detach

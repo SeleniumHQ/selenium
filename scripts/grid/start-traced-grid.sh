@@ -3,7 +3,7 @@
 SE_JAR=bazel-bin/java/src/org/openqa/selenium/grid/selenium
 TRACE_CP=$(coursier fetch -p io.opentelemetry:opentelemetry-exporter-jaeger:1.0.0 io.grpc:grpc-netty:1.35.0)
 
-ps auxw | grep "$SE_JAR" | awk '{print $2}' | xargs kill -9
+pgrep -f "$SE_JAR" | xargs kill -9
 
 bazel build grid
 

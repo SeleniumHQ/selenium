@@ -72,4 +72,7 @@ Where an engine computes something different from the recorded expectation
 and the difference is the engine's rather than a bug in the atom, record an
 engine-specific expectation file and list it here with the reason.
 
-_None recorded yet._
+- `007-images-and-figures` (WebKit): WebKit leaves the SVG `<title>` element
+  out of the tree, so neither form has its node or its text. The
+  `graphics-document` still takes its name from it. Chromium and Firefox keep
+  the element.

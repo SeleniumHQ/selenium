@@ -15062,7 +15062,8 @@
       "kind": "alias",
       "type": {
         "ref": "permissions.setPermission"
-      }
+      },
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissionscommand"
     },
     "permissions.PermissionDescriptor": {
       "kind": "record",
@@ -15076,6 +15077,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-permissiondescriptor",
       "outbound": true,
       "inbound": false
     },
@@ -15086,7 +15088,8 @@
         "denied",
         "prompt"
       ],
-      "primitive": "string"
+      "primitive": "string",
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-permissionstate"
     },
     "permissions.setPermission": {
       "kind": "record",
@@ -15108,6 +15111,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-setpermission",
       "outbound": false,
       "inbound": false
     },
@@ -15155,6 +15159,7 @@
           }
         }
       ],
+      "specHref": "https://w3c.github.io/permissions/#cddl-type-permissions-setpermissionparameters",
       "outbound": true,
       "inbound": false
     },
@@ -17990,6 +17995,67 @@
               "required": false,
               "type": {
                 "ref": "session.CapabilityRequestFirefoxOptions"
+              }
+            }
+          ]
+        },
+        "session.CapabilityResponse": {
+          "via": "session.CapabilityResponseExtension",
+          "fields": [
+            {
+              "name": "moz:buildID",
+              "wire": "moz:buildID",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "moz:headless",
+              "wire": "moz:headless",
+              "required": false,
+              "type": {
+                "primitive": "boolean"
+              }
+            },
+            {
+              "name": "moz:platformVersion",
+              "wire": "moz:platformVersion",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "moz:processID",
+              "wire": "moz:processID",
+              "required": false,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "moz:profile",
+              "wire": "moz:profile",
+              "required": false,
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "name": "moz:shutdownTimeout",
+              "wire": "moz:shutdownTimeout",
+              "required": false,
+              "type": {
+                "ref": "js-uint"
+              }
+            },
+            {
+              "name": "moz:userContext",
+              "wire": "moz:userContext",
+              "required": false,
+              "type": {
+                "ref": "browser.UserContext"
               }
             }
           ]
