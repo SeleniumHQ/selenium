@@ -4,6 +4,7 @@ load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite
 LARGE_TESTS = [
     "ExtensionsTest.java",
     "WebExtensionsTest.java",
+    "WebExtensionsWithoutBiDiTest.java",
     "FirefoxDriverTest.java",
     "FirefoxDriverBuilderTest.java",
     "FirefoxDriverPreferenceTest.java",
