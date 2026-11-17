@@ -38,6 +38,8 @@ class Domain:
     :class:`Transport` for the standalone path.
     """
 
+    EVENT_TYPES: dict[str, type | None] = {}
+
     def __init__(self, source: Any) -> None:
         if isinstance(source, Transport):
             self._transport = source
@@ -54,13 +56,24 @@ class Domain:
     def _execute(self, cmd: str, params: Any = None, result: Any = None) -> Any:
         return self._transport.execute(cmd, params=params, result=result)
 
-    def remove_listener(self, listener_id: str) -> None:
-        """Stop applying payloads to the listener an ``add_<event>_listener`` method returned ``listener_id`` for.
+    def add_listener(self, event: str, listener: Callable[[Any], Any], *, concurrent: bool = False) -> str:
+        """Invoke ``listener`` with each typed payload of ``event``, a wire name such as ``"log.entryAdded"``.
 
-        Internal, unsupported. Local only: the subscription feeding it is left to the caller. A run already
-        in progress finishes and queued payloads are dropped. Removing an unknown or removed id does nothing.
+        Internal, unsupported. Sends nothing: payloads arrive once the caller subscribes with
+        ``Session.subscribe``. By default the listener gets one payload at a time in arrival order; with
+        ``concurrent=True`` each payload is invoked as it arrives, without waiting for earlier ones.
+        Returns the id to pass to ``remove_listener``.
         """
-        self._transport.remove_listener(listener_id)
+        if event not in self.EVENT_TYPES:
+            raise ValueError(f"{type(self).__name__} has no event {event!r}")
+        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener, concurrent=concurrent)
 
-    def _add_listener(self, event: str, listener: Callable[[Any], Any]) -> str:
-        return self._transport.add_listener(event, self.EVENT_TYPES[event], listener)
+    def remove_listener(self, listener_id: str, *, drain: bool = False) -> None:
+        """Stop invoking the listener that ``listener_id`` names.
+
+        Internal, unsupported. Local only: the subscription feeding it is left to the caller. A running
+        invocation finishes either way. By default payloads not yet started are discarded and this returns at
+        once, so a listener may remove itself; with ``drain=True`` every payload received before the call is
+        invoked and this waits for them to finish. Removing an unknown or removed id does nothing.
+        """
+        self._transport.remove_listener(listener_id, drain=drain)

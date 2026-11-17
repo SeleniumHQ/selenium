@@ -843,8 +843,8 @@ def _listener_method(e: EventIR) -> str:
 
 
 def _guard_listener_names(domain: str, commands: list[CommandIR], events: list[EventIR]) -> None:
-    # ``remove_listener`` is the hand-written ``Domain`` method every generated listener is removed with.
     taken = {_listener_method(e): f"the listener method for event {e.wire}" for e in events}
+    taken["add_listener"] = "Domain.add_listener"
     taken["remove_listener"] = "Domain.remove_listener"
     for c in commands:
         if c.method in taken:
@@ -1062,19 +1062,17 @@ def _emit_command(c: CommandIR) -> list[str]:
 
 def _emit_event_listener(e: EventIR) -> list[str]:
     payload = e.payload_class or "dict[str, Any]"
-    args = ["self", f"listener: Callable[[{payload}], Any]"]
+    args = ["self", f"listener: Callable[[{payload}], Any]", "*", "concurrent: bool = False"]
     lines = [wrap_call(f"    def {_listener_method(e)}(", args, ") -> str:", 4)]
-    lines.append(f'        """Apply ``listener`` to each {e.wire} payload (internal, unsupported).')
+    lines.append(f'        """Invoke ``listener`` with each {e.wire} payload (internal, unsupported).')
     lines.append("")
-    lines.append(f"        The listener is called with a ``{payload}``, one payload at a time in arrival order;")
-    lines.append("        one that fails validation is logged and not delivered. This sends nothing: payloads")
-    lines.append("        arrive once the caller subscribes with ``Session.subscribe``. Returns the id to pass to")
-    lines.append("        ``remove_listener``.")
+    lines.append(f"        The listener gets a ``{payload}``; one that fails validation is logged and not delivered.")
+    lines.append("        See ``add_listener`` for ``concurrent``, the subscription and the returned id.")
     if e.spec_href:
         lines.append("")
         lines.append(f"        See {e.spec_href}")
     lines.append('        """')
-    lines.append(f"        return self._add_listener({lit(e.wire)}, listener)")
+    lines.append(f"        return self.add_listener({lit(e.wire)}, listener, concurrent=concurrent)")
     return lines
 
 

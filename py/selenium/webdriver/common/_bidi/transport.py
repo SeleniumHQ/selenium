@@ -62,12 +62,14 @@ class Transport:
         value = reply["result"]
         return result.from_json(value) if result is not None else value
 
-    def add_listener(self, event: str, payload_type: type | None, listener: Callable[[Any], Any]) -> str:
-        """Register ``listener`` for the ``payload_type`` payloads of ``event`` with the connection's dispatcher."""
-        return self._dispatcher().add_listener(event, payload_type, listener)
+    def add_listener(
+        self, event: str, payload_type: type | None, listener: Callable[[Any], Any], *, concurrent: bool = False
+    ) -> str:
+        """Add ``listener`` for the ``payload_type`` payloads of ``event`` to the connection's dispatcher."""
+        return self._dispatcher().add_listener(event, payload_type, listener, concurrent=concurrent)
 
-    def remove_listener(self, listener_id: str) -> None:
-        self._dispatcher().remove_listener(listener_id)
+    def remove_listener(self, listener_id: str, *, drain: bool = False) -> None:
+        self._dispatcher().remove_listener(listener_id, drain=drain)
 
     def _dispatcher(self) -> EventDispatcher:
         dispatcher = getattr(self._connection, "event_receiver", None)
