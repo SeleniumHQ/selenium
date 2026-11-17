@@ -743,6 +743,44 @@ bot.dom.getOverflowState = function (elem, opt_region) {
     }
   }
 
+  // Ancestors already checked that the user can scroll horizontally (x) and
+  // vertically (y), closest first. The element does not overflow them, but they
+  // can scroll it into view of a container further up that hides it.
+  var scrollers = { x: [], y: [] };
+
+  // Returns the closest scroller along the axis ('x' or 'y') that can scroll
+  // further towards the end of its content if forward is true, or towards its
+  // start otherwise; null if there is none.
+  function findScroller(axis, forward) {
+    return goog.array.find(scrollers[axis], function (e) {
+      var scroll = axis == 'x' ? e.scrollLeft : e.scrollTop;
+      var maxScroll = axis == 'x' ? e.scrollWidth - e.clientWidth :
+        e.scrollHeight - e.clientHeight;
+      return forward ? scroll < maxScroll : scroll > 0;
+    });
+  }
+
+  // Returns the overflow state of the element when an overflow:hidden container
+  // hides it. dirX and dirY are 1 if the element lies past the container's
+  // right or bottom edge, -1 if it lies before its left or top edge, and 0 if
+  // the container does not hide it along that axis. The element is still
+  // scrollable into view if a scroller between them can scroll it towards the
+  // container, unless that scroller is itself hidden.
+  function getStateOfHiddenElement(dirX, dirY) {
+    var scrollerX = dirX ? findScroller('x', dirX > 0) : null;
+    var scrollerY = dirY ? findScroller('y', dirY > 0) : null;
+    if ((dirX && !scrollerX) || (dirY && !scrollerY)) {
+      return bot.dom.OverflowState.HIDDEN;
+    }
+    if ((scrollerX && bot.dom.getOverflowState(scrollerX) ==
+        bot.dom.OverflowState.HIDDEN) ||
+      (scrollerY && bot.dom.getOverflowState(scrollerY) ==
+        bot.dom.OverflowState.HIDDEN)) {
+      return bot.dom.OverflowState.HIDDEN;
+    }
+    return bot.dom.OverflowState.SCROLL;
+  }
+
   // Check if the element overflows any ancestor element.
   for (var container = getOverflowParent(elem);
     !!container;
@@ -764,9 +802,11 @@ bot.dom.getOverflowState = function (elem, opt_region) {
     // Check "underflow": if an element is to the left or above the container
     var underflowsX = region.right < containerRect.left;
     var underflowsY = region.bottom < containerRect.top;
-    if ((underflowsX && containerOverflow.x == 'hidden') ||
-      (underflowsY && containerOverflow.y == 'hidden')) {
-      return bot.dom.OverflowState.HIDDEN;
+    var underflowHiddenX = underflowsX && containerOverflow.x == 'hidden';
+    var underflowHiddenY = underflowsY && containerOverflow.y == 'hidden';
+    if (underflowHiddenX || underflowHiddenY) {
+      return getStateOfHiddenElement(underflowHiddenX ? -1 : 0,
+        underflowHiddenY ? -1 : 0);
     } else if ((underflowsX && containerOverflow.x != 'visible') ||
       (underflowsY && containerOverflow.y != 'visible')) {
       // When the element is positioned to the left or above a container, we
@@ -787,9 +827,11 @@ bot.dom.getOverflowState = function (elem, opt_region) {
     // Check "overflow": if an element is to the right or below a container
     var overflowsX = region.left >= containerRect.left + containerRect.width;
     var overflowsY = region.top >= containerRect.top + containerRect.height;
-    if ((overflowsX && containerOverflow.x == 'hidden') ||
-      (overflowsY && containerOverflow.y == 'hidden')) {
-      return bot.dom.OverflowState.HIDDEN;
+    var overflowHiddenX = overflowsX && containerOverflow.x == 'hidden';
+    var overflowHiddenY = overflowsY && containerOverflow.y == 'hidden';
+    if (overflowHiddenX || overflowHiddenY) {
+      return getStateOfHiddenElement(overflowHiddenX ? 1 : 0,
+        overflowHiddenY ? 1 : 0);
     } else if ((overflowsX && containerOverflow.x != 'visible') ||
       (overflowsY && containerOverflow.y != 'visible')) {
       // If the element has fixed position and falls outside the scrollable area
@@ -807,6 +849,16 @@ bot.dom.getOverflowState = function (elem, opt_region) {
       var containerState = bot.dom.getOverflowState(container);
       return containerState == bot.dom.OverflowState.HIDDEN ?
         bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
+    }
+
+    // The element does not overflow this container. If the user can scroll
+    // the container, it can scroll the element into view of the containers
+    // further up.
+    if (containerOverflow.x == 'auto' || containerOverflow.x == 'scroll') {
+      scrollers.x.push(container);
+    }
+    if (containerOverflow.y == 'auto' || containerOverflow.y == 'scroll') {
+      scrollers.y.push(container);
     }
   }
 
