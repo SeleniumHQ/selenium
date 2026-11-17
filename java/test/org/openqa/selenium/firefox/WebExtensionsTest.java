@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,7 +64,9 @@ class WebExtensionsTest extends JupiterTestBase {
     assertThat(extension.getId()).isEqualTo(EXPECTED_ID);
 
     driver.get(pages.blankPage);
-    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    // The content script injects asynchronously after the page loads.
+    WebElement injected =
+        wait.until(presenceOfElementLocated(By.id("webextensions-selenium-example")));
     assertThat(injected.getText()).isEqualTo(INJECTED);
 
     extensions().uninstallWebExtension(extension);
