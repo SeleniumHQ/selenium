@@ -310,7 +310,7 @@ def test_drain_invokes_every_payload_received_before_it_and_waits_for_them(conne
     browser.emit("browsingContext.load", load(url="https://queued"))
 
     threading.Timer(0.2, release.set).start()
-    contexts(connection).remove_listener(listener, drain=True)
+    contexts(connection).remove_listener(listener, drain_timeout=5)
 
     assert finished == ["https://running", "https://queued"]
     browser.emit("browsingContext.load", load(url="https://late"))
@@ -331,7 +331,7 @@ def test_drain_waits_for_every_running_invocation_of_a_concurrent_listener(conne
     assert {started.get(timeout=5), started.get(timeout=5)} == {"https://one", "https://two"}
 
     threading.Timer(0.2, release.set).start()
-    contexts(connection).remove_listener(listener, drain=True)
+    contexts(connection).remove_listener(listener, drain_timeout=5)
 
     assert sorted(finished) == ["https://one", "https://two"]
 
@@ -348,7 +348,7 @@ def test_a_listener_being_drained_is_no_longer_active_for_new_payloads(connectio
     browser.emit("browsingContext.load", load(url="https://running"))
     assert started.wait(5)
 
-    drainer = threading.Thread(target=contexts(connection).remove_listener, args=(listener,), kwargs={"drain": True})
+    drainer = threading.Thread(target=contexts(connection).remove_listener, args=(listener,), kwargs={"drain_timeout": 5})
     drainer.start()
     deadline = time.monotonic() + 5
     while listener in connection.event_receiver._listeners and time.monotonic() < deadline:
@@ -363,19 +363,26 @@ def test_a_listener_being_drained_is_no_longer_active_for_new_payloads(connectio
     assert logged.empty()
 
 
-def test_a_listener_that_drains_itself_is_refused_instead_of_waiting_on_itself(connection, browser):
-    errors, listener = queue.Queue(), None
+def test_a_drain_that_times_out_raises_and_discards_the_payloads_not_yet_started(connection, browser):
+    started, release, finished = threading.Event(), threading.Event(), queue.Queue()
 
-    def drains(payload):
-        try:
-            contexts(connection).remove_listener(listener, drain=True)
-        except RuntimeError as e:
-            errors.put(e)
+    def blocks(payload):
+        started.set()
+        release.wait(5)
+        finished.put(payload.url)
 
-    listener = contexts(connection).add_load_listener(drains)
-    browser.emit("browsingContext.load", load())
+    listener = contexts(connection).add_load_listener(blocks)
+    browser.emit("browsingContext.load", load(url="https://running"))
+    assert started.wait(5)
+    browser.emit("browsingContext.load", load(url="https://queued"))
 
-    assert "cannot drain itself" in str(errors.get(timeout=5))
+    with pytest.raises(TimeoutError, match=f"Listener bidi-listener-{listener} did not finish draining within 0.2"):
+        contexts(connection).remove_listener(listener, drain_timeout=0.2)
+    release.set()
+
+    assert finished.get(timeout=5) == "https://running"
+    with pytest.raises(queue.Empty):
+        finished.get(timeout=0.2)
 
 
 def test_closing_the_connection_drops_every_listener(connection, browser):

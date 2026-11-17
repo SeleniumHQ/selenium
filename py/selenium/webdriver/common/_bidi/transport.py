@@ -68,8 +68,8 @@ class Transport:
         """Add ``listener`` for the ``payload_type`` payloads of ``event`` to the connection's dispatcher."""
         return self._dispatcher().add_listener(event, payload_type, listener, concurrent=concurrent)
 
-    def remove_listener(self, listener_id: str, *, drain: bool = False) -> None:
-        self._dispatcher().remove_listener(listener_id, drain=drain)
+    def remove_listener(self, listener_id: str, *, drain_timeout: float | None = None) -> None:
+        self._dispatcher().remove_listener(listener_id, drain_timeout=drain_timeout)
 
     def _dispatcher(self) -> EventDispatcher:
         dispatcher = getattr(self._connection, "event_receiver", None)
