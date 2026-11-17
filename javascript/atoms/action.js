@@ -90,7 +90,12 @@ bot.action.clear = function (element) {
       'Element must be user-editable in order to clear it.');
   }
 
-  if (element.value) {
+  // Invalid user input can be hidden by an empty serialized value. Preserve
+  // the separate focus and event behavior for empty number inputs below.
+  var hasBadInput = bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
+    element.validity && element.validity.badInput &&
+    !bot.dom.isInputType(element, 'number');
+  if (element.value || hasBadInput) {
     bot.action.LegacyDevice_.focusOnElement(element);
     if (goog.userAgent.IE && bot.dom.isInputType(element, 'range')) {
       var min = element.min ? element.min : 0;

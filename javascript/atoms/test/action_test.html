@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>action_test.html</title>
   <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <style>
+    #qunit-fixture { position: static; }
+  </style>
   <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
   <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
@@ -149,6 +152,34 @@
         assertChangeFired(assert);
         assert.strictEqual(e.value, '');
       });
+    });
+
+    function createInputWithBadInput(type) {
+      var element = document.createElement('input');
+      element.type = type;
+      // Scripted value assignment cannot produce a native invalid editing state.
+      Object.defineProperty(element, 'validity', {value: {badInput: true}});
+      goog.dom.getElement('qunit-fixture').appendChild(element);
+      return element;
+    }
+
+    QUnit.test('clearing invalid month input with an empty value', function(assert) {
+      var element = createInputWithBadInput('month');
+      assert.strictEqual(element.value, '');
+      expectChangeEvent(element, assert);
+
+      bot.action.clear(element);
+
+      assertChangeFired(assert);
+    });
+
+    QUnit.test('clearing invalid empty number input preserves its event behavior', function(assert) {
+      var element = createInputWithBadInput('number');
+      doNotExpectChangeEvent(element, assert);
+
+      bot.action.clear(element);
+
+      assert.strictEqual(element.value, '');
     });
 
     QUnit.test('clearing a disabled element throws', function(assert) {
