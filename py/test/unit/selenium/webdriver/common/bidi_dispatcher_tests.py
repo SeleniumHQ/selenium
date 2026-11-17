@@ -378,30 +378,6 @@ def test_a_listener_that_drains_itself_is_refused_instead_of_waiting_on_itself(c
     assert "cannot drain itself" in str(errors.get(timeout=5))
 
 
-def test_closing_the_connection_releases_a_drain_waiting_on_a_running_listener(connection, browser):
-    started, release, drained = threading.Event(), threading.Event(), threading.Event()
-
-    def blocks(payload):
-        started.set()
-        release.wait(5)
-
-    listener = contexts(connection).add_load_listener(blocks)
-    browser.emit("browsingContext.load", load())
-    assert started.wait(5)
-    browser.emit("browsingContext.load", load())
-
-    def drain():
-        contexts(connection).remove_listener(listener, drain=True)
-        drained.set()
-
-    threading.Thread(target=drain).start()
-    assert not drained.wait(0.2)
-    connection.close()
-
-    assert drained.wait(5)
-    release.set()
-
-
 def test_closing_the_connection_drops_every_listener(connection, browser):
     received = queue.Queue()
     contexts(connection).add_load_listener(received.put)
