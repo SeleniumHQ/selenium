@@ -90,11 +90,9 @@ bot.action.clear = function (element) {
       'Element must be user-editable in order to clear it.');
   }
 
-  // Invalid user input can be hidden by an empty serialized value. Preserve
-  // the separate focus and event behavior for empty number inputs below.
+  // Invalid user input can be hidden by an empty serialized value.
   var hasBadInput = bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
-    element.validity && element.validity.badInput &&
-    !bot.dom.isInputType(element, 'number');
+    element.validity && element.validity.badInput;
   if (element.value || hasBadInput) {
     bot.action.LegacyDevice_.focusOnElement(element);
     if (goog.userAgent.IE && bot.dom.isInputType(element, 'range')) {
@@ -117,9 +115,7 @@ bot.action.clear = function (element) {
     }
   } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
     (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
-    // number input fields that have invalid inputs
-    // report their value as empty string with no way to tell if there is a
-    // current value or not
+    // Retain the legacy focus behavior for empty number inputs.
     bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
   } else if (bot.dom.isContentEditable(element)) {

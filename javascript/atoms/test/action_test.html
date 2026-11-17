@@ -163,23 +163,36 @@
       return element;
     }
 
-    QUnit.test('clearing invalid month input with an empty value', function(assert) {
-      var element = createInputWithBadInput('month');
-      assert.strictEqual(element.value, '');
-      expectChangeEvent(element, assert);
+    ['month', 'number'].forEach(function(type) {
+      QUnit.test('clearing invalid ' + type + ' input with an empty value', function(assert) {
+        var element = createInputWithBadInput(type);
+        element.focus();
+        assert.strictEqual(element.value, '');
+        assert.ok(document.activeElement === element, 'Input remains focused');
+        expectChangeEvent(element, assert);
 
-      bot.action.clear(element);
+        bot.action.clear(element);
 
-      assertChangeFired(assert);
+        assertChangeFired(assert);
+        assert.notOk(document.activeElement === element, 'Input should be unfocused');
+      });
     });
 
-    QUnit.test('clearing invalid empty number input preserves its event behavior', function(assert) {
-      var element = createInputWithBadInput('number');
+    QUnit.test('clearing a valid empty number input preserves focus and events', function(assert) {
+      var element = document.createElement('input');
+      element.type = 'number';
+      goog.dom.getElement('qunit-fixture').appendChild(element);
+      element.focus();
+      assert.strictEqual(element.value, '');
+      assert.notOk(element.validity.badInput);
+      assert.ok(document.activeElement === element, 'Input remains focused');
       doNotExpectChangeEvent(element, assert);
+      doNotExpectEvent(goog.events.EventType.BLUR, element, assert);
 
       bot.action.clear(element);
 
       assert.strictEqual(element.value, '');
+      assert.ok(document.activeElement === element, 'Input remains focused');
     });
 
     QUnit.test('clearing a disabled element throws', function(assert) {
