@@ -46,11 +46,6 @@ on:
         required: false
         type: string
         default: ''
-      download-artifact-name:
-        description: Name of an artifact to download into the workspace before running
-        required: false
-        type: string
-        default: ''
       artifact-name:
         description: Name of artifact to upload
         required: false
@@ -144,12 +139,6 @@ jobs:
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
-      - name: Download artifact
-        if: inputs.download-artifact-name != ''
-        uses: actions/download-artifact@v8
-        with:
-          name: ${{ inputs.download-artifact-name }}
-        continue-on-error: true
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version
