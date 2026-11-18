@@ -48,11 +48,10 @@ module Selenium
           end
 
           describe '#set_forced_colors_mode_theme_override',
-                   pending_if: [{browser_family: :chromium,
-                                 version: 'stable',
+                   pending_if: [{browser: :edge,
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /emulation\.setForcedColorsModeThemeOverride/},
-                                 reason: 'Chromium unsupported operation: emulation.setForcedColorsModeThemeOverride'},
+                                 reason: 'Edge 157 unsupported operation: emulation.setForcedColorsModeThemeOverride'},
                                 {browser: :firefox,
                                  exception: {class: Error::UnknownCommandError},
                                  reason: 'Firefox unknown command: emulation.setForcedColorsModeThemeOverride'}] do
