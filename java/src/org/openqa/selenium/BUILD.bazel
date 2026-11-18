@@ -33,7 +33,7 @@ java_export(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":manifest",
+        ":build-properties",
         "//java/src/org/openqa/selenium/io",
         artifact("org.jspecify:jspecify"),
     ],
@@ -85,6 +85,13 @@ javadoc(
     transitive = True,
     deps = [
         ":client-combined",
+    ],
+)
+
+java_import(
+    name = "build-properties",
+    jars = [
+        ":manifest-jar",
     ],
 )
 
