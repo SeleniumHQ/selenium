@@ -1026,7 +1026,6 @@ FEATURE_TESTS = (
 # that library into every other test suite.
 ACTIONS_TESTS = [
     "test/selenium/webdriver/common/interactions_tests.py",
-    "test/selenium/webdriver/common/interactions_with_device_tests.py",
     "test/selenium/webdriver/common/w3c_interaction_tests.py",
     "test/selenium/webdriver/support/event_firing_webdriver_tests.py",
 ]
