@@ -122,7 +122,7 @@ generate_bidi_library(
 VERSION = VERSIONS["javascript"]
 
 BROWSER_VERSIONS = [
-    "v155",
+    "v158",
     "v156",
     "v157",
 ]
