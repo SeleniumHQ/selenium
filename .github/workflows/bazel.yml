@@ -237,25 +237,6 @@ jobs:
         env:
           RUN_CMD: ${{ inputs.run }}
         run: ./scripts/github-actions/rerun-failures.sh "$RUN_CMD" '${{ inputs.rerun-with-debug }}'
-      # The following two steps can be removed after collecting data evaluating effectiveness of remote caching
-      - name: Summarize remote cache use
-        id: remote-cache-summary
-        if: always() && inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && github.event_name != 'schedule'
-        continue-on-error: true
-        shell: bash
-        env:
-          JOB_NAME: ${{ inputs.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: ./scripts/github-actions/remote-cache-summary.sh
-      - name: Upload remote cache record
-        if: always() && steps.remote-cache-summary.outputs.record == 'true'
-        continue-on-error: true
-        uses: actions/upload-artifact@v7
-        with:
-          name: remote-cache-${{ inputs.os }}-${{ job.check_run_id }}-${{ github.run_attempt }}
-          retention-days: 60
-          path: build/remote-cache/record.jsonl
       - name: Collect failed logs
         if: always() && steps.run-bazel.outcome == 'failure'
         shell: bash
