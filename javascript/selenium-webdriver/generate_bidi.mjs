@@ -281,6 +281,8 @@ function generateTypeScript(ast, model, vendorModel, args) {
     }
   }
 
+  aliasMapRecords(schema)
+
   const typesByDomain = groupTypesByDomain(schema.types)
   const allCommands = schemaToCommands(schema)
   const allEvents = schemaToEvents(schema)
@@ -310,6 +312,33 @@ function generateTypeScript(ast, model, vendorModel, args) {
   }
 
   console.log('Done.')
+}
+
+/**
+ * Turns each field-less map record (a CDDL `{* text => V}` group the projector lifts out
+ * as a synthetic type) into an alias of `{ map: V }`. Emitted as a record, it would have no
+ * declared keys, so every received entry would be warned about and dropped as undeclared;
+ * as a map, each key is declared by the map's rule and each value is held to V (ADR 17786
+ * decisions 4, 7, 9 and 10). An alias keeps the type's exported name.
+ */
+function aliasMapRecords(schema) {
+  const sections = [schema, ...Object.values(schema.vendor ?? {})]
+  const maps = new Set()
+  for (const section of sections) {
+    for (const [name, node] of Object.entries(section.types ?? {})) {
+      if (node.kind === 'record' && node.map !== undefined && node.fields.length === 0) {
+        section.types[name] = { kind: 'alias', type: { map: node.map } }
+        maps.add(name)
+      }
+    }
+  }
+  // A union resolves its variants as records or unions, so it cannot select a map.
+  for (const section of sections) {
+    for (const [name, node] of Object.entries(section.types ?? {})) {
+      const variant = node.kind === 'union' ? node.variants.find((v) => maps.has(v)) : undefined
+      if (variant) throw new Error(`${name}: union variant ${variant} is a map, which a union cannot select`)
+    }
+  }
 }
 
 // ============================================================

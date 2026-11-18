@@ -210,6 +210,7 @@ pkg_tar(
 SMALL_TESTS = [
     "test/bidi/domain_test.js",
     "test/bidi/index_test.js",
+    "test/bidi/map_record_test.js",
     "test/bidi/network_types_test.js",
     "test/bidi/serialization/record_test.js",
     "test/bidi/serialization/union_test.js",
