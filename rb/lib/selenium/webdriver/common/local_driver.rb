@@ -30,7 +30,7 @@ module Selenium
 
         begin
           yield(caps, http_client) if block_given?
-        rescue Selenium::WebDriver::Error::WebDriverError
+        rescue StandardError
           @service_manager&.stop
           raise
         end
