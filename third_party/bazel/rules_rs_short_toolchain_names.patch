@@ -1,8 +1,8 @@
 diff --git a/rs/private/toolchains_repository.bzl b/rs/private/toolchains_repository.bzl
 --- a/rs/private/toolchains_repository.bzl
 +++ b/rs/private/toolchains_repository.bzl
-@@ -11,7 +11,7 @@
- exports_files(["component_labels.bzl"])
+@@ -17,7 +17,7 @@
+ load("@rules_rs//rs/toolchains:declare_rustc_toolchains.bzl", "declare_rustc_toolchains")
  
  declare_rustc_toolchains(
 -    name = "default",
@@ -13,16 +13,16 @@ diff --git a/rs/private/toolchains_repository.bzl b/rs/private/toolchains_reposi
 diff --git a/rs/toolchains/declare_rustc_toolchains.bzl b/rs/toolchains/declare_rustc_toolchains.bzl
 --- a/rs/toolchains/declare_rustc_toolchains.bzl
 +++ b/rs/toolchains/declare_rustc_toolchains.bzl
-@@ -121,7 +121,7 @@
-         clippy_repo_label = "@clippy_{}_{}//:".format(triple_suffix, version_key)
+@@ -142,7 +142,7 @@
          lld_label = _component(rust_lld, triple, rustc_repo_label + "rust-lld")
  
--        rust_toolchain_name = name + "_" + triple_suffix + "_" + version_key + "_rust_toolchain"
-+        rust_toolchain_name = name + "_" + triple_suffix + "_" + version_key + "_rust_tc"
- 
-         rust_toolchain_kwargs = dict(
-             rust_doc = _component(rust_doc, triple, rustc_repo_label + "rustdoc"),
-@@ -209,7 +209,7 @@
+         toolchain_prefix = name + "_" + triple_suffix + "_" + version_key
+-        rust_toolchain_name = toolchain_prefix + "_rust_toolchain"
++        rust_toolchain_name = toolchain_prefix + "_rust_tc"
+         exec_compatible_with = [
+             "@platforms//os:" + exec_triple.system,
+             "@platforms//cpu:" + exec_triple.arch,
+@@ -261,7 +261,7 @@
          )
  
          rust_toolchain(
@@ -31,12 +31,21 @@ diff --git a/rs/toolchains/declare_rustc_toolchains.bzl b/rs/toolchains/declare_
              bootstrapping = True,
              process_wrapper = "@rules_rust//util/process_wrapper:bootstrap_process_wrapper",
              rust_std = rust_std_label,
-@@ -236,7 +236,7 @@
-             (True, False),
+@@ -272,7 +272,7 @@
+         # explicit "cc" requires a C/C++ toolchain even during analysis.
+         for bootstrapping in [False, True]:
+             rust_toolchain(
+-                name = rust_toolchain_name + "_uefi" + ("_bootstrap" if bootstrapping else ""),
++                name = rust_toolchain_name + "_uefi" + ("_bs" if bootstrapping else ""),
+                 bootstrapping = bootstrapping,
+                 process_wrapper = "@rules_rust//util/process_wrapper" + (":bootstrap_process_wrapper" if bootstrapping else ""),
+                 rust_std = rust_std_label if bootstrapping else toolchain_rust_std,
+@@ -308,7 +308,7 @@
+             ("uefi", False),
+             ("uefi", True),
          ]:
-             target_kind = "bpf" if is_bpf else "non_bpf"
 -            bootstrap_suffix = "_bootstrap" if bootstrapping else ""
 +            bootstrap_suffix = "_bs" if bootstrapping else ""
              bootstrap_setting = "@rules_rust//rust/private:" + ("bootstrapping" if bootstrapping else "bootstrapped")
-             toolchain_suffix = "_bpf" if is_bpf else bootstrap_suffix
+             toolchain_suffix = "_bpf" if target_kind == "bpf" else ("_uefi" if target_kind == "uefi" else "") + bootstrap_suffix
              native.toolchain(
