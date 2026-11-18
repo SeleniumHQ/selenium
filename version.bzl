@@ -1,4 +1,4 @@
-# Binding versions, spelled the way each ecosystem publishes them.
+# Binding and Selenium Manager versions, spelled the way each ecosystem publishes them.
 # Edit with `./go <lang>:version <X.Y.Z|nightly>` or `./go all:version ...`.
 # Nothing under test reads this file, so a version bump leaves cached test results valid.
 VERSIONS = {
@@ -7,4 +7,5 @@ VERSIONS = {
     "javascript": "4.54.0-nightly",
     "python": "4.54.0.dev0",
     "ruby": "4.54.0.nightly",
+    "rust": "0.4.54-nightly",
 }

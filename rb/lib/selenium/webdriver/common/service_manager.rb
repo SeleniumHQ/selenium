@@ -66,7 +66,8 @@ module Selenium
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
-      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED
+      rescue ChildProcess::TimeoutError, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE,
+             Net::OpenTimeout, Net::ReadTimeout, EOFError
         nil # noop
       ensure
         stop_process

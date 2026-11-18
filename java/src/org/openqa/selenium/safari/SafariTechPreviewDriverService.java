@@ -113,6 +113,11 @@ public class SafariTechPreviewDriverService extends DriverService {
     }
   }
 
+  @Override
+  protected boolean hasShutdownEndpoint() {
+    return false;
+  }
+
   /** Builder used to configure new {@link SafariTechPreviewDriverService} instances. */
   @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)

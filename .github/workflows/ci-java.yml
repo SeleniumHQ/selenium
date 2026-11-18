@@ -2,19 +2,7 @@ name: CI - Java
 
 on:
   workflow_call:
-    inputs:
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
-    inputs:
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -39,11 +27,8 @@ jobs:
       needs-display: true
       rerun-with-debug: true
       remote-cache: true
-      download-artifact-name: targets
       run: >
-        [ -s bazel-targets-java.txt ] || echo //java/... > bazel-targets-java.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
-        --target_pattern_file=bazel-targets-java.txt
+        //java/...

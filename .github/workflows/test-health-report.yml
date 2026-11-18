@@ -36,3 +36,14 @@ jobs:
           SLACK_MESSAGE: "Test health: ${{ steps.report.outputs.message }}. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View report>"
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification on Failure
+        if: failure() && github.event_name == 'schedule'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_MESSAGE: "Needs investigation: the daily Test Health Report failed, so scheduled test results were not checked. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|view run>"
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}

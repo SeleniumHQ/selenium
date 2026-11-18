@@ -365,6 +365,20 @@ jobs:
     uses: ./.github/workflows/mirror-selenium-releases.yml
     secrets: inherit
 
+  docker-selenium:
+    name: Start docker-selenium Release
+    needs: [parse-tag, github-release-publish]
+    if: needs.parse-tag.outputs.language == 'all'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions: {}
+    steps:
+      - name: Dispatch Release Preparation
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+          VERSION: ${{ needs.parse-tag.outputs.version }}
+        run: gh workflow run release-preparation.yml -R SeleniumHQ/docker-selenium -f grid-version="$VERSION"
+
   unrestrict-trunk:
     name: Unrestrict Trunk Branch
     needs: [parse-tag, publish, publish-python, update-version, mirror]

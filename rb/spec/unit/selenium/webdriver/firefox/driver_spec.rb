@@ -88,6 +88,15 @@ module Selenium
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
+        it 'stops the driver service when starting the session times out' do
+          allow(DriverFinder).to receive(:new).and_return(finder)
+          allow(service_manager).to receive(:stop)
+          stub_request(:post, "#{service_manager.uri}/session").to_raise(Net::ReadTimeout)
+
+          expect { described_class.new }.to raise_exception(Net::ReadTimeout)
+          expect(service_manager).to have_received(:stop)
+        end
+
         it 'does not accept Options of the wrong class' do
           expect {
             described_class.new(options: Options.chrome)

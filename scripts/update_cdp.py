@@ -50,12 +50,17 @@ def github_get(url):
     return http.request("GET", url, headers=headers)
 
 
-def fetch_and_save(url, file_path):
+def github_fetch(url):
     response = github_get(url)
     if response.status != 200:
-        raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
+        body = response.data[:200].decode("utf-8", "replace")
+        raise ValueError(f"Fetch failed (HTTP {response.status}): {url}: {body}")
+    return response.data
+
+
+def fetch_and_save(url, file_path):
     with open(file_path, "wb") as file:
-        file.write(response.data)
+        file.write(github_fetch(url))
 
 
 def new_chrome(chrome_milestone):
@@ -84,11 +89,7 @@ def flatten_browser_pdl(file_path, chrome_version):
     )
     concatenated = ""
     for domain_file in includes:
-        url = f"{base_url}{domain_file}?ref={chrome_version}"
-        response = github_get(url)
-        if response.status != 200:
-            raise ValueError(f"Fetch failed (HTTP {response.status}): {url}")
-        concatenated += response.data.decode("utf-8") + "\n"
+        concatenated += github_fetch(f"{base_url}{domain_file}?ref={chrome_version}").decode("utf-8") + "\n"
     # Overwrite the file with version block + concatenated domains
     with open(file_path, "w") as file:
         file.write(version_block + concatenated)
@@ -114,9 +115,9 @@ def add_pdls(chrome_milestone):
 
         flatten_browser_pdl(f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"])
 
-        deps_content = github_get(
+        deps_content = github_fetch(
             f"https://api.github.com/repos/chromium/chromium/contents/DEPS?ref={chrome_milestone['version']}"
-        ).data.decode("utf-8")
+        ).decode("utf-8")
         v8_revision_line = next((line for line in deps_content.split("\n") if "v8_revision" in line), None)
         if v8_revision_line is None:
             raise ValueError(f"No v8_revision found in DEPS for Chrome {chrome_milestone['version']}")

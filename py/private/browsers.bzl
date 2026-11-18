@@ -102,7 +102,7 @@ BROWSERS = {
     "safari": {
         "args": ["--driver=safari"],
         "data": [],
-        "tags": COMMON_TAGS + ["safari"],
+        "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
         "target_compatible_with": ["@platforms//os:macos"],
     },
 }

@@ -398,7 +398,11 @@ js_library(
 def geckodriver():
     content = ""
 
-    r = http.request("GET", "https://api.github.com/repos/mozilla/geckodriver/releases/latest", headers=API_HEADERS)
+    releases_url = "https://api.github.com/repos/mozilla/geckodriver/releases/latest"
+    r = http.request("GET", releases_url, headers=API_HEADERS)
+    if r.status != 200:
+        body = r.data[:200].decode("utf-8", "replace")
+        raise ValueError(f"Fetch failed (HTTP {r.status}): {releases_url}: {body}")
     for a in json.loads(r.data)["assets"]:
         if a["name"].endswith("-linux64.tar.gz"):
             url = a["browser_download_url"]
