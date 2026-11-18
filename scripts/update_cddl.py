@@ -181,7 +181,8 @@ webref_cddl_extension = module_extension(
 def get(url, headers=None):
     r = http.request("GET", url, headers=headers)
     if r.status != 200:
-        raise RuntimeError(f"Failed to download {url}: HTTP {r.status}")
+        body = r.data[:200].decode("utf-8", "replace")
+        raise RuntimeError(f"Failed to download {url}: HTTP {r.status}: {body}")
     return r.data
 
 

@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import re
+import sys
 
 import urllib3
 
@@ -49,6 +50,8 @@ def run(lockfile_path):
         try:
             response = http.request("GET", releases_url, headers=API_HEADERS)
             if response.status != 200:
+                body = response.data[:200].decode("utf-8", "replace")
+                print(f"Skipping '{tool}' (HTTP {response.status}): {body}", file=sys.stderr)
                 continue
             json_resp = json.loads(response.data)
             new_version = json_resp["tag_name"]
