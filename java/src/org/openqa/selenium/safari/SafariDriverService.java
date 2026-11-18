@@ -113,6 +113,11 @@ public class SafariDriverService extends DriverService {
     }
   }
 
+  @Override
+  protected boolean hasShutdownEndpoint() {
+    return false;
+  }
+
   /** Builder used to configure new {@link SafariDriverService} instances. */
   @SuppressWarnings({"rawtypes", "RedundantSuppression"})
   @AutoService(DriverService.Builder.class)
