@@ -20,7 +20,8 @@
 const assert = require('node:assert')
 const { DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { WebExtension, MozWebExtension } = require('selenium-webdriver/bidi/generated/webextension')
-const { MozBrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
+const { BrowsingContext, MozBrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
+const { ValidationError } = require('selenium-webdriver/bidi/serialization/record')
 
 /** A transport that records each command as it would be serialized onto the socket. */
 function recordingBidi(result) {
@@ -71,25 +72,102 @@ describe('Generated vendor (moz) variant of a spec domain', function () {
     await assert.rejects(browsingContext.getTree({ scope: 'tab' }))
   })
 
-  it('keeps vendor fields of a received record a vendor extends', async function () {
-    const info = {
-      children: null,
-      clientWindow: 'w1',
-      context: 'c1',
-      originalOpener: null,
-      url: 'about:blank',
-      userContext: 'default',
-      'moz:name': 'main',
-      'moz:scope': 'content',
-    }
-    const result = await new MozBrowsingContext(recordingBidi({ contexts: [info] }), DOMAIN_TOKEN).getTree({})
-    assert.strictEqual(result.contexts[0]['moz:name'], 'main')
-    assert.strictEqual(result.contexts[0]['moz:scope'], 'content')
+  it('rejects a vendor field the vendor variant declares, passed under its wire key', async function () {
+    const browsingContext = new MozBrowsingContext(recordingBidi({ contexts: [] }), DOMAIN_TOKEN)
+    await assert.rejects(browsingContext.getTree({ scope: 'chrome', 'moz:scope': 'tab' }), ValidationError)
+  })
+
+  it('rejects an undeclared field on a vendor variant', async function () {
+    await assert.rejects(
+      new MozBrowsingContext(recordingBidi({ contexts: [] }), DOMAIN_TOKEN).getTree({ foo: 1 }),
+      ValidationError,
+    )
   })
 
   it('adds vendor commands without their namespace in the method name', async function () {
     const bidi = recordingBidi({ extensions: [] })
     await new MozWebExtension(bidi, DOMAIN_TOKEN).listExtensions()
     assert.strictEqual(bidi.frames[0].method, 'webExtension.moz:listExtensions')
+  })
+})
+
+// A vendor extension declares fields on a spec type; it does not open the type to
+// fields nobody declared (#18184, ADR 17786 decisions 1, 6 and 9).
+describe('Generated spec types a vendor extends', function () {
+  const extensionData = { type: 'path', path: '/tmp/ext' }
+  const info = {
+    children: null,
+    clientWindow: 'w1',
+    context: 'c1',
+    originalOpener: null,
+    url: 'about:blank',
+    userContext: 'default',
+  }
+
+  async function captureWarnings(fn) {
+    const warnings = []
+    const onWarning = (w) => warnings.push(w.message)
+    process.on('warning', onWarning)
+    try {
+      const result = await fn()
+      await new Promise((resolve) => setTimeout(resolve, 20))
+      return { result, warnings }
+    } finally {
+      process.off('warning', onWarning)
+    }
+  }
+
+  describe('received', function () {
+    it('types the vendor fields on the shared type, whichever class received it', async function () {
+      const payload = { contexts: [{ ...info, 'moz:name': 'main', 'moz:scope': 'content' }] }
+      for (const Cls of [BrowsingContext, MozBrowsingContext]) {
+        const { contexts } = await new Cls(recordingBidi(payload), DOMAIN_TOKEN).getTree({})
+        assert.strictEqual(contexts[0].mozName, 'main')
+        assert.strictEqual(contexts[0].mozScope, 'content')
+        assert.strictEqual(contexts[0]['moz:name'], undefined)
+      }
+    })
+
+    it('leaves the vendor fields absent for a browser that does not send them', async function () {
+      const { contexts } = await new BrowsingContext(recordingBidi({ contexts: [info] }), DOMAIN_TOKEN).getTree({})
+      assert.strictEqual(Object.hasOwn(contexts[0], 'mozName'), false)
+    })
+
+    it('rejects a vendor field outside its declared type', async function () {
+      for (const bad of [{ 'moz:scope': 'tab' }, { 'moz:name': 42 }]) {
+        await assert.rejects(
+          new BrowsingContext(recordingBidi({ contexts: [{ ...info, ...bad }] }), DOMAIN_TOKEN).getTree({}),
+          ValidationError,
+        )
+      }
+    })
+
+    it('warns about and drops a field nobody declared', async function () {
+      const { result, warnings } = await captureWarnings(() =>
+        new BrowsingContext(recordingBidi({ contexts: [{ ...info, foo: 1 }] }), DOMAIN_TOKEN).getTree({}),
+      )
+      assert.strictEqual(Object.hasOwn(result.contexts[0], 'foo'), false)
+      assert.deepStrictEqual(warnings, ['browsingContext.Info: undeclared property "foo"'])
+    })
+
+    it('types the vendor fields of an event payload too', function () {
+      const parsed = BrowsingContext.CONTEXT_DESTROYED.type.fromWire({ ...info, 'moz:scope': 'chrome' })
+      assert.strictEqual(parsed.mozScope, 'chrome')
+    })
+  })
+
+  describe('sent', function () {
+    it('keeps the shared command params spec-only', async function () {
+      const browsingContext = new BrowsingContext(recordingBidi({ contexts: [] }), DOMAIN_TOKEN)
+      await assert.rejects(browsingContext.getTree({ 'moz:scope': 'chrome' }), ValidationError)
+      await assert.rejects(browsingContext.getTree({ scope: 'chrome' }), ValidationError)
+      await assert.rejects(browsingContext.getTree({ foo: 1 }), ValidationError)
+    })
+
+    it('keeps the shared install params spec-only', async function () {
+      const webExtension = new WebExtension(recordingBidi({ extension: 'e' }), DOMAIN_TOKEN)
+      await assert.rejects(webExtension.install({ extensionData, 'moz:permanent': true }), ValidationError)
+      await assert.rejects(webExtension.install({ extensionData, foo: 1 }), ValidationError)
+    })
   })
 })
