@@ -53,15 +53,15 @@ def affected_targets_for(changed_files)
   high_impact = changed_files.find { |f| HIGH_IMPACT_PATHS.any? { |path| path_under?(f, path) } }
   if high_impact
     puts "#{high_impact} affects every target"
-    return BINDING_TARGETS.values
+    return TEST_TARGETS.values
   end
 
-  keys = changed_files.flat_map { |f|
+  keys = changed_files.flat_map do |f|
     overrides = TARGET_OVERRIDES.select { |path, _| path_under?(f, path) }.values
     top_level_dir = f.split('/').first
-    BINDING_TARGETS.key?(top_level_dir) ? overrides + [top_level_dir] : overrides
-  }
-  BINDING_TARGETS.values_at(*keys.uniq)
+    TEST_TARGETS.key?(top_level_dir) ? overrides + [top_level_dir] : overrides
+  end
+  TEST_TARGETS.values_at(*keys.uniq)
 end
 
 def path_under?(file, path)

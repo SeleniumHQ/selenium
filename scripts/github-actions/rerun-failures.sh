@@ -33,8 +33,8 @@ fi
 if [[ "$RUN_CMD" == *"/ci-build.sh"* ]]; then
   base_cmd="bazel test --config=rbe-ci --build_tests_only --keep_going"
 else
-  # Reduce the run command to its bazel invocation
-  base_cmd=$(sed -E 's/^.*;[[:space:]]*//; s/ --target_pattern_file=[^[:space:]]+//; s| //[^ ]*||g' <<<"$RUN_CMD")
+  # Swap the run's target patterns for the failed targets
+  base_cmd=$(sed -E 's| //[^ ]*||g' <<<"$RUN_CMD")
 fi
 rerun_cmd="$base_cmd --test_env=SE_DEBUG=true --test_output=all --flaky_test_attempts=1 --target_pattern_file=build/failures/_run1.txt"
 echo "Rerunning tests: $rerun_cmd"
