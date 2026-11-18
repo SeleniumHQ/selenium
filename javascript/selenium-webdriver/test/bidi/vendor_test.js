@@ -192,6 +192,15 @@ describe('Generated spec types a vendor extends that the spec marks extensible',
     return { frames: bidi.frames, session }
   }
 
+  // Each case is checked against its own message so a failure from some other field can't pass it.
+  function rejectsWith(promise, message) {
+    return assert.rejects(promise, (e) => {
+      assert.ok(e instanceof ValidationError, e)
+      assert.match(e.message, message)
+      return true
+    })
+  }
+
   describe('sent', function () {
     it('serializes typed firefoxOptions under the vendor wire key', async function () {
       const mozFirefoxOptions = {
@@ -205,19 +214,25 @@ describe('Generated spec types a vendor extends that the spec marks extensible',
     })
 
     it('rejects firefoxOptions outside their declared types', async function () {
-      for (const mozFirefoxOptions of [
-        { args: 5 },
-        { env: { MOZ_LOG: 1 } },
-        { prefs: { 'browser.startup.page': {} } },
-        { log: { level: 'loud' } },
-        { binaryPath: '/usr/bin/firefox' },
+      for (const [mozFirefoxOptions, message] of [
+        [{ args: 5 }, /FirefoxOptions\.args: expected a list/],
+        [{ env: { MOZ_LOG: 1 } }, /FirefoxOptions\.env\.MOZ_LOG: expected string/],
+        [
+          { prefs: { 'browser.startup.page': {} } },
+          /FirefoxOptions\.prefs\.browser\.startup\.page: value did not match/,
+        ],
+        [{ log: { level: 'loud' } }, /FirefoxOptionsLog\.level: "loud" is not a valid/],
+        [{ binaryPath: '/usr/bin/firefox' }, /FirefoxOptions: unknown property "binaryPath"/],
       ]) {
-        await assert.rejects(newSession({ alwaysMatch: { mozFirefoxOptions } }), ValidationError)
+        await rejectsWith(newSession({ alwaysMatch: { mozFirefoxOptions } }), message)
       }
     })
 
     it('rejects a declared vendor field passed under its wire key', async function () {
-      await assert.rejects(newSession({ alwaysMatch: { 'moz:firefoxOptions': { args: 5 } } }), ValidationError)
+      await rejectsWith(
+        newSession({ alwaysMatch: { 'moz:firefoxOptions': { args: ['-headless'] } } }),
+        /"moz:firefoxOptions" is declared; pass it as "mozFirefoxOptions"/,
+      )
     })
 
     it("still sends another browser's capabilities as extensions", async function () {
@@ -239,11 +254,11 @@ describe('Generated spec types a vendor extends that the spec marks extensible',
     })
 
     it('rejects a vendor capability outside its declared type', async function () {
-      for (const bad of [{ 'moz:processID': -1 }, { 'moz:headless': 'yes' }]) {
-        await assert.rejects(
-          newSession({}, { sessionId: 's1', capabilities: { ...response, ...bad } }),
-          ValidationError,
-        )
+      for (const [bad, message] of [
+        [{ 'moz:processID': -1 }, /CapabilityResponse\.moz:processID: expected >= 0/],
+        [{ 'moz:headless': 'yes' }, /CapabilityResponse\.moz:headless: expected boolean/],
+      ]) {
+        await rejectsWith(newSession({}, { sessionId: 's1', capabilities: { ...response, ...bad } }), message)
       }
     })
 
