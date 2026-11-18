@@ -109,6 +109,7 @@ jobs:
       safari-preview: ${{ contains(matrix.tag_filters, 'safari-preview') }}
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       run: >
         bazel test
         --config=gh-browser

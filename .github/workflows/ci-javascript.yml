@@ -81,6 +81,7 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       run: >
         bazel test
         --config=gh-browser
