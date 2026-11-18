@@ -126,7 +126,7 @@ jobs:
       - name: Delete drivers (Windows)
         if: inputs.os == 'windows'
         shell: pwsh
-        run: ./scripts/github-actions/delete-browsers-drivers.ps1
+        run: ./scripts/github-actions/delete-drivers.ps1
       - name: Free disk space
         if: contains(inputs.os, 'ubuntu')
         shell: bash
