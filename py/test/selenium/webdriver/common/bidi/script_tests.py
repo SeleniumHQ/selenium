@@ -58,7 +58,7 @@ def test_logs_console_messages(driver, pages):
         assert log_entry.level == LogLevel.INFO
         assert log_entry.method == "log"
         assert log_entry.text == "Hello, world!"
-        assert log_entry.type_ == "console"
+        assert log_entry.type == "console"
     finally:
         driver.script.remove_console_message_handler(handler_id)
 
@@ -85,7 +85,7 @@ def test_logs_console_errors(driver, pages):
         assert log_entry.level == LogLevel.ERROR
         assert log_entry.method == "error"
         assert log_entry.text == "I am console error"
-        assert log_entry.type_ == "console"
+        assert log_entry.type == "console"
     finally:
         driver.script.remove_console_message_handler(handler_id)
 
@@ -142,9 +142,9 @@ def test_javascript_error_messages(driver, pages):
         WebDriverWait(driver, 5).until(lambda _: log_entries)
 
         log_entry = log_entries[0]
-        assert log_entry.text == "Error: Not working"
-        assert log_entry.level == LogLevel.ERROR
-        assert log_entry.type_ == "javascript"
+        assert log_entry.message == "Error: Not working"
+        assert log_entry.stacktrace
+        assert log_entry.window_handle == driver.current_window_handle
     finally:
         driver.script.remove_javascript_error_handler(handler_id)
 
@@ -1509,33 +1509,34 @@ class TestBidiScriptAlignment:
     """
 
     def test_error_handler_receives_script_error(self, driver, pages):
-        from selenium.webdriver.common.bidi.script import ScriptError
+        from selenium.webdriver.remote.script import Registration, ScriptError
 
         pages.load("bidi/logEntryAdded.html")
         errors = []
-        handler_id = driver.script.add_error_handler(errors.append)
+        handler = driver.script.add_javascript_error_handler(errors.append)
 
         try:
+            assert isinstance(handler, Registration)
             driver.find_element(By.ID, "jsException").click()
             WebDriverWait(driver, 5).until(lambda _: errors)
 
             error = errors[0]
             assert isinstance(error, ScriptError)
             assert error.message == "Error: Not working"
-            assert error.line_number is not None
-            assert error.stack_trace is not None
-            assert "logEntryAdded" in (error.source or "")
+            assert "logEntryAdded" in str(error.stacktrace)
+            assert error.window_handle == driver.current_window_handle
         finally:
-            driver.script.remove_error_handler(handler_id)
+            driver.script.remove_javascript_error_handler(handler)
 
     def test_console_handler_receives_console_message(self, driver, pages):
-        from selenium.webdriver.common.bidi.script import ConsoleMessage
+        from selenium.webdriver.remote.script import ConsoleMessage, Registration
 
         pages.load("bidi/logEntryAdded.html")
         messages = []
-        handler_id = driver.script.add_console_handler(messages.append)
+        handler = driver.script.add_console_message_handler(messages.append)
 
         try:
+            assert isinstance(handler, Registration)
             driver.find_element(By.ID, "consoleLog").click()
             WebDriverWait(driver, 5).until(lambda _: messages)
 
@@ -1543,16 +1544,60 @@ class TestBidiScriptAlignment:
             assert isinstance(message, ConsoleMessage)
             assert message.level == "info"
             assert message.text == "Hello, world!"
+            assert message.type == "console"
+            assert message.window_handle == driver.current_window_handle
         finally:
-            driver.script.remove_console_handler(handler_id)
+            driver.script.remove_console_message_handler(handler)
+
+    def test_console_message_from_iframe_names_its_window(self, driver, pages):
+        pages.load("blank.html")
+        messages = []
+        handler = driver.script.add_console_message_handler(messages.append)
+
+        try:
+            driver.execute_script(
+                "const frame = document.createElement('iframe');"
+                "frame.srcdoc = '<script>console.log(\"from frame\")</' + 'script>';"
+                "document.body.appendChild(frame);"
+            )
+            WebDriverWait(driver, 5).until(lambda _: [m for m in messages if m.text == "from frame"])
+
+            message = next(m for m in messages if m.text == "from frame")
+            assert message.window_handle == driver.current_window_handle
+            assert message.frame is not None
+            assert message.frame != driver.current_window_handle
+        finally:
+            driver.script.remove_console_message_handler(handler)
+
+    def test_deprecated_handler_names_still_work(self, driver, pages):
+        pages.load("bidi/logEntryAdded.html")
+        messages = []
+        errors = []
+        with pytest.warns(DeprecationWarning, match="add_console_handler"):
+            console_handler = driver.script.add_console_handler(messages.append)
+        with pytest.warns(DeprecationWarning, match="add_error_handler"):
+            error_handler = driver.script.add_error_handler(errors.append)
+
+        try:
+            driver.find_element(By.ID, "consoleLog").click()
+            driver.find_element(By.ID, "jsException").click()
+            WebDriverWait(driver, 5).until(lambda _: messages and errors)
+
+            assert messages[0].text == "Hello, world!"
+            assert errors[0].message == "Error: Not working"
+        finally:
+            with pytest.warns(DeprecationWarning, match="remove_console_handler"):
+                driver.script.remove_console_handler(console_handler)
+            with pytest.warns(DeprecationWarning, match="remove_error_handler"):
+                driver.script.remove_error_handler(error_handler)
 
     def test_clear_console_handlers(self, driver, pages):
         pages.load("bidi/logEntryAdded.html")
         messages = []
         errors = []
-        driver.script.add_console_handler(messages.append)
         driver.script.add_console_message_handler(messages.append)
-        sentinel_id = driver.script.add_error_handler(errors.append)
+        driver.script.add_console_message_handler(messages.append)
+        sentinel = driver.script.add_javascript_error_handler(errors.append)
 
         try:
             driver.script.clear_console_handlers()
@@ -1564,15 +1609,15 @@ class TestBidiScriptAlignment:
 
             assert messages == []
         finally:
-            driver.script.remove_error_handler(sentinel_id)
+            driver.script.remove_javascript_error_handler(sentinel)
 
     def test_clear_error_handlers(self, driver, pages):
         pages.load("bidi/logEntryAdded.html")
         messages = []
         errors = []
-        driver.script.add_error_handler(errors.append)
         driver.script.add_javascript_error_handler(errors.append)
-        sentinel_id = driver.script.add_console_handler(messages.append)
+        driver.script.add_javascript_error_handler(errors.append)
+        sentinel = driver.script.add_console_message_handler(messages.append)
 
         try:
             driver.script.clear_error_handlers()
@@ -1584,7 +1629,7 @@ class TestBidiScriptAlignment:
 
             assert errors == []
         finally:
-            driver.script.remove_console_handler(sentinel_id)
+            driver.script.remove_console_message_handler(sentinel)
 
     def test_pin_returns_pinned_script(self, driver, pages):
         from selenium.webdriver.common.bidi.script import PinnedScript
