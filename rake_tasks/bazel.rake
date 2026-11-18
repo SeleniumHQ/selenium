@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-HIGH_IMPACT_PATHS = %w[common rust/src MODULE.bazel .bazelrc .bazelversion].freeze
+HIGH_IMPACT_PATHS = %w[common rust/src BUILD.bazel MODULE.bazel .bazelrc .bazelversion].freeze
 
 # Files outside a target's own directory that only its jobs use
 TARGET_OVERRIDES = {
