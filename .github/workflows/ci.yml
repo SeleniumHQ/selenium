@@ -65,7 +65,6 @@ jobs:
       dotnet: ${{ steps.select.outputs.dotnet }}
       rust: ${{ steps.select.outputs.rust }}
       js: ${{ steps.select.outputs.js }}
-      compile-manager: ${{ steps.select.outputs.compile-manager }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v6
@@ -84,9 +83,6 @@ jobs:
           if [[ "$GITHUB_EVENT_NAME" =~ ^(pull_request|push)$ ]] && [ "$RELEASE_PR" != "true" ] && git fetch --no-tags --depth=1 origin "$BASE_SHA"; then
             ./go bazel:affected_targets "$BASE_SHA..HEAD"
             targets=$(cat build/bazel-targets.txt)
-            if [ "$(cat build/selenium-manager-changed.txt)" = "true" ]; then
-              echo "compile-manager=true" >> "$GITHUB_OUTPUT"
-            fi
           else
             targets="//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..."
           fi
@@ -108,16 +104,12 @@ jobs:
     needs: [targets, wait-for-unlock]
     uses: ./.github/workflows/ci-dotnet.yml
     if: "!cancelled() && needs.targets.outputs.dotnet != ''"
-    with:
-      compile-manager: ${{ needs.targets.outputs.compile-manager == 'true' }}
 
   java:
     name: Java
     needs: [targets, wait-for-unlock]
     uses: ./.github/workflows/ci-java.yml
     if: "!cancelled() && needs.targets.outputs.java != ''"
-    with:
-      compile-manager: ${{ needs.targets.outputs.compile-manager == 'true' }}
 
   python:
     name: Python
@@ -125,7 +117,6 @@ jobs:
     uses: ./.github/workflows/ci-python.yml
     if: "!cancelled() && needs.targets.outputs.py != ''"
     with:
-      compile-manager: ${{ needs.targets.outputs.compile-manager == 'true' }}
       smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   ruby:
@@ -134,7 +125,6 @@ jobs:
     uses: ./.github/workflows/ci-ruby.yml
     if: "!cancelled() && needs.targets.outputs.rb != ''"
     with:
-      compile-manager: ${{ needs.targets.outputs.compile-manager == 'true' }}
       smoke: ${{ !(github.head_ref == 'pinned-browser-updates' && contains(github.event.pull_request.title, '(major)')) }}
 
   rust:
@@ -148,8 +138,6 @@ jobs:
     needs: [targets, wait-for-unlock]
     uses: ./.github/workflows/ci-javascript.yml
     if: "!cancelled() && needs.targets.outputs.js != ''"
-    with:
-      compile-manager: ${{ needs.targets.outputs.compile-manager == 'true' }}
 
   merge-flaky-results:
     name: Merge Flaky Results
