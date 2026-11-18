@@ -67,56 +67,28 @@ jobs:
       js: ${{ steps.select.outputs.js }}
       compile-manager: ${{ steps.select.outputs.compile-manager }}
     steps:
-      - name: Calculate fetch depth
-        id: depth
-        env:
-          PR_COMMITS: ${{ github.event.pull_request.commits }}
-        run: |
-          if [ -n "$PR_COMMITS" ]; then
-            echo "val=2" >> "$GITHUB_OUTPUT"
-          else
-            commits=$(jq -e '.commits | length // 0' "$GITHUB_EVENT_PATH" 2>/dev/null) || commits=0
-            echo "val=$((commits + 1))" >> "$GITHUB_OUTPUT"
-          fi
       - name: Checkout source tree
         uses: actions/checkout@v6
-        with:
-          fetch-depth: ${{ steps.depth.outputs.val }}
       - name: Select targets
         id: select
         env:
           FORK: ${{ github.event.repository.fork }}
           RELEASE_PR: ${{ startsWith(github.head_ref, 'release-preparation-') && github.event.pull_request.head.repo.full_name == github.repository }}
-          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           COMMIT_MESSAGES: ${{ join(github.event.commits.*.message, ' ') }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$FORK" = "true" ]; then
             exit 0
           fi
-          if { [ "$GITHUB_EVENT_NAME" != "pull_request" ] && [ "$GITHUB_EVENT_NAME" != "push" ]; } || [ "$RELEASE_PR" = "true" ]; then
-            targets="//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..."
-          else
-            if [ -n "$PR_BASE_SHA" ]; then
-              base="HEAD^1"
-            elif [ "$GITHUB_REF" = "refs/heads/trunk" ]; then
-              base="$BEFORE_SHA"
-            else
-              ahead=$(gh api "repos/$GITHUB_REPOSITORY/compare/trunk...$GITHUB_REF_NAME" --jq .ahead_by)
-              git fetch --no-tags --depth=$((ahead + 1)) origin "$GITHUB_REF_NAME"
-              base="HEAD~$ahead"
-            fi
-            if git cat-file -e "${base}^{commit}" 2>/dev/null; then
-              ./go bazel:affected_targets "${base}..HEAD"
-            else
-              ./go bazel:affected_targets
-            fi
+          if [[ "$GITHUB_EVENT_NAME" =~ ^(pull_request|push)$ ]] && [ "$RELEASE_PR" != "true" ] && git fetch --no-tags --depth=1 origin "$BASE_SHA"; then
+            ./go bazel:affected_targets "$BASE_SHA..HEAD"
             targets=$(cat build/bazel-targets.txt)
             if [ "$(cat build/selenium-manager-changed.txt)" = "true" ]; then
               echo "compile-manager=true" >> "$GITHUB_OUTPUT"
             fi
+          else
+            targets="//java/... //py/... //rb/... //dotnet/... //rust/... //javascript/..."
           fi
           check_target() {
             local pattern=$1 tag=$2
