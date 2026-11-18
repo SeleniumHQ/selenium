@@ -222,7 +222,9 @@ describe('Generated spec types a vendor extends that the spec marks extensible',
 
     it("still sends another browser's capabilities as extensions", async function () {
       const { frames } = await newSession({ alwaysMatch: { 'goog:chromeOptions': { args: ['--headless'] } } })
-      assert.deepStrictEqual(frames[0].params.capabilities.alwaysMatch, { 'goog:chromeOptions': { args: ['--headless'] } })
+      assert.deepStrictEqual(frames[0].params.capabilities.alwaysMatch, {
+        'goog:chromeOptions': { args: ['--headless'] },
+      })
     })
   })
 
@@ -238,7 +240,10 @@ describe('Generated spec types a vendor extends that the spec marks extensible',
 
     it('rejects a vendor capability outside its declared type', async function () {
       for (const bad of [{ 'moz:processID': -1 }, { 'moz:headless': 'yes' }]) {
-        await assert.rejects(newSession({}, { sessionId: 's1', capabilities: { ...response, ...bad } }), ValidationError)
+        await assert.rejects(
+          newSession({}, { sessionId: 's1', capabilities: { ...response, ...bad } }),
+          ValidationError,
+        )
       }
     })
 
