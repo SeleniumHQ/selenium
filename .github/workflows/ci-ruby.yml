@@ -91,15 +91,13 @@ jobs:
       os: ${{ matrix.os }}
       rerun-with-debug: true
       remote-cache: true
-      download-artifact-name: targets
       run: >
-        [ -s bazel-targets-rb.txt ] || echo //rb/... > bazel-targets-rb.txt;
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
         ${{ inputs.compile-manager && contains(matrix.tag_filters, 'se-manager') && '--manager=host' || '' }}
         --test_env=SKIP_PENDING=true
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
-        --target_pattern_file=bazel-targets-rb.txt
+        //rb/...
 
   os-tests-full:
     name: ${{ matrix.os }}-full
