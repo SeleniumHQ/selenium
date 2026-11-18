@@ -8,20 +8,10 @@ on:
         required: false
         type: boolean
         default: true
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
     inputs:
       smoke:
         description: Smoke tests only (default also runs the full matrix)
-        required: false
-        type: boolean
-        default: false
-      compile-manager:
-        description: Build Selenium Manager from source instead of downloading the pinned binary
         required: false
         type: boolean
         default: false
@@ -74,7 +64,6 @@ jobs:
       run: >
         ./scripts/github-actions/bazel-test-if-targets.sh
         --config=gh-browser
-        ${{ inputs.compile-manager && '--manager=host' || '' }}
         --test_tag_filters=${{ matrix.tag_filters }}${{ matrix.os == 'macos' && (github.event_name == 'pull_request' || github.event_name == 'push') && ',-edge' || '' }}
         //javascript/selenium-webdriver/...
 
@@ -92,6 +81,7 @@ jobs:
       needs-display: true
       os: ${{ matrix.os }}
       rerun-with-debug: true
+      remote-cache: true
       run: >
         bazel test
         --config=gh-browser

@@ -1,6 +1,7 @@
 load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
 load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_binary")
 load("@crates//:defs.bzl", "aliases", "all_crate_deps")
+load("//:version.bzl", "VERSIONS")
 load("//rust:defs.bzl", "rust_binary", "rust_library", "rust_test", "rustfmt_config")
 
 rustfmt_config(
@@ -125,7 +126,11 @@ rust_binary(
     rustc_env = {
         "CARGO_PKG_DESCRIPTION": "Selenium Manager is a CLI tool that automatically manages the browser/driver resources required by Selenium.",
     },
-    version = "0.4.54-nightly",
+    # Only stamped builds carry the real version, so a bump invalidates no cached build or test.
+    version = select({
+        "//common:stamp": VERSIONS["rust"],
+        "//conditions:default": None,
+    }),
     visibility = ["//visibility:public"],
     deps = [
         ":selenium_manager",

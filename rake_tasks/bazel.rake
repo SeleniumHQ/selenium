@@ -43,10 +43,6 @@ task :affected_targets do |_task, args|
     puts "Affected: #{targets.join(' ')}"
   end
   File.write('build/bazel-targets.txt', targets.join(' '))
-
-  manager_changed = changed_files.any? { |f| f.start_with?('rust/') }
-  puts 'Selenium Manager sources changed' if manager_changed
-  File.write('build/selenium-manager-changed.txt', manager_changed.to_s)
 end
 
 def affected_targets_for(changed_files)

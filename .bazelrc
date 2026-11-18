@@ -164,6 +164,7 @@ test:gh-browser --default_test_resources=unit=1,0,0,0
 test:gh-browser --local_resources=unit=HOST_CPUS-1
 test:gh-browser --jobs=500
 test:gh-browser --skip_incompatible_explicit_targets
+test:gh-browser --manager=host
 test:gh-browser --pin_browsers=false
 test:gh-browser --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
 test:gh-browser --test_env=SE_SKIP_DRIVER_IN_PATH=true
