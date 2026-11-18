@@ -67,7 +67,7 @@ on:
         type: boolean
         default: false
       remote-cache:
-        description: Read the EngFlow remote cache (trunk pushes also write it; the nightly reads it but re-runs every test)
+        description: Read the EngFlow remote cache (trunk pushes also write it)
         required: false
         type: boolean
         default: false
@@ -158,7 +158,7 @@ jobs:
           bazelrc: |
             common --color=yes
             ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'push' && 'build --config=remote-cache-write' || 'build --config=remote-cache') || '' }}
-            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && github.event_name == 'schedule' && 'test --nocache_test_results' || '' }}
+            ${{ inputs.remote-cache && github.repository_owner == 'SeleniumHQ' && (github.event_name == 'schedule' || (inputs.needs-display && github.head_ref == 'pinned-browser-updates')) && 'test --nocache_test_results' || '' }}
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
