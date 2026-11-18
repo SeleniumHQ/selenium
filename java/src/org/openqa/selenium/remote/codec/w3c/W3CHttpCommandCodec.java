@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
-import static org.openqa.selenium.io.Read.resourceAsString;
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
@@ -73,6 +72,8 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,6 +88,7 @@ import java.util.stream.Stream;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Css;
+import org.openqa.selenium.io.Read;
 import org.openqa.selenium.remote.WebElementToJsonConverter;
 import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 
@@ -359,7 +361,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
               atomFileName,
               fileName -> {
                 String rawFunction =
-                    resourceAsString(getClass(), "/org/openqa/selenium/remote/" + atomFileName);
+                    readModuleResource("/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");
                 return String.format(
                     "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);
@@ -369,6 +371,22 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       throw new WebDriverException(e.getCause());
     } catch (NullPointerException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  /**
+   * Reads a resource packaged in this module. The lookup has to happen in this module rather than
+   * in {@link Read}: {@link Class#getResourceAsStream(String)} is caller-sensitive, and on the
+   * module path the resource's package is not opened to the {@code api} module.
+   */
+  private static String readModuleResource(String resource) {
+    try (InputStream stream = W3CHttpCommandCodec.class.getResourceAsStream(resource)) {
+      if (stream == null) {
+        throw new IllegalArgumentException("Resource not found: " + resource);
+      }
+      return Read.toString(stream);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to read resource " + resource, e);
     }
   }
 
