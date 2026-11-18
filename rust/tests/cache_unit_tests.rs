@@ -362,9 +362,6 @@ fn unreadable_metadata_falls_back_to_empty() {
     );
 }
 
-// Windows may refuse to open a file while it is being replaced, so the guarantee checked
-// here only holds on Unix.
-#[cfg(unix)]
 #[test]
 fn concurrent_reader_never_sees_partially_written_metadata() {
     use std::sync::Arc;
@@ -409,6 +406,10 @@ fn concurrent_reader_never_sees_partially_written_metadata() {
         reads += 1;
     }
     writer.join().unwrap();
+    assert!(
+        reads > 0,
+        "the writer finished before the reader read anything"
+    );
 
     let leftovers: Vec<_> = fs::read_dir(&cache)
         .unwrap()
