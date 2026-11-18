@@ -22,6 +22,7 @@ const { DOMAIN_TOKEN } = require('selenium-webdriver/bidi/domain')
 const { WebExtension, MozWebExtension } = require('selenium-webdriver/bidi/generated/webextension')
 const { BrowsingContext, MozBrowsingContext } = require('selenium-webdriver/bidi/generated/browsing_context')
 const { ValidationError } = require('selenium-webdriver/bidi/serialization/record')
+const { Session } = require('selenium-webdriver/bidi/generated/session')
 
 /** A transport that records each command as it would be serialized onto the socket. */
 function recordingBidi(result) {
@@ -168,6 +169,83 @@ describe('Generated spec types a vendor extends', function () {
       const webExtension = new WebExtension(recordingBidi({ extension: 'e' }), DOMAIN_TOKEN)
       await assert.rejects(webExtension.install({ extensionData, 'moz:permanent': true }), ValidationError)
       await assert.rejects(webExtension.install({ extensionData, foo: 1 }), ValidationError)
+    })
+  })
+})
+
+// session.CapabilityRequest and CapabilityResponse are extensible in the spec, so they keep other
+// browsers' capabilities as extensions; the vendor's own fields are still declared fields.
+describe('Generated spec types a vendor extends that the spec marks extensible', function () {
+  const response = {
+    acceptInsecureCerts: false,
+    browserName: 'firefox',
+    browserVersion: '140.0',
+    platformName: 'mac',
+    setWindowRect: true,
+    userAgent: 'ua',
+    proxy: { proxyType: 'direct' },
+  }
+
+  async function newSession(capabilities, result = { sessionId: 's1', capabilities: response }) {
+    const bidi = recordingBidi(result)
+    const session = await new Session(bidi, DOMAIN_TOKEN).new({ capabilities })
+    return { frames: bidi.frames, session }
+  }
+
+  describe('sent', function () {
+    it('serializes typed firefoxOptions under the vendor wire key', async function () {
+      const mozFirefoxOptions = {
+        args: ['-headless'],
+        env: { MOZ_LOG: 'all:5' },
+        prefs: { 'browser.startup.page': 0, 'dom.disable_open_during_load': false, 'intl.locale': 'en' },
+        log: { level: 'trace' },
+      }
+      const { frames } = await newSession({ alwaysMatch: { mozFirefoxOptions } })
+      assert.deepStrictEqual(frames[0].params.capabilities.alwaysMatch, { 'moz:firefoxOptions': mozFirefoxOptions })
+    })
+
+    it('rejects firefoxOptions outside their declared types', async function () {
+      for (const mozFirefoxOptions of [
+        { args: 5 },
+        { env: { MOZ_LOG: 1 } },
+        { prefs: { 'browser.startup.page': {} } },
+        { log: { level: 'loud' } },
+        { binaryPath: '/usr/bin/firefox' },
+      ]) {
+        await assert.rejects(newSession({ alwaysMatch: { mozFirefoxOptions } }), ValidationError)
+      }
+    })
+
+    it('rejects a declared vendor field passed under its wire key', async function () {
+      await assert.rejects(newSession({ alwaysMatch: { 'moz:firefoxOptions': { args: 5 } } }), ValidationError)
+    })
+
+    it("still sends another browser's capabilities as extensions", async function () {
+      const { frames } = await newSession({ alwaysMatch: { 'goog:chromeOptions': { args: ['--headless'] } } })
+      assert.deepStrictEqual(frames[0].params.capabilities.alwaysMatch, { 'goog:chromeOptions': { args: ['--headless'] } })
+    })
+  })
+
+  describe('received', function () {
+    it('types the vendor capabilities', async function () {
+      const capabilities = { ...response, 'moz:processID': 4242, 'moz:headless': true, 'moz:profile': '/tmp/p' }
+      const { session } = await newSession({}, { sessionId: 's1', capabilities })
+      assert.strictEqual(session.capabilities.mozProcessID, 4242)
+      assert.strictEqual(session.capabilities.mozHeadless, true)
+      assert.strictEqual(session.capabilities.mozProfile, '/tmp/p')
+      assert.strictEqual(session.capabilities['moz:processID'], undefined)
+    })
+
+    it('rejects a vendor capability outside its declared type', async function () {
+      for (const bad of [{ 'moz:processID': -1 }, { 'moz:headless': 'yes' }]) {
+        await assert.rejects(newSession({}, { sessionId: 's1', capabilities: { ...response, ...bad } }), ValidationError)
+      }
+    })
+
+    it("still keeps another browser's capabilities as extensions", async function () {
+      const capabilities = { ...response, 'goog:chromeOptions': { debuggerAddress: 'localhost:9222' } }
+      const { session } = await newSession({}, { sessionId: 's1', capabilities })
+      assert.deepStrictEqual(session.capabilities['goog:chromeOptions'], { debuggerAddress: 'localhost:9222' })
     })
   })
 })
