@@ -1032,10 +1032,12 @@ ACTIONS_TESTS = [
 
 DRIVER_FINDER_TESTS = ["test/selenium/webdriver/common/driver_finder_tests.py"]
 
-# Behavior that differs by host OS (window geometry, screenshots); tagged so CI
-# runs these on every OS rather than only on the Linux RBE pass.
+# Behavior that differs by host OS (window geometry, screenshots, input); tagged
+# so CI runs these on every OS rather than only on the Linux RBE pass.
 OS_SENSITIVE_TESTS = [
+    "test/selenium/webdriver/common/interactions_tests.py",
     "test/selenium/webdriver/common/takes_screenshots_tests.py",
+    "test/selenium/webdriver/common/w3c_interaction_tests.py",
     "test/selenium/webdriver/common/window_tests.py",
 ]
 
@@ -1134,7 +1136,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS},
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src not in ACTIONS_TESTS},
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = browser,
@@ -1157,9 +1159,8 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = [
-            "os-sensitive",
-        ] + BROWSERS[browser]["tags"],
+        extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src in ACTIONS_TESTS},
+        tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         test_suffix = "%s-actions" % browser,
         deps = [
