@@ -114,7 +114,7 @@ module Selenium
         def remote_server
           args = driver_path ? %w[--detect-drivers false] : %w[--selenium-manager true]
           args += %w[--enable-managed-downloads true]
-          args += driver_configuration if driver_path || browser_version != 'stable'
+          args += driver_configuration if driver_path
 
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
@@ -129,7 +129,6 @@ module Selenium
 
         def driver_configuration
           stereotype = {browserName: w3c_browser_name}
-          stereotype[:browserVersion] = browser_version unless browser_version == 'stable'
           stereotype[options_key] = {binary: browser_path} if browser_path
 
           config = ['--driver-configuration',
@@ -383,7 +382,6 @@ module Selenium
         end
 
         def chrome_options(args: [], **opts)
-          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
@@ -393,7 +391,6 @@ module Selenium
         end
 
         def edge_options(args: [], **opts)
-          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
@@ -403,7 +400,6 @@ module Selenium
         end
 
         def firefox_options(args: [], **opts)
-          opts[:browser_version] = browser_version
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:unhandled_prompt_behavior] ||= 'ignore'
           args << '--headless' if ENV['HEADLESS']

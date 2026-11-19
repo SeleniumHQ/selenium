@@ -3,8 +3,11 @@ load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
     "chrome_data",
+    "chrome_version_env",
     "edge_data",
+    "edge_version_env",
     "firefox_data",
+    "firefox_version_env",
 )
 
 _HEADLESS_ARGS = select({
@@ -36,6 +39,7 @@ _BROWSERS = {
             "//conditions:default": [],
         }) + _HEADLESS_ARGS,
         "data": chrome_data,
+        "env": chrome_version_env,
         "tags": [],
     },
     "edge": {
@@ -58,6 +62,7 @@ _BROWSERS = {
             "//conditions:default": [],
         }) + _HEADLESS_ARGS,
         "data": edge_data,
+        "env": edge_version_env,
         "tags": [],
     },
     "firefox": {
@@ -80,6 +85,7 @@ _BROWSERS = {
             "//conditions:default": [],
         }) + _HEADLESS_ARGS,
         "data": firefox_data,
+        "env": firefox_version_env,
         "tags": [],
     },
     "ie": {
@@ -152,10 +158,13 @@ def _test_wrapper_impl(ctx):
         if DefaultInfo in d:
             runfiles = runfiles.merge(d[DefaultInfo].default_runfiles)
 
-    return [DefaultInfo(
-        executable = symlink,
-        runfiles = runfiles,
-    )]
+    return [
+        DefaultInfo(
+            executable = symlink,
+            runfiles = runfiles,
+        ),
+        RunEnvironmentInfo(environment = ctx.attr.env),
+    ]
 
 _test_wrapper_test = rule(
     implementation = _test_wrapper_impl,
@@ -167,6 +176,7 @@ _test_wrapper_test = rule(
             mandatory = True,
         ),
         "data": attr.label_list(allow_files = True),
+        "env": attr.string_dict(),
         "_windows_constraint": attr.label(default = "@platforms//os:windows"),
     },
 )
@@ -219,6 +229,7 @@ def dotnet_nunit_test_suite(
             browser_cfg = _BROWSERS[browser] if browser else None
             browser_args = browser_cfg["args"] if browser_cfg else []
             browser_data = browser_cfg["data"] if browser_cfg else []
+            browser_env = browser_cfg.get("env", {}) if browser_cfg else {}
             browser_tags = [browser] + COMMON_TAGS + browser_cfg["tags"] if browser_cfg else []
 
             if browser and browser == default_browser:
@@ -232,6 +243,7 @@ def dotnet_nunit_test_suite(
                 test_binary = ":" + name,
                 args = _NUNIT_ARGS + ["--filter", "FullyQualifiedName~.%s" % class_name] + browser_args,
                 data = browser_data,
+                env = browser_env,
                 tags = tags + browser_tags,
                 size = size,
                 target_compatible_with = browser_cfg["target_compatible_with"] if browser_cfg and "target_compatible_with" in browser_cfg else [],

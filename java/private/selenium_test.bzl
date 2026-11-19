@@ -2,10 +2,15 @@ load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
     "chrome_beta_data",
+    "chrome_beta_version_env",
     "chrome_data",
+    "chrome_version_env",
     "edge_data",
+    "edge_version_env",
     "firefox_beta_data",
+    "firefox_beta_version_env",
     "firefox_data",
+    "firefox_version_env",
 )
 load("//common/manager:defs.bzl", "SE_MANAGER_TEST_DATA", "SE_MANAGER_TEST_ENV", "SE_MANAGER_TEST_EXEC_PROPERTIES")
 load(
@@ -27,6 +32,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=chrome"] + headless_jvm_flags,
         "pinned_jvm_flags": chrome_pinned_jvm_flags,
         "data": chrome_data,
+        "env": chrome_version_env,
         "tags": COMMON_TAGS + ["chrome"],
         "target_compatible_with": [],
     },
@@ -35,6 +41,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=chrome"] + headless_jvm_flags,
         "pinned_jvm_flags": chrome_beta_pinned_jvm_flags,
         "data": chrome_beta_data,
+        "env": chrome_beta_version_env,
         "tags": COMMON_TAGS + ["chrome", "chrome-beta"],
         "target_compatible_with": [],
     },
@@ -43,6 +50,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=edge"] + headless_jvm_flags,
         "pinned_jvm_flags": edge_pinned_jvm_flags,
         "data": edge_data,
+        "env": edge_version_env,
         "tags": COMMON_TAGS + ["edge"],
         "target_compatible_with": [],
     },
@@ -51,6 +59,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=ff"] + headless_jvm_flags,
         "pinned_jvm_flags": firefox_pinned_jvm_flags,
         "data": firefox_data,
+        "env": firefox_version_env,
         "tags": COMMON_TAGS + ["firefox"],
         "target_compatible_with": [],
     },
@@ -59,6 +68,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=ff"] + headless_jvm_flags,
         "pinned_jvm_flags": firefox_beta_pinned_jvm_flags,
         "data": firefox_beta_data,
+        "env": firefox_beta_version_env,
         "tags": COMMON_TAGS + ["firefox", "firefox-beta"],
         "target_compatible_with": [],
     },
@@ -67,6 +77,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=ie"],
         "pinned_jvm_flags": [],
         "data": [],
+        "env": {},
         "tags": COMMON_TAGS + ["exclusive-if-local", "ie"],
         "target_compatible_with": ["@platforms//os:windows"],
     },
@@ -75,6 +86,7 @@ BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=safari"],
         "pinned_jvm_flags": [],
         "data": [],
+        "env": {},
         "tags": COMMON_TAGS + ["exclusive-if-local", "safari"],
         "target_compatible_with": ["@platforms//os:macos"],
     },
@@ -124,7 +136,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
             # Only allow linting on the default test
             tags = BROWSERS[browser]["tags"] + tags + local_tags + ([] if test == name else ["no-lint"]),
             data = (SE_MANAGER_TEST_DATA if se_manager else BROWSERS[browser]["data"]) + data,
-            env = SE_MANAGER_TEST_ENV if se_manager else {},
+            env = SE_MANAGER_TEST_ENV if se_manager else BROWSERS[browser]["env"],
             env_inherit = inherited_env,
             exec_properties = SE_MANAGER_TEST_EXEC_PROPERTIES if se_manager else {},
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -151,6 +163,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server",
                 ],
+                env = BROWSERS[browser]["env"],
                 target_compatible_with = BROWSERS[browser]["target_compatible_with"],
                 **stripped_args
             )
