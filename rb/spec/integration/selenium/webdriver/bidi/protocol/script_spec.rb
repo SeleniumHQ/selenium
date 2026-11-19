@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Script, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:script) { described_class.new(driver) }
 
           def target(context = driver.window_handle, sandbox: nil)

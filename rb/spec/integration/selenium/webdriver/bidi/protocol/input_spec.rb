@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Input, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:input) { described_class.new(driver) }
           let(:script) { Script.new(driver) }
 
@@ -191,6 +189,8 @@ module Selenium
                                  exception: {class: Error::UnsupportedOperationError,
                                              message: /(?:Unrecognized path|Failed to add file)/},
                                  reason: 'Firefox rejects the Windows temp file path for input.setFiles'}] do
+            after { driver.switch_to.default_content }
+
             it 'sets files on a file input element' do
               file = create_tempfile
               driver.navigate.to url_for('upload.html')

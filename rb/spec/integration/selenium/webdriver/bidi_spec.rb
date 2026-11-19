@@ -22,8 +22,6 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe BiDi, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-      after { |example| reset_driver!(example: example) }
-
       it 'errors when bidi not enabled' do
         reset_driver!(web_socket_url: false) do |driver|
           expect { driver.bidi }.to raise_error(WebDriver::Error::WebDriverError)
@@ -36,32 +34,36 @@ module Selenium
         expect(status.message).not_to be_empty
       end
 
-      it 'does not close BiDi session if at least one window is opened',
-         pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
-        status = driver.bidi.session.status
-        expect(status.ready).to be false
-        expect(status.message).to be_a String
+      context 'when closing windows' do
+        after { |example| reset_driver!(example: example) }
 
-        driver.switch_to.new_window(:window)
-        driver.switch_to.new_window(:tab)
-        driver.switch_to.new_window(:tab)
+        it 'does not close BiDi session if at least one window is opened',
+           pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
+          status = driver.bidi.session.status
+          expect(status.ready).to be false
+          expect(status.message).to be_a String
 
-        driver.close
+          driver.switch_to.new_window(:window)
+          driver.switch_to.new_window(:tab)
+          driver.switch_to.new_window(:tab)
 
-        status_after_closing = driver.bidi.session.status
-        expect(status_after_closing.ready).to be false
-        expect(status_after_closing.message).to be_a String
-      end
+          driver.close
 
-      it 'closes BiDi session if last window is closed',
-         pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
-        status = driver.bidi.session.status
-        expect(status.ready).to be false
-        expect(status.message).to be_a String
+          status_after_closing = driver.bidi.session.status
+          expect(status_after_closing.ready).to be false
+          expect(status_after_closing.message).to be_a String
+        end
 
-        driver.close
+        it 'closes BiDi session if last window is closed',
+           pending_if: {browser_family: :safari, reason: 'Safari always reports session.status ready: true'} do
+          status = driver.bidi.session.status
+          expect(status.ready).to be false
+          expect(status.message).to be_a String
 
-        expect { driver.bidi.session.status }.to raise_error(IOError)
+          driver.close
+
+          expect { driver.bidi.session.status }.to raise_error(IOError)
+        end
       end
     end
   end

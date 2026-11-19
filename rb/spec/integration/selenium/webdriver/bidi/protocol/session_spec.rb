@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe Session, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:session) { described_class.new(driver) }
 
           describe '#status' do
@@ -98,6 +96,8 @@ module Selenium
                                 exception: {class: Error::UnsupportedOperationError,
                                             message: /Ending a session /},
                                 reason: 'Firefox returns unsupported operation for session.end on Classic sessions'} do
+            after { |example| reset_driver!(example: example) }
+
             it 'ends the active BiDi session' do
               expect(session.end_).to be_empty
             end

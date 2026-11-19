@@ -25,8 +25,6 @@ module Selenium
     class BiDi
       module Protocol
         describe BrowsingContext, skip_unless: {bidi: true, reason: 'only executed when bidi is enabled'} do
-          after { |example| reset_driver!(example: example) }
-
           let(:browsing_context) { described_class.new(driver) }
 
           def script_target(context = driver.window_handle, sandbox: nil)
@@ -39,6 +37,10 @@ module Selenium
             Script.new(driver).evaluate(expression: expression, target: script_target(context), await_promise: false)
           end
 
+          def close_other_contexts
+            (driver.window_handles - [driver.window_handle]).each { |handle| browsing_context.close(context: handle) }
+          end
+
           describe '.new' do
             it 'errors when bidi not enabled' do
               reset_driver!(web_socket_url: false) do |driver|
@@ -49,6 +51,8 @@ module Selenium
           end
 
           describe '#activate' do
+            after { close_other_contexts }
+
             it 'activates an existing browsing context' do
               context = browsing_context.create(type: :tab, background: true).context
 
@@ -126,6 +130,8 @@ module Selenium
           end
 
           describe '#create' do
+            after { close_other_contexts }
+
             it 'creates a tab context' do
               result = browsing_context.create(type: :tab)
 
@@ -395,6 +401,10 @@ module Selenium
           end
 
           describe '#set_viewport' do
+            after do
+              browsing_context.set_viewport(context: driver.window_handle, viewport: nil, device_pixel_ratio: nil)
+            end
+
             it 'sets the viewport size and device pixel ratio',
                pending_if: {browser_family: :safari,
                             reason: 'Safari accepts browsingContext.setViewport but returns undefined for the ' \
