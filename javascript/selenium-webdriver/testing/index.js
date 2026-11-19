@@ -257,6 +257,10 @@ function init(force = false) {
   })
 }
 
+function isHeadless() {
+  return process.env['SE_HEADLESS'] === 'true'
+}
+
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
 const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
@@ -306,6 +310,18 @@ class Environment {
    */
   remote() {
     return () => URL_MAP.get(this) !== null
+  }
+
+  /**
+   * Returns a predicate function that will suppress tests in this environment
+   * when it starts browsers headless, as requested by `SE_HEADLESS=true`.
+   *
+   *     ignore(env.headless()).it('installs an extension', ...)
+   *
+   * @return {function(): boolean} a new predicate function.
+   */
+  headless() {
+    return isHeadless
   }
 
   /**
@@ -367,6 +383,16 @@ class Environment {
       builder.setEdgeOptions(new edge.Options())
     } else if (browser.name === Browser.FIREFOX && !builder.getFirefoxOptions()) {
       builder.setFirefoxOptions(new firefox.Options())
+    }
+
+    if (isHeadless()) {
+      if (browser.name === Browser.CHROME) {
+        builder.getChromeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.EDGE) {
+        builder.getEdgeOptions().addArguments('--headless')
+      } else if (browser.name === Browser.FIREFOX) {
+        builder.getFirefoxOptions().addArguments('-headless')
+      }
     }
 
     builder.disableEnvironmentOverrides()

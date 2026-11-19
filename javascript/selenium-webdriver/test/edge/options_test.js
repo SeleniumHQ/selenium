@@ -160,7 +160,7 @@ test.suite(
         })
       })
 
-      it('can install an extension from path', async function () {
+      test.ignore(env.headless()).it('can install an extension from path', async function () {
         let options = env.builder().getEdgeOptions() || new edge.Options()
         options.addExtensions(WEBEXTENSION_CRX)
 
@@ -170,7 +170,7 @@ test.suite(
         await verifyWebExtensionWasInstalled()
       })
 
-      it('can install an extension from Buffer', async function () {
+      test.ignore(env.headless()).it('can install an extension from Buffer', async function () {
         let options = env.builder().getEdgeOptions() || new edge.Options()
         options.addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
 

@@ -3,6 +3,11 @@
 # test execution in `aspect_rules_js`, so we can't do that yet. Fortunately, when running on
 # Linux, there are no spaces in file names, and that's all we need to get the tests running
 # on the RBE. For now, we'll only use pinned browsers when running remotely.
+headless_env = select({
+    "@selenium//common:use_headless_browser": {"SE_HEADLESS": "true"},
+    "//conditions:default": {},
+})
+
 BROWSERS = {
     "chrome": {
         "data": select({
@@ -26,7 +31,7 @@ BROWSERS = {
             #                "SE_CHROME": "mac_chrome/Chrome.app)/Contents/MacOS/Chrome",
             #            },
             "//conditions:default": {},
-        }),
+        }) | headless_env,
     },
     "edge": {
         "data": select({
@@ -42,7 +47,7 @@ BROWSERS = {
                 "SE_EDGE": "linux_edge/opt/microsoft/msedge/microsoft-edge",
             },
             "//conditions:default": {},
-        }),
+        }) | headless_env,
     },
     "firefox": {
         "data": select({
@@ -66,6 +71,6 @@ BROWSERS = {
             #                "SE_FIREFOX": "mac_firefox/Firefox.app/Contents/MacOS/firefox",
             #            },
             "//conditions:default": {},
-        }),
+        }) | headless_env,
     },
 }
