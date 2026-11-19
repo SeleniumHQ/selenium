@@ -358,7 +358,9 @@ class BaseOptions(metaclass=ABCMeta):
 
         Recording is done by Selenium Manager and is currently supported when
         starting Chrome, Edge or Firefox locally; the setting is not sent to the
-        browser or to a remote end. This is a beta feature and may change.
+        browser or to a remote end. Only the driver executable is taken from the
+        service; its port, arguments, environment and log output are not used.
+        This is a beta feature and may change.
 
         Usage:
             - Get: `self.record`
