@@ -344,7 +344,7 @@ def edge_and_edgedriver():
     matches = find_matching_edge_version()
     if not matches:
         print("Warning: No Edge browser/driver found for both Linux and macOS", file=sys.stderr)
-        return ""
+        return "", None
 
     mac_browser = matches["mac"]["browser"]
     linux_browser = matches["linux"]["browser"]
@@ -353,7 +353,7 @@ def edge_and_edgedriver():
     content += edgedriver_content("linux_edgedriver", matches["linux"]["driver_url"])
     content += edgedriver_content("mac_edgedriver", matches["mac"]["driver_url"])
 
-    return content
+    return content, linux_browser["version"]
 
 
 def edgedriver_content(name, driver_url):
@@ -451,7 +451,7 @@ def firefox():
     if latest_firefox != beta_firefox:
         sha_linux = calculate_hash(firefox_linux(beta_firefox))
         sha_mac = calculate_hash(firefox_mac(beta_firefox))
-    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac)
+    return content + print_firefox(beta_firefox, "beta_", sha_linux, sha_mac), latest_firefox, beta_firefox
 
 
 def firefox_version_data():
@@ -538,9 +538,11 @@ def pin_browsers():
     local_drivers(name = "local_drivers")
 
 """
-    content = content + firefox()
+    firefox_content, firefox_version, firefox_beta_version = firefox()
+    content = content + firefox_content
     content = content + geckodriver()
-    content = content + edge_and_edgedriver()
+    edge_content, edge_version = edge_and_edgedriver()
+    content = content + edge_content
 
     # Stable Chrome
     stable_chrome_info = get_chrome_info_for_channel(channel="Stable")
@@ -561,8 +563,22 @@ pin_browsers_extension = module_extension(
 )
 """
 
-    current_script_dir = Path(os.path.realpath(__file__)).parent
-    target_file_path = current_script_dir.parent / "common/repositories.bzl"
+    versions = {
+        "CHROME_MAJOR_VERSION": stable_chrome_info["version"],
+        "CHROME_BETA_MAJOR_VERSION": beta_chrome_info["version"],
+        "EDGE_MAJOR_VERSION": edge_version,
+        "FIREFOX_MAJOR_VERSION": firefox_version,
+        "FIREFOX_BETA_MAJOR_VERSION": firefox_beta_version,
+    }
+    versions_content = generated_note("#", "scripts/pinned_browsers.py", "bazel run //scripts:pinned_browsers")
+    versions_content += "\n\n" + "".join(
+        f'{name} = "{version.split(".")[0]}"\n' for name, version in versions.items() if version
+    )
 
-    with open(target_file_path, "w") as file:
+    common_dir = Path(os.path.realpath(__file__)).parent.parent / "common"
+
+    with open(common_dir / "repositories.bzl", "w") as file:
         file.write(content)
+
+    with open(common_dir / "browser_versions.bzl", "w") as file:
+        file.write(versions_content)

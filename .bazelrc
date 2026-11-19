@@ -155,7 +155,7 @@ test:windows --test_env=PROGRAMFILES(X86)="C:\\Program Files (x86)"
 # undeclared resource, so `build` (which `test` inherits) must declare it. CI lowers this to 1.
 build --local_resources=browser=HOST_CPUS
 
-# GitHub Actions browser tests run one browser at a time on pinned browsers, or on the latest stable from Selenium Manager where none are pinned.
+# GitHub Actions browser tests run one browser at a time; where Bazel has no pinned browser, Selenium Manager reuses an installed browser of the pinned major version.
 test:gh-browser --build_tests_only
 test:gh-browser --keep_going
 test:gh-browser --flaky_test_attempts=2
@@ -165,7 +165,6 @@ test:gh-browser --local_resources=unit=HOST_CPUS-1
 test:gh-browser --jobs=500
 test:gh-browser --skip_incompatible_explicit_targets
 test:gh-browser --manager=host
-test:gh-browser --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
 test:gh-browser --test_env=SE_SKIP_DRIVER_IN_PATH=true
 
 test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

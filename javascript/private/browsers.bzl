@@ -1,3 +1,6 @@
+load("//common:browser_versions.bzl", "CHROME_MAJOR_VERSION", "EDGE_MAJOR_VERSION", "FIREFOX_MAJOR_VERSION")
+load("//common:browsers.bzl", "pinned_version_env")
+
 # We need to enable `build --experimental_inprocess_symlink_creation` in the project `.bazelrc`
 # to allow the runfiles that are generated to include spaces. However, doing this breaks
 # test execution in `aspect_rules_js`, so we can't do that yet. Fortunately, when running on
@@ -31,7 +34,7 @@ BROWSERS = {
             #                "SE_CHROME": "mac_chrome/Chrome.app)/Contents/MacOS/Chrome",
             #            },
             "//conditions:default": {},
-        }) | headless_env,
+        }) | headless_env | pinned_version_env("chrome", CHROME_MAJOR_VERSION, ["linux"]),
     },
     "edge": {
         "data": select({
@@ -47,7 +50,7 @@ BROWSERS = {
                 "SE_EDGE": "linux_edge/opt/microsoft/msedge/microsoft-edge",
             },
             "//conditions:default": {},
-        }) | headless_env,
+        }) | headless_env | pinned_version_env("edge", EDGE_MAJOR_VERSION, ["linux"]),
     },
     "firefox": {
         "data": select({
@@ -71,6 +74,6 @@ BROWSERS = {
             #                "SE_FIREFOX": "mac_firefox/Firefox.app/Contents/MacOS/firefox",
             #            },
             "//conditions:default": {},
-        }) | headless_env,
+        }) | headless_env | pinned_version_env("firefox", FIREFOX_MAJOR_VERSION, ["linux"]),
     },
 }

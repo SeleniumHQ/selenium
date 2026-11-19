@@ -1135,6 +1135,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src not in ACTIONS_TESTS},
         tags = BROWSERS[browser]["tags"],
@@ -1158,6 +1159,7 @@ DEFAULT_BROWSER_TESTS = [b for b in BROWSER_TESTS if b != "ie"]
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         extra_tags = {src: ["os-sensitive"] for src in OS_SENSITIVE_TESTS if src in ACTIONS_TESTS},
         tags = BROWSERS[browser]["tags"],
@@ -1192,6 +1194,7 @@ FEATURE_SUITE_DEFS = {
             "--instafail",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1252,6 +1255,7 @@ FEATURE_SUITE_DEFS = {
             "--bidi",
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
+        env = BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"],
         target_compatible_with = BROWSERS[browser]["target_compatible_with"],
@@ -1286,7 +1290,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1332,7 +1336,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1367,7 +1371,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1403,7 +1407,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
@@ -1439,7 +1443,7 @@ FEATURE_SUITE_DEFS = {
         ],
         env = {
             "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
-        },
+        } | BROWSERS[browser]["env"],
         env_inherit = ["DISPLAY"],
         tags = BROWSERS[browser]["tags"] + [
             "remote",
