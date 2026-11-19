@@ -104,9 +104,13 @@ _BROWSERS = {
         "args": [
             "--test-parameter",
             "ActiveDriverConfig=Remote",
+            "--test-parameter",
+            "JavaLocation=$(rootpath //dotnet/test/testing.nunit:java-location)",
         ],
         "data": [
             "//:grid",
+            "//dotnet/test/testing.nunit:java-location",
+            "@bazel_tools//tools/jdk:current_java_runtime",
         ],
         "tags": ["skip-rbe"],
     },

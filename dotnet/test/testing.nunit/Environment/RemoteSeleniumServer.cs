@@ -36,14 +36,16 @@ public class RemoteSeleniumServer
     private readonly string gridExecutableName = @"java/src/org/openqa/selenium/grid/selenium";
     private readonly string projectRoot;
     private readonly bool autoStartServer;
+    private readonly string javaExecutable;
     private int serverPort;
 
     public static Uri ServerUri { get; private set; } = new Uri("http://127.0.0.1:6000/wd/hub/");
 
-    public RemoteSeleniumServer(string projectRoot, bool autoStartServer)
+    public RemoteSeleniumServer(string projectRoot, bool autoStartServer, string javaExecutable = "java")
     {
         this.projectRoot = projectRoot;
         this.autoStartServer = autoStartServer;
+        this.javaExecutable = javaExecutable;
         serverPort = autoStartServer ? FindAvailablePort() : ServerUri.Port;
         if (autoStartServer)
         {
@@ -137,7 +139,7 @@ public class RemoteSeleniumServer
             string gridPath = runfiles.Rlocation("_main/" + gridExecutableName);
             if (!string.IsNullOrEmpty(gridPath) && File.Exists(gridPath))
             {
-                return ("java", $"-jar \"{gridPath}\" {serverArgs}");
+                return (javaExecutable, $"-jar \"{gridPath}\" {serverArgs}");
             }
         }
         catch (Exception ex)
@@ -150,14 +152,14 @@ public class RemoteSeleniumServer
         string bazelBinGridPath = Path.Combine(projectRoot, "bazel-bin", gridExecutableName.Replace('/', Path.DirectorySeparatorChar));
         if (File.Exists(bazelBinGridPath))
         {
-            return ("java", $"-jar \"{bazelBinGridPath}\" {serverArgs}");
+            return (javaExecutable, $"-jar \"{bazelBinGridPath}\" {serverArgs}");
         }
 
         // Check traditional path for JAR (for non-Bazel runs)
         string traditionalPath = Path.Combine(projectRoot, serverJarName.Replace('/', Path.DirectorySeparatorChar));
         if (File.Exists(traditionalPath))
         {
-            return ("java", $"-jar \"{traditionalPath}\" {serverArgs}");
+            return (javaExecutable, $"-jar \"{traditionalPath}\" {serverArgs}");
         }
 
         string runfilesDetail = runfilesException == null

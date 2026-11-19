@@ -145,7 +145,7 @@ build --action_env=JRUBY_OPTS="--dev"
 test --test_env=JRUBY_OPTS="--dev"
 
 # Expose necessary variables for Selenium-Manager.
-test:windows --test_env=PATH
+# Not PATH: the runner's PATH changes with each image update and would end up in every test's cache key.
 test:windows --test_env=LOCALAPPDATA
 test:windows --test_env=PROCESSOR_ARCHITECTURE
 test:windows --test_env=PROGRAMFILES="C:\\Program Files"

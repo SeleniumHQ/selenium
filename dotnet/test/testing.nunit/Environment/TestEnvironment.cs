@@ -25,6 +25,8 @@ internal class TestEnvironment
 
     public string BrowserLocation { get; set; }
 
+    public string JavaLocation { get; set; }
+
     public bool Headless { get; set; }
 
     public string ActiveDriverConfig { get; set; }
