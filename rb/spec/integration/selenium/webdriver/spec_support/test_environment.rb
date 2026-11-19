@@ -82,15 +82,20 @@ module Selenium
         end
 
         def driver_instance(...)
+          @driver_used = true
           @driver_instance || create_driver!(...)
         end
 
         def reset_driver!(**opts, &block)
           # do not reset if the test was marked skipped
           return if opts.delete(:example)&.metadata&.fetch(:skip, nil)
+          # a driver nobody has used since the last reset is still clean
+          return @driver_instance unless @driver_used || opts.any? || block
 
           quit_driver
-          driver_instance(**opts, &block)
+          driver = driver_instance(**opts, &block)
+          @driver_used = false
+          driver
         end
 
         def quit_driver
