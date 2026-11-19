@@ -68,13 +68,22 @@ class LocalWebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             session_deleted = False
         finally:
-            recording, self._trace_recording = self._trace_recording, None
-            try:
-                if recording is not None:
-                    recording.stop(session_deleted=session_deleted)
-            finally:
-                if hasattr(self, "service") and self.service is not None:
-                    self.service.stop()
+            self._stop_driver(session_deleted)
+
+    def _stop_driver(self, session_deleted: bool) -> None:
+        """Stops the driver, waiting for the trace to be written when the session is recorded.
+
+        Args:
+            session_deleted: Whether the session was deleted, which makes Selenium
+                Manager write the trace and exit by itself.
+        """
+        recording, self._trace_recording = self._trace_recording, None
+        try:
+            if recording is not None:
+                recording.stop(session_deleted=session_deleted)
+        finally:
+            if hasattr(self, "service") and self.service is not None:
+                self.service.stop()
 
     def download_file(self, *args, **kwargs):
         """Only implemented in RemoteWebDriver."""

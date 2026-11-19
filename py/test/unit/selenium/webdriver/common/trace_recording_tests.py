@@ -195,3 +195,19 @@ def test_local_driver_does_not_record_by_default():
     _, start_recording = _local_chrome(ChromeOptions(), None, service)
     start_recording.assert_not_called()
     service.start.assert_called_once()
+
+
+def test_local_driver_stops_recording_when_connection_cannot_be_created():
+    options = ChromeOptions()
+    options.record = "trace.zip"
+    recording = mock.create_autospec(TraceRecording, instance=True, proxy_url="http://127.0.0.1:9515")
+    service = mock.create_autospec(ChromeService, instance=True, path="")
+    service.env_path.return_value = None
+
+    connection = mock.patch(
+        "selenium.webdriver.chromium.webdriver.ChromiumRemoteConnection", side_effect=ValueError("bad config")
+    )
+    with connection, pytest.raises(ValueError, match="bad config"):
+        _local_chrome(options, recording, service)
+    recording.stop.assert_called_once_with(session_deleted=False)
+    service.stop.assert_called_once()

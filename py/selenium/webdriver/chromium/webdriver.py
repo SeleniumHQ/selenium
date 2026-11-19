@@ -54,13 +54,18 @@ class ChromiumDriver(LocalWebDriver):
         self.service.path = self.service.env_path() or finder.get_driver_path()
         server_addr = self._start_driver(browser_name, self.service, self.options)
 
-        executor = ChromiumRemoteConnection(
-            remote_server_addr=server_addr,
-            browser_name=browser_name,
-            vendor_prefix=vendor_prefix,
-            keep_alive=keep_alive,
-            ignore_proxy=self.options._ignore_local_proxy,
-        )
+        try:
+            executor = ChromiumRemoteConnection(
+                remote_server_addr=server_addr,
+                browser_name=browser_name,
+                vendor_prefix=vendor_prefix,
+                keep_alive=keep_alive,
+                ignore_proxy=self.options._ignore_local_proxy,
+            )
+        except Exception:
+            # The driver (or the recording proxy) is already running.
+            self._stop_driver(session_deleted=False)
+            raise
 
         try:
             super().__init__(command_executor=executor, options=self.options)
