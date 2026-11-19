@@ -1,7 +1,7 @@
-# NNNN. Selenium Manager records sessions into Playwright-format traces
+# 18341. Selenium Manager records sessions into Playwright-format traces
 
 - Status: Proposed
-- Discussion: <!-- link to this record's PR -->
+- Discussion: https://github.com/SeleniumHQ/selenium/pull/18341
 
 ## Context
 
