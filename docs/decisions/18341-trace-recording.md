@@ -11,7 +11,7 @@ to capture this, so users write ad-hoc screenshot and logging hooks in each bind
 
 Other tools ship a recorded "trace" for this. Playwright's trace archive (`trace.zip` with NDJSON
 streams and image resources) is the de facto format, and there are viewers for it outside
-Playwright, such as the Vibium record player. Producing that format gives Selenium users existing
+Playwright, such as the Vibium record player and the WebdriverIO trace viewer. Producing that format gives Selenium users existing
 viewers for free.
 
 Every binding would have to implement recording itself: intercept commands, capture screenshots,
@@ -51,7 +51,8 @@ binding and already resolves and launches drivers, so the logic can be written o
    data is recorded in that case.
 5. **Trace format.** A Playwright trace archive (`trace.trace`, `trace.network`, `resources/`)
    using **schema version 8**. Playwright upgrades older schemas when it loads them, and v8 is the
-   newest version the Vibium record player accepts (v6 to v8), so one file works in both.
+   newest version the Vibium record player accepts (v6 to v8), so one file works in all the viewers
+   (Playwright trace viewer, Vibium record player, WebdriverIO trace viewer).
 6. **Lifecycle.** On `DELETE /session/{id}`, the proxy writes the trace *before* replying, then
    stops the driver and exits. Bindings can therefore end the process right after quitting without
    losing the trace, including on Windows, where the process is killed rather than signalled. On
@@ -77,7 +78,7 @@ binding and already resolves and launches drivers, so the logic can be written o
 ## Consequences
 
 - Users get traces with one option and no extra dependencies. The archive opens in the Playwright
-  trace viewer and in the Vibium record player.
+  trace viewer, the Vibium record player and the WebdriverIO trace viewer.
 - When recording, Selenium Manager stays alive for the whole session. Driver service settings
   (port, arguments, log output) other than the executable are not used in pipe mode.
 - Screenshots after each action add latency, and the trace is kept in memory until the session
