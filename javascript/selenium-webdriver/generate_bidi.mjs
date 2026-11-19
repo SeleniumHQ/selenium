@@ -728,8 +728,9 @@ function buildVendorModules(schema, domain, parentClassName, specCommands) {
  * the type extensible (#18184). Fields on a spec command's params go only to that command's vendor
  * variant (buildVendorModules), so a vendor value reaches the wire only through the vendor class.
  * Fields on any other type join it as optional fields, because it is received through the shared
- * class whatever the browser. A type the spec already marks extensible is left as it is, as in Java:
- * its vendor fields ride its extension map.
+ * class whatever the browser. That includes a type the spec marks extensible
+ * (session.CapabilityRequest): its vendor fields are declared all the same, so they are typed rather
+ * than left to its extension map, which keeps carrying other browsers' fields.
  */
 function foldVendorExtensions(schema) {
   const vendorTypes = Object.assign({}, ...Object.values(schema.vendor ?? {}).map((s) => s.types ?? {}))
@@ -742,7 +743,7 @@ function foldVendorExtensions(schema) {
       const wires = new Set(base.fields.map((f) => f.wire))
       const redeclared = entry.fields.find((f) => wires.has(f.wire))
       if (redeclared) throw new Error(`vendor ${namespace} redeclares ${redeclared.wire} on ${typeName}`)
-      if (base.extensible || schema.commands.some((c) => c.params?.ref === typeName)) continue
+      if (schema.commands.some((c) => c.params?.ref === typeName)) continue
 
       const taken = new Set(base.fields.map((f) => f.name))
       const fields = entry.fields.map((f) => {
