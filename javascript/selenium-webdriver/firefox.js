@@ -414,8 +414,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
   }
 
   /**
-   * Overrides the parent build() method to add the websocket port argument
-   * for Firefox when not connecting to an existing instance.
+   * Overrides the parent build() method to let Firefox pick the websocket port
+   * when not connecting to an existing instance and no port was supplied.
    *
    * @return {!DriverService} A new driver service instance.
    */
@@ -424,12 +424,11 @@ class ServiceBuilder extends remote.DriverService.Builder {
     let argsPromise = Promise.resolve(port).then((port) => {
       // Start with the default --port argument.
       let args = this.options_.args.concat(`--port=${port}`)
-      // If the "--connect-existing" flag is not set, add the websocket port.
-      if (!this.options_.args.some((arg) => arg === '--connect-existing')) {
-        return findFreePort().then((wsPort) => {
-          args.push(`--websocket-port=${wsPort}`)
-          return args
-        })
+      const skipWebSocketPort = this.options_.args.some(
+        (arg) => arg === '--connect-existing' || (typeof arg === 'string' && arg.startsWith('--websocket-port')),
+      )
+      if (!skipWebSocketPort) {
+        args.push('--websocket-port=0')
       }
       return args
     })
