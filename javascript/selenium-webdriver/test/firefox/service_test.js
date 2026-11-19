@@ -43,6 +43,14 @@ describe('firefox.ServiceBuilder', function () {
     assert.deepStrictEqual(args, ['--websocket-port', '1234', '--port=4444'])
   })
 
+  it('keeps a user-supplied websocket port given as a promise', async function () {
+    const args = await argsFor(
+      new firefox.ServiceBuilder('geckodriver').addArguments(Promise.resolve('--websocket-port=1234')),
+    )
+
+    assert.deepStrictEqual(args, ['--websocket-port=1234', '--port=4444'])
+  })
+
   it('omits the websocket port when connecting to an existing instance', async function () {
     const args = await argsFor(new firefox.ServiceBuilder('geckodriver').addArguments('--connect-existing'))
 

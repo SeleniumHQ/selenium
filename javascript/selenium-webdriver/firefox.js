@@ -421,10 +421,10 @@ class ServiceBuilder extends remote.DriverService.Builder {
    */
   build() {
     let port = this.options_.port || findFreePort()
-    let argsPromise = Promise.resolve(port).then((port) => {
+    let argsPromise = Promise.all([port, Promise.all(this.options_.args)]).then(([port, userArgs]) => {
       // Start with the default --port argument.
-      let args = this.options_.args.concat(`--port=${port}`)
-      const skipWebSocketPort = this.options_.args.some(
+      let args = userArgs.concat(`--port=${port}`)
+      const skipWebSocketPort = userArgs.some(
         (arg) => arg === '--connect-existing' || (typeof arg === 'string' && arg.startsWith('--websocket-port')),
       )
       if (!skipWebSocketPort) {
