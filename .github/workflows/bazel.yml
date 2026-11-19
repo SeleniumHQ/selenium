@@ -164,17 +164,12 @@ jobs:
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           disk-cache: false
           external-cache: false
-          # Keep the key files in sync with the paths filter in gh-cache.yml
-          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, common/selenium_manager.bzl]' || 'false' }}
+          # Keep the key files in sync with the paths filter in gh-cache.yml; populate-repository-cache.sh writes build/repository-cache-run
+          repository-cache: ${{ inputs.use-cache && '[MODULE.bazel, multitool.lock.json, pnpm-lock.yaml, rust/Cargo.lock, java/maven_install.json, py/requirements_lock.txt, rb/Gemfile.lock, dotnet/paket.lock, build/repository-cache-run]' || 'false' }}
       - name: Disk status after cache restore
         if: inputs.os != 'macos'
         shell: bash
         run: . ./scripts/github-actions/disk-status.sh
-      - name: Clear old repository cache
-        if: inputs.cache-save
-        shell: bash
-        run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then rm -rf /d/b-repo; else rm -rf "$HOME/.cache/bazel-repo"; fi
       - name: Setup Fluxbox and Xvfb
         if: inputs.needs-display && contains(inputs.os, 'ubuntu')
         run: |
