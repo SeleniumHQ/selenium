@@ -68,7 +68,7 @@ module Selenium
 
           describe '#perform_actions' do
             it 'clicks an element with pointer actions',
-               pending_if: {browser_family: :safari,
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari script.evaluate result fails deserialization in input setup'} do
               driver.navigate.to url_for('javascriptPage.html')
               element = shared_reference('#clickField')
@@ -116,8 +116,8 @@ module Selenium
             end
 
             it 'scrolls the page with wheel actions',
-               pending_if: {browser_family: :safari,
-                            reason: 'Safari script.evaluate result fails deserialization in input setup'} do
+               pending_if: {browser_family: :safari, exception: {class: Error::UnsupportedOperationError},
+                            reason: 'Safari does not support wheel input sources'} do
               driver.navigate.to url_for('scroll3.html')
               expect(page_y_offset).to eq(0)
 
@@ -138,7 +138,7 @@ module Selenium
 
           describe '#release_actions' do
             it 'releases a pressed pointer button',
-               pending_if: {browser_family: :safari,
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari script.evaluate result fails deserialization in input setup'} do
               driver.navigate.to url_for('javascriptPage.html')
               element = shared_reference('#clickField')
@@ -183,7 +183,7 @@ module Selenium
           end
 
           describe '#set_files',
-                   pending_if: [{browser_family: :safari,
+                   pending_if: [{browser_family: :safari, exception: {class: Error::SerializationError},
                                  reason: 'Safari script.evaluate result fails deserialization in input setup'},
                                 {browser: :firefox, platform: :windows,
                                  exception: {class: Error::UnsupportedOperationError,

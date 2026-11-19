@@ -182,7 +182,7 @@ module Selenium
             end
 
             it 'accepts reference, background, and user context parameters',
-               pending_if: {browser_family: :safari,
+               pending_if: {browser_family: :safari, exception: {class: Error::SerializationError},
                             reason: 'Safari create_user_context result fails strict deserialization'} do
               user_context = Browser.new(driver).create_user_context.user_context
 
